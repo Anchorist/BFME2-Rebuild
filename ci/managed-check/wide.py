@@ -7,7 +7,7 @@ import sys
 import tempfile
 from types import SimpleNamespace
 
-from common import HEX64, PIN, digest, read, validate_binding, write
+from common import HEX64, PIN, digest, encoded, read, validate_binding, write
 from compare import difference, make_report, native_commands, protected_judge
 from compact_matrix import make_compact, join_compact
 from diff_scope import diff_lines
@@ -65,7 +65,12 @@ def plan_matrix(source, out):
     with comparison_inputs(plan) as (_, git, tip, judge, tools):
         commands = {side: native_commands(git, judge, rev, plan["request_paths"], tools)
                     for side, rev in (("base", plan["base"]), ("head", tip))}
-    document = make(plan, commands, limit=RUNNERS)
+    costs = read(Path(__file__).with_name("shard-costs.json"), 256 * 1024)
+    if costs["version"] != 1 or costs["batch_size"] != BATCH:
+        raise ValueError("The protected shard cost profile changed format.")
+    weights = {tu: costs["per_tu"].get(tu, costs["default"]) for tu in plan["request_paths"]}
+    document = make(plan, commands, limit=RUNNERS, weights=weights,
+                    batch_size=BATCH, batch_cost=costs["batch_cost"])
     out.mkdir(mode=0o700)
     write(out / "matrix.json", document)
     indexes = list(range(len(document["partition"]["shards"])))
@@ -133,7 +138,7 @@ def compile_shard(source, matrix, expected, index, out):
     plan, _ = admission(source)
     doc = load_matrix(matrix, expected, plan)
     commands_by_side = assignment(doc, index, expected=expected)
-    records, reports, details = [], {side: {} for side in SIDES}, {}
+    records, reports, details, inline_objects = [], {side: {} for side in SIDES}, {}, {}
     with comparison_inputs(plan) as (work, git, tip, judge, tools):
         owners = Owners(git, plan["base"])
         adapter = SimpleNamespace(ANNOT=judge.ANNOT, land_gate9=SimpleNamespace(diff_lines=diff_lines))
@@ -161,6 +166,7 @@ def compile_shard(source, matrix, expected, index, out):
                     value = {key: command[key] for key in ("tu", "source", "contract")} | {"side": SIDES[side]}
                     reports[side][path] = sanitize_outcome(raw, path, changed)
                     if obj.is_file():
+                        inline_objects[(SIDES[side], path)] = obj
                         local = read(obj.with_suffix(".obj.compile.json"), 4 * 1024**2)
                         if (local["source_sha256"] != command["source"] or local["compiler_contract"] != command["contract"]
                                 or not HEX64.fullmatch(local["object_sha256"])):
@@ -182,9 +188,19 @@ def compile_shard(source, matrix, expected, index, out):
                             record = difference(judge, obj, row, listing)
                             if record:
                                 details[path + "@" + row["rva"]] = clean_difference(record, listing)
+        compiler = compiler_receipt(doc, index, records)
+        try:
+            from virtual_atoms import collect
+            inline = collect(compiler, find_object=lambda side, tu: inline_objects[(side, tu)])
+        except Exception:
+            inline = None
+            print("Inline virtual advisory evidence is unavailable for this shard.", file=sys.stderr)
     receipt = make_compact(doc, expected=expected, run=os.environ["GITHUB_RUN_ID"],
                            attempt=os.environ["GITHUB_RUN_ATTEMPT"],
-                           compiler=compiler_receipt(doc, index, records), native=reports, details=details)
+                           compiler=compiler, native=reports, details=details, inline=inline)
+    if inline is not None and len(encoded(receipt)) > MAX_RECEIPT:
+        receipt["inline"] = None
+        print("Inline virtual advisory evidence exceeded its shard budget.", file=sys.stderr)
     out.mkdir(mode=0o700)
     target = out / "shard.json"
     write(target, receipt)

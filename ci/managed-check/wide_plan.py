@@ -5,6 +5,7 @@ import json
 import re
 
 from pool_protocol import MAX_OBJECT, check_object, source_path
+from batch_balance import best_assignment
 
 OID = re.compile(r"[0-9a-f]{40}\Z")
 HASH = re.compile(r"[0-9a-f]{64}\Z")
@@ -23,7 +24,7 @@ def key(row):
     return row["side"], row["tu"]
 
 
-def plan(binding, rows, *, image_sha256, policy_sha256, limit=16):
+def plan(binding, rows, *, image_sha256, policy_sha256, limit=16, batch_size=1, batch_cost=0):
     if set(binding) != {"head", "base", "tree"} or not all(
         isinstance(value, str) and OID.fullmatch(value) for value in binding.values()
     ):
@@ -48,13 +49,20 @@ def plan(binding, rows, *, image_sha256, policy_sha256, limit=16):
     if not grouped:
         raise ValueError("no compiler work in the wide plan")
     work = [(sum(r["weight"] for r in group), tu, sorted(group, key=key)) for tu, group in grouped.items()]
-    shards = [{"index": i, "weight": 0, "compile": []} for i in range(min(limit, len(work)))]
-    for weight, _, group in sorted(work, key=lambda item: (-item[0], item[1])):
-        worker = min(shards, key=lambda shard: (shard["weight"], shard["index"]))
-        worker["weight"] += weight
-        worker["compile"].extend(group)
-    for shard in shards:
-        shard["compile"].sort(key=key)
+    if type(batch_size) is not int or batch_size < 1 or type(batch_cost) is not int or batch_cost < 0:
+        raise ValueError("wide plan batch costs must be non-negative integers")
+    work.sort(key=lambda item: (-item[0], item[1]))
+    groups = [[] for _ in range(min(limit, len(work)))]
+    loads = [0] * len(groups)
+    for weight, _, rows in work:
+        worker = min(range(len(groups)), key=lambda i: (loads[i], i))
+        groups[worker].append((weight, rows))
+        loads[worker] += weight
+    if batch_cost:
+        groups = best_assignment(work, groups, batch_size, batch_cost)
+    shards = [{"index": i, "weight": sum(w for w, _ in group),
+               "compile": sorted((row for _, rows in group for row in rows), key=key)}
+              for i, group in enumerate(groups)]
     return {"schema": 1, "binding": dict(binding), "image_sha256": image_sha256,
             "policy_sha256": policy_sha256, "shards": shards, "compile_rows": len(keys)}
 
