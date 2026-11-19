@@ -1,0 +1,136 @@
+{
+  "limits": {
+    "changed_paths": 60,
+    "bytes_per_file": 1048576,
+    "changed_source_bytes": 8388608,
+    "source_files": 3,
+    "path_characters": 220,
+    "component_characters": 96
+  },
+  "source_extensions": [
+    ".c",
+    ".cpp"
+  ],
+  "header_extensions": [
+    ".h",
+    ".hh",
+    ".hpp",
+    ".inl"
+  ],
+  "vendored_prefixes": [
+    "include/upstream/",
+    "src/gamespy-sdk/",
+    "src/lua-4.0.1/",
+    "src/lua-4.0.1-bfme/",
+    "src/lzhl-1.0/",
+    "src/stlport-4.6/",
+    "src/zlib-1.1.4/"
+  ],
+  "annotation_pattern": "^[ \\t]*//[ \\t]*(?:FUNCTION|DATA|GLOBAL|VTABLE|UPSTREAM):",
+  "approved_forbidden": {
+    "include/Apt/Assert.h": {
+      "21115e3683f6a0bb903f1dc3d73dd0eaf035f192c73029f2ef5f7dc5928c223f": 1
+    },
+    "include/WW3D2/DX8Wrapper.h": {
+      "5d31f7e105ce61757a969b87844ff1cb40aa7061dce603d96815daa80a383c5c": 1
+    },
+    "include/WWMath/FloatToLong.h": {
+      "1500ba5c4691fcd6f8483a7239e9ab2d5b0012e68282b8ee1107682973ae1abe": 1,
+      "9e93ce24c161a5d22e617939d8dc2a68ace212308cde4c62422761c88f3cc24d": 1
+    },
+    "include/WWMath/wwmath.h": {
+      "876f64639ac7170af63b6921a87089d656ad927c90ecd7539f531fb29d2a3824": 1,
+      "def64b3c98b41e7ebd0a5c8c8d9bd6676af52a45932ab8eafa3fa67f9e2d8efa": 1,
+      "e974146f647b1c199ad9341380a82a81d9770635102a4a96edf4be143d9e3341": 1
+    },
+    "include/upstream/zlib-1.1.4/zconf.h": {
+      "041ede1b634eb33ae46ce877809b7e4ccc6210123d4cfbebd8728ab84f93dd79": 1,
+      "0504a6d821f4c948cb3b00d24715100a427f42b839901c8b006459a2e5cfb855": 1,
+      "06a4c938aa685e268024f561fc314e2dd2a96d0dd52d3f66998d975b64ad5da0": 1,
+      "21ef3f3b2c6038781dd38ed2c12b89c91501b0f3c41bec2f6767308c24a29913": 1,
+      "2e1e4eeae6b5a3485d62b3b057985f9707352c375feb342ea6b4a50c46a370ea": 1,
+      "2f760270ee6b7dc5dd7d76b605a9639b19238199eab1fd11bf1d28c81950f59f": 1,
+      "398c0219bd935f8b26543603d0514ac63cf6bb46fd6a62077f69fe63b5e94a8b": 1,
+      "40c95dd179ed7f4f08b63089ce98fde7cbfeaa4893fc696fc3e0c04ec77e11bd": 1,
+      "4f74a8b47275a4a014c6baeed84b5871696871321b1f8c04b736f820a1dd2a2f": 1,
+      "4f848c4e7d5968546e38ae4287e30c3ecfc39446c98488cadff57d69ca8c21bf": 1,
+      "58066d478b537c429a6d0ec37a9572fcd5f065233cf9a74fd4f6606a4733d23b": 1,
+      "6686816c23f118d13a887ade7a83a41dd40d9854af105f6a1555d4dcad78a863": 1,
+      "720faa8aa210a4772808747f98d14ac1fd5f135cebb6776a33b8f1da026e8866": 1,
+      "7a8f4aa674a275318bbacdc3840d43964adaea49bedb7e6d5447627d85d9f894": 1,
+      "b4314402b360732623976346f14e8a97ba01e2ee1e3742bb3f667611fa8e6a53": 1,
+      "b64ac5163a8820c4bad384513c1c2a6e3bd60d5944e5a75e6e3127e9581544f3": 1,
+      "b8fb2ac2fe745aa49ff1e36297fcebec1df776c38be082825a46167c6d29cae1": 1,
+      "c982f3797bc7a963b0cdd44b320ecc964f45971caa5e40b509ae33bf8888d2da": 1,
+      "d54fd17e9f0f536bae55d81068653ade88732117204ecab08b8b34f99eab395f": 1,
+      "da6fdebd15b824d2254f6ac01d641b8d237e50144013f95ae3f58dcd0f578615": 1,
+      "e591af5eba925f9eceae2570db85517943693123b054356276d2891883fe7197": 1,
+      "ed5654f29b09b8de08da0bb2eb97ac856f900ab37014ab3f9bb3f969261faf15": 1,
+      "f41ce60159ceb6dd2b398170fa8ee55c56c8aedb7ce61c79ba74222f6c1771f6": 1
+    },
+    "src/Code/Libraries/Source/WWVegas/WW3D2/part_ldr.cpp": {
+      "06627b5f11baeb991b12d5243681d4b2c09313cb2225a459fc81a8525ccd8e0c": 1,
+      "edc4afa41d0bd3cbd2cb9dea4350a29c2ab1f200f7c96c9d97eab8d2ef81a8c2": 1
+    },
+    "src/Code/Libraries/Source/WWVegas/WWLib/cpudetect.cpp": {
+      "61c8631f0844eb3914c8e126a9e9b26a8ca0e85b3029c2a7b8841e1c47d09444": 1,
+      "ab7c2e8be5f14fe3302e484cf710b7c57f3fd61464f223249ee99d3a0a05f258": 1,
+      "ae054e6433d32af086e6d4ea86f22dd86ef37b746bdd2e4da1d035ba89364717": 1
+    },
+    "src/Code/Libraries/Source/file/FileSystem.cpp": {
+      "5ca84128089ed36035c3887f61b08c21516860cb415ed86e09d5091a3575c434": 1
+    },
+    "src/gamespy-sdk/GameSpy/nonport.c": {
+      "1fd44b02f5cf6980b180e6f1a075935fa3010f93c27341dce61970c64605656f": 1,
+      "406b8244a31e552a8bcebd7740c1cbb9ae8a2895e43a609f9b9bb46072a3a24f": 1,
+      "64a2713f4ca7bd4b9c797d702bd6b65dea9cd763b698231ae5afa29a339fc8dd": 1,
+      "ad2e11b303352d06a4f4e7f727f8e1e84cbceaaa8aa1f257f88510a7c1d7da78": 1,
+      "b2aef0ac92a4ac2204e4bd97a63b4826951c594864c44dbf0004ca3d12af5317": 1,
+      "df1bafe3bf9ae0b11fc316b881d88717986950b5f4c6099c7ed04f3c4b692aef": 1
+    },
+    "src/gamespy-sdk/GameSpy/qr2/qr2.c": {
+      "02d285bae74361269c10590b57a9b34aecf789e8da6dd57b56e8e4c06379d999": 4,
+      "4aaa1e4fd1b95b3ec809365db32bef022ec99585465974b8eb3b58cd9de31ac6": 1,
+      "7e5263114fab6d3b2e689ade610c8870d49f3274ac78d12b9cb4d2fcc1ca548f": 1
+    },
+    "src/stlport-4.6/STLport-4.6/src/fstream.cpp": {
+      "5e4e90e862c9644bf486bba944f5ca329251ddc2b1b51ab1c55520c9f6979595": 2
+    },
+    "src/stlport-4.6/STLport-4.6/src/iostream.cpp": {
+      "21e68ab13e34bafcbacca245e55772c3c5636faf483e9e2b95ac5036d7fbda60": 1,
+      "2340a419faea7f8fe21c50ea7aa8d319d0e996c3f8df87486de48e7c5e23b277": 1,
+      "3d8cd5c1e35c8e9cb5374fa5b97ff165b426db96aa0d1eae5303e2f85ddff52c": 1,
+      "778f12e68e895ae7aeebf8902200d3bfe5b1c789f29130d67cea29f30122ec24": 1,
+      "7f6602739c7680677d26b4c22270fd61504fdfaa65599a28eaf323eae0f4ca37": 1,
+      "c0a1c97f2fa9fd2c03c93ce6b85c5d82634a0bf81ef0903a7e2cd7d3cfb4b217": 1,
+      "e58cd6162e5a180e26d90166915c969c5814b63946a3dafcf1072ca9d21462c3": 1,
+      "ea8d73fdab856cb72bf2cfcfd791e32e79973ba0d010bf5304b351872a461c64": 1,
+      "efef771fb2986bdf48fced38c987c8411c7f955a4165a0473923259aaf53c6ad": 1,
+      "f0914cfe9ee1c1dd6aa717478861be7b73aea3dc7484a8cebb3e6e076c865457": 1,
+      "f7f989393eaa9f1f34f6179e569011ae7a52ea49ec4781c8a8a0ce26f79423e2": 1
+    }
+  },
+  "address_identifiers": [
+    "(?:_?G?Rva|_?rva|RVA)_?(?:0[xX])?[0-9A-Fa-f]{6,8}\\w*",
+    "(?:sub|g|m|unk|off|loc|byte|word|dword|qword|fn|data|ptr|vtable|float|int|spell|func)_(?:0[xX])?[0-9A-Fa-f]{6,8}(?:_\\w+)?",
+    "(?:FUN|DAT|LAB|PTR|UNK)_[0-9A-Fa-f]{6,8}(?:_\\w+)?"
+  ],
+  "comment_patterns": {
+    "date": "\\b(?:(?:19|20)\\d\\d[-/]\\d{1,2}[-/]\\d{1,2}|\\d{1,2}/\\d{1,2}/(?:19|20)\\d\\d|\\d{1,2}[ /-](?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[A-Za-z]*[ /-](?:19|20)\\d\\d|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[A-Za-z]*[ /-]\\d{1,2},?[ /-](?:19|20)\\d\\d)\\b",
+    "author or seat tag": "(?:\\b(?:co-authored-by|signed-off-by|author|authors|created by|written by|seat|agent)\\s*[:=]|\\b(?:seat|agent)\\s+[a-z]{1,6}\\d{1,3}\\b|(?:^|[\\[(])\\s*(?:gen|pub|ci|cm|f|k|m|rt|bn|gt|qa)\\d{1,3}\\s*(?=[:\\])]|\\s+\\d\\d?:\\d\\d\\b)|\\b(?:gen|pub|ci|cm|f|k|m|rt|bn|gt|qa)\\d{1,3}\\s+\\d\\d?:\\d\\dZ?\\b)|\\b(?:generated|recovered|verified|written|compiled|matched|ported|added)\\s+by\\s+(?:gen|pub|ci|cm|f|k|m|rt|bn|gt|qa)\\d{1,3}[a-z]?\\b|(?:^|\\s)[@\\\\]authors?\\b",
+    "branch name": "(?:\\brefs/(?:heads|remotes)/|\\ba/[a-z]{1,8}\\d{1,4}/[\\w.-]+|\\bbranch\\s*[:=]\\s*(?:['\\x60][\\w./-]+['\\x60]|(?:main|master|(?:feature|fix|release|topic|work)/[\\w./-]+)\\b)|\\bon\\s+(?:branch\\s+)?(?:feature|fix|release|topic)/[\\w./-]+)",
+    "host or home path": "(?:\\bsrv\\d+\\b|(?<![\\w/~])~[\\w.-]*/|/(?:home|Users|root|mnt/[a-z]/Users)/|\\\\Users\\\\|\\b[A-Za-z]:[\\\\/]|(?<![?\\w])\\b[a-z][\\w.-]+@(?:srv\\d+|(?:[\\w-]+\\.)+[a-z]{2,}):)",
+    "match or attempt narration": "(?:\\bbyte[ -]?(?:exact|matched|matching|for[ -]byte)\\b|\\b(?:attempts?|attempted|attempting)\\s+(?:#?\\d+|notes?|(?:to\\s+)?match(?:ing)?|at\\s+(?:match|codegen))\\b|\\b(?:matches|matched|matching)\\s+(?:retail(?:'s)?\\s+(?:bytes?|code|body)|(?:the\\s+)?(?:reference|retail)\\s+build|(?:compiled|target|original)\\s+bytes?|\\d+(?:\\.\\d+)?\\s*%|byte\\b)|\\b(?:matches|matched)\\s+retail\\s*(?:[.!;,)]|$))|(?:\\b(?:forms?|shapes?|variants?|approaches?) tried\\b|\\b(?:failed|earlier|previous|next) (?:match|codegen) attempt\\b|\\b(?:retail\\s+)?match\\s*[:=]\\s*\\d+(?:\\.\\d+)?\\s*%)|\\b(?:present|locally)[ -]unmatched\\b",
+    "match measurement": "(?:\\b(?:matches?|matched|matching|score|similarity|codegen|partial|vs)\\b.{0,90}\\b\\d+(?:\\.\\d+)?\\s*%|\\b\\d+(?:\\.\\d+)?\\s*%.{0,90}\\b(?:match(?:ed|es|ing)?|retail|reference|codegen|partial|vs)\\b|\\b(?:matches?|matched|matching|codegen|partial)\\b.{0,50}\\b\\d+\\s*[- ]?bytes?\\b|\\b\\d+\\s*[- ]?bytes?\\b.{0,50}\\b(?:match(?:ed|es|ing)?|codegen|partial)\\b|^\\s*(?:[/\\*]+\\s*)?(?:match\\s*[:=]\\s*)?\\d+(?:\\.\\d+)?\\s*%\\s*(?:[.)!;*]*\\s*)$)",
+    "bare address tag": "^\\s*(?:RVA|VA|row(?:\\s+address)?)\\s*[:=]?\\s*0x[0-9a-f]{6,8}\\s*[.;]?\\s*$"
+  },
+  "allowed_pragmas": {
+    "all": [
+      "once",
+      "warning"
+    ],
+    "header": [
+      "pack"
+    ]
+  }
+}

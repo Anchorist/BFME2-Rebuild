@@ -1,0 +1,14 @@
+{
+  "commit": "65478ea9f0a5e794d39056d12236876ba0952852",
+  "files": 7063,
+  "policy_sha256": "11a5c865d0715c21b191f5c18a8bfa200d49aca87b688a66f87ce6ebd1a0a113",
+  "totals": {
+    "c_pointer_cast": 4329,
+    "cast_call_result": 1939,
+    "reinterpret_cast": 160,
+    "this_arithmetic": 5,
+    "void_pointer": 4177
+  },
+  "tree": "8d3ebed5d12f0271bfc00ff975350cd59dfaa76a",
+  "unscannable": []
+}

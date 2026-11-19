@@ -1,0 +1,101 @@
+# Source rules
+
+Use Python 3.10 or newer and Git. Run this command from the trusted base
+checkout or another trusted installation of the gate.
+
+    python3 tools/gates/gate.py /path/to/repo BASE HEAD --json rules-result.json
+
+Add `--report rules-report.md` to write the report to a file. The Git input can
+be a bare or working repository. BASE and HEAD can name commits or trees.
+The gate reads tracked Git objects, including the base ledger when needed.
+Working-tree files and Git diff attributes have no effect. It runs without
+a compiler, a network connection, or runtime evidence. Exit 0 means pass,
+1 means fail, and 2 means the check could not complete. A dependent gate
+reports a blocked failure if G1 cannot inspect an eligible source blob.
+
+| Rule | Check and remedy |
+| --- | --- |
+| G1 Paths | Modify existing C/C++ units and eligible headers within the intake limits, add headers only outside Draft and delete headers only under Draft, and restore out-of-scope paths or exact function moves to their original locations. |
+| G2 Generated annotations | Keep generated row and upstream marker lines verbatim and in order, and restore any marker moved away from its existing function body. |
+| G3 Forbidden constructs | Use ordinary C/C++ and the declared symbols, with no inline assembly, naked functions, emitted bytes, symbol aliases, or pragmas outside the approved forms. |
+| G4 Stand-in types | Keep each count of explicit stand-ins at or below the base total over the changed files, and declare the evidenced types so callers and members can use them directly. |
+| G5 Comments | Keep new comments focused on evidence and intent, and move attribution, dates, private paths, work branches, and attempt measurements to the pull request description. |
+| G6 One item | Keep substantive source edits within the configured file cap apart from narrow Draft promotion include and type-use edits, and split unrelated work or update every literal includer of the removed Draft. |
+| G7 One definition | Define new classes, structs and unions in shared headers and keep one explicit definition of each named type or externally linked object. |
+| G8 Address names | Introduce an address-shaped identifier only if the base ledger recognizes that exact spelling, and use an evidenced name or request the accepted spelling through the ledger process. |
+
+## How to read a refusal
+
+The report lists G1 through G8 in order. A finding gives the path, a
+one-based physical line number, the rule and a one-line action. An annotation
+removal points to its line in the base. A path-level failure uses line 1.
+`config.json` holds the limits and allow-lists. Changes to this directory,
+including the policy, code and informational baseline, are maintainer changes.
+
+- **G1** follows the compiler CI path limits, modes and suffixes. A move
+  expressed as delete plus add is two path changes. Recognizable exact
+  cross-unit body moves are detected by the external function's lexical
+  definition. The changed-source byte limits count head blobs, including
+  their actual line terminators. Lexical checks accept LF, CRLF and mixtures
+  of the two, and use normalized terminators for comparison.
+- **G2** covers `FUNCTION` and reserved row markers `DATA`, `GLOBAL` and
+  `VTABLE`, plus `UPSTREAM` provenance. Draft status and snapshot banners
+  describe the lifecycle of a Draft, so the generated-row check allows
+  their retirement. The sequence preserves spelling, indentation, multiplicity, and order.
+  The gate checks movement past an existing recognizable function declaration.
+- **G3** lexes complete C/C++ blobs, including block comments, escaped
+  literals, raw strings, and line continuations. A maintainer-approved
+  exception is a token fingerprint and a cap specific to a tracked file.
+  The general pragma allow-list permits `once` and `warning` everywhere and
+  `pack` in headers.
+  It can preserve an identical occurrence already in the base.
+- **G4** counts `void *` declaration and signature forms,
+  `reinterpret_cast`, C-style pointer casts, arithmetic on explicit
+  `this` or simple byte-pointer aliases, and casts of direct call results.
+  The counts are five independent ratchets. A Draft deletion contributes
+  its old count and zero new occurrences. Whole-tree totals in
+  `baseline.json` are informational. For a PR verdict the gate measures
+  both trees afresh over the changed paths.
+- **G5** reads only added comment text. It permits hexadecimal addresses
+  in evidence, and refuses standalone row-address labels that repeat the
+  ledger. Vendored paths are listed in the configuration.
+- **G6** compares lexical tokens and directive boundaries. Ordinary comment
+  and formatting edits do not consume the source-file cap. For an eligible
+  Draft removal and permanent header addition, an includer can repoint the
+  relevant literal include and substitute the identified type spelling.
+  The overall path limit still applies.
+- **G7** extends the existing landing check's declaration-head, scope and
+  before/after ownership logic. It prohibits new class, struct and union
+  definitions at any source scope, including local or anonymous types.
+  It distinguishes namespace identities,
+  declarations and file-local objects. It checks the full eligible tree,
+  including vendored paths. It reports explicit same-file duplicate
+  globals and new same-name type or external object definitions with a
+  surviving other owner.
+- **G8** indexes `name` and `accepted_names` from the base ledger at most once
+  per ledger blob. Recognized compiler decoration is removed from a name
+  before checking the exact source component. Reusing a spelling already
+  present in the base source tree does not introduce a new spelling.
+
+## Scope of the decision
+
+These are lexical source rules. Whether a name is true, whether code
+reads as source, and whether a type is the right one stay with a sampled
+audit. The audit also judges evidence for fields and method owners,
+same-layout copies under different names, template and macro reuse,
+undocumented integer stand-ins, and original translation-unit ownership.
+The gate works on explicit syntax. It cannot resolve arbitrary
+preprocessor expansions, indirect pointer data flow, template
+instantiation, or semantic equivalence of two implementations. The
+build and inline-virtual checks have their own verdicts.
+
+Run the fixtures from this directory.
+
+    python3 -B -m unittest -v test_gate.py
+
+The replay helper runs the same gate on each selected first-parent
+landing and can reproduce the informational baseline from a pinned tip.
+
+    python3 -B replay.py replay /path/to/development.git TIP result.json --count 500
+    python3 -B replay.py inventory /path/to/development.git TIP inventory.json
+
