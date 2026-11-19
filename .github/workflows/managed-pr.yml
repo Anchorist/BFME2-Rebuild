@@ -1,0 +1,195 @@
+name: BFME II Boat comparison
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, reopened, synchronize, ready_for_review, labeled, unlabeled, edited]
+
+permissions: {}
+
+concurrency:
+  group: >-
+    managed-pr-${{ github.event.pull_request.number }}-${{
+      ((github.event.action == 'edited' && github.event.changes.base.ref.from == '') ||
+        ((github.event.action == 'labeled' || github.event.action == 'unlabeled') &&
+          github.event.label.name != 'boat-ok')) && github.run_id || 'active' }}
+  cancel-in-progress: true
+
+jobs:
+  pending:
+    if: >-
+      github.repository == 'Open-BFME/BFME2-Rebuild' &&
+      (github.event.action != 'edited' || github.event.changes.base.ref.from != '') &&
+      ((github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
+        github.event.label.name == 'boat-ok')
+    name: Start exact-head status
+    runs-on: boat
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: write
+    steps:
+      - name: Check out protected status writer
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: |
+            ci/managed-check
+            ci/managed-nt2
+      - name: Start exact-head status
+        shell: bash
+        env:
+          BFME_STATUS_TOKEN: '${{ github.token }}'
+        run: |
+          set -euo pipefail
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          python3 -B ci/managed-check/github_io.py start
+
+  intake:
+    if: >-
+      github.repository == 'Open-BFME/BFME2-Rebuild' &&
+      (github.event.action != 'edited' || github.event.changes.base.ref.from != '') &&
+      ((github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
+        github.event.label.name == 'boat-ok')
+    name: Protected source intake
+    runs-on: boat
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      compile: '${{ steps.plan.outputs.compile }}'
+    steps:
+      - name: Check out protected main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Verify protected check package
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
+      - name: Receive exact head as Git objects
+        shell: bash
+        env:
+          BFME_READ_TOKEN: '${{ github.token }}'
+        run: python3 -B ci/managed-check/github_io.py fetch "$RUNNER_TEMP/bfme-receive"
+      - name: Validate source and determine affected files
+        id: plan
+        shell: bash
+        run: |
+          set -euo pipefail
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            GITHUB_OUTPUT="$GITHUB_OUTPUT" TMPDIR="$RUNNER_TEMP" \
+            python3 -B ci/managed-check/intake.py "$RUNNER_TEMP/bfme-receive" "$RUNNER_TEMP/bfme-plan"
+      - name: Save protected source decision
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-plan-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-plan'
+          if-no-files-found: error
+          retention-days: 1
+
+  compare:
+    needs: [pending, intake]
+    if: needs.intake.outputs.compile == 'true'
+    name: Isolated Boat compiler and native comparison
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the same protected main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+      - name: Read protected source plan from this run
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-plan-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-plan'
+      - name: Verify image and comparison inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          (
+            cd ci/managed-nt2
+            sha256sum -c --quiet bundle.sha256
+            got=$(printf '%s\n' '?f@X@@QAEHXZ' | engine/gen/bin/demangle)
+            test "$got" = 'public: int __thiscall X::f(void)'
+          )
+          cd /opt/boat-compiler
+          sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
+          sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Compile admitted source and compare exact pairs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "${BFME_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" \
+            python3 -B ci/managed-check/compare.py "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-verdict"
+      - name: Save capped structured verdict
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-verdict-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-verdict/verdict.json'
+          if-no-files-found: error
+          retention-days: 1
+
+  report:
+    needs: [pending, intake, compare]
+    if: always() && !cancelled() && needs.intake.result != 'skipped'
+    name: Report on the pull request head
+    runs-on: boat
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: write
+    steps:
+      - name: Check out protected report writer
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: |
+            ci/managed-check
+            ci/managed-nt2
+      - name: Verify protected writer
+        shell: bash
+        run: (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+      - name: Read this run's admission
+        if: needs.intake.result == 'success'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-plan-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-plan'
+      - name: Read this run's comparison
+        if: needs.compare.result == 'success'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-verdict-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-verdict'
+      - name: Publish job summary and exact-head commit status
+        shell: bash
+        env:
+          BFME_STATUS_TOKEN: '${{ github.token }}'
+          MANAGED_PUBLIC_REPORT: '${{ runner.temp }}/bfme-report'
+        run: python3 -B ci/managed-check/github_io.py finish "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-verdict"
+      - name: Retain readable summary for the owner
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-report-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-report'
+          if-no-files-found: ignore
+          retention-days: 7
+
