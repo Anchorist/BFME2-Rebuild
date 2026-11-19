@@ -86,8 +86,7 @@ def row_report(path, address, old, new, metadata, was_proven, is_proven, compari
             "first": numeric(comparison.get("first"), 2**31) if new and new[0] == "PARTIAL" else None,
             "compiled_size": numeric(comparison.get("compiled_size"), 2**31),
             "retail_size": numeric(comparison.get("retail_size"), 2**31),
-            "compiled_listing": safe_listing(comparison.get("compiled_listing", [])),
-            "reference_listing": safe_listing(comparison.get("reference_listing", []))}
+            "compiled_listing": safe_listing(comparison.get("compiled_listing", []))}
 
 
 def diagnostics(raw_results, changed_paths):
@@ -134,7 +133,7 @@ def changed_definitions(edited, state, prior, raw, lookup, first_diff, errors):
             item_row = {"path": item["path"], "rva": None, "name": None, "size": None,
                         "old": "UNMEASURED" if item["before_body"] else "NONE",
                         "new": "UNKNOWN_RVA", "pct": None, "first": None,
-                        "compiled_listing": [], "reference_listing": []}
+                        "compiled_listing": []}
         else:
             key = f"0x{address:08X}"
             item_row = row_report(item["path"], key, old, new, lookup(key), address in old_proven,

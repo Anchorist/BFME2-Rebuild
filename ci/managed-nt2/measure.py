@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+from time import monotonic
 import time
 from types import SimpleNamespace
 
@@ -102,7 +103,7 @@ def data_entry(git, rev, name, root, *, max_size=128 * 1024**2):
     path.write_bytes(data)
 
 
-def measure(git, judge, side, plan, tools, job):
+def measure(git, judge, side, plan, tools, job, *, timing=None):
     base = plan["historical_base"]
     sha = plan["historical_" + side]
     sources, hashes = projection(git, sha)
@@ -123,7 +124,12 @@ def measure(git, judge, side, plan, tools, job):
                       sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("ascii")
     if len(wire) > 92 * 1024**2:
         raise ValueError("The compiler input is too large.")
-    reply = request("compile", wire)
+    started = monotonic()
+    try:
+        reply = request("compile", wire)
+    finally:
+        if timing is not None:
+            timing["compile"] = monotonic() - started
     if (reply["version"] != 1 or reply["request"] != digest(wire)
             or reply["profile"] != plan["profile_sha256"] or len(reply["results"]) != len(rows)):
         raise ValueError("The compiler response is incompatible with the exact source plan.")
@@ -171,8 +177,13 @@ def measure(git, judge, side, plan, tools, job):
         return obj, error, judge.effective_source(name, raw)
 
     judge.compile_tu = precompiled
-    ledger = judge.ledger(job)
-    return {tu: judge.judge_tu(job, tu, ledger) for tu in plan["request_paths"]}
+    started = monotonic()
+    try:
+        ledger = judge.ledger(job)
+        return {tu: judge.judge_tu(job, tu, ledger) for tu in plan["request_paths"]}
+    finally:
+        if timing is not None:
+            timing["compare"] = monotonic() - started
 
 
 def reduced(before, after):

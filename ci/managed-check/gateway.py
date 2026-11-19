@@ -71,8 +71,7 @@ def projected_row(row, changed):
             "first": numeric(row.get("first"), 2**31) if new == "PARTIAL" and pct is not None else None,
             "compiled_size": numeric(row.get("compiled_size"), 2**31),
             "retail_size": numeric(row.get("retail_size"), 2**31),
-            "compiled_listing": safe_listing(row.get("compiled_listing", [])) if row["path"] in changed else [],
-            "reference_listing": safe_listing(row.get("reference_listing", [])) if row["path"] in changed else []}
+            "compiled_listing": safe_listing(row.get("compiled_listing", [])) if row["path"] in changed else []}
 
 
 def projection(reply, changed):

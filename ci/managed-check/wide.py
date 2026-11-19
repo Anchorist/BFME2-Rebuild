@@ -5,9 +5,10 @@ from pathlib import Path
 import re
 import sys
 import tempfile
+from time import monotonic
 from types import SimpleNamespace
 
-from common import HEX64, PIN, digest, read, validate_binding, write
+from common import HEX64, PIN, digest, encoded, read, validate_binding, write
 from compare import difference, make_report, native_commands, protected_judge
 from compact_matrix import make_compact, join_compact
 from diff_scope import diff_lines
@@ -112,11 +113,10 @@ def clean_difference(value, listing):
         "compiled_size": numeric(value.get("compiled_size"), 2**31),
         "retail_size": numeric(value.get("retail_size"), 2**31),
         "compiled_listing": safe_listing(value.get("compiled_listing", [])) if listing else [],
-        "reference_listing": safe_listing(value.get("reference_listing", [])) if listing else [],
     }.items() if field is not None}
 
 
-def measure_batch(git, judge, side, plan, tools, job):
+def measure_batch(git, judge, side, plan, tools, job, *, timing=None):
     """Preserve the optional assembly allowances from the protected base."""
     previous = canary_measure.CONFIG
     base = plan["historical_base"]
@@ -124,7 +124,9 @@ def measure_batch(git, judge, side, plan, tools, job):
     if git.run("cat-file", "-e", f"{base}:config/{asm}", check=False).returncode == 0:
         canary_measure.CONFIG = (*previous, asm)
     try:
-        return canary_measure.measure(git, judge, side, plan, tools, job)
+        if timing is None:
+            return canary_measure.measure(git, judge, side, plan, tools, job)
+        return canary_measure.measure(git, judge, side, plan, tools, job, timing=timing)
     finally:
         canary_measure.CONFIG = previous
 
@@ -133,7 +135,11 @@ def compile_shard(source, matrix, expected, index, out):
     plan, _ = admission(source)
     doc = load_matrix(matrix, expected, plan)
     commands_by_side = assignment(doc, index, expected=expected)
-    records, reports, details = [], {side: {} for side in SIDES}, {}
+    started = monotonic()
+    total = {stage: 0.0 for stage in ("compile", "compare")}
+    units = len(commands_by_side[SIDES["base"]])
+    print(f"Wide shard {index}: {units} translation units / {2 * units} paired sides planned.", flush=True)
+    records, reports, details, inline_objects = [], {side: {} for side in SIDES}, {}, {}
     with comparison_inputs(plan) as (work, git, tip, judge, tools):
         owners = Owners(git, plan["base"])
         adapter = SimpleNamespace(ANNOT=judge.ANNOT, land_gate9=SimpleNamespace(diff_lines=diff_lines))
@@ -151,7 +157,16 @@ def compile_shard(source, matrix, expected, index, out):
                 native = dict(plan, historical_base=plan["base"], historical_head=tip,
                               request_paths=names, compile={side: batch})
                 job = work / f"{side}-{begin}"
-                results = measure_batch(git, judge, side, native, tools, job)
+                spans = {}
+                try:
+                    results = measure_batch(git, judge, side, native, tools, job, timing=spans)
+                finally:
+                    for stage in total:
+                        total[stage] += spans.get(stage, 0.0)
+                    compile_s, compare_s = (f"{spans[stage]:.2f}" if stage in spans else "unavailable"
+                                            for stage in ("compile", "compare"))
+                    print(f"Wide shard {index}: {side} batch {begin // BATCH + 1}, {len(names)} files, "
+                          f"compiler RPC {compile_s} s, native comparison {compare_s} s.", flush=True)
                 if list(results) != names:
                     raise ValueError("The trusted comparator omitted a planned TU.")
                 for command in batch:
@@ -161,6 +176,7 @@ def compile_shard(source, matrix, expected, index, out):
                     value = {key: command[key] for key in ("tu", "source", "contract")} | {"side": SIDES[side]}
                     reports[side][path] = sanitize_outcome(raw, path, changed)
                     if obj.is_file():
+                        inline_objects[(SIDES[side], path)] = obj
                         local = read(obj.with_suffix(".obj.compile.json"), 4 * 1024**2)
                         if (local["source_sha256"] != command["source"] or local["compiler_contract"] != command["contract"]
                                 or not HEX64.fullmatch(local["object_sha256"])):
@@ -182,9 +198,23 @@ def compile_shard(source, matrix, expected, index, out):
                             record = difference(judge, obj, row, listing)
                             if record:
                                 details[path + "@" + row["rva"]] = clean_difference(record, listing)
+        compiler = compiler_receipt(doc, index, records)
+        atom_started = monotonic()
+        try:
+            from virtual_atoms import collect
+            inline = collect(compiler, find_object=lambda side, tu: inline_objects[(side, tu)])
+        except Exception:
+            inline = None
+            print("Inline virtual advisory evidence is unavailable for this shard.", file=sys.stderr)
+        print(f"Wide shard {index}: virtual extraction {monotonic() - atom_started:.2f} s.", flush=True)
+    print(f"Wide shard {index}: {units} paired files, compiler RPC {total['compile']:.2f} s, "
+          f"native comparison {total['compare']:.2f} s, elapsed {monotonic() - started:.2f} s.", flush=True)
     receipt = make_compact(doc, expected=expected, run=os.environ["GITHUB_RUN_ID"],
                            attempt=os.environ["GITHUB_RUN_ATTEMPT"],
-                           compiler=compiler_receipt(doc, index, records), native=reports, details=details)
+                           compiler=compiler, native=reports, details=details, inline=inline)
+    if inline is not None and len(encoded(receipt)) > MAX_RECEIPT:
+        receipt["inline"] = None
+        print("Inline virtual advisory evidence exceeded its shard budget.", file=sys.stderr)
     out.mkdir(mode=0o700)
     target = out / "shard.json"
     write(target, receipt)

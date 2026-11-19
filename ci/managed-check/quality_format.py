@@ -1,5 +1,4 @@
 """Render the deterministic, contributor-facing check report."""
-from itertools import zip_longest
 import re
 
 from progress_delta import public_table
@@ -57,11 +56,9 @@ def append_function(out, row, label, location):
         main += " · " + row["explanation"]
     out.append(main)
     actual = row.get("compiled_listing", [])
-    reference = row.get("reference_listing", [])
-    if actual or reference:
-        out.extend(["", "| Compiled instructions | Reference instructions |", "| --- | --- |"])
-        for lhs, rhs in zip_longest(actual, reference):
-            out.append(f"| {instruction_cell(lhs)} | {instruction_cell(rhs)} |")
+    if actual:
+        out.extend(["", "| Compiled instructions |", "| --- |"])
+        out.extend(f"| {instruction_cell(item)} |" for item in actual)
         out.append("")
 
 
