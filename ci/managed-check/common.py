@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 ENGINE = ROOT.parent / "managed-nt2"
-sys.path.append(str(ENGINE))
+sys.path.insert(1, str(ENGINE))
 REPO = "Open-BFME/BFME2-Rebuild"
 REPO_ID = 1464323350
 CONTEXT = "BFME II / Boat"

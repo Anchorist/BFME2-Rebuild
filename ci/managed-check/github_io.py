@@ -7,7 +7,7 @@ import urllib.error
 import urllib.request
 
 from common import CONTEXT, HEX40, REPO, REPO_ID, encoded, read, write
-from gitrepo import Git
+from gitrepo import Git, GitFailure
 
 
 class Superseded(Exception):
@@ -99,24 +99,40 @@ def fetch(work):
     base = Git(Path.cwd() / ".git")
     if base.rev("HEAD") != binding["base"]:
         raise ValueError("The trusted checkout differs from the protected workflow revision.")
-    alternate = (base.path / "objects").resolve(strict=True)
-    (git.path / "objects/info/alternates").write_text(str(alternate) + "\n")
-    git.run("update-ref", "refs/heads/main", binding["base"])
     ask = work / "askpass"
     ask.write_text('#!/bin/sh\ncase "$1" in *Username*) printf "%s\\n" x-access-token ;;\n'
                    '*Password*) printf "%s\\n" "$BFME_GIT_TOKEN" ;; *) exit 1 ;; esac\n')
     ask.chmod(0o700)
-    number = binding["number"]
     try:
-        git.run("fetch", "-q", "--no-tags", "--no-write-fetch-head", "--depth=128", "--",
-                f"https://github.com/{REPO}.git", "+refs/heads/main:refs/ci/actual-main",
-                f"+refs/pull/{number}/head:refs/ci/head",
-                env={"GIT_ASKPASS": str(ask), "BFME_GIT_TOKEN": api.token}, timeout=120)
+        receive_refs(git, f"https://github.com/{REPO}.git", binding,
+                     {"GIT_ASKPASS": str(ask), "BFME_GIT_TOKEN": api.token})
     finally:
         ask.unlink()
+    write(work / "event.json", binding)
+
+
+def receive_refs(git, remote, binding, environment):
+    # Fetch into an empty bare repo. A depth-one checkout's alternate store
+    # does not carry the checkout's shallow boundary into the receiving repo.
+    number = binding["number"]
+    result = git.run("fetch", "-q", "--no-tags", "--no-write-fetch-head", "--depth=128", "--", remote,
+                     "+refs/heads/main:refs/ci/actual-main", f"+refs/pull/{number}/head:refs/ci/head",
+                     env=environment, timeout=120, check=False)
+    if result.returncode:
+        code = result.stderr.lower()
+        reasons = (
+            (b"remote ref", "one exact repository ref is unavailable"),
+            (b"authenti", "GitHub denied the read credential"),
+            (b"permission denied", "GitHub denied repository read access"),
+            (b"object", "the received Git object pack could not be verified"),
+            (b"size limit", "the transfer exceeded the private Git input allowance"),
+            (b"unable to access", "the GitHub transfer could not connect"),
+        )
+        reason = next((reason for fragment, reason in reasons if fragment in code),
+                      "the authenticated Git transfer did not complete")
+        raise GitFailure(f"Protected Git intake failed ({result.returncode}): {reason}.")
     if git.rev("refs/ci/head") != binding["head"] or git.rev("refs/ci/actual-main") != binding["base"]:
         raise Superseded()
-    write(work / "event.json", binding)
 
 
 def publish(phase, admission=None, result=None):
