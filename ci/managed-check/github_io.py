@@ -76,13 +76,13 @@ class GitHub:
             raise Superseded()
         return pr
 
-    def status(self, binding, state, text, *, context=CONTEXT):
+    def status(self, binding, state, text):
         run = os.environ["GITHUB_RUN_ID"]
         if not re.fullmatch(r"[1-9][0-9]{0,20}", run):
             raise ValueError("The Actions run ID is invalid.")
-        result = self.call("statuses/" + binding["head"], {"state": state, "context": context,
+        result = self.call("statuses/" + binding["head"], {"state": state, "context": CONTEXT,
                            "description": text, "target_url": f"https://github.com/{REPO}/actions/runs/{run}"})
-        if result.get("state") != state or result.get("context") != context:
+        if result.get("state") != state or result.get("context") != CONTEXT:
             raise ValueError("GitHub did not acknowledge the expected commit status.")
 
 
@@ -161,8 +161,6 @@ def publish(phase, admission=None, result=None):
     api.current(binding)
     if phase == "start":
         api.status(binding, "pending", "Waiting for protected intake and Boat comparison")
-        from inline_status import CONTEXT as INLINE_CONTEXT
-        api.status(binding, "pending", "Waiting for admitted inline-virtual evidence", context=INLINE_CONTEXT)
         return
     decision_path = admission / "decision.json"
     final_path = result / "verdict.json"

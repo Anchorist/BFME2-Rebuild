@@ -217,14 +217,6 @@ def main(admission, out):
         new = measure(git, judge, "head", native, roots, work / "head")
         report, counts, functions = make_report(git, judge, plan, tip, old, new,
             lambda path: work / "head/obj" / (path.replace("/", "_") + ".obj"))
-        if advisory_root := os.environ.get("BFME_INLINE_EXPORT"):
-            try:
-                from inline_payload import narrow
-                matrix_sha = narrow(plan, native, {"base": old, "head": new}, work, advisory_root)
-                with Path(os.environ["GITHUB_OUTPUT"]).open("a") as stream:
-                    stream.write("inline_matrix_sha=" + matrix_sha + "\n")
-            except Exception:
-                print("Inline virtual advisory evidence is unavailable for this run.", file=sys.stderr)
     out.mkdir(mode=0o700)
     write(out / "verdict.json", {key: plan[key] for key in ("version", "repo", "number", "base", "head", "tree")}
           | {"plan": plan_hash, "report": report, "counts": counts, "functions": functions})

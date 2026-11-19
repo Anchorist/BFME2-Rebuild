@@ -55,14 +55,12 @@ jobs:
         github.event.label.name == 'boat-ok')
     name: Protected source intake
     runs-on: boat-small/from=bfme2-compiler-v1
-    timeout-minutes: 8
+    timeout-minutes: 5
     permissions:
       contents: read
       pull-requests: read
     outputs:
-      route: '${{ steps.intake.outputs.route }}'
-      shards: '${{ steps.plan.outputs.shards }}'
-      matrix_sha: '${{ steps.plan.outputs.matrix_sha }}'
+      route: '${{ steps.plan.outputs.route }}'
     steps:
       - name: Check out protected main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -82,7 +80,7 @@ jobs:
           BFME_READ_TOKEN: '${{ github.token }}'
         run: python3 -B ci/managed-check/github_io.py fetch "$RUNNER_TEMP/bfme-receive"
       - name: Validate source and determine affected files
-        id: intake
+        id: plan
         shell: bash
         run: |
           set -euo pipefail
@@ -96,31 +94,6 @@ jobs:
           path: '${{ runner.temp }}/bfme-plan'
           if-no-files-found: error
           retention-days: 1
-      - name: Verify sealed planning image
-        if: steps.intake.outputs.route == 'wide'
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd /opt/boat-compiler
-          sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
-          sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
-      - name: Create exact compile plan and shard assignments
-        if: steps.intake.outputs.route == 'wide'
-        shell: bash
-        id: plan
-        run: |
-          set -euo pipefail
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
-            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
-            python3 -B ci/managed-check/wide.py plan "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix"
-      - name: Save the protected paired plan
-        if: steps.intake.outputs.route == 'wide'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: bfme-matrix-${{ github.run_attempt }}
-          path: '${{ runner.temp }}/bfme-matrix/matrix.json'
-          if-no-files-found: error
-          retention-days: 1
 
   compare:
     needs: [pending, intake]
@@ -130,8 +103,6 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read
-    outputs:
-      inline_matrix_sha: '${{ steps.compile.outputs.inline_matrix_sha }}'
     steps:
       - name: Check out the same protected main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -158,15 +129,12 @@ jobs:
           sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
           sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
       - name: Compile admitted source and compare exact pairs
-        id: compile
         shell: bash
         run: |
           set -euo pipefail
           test -z "${BFME_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
-            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
-            GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
-            BFME_INLINE_EXPORT="$RUNNER_TEMP/bfme-inline-narrow" \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" \
             python3 -B ci/managed-check/compare.py "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-verdict"
       - name: Save capped structured verdict
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -176,26 +144,63 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      - name: Save advisory narrow virtual evidence
-        continue-on-error: true
-        if: steps.compile.outputs.inline_matrix_sha != ''
+  wide-plan:
+    needs: [pending, intake]
+    if: needs.intake.outputs.route == 'wide'
+    name: Plan the paired Boat matrix
+    timeout-minutes: 5
+    outputs:
+      shards: '${{ steps.plan.outputs.shards }}'
+      matrix_sha: '${{ steps.plan.outputs.matrix_sha }}'
+    runs-on: boat-small/from=bfme2-compiler-v1
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the same protected main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+      - name: Read the protected source decision from this run
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-plan-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-plan'
+      - name: Verify protected comparison and sealed image
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
+          cd /opt/boat-compiler
+          sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
+          sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Create exact compile plan and shard assignments
+        shell: bash
+        id: plan
+        run: |
+          set -euo pipefail
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            python3 -B ci/managed-check/wide.py plan "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix"
+      - name: Save the protected paired plan
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: bfme-inline-narrow-${{ github.run_attempt }}
-          path: '${{ runner.temp }}/bfme-inline-narrow'
+          name: bfme-matrix-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-matrix/matrix.json'
           if-no-files-found: error
           retention-days: 1
 
   wide-compare:
-    needs: [pending, intake]
-    if: needs.intake.outputs.route == 'wide'
+    needs: wide-plan
+    if: needs.wide-plan.result == 'success'
     name: Compare wide shard ${{ matrix.index }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
       max-parallel: 16
       matrix:
-        index: '${{ fromJSON(needs.intake.outputs.shards) }}'
+        index: '${{ fromJSON(needs.wide-plan.outputs.shards) }}'
     runs-on: boat-small/from=bfme2-compiler-v1
     permissions:
       contents: read
@@ -227,7 +232,7 @@ jobs:
       - name: Compile and compare only assigned files
         shell: bash
         env:
-          PLAN_SHA: '${{ needs.intake.outputs.matrix_sha }}'
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
           SHARD: '${{ matrix.index }}'
         run: |
           set -euo pipefail
@@ -245,128 +250,69 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  inline-virtual:
-    needs: [intake, compare, wide-compare]
-    if: >-
-      always() && !cancelled() &&
-      ((needs.compare.result == 'success' && needs.compare.outputs.inline_matrix_sha != '') ||
-        needs.wide-compare.result == 'success')
-    name: Inline virtual behaviour (report only)
+  wide-join:
+    needs: [wide-plan, wide-compare]
+    if: needs.wide-compare.result == 'success'
+    name: Verify all wide receipts and assemble verdict
+    timeout-minutes: 5
     runs-on: boat-small/from=bfme2-compiler-v1
-    timeout-minutes: 8
-    continue-on-error: true
     permissions:
       contents: read
     steps:
-      - name: Check out protected evaluator and reference
+      - name: Check out the same protected main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: '${{ github.sha }}'
           persist-credentials: false
-      - name: Read private source admission for this attempt
+      - name: Read the protected source decision from this run
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: bfme-plan-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-plan'
-      - name: Read private narrow advisory evidence
-        if: needs.compare.outputs.inline_matrix_sha != ''
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          name: bfme-inline-narrow-${{ github.run_attempt }}
-          path: '${{ runner.temp }}/bfme-inline-narrow'
-      - name: Read protected wide matrix for this attempt
-        if: needs.wide-compare.result == 'success'
+      - name: Read this run's exact compile assignments
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: bfme-matrix-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-matrix'
-      - name: Read same-attempt compact wide receipts
-        if: needs.wide-compare.result == 'success'
+      - name: Read all same-run sanitized shard receipts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           pattern: bfme-wide-${{ github.run_attempt }}-*
           path: '${{ runner.temp }}/bfme-shards'
           merge-multiple: false
-      - name: Evaluate and render advisory result
+      - name: Verify protected comparison and sealed image
         shell: bash
-        env:
-          NARROW_SHA: '${{ needs.compare.outputs.inline_matrix_sha }}'
-          WIDE_SHA: '${{ needs.intake.outputs.matrix_sha }}'
         run: |
           set -euo pipefail
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
           (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
-          dir="$RUNNER_TEMP/bfme-inline-narrow"
-          matrix="$dir/matrix.json"
-          sha="$NARROW_SHA"
-          if test -z "$sha"; then
-              dir="$RUNNER_TEMP/bfme-shards"
-              matrix="$RUNNER_TEMP/bfme-matrix/matrix.json"
-              sha="$WIDE_SHA"
-          fi
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C TMPDIR="$RUNNER_TEMP" \
-            GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
-            GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" \
-            python3 -B ci/managed-check/managed_inline_action.py "$RUNNER_TEMP/bfme-plan/plan.json" \
-              "$matrix" "$dir" "$sha" "$RUNNER_TEMP/bfme-inline-report"
-      - name: Retain report-only state and summary
+          cd /opt/boat-compiler
+          sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
+          sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Join complete paired outcomes
+        shell: bash
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+        run: |
+          set -euo pipefail
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
+            python3 -B ci/managed-check/wide.py join "$RUNNER_TEMP/bfme-plan" \
+              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-shards" "$RUNNER_TEMP/bfme-verdict"
+      - name: Save complete capped comparison
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: bfme-inline-report-${{ github.run_attempt }}
-          path: '${{ runner.temp }}/bfme-inline-report'
+          name: bfme-verdict-wide-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-verdict/verdict.json'
           if-no-files-found: error
           retention-days: 1
 
-  inline-report:
-    needs: [pending, intake, compare, wide-compare, inline-virtual]
-    if: >-
-      always() && !cancelled() && needs.pending.result == 'success' &&
-      (needs.intake.outputs.route == 'compile' || needs.intake.outputs.route == 'wide')
-    name: Publish inline virtual commit status
+  report:
+    needs: [pending, intake, compare, wide-join]
+    if: always() && !cancelled() && needs.intake.result != 'skipped'
+    name: Report on the pull request head
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 5
-    permissions:
-      contents: read
-      pull-requests: read
-      statuses: write
-    steps:
-      - name: Check out protected status writer
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: '${{ github.sha }}'
-          persist-credentials: false
-          sparse-checkout: ci/managed-check
-      - name: Verify protected writer
-        shell: bash
-        run: (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
-      - name: Read this attempt's sanitized inline status
-        id: receipt
-        if: needs.inline-virtual.result == 'success'
-        continue-on-error: true
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          name: bfme-inline-report-${{ github.run_attempt }}
-          path: '${{ runner.temp }}/bfme-inline-status'
-      - name: Publish exact-head inline virtual status
-        shell: bash
-        env:
-          BFME_STATUS_TOKEN: '${{ github.token }}'
-          RECEIPT: '${{ steps.receipt.outcome }}'
-        run: |
-          set -euo pipefail
-          if [[ "$RECEIPT" == success ]]; then
-            path="$RUNNER_TEMP/bfme-inline-status/inline-status.json"
-          else
-            path="$RUNNER_TEMP/bfme-inline-unavailable/inline-status.json"
-          fi
-          python3 -B ci/managed-check/inline_status.py "$path"
-
-  report:
-    needs: [pending, intake, compare, wide-compare]
-    if: always() && !cancelled() && needs.intake.result != 'skipped'
-    name: Join wide receipts and report on the pull request head
-    runs-on: boat-small/from=bfme2-compiler-v1
-    timeout-minutes: 8
     permissions:
       contents: read
       pull-requests: read
@@ -377,11 +323,13 @@ jobs:
         with:
           ref: '${{ github.sha }}'
           persist-credentials: false
+          sparse-checkout: |
+            ci/managed-check
+            ci/managed-nt2
       - name: Verify protected writer
         shell: bash
         run: (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
       - name: Read this run's admission
-        id: admission
         if: needs.intake.result == 'success'
         continue-on-error: true
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
@@ -389,84 +337,25 @@ jobs:
           name: bfme-plan-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-plan'
       - name: Read this run's comparison
-        id: narrow
         if: needs.compare.result == 'success'
         continue-on-error: true
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: bfme-verdict-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-verdict'
-      - name: Read this run's exact compile assignments
-        id: assignments
-        if: needs.wide-compare.result == 'success' && needs.intake.outputs.route == 'wide'
+      - name: Read this run's joined wide comparison
+        if: needs.wide-join.result == 'success'
         continue-on-error: true
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          name: bfme-matrix-${{ github.run_attempt }}
-          path: '${{ runner.temp }}/bfme-matrix'
-      - name: Read all same-run sanitized shard receipts
-        id: receipts
-        if: needs.wide-compare.result == 'success' && needs.intake.outputs.route == 'wide'
-        continue-on-error: true
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          pattern: bfme-wide-${{ github.run_attempt }}-*
-          path: '${{ runner.temp }}/bfme-shards'
-          merge-multiple: false
-      - name: Verify protected comparison and sealed image
-        id: sealed
-        if: needs.wide-compare.result == 'success' && needs.intake.outputs.route == 'wide'
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
-          (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
-          cd /opt/boat-compiler
-          sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
-          sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
-      - name: Join complete paired outcomes
-        id: join
-        if: >-
-          needs.wide-compare.result == 'success' && needs.intake.outputs.route == 'wide' &&
-          steps.admission.outcome == 'success' && steps.assignments.outcome == 'success' &&
-          steps.receipts.outcome == 'success' && steps.sealed.outcome == 'success'
-        continue-on-error: true
-        shell: bash
-        env:
-          PLAN_SHA: '${{ needs.intake.outputs.matrix_sha }}'
-        run: |
-          set -euo pipefail
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
-            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
-            python3 -B ci/managed-check/wide.py join "$RUNNER_TEMP/bfme-plan" \
-              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-shards" "$RUNNER_TEMP/bfme-joined"
-      - name: Save complete capped comparison
-        if: steps.join.outcome == 'success'
-        continue-on-error: true
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: bfme-verdict-wide-${{ github.run_attempt }}
-          path: '${{ runner.temp }}/bfme-joined/verdict.json'
-          if-no-files-found: error
-          retention-days: 1
+          path: '${{ runner.temp }}/bfme-verdict'
       - name: Publish job summary and exact-head commit status
         shell: bash
         env:
           BFME_STATUS_TOKEN: '${{ github.token }}'
           MANAGED_PUBLIC_REPORT: '${{ runner.temp }}/bfme-report'
-          NARROW: '${{ steps.narrow.outcome }}'
-          WIDE_JOIN: '${{ steps.join.outcome }}'
-        run: |
-          set -euo pipefail
-          if [[ "$WIDE_JOIN" == success ]]; then
-            result="$RUNNER_TEMP/bfme-joined"
-          elif [[ "$NARROW" == success ]]; then
-            result="$RUNNER_TEMP/bfme-verdict"
-          else
-            result="$RUNNER_TEMP/bfme-unavailable"
-          fi
-          python3 -B ci/managed-check/github_io.py finish "$RUNNER_TEMP/bfme-plan" "$result"
+        run: python3 -B ci/managed-check/github_io.py finish "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-verdict"
       - name: Retain readable summary for the owner
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
