@@ -32,7 +32,7 @@ public:
 	Coord3DBase m_lastPosition;		// +0x24
 	UnsignedInt m_firstCheckFrame;		// +0x30
 public:
-	virtual UpdateSleepTime update();	// 0x0048FD1B, UpdateModuleInterface slot 0; retail's table has this class's own (h05, gen3 vtable-content list)
+	virtual UpdateSleepTime update();	// 0x0048FD1B, UpdateModuleInterface slot 0; retail's table has this class's own
 };
 
 #endif

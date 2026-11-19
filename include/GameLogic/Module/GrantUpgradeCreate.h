@@ -20,10 +20,10 @@ public:
 	virtual void onBuildComplete();
 	virtual NameKeyType getModuleNameKey() const;
 protected:
-	virtual const char *GetSnapshotName() const;	// 0x004B8F8C, primary slot 2; retail's table has this class's own (h05, gen3 vtable-content list)
-	virtual void xfer(Xfer *xfer);	// primary slot 3: retail 0x004851E3, Version1 then CreateModule::xfer (the fold PreorderCreate and LockWeaponCreate share; h05 r9)
+	virtual const char *GetSnapshotName() const;	// 0x004B8F8C, primary slot 2; retail's table has this class's own
+	virtual void xfer(Xfer *xfer);	// primary slot 3: retail 0x004851E3, Version1 then CreateModule::xfer (the fold PreorderCreate and LockWeaponCreate share)
 protected:
-	virtual void loadPostProcess() { CreateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to CreateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { CreateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to CreateModule's, ICF-folded across classes
 };
 // SIZE 0x18
 

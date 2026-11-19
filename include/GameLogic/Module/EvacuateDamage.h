@@ -1,5 +1,5 @@
 // EvacuateDamage.h: the EvacuateDamage module. SIZE 0x18 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004BAE1D calls DamageModule first; it stores the
+// Target facts: the constructor 0x004BAE1D calls DamageModule first; it stores the
 // tables 0x00C59E2C at +0x0, 0x00C597F8 at +0xC, 0x00C59E20 at +0x10. Members are what xfer (0x004BAC83) transfers after DamageModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -41,7 +41,7 @@ protected:
 public:
 	UnsignedByte m_gap0x14[0x4];
 protected:
-	virtual void loadPostProcess() { DamageModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to DamageModule's (h05)
+	virtual void loadPostProcess() { DamageModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to DamageModule's
 };
 // SIZE 0x18
 typedef char EvacuateDamage_size[(sizeof(EvacuateDamage) == 0x18) ? 1 : -1];

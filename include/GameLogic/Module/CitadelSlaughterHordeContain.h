@@ -1,5 +1,5 @@
 // CitadelSlaughterHordeContain.h: the CitadelSlaughterHordeContain module. SIZE 0x9F0 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x0048059F calls SlaughterHordeContain first; it stores the
+// Target facts: the constructor 0x0048059F calls SlaughterHordeContain first; it stores the
 // tables 0x00C48CC0 at +0x0, 0x00C43528 at +0xC, 0x00C48CB0 at +0x10, 0x00C48B38 at +0x20, 0x00C46064 at +0x24, 0x00C48910 at +0x28, 0x00C463D8 at +0x2C, 0x00C488E0 at +0x30, 0x00C48B28 at +0x34. Members are what xfer (0x0048030D) transfers after SlaughterHordeContain::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

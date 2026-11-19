@@ -20,6 +20,6 @@ private:
     UnsignedInt m_birthFrame;
     Bool m_disabled;
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 };
 typedef char check_LifetimeUpdate_size[sizeof(LifetimeUpdate)==0x2C?1:-1];

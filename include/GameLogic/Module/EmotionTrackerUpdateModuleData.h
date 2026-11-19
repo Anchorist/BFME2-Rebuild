@@ -1,11 +1,11 @@
-// Promoted from Draft by f10 (2026-11-17): generated from retail's field-parse table (VA 0x00C56858); constructor 0x004B115A and
+// Promoted from Draft: generated from retail's field-parse table (VA 0x00C56858); constructor 0x004B115A and
 // destructor 0x004B1285 are written against it. The 12 bytes at +0x34 are an STLport vector of EmotionTrackerUpdateEntry pointers
 // (IniParseAddEmotion 0x004B2087 pushes through it at +0x34; the destructor deletes each entry, then the buffer).
 // EmotionTrackerUpdateModuleData.h: the INI data of EmotionTrackerUpdate. SIZE 0x40.
 // Target facts: ModuleFactory registers the module with operator new 0x40 and
 // constructor RVA 0x004B115A; buildFieldParse RVA 0x004B235D adds VA 0x00C56858 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_EMOTION_TRACKER_UPDATE_MODULE_DATA_H

@@ -1,5 +1,5 @@
 // InactiveBody.h: the InactiveBody module. SIZE 0x1C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004BD8BD calls BodyModule first; it stores the
+// Target facts: the constructor 0x004BD8BD calls BodyModule first; it stores the
 // tables 0x00C5AE34 at +0x0, 0x00C5AD78 at +0xC, 0x00C5ACC8 at +0x10. Members are what xfer (0x004BD9A1) transfers after BodyModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -70,10 +70,10 @@ protected:
 public:
 	Bool m_unk0x18;                                // +0x18; xfer Bool
 public:
-	virtual Real estimateDamage(DamageInfoInput &damageInfo) const;	// 0x004BD7AE, BodyModuleInterface slot 2; retail's table has this class's own (h05, gen3 vtable-content list)
-	virtual void reapplyDamageState() {}	// BodyModuleInterface slot 3: retail's table holds the shared empty body 0x000B3FD0, not pure (h05 r9)
+	virtual Real estimateDamage(DamageInfoInput &damageInfo) const;	// 0x004BD7AE, BodyModuleInterface slot 2; retail's table has this class's own
+	virtual void reapplyDamageState() {}	// BodyModuleInterface slot 3: retail's table holds the shared empty body 0x000B3FD0, not pure
 protected:
-	virtual void loadPostProcess() { BodyModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to BodyModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { BodyModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to BodyModule's, ICF-folded across classes
 };
 // SIZE 0x1C
 typedef char InactiveBody_size[(sizeof(InactiveBody) == 0x1C) ? 1 : -1];

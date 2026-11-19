@@ -1,4 +1,4 @@
-// Promoted from Draft by f03: the class derives from UpgradeModuleData (its constructor calls 0x00253487 first, and
+// Promoted from Draft: the class derives from UpgradeModuleData (its constructor calls 0x00253487 first, and
 // the destructor 0x004B5C80 is implicit: one trailing ModuleData vptr store); Percentage (0x004B60D5) parses a percent to a Real and push_backs it into a
 // vector<Real> at +0x11C (the destructor 0x004B5C80 frees its buffer inline; the constructor builds it as an empty
 // vector). The constructor 0x004B5BAC initialises the ObjectFilter from two empty KindOf masks, sets the label to
@@ -7,7 +7,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x13C and
 // constructor RVA 0x004B5BAC; buildFieldParse RVA 0x004B5CE9 adds VA 0x00C582D8 at +0x0 and UpgradeMuxData at +0x8.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_COST_MODIFIER_UPGRADE_MODULE_DATA_H

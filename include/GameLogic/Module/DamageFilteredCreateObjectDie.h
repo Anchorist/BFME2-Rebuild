@@ -1,6 +1,6 @@
 // bases DieModule and DamageModuleInterface (+0x14, its pure table stored first by the constructor 0x00485F87), size 0x20, no new primary slots; the constructor, name, getModuleNameKey and the inline getDamage match against it.
 // DamageFilteredCreateObjectDie.h: the DamageFilteredCreateObjectDie module. SIZE 0x20 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x00485F87 calls DieModule first; it stores the
+// Target facts: the constructor 0x00485F87 calls DieModule first; it stores the
 // tables 0x00BE2B78 at +0x14, 0x00C4AB54 at +0x0, 0x00C4AA98 at +0xC, 0x00C4AA90 at +0x10, 0x00C4AA84 at +0x14. Members are what xfer (0x00485FE3) transfers after DieModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -54,7 +54,7 @@ public:
 	UnsignedInt m_unk0x18;                         // +0x18; xfer UnsignedInt; the constructor zeroes it
 	Int m_unk0x1C;                                 // +0x1C; xfer Int; the constructor sets -1
 protected:
-	virtual void loadPostProcess() { DieModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to DieModule's (h05)
+	virtual void loadPostProcess() { DieModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to DieModule's
 };
 // SIZE 0x20
 typedef char DamageFilteredCreateObjectDie_size[(sizeof(DamageFilteredCreateObjectDie) == 0x20) ? 1 : -1];

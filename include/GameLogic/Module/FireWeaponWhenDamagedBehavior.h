@@ -66,7 +66,7 @@ protected:
 	virtual void xfer(Xfer *xfer);									// 0x00482641 (slot 3)
 	virtual Bool requiresAllActivationUpgrades() const;				// 0x004827EF (UpgradeMux slot 13)
 	virtual Bool requiresAllConflictingUpgrades() const;			// 0x004827F9 (UpgradeMux slot 14)
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); upgradeMuxLoadPostProcess(); }	// retail slot 0x004B7BAA, the body AudioLoopUpgrade's shares (h05, gen3 vtable-content list)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); upgradeMuxLoadPostProcess(); }	// retail slot 0x004B7BAA, the body AudioLoopUpgrade's shares
 };
 // SIZE 0x4C
 typedef char FireWeaponWhenDamagedBehavior_size[(sizeof(FireWeaponWhenDamagedBehavior) == 0x4C) ? 1 : -1];

@@ -39,7 +39,7 @@ public:
 protected:
 	virtual void xfer(Xfer *xfer);
 
-	virtual void loadPostProcess() { SlowDeathBehavior::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SlowDeathBehavior's (h05)
+	virtual void loadPostProcess() { SlowDeathBehavior::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SlowDeathBehavior's
 };
 // SIZE 0x54
 typedef char ClearanceTestingSlowDeathBehavior_size[(sizeof(ClearanceTestingSlowDeathBehavior) == 0x54) ? 1 : -1];

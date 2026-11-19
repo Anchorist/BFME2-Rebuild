@@ -1,7 +1,7 @@
-// DelayedWeaponSetUpgradeUpdate.h: promoted from include/Draft by h05 (round 10). Proven by 1 row that MATCH against it on main (0x0048828E);
+// DelayedWeaponSetUpgradeUpdate.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x0048828E);
 // name, size, bases and virtual order are retail facts given below.
 // DelayedWeaponSetUpgradeUpdate.h: the DelayedWeaponSetUpgradeUpdate module. SIZE 0x24 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004882E4 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004882E4 calls UpdateModule first; it stores the
 // tables 0x00C6FFFC at +0x20, 0x00C4B2F8 at +0x0, 0x00BEFF90 at +0xC, 0x00C4B2EC at +0x10, 0x00C4B2E4 at +0x20. Members are what xfer (0x004DF81B) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -49,7 +49,7 @@ protected:
 public:
 	UnsignedByte m_gap0x20[0x4];
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x24
 typedef char DelayedWeaponSetUpgradeUpdate_size[(sizeof(DelayedWeaponSetUpgradeUpdate) == 0x24) ? 1 : -1];

@@ -1,7 +1,7 @@
-// LargeGroupBonusUpdate.h: promoted from include/Draft by h05 (round 10). Proven by 3 rows that MATCH against it on main (0x0048FFD4, 0x00490031, 0x004901B5);
+// LargeGroupBonusUpdate.h: promoted from include/Draft. Proven by 3 rows that MATCH against it on main (0x0048FFD4, 0x00490031, 0x004901B5);
 // name, size, bases and virtual order are retail facts given below.
 // LargeGroupBonusUpdate.h: the LargeGroupBonusUpdate module. SIZE 0x2C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004900B1 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004900B1 calls UpdateModule first; it stores the
 // tables 0x00BE2B78 at +0x20, 0x00C4D124 at +0x0, 0x00C4D068 at +0xC, 0x00C4D058 at +0x10, 0x00C4D04C at +0x20. Members are what xfer (0x00490031) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -54,7 +54,7 @@ public:
 	Bool m_unk0x29;                                // +0x29; xfer Bool
 	Bool m_unk0x2A;                                // +0x2A; xfer Bool
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x2C
 typedef char LargeGroupBonusUpdate_size[(sizeof(LargeGroupBonusUpdate) == 0x2C) ? 1 : -1];

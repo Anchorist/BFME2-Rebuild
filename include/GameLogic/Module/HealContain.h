@@ -31,7 +31,7 @@ protected:
 	virtual const char *GetSnapshotName() const;						// 0x00466B3F
 	virtual void xfer(Xfer *xfer);										// 0x00466BE9
 protected:
-	virtual void loadPostProcess() { OpenContain::loadPostProcess(); }	// retail slot 0x004783D7: a jmp to OpenContain's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { OpenContain::loadPostProcess(); }	// retail slot 0x004783D7: a jmp to OpenContain's, ICF-folded across classes
 };
 // SIZE 0xFC
 

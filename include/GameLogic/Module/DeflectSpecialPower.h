@@ -30,7 +30,7 @@ protected:
 	Bool m_unk0x3C;		// +0x3C xfer bool
 	Bool m_unk0x3D;		// +0x3D xfer bool
 protected:
-	virtual void loadPostProcess() { SpecialPowerUpdateModule::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialPowerUpdateModule's (h05)
+	virtual void loadPostProcess() { SpecialPowerUpdateModule::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialPowerUpdateModule's
 };
 
 #endif

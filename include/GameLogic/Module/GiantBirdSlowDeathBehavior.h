@@ -1,5 +1,5 @@
 // GiantBirdSlowDeathBehavior.h: the GiantBirdSlowDeathBehavior module. SIZE 0x68 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x00461E58 calls SlowDeathBehavior first; it stores the
+// Target facts: the constructor 0x00461E58 calls SlowDeathBehavior first; it stores the
 // tables 0x00C42E64 at +0x0, 0x00C42DA8 at +0xC, 0x00C42D98 at +0x10, 0x00C42030 at +0x20, 0x00C42D88 at +0x24. Members are what xfer (0x00461F34) transfers after SlowDeathBehavior::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -50,7 +50,7 @@ public:
 	Real m_unk0x60;                                // +0x60; xfer Real
 	Bool m_unk0x64;                                // +0x64; xfer Bool
 protected:
-	virtual void loadPostProcess() { SlowDeathBehavior::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SlowDeathBehavior's (h05)
+	virtual void loadPostProcess() { SlowDeathBehavior::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SlowDeathBehavior's
 };
 // SIZE 0x68
 typedef char GiantBirdSlowDeathBehavior_size[(sizeof(GiantBirdSlowDeathBehavior) == 0x68) ? 1 : -1];

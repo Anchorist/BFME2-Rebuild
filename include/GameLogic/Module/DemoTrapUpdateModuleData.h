@@ -1,10 +1,10 @@
-// DemoTrapUpdateModuleData.h: promoted from include/Draft by h05 (round 10). Proven by 1 row that MATCH against it on main (0x00495AA9);
+// DemoTrapUpdateModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x00495AA9);
 // name, size, bases and virtual order are retail facts given below.
 // DemoTrapUpdateModuleData.h: the INI data of DemoTrapUpdate. SIZE 0x40.
 // Target facts: ModuleFactory registers the module with operator new 0x40 and
 // constructor RVA 0x0049597A; buildFieldParse RVA 0x00495AA9 adds VA 0x00C4EEC8 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_DEMO_TRAP_UPDATE_MODULE_DATA_H

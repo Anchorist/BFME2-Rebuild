@@ -26,9 +26,9 @@ protected:
 
 	AsciiString m_unk0x1C;												// 0x1C
 protected:
-	virtual const char *GetSnapshotName() const;	// slot 2: the class's own (`mov eax,"GeometryUpgrade"; ret`) (h05 r9)
+	virtual const char *GetSnapshotName() const;	// slot 2: the class's own (`mov eax,"GeometryUpgrade"; ret`)
 protected:
-	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpgradeModule's (h05)
+	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpgradeModule's
 };
 
 #endif

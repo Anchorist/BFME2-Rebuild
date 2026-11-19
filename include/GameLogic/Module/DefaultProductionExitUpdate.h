@@ -7,7 +7,7 @@
 // and sets the byte +0x30; getRallyPoint 0x00487F75 returns +0x24 only while
 // +0x30 is set. xfer 0x0048805B: UpdateModule::xfer, then (unless the Xfer is a
 // light CRC) version 1, the Coord3D +0x24 and the Bool +0x30.
-// (h05 modgen generated the first draft; h08 placed ExitInterface at +0x20.)
+// ExitInterface is at +0x20.
 // Donor facts: Zero Hour's DefaultProductionExitUpdate names m_rallyPoint and
 // m_rallyPointExists.
 #pragma once
@@ -41,7 +41,7 @@ public:
 	// Primary-table slot 13 (table 0x0084B2AC has 14 slots): 0x004A6642, shared with the other production exits; the
 	// ledger's name, one Coord3D argument (not ExitInterface's two-argument getExitPosition).
 	virtual Bool getExitPosition(Coord3D &exitPosition) const;
-	// Retail's table at +0x20 holds this class's own for every slot (h05, gen3 vtable-content list):
+	// Retail's table at +0x20 holds this class's own for every slot:
 	virtual Bool isExitBusy() const { return false; }					// 0: the shared `xor al,al; ret` 0x0047A699
 	virtual ExitDoorType reserveDoorForExit(const ThingTemplate *objType, Object *specificObject) { return (ExitDoorType)0; }	// 1: the shared `xor eax,eax; ret 8` 0x005748B2
 	virtual void exitObjectByBudding(Object *newObj, Object *budHost) {}	// 3: the shared `ret 8` 0x0050B238
@@ -55,7 +55,7 @@ public:
 	Coord3D m_rallyPoint;												// +0x24
 	Bool m_rallyPointExists;											// +0x30
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x34
 typedef char DefaultProductionExitUpdate_size[(sizeof(DefaultProductionExitUpdate) == 0x34) ? 1 : -1];

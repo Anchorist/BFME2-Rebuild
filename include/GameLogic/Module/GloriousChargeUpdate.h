@@ -1,7 +1,7 @@
-// GloriousChargeUpdate.h: promoted from include/Draft by h05 (round 10). Proven by 2 rows that MATCH against it on main (0x004AD5C8, 0x004AD5CE);
+// GloriousChargeUpdate.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x004AD5C8, 0x004AD5CE);
 // name, size, bases and virtual order are retail facts given below.
 // GloriousChargeUpdate.h: the GloriousChargeUpdate module. SIZE 0x94 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004AD680 calls SpecialAbilityUpdate first; it stores the
+// Target facts: the constructor 0x004AD680 calls SpecialAbilityUpdate first; it stores the
 // tables 0x00C55118 at +0x0, 0x00C4D640 at +0xC, 0x00C55108 at +0x10, 0x00C552A4 at +0x20. Members are what xfer (0x004AD890) transfers after SpecialAbilityUpdate::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -45,7 +45,7 @@ public:
 	UnsignedInt m_unk0x8C;                         // +0x8C; xfer UnsignedInt
 	Bool m_unk0x90;                                // +0x90; xfer Bool
 protected:
-	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's (h05)
+	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's
 };
 // SIZE 0x94
 typedef char GloriousChargeUpdate_size[(sizeof(GloriousChargeUpdate) == 0x94) ? 1 : -1];

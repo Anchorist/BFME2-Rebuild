@@ -10,7 +10,7 @@ project and compile to the reference code.
 ## Status
 
 The maintainers recorded these progress counts at
-**2026-11-19 16:05 UTC**, revision `ca158b5e89` of their
+**2026-11-19 17:05 UTC**, revision `e226a9b406` of their
 working repository (the tree of this snapshot's `src/`, `include/`,
 `config/` and `expected/` is that revision or a later one).
 
@@ -18,7 +18,7 @@ working repository (the tree of this snapshot's `src/`, `include/`,
 | --- | ---: |
 | Owned functions credited MATCH | 14,992 / 41,565 |
 | Credited functions with proven references | 11,588 |
-| Whole objects VERIFIED | 151 / 2,155 |
+| Whole objects VERIFIED | 151 / 2,154 |
 | Headers outside `include/Draft/` | 1,669 |
 | Owned function names classified as real / placeholder | 23,544 / 18,021 |
 
@@ -31,9 +31,9 @@ annotations and no code yet (1,856 address-named, 239
 named); they are scaffolds, counted apart.
 
 In this snapshot's tree, **27 Draft headers are in use** (included by
-some file; these are the ones to retire). Another 2,135 Drafts are
+some file; these are the ones to retire). Another 2,134 Drafts are
 unused generated layout guesses: 2,118 are kept as leads for classes not
-written yet and 17 are dead copies of headers that now exist outside
+written yet and 16 are dead copies of headers that now exist outside
 `include/Draft/`. See the [worklist](worklist/README.md).
 
 See [the checker verdicts](docs/ledger-and-checks.md#read-the-verdict) for how

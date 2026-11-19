@@ -1,5 +1,5 @@
 // CommandButtonHuntUpdate.h: the CommandButtonHuntUpdate module. SIZE 0x28 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004952CF calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004952CF calls UpdateModule first; it stores the
 // tables 0x00C4ECFC at +0x0, 0x00BEFF90 at +0xC, 0x00C4ECF0 at +0x10. Members are what xfer (0x004953EE) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -57,7 +57,7 @@ public:
 	AsciiString m_commandButtonName;               // +0x20; the constructor sets it to the empty string
 	const CommandButton *m_commandButton;          // +0x24; the constructor clears it
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 };
 // SIZE 0x28
 typedef char CommandButtonHuntUpdate_size[(sizeof(CommandButtonHuntUpdate) == 0x28) ? 1 : -1];

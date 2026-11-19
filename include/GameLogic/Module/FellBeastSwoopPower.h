@@ -1,5 +1,5 @@
 // FellBeastSwoopPower.h: the FellBeastSwoopPower module. SIZE 0x8C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004C6C1E calls SpecialAbilityUpdate first; it stores the
+// Target facts: the constructor 0x004C6C1E calls SpecialAbilityUpdate first; it stores the
 // tables 0x00C5DF80 at +0x0, 0x00C4D640 at +0xC, 0x00C5DF74 at +0x10, 0x00C552A4 at +0x20. Members are what xfer (0x004C6CE2) transfers after SpecialAbilityUpdate::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -52,7 +52,7 @@ protected:
 public:
 	Bool m_unk0x88;                                // +0x88; xfer Bool
 protected:
-	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's (h05)
+	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's
 };
 // SIZE 0x8C
 typedef char FellBeastSwoopPower_size[(sizeof(FellBeastSwoopPower) == 0x8C) ? 1 : -1];

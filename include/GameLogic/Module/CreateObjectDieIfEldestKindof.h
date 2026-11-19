@@ -52,7 +52,7 @@ protected:
 public:
 	StatusBitsEldestFrame m_eldest;	// +0x14
 protected:
-	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x0048599C (h05 r9)
+	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x0048599C
 };
 // SIZE 0x18
 

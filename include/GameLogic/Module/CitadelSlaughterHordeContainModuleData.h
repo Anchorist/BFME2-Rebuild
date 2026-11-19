@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x110 and
 // constructor RVA 0x0048112F; buildFieldParse RVA 0x004802F2 calls SlaughterHordeContainModuleData::buildFieldParse, then adds VA 0x00C48890 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_CITADEL_SLAUGHTER_HORDE_CONTAIN_MODULE_DATA_H

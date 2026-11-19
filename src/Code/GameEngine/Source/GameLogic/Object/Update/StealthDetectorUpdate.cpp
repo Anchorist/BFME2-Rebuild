@@ -40,6 +40,7 @@
 #include <stddef.h>
 #include "Common/NameKeyGenerator.h"
 #include "Common/Xfer.h"
+#include "GameLogic/Module/ContainModule.h"
 #include "GameLogic/Module/StealthDetectorUpdate.h"
 #include "GameLogic/Module/StealthDetectorUpdateModuleData.h"
 #include "GameLogic/Object.h"
@@ -60,8 +61,8 @@ Bool Rva004A2BF0::allow(Object *obj)
 {
 	if (obj->rva002943B2(m_player))
 		return true;
-	Rva004A2BF0Interface *iface = (Rva004A2BF0Interface *)obj->getContain();
-	if (iface && iface->s4() && iface->s73())
+	ContainModuleInterface *contain = obj->getContain();
+	if (contain && contain->isGarrisonable() && contain->getStealthUnitsContained())
 		return true;
 	return false;
 }

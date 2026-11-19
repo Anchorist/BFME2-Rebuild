@@ -42,7 +42,7 @@ public:
 	Weapon *m_collideWeapon;		// 0x14
 	Bool m_everFired;				// 0x18
 protected:
-	virtual void loadPostProcess() { CollideModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to CollideModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { CollideModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to CollideModule's, ICF-folded across classes
 };
 // SIZE 0x1C
 typedef char FireWeaponCollide_size[(sizeof(FireWeaponCollide) == 0x1C) ? 1 : -1];

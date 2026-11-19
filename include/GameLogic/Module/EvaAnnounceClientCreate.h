@@ -1,7 +1,7 @@
-// EvaAnnounceClientCreate.h: promoted from include/Draft by h05 (round 10). Proven by 1 row that MATCH against it on main (0x004C9A0C);
+// EvaAnnounceClientCreate.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x004C9A0C);
 // name, size, bases and virtual order are retail facts given below.
 // EvaAnnounceClientCreate.h: the EvaAnnounceClientCreate module. SIZE 0x18 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004C99D4 calls Rva00362EC7 first; it stores the
+// Target facts: the constructor 0x004C99D4 calls Rva00362EC7 first; it stores the
 // tables 0x00C5EBEC at +0xC, 0x00C5ED50 at +0x0, 0x00C5ED48 at +0xC. Members are what xfer (0x004C9B44) transfers after Rva00362EC7::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

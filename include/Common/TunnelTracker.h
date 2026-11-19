@@ -82,8 +82,8 @@ public:
 	std::list<ObjectID> m_xferContainList;								// 0x14
 	Int m_containListSize;												// 0x18
 	UnsignedInt m_tunnelCount;													// 0x1C, incremented by onTunnelCreated; xfer 0x004F579C moves it through the unsigned slot
-	ObjectID m_unk0x20;														// 0x20 the nemesis ID (xfer 0x004F579C moves it through XferObjectID)
-	UnsignedInt m_unk0x24;														// 0x24 the nemesis timestamp (xfer: unsigned slot)
+	ObjectID m_curNemesisID;														// 0x20 the nemesis ID (xfer 0x004F579C moves it through XferObjectID)
+	UnsignedInt m_nemesisTimestamp;														// 0x24 the nemesis timestamp (xfer: unsigned slot)
 };
 // SIZE 0x28
 

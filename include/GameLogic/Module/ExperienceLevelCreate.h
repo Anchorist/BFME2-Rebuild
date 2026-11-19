@@ -1,5 +1,5 @@
 // ExperienceLevelCreate.h: the ExperienceLevelCreate module. SIZE 0x18 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004B917B calls CreateModule first; it stores the
+// Target facts: the constructor 0x004B917B calls CreateModule first; it stores the
 // tables 0x00C5956C at +0x0, 0x00BEF9C0 at +0xC, 0x00C5955C at +0x10. Members are what xfer (0x004851E3) transfers after CreateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -36,7 +36,7 @@ protected:
 
 public:
 protected:
-	virtual void loadPostProcess() { CreateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to CreateModule's (h05)
+	virtual void loadPostProcess() { CreateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to CreateModule's
 };
 // SIZE 0x18
 typedef char ExperienceLevelCreate_size[(sizeof(ExperienceLevelCreate) == 0x18) ? 1 : -1];

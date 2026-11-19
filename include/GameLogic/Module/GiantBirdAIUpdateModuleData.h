@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x84 and
 // constructor RVA 0x0036812E; buildFieldParse RVA 0x00368182 calls AIUpdateModuleData::buildFieldParse, then adds VA 0x00C178D8 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_GIANT_BIRD_A_I_UPDATE_MODULE_DATA_H

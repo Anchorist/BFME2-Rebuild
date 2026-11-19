@@ -1,5 +1,5 @@
 // DamageFieldUpdate.h: the DamageFieldUpdate module. SIZE 0x30 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004912A9 calls FireWeaponUpdate first; it stores the
+// Target facts: the constructor 0x004912A9 calls FireWeaponUpdate first; it stores the
 // tables 0x00C4D970 at +0x0, 0x00BEFF90 at +0xC, 0x00C4D964 at +0x10. Members are what xfer (0x0049157D) transfers after FireWeaponUpdate::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -37,7 +37,7 @@ protected:
 public:
 	UnsignedByte m_gap0x2C[0x4];
 protected:
-	virtual void loadPostProcess() { FireWeaponUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to FireWeaponUpdate's (h05)
+	virtual void loadPostProcess() { FireWeaponUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to FireWeaponUpdate's
 };
 // SIZE 0x30
 typedef char DamageFieldUpdate_size[(sizeof(DamageFieldUpdate) == 0x30) ? 1 : -1];

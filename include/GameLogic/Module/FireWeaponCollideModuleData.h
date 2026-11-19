@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x30 and
 // constructor RVA 0x00254A36; buildFieldParse RVA 0x004BB918 adds VA 0x00C5A190 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_FIRE_WEAPON_COLLIDE_MODULE_DATA_H

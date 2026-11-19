@@ -31,7 +31,7 @@ protected:
 	virtual void upgradeImplementation();								// 0x004B6213
 	virtual void upgradeRemovalImplementation();						// 0x004B6236
 protected:
-	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpgradeModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpgradeModule's, ICF-folded across classes
 };
 // SIZE 0x1C
 typedef char ExperienceScalarUpgrade_size[(sizeof(ExperienceScalarUpgrade) == 0x1C) ? 1 : -1];
