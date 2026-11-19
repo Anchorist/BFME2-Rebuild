@@ -31,7 +31,7 @@ public:
 	Coord3D(const Coord3DBase &that) { x = that.x; y = that.y; z = that.z; }
 	// Empty destructor: doFxAtBones 0x001E2DD6 hands 0x000B3FD0 (bare ret) to the EH
 	// vector-constructor iterator 0x00629512 and destroys the array with 0x00629110;
-	// MSVC uses those iterators only for an element type with a destructor (h06).
+	// MSVC uses those iterators only for an element type with a destructor.
 	~Coord3D() {}
 
 	float lengthSqr() const;
@@ -43,7 +43,7 @@ public:
 	float GetLengthSqrd() const;		// 0x00005A51 (retail keeps this x87 copy beside lengthSqr 0x00065A1A)
 	float GetLength2D() const;		// 0x0000599F
 	float GetLengthSqrd2D() const;		// 0x000059BF
-	float GetLengthEstimate() const;	// 0x00003ACE (map ?GetLengthEstimate@Coord3D@@QBEMXZ, N:ledger; AIGuardReturnState::onEnter 0x00543CC4; decl_queue f04 18:00, ACCEPTED k11)
+	float GetLengthEstimate() const;	// 0x00003ACE (map ?GetLengthEstimate@Coord3D@@QBEMXZ, N:ledger; AIGuardReturnState::onEnter 0x00543CC4)
 	void sub(const Coord3DBase *a) { x -= a->x; y -= a->y; z -= a->z; }
 
 	void zero() { x = 0.0f; y = 0.0f; z = 0.0f; }

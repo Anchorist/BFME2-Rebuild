@@ -33,7 +33,7 @@ protected:
 public:
 	UnsignedInt m_unk0x20;                         // +0x20; xfer UnsignedInt
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 public:
 	virtual UpdateSleepTime update();	// 0x0049680F (UpdateModuleInterface slot 0)
 };

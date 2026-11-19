@@ -9,7 +9,7 @@
 // body 0x000B3FD0 at init, reset and update (overridden, empty) and SubsystemInterface's
 // own entries elsewhere, so the class overrides nothing else (slot 6, getFieldParse,
 // is the base's NULL return). Field names follow the INI tokens of the parse table
-// 0x00C18FB0 (h05's Draft); findMultiplayerColorDefinitionByName 0x00380E34 walks
+// 0x00C18FB0; findMultiplayerColorDefinitionByName 0x00380E34 walks
 // the map at +0x34 and compares each value's tooltip name.
 #pragma once
 #ifndef BFME2_MULTIPLAYERSETTINGS_H

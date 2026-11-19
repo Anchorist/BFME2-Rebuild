@@ -48,7 +48,7 @@ public:
 
 	void Init(Int playerIndex, Bool flag);					// 0x002A71BC
 	Int rva002A7461();							// 0x002A7461: the cap
-	Int getCommandPointsInUse(Int unused);	// 0x002A7389: returns m_pointsInUse (+8) and ignores its argument (f07, ScriptActions 0x003C2CD8; accepted batch 32)
+	Int getCommandPointsInUse(Int unused);	// 0x002A7389: returns m_pointsInUse (+8) and ignores its argument (ScriptActions 0x003C2CD8)
 	Int rva002A7548(Int);							// 0x002A7548: cap less the points in use
 	void RemoveUpgradableCommandPointsFromBonus(Int points, ObjectID source);	// 0x002A7611
 	void AddUpgradableCommandPointsToBonus(Int points, ObjectID source, const void *filter);	// 0x002A77C1

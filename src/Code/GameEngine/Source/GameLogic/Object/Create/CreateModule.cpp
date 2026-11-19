@@ -6,6 +6,10 @@
 #include "Common/Xfer.h"
 
 // FUNCTION: BFME2 0x004B8CDE size=25 name=??1CreateModule@@MAE@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-class+shared-data
+CreateModule::~CreateModule()
+{
+}
+
 // FUNCTION: BFME2 0x004B8CF7 size=53 name=??0CreateModule@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger
 CreateModule::CreateModule(Thing *thing, const ModuleData *moduleData)
 	: BehaviorModule(thing, moduleData),

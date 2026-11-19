@@ -45,7 +45,7 @@ protected:
 	Bool m_24;						// 0x24
 	Bool m_25;						// 0x25
 protected:
-	virtual void loadPostProcess() { BehaviorModule::loadPostProcess(); }	// retail slot 0x0058B03E: a jmp to BehaviorModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { BehaviorModule::loadPostProcess(); }	// retail slot 0x0058B03E: a jmp to BehaviorModule's, ICF-folded across classes
 };
 // SIZE 0x28
 typedef char CastleMemberBehavior_size[(sizeof(CastleMemberBehavior) == 0x28) ? 1 : -1];

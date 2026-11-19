@@ -8,6 +8,10 @@
 #include "GameLogic/GameLogic.h"
 #include "GameLogic/Object.h"
 // FUNCTION: BFME2 0x004864AA size=25 name=??1DestroyDie@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+DestroyDie::~DestroyDie()
+{
+}
+
 // FUNCTION: BFME2 0x004864C3 size=6 name=?name@Rva004864C3Named@@QBEPBDXZ evidence=?:placeholder
 const char *DestroyDie::GetSnapshotName() const
 {

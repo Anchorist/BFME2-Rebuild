@@ -7,7 +7,7 @@
 #include "debug/DebugWin32.h"
 #include "profile/Profile.h"
 #include "profile/ProfileId.h"
-#include "Draft/ProfileFuncLevelTracer.h"
+#include "profile/ProfileFuncLevelTracer.h"
 extern "C" __declspec(dllimport) void *__stdcall GlobalAlloc(unsigned int flags, unsigned int bytes);
 extern "C" __declspec(dllimport) void *__stdcall GlobalReAlloc(void *mem, unsigned int bytes, unsigned int flags);
 extern "C" __declspec(dllimport) unsigned int __stdcall GlobalSize(void *mem);

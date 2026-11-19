@@ -55,7 +55,7 @@ private:
 
 // Retail instantiated DLINK_ITERATOR<Object> while Object was only forward-declared (Team.h): MSVC then gives the
 // member pointer its unspecified-inheritance 16-byte form and the iterator 24 bytes (ScriptActions 0x003C5C93 copies it with
-// `push 6; pop ecx; rep movsd`). Measured: sizeof == 24 here, 20 once Object is complete (f07 probe).
+// `push 6; pop ecx; rep movsd`). Measured: sizeof == 24 here, 20 once Object is complete.
 class Object;
 typedef char DLinkIteratorObjectPin[sizeof(DLINK_ITERATOR<Object>) == 24 ? 1 : -1];
 

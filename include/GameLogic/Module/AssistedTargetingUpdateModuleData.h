@@ -1,10 +1,10 @@
-// AssistedTargetingUpdateModuleData.h: promoted from include/Draft by h05 (round 10). Proven by 1 row that MATCH against it on main (0x00486E7C);
+// AssistedTargetingUpdateModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x00486E7C);
 // name, size, bases and virtual order are retail facts given below.
 // AssistedTargetingUpdateModuleData.h: the INI data of AssistedTargetingUpdate. SIZE 0x18.
 // Target facts: ModuleFactory registers the module with operator new 0x18 and
 // constructor RVA ?; buildFieldParse RVA 0x00486E7C adds VA 0x00C4AFE8 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_ASSISTED_TARGETING_UPDATE_MODULE_DATA_H

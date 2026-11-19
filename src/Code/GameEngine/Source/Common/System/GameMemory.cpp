@@ -1,4 +1,7 @@
-// cl: /O2 /G6
+// cl: /O2 /G6 /D_STLP_USE_STATIC_LIB
+// stlport46
+// bfmealloc_alloconly
+#include <memory>
 #include "Common/GameMemory.h"
 extern "C" __declspec(dllimport) void * __stdcall TlsGetValue(unsigned long index);
 extern "C" __declspec(dllimport) void * __stdcall GetModuleHandleA(const char *name);
@@ -279,6 +282,13 @@ void MemoryPool::InitFunctionPointers()
 	__gameMemGetHeapAllocatorByIndexPtr = (EA::Allocator::GeneralAllocator *(__cdecl *)(unsigned int))GetProcAddress(module, "?_GetHeapAllocatorByIndex@MemoryPool@@YAPAVGeneralAllocator@Allocator@EA@@I@Z");
 }
 
+// The byte allocator every STLport container in the game funnels through (declared by the
+// allocator shim): the memory front end's allocate with the CRT allocation type.
+char *_STL::allocator<char>::allocate(size_type size, const void *hint)
+{
+	return (char *)__gameMemAllocatePtr(size, ALLOC_TYPE_CRT, (unsigned int)hint);
+}
+
 // FUNCTION: BFME2 0x00030810 size=27 name=?rva00030810@@YAHPAXPBDH@Z evidence=?:placeholder
 // The C runtime's realloc replaced (the heap argument is the caller's; MemoryWriteFile::write 0x6021CA passes 0):
 // the block goes back through the front end as ALLOC_TYPE_CRT. Name: structural, after isValidBlock/getBlockSize.
@@ -288,7 +298,7 @@ void *reallocateBlock(void *block, unsigned int size, unsigned int heap)
 }
 
 // The CRT's free replaced (0x00030830, an expected row of this object): blocks from the CRT
-// replacements go back through the memorypool with AllocType 3. (pp3, a/pp3/4)
+// replacements go back through the memorypool with AllocType 3.
 extern "C" void __cdecl free(void *p)
 {
 	__gameMemFreePtr(p, ALLOC_TYPE_CRT);

@@ -17,7 +17,7 @@
 // RGBAColorReal, RGBAColorInt and the Coord/Region structs are structs (AAU), while
 // Coord2D, Snapshot and the three string classes are classes (the map's slot-20
 // name is ??8Xfer@@UAEAAV0@AAVCoord2D@@@Z).
-// Confirmed slot by slot against table 0x007BB910 (k01, round 6): 0 deleting
+// Confirmed slot by slot against table 0x007BB910: 0 deleting
 // dtor 0x00005422; 1-4 the shared `xor al,al; ret` 0x0047A699; 5-7 __purecall;
 // 8 SkipBadBlock 0x0050B238; 9 XferRawBytes 0x0060B886; 10 Version 0x0060B8D9;
 // 11 __purecall; 12-36 the typed transfers in the order above; 37 XferEnum

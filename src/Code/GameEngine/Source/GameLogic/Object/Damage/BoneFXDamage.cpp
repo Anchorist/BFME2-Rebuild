@@ -10,6 +10,10 @@
 #include "GameLogic/Module/BoneFXUpdate.h"
 
 // FUNCTION: BFME2 0x004B96E5 size=25 name=??1BoneFXDamage@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+BoneFXDamage::~BoneFXDamage()
+{
+}
+
 // FUNCTION: BFME2 0x004B96FE size=6 name=?GetSnapshotName@BoneFXDamage@@MBEPBDXZ evidence=N:ledger
 const char *BoneFXDamage::GetSnapshotName() const
 {

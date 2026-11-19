@@ -30,6 +30,7 @@ class FXListDie : public DieModule
 {
 public:
 	FXListDie(Thing *thing, const ModuleData *moduleData);
+	virtual ~FXListDie();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual void onDie(const DamageInfo *);	// override: onDie slot 0 at +0x10 (0x00486623)

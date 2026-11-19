@@ -116,7 +116,7 @@ public:
 	void healAllObjects();	// 0x0039DCE9
 	bool rva0039DD4B(bool);	// 0x0039DD4B
 	bool hasAnyUnits();	// 0x0039DEC4
-	Bool hasAnyBuildings(KindOfMaskType kindOf, Bool ignoreIncomplete);	// 0x0039DDC2 (decl_queue f13)
+	Bool hasAnyBuildings(KindOfMaskType kindOf, Bool ignoreIncomplete);	// 0x0039DDC2
 	Bool hasAnyBuildings(ObjectFilter *filter, Bool ignoreIncomplete);	// 0x0039DE46
 	Bool hasAnyBuildings(KindOfMaskType setMask, KindOfMaskType clearMask);	// 0x0039DF1C
 	Bool hasAnyUnits(ObjectFilter *filter);	// 0x0039DF87
@@ -163,7 +163,7 @@ public:
 	bool enableGenericScript(AsciiString const &, AsciiString const &, bool);	// 0x003A1F65
 	void rva003A23A5(int, bool);	// 0x003A23A5
 	void rva003A2CEB(int, Object *);	// 0x003A2CEB
-	Bool removeOverrideTeamRelationship(NameKeyType teamID);	// 0x003A2897 (f07, ScriptActions 0x003C09DA and 0x003C0A2E; accepted batch 33)
+	Bool removeOverrideTeamRelationship(NameKeyType teamID);	// 0x003A2897 (ScriptActions 0x003C09DA and 0x003C0A2E)
 	Bool removeOverridePlayerRelationship(Int playerIndex);	// 0x003A28ED
 	void rva003A2D53(int, Object *);	// 0x003A2D53
 	void rva003A2DBB(float);	// 0x003A2DBB
@@ -176,7 +176,7 @@ public:
 	TeamPrototype *getPrototype() const { return m_proto; }
 	Int getID() const { return m_id; }
 	Bool isCreated() const { return m_created; }
-	void setActive() { if (!m_unk0x5C[1]) { m_unk0x5C[2] = true; m_unk0x5C[1] = true; } }	// Zero Hour's setActive (TeamInQueue::~TeamInQueue 0x004F05F0; h07)
+	void setActive() { if (!m_unk0x5C[1]) { m_unk0x5C[2] = true; m_unk0x5C[1] = true; } }	// Zero Hour's setActive (TeamInQueue::~TeamInQueue 0x004F05F0)
 
 	TeamPrototype *m_proto;			// +0x30
 	Int m_id;				// +0x34

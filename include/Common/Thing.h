@@ -30,7 +30,7 @@ public:
 	friend inline const Drawable *AsDrawable(const Thing *thing) { return thing ? thing->asDrawableMeth() : 0; }
 
 	const ThingTemplate *getTemplate() const { return m_template; }
-	// f14 (SquishCollide.cpp rows 0x004BB976, 0x004BB980: the template's +0x608/+0x60C forwarded; out of line):
+	// (SquishCollide.cpp rows 0x004BB976, 0x004BB980: the template's +0x608/+0x60C forwarded; out of line):
 	Real getRamPower() const;	// 0x004BB976
 	Real getRamZMult() const;	// 0x004BB980
 	void setPosition(const Coord3D *pos);

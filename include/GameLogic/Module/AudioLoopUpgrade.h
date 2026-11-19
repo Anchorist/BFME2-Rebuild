@@ -1,7 +1,7 @@
-// AudioLoopUpgrade.h: promoted from include/Draft by h05 (round 10). Proven by 2 rows that MATCH against it on main (0x004B7B81, 0x004B7BBB);
+// AudioLoopUpgrade.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x004B7B81, 0x004B7BBB);
 // name, size, bases and virtual order are retail facts given below.
 // AudioLoopUpgrade.h: the AudioLoopUpgrade module. SIZE 0x30 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004B7CBC calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004B7CBC calls UpdateModule first; it stores the
 // tables 0x00C1C780 at +0x28, 0x00C58CC4 at +0x0, 0x00C496F8 at +0xC, 0x00C58CB8 at +0x10, 0x00C58C68 at +0x28. Members are what xfer (0x004B7E75) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

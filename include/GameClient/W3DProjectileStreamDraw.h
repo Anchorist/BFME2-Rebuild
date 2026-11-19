@@ -43,7 +43,7 @@ public:
 
 protected:
 	virtual ~W3DProjectileStreamDraw();										// 0x000D146B
-	virtual void loadPostProcess() { DrawModule::loadPostProcess(); }	// slot 1: retail table 0x007CE010 holds 0x0058B03E (`jmp 0x000B3FD0`, DrawModule's empty body), ICF-folded with the module bases' (h05)
+	virtual void loadPostProcess() { DrawModule::loadPostProcess(); }	// slot 1: retail table 0x007CE010 holds 0x0058B03E (`jmp 0x000B3FD0`, DrawModule's empty body), ICF-folded with the module bases'
 	virtual const char *GetSnapshotName() const;								// 0x000D1401 (the map names it W3DProjectileStreamDraw::name)
 	virtual void xfer(Xfer *xfer);												// 0x000D11A6
 

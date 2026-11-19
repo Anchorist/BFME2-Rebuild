@@ -1,5 +1,5 @@
 // AnimatedParticleSysBoneClientUpdate.h: the AnimatedParticleSysBoneClientUpdate module. SIZE 0x10 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004C8FE8 calls Rva00362EC7 first; it stores the
+// Target facts: the constructor 0x004C8FE8 calls Rva00362EC7 first; it stores the
 // tables 0x00C5EA50 at +0x0. Members are what xfer (0x004C9C7D) transfers after Rva00362EC7::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

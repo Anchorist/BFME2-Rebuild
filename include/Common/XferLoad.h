@@ -1,6 +1,6 @@
 // XferLoad.h: the save-game reader (an Xfer over a File). Vtable VA 0x00C7AF18 (RVA 0x0087AF18, 39 slots); the
 // constructor 0x0060C5FA (map placeholder Rva0060C5FA) takes three pointers and stores them at +4, +0xC and +8.
-// Target facts (retail game.dat; f04, reading the table and the five rows below):
+// Target facts (retail game.dat, reading the table and the five rows below):
 //  - slots 5/6/7/8 are BeginBlock 0x0060C629, EndBlock 0x0060C469, SkipBlock 0x0060C6F6 and SkipBadBlock 0x0060C4EA;
 //    slot 38 XferData 0x0060C7AD; slot 12 0x0060C549 is its own operator==(Snapshot &) (map placeholder).
 //  - +0x08 a callback the bad-block skip calls with (snapshot, +0x0C, +0x1C); +0x10 Bool: the block names are

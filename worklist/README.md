@@ -12,7 +12,32 @@ snapshot was exported from that revision or a later one. Treat
 checkout before you start (search `src/` and `include/` for the RVA and the
 function name).
 
-## Choose a small item
+## Choose a file to finish
+
+The unit of work is a file: finish one source file, or replace one Draft
+header that is in use. [Files to finish](files.tsv) lists every source file
+that still owns functions not yet credited MATCH, closest to finished first:
+`owned_functions`, `not_yet_matched` and `bytes_not_yet_matched` say how much
+is left, `link_referrers_waiting` how much of the rebuilt game waits on it,
+and `class_header` whether the file's class already has a real header
+(`real`), only a Draft (`draft`), none (`none`), or the file is still named by
+address (`address-named`: identifying its real name and place is a
+contribution of its own). The verdicts are the maintainers' dated checker
+state, named in the first line.
+
+The lists below help inside a file.
+
+## Remove a stand-in type
+
+[Stand-in types](stand_in_types.tsv) lists declarations in ordinary headers
+whose return or parameter type is `void *`. Many are a type the code already
+knows, erased at a module boundary, so every caller casts it back. Replace it
+with the real type in the declaration, the definition and every caller in one
+change; the bytes must not change. Some entries are legitimate (buffers,
+allocators, user data) and stay; check the callers first. Integer words used
+for pointers are the same problem and are not listed yet.
+
+## Lists for single functions and headers
 
 1. [Unwritten functions with a Zero Hour counterpart](unwritten_with_zero_hour_counterpart.tsv).
    Start with `ready_at_snapshot=yes` and `reference_kind=def`, a lead with a
@@ -20,7 +45,8 @@ function name).
    identify a function. Open `zero_hour_file` at `zero_hour_line` and confirm
    `zero_hour_function`. If the line or spelling is ambiguous, search
    `reference/CnC_Generals_Zero_Hour/GeneralsMD/Code`. A zero `link_referrers`
-   count means the recorded link report had no referrers for that item.
+   count means the recorded link report had no referrers for that item; a
+   higher count means more rebuilt code waits for it, so it ranks higher.
    Rows whose function already has a body in the checkout (in its owning
    file, in a header that file includes, or elsewhere under `src/` or
    `include/`) are left out when the list is written; the first line says
@@ -80,7 +106,7 @@ example, the tracked owner includes `include/GameClient/W3DScriptedModelDraw.h`.
 The target class and the older `W3DModelDraw` class can have different layouts.
 If the target field or called function is unconfirmed, ask for the missing
 slot, layout or call evidence. A plain clone provides the checked-in notes
-and ledger, and a local binary comparison is optional.
+ledger and `baseline/game.dat`, and a local check is optional.
 
 For a Draft promotion, find the current shared type and every direct include,
 then follow headers to their users. Read the [promotion
@@ -124,7 +150,7 @@ The landed
 uses the translation unit's square helper, multiplies by the reciprocal
 and returns the length. The shape comes from the reference function and
 its caller contract. It would change if the older zero-length guard were
-copied across. Source recovery record, 2026-11-18.
+copied across (recorded 2026-11-18).
 
 ### AsciiString construction
 
@@ -135,7 +161,7 @@ initializes its own member and calls its setter. The landed
 delegates construction to `StringBase<char>`. Reference callers mostly use
 the base constructor directly while some reach an emitted wrapper copy.
 That pattern supports one inline wrapper and preserves the reference's
-by-value temporary setup. Source recovery record, 2026-11-16.
+by-value temporary setup (recorded 2026-11-16).
 
 ### Model-draw transform hook
 
@@ -147,7 +173,7 @@ has an empty base hook, with a derived override where the table calls for
 one. The reference constructor calls `DrawModule` directly, and the
 scripted model's table makes that class the shared model-draw base.
 Zero Hour supports the hook's name and signature, while the reference class
-and slot establish ownership and behavior. Source recovery record, 2026-11-18.
+and slot establish ownership and behavior (recorded 2026-11-18).
 
 ## Refresh the lists
 

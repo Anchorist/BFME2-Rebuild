@@ -10,7 +10,7 @@
 #include <stddef.h>
 #include "Common/INI.h"
 #include "GameLogic/Module/ScaleWallSpecialAbilityUpdateModuleData.h"
-#include "Draft/ScaleWallSpecialAbilityUpdate.h"
+#include "GameLogic/Module/ScaleWallSpecialAbilityUpdate.h"
 
 // The table retail passes to MultiIniFieldParse::add (VA 0x00BEF1B4), read back
 // entry by entry from the image.

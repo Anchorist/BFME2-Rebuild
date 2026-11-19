@@ -96,7 +96,7 @@ public:
 														// body folds into the 7-byte Snapshot restore 0x0049B47C
 
 	virtual StateReturnType onEnter() { return STATE_CONTINUE; }	// slot 4
-	virtual void onExit(StateExitType status);				// slot 5, 0x0047A69C (the shared `ret 4`; the map accepts ?onExit@State@@UAEXW4StateExitType@@@Z there since publish 5)
+	virtual void onExit(StateExitType status);				// slot 5, 0x0047A69C (the shared `ret 4`; the map accepts ?onExit@State@@UAEXW4StateExitType@@@Z there)
 	virtual StateReturnType update() = 0;					// slot 6
 	virtual void clearWaitingForPath() {}					// slot 7
 	virtual Bool isAttack() const { return false; }			// slot 8

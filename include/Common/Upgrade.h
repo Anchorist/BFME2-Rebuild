@@ -64,7 +64,7 @@ public:
     AsciiString m_upgradeFX; //3C UpgradeFX
     // 0x40..0x63 from the field table: the audio entries are stored by INI::parseAudioEventRTS
     // and the Eva entries by the Eva-event parser 0x001DEE74; neither store type is resolved
-    // fleet-wide yet (OpenContainModuleData and ThingTemplate keep the same four bytes).
+    // yet (OpenContainModuleData and ThingTemplate keep the same four bytes).
     unsigned char m_researchSound[4]; //40 ResearchSound
     unsigned char m_researchCompleteEvaEvent[4]; //44 ResearchCompleteEvaEvent
     unsigned char m_unitSpecificSound[4]; //48 UnitSpecificSound
@@ -108,11 +108,11 @@ public:
     virtual void update() {}
     const UpgradeTemplate *findUpgradeByKey(NameKeyType) const;
     const UpgradeTemplate *findUpgrade(const AsciiString &) const;
-    const UpgradeTemplate *findUpgradeByMaskIndex(int maskIndex) const; // 0x0026EEA0: the template whose m_maskIndex (+0x38) is maskIndex (f03)
+    const UpgradeTemplate *findUpgradeByMaskIndex(int maskIndex) const; // 0x0026EEA0: the template whose m_maskIndex (+0x38) is maskIndex
     const UpgradeTemplate *findVeterancyUpgrade(VeterancyLevel) const;
     UpgradeTemplate *newUpgrade(const AsciiString &,bool);
     void linkUpgrade(UpgradeTemplate *);
-    const UpgradeTemplate *findFirstUpgradeInMask(const UpgradeMaskType *mask) const; // 0x0026F0F0 (f03: first template whose m_maskIndex bit is set in the mask)
+    const UpgradeTemplate *findFirstUpgradeInMask(const UpgradeMaskType *mask) const; // 0x0026F0F0 (first template whose m_maskIndex bit is set in the mask)
     void rva0026F93C(); // native post-load sub-upgrade resolution walk; reset26FBBC
     static void parseUpgradeDefinition(INI *);
     UpgradeTemplate *m_upgradeList; //0C

@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x18 and
 // constructor RVA 0x00457FF1; buildFieldParse RVA 0x00458268 adds VA 0x00C40B20 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 // Unresolved (byte storage up to the next member, named after the token):
 //   m_bridgeDieFX +0x10: BridgeBehaviorModuleData::parseFX 0x004580A9

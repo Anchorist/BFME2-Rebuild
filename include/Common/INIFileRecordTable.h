@@ -3,7 +3,6 @@
 // range-check an index against (m_end - m_begin) / 12 and read the 12-byte records
 // {file id +0, line +4, name index +8}; getRecordName 0x0060188C copies m_names[nameIndex]
 // (AsciiString copy 0x000365F0). The record vector sits at +0, the name vector at +0x0C.
-// Decl_queue f09 14:53 (CORRECTION of 14:44), ACCEPTED k10.
 #pragma once
 #ifndef BFME2_INIFILERECORDTABLE_H
 #define BFME2_INIFILERECORDTABLE_H

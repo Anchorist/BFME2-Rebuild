@@ -20,6 +20,10 @@ static const FieldParse s_autoFindHealingFieldParse[] =
 };
 
 // FUNCTION: BFME2 0x0049506E size=25 name=??1AutoFindHealingUpdate@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+AutoFindHealingUpdate::~AutoFindHealingUpdate()
+{
+}
+
 // FUNCTION: BFME2 0x00495087 size=6 name=?GetSnapshotName@AutoFindHealingUpdate@@MBEPBDXZ evidence=N:ledger
 const char *AutoFindHealingUpdate::GetSnapshotName() const
 {

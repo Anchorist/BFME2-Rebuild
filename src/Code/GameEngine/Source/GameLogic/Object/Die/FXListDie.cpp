@@ -12,6 +12,10 @@
 #include "GameLogic/Object.h"
 #include "GameLogic/Damage.h"
 // FUNCTION: BFME2 0x00486579 size=25 name=??1FXListDie@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+FXListDie::~FXListDie()
+{
+}
+
 // FUNCTION: BFME2 0x00486592 size=6 name=?name@Rva00486592Named@@QBEPBDXZ evidence=?:placeholder
 const char *FXListDie::GetSnapshotName() const
 {

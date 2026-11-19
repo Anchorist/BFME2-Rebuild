@@ -49,8 +49,8 @@ public:
     static void parseDynamicGameLODLevel(INI *, void *, void *, const void *); // 0x002025AC: a LOD name token to its level index
     static void parseBenchProfile(INI *); // 0x002026D4
     static void parseLODPreset(INI *); // 0x00202E23
-    static void parseStaticGameLODDefinition(INI *); // 0x00202F05 (f13)
-    static void parseAudioLODDefinition(INI *); // 0x00202F8A (f13)
+    static void parseStaticGameLODDefinition(INI *); // 0x00202F05
+    static void parseAudioLODDefinition(INI *); // 0x00202F8A
     static void parseLanguageDefinition(INI *); // 0x001EA3F4: initFromINI(TheGlobalLanguageData, GlobalLanguage::m_languageParseTable)
     static void parseMiscEvaData(INI *);
     static void parseWaterSettingDefinition(INI *);
@@ -78,7 +78,7 @@ public:
     int getPreviousLineNum() const; // 0x0002BBDE (map ?rva0002BBDE@INI@@QBEHXZ, placeholder): the line number of the file index at +0x0C
     AsciiString getPreviousFilename() const; // 0x0002BFE5 (map ?rva0002BFE5@INI@@QBE?AVAsciiString@@XZ, placeholder): the file name of the file index at +0x0C
     int scanIndexList(const char *,const char *const *);
-	void parseLine(AsciiString &line);	// 0x0002C0F5: parses one line of the file (f09)
+	void parseLine(AsciiString &line);	// 0x0002C0F5: parses one line of the file
 	const char *getNextToken(const char *seps = 0);
     File *m_file;
     AsciiString m_filename;
@@ -112,17 +112,17 @@ public:
 	UnsignedInt parseUnsignedIntMathExpression(const char *token, UnsignedInt (INI::*scan)(const char *));	// 0x0002E299
 	Real parseMathExpression(const char *token, Real (INI::*scan)(const char *));	// 0x0002E46A
 
-	static void parseByteSizedIndexList(INI *ini, void *instance, void *store, const void *userData);	// 0x0002EC6E: scanIndexList into a byte (f09)
-	static void parseUnsignedByte(INI *ini, void *instance, void *store, const void *userData);	// 0x0002EE6D (f09)
-	static void parseShort(INI *ini, void *instance, void *store, const void *userData);	// 0x0002EEB9 (f09)
-	static void parseUnsignedShort(INI *ini, void *instance, void *store, const void *userData);	// 0x0002EF09 (f09)
-	static void parseQuotedAsciiString(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F15A (f09)
-	static void parseBitString8(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F1DC (f09)
-	static void parseBitString16(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F21A (f09)
-	static void parseBitInInt32(INI *ini, void *instance, void *store, const void *userData);	// 0x0002E86C: sets or clears the mask in userData in the word at store (f09)
-	static Bool isEndOfBlock(char *bufferToCheck);	// 0x0002BDF2: the line is just "End" (f09)
-	static Bool isDeclarationOfType(AsciiString blockType, AsciiString blockName, char *bufferToCheck);	// 0x0002C2C7: the line is "<type> <name>" (f09)
-	const char *getNextExpandedTokenOrNull(const char *seps, bool *expanded);	// 0x0002E03D (map ?rva0002E03D@INI@@QAEPBDPBDPA_N@Z, placeholder): the token, run through preprocessMacro; *expanded says a macro was expanded; no throw when the line has no token (f09)
+	static void parseByteSizedIndexList(INI *ini, void *instance, void *store, const void *userData);	// 0x0002EC6E: scanIndexList into a byte
+	static void parseUnsignedByte(INI *ini, void *instance, void *store, const void *userData);	// 0x0002EE6D
+	static void parseShort(INI *ini, void *instance, void *store, const void *userData);	// 0x0002EEB9
+	static void parseUnsignedShort(INI *ini, void *instance, void *store, const void *userData);	// 0x0002EF09
+	static void parseQuotedAsciiString(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F15A
+	static void parseBitString8(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F1DC
+	static void parseBitString16(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F21A
+	static void parseBitInInt32(INI *ini, void *instance, void *store, const void *userData);	// 0x0002E86C: sets or clears the mask in userData in the word at store
+	static Bool isEndOfBlock(char *bufferToCheck);	// 0x0002BDF2: the line is just "End"
+	static Bool isDeclarationOfType(AsciiString blockType, AsciiString blockName, char *bufferToCheck);	// 0x0002C2C7: the line is "<type> <name>"
+	const char *getNextExpandedTokenOrNull(const char *seps, bool *expanded);	// 0x0002E03D (map ?rva0002E03D@INI@@QAEPBDPBDPA_N@Z, placeholder): the token, run through preprocessMacro; *expanded says a macro was expanded; no throw when the line has no token
 	static void parseBool(INI *ini, void *instance, void *store, const void *userData);
 	static void parseColorInt(INI *ini, void *instance, void *store, const void *userData);
 	static void parseByte(INI *ini, void *instance, void *store, const void *userData);
@@ -130,11 +130,11 @@ public:
 	static void parseUnsignedInt(INI *ini, void *instance, void *store, const void *userData);
 	static void parseReal(INI *ini, void *instance, void *store, const void *userData);
 	static void dup_002F02F(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F02F: a real, stored, then refused if negative (the map's placeholder name)
-	static void dup_002F082(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F082: a real, stored, refused if positive (decl_queue f09 07:00, ACCEPTED k08)
+	static void dup_002F082(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F082: a real, stored, refused if positive
 	static void dup_002F0F7(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F0F7: (Int)(real * 1000.0f)
 	static void parsePositiveNonZeroReal(INI *ini, void *instance, void *store, const void *userData);
 	static void parsePercentToReal(INI *ini, void *instance, void *store, const void *userData);
-	static void Rva004B60D5_ParsePercentage(INI *ini, void *instance, void *store, const void *userData);	// 0x004B60D5: parsePercentToReal into a Real, push_back into the vector<Real> at store (CostModifierUpgrade's Percentage) (f03)
+	static void Rva004B60D5_ParsePercentage(INI *ini, void *instance, void *store, const void *userData);	// 0x004B60D5: parsePercentToReal into a Real, push_back into the vector<Real> at store (CostModifierUpgrade's Percentage)
 	static void parseAngleReal(INI *ini, void *instance, void *store, const void *userData);
 	static void parseAngularVelocityReal(INI *ini, void *instance, void *store, const void *userData);
 	static void parseAsciiString(INI *ini, void *instance, void *store, const void *userData);
@@ -146,8 +146,8 @@ public:
 	static void parseAndTranslateLabel(INI *ini, void *instance, void *store, const void *userData);	// 0x0033987B
 	static void parseCoord3D(INI *ini, void *instance, void *store, const void *userData);
 	static void parseCoord2D(INI *ini, void *instance, void *store, const void *userData);
-	static void parseRGBColor(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F259 (dd4)
-	static void parseRGBAColorInt(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F2FF (dd4)
+	static void parseRGBColor(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F259
+	static void parseRGBAColorInt(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F2FF
 	static void parseDurationReal(INI *ini, void *instance, void *store, const void *userData);
 	static void parseDurationUnsignedInt(INI *ini, void *instance, void *store, const void *userData);
 	static void Rva00338E52_ParseEnvelope(INI *ini, void *instance, void *store, const void *userData);	// 0x00338E52: the Envelope token of W3DLaserDrawModuleData (+0x4C); placeholder name
@@ -176,16 +176,16 @@ public:
 	static void parseDamageFX(INI *ini, void *instance, void *store, const void *userData); // 0x0033962F
 	static void parseArmorTemplate(INI *ini, void *instance, void *store, const void *userData); // 0x003394FB
 	static void parseAnim2DTemplate(INI *ini, void *instance, void *store, const void *userData); // 0x00339109
-	static void parseSpecialPowerIdList(INI *ini, void *instance, void *store, const void *userData); // 0x00339B50 (f05)
-	static void parseIndexListVector(INI *ini, void *instance, void *store, const void *userData); // 0x00339E1C (f05)
+	static void parseSpecialPowerIdList(INI *ini, void *instance, void *store, const void *userData); // 0x00339B50
+	static void parseIndexListVector(INI *ini, void *instance, void *store, const void *userData); // 0x00339E1C
 	static ScienceType scanScience(const char *token); // 0x00338A8D
 	static void iniParseAnimAndDuration(INI *ini, void *instance, void *store, const void *userData); // 0x0044E6CD
 	static void iniParseAnim(INI *ini, void *instance, void *store, const void *userData); // 0x004B6481 (ModelConditionState token parser) (bfp.json parse_name ?iniParseAnimAndDuration@INI@@SAXPAV1@PAX1PBX@Z)
 protected:
-	bool prepFile(const AsciiString &filename, INILoadType loadType);	// 0x0002D2C1 (f09)
-	void readLine();	// 0x0002D669 (f09)
-	void unPrepFile();	// 0x0002BF4A (f09)
-	static Bool isValidINIFilename(const char *filename);	// 0x0002BB7F (map ?isValidINIFilename@INI@@KA_NPBD@Z: protected static) (f09)
+	bool prepFile(const AsciiString &filename, INILoadType loadType);	// 0x0002D2C1
+	void readLine();	// 0x0002D669
+	void unPrepFile();	// 0x0002BF4A
+	static Bool isValidINIFilename(const char *filename);	// 0x0002BB7F (map ?isValidINIFilename@INI@@KA_NPBD@Z: protected static)
 };
 
 typedef char INISizeCheck[sizeof(INI)==0x87C ? 1 : -1];

@@ -66,7 +66,7 @@ public:
 	int compareNoCase(const CharT *s) const throw();		// char 0x00037980 (ScriptConditions::evaluateGameModeActive 0x003E92B2); throw():
 														// OptionPreferences::getFirewallNeedToRefresh 0x002E4928 has no EH frame while a copy
 														// is live across it, and 0x00059646 calls it twice on a live copy with no state store
-	int compareNoCase(const StringBase<CharT> &s) const throw();	// char 0x00006A00 (throw(): Shell::findScreenByFilename 0x0035C6B4 has no EH frame, h09) (ControlBarSchemeManager::findControlBarScheme calls it)
+	int compareNoCase(const StringBase<CharT> &s) const throw();	// char 0x00006A00 (throw(): Shell::findScreenByFilename 0x0035C6B4 has no EH frame) (ControlBarSchemeManager::findControlBarScheme calls it)
 	void toLower();										// char 0x00036A70 (findControlBarScheme, newControlBarScheme)
 
 	// The rest of the template's out-of-line surface: every StringBase<D>/<G>
@@ -100,7 +100,7 @@ public:
 	bool endsWithNoCase(const StringBase<CharT> &s) const;	// char 0x00036110, wide 0x000363D0
 	const CharT *find(CharT c) const;					// char 0x0002C459, wide 0x00035AB0
 	const CharT *reverseFind(CharT c) const;			// char 0x00035930, wide 0x00035AF0
-	// Inline (Zero Hour): NetPacket 0x005913CB/0x005914D4 test m_data at each character (h11).
+	// Inline (Zero Hour): NetPacket 0x005913CB/0x005914D4 test m_data at each character.
 	// The out-of-line copies char 0x00035720, wide 0x00035760 remain for other callers.
 	CharT getCharAt(int index) const { return m_data ? peek()[index] : 0; }
 	bool isNone() const;								// char 0x00037DE0, wide 0x00038040

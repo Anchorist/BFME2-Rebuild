@@ -16,6 +16,7 @@ class BoneFXDamage : public DamageModule
 {
 public:
 	BoneFXDamage(Thing *thing, const ModuleData *moduleData);
+	virtual ~BoneFXDamage();
 
 	virtual NameKeyType getModuleNameKey() const;	// primary slot 4, 0x004B9757
 	// DamageModuleInterface slots 0 and 1 use the native ret-4 fold 0x0047A69C.
@@ -34,7 +35,7 @@ protected:
 		DamageModule::xfer(xfer);
 	}
 	virtual void onObjectCreated();
-	virtual void loadPostProcess() { DamageModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to DamageModule's (h05)
+	virtual void loadPostProcess() { DamageModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to DamageModule's
 };
 
 #endif /* BFME2_BONEFXDAMAGE_H */

@@ -541,6 +541,8 @@ public:
 	void doCommandButtonAtPosition(const CommandButton *button, const Coord3D *pos, Int arg, Int flag);	// 0x00297149
 	void rva00297000(const CommandButton *button, Object *obj, Int arg, Int flag);	// 0x00297000
 	void clearAndSetModelConditionFlagsForHorde(const int *clear, const int *set);
+	void setWeaponSetFlagForHorde(WeaponSetType flag);	// 0x00293DAC: sets the flag on the horde leader and on every member of its horde
+	void clearWeaponSetFlagForHorde(WeaponSetType flag);	// 0x00293E08: clears it the same way
 	void rva0028CFB2(const int *clear, const int *set);
 	void rva0028AE6D();
 	void rva0028EBDA(Bool flag);							// 0x0028EBDA

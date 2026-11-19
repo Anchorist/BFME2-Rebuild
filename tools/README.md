@@ -27,12 +27,12 @@ are operated by maintainers.
 
 ## Optional local check inputs
 
-A local judge uses a contributor's own Battle for Middle-earth II 1.06
-`game.dat` matching the image hash recorded in `config/symbols.json`. It
-also needs the x86 Microsoft Visual C++ 7.1 compiler from Visual Studio
+A local judge compares against `baseline/game.dat`, the version 1.06
+program whose image hash `config/symbols.json` records. It needs no other
+game file. It does need the x86 Microsoft Visual C++ 7.1 compiler from Visual Studio
 .NET 2003, a compatible Wine setup, Python, the corresponding STLport and
 its overlays, and any DirectX SDK or shim headers required by the unit.
-Never include your game binary, compiler or raw checker artifacts in a
+Never include a compiler, another binary or raw checker artifacts in a
 contribution.
 
 The ordinary compilation profile uses `-nologo -c -O2 -GR- -EHsc- -O1
@@ -84,7 +84,7 @@ Use revision `39cdd2ca5c409c01b9c08d5dae7b3835c59a8b25` for the configuration me
 parts are `tools/`, `vendor/stlport*`, `vendor/dxsdk-aug2005/` where used,
 and the corresponding `reference/shims/` and compiler include trees. A
 sparse checkout of the support tree can keep its runtime baselines out of
-your checkout. Set your own path to the reference game binary explicitly.
+your checkout. Set the path to the reference program explicitly; it is `baseline/game.dat` in the checkout.
 
 Build the checked-in LLVM demangler source and point the checker to the
 result. The comparison used LLVM 18 from the demangler's shared-library
@@ -95,7 +95,7 @@ the filesystem root, or initialize one at the configured path before judging.
 ```sh
 export BFME_JUDGE_RUNNER=/path/to/the/support-checkout
 export BFME_JUDGE_REPO="$(git rev-parse --absolute-git-dir)"
-export BFME_JUDGE_RETAIL=/path/to/your/game.dat
+export BFME_JUDGE_RETAIL="$PWD/baseline/game.dat"
 export BFME_JUDGE_STATE="$HOME/.cache/bfme2-judge"
 export BFME_JUDGE_WINEPREFIX="$BFME_JUDGE_STATE/wine"
 export VC71_ROOT="/path/to/Microsoft Visual Studio .NET 2003"

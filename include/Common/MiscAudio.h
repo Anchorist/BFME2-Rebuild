@@ -3,8 +3,8 @@
 // MiscAudio: the INI MiscAudio block, 61 audio events of four bytes each (SIZE 0xF4, the extent
 // of its constructor 0x001ED70C). Offsets and order come from the field table (VA 0x00BDF2D0);
 // member names are Zero Hour's where the INI token is the same, the token otherwise. The
-// audio-event store type INI::parseAudioEventRTS writes is not resolved fleet-wide, so each
-// field is a four-byte owning handle (OpaqueRefElement4: AudioEventRTS's constructor 0x002DA461 takes it; f10).
+// audio-event store type INI::parseAudioEventRTS writes is not resolved yet, so each
+// field is a four-byte owning handle (OpaqueRefElement4: AudioEventRTS's constructor 0x002DA461 takes it).
 #include <stddef.h>
 #include "Common/OpaqueRefElement4.h"
 struct FieldParse;

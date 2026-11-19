@@ -2422,6 +2422,21 @@ void Object::clearScriptStatus(ObjectScriptStatusBit bit)
 // FUNCTION: BFME2 0x00293C1B size=92 name=?setModelConditionFlagsForHorde@Object@@QAEXPBH@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x00293C77 size=98 name=?clearAndSetModelConditionFlagsForHorde@Object@@QAEXPBH0@Z evidence=N:ledger tier=A
+void Object::clearAndSetModelConditionFlagsForHorde(const int *clear, const int *set)
+{
+	Object *leader = rva002931F5(false);
+	if (leader)
+	{
+		HordeContainInterface *horde = leader->rva0028C197();
+		if (horde)
+		{
+			ContainmentListView members = horde->hordeSlot66();
+			for (ContainmentList::const_iterator it = members.objects().begin(); it != members.objects().end(); ++it)
+				(*it)->rva0028CFB2(clear, set);
+			leader->rva0028CFB2(clear, set);
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x00293CD9 size=98 name=?replaceModelConditionFlagsForHorde@Object@@QAEXPBH_N@Z evidence=N:ledger tier=A
 

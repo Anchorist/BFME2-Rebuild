@@ -12,6 +12,18 @@ rows say what the check found in `body_check`:
   owner-file-missing  the owning file named by the report is no longer in the
                       checkout; find the current owner first
 
+The file view (files.tsv) lists every source file that still has owned
+functions to finish: how many it owns, how many are not yet credited MATCH
+(from the dated verdict input), their bytes, how many link referrers wait on
+them, and whether the file's class already has a real header. Finishing a
+file is the preferred unit of work.
+
+The stand-in list (stand_in_types.tsv) names declarations in ordinary
+headers (not Draft, not upstream libraries) whose return or parameter type is
+`void *`. Many are a known type erased at a module boundary; some are
+legitimate (buffers, allocators, callbacks with user data). Check the callers
+before replacing one.
+
 Draft headers are split in two: the ones some file includes (to retire by
 promoting them) and the unused ones (layout leads for whoever writes that
 class). An unused Draft whose class or file name already exists outside
@@ -21,6 +33,7 @@ import argparse
 import bisect
 from collections import Counter, defaultdict, namedtuple
 import csv
+import json
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 import posixpath
@@ -283,6 +296,92 @@ def draft_headers(args, index, files, meta):
           f" left_out_duplicates={dead}")
 
 
+def per_file(args, index, files):
+    ledger = json.loads((args.root / "config/map.json").read_text(encoding="utf-8"))
+    objects = {o["object_id"]: o for o in ledger["objects"]}
+    present = set(files)
+    verdicts, revision = {}, "none"
+    if args.verdicts:
+        state = json.loads(args.verdicts.read_text(encoding="utf-8"))
+        verdicts, revision = state.get("tus", {}), state.get("sha", "unknown")
+    waiting = Counter()
+    if args.ranked:
+        for row in snapshot(args.ranked, LINK_META)[1]:
+            waiting[int(row["rva"], 16)] += int(row["referrers"] or 0)
+    owned, todo, todo_bytes, todo_wait = Counter(), Counter(), Counter(), Counter()
+    for row in ledger["rows"]:
+        if row.get("role") != "owned":
+            continue
+        tu = (objects.get(row.get("object")) or {}).get("tu")
+        if tu not in present:
+            continue
+        rva = int(row["rva"], 16)
+        owned[tu] += 1
+        verdict = verdicts.get(tu, {}).get("rows", {}).get(hex(rva), ["MISSING"])[0]
+        if verdict != "MATCH":
+            todo[tu] += 1
+            todo_bytes[tu] += int(row.get("size") or 0)
+            todo_wait[tu] += waiting.get(rva, 0)
+    real = defaultdict(bool)
+    draft = defaultdict(bool)
+    for file in files:
+        if not file.lower().endswith(HDR_EXT):
+            continue
+        names = {PurePosixPath(file).stem.lower(), *(c.lower() for c in index.classes.get(file, []))}
+        for name in names:
+            if file.startswith("include/Draft/"):
+                draft[name] = True
+            else:
+                real[name] = True
+    rows = []
+    for tu, count in todo.items():
+        stem = PurePosixPath(tu).stem.lower()
+        if tu.startswith("src/unk/"):
+            header = "address-named"
+        else:
+            header = "real" if real[stem] else "draft" if draft[stem] else "none"
+        rows.append((tu, owned[tu], count, todo_bytes[tu], todo_wait[tu], header))
+    rows.sort(key=lambda r: (r[5] == "address-named", r[2], -r[4], r[0]))
+    finished = sum(1 for tu in owned if not todo[tu])
+    try:
+        date = subprocess.check_output(["git", "-C", str(args.root), "show", "-s", "--format=%cI", revision],
+                                       stderr=subprocess.DEVNULL).decode().strip()
+        date = datetime.fromisoformat(date).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    except (subprocess.CalledProcessError, ValueError):
+        date = "unknown"
+    write(args.output / "files.tsv", (date, revision[:10]),
+          ["file", "owned_functions", "not_yet_matched", "bytes_not_yet_matched", "link_referrers_waiting",
+           "class_header"], rows, f" finished_files={finished}")
+
+
+SKIP = re.compile(r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\\n])*"|\'(?:\\.|[^\'\\\n])*\'|^[ \t]*#[^\n]*(?:\\\n[^\n]*)*', re.M)
+DECL = re.compile(r'(?<![\w.])(?P<type>[A-Za-z_~][\w:\s*&<>,]*?)\s*(?<=[\s*&])(?P<name>[A-Za-z_~]\w*)\s*\((?P<params>[^;{}]*?)\)\s*(?:const\s*)?(?:=\s*0\s*)?(?=[;{])')
+VOIDP = re.compile(r'\bvoid\s*(?:(?:const|volatile)\s*)?\*')
+NOT_A_STAND_IN = re.compile(r'alloc|free|copy|mem|buffer|data|raw|lock|operator|new|delete|read|write|callback|user|param|handle|ptr|pointer|address', re.I)
+BLOCKED = {'if', 'else', 'for', 'while', 'return', 'switch', 'case', 'catch', 'sizeof', 'typedef', 'using', 'delete', 'new'}
+
+
+def stand_ins(args, files, meta):
+    rows = []
+    for file in files:
+        if not file.startswith("include/") or file.startswith(("include/Draft/", "include/upstream/")):
+            continue
+        if not file.lower().endswith(HDR_EXT):
+            continue
+        raw = (args.root / file).read_bytes().decode("latin-1")
+        text = SKIP.sub(lambda m: re.sub(r"[^\n]", " ", m.group(0)), raw)
+        for m in DECL.finditer(text):
+            name = m.group("name")
+            if name in BLOCKED or NOT_A_STAND_IN.search(name):
+                continue
+            where = [w for w, part in (("return", m.group("type")), ("parameter", m.group("params"))) if VOIDP.search(part)]
+            if not where:
+                continue
+            rows.append((file, text.count("\n", 0, m.start("name")) + 1, name, "+".join(where)))
+    rows.sort()
+    write(args.output / "stand_in_types.tsv", meta, ["header", "line", "function", "void_pointer_in"], rows)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1], help="checked-out source and reference tree")
@@ -290,6 +389,7 @@ def main():
     parser.add_argument("--output", type=Path)
     parser.add_argument("--unwritten", type=Path, help="dated correspondence report, including the header row")
     parser.add_argument("--ranked", type=Path, help="dated standalone link report")
+    parser.add_argument("--verdicts", type=Path, help="dated checker state (per-file row verdicts)")
     args = parser.parse_args()
     args.output = args.output or args.root / "worklist"
     args.output.mkdir(parents=True, exist_ok=True)
@@ -306,10 +406,13 @@ def main():
     if old.exists():
         old.unlink()
     draft_headers(args, index, files, (date, revision))
+    stand_ins(args, files, (date, revision))
     if args.unwritten:
         unwritten(args, index, checked)
     if args.ranked:
         link_ranked(args, index, checked)
+    if args.verdicts:
+        per_file(args, index, files)
 
 if __name__ == "__main__":
     main()

@@ -9,7 +9,7 @@
 // FUNCTION: BFME2 0x006C83A0 size=16 name=?FrameEnd@ProfileFuncLevelTracer@@SAXHH@Z evidence=N:ledger
 
 // cl: /O2 /MD /EHsc
-#include "Draft/ProfileFuncLevelTracer.h"
+#include "profile/ProfileFuncLevelTracer.h"
 
 // The Platform SDK is not on this unit's include path; the import identity is
 // the one the retail body calls through the slot at 0x00BBA1FC.

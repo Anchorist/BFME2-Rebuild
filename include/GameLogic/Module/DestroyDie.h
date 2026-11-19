@@ -30,6 +30,7 @@ class DestroyDie : public DieModule
 {
 public:
 	DestroyDie(Thing *thing, const ModuleData *moduleData);
+	virtual ~DestroyDie();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual void onDie(const DamageInfo *damageInfo);

@@ -20,7 +20,7 @@ public:
 	~Coord2D() {}
 
 	float Normalize();	// 0x000059D3 (returns the length; no zero test)
-	void normalize();	// 0x0000378A (AISkirmishPlayer::computeSuperweaponTarget 0x004EFDDC; h07)
+	void normalize();	// 0x0000378A (AISkirmishPlayer::computeSuperweaponTarget 0x004EFDDC)
 	float length() const;	// 0x00003755 (?length@Coord2D@@QBEMXZ, out of line: Coord2D::toAngle 0x00005923 calls it)
 	float toAngle() const;	// 0x00005923 (StructureToppleUpdate::beginStructureTopple 0x004A5C8C, applyCrushingDamage 0x004A5EAC)
 

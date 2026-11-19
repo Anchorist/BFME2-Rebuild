@@ -4,7 +4,7 @@
 #include "Common/PixelRegion.h"
 // Retail appends at 0x0030F949..0x0030FA44 prove payload at +8,
 // type at +0x18 and the tags below. allocArg proves total size 0x1C.
-// location is Coord3D's three-float base (k02): Coord3D has user-declared constructors,
+// location is Coord3D's three-float base: Coord3D has user-declared constructors,
 // which a union member may not have. Readers build a Coord3D from it through the inline
 // ??0Coord3D@@QAE@ABUCoord3DBase@@@Z (the old decomp's GameLogicDispatch and CommandXlat
 // bodies copy it member by member from &arg->location).

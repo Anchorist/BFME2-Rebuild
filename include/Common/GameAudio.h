@@ -4,7 +4,7 @@
 // Primary slots 0..13 belong to SubsystemInterface; 14..104 are pure.
 // Secondary table is Snapshot's destructor/loadPostProcess/name/xfer order.
 // Sources: old canonical GameAudio.h, MilesAudioManager.cpp and its small-slot
-// units; h01 synthesis of all 59 AudioManager views. Slot names below are
+// units; synthesis of all 59 AudioManager views. Slot names below are
 // separated from target layout facts. Unknown slots have no recovered ABI;
 // do not call them until their declaration is reconciled with target evidence.
 // 89 of91 own slots named;2 remain unresolved. Role-inferred spellings are

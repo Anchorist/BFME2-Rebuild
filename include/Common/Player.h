@@ -159,25 +159,25 @@ public:
 	virtual Bool usesRankLevelLimitOverride() const;	// 0x002A9F53
 
 	Int iterateObjects(Int (*func)(Object *obj, void *userData), void *userData) const;	// 0x002AB08B
-	UnsignedByte rva002AA245() const;	// 0x002AA245: the template's PlayableSide (CrateCollide calls it); UnsignedByte as the retail movzx shows (f04)
+	UnsignedByte rva002AA245() const;	// 0x002AA245: the template's PlayableSide (CrateCollide calls it); UnsignedByte as the retail movzx shows
 	AsciiString getBaseSide() const;	// 0x0004F833
 	AcademyStats * getAcademyStats();	// 0x000B6464
 	bool isPlayerDead() const;	// 0x0028A7D8
 	void setPlanningModeState(Int state);	// 0x002AA257 (caller 0x00377613; row_attributions: Player)
-	Bool isPlayerActive();	// 0x002AA231 Zero Hour's body: !m_observer && !m_isPlayerDead (Zero Hour's name, map ?isPlayerActive@Player@@QAE_NXZ; RebuildHoleExposeDie::onDie 0x004867FE; decl_queue f14 05:54, ACCEPTED k08)
+	Bool isPlayerActive();	// 0x002AA231 Zero Hour's body: !m_observer && !m_isPlayerDead (Zero Hour's name, map ?isPlayerActive@Player@@QAE_NXZ; RebuildHoleExposeDie::onDie 0x004867FE)
 	void accumulateRTSBattleStatsIntoLivingWorldScoreKeeper();	// 0x002A9994
-	void setBuildList(BuildListInfo *buildList);	// 0x002A99D2 (f13: PlayerList::newGame 0x002A8008)
+	void setBuildList(BuildListInfo *buildList);	// 0x002A99D2 (PlayerList::newGame 0x002A8008)
 	void rva002A99FA();	// 0x002A99FA
 	void setPlayerType(PlayerType, bool);	// 0x002A9A18
-	Int getPlayerDifficulty() const;	// 0x002A9BF2 (Team::setTeamTargetObject 0x0039D84A; f13)
-	Bool removeTeamRelationship(const Team *that);	// 0x002AD19E (Zero Hour's name; PlayerList 0x002A7AFE; f13)
-	void setTeamRelationship(const Team *that, Relationship r);	// 0x002ADFC7 (Zero Hour's name; ScriptActions::doPlayerSetOverrideRelationToTeam 0x003C4350; f07)
-	void guardSupplyCenter(Team *team, Int minSupplies);	// 0x002A9CDE: forwards to the AIPlayer at +0x2DC (ScriptActions 0x003C1F6C; f07)
-	Bool okToPlayRadarEdgeSound();	// 0x002AA04C (Zero Hour's name; addRadar 0x002AA91F, removeRadar 0x002AA9C2, disableRadar 0x002AAA65, enableRadar 0x002AAAF9; f08)
+	Int getPlayerDifficulty() const;	// 0x002A9BF2 (Team::setTeamTargetObject 0x0039D84A)
+	Bool removeTeamRelationship(const Team *that);	// 0x002AD19E (Zero Hour's name; PlayerList 0x002A7AFE)
+	void setTeamRelationship(const Team *that, Relationship r);	// 0x002ADFC7 (Zero Hour's name; ScriptActions::doPlayerSetOverrideRelationToTeam 0x003C4350)
+	void guardSupplyCenter(Team *team, Int minSupplies);	// 0x002A9CDE: forwards to the AIPlayer at +0x2DC (ScriptActions 0x003C1F6C)
+	Bool okToPlayRadarEdgeSound();	// 0x002AA04C (Zero Hour's name; addRadar 0x002AA91F, removeRadar 0x002AA9C2, disableRadar 0x002AAA65, enableRadar 0x002AAAF9)
 	bool isSkirmishAIPlayer();	// 0x002A9B7B
 	Energy *getEnergy() { return &m_energy; }			// Zero Hour's; inline (ScriptConditions 0x003E417D: lea ecx,[player+0x1BC])
 	const Energy *getEnergy() const { return &m_energy; }
-	// Zero Hour's AI forwarders (each tests the AIPlayer at +0x2DC first; k02, rule of 18:30):
+	// Zero Hour's AI forwarders (each tests the AIPlayer at +0x2DC first):
 	Player *getCurrentEnemy();	// 0x002A9BBD (AIPlayer slot 12, getAiEnemy)
 	void preTeamDestroy(const Team *team);	// 0x002A9CF0 (AIPlayer::aiPreTeamDestroy 0x004F0819)
 	void buildUpgrade(const AsciiString &upgrade);	// 0x002A9DEC (AIPlayer::buildUpgrade 0x004F2C14)
@@ -249,12 +249,12 @@ public:
 	int rva002ABD1D(int, int);	// 0x002ABD1D
 	void removeTeamFromList(TeamPrototype *);	// 0x002ABD48
 	void setObjectsEnabled(AsciiString const &, bool);	// 0x002ABD93
-	void sellEverythingUnderTheSun();	// 0x002AB5C7 (f04: ScriptActions::doPlayerSellEverything 0x003BB2DF)
-	void killPlayer();	// 0x002AB44A (f04: ScriptActions::doPlayerKill 0x003BB518)
-	void setPlayerRelationship(const Player *that, Relationship relationship);	// 0x002ADF9C (f13: PlayerList::newGame 0x002A8008)
+	void sellEverythingUnderTheSun();	// 0x002AB5C7 (ScriptActions::doPlayerSellEverything 0x003BB2DF)
+	void killPlayer();	// 0x002AB44A (ScriptActions::doPlayerKill 0x003BB518)
+	void setPlayerRelationship(const Player *that, Relationship relationship);	// 0x002ADF9C (PlayerList::newGame 0x002A8008)
 	bool allowedToBuild(ThingTemplate const *) const;	// 0x002ABE24
-	void allowToBuild(const ThingTemplate *tmpl);	// 0x002ABFA0 (s05): takes the template ID off m_forbiddenTemplateIDs
-	void forbidToBuild(const ThingTemplate *tmpl);	// 0x002ACEDF (s05): appends the template ID to m_forbiddenTemplateIDs
+	void allowToBuild(const ThingTemplate *tmpl);	// 0x002ABFA0: takes the template ID off m_forbiddenTemplateIDs
+	void forbidToBuild(const ThingTemplate *tmpl);	// 0x002ACEDF: appends the template ID to m_forbiddenTemplateIDs
 	bool isCapableOfPurchasingScience(ScienceType) const;	// 0x002ABE86
 	ScienceAvailabilityType getScienceAvailabilityTypeFromString(AsciiString const &);	// 0x002ABEC9
 	bool canBuild(ThingTemplate const *) const;	// 0x002ABEF1
@@ -273,7 +273,7 @@ public:
 	void setCurrentlySelectedAIGroup(AIGroup *);	// 0x002ACC53
 	void addAIGroupToCurrentSelection(AIGroup *);	// 0x002ACCA3
 	void rva002ACD09(void *, int);	// 0x002ACD09
-	// f03 (CostModifierUpgrade 0x004B5B4C, 0x004B5A65, 0x004B5AC0):
+	// (CostModifierUpgrade 0x004B5B4C, 0x004B5A65, 0x004B5AC0):
 	void removeProductionCostModifierByID(void *data, int objectID);	// 0x002ADC03
 	void addProductionCostModifierByTemplate(void *data, const AsciiString &templateName);	// 0x002B212A
 	void removeProductionCostModifierByTemplate(void *data, const AsciiString *templateName);	// 0x002B0E55
@@ -327,12 +327,12 @@ public:
 	Int getPlayerNightColor() const { return m_playerNightColor; }
 	NameKeyType getPlayerNameKey() const { return m_playerNameKey; }
 	Int getPlayerIndex() const { return m_playerIndex; }
-	UnsignedInt getAttackedFrame() const { return m_attackedFrame; }	// inline (AIPlayer::isSupplySourceAttacked 0x004F1138 reads +0x354; decl_queue h07 14:42, ACCEPTED k10)
+	UnsignedInt getAttackedFrame() const { return m_attackedFrame; }	// inline (AIPlayer::isSupplySourceAttacked 0x004F1138 reads +0x354)
 	Int getNumBattlePlansActive() const { return m_bombardBattlePlans + m_holdTheLineBattlePlans + m_searchAndDestroyBattlePlans; }	// Zero Hour's
 	UnsignedInt getPlayerMask() const { return 1 << m_playerIndex; }	// Zero Hour's (processSelectTeamGameMessage 0x002ACAFB: 1 << +0x54)
-	Int getLightPoints() const;	// 0x002A9ED2 (ScriptConditions evaluatePlayerCompareLightPoints 0x003E4F79; f07)
-	UnsignedByte getAttackedByFlag(Int playerIndex) const;	// 0x002AA201 (ScriptConditions 0x003E4BFA; f07)
-	void setAttackedByFlag(Int playerIndex);	// 0x002AA1E4 (f07)
+	Int getLightPoints() const;	// 0x002A9ED2 (ScriptConditions evaluatePlayerCompareLightPoints 0x003E4F79)
+	UnsignedByte getAttackedByFlag(Int playerIndex) const;	// 0x002AA201 (ScriptConditions 0x003E4BFA)
+	void setAttackedByFlag(Int playerIndex);	// 0x002AA1E4
 	const AsciiString &getSide() const { return m_side; }
 	Team *getDefaultTeam() const { return m_defaultTeam; }
 	Bool isPlayerObserver() const;	// 0x002AA223: reads +0x33A (an ICF fold: the map spells the shared body ParticleSystem::isSaveable)
@@ -388,9 +388,9 @@ public:
 	_STL::vector<ScienceType> m_sciencesHidden;	// +0x308
 	Real m_scavengerBountyPercent;	// +0x314 ScavengerSpecialPower sets this percentage and clears it while the power is paused.
 	Int m_unk0x318;						// +0x318
-	Int m_lightPoints;					// +0x31C getLightPoints 0x002A9ED2 (f07)
+	Int m_lightPoints;					// +0x31C getLightPoints 0x002A9ED2
 	unsigned char m_unk0x320[0xC];		// +0x320 ctor 0x002AC340, virtual dtor 0x002AC366
-	// Pooled, like ObjectIDList: _M_create_node 0x002AC04E takes its cell from the TeamPrototype * pool (x06).
+	// Pooled, like ObjectIDList: _M_create_node 0x002AC04E takes its cell from the TeamPrototype * pool.
 	PlayerTeamList m_playerTeamPrototypes;	// +0x32C (the dtor clears it)
 	PlayerRelationMap *m_playerRelations;	// +0x330 getRelationship(const Player *) 0x002AC3E0 looks players up here; the dtor deletes it
 	TeamRelationMap *m_teamRelations;	// +0x334 the dtor deletes it

@@ -1,5 +1,5 @@
 // XferSave.h: the save-game writer (an Xfer over a File). Vtable VA 0x00C7B010 (RVA 0x0087B010), constructor
-// 0x0060D1F7, destructor 0x0060D0B3. Target facts (retail game.dat; f04, tables 0x87B010 and 0x87AF18):
+// 0x0060D1F7, destructor 0x0060D0B3. Target facts (retail game.dat, tables 0x87B010 and 0x87AF18):
 //  - +0x04 File *m_file, called through its vtable slot 4 (+0x10, write) and slot 5 (+0x14, seek);
 //    +0x08 Bool (Open's third argument: the block names go through a string table);
 //    +0x0C vector<Int> (the file position pushed by BeginBlock and popped by EndBlock);

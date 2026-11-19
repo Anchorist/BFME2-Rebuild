@@ -1,5 +1,5 @@
 // AODCrushCollide.h: the AODCrushCollide module. SIZE 0x30 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004BC00D calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004BC00D calls UpdateModule first; it stores the
 // tables 0x00C40818 at +0x20, 0x00C5A31C at +0x0, 0x00C5A260 at +0xC, 0x00C5A254 at +0x10, 0x00C5A23C at +0x20. Members are what xfer (0x004BBF03) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -59,7 +59,7 @@ public:
 	ObjectID m_unk0x28;                            // +0x28; xfer ObjectID
 	Bool m_unk0x2C;                                // +0x2C; xfer Bool
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 public:
 	virtual Bool wouldLikeToCollideWith(const Object *other) const { return false; }	// CollideModuleInterface slot 1: retail 0x005CB9FF, `xor al,al; ret 4` (ICF-folded)
 	virtual Bool isHijackedVehicleCrateCollide() const { return false; }	// slot 2: 0x0047A699 (ICF-folded `xor al,al; ret`)

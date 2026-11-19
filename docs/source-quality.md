@@ -109,5 +109,5 @@ address `0x0087C440` and `.rdata` location in the version 1.06 reference
 build. The table's role and extent were checked in the 2026-11-18 inventory.
 
 Include only the data required by the typed definition and check it with
-its users. Keep the executable, byte dumps of instructions and game assets
-out of the repository.
+its users. Apart from `baseline/game.dat`, keep executables, byte dumps of
+instructions and game assets out of the repository.

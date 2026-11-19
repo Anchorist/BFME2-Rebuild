@@ -6,7 +6,7 @@
 // entries reach 0x63C. Entries whose parser has no scalar type keep their INI
 // token and their extent to the next entry. Eva-event entries (Rva001DEE74Parse
 // stores the iniScanEvaEventID result, 4 bytes) and index-list bytes
-// (dup_002EC6E stores one byte) are typed from h05's parse-function catalogue. m_templateID (0x5D8) is not in the
+// (dup_002EC6E stores one byte) are typed from the parse functions that fill them. m_templateID (0x5D8) is not in the
 // table: OnActivation 0x004DCC84 keys its per-template map with it. The class
 // size is not yet proven beyond 0x640.
 #pragma once
@@ -57,7 +57,7 @@ class Image;
 class ThingTemplate : public Overridable
 {
 public:
-	ThingTemplate();	// 0x0033E1B8 (decl_queue f01 07:20)
+	ThingTemplate();	// 0x0033E1B8
 	void copyFrom(const ThingTemplate *other);	// 0x0033EBEB
 	void resolveNames();	// 0x0033C2C2
 	unsigned short getTemplateID() const { return m_templateID; }
@@ -87,7 +87,7 @@ public:
 	// 0x0033A68A: the last override of this template, or the template itself (through the
 	// const friend_getFinalOverride 0x00288609; three ThingFactory-side callers, e.g. 0x00244D56).
 	const ThingTemplate *getFinalOverride() const;
-	Int calcCostToBuild(const Player *player, Int unused, Int base) const;	// 0x0033A69A (decl_queue f04 04:10, ACCEPTED k06: map ?rva0033A69A, Zero Hour role name)
+	Int calcCostToBuild(const Player *player, Int unused, Int base) const;	// 0x0033A69A
 	Int calcTimeToBuild(const Player *player, Int unused, Int base) const;	// 0x0033AA1F
 	// Zero Hour's: the first prerequisite's existing build facility (ProductionPrerequisite 0x004F4C85).
 	Int getPrereqCount() const { return m_prereqInfo.size(); }

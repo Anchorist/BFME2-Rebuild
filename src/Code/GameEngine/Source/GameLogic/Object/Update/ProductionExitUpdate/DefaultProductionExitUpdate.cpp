@@ -7,6 +7,10 @@
 #include "Common/Xfer.h"
 #include "Common/NameKeyGenerator.h"
 // FUNCTION: BFME2 0x00487F3A size=32 name=??1DefaultProductionExitUpdate@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+DefaultProductionExitUpdate::~DefaultProductionExitUpdate()
+{
+}
+
 // FUNCTION: BFME2 0x00487F5A size=6 name=?name@Rva00487F5ANamed@@QBEPBDXZ evidence=?:placeholder
 const char *DefaultProductionExitUpdate::GetSnapshotName() const
 {

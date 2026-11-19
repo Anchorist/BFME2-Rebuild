@@ -19,15 +19,15 @@ compiler, to the original machine code.
 
 ## The work
 
-1. Write a missing function: `worklist/unwritten_with_zero_hour_counterpart.tsv`, `worklist/link_ranked.tsv`.
-2. Replace a Draft header that is in use with a real one: `worklist/draft_headers.tsv`.
+1. Finish a file (`worklist/files.tsv`) or write a missing function (`worklist/unwritten_with_zero_hour_counterpart.tsv`).
+2. Replace a Draft header that is in use with a real one: `worklist/draft_headers_in_use.tsv`.
 3. Identify an address-named file: show which original source file `src/unk/O<addr>.cpp` is.
 4. Supply evidence for a name, a type, a class layout or a virtual-table order: open issues.
 5. Record a dead end in `docs/hard_rows.md`.
 
 ## One item, start to finish
 
-1. Pick one unclaimed item. Claim it: open a draft pull request with a line `Claim: 0x00ABCDEF` per address.
+1. Pick one unclaimed file or Draft. Claim it: a draft pull request with `Claim: src/path/File.cpp` (or an address).
 2. Read the function's bytes in `baseline/game.dat` at its address. Read the Zero Hour counterpart in `reference/`.
    Where they disagree, the bytes are right.
 3. Write it in the file the ledger names, against the shared headers.

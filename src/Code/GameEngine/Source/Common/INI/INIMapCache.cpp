@@ -1,7 +1,7 @@
 // cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS
 // stlport46
 #include "Common/INI.h"
-#include "Draft/MapMetaDataReader.h"
+#include "GameClient/MapMetaDataReader.h"
 #include <stdlib.h>
 #include <algorithm>
 #include <iterator>

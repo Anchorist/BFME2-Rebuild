@@ -42,11 +42,11 @@ public:
 	Real getViewObjectRange() const { return getFO()->m_viewObjectRange; }	// +0x50 of the final override (CommandButtonHuntUpdate::scanClosestTarget 0x00495489 reads it through the out-of-line getter)
 	Int getLightPointCost() const;									// 0x004210EF
 	Int getEvaEventToPlayOnSuccess() const;							// 0x0044EB4B
-	const UnsignedByte *getInitiateSound() const;						// 0x004932EF (+0x34 of the final override; decl_queue f11 13:58, ACCEPTED k10)
+	const UnsignedByte *getInitiateSound() const;						// 0x004932EF (+0x34 of the final override)
 	const UnsignedByte *getInitiateAtLocationSound() const;			// 0x004932F8 (+0x38 of the final override)
 	Real getRadius() const;											// 0x0029B6E2 (+0x54 of the final override)
 	Int getViewObjectDuration() const;								// 0x0049330A (+0x4C of the final override)
-	AsciiString getPalantirMovie() const;							// 0x00493313 (+0x5C of the final override, copied out; decl_queue f11 14:03, ACCEPTED k10)
+	AsciiString getPalantirMovie() const;							// 0x00493313 (+0x5C of the final override, copied out)
 
 	AsciiString m_name;												// 0x10, SpecialPowerModule::getPowerName 0x004934B8 copies it
 	UnsignedInt m_id;											// 0x14

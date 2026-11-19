@@ -1,9 +1,9 @@
-// Promoted from Draft by f10 (2026-11-17): constructor 0x00497ED0, destructor 0x004978A3 and xfer 0x00498517 are written against it.
+// Promoted from Draft: constructor 0x00497ED0, destructor 0x004978A3 and xfer 0x00498517 are written against it.
 // +0x40 is a BattlePlanBonuses (allocated in the constructor, never freed by the destructor); +0x44..+0x84 sixteen AsciiStrings
 // (the constructor runs the eh vector constructor over them, the destructor the vector destructor); +0x84 an AudioHandle the
 // destructor removes (TheAudio slot 0x6C) and xfer transfers (slot 0x160); +0x88 the vision object the update creates.
 // BattlePlanUpdate.h: the BattlePlanUpdate module. SIZE 0x8C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x00497ED0 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x00497ED0 calls UpdateModule first; it stores the
 // tables 0x00C6F248 at +0x20, 0x00C4FBAC at +0x0, 0x00C4D640 at +0xC, 0x00C4FBA0 at +0x10, 0x00C4FB7C at +0x20. Members are what xfer (0x00498517) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -109,7 +109,7 @@ public:
 	void rva00497AE8(BattlePlanStatus newPlan);	// 0x00497AE8 (public, placeholder name): removes the active plan's bonuses, then applies the new plan's
 	// SpecialPowerUpdateInterface slot 3 (+0x20 interface), retail 0x0049771E: the plan's command option.
 	// SpecialPowerUpdateInterface slot 2 (+0x20 table), retail 0x00497960: a plan is unpacking, active or packing.
-	virtual bool isSpecialAbility() const { return false; }	// SpecialPowerUpdateInterface slot 1 (+0x20 table 0x0084FB7C): the return-false fold 0x0047A699 (h05 r13)
+	virtual bool isSpecialAbility() const { return false; }	// SpecialPowerUpdateInterface slot 1 (+0x20 table 0x0084FB7C): the return-false fold 0x0047A699
 	virtual bool isActive() const;
 	virtual CommandOption getCommandOption() const;
 	// SpecialPowerUpdateInterface slots 4-8 (+0x20 table 0x0084FB7C): 4 the false fold 0x0047A699, 5 the `ret 4` fold

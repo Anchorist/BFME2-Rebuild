@@ -12,6 +12,10 @@
 // passes to MultiIniFieldParse::add at 0x0048FCA1 (0x00C4CFC8), which names
 // every member and its parser.
 // FUNCTION: BFME2 0x0048FBBA size=25 name=??1HeightDieUpdate@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+HeightDieUpdate::~HeightDieUpdate()
+{
+}
+
 // FUNCTION: BFME2 0x0048FBD3 size=6 name=?GetSnapshotName@HeightDieUpdate@@MBEPBDXZ evidence=N:ledger
 
 const char *HeightDieUpdate::GetSnapshotName(void) const

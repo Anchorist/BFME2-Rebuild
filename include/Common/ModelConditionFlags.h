@@ -30,7 +30,7 @@ public:
 	// WeaponSet::setWeaponLock 0x002C8AAE and releaseWeaponLock 0x002C8B9B build their
 	// WEAPONLOCK_* mask through it.
 	enum InitType { kInit = 0 };
-	// 0x001E4912 (out of line): a set holding the two listed conditions; Locomotor 0x001E5F1D builds (kInit, 240, 239) with it (h06).
+	// 0x001E4912 (out of line): a set holding the two listed conditions; Locomotor 0x001E5F1D builds (kInit, 240, 239) with it.
 	// The other out-of-line (kInit, conditions...) constructors retail calls on temporaries passed to Object's
 	// condition setters (each memsets 0x4C bytes and sets its bits; the map accepts these names):
 	// 0x0028F59A one condition (DockUpdate, DeployStyleAIUpdate, SpecialAbilityUpdate),
@@ -43,16 +43,16 @@ public:
 	ModelConditionFlags(InitType init, UnsignedInt a, UnsignedInt b, UnsignedInt c, UnsignedInt d, UnsignedInt e, UnsignedInt f, UnsignedInt g, UnsignedInt h, UnsignedInt i, UnsignedInt j, UnsignedInt k);
 	ModelConditionFlags(InitType init, UnsignedInt a, UnsignedInt b);
 	ModelConditionFlags(InitType init, UnsignedInt a, UnsignedInt b, UnsignedInt c, UnsignedInt d, UnsignedInt e);
-	// 0x0044E9C7 (out of line): a set holding fourteen conditions (SpecialAbilityUpdate 0x0044EE07; f11).
+	// 0x0044E9C7 (out of line): a set holding fourteen conditions (SpecialAbilityUpdate 0x0044EE07).
 	ModelConditionFlags(InitType init, UnsignedInt a, UnsignedInt b, UnsignedInt c, UnsignedInt d, UnsignedInt e, UnsignedInt f, UnsignedInt g, UnsignedInt h, UnsignedInt i, UnsignedInt j, UnsignedInt k, UnsignedInt l, UnsignedInt m, UnsignedInt n);
 	void set(Int bit, Int value);	// 0x000B3FA5, out of line (CrushDie::onDie 0x00486327)
 	void clear() { memset(m_bits, 0, sizeof(m_bits)); }
 	// 0x00045455 (out of line, `??0ModelConditionFlags@@QAE@ABV0@@Z`): the copy; SlowDeathBehavior's complement 0x0045D859 copies through it twice.
-	// Inline like BitFlags' copy (memcpy); /O1 declines it where retail calls the COMDAT (f08: complement 0x0045D859 twice).
+	// Inline like BitFlags' copy (memcpy); /O1 declines it where retail calls the COMDAT (complement 0x0045D859 twice).
 	ModelConditionFlags(const ModelConditionFlags &other) { memcpy(m_bits, other.m_bits, sizeof(m_bits)); }
 	// 0x0045D859 (map: rva0045D859 on the placeholder class WeaponTemplateSetHead): every condition flipped.
 	ModelConditionFlags complement() const;
-	// 0x000B3EB3, ?rva000B3EB3@ModelConditionFlags@@QBE_NXZ (out of line): true when any condition is set (ModelConditionUpgrade 0x004B6532 tests both of its sets with it) (f03)
+	// 0x000B3EB3, ?rva000B3EB3@ModelConditionFlags@@QBE_NXZ (out of line): true when any condition is set (ModelConditionUpgrade 0x004B6532 tests both of its sets with it)
 	Bool rva000B3EB3() const;
 	// The 591-name set's parser (0x000B937E): tokens to the end of the line, set by name;
 	// WeaponTemplateSet's OnlyInCondition (0x002C883E) calls it with no name list.
@@ -82,7 +82,7 @@ public:
 	// Object's single-condition clear/set test (Object.h). Retail reads the WORD and lets the compiler narrow it to a
 	// byte test: two conditions of one word share one address (AIInternalMoveToState::onExit 0x003473A4,
 	// `lea ebp,[obj+0x118]; test byte [ebp],0x80 ... test byte [ebp+1],2` for 3*32+7 and 3*32+9), which a byte-indexed
-	// read does not give (it addresses [obj+0x118] and [obj+0x119] separately; probe k07 p5b). Same bytes for one test.
+	// read does not give (it addresses [obj+0x118] and [obj+0x119] separately). Same bytes for one test.
 	UnsignedInt testByte(UnsignedInt bit) const { return m_bits[bit >> 5] & (1u << (bit & 31)); }
 	void clearByte(UnsignedInt bit) { ((Byte *)m_bits)[bit >> 3] &= (Byte)~(1u << (bit & 7)); }
 

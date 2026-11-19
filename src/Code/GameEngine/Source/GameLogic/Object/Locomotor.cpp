@@ -61,8 +61,27 @@ Int Locomotor::m_instanceCount;
 // FUNCTION: BFME2 0x001E35CA size=21 name=??0Overridable@@QAE@XZ evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x001E35DF size=14 name=?friend_getFinalOverride@Overridable@@QAEPAV1@XZ evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x001E35ED size=45 name=?deleteOverrides@Overridable@@QAEPAV1@XZ evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
+Overridable *Overridable::deleteOverrides()
+{
+	if (m_isOverride)
+	{
+		::delete this;
+		return NULL;
+	}
+	if (m_nextOverride)
+		m_nextOverride = m_nextOverride->deleteOverrides();
+	return this;
+}
+
 // FUNCTION: BFME2 0x001E361A size=10 name=?Rva001E361ASetFlag@@YAXE@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x001E3624 size=35 name=??1Overridable@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
+Overridable::~Overridable()
+{
+	if (m_nextOverride)
+		::delete m_nextOverride;
+	m_nextOverride = NULL;
+}
+
 // FUNCTION: BFME2 0x001E3647 size=50 name=?rva001E3647Pos@Pathfinder@@QAEPAXHPBVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 
 // FUNCTION: BFME2 0x001E3679 size=21 name=?Rva001E3679@@YA_NH@Z evidence=?:placeholder tier=A

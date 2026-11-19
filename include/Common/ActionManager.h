@@ -38,6 +38,7 @@ public:
 	bool canDoSpecialPowerAtObject(const Object *source, const Object *target, CommandSourceType commandSource, const SpecialPowerTemplate *power, unsigned int commandOptions, bool flag); // 0x0041CFCC (GrabPassengerSpecialPower::doSpecialPowerAtObject 0x004C504E)
 	bool canEnterObject(const Object *obj, const Object *target, CommandSourceType commandSource, CanEnterType modifier, bool flag, bool *outFlag); // 0x0041C2D0 (the map files it under class BFMEActionManager; every other ActionManager row and the function-local statics of canDoSpecialPowerAtObject/canTransferSuppliesAt say ActionManager)
 	bool Rva0041B94AGet(Object *obj, Object *target, int commandSource); // 0x0041B94A (AIUpdateInterface::privateMoveToObject 0x0026472F)
+	bool canTransferSuppliesAt(const Object *obj, const Object *dest); // 0x0041BCA1
 	bool canRepairObject(const Object *repairer, const Object *target, CommandSourceType commandSource); // 0x0041CE99 (DozerAIUpdate::update 0x00489800 and privateRepair 0x00488AC9 call it)
 };
 

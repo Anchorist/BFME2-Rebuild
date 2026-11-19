@@ -16,6 +16,10 @@ extern NameKeyGenerator *TheNameKeyGenerator;
 #include "GameLogic/GameLogic.h"
 
 // FUNCTION: BFME2 0x00486B56 size=25 name=??1UpgradeDie@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+UpgradeDie::~UpgradeDie()
+{
+}
+
 // FUNCTION: BFME2 0x00486B6F size=6 name=?name@Rva00486B6FNamed@@QBEPBDXZ evidence=?:placeholder
 const char *UpgradeDie::GetSnapshotName() const
 {

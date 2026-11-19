@@ -1,5 +1,5 @@
 // AnnounceBirthAndDeathBehavior.h: the AnnounceBirthAndDeathBehavior module. SIZE 0x1C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x00485125 calls CreateModule first; it stores the
+// Target facts: the constructor 0x00485125 calls CreateModule first; it stores the
 // tables 0x00C1C780 at +0x18, 0x00C4A61C at +0x0, 0x00C4A560 at +0xC, 0x00C4A550 at +0x10, 0x00C4A54C at +0x18. Members are what xfer (0x004851E3) transfers after CreateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -80,7 +80,7 @@ protected:
 
 public:
 protected:
-	virtual void loadPostProcess() { CreateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to CreateModule's (h05)
+	virtual void loadPostProcess() { CreateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to CreateModule's
 };
 // SIZE 0x1C
 typedef char AnnounceBirthAndDeathBehavior_size[(sizeof(AnnounceBirthAndDeathBehavior) == 0x1C) ? 1 : -1];

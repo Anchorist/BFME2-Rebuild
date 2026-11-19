@@ -8,7 +8,7 @@
 #include "GameLogic/Module/RadiateFearUpdateModuleData.h"
 #include "GameLogic/Module/UpgradeMuxData.h"
 #include "GameLogic/Module/UpgradeMuxData.h"
-#include "Draft/RadiateFearUpdate.h"
+#include "GameLogic/Module/RadiateFearUpdate.h"
 #include "Common/NameKeyGenerator.h"
 void iniParseObjectFilter(INI *ini, void *instance, void *store, const void *userData);
 

@@ -1,11 +1,11 @@
-// DRAFT (h05 fpgen): generated from retail's field-parse table (VA 0x00C4FF58).
+// DRAFT: generated from retail's field-parse table (VA 0x00C4FF58).
 // Offsets and size are compile-checked below; no function matches against it yet,
 // so it stays in Draft until one does. Unresolved members: m_bombardmentPlanUnpackSoundName, m_bombardmentPlanPackSoundName, m_bombardmentAnnouncementName, m_searchAndDestroyPlanUnpackSoundName, m_searchAndDestroyPlanIdleLoopSoundName, m_searchAndDestroyPlanPackSoundName, m_searchAndDestroyAnnouncementName, m_holdTheLinePlanUnpackSoundName, m_holdTheLinePlanPackSoundName, m_holdTheLineAnnouncementName.
 // BattlePlanUpdateModuleData.h: the INI data of BattlePlanUpdate. SIZE 0xA8.
 // Target facts: ModuleFactory registers the module with operator new 0xA8 and
 // constructor RVA 0x0049780A; buildFieldParse RVA 0x0049861A adds VA 0x00C4FF58 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 // Unresolved (byte storage up to the next member, named after the token):
 //   m_bombardmentPlanUnpackSoundName +0x1C: INI::parseAudioEventRTS 0x00339900

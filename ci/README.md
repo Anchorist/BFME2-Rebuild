@@ -3,7 +3,9 @@
 The project checks pull requests against the retail game on Boat. Look for
 **BFME II / Boat** in the pull request's checks and for the bot's report in the
 conversation. The report identifies the pull request head and the main commit
-used for the check.
+used for the check. The repository's **baseline/game.dat** is the reference
+for local byte comparisons. Keep that baseline intact and leave additional
+executables, game assets and raw dumps out of pull requests.
 
 ## Submit a source change
 
@@ -44,6 +46,8 @@ the service holds check admissions.
 
 - **Pending** means the request is queued, needs first-time approval, or is
   waiting for Boat or the checker. A service outage leaves the check pending.
+  Shared-header changes are checked in the wide lane and can take up to
+  two hours to return a verdict with the current compiler scheduling.
 - **Pass** means the measured change meets the landing gates on the reported
   main commit. A maintainer review applies to the current pull request head.
 - **Fail** identifies source intake issues, conflicts, compiler diagnostics,
@@ -56,7 +60,8 @@ sizes, and first differing offset within the function. For a function edited
 in the pull request, the report can show up to eight instructions from its
 compiled output near the offset. Diagnostics for edited files contain the
 source location, compiler diagnostic code and a brief description. The report
-is capped at 8 KiB. Retail bytes and retail disassembly stay private.
+is capped at 8 KiB. The check report omits retail bytes and retail disassembly.
+The compiler workers receive only source and headers.
 
 ## Claim a worklist item
 

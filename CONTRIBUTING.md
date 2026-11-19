@@ -9,8 +9,8 @@ the reference build. Changes need both good source and a passing check.
 - **Windows:** clone with `git clone -c core.longpaths=true <URL>`. Some
   Zero Hour reference paths exceed 260 characters and fail to check out
   otherwise.
-- **What the clone does not contain:** the game executable; the
-  maintainers' generator; and the check service, the `claims` branch, the
+- **What the clone does not contain:** the maintainers' generator; and
+  the check service, the `claims` branch, the
   `boat-ok` label, issues and pull requests, which exist only on the GitHub
   repository and appear there once it is live and the check is open (the
   README says when). A first line such
@@ -19,12 +19,12 @@ the reference build. Changes need both good source and a passing check.
   ledger. A `FUNCTION` annotation with no body below it marks an address
   that this file owns and nobody has written yet; put the body directly
   below the annotation and keep the annotation.
-- **Reading the target:** if you own the game, version 1.06, you may
-  inspect your own `game.dat` with any disassembler, using the RVA from the
-  worklist or ledger. Never attach its bytes or a disassembly of it to an
-  issue or pull request; cite the address, size, offsets and what the code
-  does. Without a copy, work from the Zero Hour source and the check's
-  report, and say in the pull request which facts you could not confirm.
+- **Reading the target:** `baseline/game.dat` is the original program,
+  version 1.06 (its SHA-256 is in `baseline/README.md`). Read any function's
+  bytes there with a disassembler, at the RVA from the worklist or ledger.
+  In an issue or pull request cite the address, size, offsets and what the
+  code does rather than pasting dumps. Do not add any other executable, game
+  asset or byte or disassembly dump to the repository.
 - **When Zero Hour and the reference build disagree,** the reference build
   decides behaviour. Zero Hour is evidence for names, types and shape only
   where the code corresponds. Note the difference in the pull request.
@@ -42,8 +42,8 @@ the reference build. Changes need both good source and a passing check.
   or a ledger correction. Comments in the source sometimes mention notes the
   clone does not contain; treat those as history and ask in an issue.
 - **Addresses:** an RVA is relative to the image base. A virtual address
-  (VA) in a comment is the RVA plus `0x400000`. To find an RVA in your own
-  `game.dat`, list its sections with `objdump -h game.dat`; for a VA inside
+  (VA) in a comment is the RVA plus `0x400000`. To find an RVA in
+  `baseline/game.dat`, list its sections with `objdump -h baseline/game.dat`; for a VA inside
   a section, file offset = VA - VMA + "File off" of that section.
 - **Line endings:** the repository stores LF. On Windows set
   `git config core.autocrlf input` (or `false`) in your clone so a patch does
@@ -59,9 +59,55 @@ the reference build. Changes need both good source and a passing check.
   and `offsetof`) before you open a pull request. The pull-request check then
   compiles with the reference compiler. A member that no compiled function
   reads is not checked by anything, so state its evidence.
+- **Words you will meet:** *Boat* is the cloud service whose compiler-only
+  machines build pull requests; *the farm* is the set of those machines;
+  **BFME II / Boat** is the status the check posts on a pull request. A
+  `// cl: /O1` line at the top of a source file gives that file's extra
+  compiler flags; leave it as it is. A generated `// FUNCTION:` line and its
+  words (`tier`, `evidence=`, `hypothesis:`) are explained in
+  [Read a generated annotation](docs/ledger-and-checks.md#read-a-generated-annotation).
+- **Where the attribution line goes:** first line of the file, above any
+  `// cl:` line, exactly as `NOTICE` gives it. Existing files that place it
+  lower are not wrong; do not move theirs.
+- **Header changes cost more:** every file that includes the header, directly
+  or through other headers, is rebuilt and compared. Add to a shared header
+  only what your change needs; an inline accessor that Zero Hour has is fine
+  when it emits no code of its own, but say so in the pull request.
 - **Worklist generator:** `python3 worklist/generate.py` rewrites the tracked
   TSV files. Use it to confirm an item drops out, then restore them
   (`git checkout -- worklist/`); do not commit its output.
+
+## A first contribution, step by step
+
+A pull request finishes one file or replaces one Draft header. For a first
+one, a single function is fine.
+
+1. Clone (on Windows with `-c core.longpaths=true`).
+2. Open `worklist/files.tsv` and take a file near the top (few functions
+   left, a `real` class header), or open
+   `worklist/unwritten_with_zero_hour_counterpart.tsv` and take a row with
+   `ready_at_snapshot=yes`, `reference_kind=def`, `body_check=none-found`
+   and a small `size_bytes` (under about 100). Higher `link_referrers` means
+   more of the rebuilt game is waiting for that function.
+3. Search `src/` and `include/` for its RVA and name; the owning file has a
+   `// FUNCTION:` line for it.
+4. Read its bytes in `baseline/game.dat` at the RVA, and its Zero Hour body at
+   `zero_hour_file:zero_hour_line`.
+5. Write the body directly below its `// FUNCTION:` line, against the shared
+   headers. Where Zero Hour and the bytes differ, follow the bytes.
+6. Commit with a message that gives the evidence.
+7. Open a draft pull request whose description starts with the claim line
+   (`Claim: src/path/File.cpp` for a file, `Claim: include/Draft/X.h` for a
+   Draft, `Claim: 0x00ABCDEF` for one function) and the evidence, for example:
+
+   ```text
+   Claim: 0x003B0FD0
+   SpecialPowerStore::findSpecialPowerTemplateByID, 71 bytes.
+   Zero Hour: GameEngine/Source/Common/RTS/SpecialPower.cpp:286.
+   Bytes against Zero Hour: <what agrees, what differs and which you followed>.
+   Unconfirmed: <fields, slots or names you could not confirm, or "none">.
+   ```
+8. Read the **BFME II / Boat** report, fix, and mark it ready when it passes.
 
 ## Choose and prepare a change
 
@@ -110,10 +156,10 @@ the service reruns the landing gate before updating main. Public
 admissions open after the dedicated compiler-only pool is verified.
 
 A local check is optional. [Checker inputs and methods](tools/README.md)
-describes the toolchain and comparison. Never attach your game executable or
-raw reference bytes to a pull request. Point to the patch version, address,
-caller, slot, offset or other evidence that a reviewer can verify with their
-own reference copy.
+describes the toolchain and comparison. Do not attach executables, game
+assets, or byte or disassembly dumps to a pull request. Point to the address,
+caller, slot, offset or other evidence that a reviewer can verify in
+`baseline/game.dat`.
 
 A numerically better result does not excuse a duplicate class, lost proof,
 invented name or unexplained change in runtime behavior. Keep unsuccessful

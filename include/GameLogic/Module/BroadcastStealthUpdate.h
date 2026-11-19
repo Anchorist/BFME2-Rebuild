@@ -1,7 +1,7 @@
-// BroadcastStealthUpdate.h: promoted from include/Draft by h05 (round 10). Proven by 2 rows that MATCH against it on main (0x004A34C0, 0x004A34C6);
+// BroadcastStealthUpdate.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x004A34C0, 0x004A34C6);
 // name, size, bases and virtual order are retail facts given below.
 // BroadcastStealthUpdate.h: the BroadcastStealthUpdate module. SIZE 0x2C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004A342E calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004A342E calls UpdateModule first; it stores the
 // tables 0x00C52364 at +0x0, 0x00C49F78 at +0xC, 0x00C52358 at +0x10. Members are what xfer (0x004A3752) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -43,7 +43,7 @@ public:
 	UnsignedInt m_unk0x20;                         // +0x20; xfer UnsignedInt
 	UnsignedByte m_gap0x24[0x8];
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x2C
 typedef char BroadcastStealthUpdate_size[(sizeof(BroadcastStealthUpdate) == 0x2C) ? 1 : -1];

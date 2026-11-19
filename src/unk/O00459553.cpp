@@ -9,7 +9,7 @@
 #include <string.h>
 #include "Common/INI.h"
 #include "GameLogic/Module/ClickReactionBehaviorModuleData.h"
-#include "Draft/ClickReactionBehavior.h"
+#include "GameLogic/Module/ClickReactionBehavior.h"
 #include "Common/NameKeyGenerator.h"
 #include "Common/Xfer.h"
 

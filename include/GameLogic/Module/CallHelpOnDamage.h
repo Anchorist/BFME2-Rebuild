@@ -1,5 +1,5 @@
 // CallHelpOnDamage.h: the CallHelpOnDamage module. SIZE 0x18 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004BB43C calls DamageModule first; it stores the
+// Target facts: the constructor 0x004BB43C calls DamageModule first; it stores the
 // tables 0x00C59FDC at +0x0, 0x00C597F8 at +0xC, 0x00C59FD0 at +0x10. Members are what xfer (0x004BB4D6) transfers after DamageModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -45,7 +45,7 @@ protected:
 public:
 	UnsignedInt m_unk0x14;                         // +0x14; xfer UnsignedInt
 protected:
-	virtual void loadPostProcess() { DamageModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to DamageModule's (h05)
+	virtual void loadPostProcess() { DamageModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to DamageModule's
 };
 // SIZE 0x18
 typedef char CallHelpOnDamage_size[(sizeof(CallHelpOnDamage) == 0x18) ? 1 : -1];

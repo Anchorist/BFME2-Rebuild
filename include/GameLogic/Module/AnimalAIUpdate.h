@@ -5,7 +5,7 @@
 //   AIUpdateInterface's 0x00BFA3C0 (+0xC) and 0x00C52F88 (+0x24), and stores
 //   0x00C47B84 at +0x3E4: a one-slot interface right after AIUpdateInterface.
 //   Its slot 0x0047EC5F takes the interface as this and returns the module
-//   data's AfraidOfCastles byte (+0x7C, h05's AnimalAIUpdateModuleData).
+//   data's AfraidOfCastles byte (+0x7C, AnimalAIUpdateModuleData).
 //   The interface's retail name is not recovered; AnimalAIInterface is a role name.
 // - xfer 0x0047EBAF: version 1, XferObjectID +0x3E8, Bool +0x3F8, Coord3D +0x3EC,
 //   Bool +0x3F9, then AIUpdateInterface::xfer.
@@ -42,7 +42,7 @@ protected:
 	Bool m_unk0x3F8;										// +0x3F8
 	Bool m_unk0x3F9;										// +0x3F9
 protected:
-	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x0047EBA9 (h05 r9)
+	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x0047EBA9
 };
 // SIZE 0x3FC
 

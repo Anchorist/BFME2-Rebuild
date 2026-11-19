@@ -46,10 +46,10 @@ public:
 	// next to operator=(const char *) it would make `s = 0` ambiguous.
 	AsciiString &operator+=(const char *s);
 	AsciiString &operator+=(char c);
-	AsciiString &operator+=(const PooledString &s);	// 0x0060BD19: concat of the pool entry's text (+8) (Xfer.cpp; decl_queue f09 05:50, ACCEPTED k08)
+	AsciiString &operator+=(const PooledString &s);	// 0x0060BD19: concat of the pool entry's text (+8) (Xfer.cpp)
 
 	void __cdecl format(const char *fmt, ...);				// 0x00038150 (?format@AsciiString@@QAAXPBDZZ), a cdecl member
-	void __cdecl format(const AsciiString *fmt, ...);				// 0x000381E0 (?format@AsciiString@@QAAXPBV1@ZZ; decl_queue f09 06:15, ACCEPTED k08)
+	void __cdecl format(const AsciiString *fmt, ...);				// 0x000381E0 (?format@AsciiString@@QAAXPBV1@ZZ)
 	void translate(const unsigned short *s);				// 0x00038170
 	void translate(const UnicodeString &that);				// 0x00038220
 

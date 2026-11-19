@@ -4,7 +4,7 @@
 // player timer through a one-argument thiscall that returns the ready frame
 // (`mov ecx,<player>; push <template>; call rel32`), and the reset counterpart
 // takes the same argument. The receiver-prefix view keeps the address-derived
-// name until Player's own method names are recovered; Player.h is h04's.
+// name until Player's own method names are recovered.
 #pragma once
 #ifndef BFME2_SPECIALPOWERTIMERS_H
 #define BFME2_SPECIALPOWERTIMERS_H

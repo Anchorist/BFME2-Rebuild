@@ -2,7 +2,7 @@
 // DRAFT: N:ledger; S:fields 6/6; agrees: N:ledger,S:best-field-set
 #pragma once
 #include <stddef.h>
-#include "Draft/W3DPropDrawModuleData.h"
+#include "GameClient/W3DPropDrawModuleData.h"
 class Xfer;
 #pragma pack(push,1) // DRAFT layout policy; all known offsets asserted below
 class W3DFloorDrawModuleData : public ::W3DPropDrawModuleData {

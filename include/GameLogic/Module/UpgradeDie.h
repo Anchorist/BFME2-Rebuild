@@ -13,6 +13,7 @@ class UpgradeDie : public DieModule
 {
 public:
 	UpgradeDie(Thing *thing, const ModuleData *moduleData);				// 0x00486BBA
+	virtual ~UpgradeDie();
 
 	virtual NameKeyType getModuleNameKey() const;						// 0x00486B75
 	virtual const char *GetSnapshotName() const;

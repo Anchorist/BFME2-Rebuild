@@ -213,7 +213,7 @@ public:
 	Bool m_showObjectHealth;                               // +0x9BD ShowObjectHealth
 	unsigned char m_unk0x9BE[0x1];
 	Bool m_showTooltips;                                   // +0x9BF ShowTooltips
-	Bool m_unk0x9C0;                                       // +0x9C0 set by the command-line parser 0x003B9AB9 (f13)
+	Bool m_unk0x9C0;                                       // +0x9C0 set by the command-line parser 0x003B9AB9
 	unsigned char m_unk0x9C1[5];
 	bool m_winCursors;						// +0x9C6 Mouse::init 0x001EE4DC selects the Windows-drawn cursor mode when it is set (name: Zero Hour's)
 	unsigned char m_unk0x9C7[0x9];
@@ -247,12 +247,12 @@ public:
 	AsciiString m_autoAflameParticleSystem;                // +0xA3C AutoAflameParticleSystem
 	Int m_autoAflameParticleMax;                           // +0xA40 AutoAflameParticleMax
 	unsigned char m_unk0xA44[4];
-	UnsignedInt m_defaultIP;                               // +0xA48 set from OptionPreferences::getLANIPAddress by applyOptionPreferences 0x0023576A (Zero Hour's name; f13)
+	UnsignedInt m_defaultIP;                               // +0xA48 set from OptionPreferences::getLANIPAddress by applyOptionPreferences 0x0023576A (Zero Hour's name)
 	Int m_firewallBehavior;                                // +0xA4C FirewallBehavior
 	Bool m_firewallSendDelay;                              // +0xA50 default for the SendDelay preference (OptionPreferences 0x002E47B0)
 	unsigned char m_unk0xA51[0x3];
 	Int m_firewallPortOverride;                            // +0xA54 FirewallPortOverride
-	Short m_firewallPortAllocationDelta;                   // +0xA58 FirewallPortAllocationDelta (a 16-bit store in applyOptionPreferences 0x0023576A; Zero Hour declares it Short; f13)
+	Short m_firewallPortAllocationDelta;                   // +0xA58 FirewallPortAllocationDelta (a 16-bit store in applyOptionPreferences 0x0023576A; Zero Hour declares it Short)
 	unsigned char m_unk0xA5A[2];
 	Int m_valuePerSupplyBox;                               // +0xA5C ValuePerSupplyBox
 	Int m_supplyBoxesPerTree;                              // +0xA60 SupplyBoxesPerTree
@@ -280,7 +280,7 @@ public:
 	unsigned char m_unk0xAB5[0x3];						// +0xAB5 a byte the ctor 0x0023631C zeroes (Zero Hour's m_buildMapCache place)
 	AsciiString m_unk0xAB8;                                // +0xAB8 the ctor zeroes +0xAB8/+0xABC/+0xAC0 and the dtor 0x002376CC destroys them (0x00036410) in reverse order
 	AsciiString m_initialFile;                             // +0xABC (Zero Hour's order: m_initialFile, m_pendingFile)
-	AsciiString m_pendingFile;                             // +0xAC0 RecorderClass::init 0x0037B326 hands it to GameInfo::setMap; playbackFile 0x0037D1E6 stores the replay's map (f13)
+	AsciiString m_pendingFile;                             // +0xAC0 RecorderClass::init 0x0037B326 hands it to GameInfo::setMap; playbackFile 0x0037D1E6 stores the replay's map
 	unsigned char m_unk0xAC4[0x4];                         // +0xAC4 two bytes the ctor zeroes
 	Int m_maxParticleCount;                                // +0xAC8 MaxParticleCount
 	Int m_maxFieldParticleCount;                           // +0xACC MaxFieldParticleCount
@@ -300,12 +300,12 @@ public:
 	Real m_keyboardScrollSpeedFactor;                      // +0xAF8 KeyboardScrollSpeedFactor
 	Real m_keyboardDefaultScrollSpeedFactor;               // +0xAFC KeyboardDefaultScrollSpeedFactor
 	Bool m_animateWindows;                                 // +0xB00 AnimateWindows; the flag Shell's animation calls test
-	Bool m_incrementalAGPBuf;                              // +0xB01 (Zero Hour's member order: m_animateWindows, m_incrementalAGPBuf, m_iniCRC, m_exeCRC; position only; h11)
+	Bool m_incrementalAGPBuf;                              // +0xB01 (Zero Hour's member order: m_animateWindows, m_incrementalAGPBuf, m_iniCRC, m_exeCRC; position only)
 	unsigned char m_pad0xB02[2];
-	UnsignedInt m_iniCRC;                                  // +0xB04 CRC of the INI files (LANAPI::RequestGameJoin 0x00449E9A copies it; h11)
-	UnsignedByte m_exeCRC[16];                             // +0xB08 digest of the executable, 16 bytes in BFME 2 (h11)
+	UnsignedInt m_iniCRC;                                  // +0xB04 CRC of the INI files (LANAPI::RequestGameJoin 0x00449E9A copies it)
+	UnsignedByte m_exeCRC[16];                             // +0xB08 digest of the executable, 16 bytes in BFME 2
 	unsigned char m_unk0xB18[0x20];                        // +0xB18..+0xB37
-	UnsignedInt m_extraCRC;                                // +0xB38 the third CRC of the join request (h11)
+	UnsignedInt m_extraCRC;                                // +0xB38 the third CRC of the join request
 	Int m_movementPenaltyDamageState;                      // +0xB3C MovementPenaltyDamageState; index into a name table
 	Real m_damageRadiusMinimumForSplash;                   // +0xB40 DamageRadiusMinimumForSplash
 	Int m_groupSelectMinSelectSize;                        // +0xB44 GroupSelectMinSelectSize
@@ -325,7 +325,7 @@ public:
 	Bool m_refreshNet;                                     // +0xB6C RefreshNet
 	Bool m_displayForeignLanguage;                         // +0xB6D DisplayForeignLanguage
 	unsigned char m_unk0xB6E[2];
-	Bool m_saveCameraInReplay;                             // +0xB70 cleared by applyOptionPreferences 0x0023576A (Zero Hour's name; f13)
+	Bool m_saveCameraInReplay;                             // +0xB70 cleared by applyOptionPreferences 0x0023576A (Zero Hour's name)
 	Bool m_useCameraInReplay;                              // +0xB71 UseCameraInReplay
 	Real m_shakeSubtleIntensity;                           // +0xB74 ShakeSubtleIntensity
 	Real m_shakeNormalIntensity;                           // +0xB78 ShakeNormalIntensity
@@ -349,9 +349,9 @@ public:
 	Int m_powerBarBase;                                    // +0xBC0 PowerBarBase
 	Real m_powerBarIntervals;                              // +0xBC4 PowerBarIntervals
 	Int m_powerBarYellowRange;                             // +0xBC8 PowerBarYellowRange
-	Real m_gammaAdjustment;                                // +0xBCC the brightness preference mapped to 0.0..2.0 by applyOptionPreferences 0x0023576A (f13)
+	Real m_gammaAdjustment;                                // +0xBCC the brightness preference mapped to 0.0..2.0 by applyOptionPreferences 0x0023576A
 	UnsignedInt m_unlookPersistDuration;                   // +0xBD0 UnlookPersistDuration; duration, frames
-	Bool m_updateImages;                                   // +0xBD4 set by parseUpdateImages 0x003B9A0C (f13)
+	Bool m_updateImages;                                   // +0xBD4 set by parseUpdateImages 0x003B9A0C
 	unsigned char m_unk0xBD5[7];
 	RGBColor m_shroudColor;                               // +0xBDC ShroudColor
 	UnsignedByte m_clearAlpha;                             // +0xBE8 ClearAlpha
@@ -385,9 +385,9 @@ public:
 	unsigned char m_unk0xC6B[0xB9];
 	Bool m_checkDuplicateCommandIDs;                       // +0xD24 set to 1 by the ctor 0x00236EB4; CommandIDHistory::accept 0x004D2164 skips the duplicate filter when clear
 	unsigned char m_unk0xD25[0x21];
-	Bool m_unk0xD46;										// +0xD46 set by the command-line parser 0x003B9A29 (f13)
+	Bool m_unk0xD46;										// +0xD46 set by the command-line parser 0x003B9A29
 	unsigned char m_unk0xD47[1];
-	Int m_unk0xD48;										// +0xD48 set from the next argument by the command-line parser 0x003B9A3D (f13)
+	Int m_unk0xD48;										// +0xD48 set from the next argument by the command-line parser 0x003B9A3D
 	AsciiString m_particleCursorAnim2DTemplateName;        // +0xD4C ParticleCursorAnim2DTemplateName
 	UnsignedInt m_particleCursorBurstCount;                // +0xD50 ParticleCursorBurstCount
 	GameClientRandomVariable m_particleCursorBurstFactor;  // +0xD54 ParticleCursorBurstFactor
@@ -437,7 +437,7 @@ public:
 	Int m_evilCommandPointLimit;                           // +0xE90 EvilCommandPointLimit
 	Int m_powerLimit;                                      // +0xE94 PowerLimit
 	Real m_resourceMultiplierLimit;                        // +0xE98 ResourceMultiplierLimit
-	Bool m_debugEmotionRanges;                             // +0xE9C draw the emotion/cheer-range circles (ActiveBody 0x004BF9ED, EmotionTrackerUpdate::update 0x004B1633; f14)
+	Bool m_debugEmotionRanges;                             // +0xE9C draw the emotion/cheer-range circles (ActiveBody 0x004BF9ED, EmotionTrackerUpdate::update 0x004B1633)
 	unsigned char m_unk0xE9D[0x13];
 	ObjectFilter m_treeFadeObjectFilter;                   // +0xEB0 TreeFadeObjectFilter; iniParseObjectFilter 0x00361CA5; a 4-byte handle value, GlobalData() constructs it through 0x003623E5
 	ObjectFilter m_camouflageDetectorObjectFilter;         // +0xEB4 CamouflageDetectorObjectFilter; iniParseObjectFilter 0x00361CA5
@@ -470,8 +470,8 @@ public:
 	unsigned char m_unk0x10FC[0xC];	// +0x10FC
 	Int m_blockedByWallLeeway;                             // +0x1108 BlockedByWallLeeway
 	Real m_secondsBeforeBaseCheckActive;                   // +0x110C SecondsBeforeBaseCheckActive
-	Bool m_unk0x1110;                                      // +0x1110 cleared by the command-line parser 0x003B9CDF (f13)
-	Bool m_unk0x1111;                                      // +0x1111 set by 0x003B99AB (f13)
+	Bool m_unk0x1110;                                      // +0x1110 cleared by the command-line parser 0x003B9CDF
+	Bool m_unk0x1111;                                      // +0x1111 set by 0x003B99AB
 	unsigned char m_unk0x1112[2];
 	AsciiString m_basicTutorialMap;                        // +0x1114 BasicTutorialMap
 	AsciiString m_basicTutorialLoadMovie;                  // +0x1118 BasicTutorialLoadMovie
@@ -512,7 +512,7 @@ public:
 	unsigned char m_unk0x11BC[0x4];
 	Int m_tintUnitIfPathingForMoreThan;                    // +0x11C0 TintUnitIfPathingForMoreThan
 	Real m_clampedLOSHeightForCastleStructures;            // +0x11C4 ClampedLOSHeightForCastleStructures
-	Bool m_unk0x11C8;                                      // +0x11C8 set by the command-line parser 0x003B9D5F (f13)
+	Bool m_unk0x11C8;                                      // +0x11C8 set by the command-line parser 0x003B9D5F
 	unsigned char m_unk0x11C9[1];
 	Bool m_planningModeEnabled;                            // +0x11CA PlanningModeEnabled
 	UnsignedInt m_reinvisibityDelay;                       // +0x11CC ReinvisibityDelay; duration, frames
@@ -538,7 +538,7 @@ public:
 	UnsignedInt m_maxCellsToExamineTowardsGoal;            // +0x121C MaxCellsToExamineTowardsGoal
 	Real m_maxCastleRadius;                                // +0x1220 MaxCastleRadius
 	Real m_garrisonedRangeMultiplier;                      // +0x1224 GarrisonedRangeMultiplier
-	Int m_fixedSeedOverride;	// +0x1228 InitRandom 0x00233F82 / InitGameLogicRandom 0x00233FC7 use it as the seed when it is not -1 (f13)
+	Int m_fixedSeedOverride;	// +0x1228 InitRandom 0x00233F82 / InitGameLogicRandom 0x00233FC7 use it as the seed when it is not -1
 	Int m_numMinutesBeforePlayersCanTransferMoney;         // +0x122C NumMinutesBeforePlayersCanTransferMoney
 	UnsignedInt m_maxNumMembersToForceToImmediatelyEnter;  // +0x1230 MaxNumMembersToForceToImmediatelyEnter
 	UnsignedInt m_waitToForceMemberToEnterDelay;           // +0x1234 WaitToForceMemberToEnterDelay

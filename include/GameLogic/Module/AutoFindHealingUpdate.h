@@ -34,6 +34,7 @@ class AutoFindHealingUpdate : public UpdateModule
 {
 public:
 	AutoFindHealingUpdate(Thing *thing, const ModuleData *moduleData);
+	virtual ~AutoFindHealingUpdate();
 
 	virtual NameKeyType getModuleNameKey() const;
 

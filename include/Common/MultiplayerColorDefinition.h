@@ -19,8 +19,8 @@ public:
 	MultiplayerColorDefinition *operator=(const MultiplayerColorDefinition &that);		// 0x00380CAE
 	void setColor(RGBColor color);														// 0x00380C1E
 	void setNightColor(RGBColor color);													// 0x00380C36
-	RGBColor getRGBValue() const;	// 0x001EF34E: +0x04 by value (h05)
-	RGBColor getRGBNightValue() const;	// 0x00098516: +0x14 by value (h05)
+	RGBColor getRGBValue() const;	// 0x001EF34E: +0x04 by value
+	RGBColor getRGBNightValue() const;	// 0x00098516: +0x14 by value
 	AsciiString getTooltipName() const;												// 0x002E4336: a copy of the tooltip name
 
 	AsciiString m_tooltipName;					// +0x00

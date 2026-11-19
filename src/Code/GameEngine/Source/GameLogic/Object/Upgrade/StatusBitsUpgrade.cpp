@@ -21,6 +21,10 @@ static const FieldParse s_statusBitsUpgradeModuleDataFieldParse[] =
 	{ 0, 0, 0, 0 }
 };
 // FUNCTION: BFME2 0x004B48D3 size=32 name=??1StatusBitsUpgrade@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+StatusBitsUpgrade::~StatusBitsUpgrade()
+{
+}
+
 // FUNCTION: BFME2 0x004B48F3 size=6 name=?GetSnapshotName@StatusBitsUpgrade@@MBEPBDXZ evidence=N:ledger tier=B hypothesis:cohesion
 const char *StatusBitsUpgrade::GetSnapshotName() const
 {

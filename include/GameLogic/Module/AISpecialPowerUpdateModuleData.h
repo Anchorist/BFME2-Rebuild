@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x1C and
 // constructor RVA 0x004B2FCD; buildFieldParse RVA 0x004B2F19 adds VA 0x00C56ED8 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 // Unresolved (byte storage up to the next member, named after the token):
 //   m_specialPowerAIType +0xC: parseSpecialPowerAIType 0x0058A617

@@ -29,6 +29,7 @@ class DefaultProductionExitUpdate : public UpdateModule, public ExitInterface	//
 public:
 	virtual ExitInterface *getUpdateExitInterface() { return this; }
 	DefaultProductionExitUpdate(Thing *thing, const ModuleData *moduleData);	// 0x00487FC7
+	virtual ~DefaultProductionExitUpdate();
 	virtual NameKeyType getModuleNameKey() const;						// 0x00487F82
 	virtual const char *GetSnapshotName() const;						// 0x00487F5A
 	virtual UpdateSleepTime update() { return UPDATE_SLEEP_FOREVER; }

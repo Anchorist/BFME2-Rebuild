@@ -21,6 +21,10 @@
 #include "GameLogic/Object.h"
 #include "GameLogic/ExperienceTracker.h"
 // FUNCTION: BFME2 0x0049A1AB size=25 name=??1AutoDepositUpdate@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+AutoDepositUpdate::~AutoDepositUpdate()
+{
+}
+
 // FUNCTION: BFME2 0x0049A1C4 size=6 name=?GetSnapshotName@AutoDepositUpdate@@MBEPBDXZ evidence=N:ledger
 const char *AutoDepositUpdate::GetSnapshotName() const
 {

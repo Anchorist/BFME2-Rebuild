@@ -42,6 +42,7 @@ class StatusBitsUpgrade : public UpgradeModule
 {
 public:
 	StatusBitsUpgrade(Thing *thing, const ModuleData *moduleData);
+	virtual ~StatusBitsUpgrade();
 	virtual NameKeyType getModuleNameKey() const;
 
 protected:

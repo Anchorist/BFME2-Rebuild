@@ -158,7 +158,7 @@ void BitFlags<NUMBITS>::xferCRCBytes(Xfer *xfer)
 }
 
 // count: the set bits, a parallel bit count per word (<218> 0x002AACDB, <104> 0x0028F6EB;
-// probe k07 p11: the first step reads the word twice, the nibble sum adds the shifted value first).
+// the first step reads the word twice, the nibble sum adds the shifted value first).
 template <int NUMBITS>
 Int BitFlags<NUMBITS>::count() const
 {
@@ -187,7 +187,7 @@ Bool BitFlags<NUMBITS>::setBitByName(const char *token)
 
 // countIntersection / countInverseIntersection: the bits set in both, and the bits of `that`
 // not set here (<104> 0x0033ADFC / 0x0033AE53, emitted in ThingTemplate.cpp for the weapon-set
-// SparseMatchFinder; probe k07 p12, same popcount as count()).
+// SparseMatchFinder; same popcount as count()).
 template <int NUMBITS>
 Int BitFlags<NUMBITS>::countIntersection(const BitFlags &that) const
 {

@@ -36,7 +36,7 @@ protected:
 	virtual Bool requiresAllConflictingUpgrades() const;				// slot 14
 	virtual void processUpgradeRemoval() { ((const AttributeModifierAuraUpdateModuleData *)getModuleData())->m_upgradeMuxData.muxDataProcessUpgradeRemoval(getObject()); }	// slot 15: retail 0x0049B648, ICF-folded with performUpgradeFX (both call the mux data's `ret 4` 0x0047A69C)
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x28
 typedef char AttributeModifierAuraUpdate_size[(sizeof(AttributeModifierAuraUpdate) == 0x28) ? 1 : -1];

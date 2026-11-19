@@ -1,5 +1,5 @@
 // BitFlags.h: the engine's fixed-size bit set, one instantiation per enumeration,
-// each with a static name table for INI parsing (h05). SIZE (N+31)/32 words.
+// each with a static name table for INI parsing. SIZE (N+31)/32 words.
 //
 // Target facts:
 // - Names: every member below except parse/parseFromINI is spelled by a mangled
@@ -10,7 +10,7 @@
 //   <104> 4, <218> 7). Retail keeps an STLport bitset<N> there (DieMuxData's
 //   masks reset through `bitset<128>::reset`, 0x0024CA24, the fold of every
 //   97..128-bit reset); the words are the same bytes.
-// - parse/parseFromINI are h05's proposed names (the map holds placeholders):
+// - parse/parseFromINI are proposed names (the map holds placeholders):
 //   each table entry for a mask is the 16-byte wrapper
 //   `((BitFlags *)store)->parse(ini, NULL)` (SAGE's BitFlags::parseFromINI), and
 //   parse is a 234-byte copy per instantiation that reads tokens until the line
@@ -92,7 +92,7 @@ public:
 	// the two flags track a bare name and a signed name, and mixing them throws an INIException.
 	Bool rva003339CE(const char *token, Bool *sawName, Bool *sawSign);
 	void xfer(Xfer *xfer);
-	// f14 (BitFlags<21>::xfer 0x004BE781): 0x004BE0C7 gives the name of a set bit, else NULL; 0x004BE722 writes the CRC image (ceil(N/8) bytes).
+	// (BitFlags<21>::xfer 0x004BE781): 0x004BE0C7 gives the name of a set bit, else NULL; 0x004BE722 writes the CRC image (ceil(N/8) bytes).
 	const char *getBitNameIfSet(UnsignedInt bit) const;	// 0x004BE0C7
 	void xferCRCBytes(Xfer *xfer);	// 0x004BE722
 

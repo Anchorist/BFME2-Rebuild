@@ -1,4 +1,4 @@
-// UpgradeMaskType.h: the 1024-bit upgrade mask (h05). SIZE 0x80. Not a BitFlags<N>:
+// UpgradeMaskType.h: the 1024-bit upgrade mask. SIZE 0x80. Not a BitFlags<N>:
 // no name table or getSingleBitFromName reaches it; bits are UpgradeTemplate indices.
 // Target facts (map names are ledger N: evidence; all three rows sit in map object
 // "unknown", so nothing in src witnesses them yet):
@@ -23,11 +23,11 @@ struct UpgradeMaskType
 	void clear();								// RVA 0x001EAE86
 	void set(UnsignedInt bit);					// RVA 0x0033A7C1
 	Bool test(UnsignedInt bit) const { return (m_bits[bit >> 5] & (1u << (bit & 31))) != 0; }
-	// 0x00406F9C, ?rva00406F9C@Rva00406F9C@@QAE_NPBX@Z (the map spells it on an address-named class): true when this mask and the argument share a bit. SubObjectsUpgrade 0x004B4E56 calls it on Object +0x284 and Player +0x13C (f03)
+	// 0x00406F9C, ?rva00406F9C@Rva00406F9C@@QAE_NPBX@Z (the map spells it on an address-named class): true when this mask and the argument share a bit. SubObjectsUpgrade 0x004B4E56 calls it on Object +0x284 and Player +0x13C
 	// 0x0033A453 (map ?rva0033A453@Rva0033A453@@QBE_NPBX0@Z): true when this mask holds every bit of `required` and shares no bit with `forbidden`, word by word.
 	Bool satisfies(const UpgradeMaskType *required, const UpgradeMaskType *forbidden) const;
 	Bool rva00406F9C(const UpgradeMaskType *other) const;
-	// 0x002AA292 (map ?rva002AA292@Rva002AA292@@QBE_NPBH@Z, evidence=?:placeholder): true when every bit set in `other` is also set in this mask; UpgradeMux::wouldUpgrade 0x004CE2B0 calls it on the key mask for the "requires all" case (f11)
+	// 0x002AA292 (map ?rva002AA292@Rva002AA292@@QBE_NPBH@Z, evidence=?:placeholder): true when every bit set in `other` is also set in this mask; UpgradeMux::wouldUpgrade 0x004CE2B0 calls it on the key mask for the "requires all" case
 	Bool hasAllBitsOf(const UpgradeMaskType *other) const;
 	Bool any() const
 	{
@@ -38,9 +38,9 @@ struct UpgradeMaskType
 		}
 		return false;
 	}
-	// 0x004CE3B9 (map: ?rva004CE3B9@Rva004CE3B9@@QAEABVAsciiString@@XZ): the name of the lowest upgrade in the mask (found through TheUpgradeCenter->findUpgradeByMaskIndex), the empty string when none is set; f03: UnpauseSpecialPowerUpgrade 0x004B555F tail-jumps to it with its TriggeredBy mask
+	// 0x004CE3B9 (map: ?rva004CE3B9@Rva004CE3B9@@QAEABVAsciiString@@XZ): the name of the lowest upgrade in the mask (found through TheUpgradeCenter->findUpgradeByMaskIndex), the empty string when none is set; UnpauseSpecialPowerUpgrade 0x004B555F tail-jumps to it with its TriggeredBy mask
 	const AsciiString &getFirstUpgradeName() const;
-	// 0x004B3FDC (map: ?notContains@Rva00406F9C@@QAEHPBX@Z): the negation of rva00406F9C on the same mask (ObjectCreationUpgrade.cpp's rows; f03)
+	// 0x004B3FDC (map: ?notContains@Rva00406F9C@@QAEHPBX@Z): the negation of rva00406F9C on the same mask (ObjectCreationUpgrade.cpp's rows)
 	Int hasNoBitsInCommon(const UpgradeMaskType *other) const;
 
 	UnsignedInt m_bits[0x20];					// +0x0

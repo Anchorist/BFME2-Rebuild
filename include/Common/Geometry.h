@@ -25,7 +25,7 @@ enum GeometryType
 	GEOMETRY_NUM_TYPES
 };
 
-// One 0x24-byte shape record of a GeometryInfo (f14: ActiveBody::setCorrectDamageState 0x004BE8BD compares the
+// One 0x24-byte shape record of a GeometryInfo (ActiveBody::setCorrectDamageState 0x004BE8BD compares the
 // string at +0x1C with "Bookend"). Layout from the max-height queries 0x006BD7C0 and 0x006BD8A0 (type at +0, the
 // height at +4 for a cylinder or box and the major radius at +8 for a sphere, the z offset at +0x18, the enable
 // byte at +0x20), expandFootprint 0x006BEB40 (adds a radius to +8 and +0xC) and the INI parsers 0x006BEA00 ..
@@ -74,11 +74,11 @@ public:
 	// (Weapon::isWithinTargetPitch 0x002C9C82 compares them with the weapon's pitch limits).
 	void calcPitches(const Coord3D &thisPos, const GeometryInfo &that, const Coord3D &thatPos, Real &minPitch, Real &maxPitch) const;
 	// 0x006BEB80: whether this geometry at thisPos (with its height) overlaps the other at thatPos; the map spells
-	// it ?CollidesWith@GeometryInfo@@QBE_NABVCoord3D@@MABV1@0M@Z. SpecialAbilityUpdate 0x0044F4F7 and 0x0044F28E call it (f11).
+	// it ?CollidesWith@GeometryInfo@@QBE_NABVCoord3D@@MABV1@0M@Z. SpecialAbilityUpdate 0x0044F4F7 and 0x0044F28E call it.
 	Bool CollidesWith(const Coord3D &thisPos, Real thisHeight, const GeometryInfo &that, const Coord3D &thatPos, Real thatHeight) const;
 	Real getMajorRadius() const { return m_majorRadius; }
 	// 0x006BD470: copies m_center (+0x18) to the argument (SpecialAbilityUpdate::initLaser 0x0044FB28; the map still spells it ?get@GeometryInfo@@QAEXPAURva0087DC00Vec@@@Z).
-	void getLocalCenter(Coord3DBase *center);	// decl_queue f11 16:15, ACCEPTED k11
+	void getLocalCenter(Coord3DBase *center);
 	// 0x006BD8A0: the largest depth below the position over the enabled shapes (a sphere's major radius, else 0).
 	Real getMaxHeightBelowPosition() const;
 	// 0x006BD830: getMaxHeightAbovePosition over the enabled shapes that are also used for the health box
@@ -97,11 +97,11 @@ public:
 	static void parseGeometryHeight(INI *ini, void *instance, void *store, const void *userData);		// 0x006BEA00
 	static void parseGeometryMajorRadius(INI *ini, void *instance, void *store, const void *userData);	// 0x006BEA60
 	static void parseGeometryMinorRadius(INI *ini, void *instance, void *store, const void *userData);	// 0x006BEAB0
-	// 0x006BD980: the shape record at an index (the map still spells the class BfmeObjE15; rename requested of m01).
+	// 0x006BD980: the shape record at an index (the map still spells the class BfmeObjE15).
 	GeometryShape *getGeometryShape(Int index);
 	// 0x006BF450: sets every shape whose name differs from `name` to `active` (map ?rva0087FA50@BfmeObjF9@@..., ?:placeholder).
 	void setShapesActiveExcept(const AsciiString &name, Bool active);
-	// 0x006BF3C0: sets the named shape on or off (GateOpenAndCloseBehavior 0x0049924B, 0x004992D5; the map still spells the class BfmeObjF9; f08).
+	// 0x006BF3C0: sets the named shape on or off (GateOpenAndCloseBehavior 0x0049924B, 0x004992D5; the map still spells the class BfmeObjF9).
 	void setFlag(const AsciiString &name, char flag);
 	Int getNumShapes() const { return (Int)m_shapes.size(); }
 

@@ -20311,6 +20311,14 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A00954",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (One actual four-byte definition and two independent native same-position typed COFF references): Authenticated MessageStream.cpp COFF SHA 167b972674079821474dab806df22ad7906312104f16d788c043ae5db0b65df0 emits the single typed external in .bss at section 3 +4. An existing non-proven H key retains this same 4-byte RVA.; Native cullBadCommands 0x37B146 has absolute operand 0x37B150 reading this pointer for its +0xC list head, and Recorder COFF SHA 5cab6968b3018d9ec9b46c53d85037c8ae2d130b62233c0d3418e90c6d104fb8 relocates the same operand at body +0xA.; Native propagateMessages 0x310FF5 references the same cell at +0x51 then calls CommandList::appendMessageList. The defining COFF relocates DIR32 at precisely +0x51 before the same named call. Source blobs checked against the farm pin 219261d3d4.",
+          "defined_in": "src/Code/GameEngine/Source/Common/MessageStream.cpp"
         }
       ]
     },

@@ -7,6 +7,11 @@
 
 #include "GameClient/DrawModule.h"
 
+DrawModule::DrawModule(Thing *thing, const ModuleData *moduleData)
+	: DrawableModule(thing, moduleData)
+{
+}
+
 const char *DrawModule::GetSnapshotName() const
 {
 	return "DrawModule";

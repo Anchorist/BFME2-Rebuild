@@ -10,32 +10,38 @@ project and compile to the reference code.
 ## Status
 
 The maintainers recorded these progress counts at
-**2026-11-19 15:05 UTC**, revision `75d0188608` of their
+**2026-11-19 16:05 UTC**, revision `ca158b5e89` of their
 working repository (the tree of this snapshot's `src/`, `include/`,
 `config/` and `expected/` is that revision or a later one).
 
 | Measure | At that snapshot |
 | --- | ---: |
-| Owned functions credited MATCH | 14,953 / 41,565 |
-| Credited functions with proven references | 11,560 |
+| Owned functions credited MATCH | 14,992 / 41,565 |
+| Credited functions with proven references | 11,588 |
 | Whole objects VERIFIED | 151 / 2,155 |
-| Headers outside `include/Draft/` | 1,662 |
+| Headers outside `include/Draft/` | 1,669 |
 | Owned function names classified as real / placeholder | 23,544 / 18,021 |
 
 36% of the owned functions had match credit at that snapshot.
 
-In this snapshot's tree, **35 Draft headers are in use** (included by
-some file; these are the ones to retire). Another 2,419 Drafts are
+Source files with code: **824 named** and **335 still named by
+address** (under `src/unk/`, waiting for evidence of their real name and
+place). Another 2,095 files hold only generated
+annotations and no code yet (1,856 address-named, 239
+named); they are scaffolds, counted apart.
+
+In this snapshot's tree, **27 Draft headers are in use** (included by
+some file; these are the ones to retire). Another 2,135 Drafts are
 unused generated layout guesses: 2,118 are kept as leads for classes not
-written yet and 301 are dead copies of headers that now exist outside
+written yet and 17 are dead copies of headers that now exist outside
 `include/Draft/`. See the [worklist](worklist/README.md).
 
 See [the checker verdicts](docs/ledger-and-checks.md#read-the-verdict) for how
 bytes, references, names and object verification are measured.
 
 The game does not yet build from this source alone. A link of the rebuilt
-objects on 2026-11-19 (run 12:50 UTC, revision `75d0188608dc`)
-still lacked 3,141 symbols and had
+objects on 2026-11-19 (run 15:36 UTC, revision `5c48db972b2e`)
+still lacked 3,140 symbols and had
 7 duplicate definitions.
 
 In the project's 2026-11-18 substitution test, an executable used
@@ -58,10 +64,12 @@ guide](ci/README.md) describes how the check will work.
 
 Start with the [worklist](worklist/README.md) and
 [contribution guide](CONTRIBUTING.md). Good first contributions are a small
-group of related functions, a provisional header under `include/Draft/`,
-or evidence for a name or file assignment. A plain clone is
-enough to choose an item, inspect the public Zero Hour source, and request
-evidence. A local checker run is optional. [AGENTS.md](AGENTS.md) is the
+group of related functions, replacing a Draft header that is in use with a
+real one, or evidence for a name or file assignment. A plain clone is
+enough to choose an item, read the original bytes of any function in
+`baseline/game.dat`, compare them with the public Zero Hour source and
+request evidence. A local check additionally needs only the reference
+compiler toolchain ([tools/README.md](tools/README.md)); it is optional. [AGENTS.md](AGENTS.md) is the
 starting point for coding agents.
 
 On Windows, clone with long paths enabled, because some Zero Hour reference
@@ -128,7 +136,8 @@ The ten findings, as the review states them:
 
 Where to help: retiring the Drafts in use ([worklist/draft_headers_in_use.tsv](worklist/draft_headers_in_use.tsv)),
 evidence that moves an address-named unit to its real file (see the
-[worklist](worklist/README.md)), and typed interfaces and real library
+[worklist](worklist/README.md)), replacing stand-in types
+([worklist/stand_in_types.tsv](worklist/stand_in_types.tsv)), and typed interfaces and real library
 templates for the cases above ([source-quality rules](docs/source-quality.md)
 on real types and real templates). A change that only raises the match
 count while keeping a cast-based interface is not progress by these rules.

@@ -10,7 +10,7 @@
 #include <stddef.h>
 #include "Common/INI.h"
 #include "GameLogic/Module/TeleportSpecialAbilityUpdateModuleData.h"
-#include "Draft/TeleportSpecialAbilityUpdate.h"
+#include "GameLogic/Module/TeleportSpecialAbilityUpdate.h"
 
 // The table retail passes to MultiIniFieldParse::add (VA 0x00BEF150), read back
 // entry by entry from the image.

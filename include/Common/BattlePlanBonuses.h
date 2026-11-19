@@ -1,5 +1,5 @@
 // BattlePlanBonuses.h: the bonuses a battle plan hands to the objects it affects. SIZE 0x4C.
-// Target facts (f10, 2026-11-17): BattlePlanUpdate's constructor 0x00497ED0 allocates 0x4C bytes
+// Target facts: BattlePlanUpdate's constructor 0x00497ED0 allocates 0x4C bytes
 // (operator new 0x0002FDA0), runs the out-of-line default constructor 0x002AA14D (it runs the
 // BitFlags<218> default constructor 0x0024C7B3 on +0x14 and +0x30 and returns this), then stores
 // 1.0f at +0x00 and +0x10, zero at +0x04/+0x08/+0x0C and copies the module data's ValidMemberKindOf

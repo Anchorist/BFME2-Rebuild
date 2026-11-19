@@ -7,18 +7,19 @@
     "ledger-fold-member"
   ],
   "rounds": {
-    "requests": {
-      "PFramePlainDtorWithWrapperPlacement.csv": {
-        "changes": 2,
-        "refused": 0,
-        "held": 0
-      }
+    "dataR": {
+      "parts": [
+        {
+          "added": 1,
+          "already": 0,
+          "refused": 0
+        }
+      ],
+      "legacy_keys_retired": 0
     },
-    "labels": {
-      "object_evidence": 1
-    }
+    "labels": {}
   },
-  "step_changes": 3,
+  "step_changes": 1,
   "changes": [
     {
       "rva": "0x0009FD78",
@@ -122315,6 +122316,15 @@
       "confidence": "strong",
       "source": "publisher placement",
       "basis": "single owned row and exact source skeleton removed"
+    },
+    {
+      "rva": "0x00A00954",
+      "kind": "data-identity",
+      "name": "?TheCommandList@@3PAVCommandList@@A",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (One actual four-byte definition and two independent native same-position typed COFF references): Authenticated MessageStream.cpp COFF SHA 167b972674079821474dab806df22ad7906312104f16d788c043ae5db0b65df0 emits the single typed external in .bss at section 3 +4. An existing non-proven"
     }
   ],
   "refused": [

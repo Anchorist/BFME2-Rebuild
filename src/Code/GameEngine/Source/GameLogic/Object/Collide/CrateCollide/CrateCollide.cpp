@@ -38,6 +38,10 @@ static const FieldParse s_crateCollideModuleDataFieldParse[] =
 };
 
 // FUNCTION: BFME2 0x004BC4FC size=25 name=??1CrateCollide@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+CrateCollide::~CrateCollide()
+{
+}
+
 // FUNCTION: BFME2 0x004BC515 size=6 name=?name@Rva004BC515Named@@QBEPBDXZ evidence=?:placeholder
 const char *CrateCollide::GetSnapshotName() const
 {

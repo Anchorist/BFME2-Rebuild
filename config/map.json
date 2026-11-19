@@ -27,7 +27,7 @@
     "inputs/fold-aliases-ef989f0936.csv": "afdc74a7d7991232ff24769b1e16d9554e4b5147645092373a086148a792f64d",
     "inputs/class-identities-40cf8154b2.csv": "32cad0aa08dd5841ce31d4dccb4733feb03278a105606a7f4e482c9ee3a57dce",
     "inputs/attributions-67a69c5b83.csv": "2cd4b9543244e9dd7293c8d8bb693ae87abead9226dcace8ec24f17fa5a959aa",
-    "inputs/measurement-b40ed71c99": "bf7b0ba3db944fd71bfc1d7a82959490175da16b879709af85cb0041b7ddeb2d",
+    "inputs/measurement-b40ed71c99": "706873d52b3d641b09c8b658445d05aa92671f32bf82bae840145eb713fc4838",
     "generator/requests21.py": "21343ae8c0c75368817e0f646c24a32cd1e510e29eed2e20f1d8e55076b488ef",
     "inputs/requests-51a801a65e.csv": "34d2914de8bc76987ff28be07a9e8d3853f130a81e0af43c1d0aa8aa625d9436",
     "inputs/requests-213f4e0b67.csv": "854174bfdc9c20a0df7e31156835c1fb563058586be7c25d305043f597eac5d0",
@@ -136,7 +136,7 @@
     "inputs/requests-8f8b6376ef.csv": "0c2ddca7e94df30142966ec17148d3c04f99ca424492d955754183e73cc2b123",
     "inputs/requests-5dc26b7067.csv": "c0b7a8e2ddd1e7e671d577446cbfd461bcc1cb1a4b501c1a9116c57f33c1d0cc",
     "inputs/requests-e42eb569d8.csv": "ccaf1111cae4ca447fc1737675024e3f9b8bb1a4c36cca30e54581e1f9cc915e",
-    "inputs/input-8e90b338ca.json": "9f83002934e6a85cffd7b18e24579f4187258d19c0fed6d5d4cb049d135f96cf",
+    "inputs/input-8e90b338ca.json": "e3858a61b36fc64cfcf4945060b0f6c71045b394bd98b9fd4c3b2e014c0229bd",
     "inputs/requests-f7bbc2a6c7.json": "85a8f3bf6ca08aee57c4029d2401270554df9ebc0cf778e8afd6d68b15e7fb12",
     "inputs/requests-538bd10250.json": "0281d868e2a353af7907743f04dfbf5936ee30829553ecc36f45d308b7393bb6",
     "inputs/requests-51b1a471fb.json": "d14a3847850b8f218568bc0477a45c07d8bd1dd3f230c3355127a4c6494c0aa9",
@@ -161,7 +161,8 @@
     "inputs/requests-2b0fcc4697.csv": "92732336087ad05b3bf0d6e34b7d2813feff3ca36c05856739a4f3c4c54afe38",
     "inputs/requests-ccec3f4d53.csv": "d828efb8dabaad4e3c6eb1dddc99abe414f39960900d50911dd455602dda31e7",
     "inputs/requests-8f10e6ecc6.json": "0492e9c0a725435e91a0bf51691388145f990cedba66ef6516bca8ffd2ebe9bd",
-    "inputs/requests-444e02638d.csv": "720663780043aee6bbd2d0454b13ea4cb4c703fdc92e08fedc6296f9b3101f58"
+    "inputs/requests-444e02638d.csv": "720663780043aee6bbd2d0454b13ea4cb4c703fdc92e08fedc6296f9b3101f58",
+    "inputs/requests-5ee10cc977.json": "a292283d8dfeffccbd20b6719d35d85e4140ae350b633ae194e1dcd98583c7f9"
   },
   "virtual_identity_policy": "vtable owner plus base slot declaration overrides the incidental name of a small folded body; explicit slot overrides are binary-checked in gen_repo21.corrections",
   "rows": [
@@ -822050,7 +822051,7 @@
       "depends_on": "L4:+Z-hints",
       "weakest_link": "Z",
       "parent": null,
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "?logCRCMismatch@RecorderClass@@QAEXXZ"
       ],
@@ -822075,7 +822076,7 @@
       "depends_on": "L4:+Z-hints",
       "weakest_link": "Z",
       "parent": null,
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "?logGameEnd@RecorderClass@@QAEXXZ"
       ],
@@ -822100,7 +822101,7 @@
       "depends_on": "L4:+Z-hints",
       "weakest_link": "Z",
       "parent": null,
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "?rva0037AEE2@RecorderClass@@QAEXXZ"
       ],
@@ -822125,7 +822126,7 @@
       "depends_on": "L4:+Z-hints",
       "weakest_link": "Z",
       "parent": null,
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "?writeArgument@RecorderClass@@QAEXHTGameMessageArgumentType@@@Z"
       ],
@@ -822150,7 +822151,7 @@
       "depends_on": "L4:+Z-hints",
       "weakest_link": "Z",
       "parent": null,
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "?readArgument@RecorderClass@@QAEXHPAVGameMessage@@@Z"
       ],
@@ -822175,7 +822176,7 @@
       "depends_on": "L4:+Z-hints",
       "weakest_link": "Z",
       "parent": null,
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "?cullBadCommands@RecorderClass@@IAEXXZ",
         "?rva0037B146@Rva0037B146@@QAEXXZ"
@@ -822201,7 +822202,7 @@
       "depends_on": "L4:+Z-hints",
       "weakest_link": "Z",
       "parent": null,
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "?isMultiplayer@RecorderClass@@QAE_NXZ"
       ],
@@ -822226,7 +822227,7 @@
       "depends_on": "L1:structure+F/W/L",
       "weakest_link": "X/F/W/L",
       "parent": null,
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "?logGameStart@RecorderClass@@IAEXVAsciiString@@@Z"
       ],
@@ -822251,7 +822252,7 @@
       "depends_on": "L4:+Z-hints",
       "weakest_link": "Z",
       "parent": null,
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "?logPlayerDisconnect@RecorderClass@@QAEXVUnicodeString@@H@Z"
       ],
@@ -2155738,7 +2155739,7 @@
       "depends_on": "L1:structure+F/W/L",
       "weakest_link": "X/F/W/L",
       "parent": "0x0037B1FA",
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "$L5437"
       ],
@@ -2155763,7 +2155764,7 @@
       "depends_on": "L1:structure+F/W/L",
       "weakest_link": "X/F/W/L",
       "parent": "0x0037B1FA",
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "__ehhandler$?logGameStart@RecorderClass@@IAEXVAsciiString@@@Z"
       ],
@@ -2155788,7 +2155789,7 @@
       "depends_on": "L4:+Z-hints",
       "weakest_link": "Z",
       "parent": "0x0037B287",
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "$L7200"
       ],
@@ -2155813,7 +2155814,7 @@
       "depends_on": "L4:+Z-hints",
       "weakest_link": "Z",
       "parent": "0x0037B287",
-      "object": "O0037ADB6",
+      "object": "O0037B326",
       "accepted_names": [
         "__ehhandler$?logPlayerDisconnect@RecorderClass@@QAEXVUnicodeString@@H@Z"
       ],
@@ -2716105,53 +2716106,18 @@
       "owned_bytes": 23
     },
     {
-      "object_id": "O0037ADB6",
-      "link_index": "825",
-      "path": "invented/O0037ADB6",
-      "path_evidence": "invented",
-      "library": "",
-      "flag_profile": "align=U;ehform=EH_prolog",
-      "text_ranges": "0x0037ADB6-0x0037B326",
-      "textx_ranges": "x:0x0077EC8C-0x0077ECB0",
-      "xcu_slots": "",
-      "rdata_ranges": "0x0092901C-0x00929064",
-      "data_ranges": "",
-      "bss_ranges": "0x00A0228C-0x00A0228D",
-      "confidence": "low",
-      "contradictions": "",
-      "left_edge": "unknown-rows",
-      "right_edge": "rests-on:veto",
-      "alt_names": "Code/GameEngine/Source/Common/Recorder.cpp",
-      "text_rows": "9",
-      "vetoes": "veto call:owned1 Z:code/gameengine/source/common/recorder.cpp|code/gameengine/source/gameclient/fxlist.cpp|code/libraries/source/file/fil | veto call:owned1 Z:code/gameengine/source/common/recorder.cpp|code/gameengine/source/gameclient/fxlist.cpp|code/libraries/source/file/fil | veto call:owned1 Z:code/gameengine/source/common/recorder.cpp|code/gameengine/source/gameclient/fxlist.cpp|code/libraries/source/file/fil | veto call:owned1 Z:code/gameengine/source/common/recorder.cpp|code/gameengine/source/gameclient/fxlist.cpp|code/libraries/source/file/fil | veto id:Z Z:code/gameengine/source/common/recorder.cpp|code/gameengine/source/gameclient/fxlist.cpp|code/libraries/source/file/fil",
-      "depends_on": "L1:3;L4:10",
-      "weakest_link": "Z",
-      "core_level": "X/F/W/L",
-      "seed_tier": "hypothesis:Z",
-      "hard_text_share": "0.101",
-      "tu": "src/unk/O0037ADB6.cpp",
-      "tier": "B",
-      "name_tier": "invented",
-      "seedable": true,
-      "proof_first": false,
-      "extent_is_hypothesis": true,
-      "refusals": [],
-      "owned_functions": 9,
-      "owned_bytes": 1392
-    },
-    {
       "object_id": "O0037B326",
-      "link_index": "826",
+      "link_index": "825",
       "path": "Code/GameEngine/Source/Common/Recorder.cpp",
       "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
-      "text_ranges": "0x0037B326-0x0037DC52",
-      "textx_ranges": "x:0x0077ECB0-0x0077F0AB",
+      "text_ranges": "0x0037ADB6-0x0037B326;0x0037B326-0x0037DC52",
+      "textx_ranges": "x:0x0077EC8C-0x0077ECB0;x:0x0077ECB0-0x0077F0AB",
       "xcu_slots": "",
-      "rdata_ranges": "0x0081875C-0x00818D16;0x00929064-0x009295BC",
+      "rdata_ranges": "0x0092901C-0x00929064;0x0081875C-0x00818D16;0x00929064-0x009295BC",
       "data_ranges": "0x009C05C0-0x009C05C8",
-      "bss_ranges": "",
+      "bss_ranges": "0x00A0228C-0x00A0228D",
       "confidence": "medium",
       "contradictions": "",
       "left_edge": "rests-on:veto",
@@ -2716171,8 +2716137,8 @@
       "proof_first": false,
       "extent_is_hypothesis": true,
       "refusals": [],
-      "owned_functions": 35,
-      "owned_bytes": 9828
+      "owned_functions": 44,
+      "owned_bytes": 11220
     },
     {
       "object_id": "O0037DC62",
