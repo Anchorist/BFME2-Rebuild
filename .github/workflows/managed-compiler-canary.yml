@@ -20,7 +20,7 @@ jobs:
             e1f176db430a157b71cfb2f1adffbe5d0464aecb25f7e8796a83e015232ba0e3 worker.json \
             88888c03f6f12eedd455273f0cd131ef7637dba66f83503bf29ed89544b208ab /usr/local/libexec/bfme2-compiler/managed_probe.py \
             3c5253ceace321aa6855d5f313a951f2db79ab00cbb06bcd78c0c80d08fa7630 /usr/local/libexec/bfme2-compiler/run | sha256sum -c --quiet
-          sha256sum -c --quiet input.sha256 runtime-files.sha256
+          sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
           umask 077
           t=$(mktemp -d)
           trap 'rm -f -- "$t"/{probe,request,reply}.json; rmdir -- "$t"' EXIT
