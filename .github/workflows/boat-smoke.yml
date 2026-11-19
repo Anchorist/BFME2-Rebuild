@@ -1,0 +1,39 @@
+name: Boat runner smoke test
+
+# Proves that GitHub Actions jobs for this repository run on Boat machines, and records what a fresh
+# runner contains. It uses no secrets and builds nothing. Run it by hand from the Actions tab.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/boat-smoke.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: boat
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: What the runner is
+        run: |
+          set -u
+          echo "kernel: $(uname -srm)"
+          . /etc/os-release 2>/dev/null && echo "os: ${PRETTY_NAME:-unknown}"
+          echo "cpus: $(nproc)"
+          free -g | sed -n '1,2p'
+          df -h / | tail -n 1
+          for t in git python3 gcc clang make wine wine64 zstd curl docker; do
+            if command -v "$t" >/dev/null 2>&1; then echo "have $t: $($t --version 2>&1 | head -n 1)"; else echo "no   $t"; fi
+          done
+      - name: The tree is here
+        run: |
+          set -eu
+          test -f AGENTS.md
+          test -f baseline/game.dat
+          sha256sum baseline/game.dat
+          echo "source files: $(find src -name '*.cpp' -o -name '*.c' | wc -l)"
