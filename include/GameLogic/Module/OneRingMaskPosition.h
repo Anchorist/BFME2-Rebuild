@@ -4,5 +4,5 @@
 union OneRingMaskPosition
 {
  CreateMask mask;
- struct PositionOverlay { unsigned pad; Coord3DBase pos; } overlay;	// Coord3D has constructors; a union member may not (k02)
+ struct PositionOverlay { unsigned pad; Coord3DBase pos; } overlay;	// Coord3D has constructors; a union member may not
 };

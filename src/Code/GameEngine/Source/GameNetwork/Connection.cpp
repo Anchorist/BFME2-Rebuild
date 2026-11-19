@@ -91,10 +91,10 @@ void Connection::doRetryMetrics()
 }
 
 // FUNCTION: BFME2 0x0058BAA7 size=181 name=?rva0058BAA7@Connection@@QAEXPAUInitAddrs@@ABVUnicodeString@@H@Z evidence=?:placeholder
-void Connection::rva0058BAA7(InitAddrs *addrs, const UnicodeString &name, Int slot)
+void Connection::rva0058BAA7(const NetPacketAddress *address, const UnicodeString &name, Transport *transport)
 {
-	m_unk0x08 = slot;
-	m_address = *addrs;
+	m_transport = transport;
+	m_address = *address;
 	m_name = name;
 	if (m_netCommandList == 0)
 	{
@@ -181,7 +181,7 @@ UnsignedInt Connection::doSend(Bool isInGame)
 		numPackets++;
 		if (packet->m_numCommands > 0)
 		{
-			canQueueMore = ((Transport *)m_unk0x08)->queueSend(&packet->m_addr, packet->m_packet, packet->m_packetLen);
+			canQueueMore = m_transport->queueSend(&packet->m_addr, packet->m_packet, packet->m_packetLen);
 			if (numPackets > 5 && isInGame)
 				canQueueMore = false;
 			m_unk0x348 = now;
@@ -216,7 +216,7 @@ Connection::Connection()
 	m_quitValue = (UnsignedInt)-1;
 	m_retries = 0;
 	m_retryMetricsTime = 0;
-	m_unk0x08 = 0;
+	m_transport = 0;
 	m_netCommandList = 0;
 	m_unk0x348 = 0;
 	m_unk0x34C = 0;

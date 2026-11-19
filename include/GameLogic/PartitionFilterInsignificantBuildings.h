@@ -1,4 +1,4 @@
-// Zero Hour's PartitionFilterInsignificantBuildings (h11's header; its allow row 0x00261246 now proves the shape and
+// Zero Hour's PartitionFilterInsignificantBuildings (its allow row 0x00261246 proves the shape and
 // the member names, which are Zero Hour's).
 // Target facts: vtable RVA 0x00807160 (3 slots: shared deleting dtor 0x00395A19,
 // allow 0x00261246, the default getPlayerMask 0x0036CC7A); constructor stores 0 at +4 (link) and

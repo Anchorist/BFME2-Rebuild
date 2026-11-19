@@ -82,7 +82,7 @@ private:
 	ObjectID m_sacrificeOwnerID;	// +0x28. The sacrifice claimant ID assigned and read through interface slots 5 and 7.
 	UnsignedInt m_kills;		// 0x2C
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 public:
 	virtual DisabledMaskType getDisabledTypesToProcess() const { return DisabledMaskType(DisabledMaskType::kInit, 3, 4); }	// UpdateModuleInterface slot 1: retail 0x004AE972 (DISABLED_HELD and DISABLED_PARALYZED)
 };

@@ -69,7 +69,7 @@ virtual overloads in the table, so check their emitted slots.
 
 1. Find the intended permanent header and search tracked `src/` and `include/`
    for the Draft's include spelling, basename and class declaration.
-   Trace headers that include it to their consumers. The gate checks new
+   Trace headers that include it to their consumers. The check covers new
    header paths that resemble temporary views, shims or address names.
    Use the actual class name. A real name containing `View` can pass when
    the current ledger or symbol table recognizes its constructor,

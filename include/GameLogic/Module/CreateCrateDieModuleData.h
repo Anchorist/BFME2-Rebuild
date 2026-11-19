@@ -1,10 +1,10 @@
-// CreateCrateDieModuleData.h: promoted from include/Draft by h05 (round 10). Proven by 2 rows that MATCH against it on main (0x004858F4, 0x0025739D);
+// CreateCrateDieModuleData.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x004858F4, 0x0025739D);
 // name, size, bases and virtual order are retail facts given below.
 // CreateCrateDieModuleData.h: the INI data of CreateCrateDie. SIZE 0x3C.
 // Target facts: ModuleFactory registers the module with operator new 0x3C and
 // constructor RVA 0x002572EE; buildFieldParse RVA 0x00253991 adds VA 0x00BF0740 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_CREATE_CRATE_DIE_MODULE_DATA_H

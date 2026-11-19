@@ -1,4 +1,4 @@
-# measured_utc=2026-11-19T15:51:11Z revision=5c48db972b body_checked_against=b7596e675f left_out_written=54
+# measured_utc=2026-11-19T15:51:11Z revision=5c48db972b body_checked_against=0a6b4f7e08 left_out_written=54
 referrers	state	rva	file	symbol	first_referrer	body_check
 59	placeholder-owned:MISSING	0x00253390	src/unk/O0024EEBB.cpp	??0UpdateModule@@QAE@PAVThing@@PBVModuleData@@@Z	src/Code/GameEngine/Source/GameLogic/Object/Behavior/AutoHealBehavior.cpp	none-found
 29	unwritten	0x000307F0	src/Code/GameEngine/Source/Common/System/GameMemory.cpp	?allocate@?$allocator@D@_STL@@SAPADIPBX@Z	src/Code/GameEngine/Source/Common/Dict.cpp	none-found

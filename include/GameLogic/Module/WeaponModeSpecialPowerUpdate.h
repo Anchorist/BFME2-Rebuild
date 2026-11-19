@@ -27,7 +27,7 @@ protected:
 
 	Bool m_active;		// +0x38: the constructor 0x00494B38 clears it, xfer 0x00494BBA transfers it
 protected:
-	virtual void loadPostProcess() { SpecialPowerUpdateModule::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialPowerUpdateModule's (h05)
+	virtual void loadPostProcess() { SpecialPowerUpdateModule::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialPowerUpdateModule's
 };
 
 #endif

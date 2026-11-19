@@ -32,7 +32,7 @@ public:
 	Bool m_unk0x21;                                // +0x21; xfer Bool
 	Int m_unk0x24;                                 // +0x24; constructor store
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 
 private:
 	void postInitAISpecialPower();

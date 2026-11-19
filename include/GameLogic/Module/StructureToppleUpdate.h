@@ -97,7 +97,7 @@ public:
 	Coord3D m_delayBurstLocation;												// +0x48
 	Real m_buildingHeight;														// +0x54, not transferred
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 };
 // SIZE 0x58
 typedef char StructureToppleUpdate_size[(sizeof(StructureToppleUpdate) == 0x58) ? 1 : -1];

@@ -26,9 +26,9 @@ public:
 	void rva004CD4DC(Object *obj);
 	void teleportList(const _STL::vector<ObjectID> *ids, const Coord3D *center);
 protected:
-	virtual const char *GetSnapshotName() const;	// slot 2: the class's own (`mov eax,"TeleportToCasterSpecialPower"; ret`) (h05 r9)
+	virtual const char *GetSnapshotName() const;	// slot 2: the class's own (`mov eax,"TeleportToCasterSpecialPower"; ret`)
 protected:
-	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's (h05)
+	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's
 };
 
 #endif

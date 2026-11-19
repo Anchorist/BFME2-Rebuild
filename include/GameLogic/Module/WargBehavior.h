@@ -1,5 +1,5 @@
 // WargBehavior.h: the WargBehavior module. SIZE 0x10 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x00460804 calls BehaviorModule first; it stores the
+// Target facts: the constructor 0x00460804 calls BehaviorModule first; it stores the
 // tables 0x00C426E8 at +0x0, 0x00BEE9C0 at +0xC. Members are what xfer (0x004CE56D) transfers after BehaviorModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

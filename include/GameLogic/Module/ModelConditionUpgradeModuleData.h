@@ -1,10 +1,10 @@
-// Promoted from Draft by f03: both flag sets are ModelConditionFlags (the 591-name set, 0x4C bytes, so
+// Promoted from Draft: both flag sets are ModelConditionFlags (the 591-name set, 0x4C bytes, so
 // +0x164 + 0x4C meets +0x1B0), and the temporary condition is the int iniParseAnim 0x004B6481 stores (-1 for none).
 // ModelConditionUpgradeModuleData.h: the INI data of ModelConditionUpgrade. SIZE 0x1B8.
 // Target facts: ModuleFactory registers the module with operator new 0x1B8 and
 // constructor RVA 0x004B6428; buildFieldParse RVA 0x004B6691 adds VA 0x00C58730 at +0x0 and UpgradeMuxData at +0x8.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_MODEL_CONDITION_UPGRADE_MODULE_DATA_H

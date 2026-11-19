@@ -39,7 +39,7 @@ public:
 	virtual void reactToGeometryChange() {}									// slot 39, folded `ret`
 
 protected:
-	virtual void loadPostProcess() { DrawModule::loadPostProcess(); }	// slot 1: retail table 0x007CD328 holds 0x0058B03E (`jmp 0x000B3FD0`, DrawModule's empty body), ICF-folded with the module bases' (h05)
+	virtual void loadPostProcess() { DrawModule::loadPostProcess(); }	// slot 1: retail table 0x007CD328 holds 0x0058B03E (`jmp 0x000B3FD0`, DrawModule's empty body), ICF-folded with the module bases'
 	virtual const char *GetSnapshotName() const;							// 0x000CEEE0
 	virtual void xfer(Xfer *xfer);											// 0x000B221A
 

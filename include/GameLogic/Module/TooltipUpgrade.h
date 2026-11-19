@@ -1,5 +1,5 @@
 // TooltipUpgrade.h: the TooltipUpgrade module. SIZE 0x1C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004B7A50 calls UpgradeModule first; it stores the
+// Target facts: the constructor 0x004B7A50 calls UpgradeModule first; it stores the
 // tables 0x00C58C08 at +0x0, 0x00C57328 at +0xC, 0x00C58BC0 at +0x10, 0x00C58790 at +0x18. Members are what xfer (0x004B8710) transfers after UpgradeModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -54,9 +54,9 @@ protected:
 
 public:
 public:
-	virtual void vslot06();	// UpgradeMux slot 6: folded with CommandSetUpgrade's 0x004B3B42; retail's table has this class's own (h05, gen3 vtable-content list)
+	virtual void vslot06();	// UpgradeMux slot 6: folded with CommandSetUpgrade's 0x004B3B42; retail's table has this class's own
 protected:
-	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpgradeModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpgradeModule's, ICF-folded across classes
 };
 // SIZE 0x1C
 typedef char TooltipUpgrade_size[(sizeof(TooltipUpgrade) == 0x1C) ? 1 : -1];

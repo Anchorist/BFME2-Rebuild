@@ -19,9 +19,9 @@ public:
 	virtual const char *GetSnapshotName() const;
 	virtual void onDie(const DamageInfo *damageInfo);					// 0x00486C00
 protected:
-	virtual void xfer(Xfer *xfer);	// primary slot 3: retail's body is folded at 0x0045CE8C; retail's table has this class's own (h05, gen3 vtable-content list)
+	virtual void xfer(Xfer *xfer);	// primary slot 3: retail's body is folded at 0x0045CE8C; retail's table has this class's own
 protected:
-	virtual void loadPostProcess() { DieModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to DieModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { DieModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to DieModule's, ICF-folded across classes
 };
 
 #endif

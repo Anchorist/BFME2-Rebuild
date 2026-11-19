@@ -23,9 +23,9 @@ protected:
 	virtual ~RebuildHoleExposeDie();
 	virtual void xfer(Xfer *xfer);
 protected:
-	virtual const char *GetSnapshotName() const;	// 0x004867D7, primary slot 2; retail's table has this class's own (h05, gen3 vtable-content list)
+	virtual const char *GetSnapshotName() const;	// 0x004867D7, primary slot 2; retail's table has this class's own
 protected:
-	virtual void loadPostProcess() { DieModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to DieModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { DieModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to DieModule's, ICF-folded across classes
 };
 // SIZE 0x14
 

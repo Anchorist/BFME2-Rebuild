@@ -1,5 +1,5 @@
 // RiderChangeContain.h: the RiderChangeContain module. SIZE 0x148 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x0047E268 calls SiegeEngineContain first; it stores the
+// Target facts: the constructor 0x0047E268 calls SiegeEngineContain first; it stores the
 // tables 0x00C47A00 at +0x0, 0x00C441B8 at +0xC, 0x00C479F0 at +0x10, 0x00C47878 at +0x20, 0x00C46064 at +0x24, 0x00C46F78 at +0x28, 0x00C58790 at +0x2C, 0x00C47848 at +0x30, 0x00C47838 at +0x34, 0x00C47834 at +0xFC. Members are what xfer (0x0047E357) transfers after SiegeEngineContain::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

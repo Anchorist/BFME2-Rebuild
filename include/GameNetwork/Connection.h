@@ -23,10 +23,7 @@
 
 class NetCommandList;
 
-// The address block 0x0058BAA7 reads (an ip dword and a port word, copied as two dwords; the map spells the struct InitAddrs).
-struct InitAddrs : public NetPacketAddress
-{
-};
+class Transport;
 class NetCommandRef;
 class NetCommandMsg;
 class NetAckStage1CommandMsg;
@@ -38,7 +35,7 @@ public:
 	Connection();												// 0x0058BDA0
 	~Connection() { ::delete m_netCommandList; }				// 0x004D060B (emitted in ConnectionManager.cpp: frees the command list, then the name)
 
-	void rva0058BAA7(InitAddrs *addrs, const UnicodeString &name, Int slot);	// 0x0058BAA7 (sets up the connection for a peer)
+	void rva0058BAA7(const NetPacketAddress *address, const UnicodeString &name, Transport *transport);	// 0x0058BAA7 (sets up the connection for a peer)
 	void sendNetCommandMsg(NetCommandMsg *msg, UnsignedByte relay);		// 0x0058BDFA
 	void clearCommandsExceptFrom(Int playerID);					// 0x0058B960
 	UnsignedInt doSend(Bool isInGame);							// 0x0058BB5C (builds packets from the pending commands and queues them on the transport)
@@ -56,7 +53,7 @@ protected:
 public:
 	UnsignedInt m_quitValue;									// +0x00 (-1 after the constructor)
 	UnsignedInt m_quitTime;										// +0x04
-	Int m_unk0x08;											// +0x08
+	Transport *m_transport;											// +0x08, the transport that queues this peer's packets
 	NetPacketAddress m_address;								// +0x0C the peer's address (ip dword, port word; the constructor value-initialises it)
 	UnicodeString m_name;										// +0x14 (the player name; ConnectionManager::getPlayerName copies it, 0x004D060B releases it)
 	NetCommandList *m_netCommandList;							// +0x18

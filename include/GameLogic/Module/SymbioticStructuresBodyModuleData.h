@@ -1,10 +1,10 @@
-// SymbioticStructuresBodyModuleData.h: promoted from include/Draft by h05 (round 10). Proven by 1 row that MATCH against it on main (0x00256D50);
+// SymbioticStructuresBodyModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x00256D50);
 // name, size, bases and virtual order are retail facts given below.
 // SymbioticStructuresBodyModuleData.h: the INI data of SymbioticStructuresBody. SIZE 0x68.
 // Target facts: ModuleFactory registers the module with operator new 0x68 and
 // constructor RVA 0x00256D0D; buildFieldParse RVA 0x00251505 calls ActiveBodyModuleData::buildFieldParse, then adds VA 0x00BEFCD4 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_SYMBIOTIC_STRUCTURES_BODY_MODULE_DATA_H

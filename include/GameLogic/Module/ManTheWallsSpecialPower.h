@@ -1,5 +1,5 @@
 // ManTheWallsSpecialPower.h: the ManTheWallsSpecialPower module. SIZE 0x34 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004C6F47 calls SpecialPowerModule first; it stores the
+// Target facts: the constructor 0x004C6F47 calls SpecialPowerModule first; it stores the
 // tables 0x00C5E044 at +0x0, 0x00BEFCF8 at +0xC, 0x00C5DFE0 at +0x10. Members are what xfer (0x004C8A95) transfers after SpecialPowerModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

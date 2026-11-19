@@ -1,6 +1,6 @@
 // DeletionUpdate.h: counts a lifetime down and destroys its object when it runs out.
 // SIZE 0x24 (ModuleFactory operator new).
-// Target facts (retail image, h05 modgen and the DeletionUpdate rows): the constructor
+// Target facts (retail image and the DeletionUpdate rows): the constructor
 // 0x004883D0 calls UpdateModule first, then stores the primary table 0x00C4B338 at +0x00,
 // 0x00BEFF90 at +0x0C and 0x00C4B32C at +0x10. The module data's minimum and maximum frame
 // counts are read by the constructor and by setLifetimeRange; calcSleepDelay stores the
@@ -44,7 +44,7 @@ protected:
 public:
 	UnsignedInt m_dieFrame;		// +0x20; the frame the object is destroyed on
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 };
 // SIZE 0x24
 typedef char DeletionUpdate_size[(sizeof(DeletionUpdate) == 0x24) ? 1 : -1];

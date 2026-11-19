@@ -1,5 +1,5 @@
 // PorcupineFormationBodyModule.h: the PorcupineFormationBodyModule module. SIZE 0x100 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004C1FE6 calls ActiveBody first; it stores the
+// Target facts: the constructor 0x004C1FE6 calls ActiveBody first; it stores the
 // tables 0x00C5C3C8 at +0x0, 0x00C5AD78 at +0xC, 0x00C5C318 at +0x10. Members are what xfer (0x004C20BA) transfers after ActiveBody::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

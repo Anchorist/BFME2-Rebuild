@@ -1,7 +1,7 @@
-// RousingSpeechUpdate.h: promoted from include/Draft by h05 (round 10). Proven by 2 rows that MATCH against it on main (0x004ACED2, 0x004ACED8);
+// RousingSpeechUpdate.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x004ACED2, 0x004ACED8);
 // name, size, bases and virtual order are retail facts given below.
 // RousingSpeechUpdate.h: the RousingSpeechUpdate module. SIZE 0x9C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004ACF76 calls SpecialAbilityUpdate first; it stores the
+// Target facts: the constructor 0x004ACF76 calls SpecialAbilityUpdate first; it stores the
 // tables 0x00C54FE8 at +0x0, 0x00C4D640 at +0xC, 0x00C54FD8 at +0x10, 0x00C552A4 at +0x20. Members are what xfer (0x004AD2AF) transfers after SpecialAbilityUpdate::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -47,7 +47,7 @@ public:
 	Real m_unk0x94;                                // +0x94; xfer Real
 	Real m_unk0x98;                                // +0x98; xfer Real
 protected:
-	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's (h05)
+	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's
 };
 // SIZE 0x9C
 typedef char RousingSpeechUpdate_size[(sizeof(RousingSpeechUpdate) == 0x9C) ? 1 : -1];

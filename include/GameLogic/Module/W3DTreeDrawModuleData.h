@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x64 and
 // constructor RVA 0x000CEBBF; buildFieldParse RVA 0x000CED03 adds VA 0x00BCCFE8 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 // Retail's table 0x007CCDF0 (31 slots) overrides slot 0 (the destructor), slot 14 (0x000CED14: a copy of the string at
 // +0x08, shared with W3DPropDrawModuleData's table), slot 15 (the folded `mov al,1; ret`) and slot 16 (the folded

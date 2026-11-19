@@ -26,13 +26,13 @@ private:
 	void doLevelGainNearby(ObjectIterator *units);						// 0x004BD2D0 (placeholder row): one level for every unit the scan found
 	void doMoney(Object *other);										// 0x004BD342
 protected:
-	virtual void xfer(Xfer *xfer);										// slot 3, 0x004BD2F9: Version1, then CrateCollide's (f08)
+	virtual void xfer(Xfer *xfer);										// slot 3, 0x004BD2F9: Version1, then CrateCollide's
 	virtual bool executeCrateBehavior(Object *other);					// 0x004BD442
 	virtual bool isValidToExecute(const Object *other) const;			// 0x004BD314
 protected:
-	virtual const char *GetSnapshotName() const;	// 0x004BD201, primary slot 2; retail's table has this class's own (h05, gen3 vtable-content list)
+	virtual const char *GetSnapshotName() const;	// 0x004BD201, primary slot 2; retail's table has this class's own
 protected:
-	virtual void loadPostProcess() { CrateCollide::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to CrateCollide's (h05)
+	virtual void loadPostProcess() { CrateCollide::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to CrateCollide's
 };
 // SIZE 0x18
 

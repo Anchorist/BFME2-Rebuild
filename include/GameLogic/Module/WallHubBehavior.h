@@ -1,7 +1,7 @@
-// WallHubBehavior.h: promoted from include/Draft by h05 (round 10). Proven by 2 rows that MATCH against it on main (0x00452DA3, 0x00452F25);
+// WallHubBehavior.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x00452DA3, 0x00452F25);
 // name, size, bases and virtual order are retail facts given below.
 // WallHubBehavior.h: the WallHubBehavior module. SIZE 0x28 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x00452E27 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x00452E27 calls UpdateModule first; it stores the
 // tables 0x00C633C0 at +0x20, 0x00C3FDBC at +0x0, 0x00BEFF90 at +0xC, 0x00C4B1E0 at +0x10, 0x00C3FD80 at +0x20. Members are what xfer (0x00452F25) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -74,7 +74,7 @@ protected:
 public:
 	UnsignedByte m_gap0x20[0x8];
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x28
 typedef char WallHubBehavior_size[(sizeof(WallHubBehavior) == 0x28) ? 1 : -1];

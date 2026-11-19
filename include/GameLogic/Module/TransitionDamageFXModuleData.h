@@ -1,4 +1,4 @@
-// TransitionDamageFXModuleData.h: the INI data of TransitionDamageFX. SIZE 0x1040. Target facts (f14, 2026-11-18, read
+// TransitionDamageFXModuleData.h: the INI data of TransitionDamageFX. SIZE 0x1040. Target facts (read
 // from the constructor 0x004BA58A, the parse rows 0x004B9917..0x004B9B2E and the field-parse table 0x00C6BB18):
 // the same structures as Zero Hour's (an FX location is a Bone: name with RandomBone, or a Loc: point), in four
 // BodyDamageType groups of twelve effects each (group 0, pristine, is never parsed). The constructor fills each

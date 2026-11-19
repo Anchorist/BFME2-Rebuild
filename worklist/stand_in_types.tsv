@@ -1,4 +1,4 @@
-# measured_utc=2026-11-19T17:15:33Z revision=b7596e675fd4e27a1d38963d4940a23d2e8d575a
+# measured_utc=2026-11-19T18:06:55Z revision=0a6b4f7e08abb66aafa1bd6934ab113c35be461e
 header	line	function	void_pointer_in
 include/Apt/AptActionInterpreter.h	92	rva006FD300	return
 include/Apt/AptActionInterpreter.h	103	PrepareForExecution	return
@@ -554,9 +554,9 @@ include/GameLogic/Object.h	210	rva002636F6	parameter
 include/GameLogic/Object.h	219	rva00263763	parameter
 include/GameLogic/Object.h	295	rva0028BD17	return
 include/GameLogic/Object.h	296	rva0028BD3A	return
-include/GameLogic/Object.h	486	setEmotion	parameter
-include/GameLogic/Object.h	512	isVisibleToPlayer	parameter
-include/GameLogic/Object.h	579	rva0023D3AF	parameter
+include/GameLogic/Object.h	488	setEmotion	parameter
+include/GameLogic/Object.h	514	isVisibleToPlayer	parameter
+include/GameLogic/Object.h	581	rva0023D3AF	parameter
 include/GameLogic/ObjectCreation/ApplyRandomForceNugget.h	31	GetAssetList	parameter
 include/GameLogic/ObjectCreation/ApplyRandomForceNugget.h	33	parse	parameter
 include/GameLogic/ObjectCreation/AttackNugget.h	31	GetAssetList	parameter
@@ -656,7 +656,7 @@ include/GameLogic/WeaponTemplateSet.h	92	parseAutoChoose	parameter
 include/GameLogic/WeaponTemplateSet.h	93	parsePreferredAgainst	parameter
 include/GameLogic/WeaponTemplateSet.h	98	parseOnlyAgainst	parameter
 include/GameLogic/WeaponTemplateSet.h	99	parseOnlyInCondition	parameter
-include/GameNetwork/Connection.h	49	rva0058BD4F	parameter
+include/GameNetwork/Connection.h	46	rva0058BD4F	parameter
 include/GameNetwork/ConnectionManager.h	76	rva004D04C9	return
 include/GameNetwork/ConnectionManager.h	128	relayCommand	parameter
 include/GameNetwork/ConnectionManager.h	149	processAckCommand	parameter

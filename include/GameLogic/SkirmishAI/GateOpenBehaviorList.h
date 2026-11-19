@@ -4,7 +4,7 @@
 // with the argument; appendOnce pushes back when the argument is not found, the removal erases the entry).
 // GateOpenAndCloseBehavior's constructor 0x0049889C appends itself, its destructor 0x00498798 and
 // onObjectCreated 0x0049936A (dead owner) and update 0x0049947A (dead owner) remove it.
-// Only the methods those rows call are declared; the map spells the class GateOpenBehaviorList (f08).
+// Only the methods those rows call are declared; the map spells the class GateOpenBehaviorList.
 #pragma once
 #ifndef BFME2_GATEOPENBEHAVIORLIST_H
 #define BFME2_GATEOPENBEHAVIORLIST_H

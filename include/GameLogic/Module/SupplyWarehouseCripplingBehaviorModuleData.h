@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x14 and
 // constructor RVA 0x00483A61; buildFieldParse RVA 0x00483A7A adds VA 0x00C49B40 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_SUPPLY_WAREHOUSE_CRIPPLING_BEHAVIOR_MODULE_DATA_H

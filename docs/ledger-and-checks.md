@@ -161,7 +161,7 @@ The other `hypothesis:` values:
 | --- | --- | --- |
 | **MATCH** | An owned row compiled with equal comparison bytes after applying the checker's relocation treatment and name policy. Without a proven wrong reference, the row can be credited while its reference proof remains open. | Inspect reference proof and the result's scope. |
 | **Proven** | A credited MATCH also passed reference verification for the checked references. | Runtime behavior, uncovered bodies and original file boundaries have separate checks. |
-| **VERIFIED** | The checker found no blocker for the assigned object. It checks owned and expected emitted rows, references, compile receipts, emitted order, extra symbols, applicable gates and unresolved Draft dependencies. | Unassigned contributions and original source completeness remain open where the ledger lacks evidence. |
+| **VERIFIED** | The checker found no blocker for the assigned object. It checks owned and expected emitted rows, references, compile receipts, emitted order, extra symbols, applicable checks and unresolved Draft dependencies. | Unassigned contributions and original source completeness remain open where the ledger lacks evidence. |
 | **PARTIAL** | The selected compiled body differs under byte comparison. | Check the reported symbol and RVA first. For an unresolved placeholder, a near-match percentage can describe a different compiled body. |
 | **MISNAMED** | An otherwise plausible emitted body conflicts with the accepted identity at that address. | Establish the real class, signature and spelling. Request a ledger correction when the ledger is wrong. |
 | **WRONG_REFERENCE** | The comparison bytes agree and a relocation points to a target the checker proves wrong. The row receives no Function MATCH credit. | Identify the intended reference and the actual emitted target, including its owning data, slot or symbol. |
@@ -199,6 +199,6 @@ evidence and let the checker and maintainer handle adoption.
 The check compiles changed units and units affected by changed headers,
 checks the source and generated metadata rules, and compares the result
 against the recorded base for losses of existing credit or proof. It reports
-compile errors and gate failures. A green check is scoped to the revision,
+compile errors and failed checks. A green check is scoped to the revision,
 affected units and checked rules. No pull-request result claims a successful
 standalone link or game run.

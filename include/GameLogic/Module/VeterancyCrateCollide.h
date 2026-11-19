@@ -32,9 +32,9 @@ public:
 		return static_cast<const VeterancyCrateCollideModuleData *>(getCrateCollideModuleData());
 	}
 protected:
-	virtual void loadPostProcess() { CrateCollide::loadPostProcess(); }	// slot 1: retail 0x00483CEF, `jmp` to CrateCollide's (0x00497805) (h05 r9)
+	virtual void loadPostProcess() { CrateCollide::loadPostProcess(); }	// slot 1: retail 0x00483CEF, `jmp` to CrateCollide's (0x00497805)
 	virtual const char *GetSnapshotName() const;					// slot 2, 0x004BCE5C
-	virtual void xfer(Xfer *xfer);									// slot 3: retail 0x004BD2F9, Version1 then CrateCollide::xfer (the fold SalvageCrateCollide shares) (h05 r9)
+	virtual void xfer(Xfer *xfer);									// slot 3: retail 0x004BD2F9, Version1 then CrateCollide::xfer (the fold SalvageCrateCollide shares)
 	virtual bool executeCrateBehavior(Object *other);				// slot 12, 0x004BCFF0
 	virtual bool isValidToExecute(const Object *other) const;		// slot 13, 0x004BCEF0
 };

@@ -31,9 +31,9 @@ protected:
 	virtual void upgradeRemovalImplementation();						// 0x004B471F
 	virtual void upgradeImplementation();								// 0x004B488F
 protected:
-	virtual void xfer(Xfer *xfer);	// primary slot 3: retail's body is folded with ArmorUpgrade::xfer 0x004B8710; retail's table has this class's own (h05, gen3 vtable-content list)
+	virtual void xfer(Xfer *xfer);	// primary slot 3: retail's body is folded with ArmorUpgrade::xfer 0x004B8710; retail's table has this class's own
 protected:
-	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpgradeModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpgradeModule's, ICF-folded across classes
 };
 
 #endif

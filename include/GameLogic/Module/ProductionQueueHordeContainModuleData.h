@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0xE0 and
 // constructor RVA 0x00481776; buildFieldParse RVA 0x0048175B calls HordeGarrisonContainModuleData::buildFieldParse, then adds VA 0x00C490D4 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 // DestinationTemplate parses a name and an ObjectFilter into one 8-byte vector entry.
 #pragma once

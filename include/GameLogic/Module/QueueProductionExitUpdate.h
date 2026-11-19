@@ -49,7 +49,7 @@ protected:
 	bool isFreeToExit() const; // 0x004A002A (IBE: protected)
 public:
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 public:
 	virtual Bool useSpawnRallyPoint() const;	// ExitInterface slot 6: 0x004A0107 (`mov al,[ecx+0x14]`: the rally point exists)
 	virtual Bool isExitBusy() const { return false; }	// ExitInterface slot 0: retail 0x0047A699, `xor al,al; ret` (ICF-folded)

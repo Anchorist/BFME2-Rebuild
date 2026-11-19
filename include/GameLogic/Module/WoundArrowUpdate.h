@@ -1,5 +1,5 @@
 // WoundArrowUpdate.h: the WoundArrowUpdate module. SIZE 0x8C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004C6905 calls SpecialAbilityUpdate first; it stores the
+// Target facts: the constructor 0x004C6905 calls SpecialAbilityUpdate first; it stores the
 // tables 0x00C5DF10 at +0x0, 0x00C4D640 at +0xC, 0x00C5DF00 at +0x10, 0x00C5DEDC at +0x20. Members are what xfer (0x004C6963) transfers after SpecialAbilityUpdate::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -41,7 +41,7 @@ protected:
 public:
 	Bool m_unk0x88;                                // +0x88; xfer Bool
 protected:
-	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's (h05)
+	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's
 };
 // SIZE 0x8C
 typedef char WoundArrowUpdate_size[(sizeof(WoundArrowUpdate) == 0x8C) ? 1 : -1];

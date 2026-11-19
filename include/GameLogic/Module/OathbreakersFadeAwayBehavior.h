@@ -1,7 +1,7 @@
-// OathbreakersFadeAwayBehavior.h: promoted from include/Draft by h05 (round 10). Proven by 3 rows that MATCH against it on main (0x004B89DD, 0x004B8A22, 0x004B8A28);
+// OathbreakersFadeAwayBehavior.h: promoted from include/Draft. Proven by 3 rows that MATCH against it on main (0x004B89DD, 0x004B8A22, 0x004B8A28);
 // name, size, bases and virtual order are retail facts given below.
 // OathbreakersFadeAwayBehavior.h: the OathbreakersFadeAwayBehavior module. SIZE 0x28 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004B8A8A calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004B8A8A calls UpdateModule first; it stores the
 // tables 0x00C5928C at +0x0, 0x00BEFF90 at +0xC, 0x00C59280 at +0x10. Members are what xfer (0x004B8A28) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -41,7 +41,7 @@ public:
 	Bool m_unk0x20;                                // +0x20; xfer Bool
 	Real m_unk0x24;                                // +0x24; xfer Real
 protected:
-	virtual void loadPostProcess() {}	// retail slot: the shared empty body 0x000B3FD0 (h05, gen3 vtable-content list)
+	virtual void loadPostProcess() {}	// retail slot: the shared empty body 0x000B3FD0
 public:
 	virtual UpdateSleepTime update();	// UpdateModuleInterface slot 0: 0x004B8B41
 };

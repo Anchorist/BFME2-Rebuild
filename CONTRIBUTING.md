@@ -152,7 +152,7 @@ function compiled from your source. Reference disassembly stays private.
 
 Update against current `main` when the check asks. Mark the pull request
 ready for review once it passes. Maintainers review the current head and
-the service reruns the landing gate before updating main. Public
+the service reruns the landing checks before updating main. Public
 admissions open after the dedicated compiler-only pool is verified.
 
 A local check is optional. [Checker inputs and methods](tools/README.md)

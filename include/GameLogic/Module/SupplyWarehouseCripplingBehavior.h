@@ -1,9 +1,9 @@
-// Slots 13-15 of the primary table 0x00C49AC8 are this class's own (0x00483BA3, 0x00483BBB, 0x00483BCD: f08 read the table, which ends at the
-// "SelfHealSupression" literal at slot 16; the h05 note below that the bounded table's slots 13-15 are ModuleData's was wrong). They are Zero Hour's
+// Slots 13-15 of the primary table 0x00C49AC8 are this class's own (0x00483BA3, 0x00483BBB, 0x00483BCD: the table ends at the
+// "SelfHealSupression" literal at slot 16). They are Zero Hour's
 // protected virtuals resetSelfHealSupression, startCrippledEffects and stopCrippledEffects, in that order.
-// bases UpdateModule and DamageModuleInterface (+0x20, identified by its three slots' shape; the constructor 0x00483A8B stores the pure table there first), size 0x2C; the bounded table's slots 13-15 are the next table's (ModuleData's), so it adds no slot of its own. GetSnapshotName, getModuleNameKey and xfer match against it.
+// bases UpdateModule and DamageModuleInterface (+0x20, identified by its three slots' shape; the constructor 0x00483A8B stores the pure table there first), size 0x2C. GetSnapshotName, getModuleNameKey and xfer match against it.
 // SupplyWarehouseCripplingBehavior.h: the SupplyWarehouseCripplingBehavior module. SIZE 0x2C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x00483A8B calls UpdateModule first; it stores the
+// Target facts: the constructor 0x00483A8B calls UpdateModule first; it stores the
 // tables 0x00BE2B78 at +0x20, 0x00C49AC8 at +0x0, 0x00C49800 at +0xC, 0x00C49AB8 at +0x10, 0x00C49AAC at +0x20. Members are what xfer (0x00483BDF) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -66,7 +66,7 @@ public:
 	UnsignedInt m_healingSupressedUntilFrame;	// +0x24; xfer UnsignedInt; the constructor zeroes it
 	UnsignedInt m_nextHealingFrame;				// +0x28; xfer UnsignedInt; the constructor zeroes it
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x2C
 typedef char SupplyWarehouseCripplingBehavior_size[(sizeof(SupplyWarehouseCripplingBehavior) == 0x2C) ? 1 : -1];

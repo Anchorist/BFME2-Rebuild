@@ -28,7 +28,7 @@ executables, game assets and raw dumps out of pull requests.
    first farm check. After approval, later eligible submissions queue
    automatically. Push fixes to the same branch to run again.
 5. Request maintainer review when the check passes. The landing service reruns
-   the gate before updating main. The bot links the landed commit in the PR
+   the comparison before updating main. The bot links the landed commit in the PR
    conversation.
 
 The check accepts up to 60 changed paths, 1 MiB per changed file and 8 MiB of
@@ -48,10 +48,10 @@ the service holds check admissions.
   waiting for Boat or the checker. A service outage leaves the check pending.
   Shared-header changes are checked in the wide lane and can take up to
   two hours to return a verdict with the current compiler scheduling.
-- **Pass** means the measured change meets the landing gates on the reported
+- **Pass** means the measured change meets the landing checks on the reported
   main commit. A maintainer review applies to the current pull request head.
 - **Fail** identifies source intake issues, conflicts, compiler diagnostics,
-  lost credit, lost reference proof, lost Object VERIFIED or another gate.
+  lost credit, lost reference proof, lost Object VERIFIED or another check.
   Resolve a conflict against current main and push the fix.
 
 Rows show file, function when available, address, size, and before/after

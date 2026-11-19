@@ -1,5 +1,4 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-// Diagnostic pilot import; object boundaries may be unproven.
 // FUNCTION: BFME2 0x00499954 size=6 name=?name@Rva00499954Named@@QBEPBDXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0049995A size=82 name=?xfer@OneRingPenaltyUpdate@@MAEXPAVXfer@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x004999AC size=69 name=?getModuleNameKey@OneRingPenaltyUpdate@@UBE?AW4NameKeyType@@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
@@ -66,10 +65,10 @@ void OneRingPenaltyUpdate::xfer(Xfer *xfer)
 	if (xfer->IsLightCRC())
 		return;
 	xfer->Version1();
-	XferObjectID(xfer, &m_24);
-	*xfer == m_28;
-	*xfer == m_2C;
-	*xfer == m_30;
+	XferObjectID(xfer, &m_pursuerID);
+	*xfer == m_ringWearStartFrame;
+	*xfer == m_pursuitAngle;
+	*xfer == m_suppressionStartFrame;
 }
 
 
@@ -104,7 +103,7 @@ OneRingPenaltyUpdate::OneRingPenaltyUpdate(Thing *thing,const ModuleData *module
 {
  float fzero=0.0f;
  int zero=0;
- m_24=(ObjectID)zero; m_28=zero; m_2C=fzero; m_30=zero;
+ m_pursuerID=(ObjectID)zero; m_ringWearStartFrame=zero; m_pursuitAngle=fzero; m_suppressionStartFrame=zero;
  setWakeFrame(m_object,UPDATE_SLEEP_NONE);
 }
 
@@ -130,7 +129,7 @@ void OneRingPenaltyUpdate::rva00499AFD()
 		Object *newObj = TheThingFactory->newObject(thingTemplate, team, &u.mask, (ObjectID)0);
 		if (!newObj)
 			return;
-		m_24 = newObj->m_id;
+		m_pursuerID = newObj->m_id;
 		const Coord3D *objPos = obj->getPosition();
 		u.overlay.pos.x = objPos->x;
 		u.overlay.pos.y = objPos->y;
@@ -140,7 +139,7 @@ void OneRingPenaltyUpdate::rva00499AFD()
 		u.overlay.pos.y += Sin(angle) * data->m_startingDistanceFromMe;
 		u.overlay.pos.z = TheTerrainLogic->getGroundHeight(u.overlay.pos.x, u.overlay.pos.y, 0);
 		newObj->setPosition(static_cast<const Coord3D *>(&u.overlay.pos));
-		m_2C = angle;
+		m_pursuitAngle = angle;
 	}
 }
 
@@ -148,30 +147,30 @@ void OneRingPenaltyUpdate::rva00499AFD()
 
 void OneRingPenaltyUpdate::rva00499C35()
 {
-	m_30 = 0;
-	m_object->setStatus((ObjectStatusTypes)0x12, true);
+	m_suppressionStartFrame = 0;
+	m_object->setStatus(OBJECT_STATUS_CAN_STEALTH, true);
 }
 
 
 void OneRingPenaltyUpdate::rva00499C46()
 {
- Object *obj=TheGameLogic->findObjectByID(m_24);
- if(obj) { obj->kill((DamageType)8,(DeathType)0);m_24=INVALID_ID; }
+ Object *obj=TheGameLogic->findObjectByID(m_pursuerID);
+ if(obj) { obj->kill((DamageType)8,(DeathType)0);m_pursuerID=INVALID_ID; }
 }
 
 
 void OneRingPenaltyUpdate::rva00499C6C()
 {
 	UnsignedInt frame = TheGameLogic->getFrame();
-	const OneRingPenaltyUpdateModuleData *data = reinterpret_cast<const OneRingPenaltyUpdateModuleData *>(getModuleData());
-	m_28 = 0;
+	const OneRingPenaltyUpdateModuleData *data = static_cast<const OneRingPenaltyUpdateModuleData *>(getModuleData());
+	m_ringWearStartFrame = 0;
 	Object *obj = m_object;
-	m_30 = frame;
+	m_suppressionStartFrame = frame;
 	Rva00373EC6 *ring = obj->rva0028F4BC();
 	if (ring != 0 && ring->m_31)
 	{
 		ring->rva00374815();
-		obj->setStatus((ObjectStatusTypes)0x12, false);
+		obj->setStatus(OBJECT_STATUS_CAN_STEALTH, false);
 		obj->rva0028EC68(5, 0, 1);
 		const OpaqueRefElement4 *ref = &data->m_discoveredSound;
 		if (ref->referent != 0)
@@ -189,12 +188,12 @@ void OneRingPenaltyUpdate::onDie(const DamageInfo *) { rva00499C46(); }
 
 void OneRingPenaltyUpdate::rva00499D23()
 {
-	const OneRingPenaltyUpdateModuleData *oneRingPenaltyUpdateModuleData = reinterpret_cast<const OneRingPenaltyUpdateModuleData *>(getModuleData());
+	const OneRingPenaltyUpdateModuleData *oneRingPenaltyUpdateModuleData = static_cast<const OneRingPenaltyUpdateModuleData *>(getModuleData());
 	Object *obj = m_object;
 	GameLogic *logic = TheGameLogic;
-	Object *ringer = logic->findObjectByID(m_24);
+	Object *ringer = logic->findObjectByID(m_pursuerID);
 	UnsignedInt now = logic->getFrame();
-	UnsignedInt start = m_28 + oneRingPenaltyUpdateModuleData->m_ringTimeBeforeSpawning;
+	UnsignedInt start = m_ringWearStartFrame + oneRingPenaltyUpdateModuleData->m_ringTimeBeforeSpawning;
 	UnsignedInt end = start + oneRingPenaltyUpdateModuleData->m_timeSpentRoamingAround;
 
 	if (now >= end)
@@ -209,7 +208,7 @@ void OneRingPenaltyUpdate::rva00499D23()
 		Coord3D pos;
 		pos.x = obj->getPosition()->x;
 		pos.y = obj->getPosition()->y;
-		m_2C += GetGameLogicRandomValueReal(-1.5707964f, 1.5707964f,
+		m_pursuitAngle += GetGameLogicRandomValueReal(-1.5707964f, 1.5707964f,
 			"C:\\projects\\bfme2patch103\\bfme2\\Code\\GameEngine\\Source\\GameLogic\\Object\\Update\\OneRingPenaltyUpdate.cpp",
 			184);
 		Real radius;
@@ -223,46 +222,46 @@ void OneRingPenaltyUpdate::rva00499D23()
 			Real ratio = (Real)(now - start) / (Real)(end - start);
 			radius = startRadius + ratio * (oneRingPenaltyUpdateModuleData->m_startingDistanceFromMe / 2.0f - startRadius);
 		}
-		pos.x += Cos(m_2C) * radius;
-		Real sine = Sin(m_2C);
+		pos.x += Cos(m_pursuitAngle) * radius;
+		Real sine = Sin(m_pursuitAngle);
 		TerrainLogic *terrain = TheTerrainLogic;
         const TerrainGroundMethods &ground=**reinterpret_cast<TerrainGroundMethods **>(terrain);
 
 		pos.y += sine * radius;
 		pos.z = (terrain->*ground[6])(pos.x,pos.y,0);
-		ringer->getAI()->aiMoveToPosition(&pos, (CommandSourceType)2);
+		ringer->getAI()->aiMoveToPosition(&pos, CMD_FROM_AI);
 	}
 }
 
 
 UpdateSleepTime OneRingPenaltyUpdate::update()
 {
-	const OneRingPenaltyUpdateModuleData *oneRingPenaltyUpdateModuleData = reinterpret_cast<const OneRingPenaltyUpdateModuleData *>(getModuleData());
+	const OneRingPenaltyUpdateModuleData *oneRingPenaltyUpdateModuleData = static_cast<const OneRingPenaltyUpdateModuleData *>(getModuleData());
 	Object *obj = m_object;
 	Bool wearing = false;
-	if (obj->rva0028F518() || obj->testStatus((ObjectStatusTypes)0xF))
+	if (obj->rva0028F518() || obj->testStatus(OBJECT_STATUS_STEALTHED))
 	{
 		Rva00373EC6 *ring = obj->rva0028F4BC();
 		if (ring && ring->m_31)
 			wearing = true;
 	}
 	UnsignedInt now = TheGameLogic->getFrame();
-	if (m_30 != 0 && now > oneRingPenaltyUpdateModuleData->m_timeRingPowerSuppressed + m_30)
+	if (m_suppressionStartFrame != 0 && now > oneRingPenaltyUpdateModuleData->m_timeRingPowerSuppressed + m_suppressionStartFrame)
 		rva00499C35();
-	else if (m_28 == 0)
+	else if (m_ringWearStartFrame == 0)
 	{
 		if (wearing)
-			m_28 = now;
+			m_ringWearStartFrame = now;
 	}
 	else if (!wearing)
 	{
-		m_28 = 0;
-		if (m_24)
+		m_ringWearStartFrame = 0;
+		if (m_pursuerID)
 			rva00499C46();
 	}
-	else if (m_24)
+	else if (m_pursuerID)
 		rva00499D23();
-	else if (now > oneRingPenaltyUpdateModuleData->m_ringTimeBeforeSpawning + m_28)
+	else if (now > oneRingPenaltyUpdateModuleData->m_ringTimeBeforeSpawning + m_ringWearStartFrame)
 		rva00499AFD();
 	return (UpdateSleepTime)BfmeLogicFramesPerSecond;
 }

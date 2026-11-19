@@ -1,7 +1,7 @@
-// SiegeDockingBehavior.h: promoted from include/Draft by h05 (round 10). Proven by 3 rows that MATCH against it on main (0x004599DF, 0x004599E5, 0x0045A16D);
+// SiegeDockingBehavior.h: promoted from include/Draft. Proven by 3 rows that MATCH against it on main (0x004599DF, 0x004599E5, 0x0045A16D);
 // name, size, bases and virtual order are retail facts given below.
 // SiegeDockingBehavior.h: the SiegeDockingBehavior module. SIZE 0x34 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x0045996C calls UpdateModule first; it stores the
+// Target facts: the constructor 0x0045996C calls UpdateModule first; it stores the
 // tables 0x00C4EF80 at +0x20, 0x00C414DC at +0x0, 0x00C41420 at +0xC, 0x00C41414 at +0x10, 0x00C41404 at +0x20. Members are what xfer (0x0045A02F) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

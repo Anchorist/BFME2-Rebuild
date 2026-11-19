@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x18C and
 // constructor RVA 0x000CAF17; buildFieldParse RVA 0x000CAE28 calls W3DModelDrawModuleData::buildFieldParse, then adds VA 0x00BCBED8 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_W3_D_SUPPLY_DRAW_MODULE_DATA_H

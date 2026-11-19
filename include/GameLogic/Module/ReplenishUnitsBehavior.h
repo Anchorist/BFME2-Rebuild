@@ -1,5 +1,5 @@
 // ReplenishUnitsBehavior.h: the ReplenishUnitsBehavior module. SIZE 0x28 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x00484227 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x00484227 calls UpdateModule first; it stores the
 // tables 0x00C4A034 at +0x0, 0x00C49F78 at +0xC, 0x00C49F68 at +0x10. Members are what xfer (0x00484365) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -36,7 +36,7 @@ public:
 	virtual void upgradeImplementation();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();	// 0x0048438A (UpdateModuleInterface slot 0)
-	virtual DisabledMaskType getDisabledTypesToProcess() const { return DisabledMaskType(DisabledMaskType::kInit, 3); }	// UpdateModuleInterface slot 1 (table 0x00849F68): the shared DISABLED_HELD body 0x004A2D67 (h05 r13)
+	virtual DisabledMaskType getDisabledTypesToProcess() const { return DisabledMaskType(DisabledMaskType::kInit, 3); }	// UpdateModuleInterface slot 1 (table 0x00849F68): the shared DISABLED_HELD body 0x004A2D67
 	virtual const char *GetSnapshotName() const;
 	virtual ~ReplenishUnitsBehavior();
 	void rva004842DD(Object *replenished);	// 0x004842DD: replenish one object (FX, rider reset)
@@ -52,7 +52,7 @@ protected:
 public:
 	// +0x20..+0x27 is the UpgradeMux base (xfer calls its upgradeMuxXfer 0x004CE397 on this+0x20).
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); upgradeMuxLoadPostProcess(); }	// retail slot 0x004B7BAA, the body AudioLoopUpgrade's shares (h05, gen3 vtable-content list)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); upgradeMuxLoadPostProcess(); }	// retail slot 0x004B7BAA, the body AudioLoopUpgrade's shares
 };
 // SIZE 0x28
 typedef char ReplenishUnitsBehavior_size[(sizeof(ReplenishUnitsBehavior) == 0x28) ? 1 : -1];

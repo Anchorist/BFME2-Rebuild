@@ -1,5 +1,5 @@
 // StructureCollapseUpdate.h: the update module that makes a destroyed structure shudder, sink and burst apart.
-// SIZE 0x44 (ModuleFactory operator new). Promoted out of Draft by f08 (2026-11-17).
+// SIZE 0x44 (ModuleFactory operator new). Promoted out of Draft.
 // Layout is Zero Hour's: class StructureCollapseUpdate : public UpdateModule, public DieModuleInterface.
 // Target facts (retail game.dat):
 // - Ctor 0x004A42E4 calls UpdateModule's, stores the tables 0x00C52648 at +0, 0x00C5263C at +0x10 (update interface)
@@ -58,7 +58,7 @@ public:
 	virtual ~StructureCollapseUpdate();	// 0x004A4214: restores the four tables and jumps to ~UpdateModule (deleting thunk 0x004A436F)
 	virtual NameKeyType getModuleNameKey() const;	// slot 4, 0x004A429F (the map spells it as a static of the class: rva0004A429F)
 	virtual const char *GetSnapshotName() const;
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004A46BF)
 	virtual DisabledMaskType getDisabledTypesToProcess() const;	// override: update slot 1 at +0x10 (0x004A4580)
 	virtual DieModuleInterface *getDie() { return this; }	// override: BehaviorModuleInterface slot 7 (retail 0x004543A9: the null-checked interface pointer)

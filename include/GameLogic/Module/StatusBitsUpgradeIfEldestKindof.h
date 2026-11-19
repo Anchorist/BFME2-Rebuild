@@ -1,5 +1,5 @@
 // StatusBitsUpgradeIfEldestKindof.h: the StatusBitsUpgradeIfEldestKindof module. SIZE 0x20 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004B4A32 calls StatusBitsUpgrade first; it stores the
+// Target facts: the constructor 0x004B4A32 calls StatusBitsUpgrade first; it stores the
 // tables 0x00C57ADC at +0x0, 0x00C57A20 at +0xC, 0x00C579D8 at +0x10, 0x00C58790 at +0x18. Members are what xfer (0x004B4B7C) transfers after StatusBitsUpgrade::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

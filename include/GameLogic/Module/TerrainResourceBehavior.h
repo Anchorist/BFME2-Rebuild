@@ -1,7 +1,7 @@
-// TerrainResourceBehavior.h: promoted from include/Draft by h05 (round 10). Proven by 1 row that MATCH against it on main (0x00481FBD);
+// TerrainResourceBehavior.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x00481FBD);
 // name, size, bases and virtual order are retail facts given below.
 // TerrainResourceBehavior.h: the TerrainResourceBehavior module. SIZE 0x30 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x0048209B calls UpdateModule first; it stores the
+// Target facts: the constructor 0x0048209B calls UpdateModule first; it stores the
 // tables 0x00C1C780 at +0x20, 0x00C4EF80 at +0x24, 0x00C49408 at +0x0, 0x00C42B60 at +0xC, 0x00C493FC at +0x10, 0x00C493F8 at +0x20, 0x00C493E8 at +0x24. Members are what xfer (0x004821CB) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

@@ -1,5 +1,5 @@
 // SpawnUnitBehavior.h: the SpawnUnitBehavior module. SIZE 0x28 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004B87E3 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004B87E3 calls UpdateModule first; it stores the
 // tables 0x00C1C780 at +0x20, 0x00C591EC at +0x0, 0x00C59130 at +0xC, 0x00C59124 at +0x10, 0x00C59120 at +0x20. Members are what xfer (0x004B87A3) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -79,7 +79,7 @@ protected:
 public:
 	Bool m_unk0x24;                                // +0x24; xfer Bool
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x28
 typedef char SpawnUnitBehavior_size[(sizeof(SpawnUnitBehavior) == 0x28) ? 1 : -1];

@@ -27,9 +27,9 @@ public:
 
 protected:
 	virtual const char *GetSnapshotName() const;					// 0x0048B68A
-	virtual void xfer(Xfer *xfer);									// slot 3, 0x004DF81B: Version1, then UpdateModule's (f08)
+	virtual void xfer(Xfer *xfer);									// slot 3, 0x004DF81B: Version1, then UpdateModule's
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 };
 // SIZE 0x20
 typedef char FireSpreadUpdate_size[(sizeof(FireSpreadUpdate) == 0x20) ? 1 : -1];

@@ -1,8 +1,8 @@
 // LockWeaponCreateModuleData.h: the INI data of LockWeaponCreate. SIZE 0xC.
-// Proven by buildFieldParse 0x004B8C9C (h06). Target facts: ModuleFactory registers the module with operator new 0xC and
+// Proven by buildFieldParse 0x004B8C9C. Target facts: ModuleFactory registers the module with operator new 0xC and
 // constructor RVA 0x00254C8E; buildFieldParse RVA 0x004B8C9C adds VA 0x00C59338 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_LOCK_WEAPON_CREATE_MODULE_DATA_H

@@ -1,5 +1,5 @@
 // SlavedUpdate.h: the SlavedUpdate module. SIZE 0x48 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004A18C5 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004A18C5 calls UpdateModule first; it stores the
 // tables 0x00C6F248 at +0x20, 0x00C51F1C at +0x0, 0x00C51E60 at +0xC, 0x00C51E54 at +0x10, 0x00C51E30 at +0x20. Members are what xfer (0x004A1B54) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -103,7 +103,7 @@ public:
 	Bool m_unk0x44;                                // +0x44; xfer Bool
 	Bool m_unk0x45;                                // +0x45; xfer Bool
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 };
 // SIZE 0x48
 typedef char SlavedUpdate_size[(sizeof(SlavedUpdate) == 0x48) ? 1 : -1];

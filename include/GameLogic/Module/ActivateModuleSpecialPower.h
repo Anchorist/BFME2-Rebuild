@@ -1,5 +1,5 @@
 // ActivateModuleSpecialPower.h: the ActivateModuleSpecialPower module. SIZE 0x88 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004CDD02 calls SpecialAbilityUpdate first; it stores the
+// Target facts: the constructor 0x004CDD02 calls SpecialAbilityUpdate first; it stores the
 // tables 0x00C5FC88 at +0x0, 0x00C4D640 at +0xC, 0x00C4DEE8 at +0x10, 0x00C552A4 at +0x20. Members are what xfer (0x004CE0BE) transfers after SpecialAbilityUpdate::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -41,7 +41,7 @@ public:
 	virtual void triggerAbilityEffect();			// 0x004CDEED, slot 17
 	void SetWakeState(int state);				// 0x004CDDBA
 protected:
-	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF (table 0x0085FC88): a jmp to SpecialAbilityUpdate's 0x00497805 (h05 r13)
+	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF (table 0x0085FC88): a jmp to SpecialAbilityUpdate's 0x00497805
 };
 // SIZE 0x88
 typedef char ActivateModuleSpecialPower_size[(sizeof(ActivateModuleSpecialPower) == 0x88) ? 1 : -1];

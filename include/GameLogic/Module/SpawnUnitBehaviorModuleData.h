@@ -1,10 +1,10 @@
-// SpawnUnitBehaviorModuleData.h: promoted from include/Draft by h05 (round 10). Proven by 1 row that MATCH against it on main (0x002559F1);
+// SpawnUnitBehaviorModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x002559F1);
 // name, size, bases and virtual order are retail facts given below.
 // SpawnUnitBehaviorModuleData.h: the INI data of SpawnUnitBehavior. SIZE 0x20.
 // Target facts: ModuleFactory registers the module with operator new 0x20 and
 // constructor RVA 0x0025598C; buildFieldParse RVA 0x004B8840 adds VA 0x00C59238 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_SPAWN_UNIT_BEHAVIOR_MODULE_DATA_H

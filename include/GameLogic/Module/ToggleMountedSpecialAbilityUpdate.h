@@ -1,5 +1,5 @@
 // ToggleMountedSpecialAbilityUpdate.h: the ToggleMountedSpecialAbilityUpdate module. SIZE 0x90 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004ADAB5 calls SpecialAbilityUpdate first; it stores the
+// Target facts: the constructor 0x004ADAB5 calls SpecialAbilityUpdate first; it stores the
 // tables 0x00C551C0 at +0x0, 0x00C562D8 at +0xC, 0x00C4DEE8 at +0x10, 0x00C55198 at +0x20. Members are what xfer (0x004ADA2D) transfers after SpecialAbilityUpdate::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -47,7 +47,7 @@ public:
 	UnsignedByte m_gap0x88[0x4];
 	Bool m_unk0x8C;                                // +0x8C; xfer Bool
 protected:
-	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's (h05)
+	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's
 };
 // SIZE 0x90
 typedef char ToggleMountedSpecialAbilityUpdate_size[(sizeof(ToggleMountedSpecialAbilityUpdate) == 0x90) ? 1 : -1];

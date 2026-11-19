@@ -1,5 +1,5 @@
 // RampageBehavior.h: the RampageBehavior module. SIZE 0x2C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x00458B60 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x00458B60 calls UpdateModule first; it stores the
 // tables 0x00C40DA8 at +0x0, 0x00BEFF90 at +0xC, 0x00C40D9C at +0x10. Members are what xfer (0x00458ACD) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -40,7 +40,7 @@ public:
 	Int m_unk0x24;                                 // +0x24; xfer Int
 	Int m_unk0x28;                                 // +0x28; xfer Int
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 };
 // SIZE 0x2C
 typedef char RampageBehavior_size[(sizeof(RampageBehavior) == 0x2C) ? 1 : -1];

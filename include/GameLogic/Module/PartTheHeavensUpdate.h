@@ -1,7 +1,7 @@
-// PartTheHeavensUpdate.h: promoted from include/Draft by h05 (round 10). Proven by 5 rows that MATCH against it on main (0x004AC93C, 0x004AC942, 0x004ACAAA, 0x004ACBB3, 0x004ACBE8);
+// PartTheHeavensUpdate.h: promoted from include/Draft. Proven by 5 rows that MATCH against it on main (0x004AC93C, 0x004AC942, 0x004ACAAA, 0x004ACBB3, 0x004ACBE8);
 // name, size, bases and virtual order are retail facts given below.
 // PartTheHeavensUpdate.h: the PartTheHeavensUpdate module. SIZE 0x28 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004AC998 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004AC998 calls UpdateModule first; it stores the
 // tables 0x00C54DA4 at +0x0, 0x00BEFF90 at +0xC, 0x00C54D98 at +0x10. Members are what xfer (0x004ACAAA) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

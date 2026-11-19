@@ -22,7 +22,7 @@ public:
     BridgeScaffoldBehavior(Thing *, const ModuleData *);
     virtual ~BridgeScaffoldBehavior();
     virtual UpdateSleepTime update();
-    virtual NameKeyType getModuleNameKey() const;     // 0x004583BD (h05: written in BridgeScaffoldBehavior.cpp)
+    virtual NameKeyType getModuleNameKey() const;     // 0x004583BD (written in BridgeScaffoldBehavior.cpp)
     virtual BridgeScaffoldBehaviorInterface *getBridgeScaffoldBehaviorInterface() { return this; }
     static BridgeScaffoldBehaviorInterface *getBridgeScaffoldBehaviorInterfaceFromObject(Object *);
     virtual void setPositions(const Coord3D *, const Coord3D *, const Coord3D *);

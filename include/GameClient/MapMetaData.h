@@ -34,7 +34,6 @@
 #include "Common/Coord3D.h"
 #include "Common/Region3D.h"
 
-#if defined(_STLPORT_VERSION)
 #include <map>
 #include <list>
 #include <set>
@@ -76,7 +75,6 @@ struct MapPlayers
 };
 
 typedef _STL::list<Coord3D> MapCoordList;
-#endif
 
 class MapMetaData
 {
@@ -103,21 +101,11 @@ public:
 	UnsignedInt m_fileCRC;													// +0x2C
 	UnsignedInt m_timestampLo;												// +0x30
 	UnsignedInt m_timestampHi;												// +0x34
-#if defined(_STLPORT_VERSION)
 	WaypointMap m_waypoints;												// +0x38
 	MapCoordList m_supplyPositions;											// +0x48
 	MapCoordList m_techPositions;											// +0x4C
-#else
-	unsigned char m_waypointsStorage[0x10];									// +0x38
-	unsigned char m_supplyPositionsStorage[4];								// +0x48
-	unsigned char m_techPositionsStorage[4];								// +0x4C
-#endif
 	AsciiString m_fileName;													// +0x50
-#if defined(_STLPORT_VERSION)
 	MapPlayers m_players;													// +0x54
-#else
-	unsigned char m_playersStorage[0xA0];									// +0x54
-#endif
 	UnsignedInt m_wordF4;													// +0xF4
 	UnicodeString m_cachedDisplayName;										// +0xF8
 	UnicodeString m_cachedDescription;										// +0xFC

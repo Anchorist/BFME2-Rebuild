@@ -31,7 +31,7 @@ protected:
 	Coord3D m_unk0x3C;		// +0x3C xfer Coord3D
 	Int m_unk0x48;			// +0x48 xfer int from version 2
 protected:
-	virtual void loadPostProcess() { SpecialPowerUpdateModule::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialPowerUpdateModule's (h05)
+	virtual void loadPostProcess() { SpecialPowerUpdateModule::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialPowerUpdateModule's
 };
 
 #endif

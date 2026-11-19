@@ -1,5 +1,5 @@
 // SpecialPowerCompletionDie.h: the SpecialPowerCompletionDie module. SIZE 0x1C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x00486A74 calls DieModule first; it stores the
+// Target facts: the constructor 0x00486A74 calls DieModule first; it stores the
 // tables 0x00C4AE88 at +0x0, 0x00C4A650 at +0xC, 0x00C4AE84 at +0x10. Members are what xfer (0x00486AC2) transfers after DieModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -48,7 +48,7 @@ public:
 	ObjectID m_creatorID;                          // +0x14; xfer ObjectID (Zero Hour name)
 	Bool m_creatorSet;                             // +0x18; xfer Bool (Zero Hour name)
 protected:
-	virtual void loadPostProcess() { DieModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to DieModule's (h05)
+	virtual void loadPostProcess() { DieModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to DieModule's
 };
 // SIZE 0x1C
 typedef char SpecialPowerCompletionDie_size[(sizeof(SpecialPowerCompletionDie) == 0x1C) ? 1 : -1];

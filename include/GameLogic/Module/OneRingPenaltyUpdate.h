@@ -33,10 +33,10 @@ private:
     void rva00499C6C();
     void rva00499D23();
 
-    ObjectID m_24; // +0x24
-    unsigned int m_28; // +0x28
-    float m_2C; // +0x2C
-    unsigned int m_30; // +0x30
+    ObjectID m_pursuerID; // +0x24, the spawned object sent toward the wearer
+    unsigned int m_ringWearStartFrame; // +0x28, starts the spawn timer
+    float m_pursuitAngle; // +0x2C, directs the pursuer around the wearer
+    unsigned int m_suppressionStartFrame; // +0x30, cleared when stealth is restored
 };
 
 #endif

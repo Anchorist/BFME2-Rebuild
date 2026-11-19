@@ -1,7 +1,7 @@
-// SpawnPointProductionExitUpdate.h: promoted from include/Draft by h05 (round 10). Proven by 6 rows that MATCH against it on main (0x004A3B8F, 0x004A3BD6, 0x004A3CEA, 0x004A3E3E, 0x004A3F04, 0x004A3F3B);
+// SpawnPointProductionExitUpdate.h: promoted from include/Draft. Proven by 6 rows that MATCH against it on main (0x004A3B8F, 0x004A3BD6, 0x004A3CEA, 0x004A3E3E, 0x004A3F04, 0x004A3F3B);
 // name, size, bases and virtual order are retail facts given below.
 // SpawnPointProductionExitUpdate.h: the SpawnPointProductionExitUpdate module. SIZE 0xF4 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004A3C1B calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004A3C1B calls UpdateModule first; it stores the
 // tables 0x00C430B4 at +0x20, 0x00C5259C at +0x0, 0x00C4B1F0 at +0xC, 0x00C4B1E0 at +0x10, 0x00C5256C at +0x20. Members are what xfer (0x004A3B95) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -77,7 +77,7 @@ public:
 	Real m_doorAngles[10];								// +0xA4; exitObjectViaDoor reads entry i as the exit angle
 	ObjectID m_occupants[10];							// +0xCC; revalidateOccupiers and reserveDoorForExit read them
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0xF4
 typedef char SpawnPointProductionExitUpdate_size[(sizeof(SpawnPointProductionExitUpdate) == 0xF4) ? 1 : -1];

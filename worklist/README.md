@@ -118,7 +118,7 @@ the move. Keep slot behavior and dependent translations in the same review.
 The [pull-request guide](../ci/README.md) explains the source paths the check
 accepts and its statuses. A new body is measured for the row's name, code
 and checked references. A shared-header change is measured across the
-affected object files. The gate can refuse a compile error, prohibited
+affected object files. The check can refuse a compile error, prohibited
 source shape, or loss of old match credit, reference proof or object
 verification. An eligible pass measures the proposed change against its
 base. Standalone link and runtime evidence come from separate checks.

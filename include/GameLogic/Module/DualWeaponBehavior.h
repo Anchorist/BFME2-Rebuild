@@ -1,7 +1,7 @@
-// DualWeaponBehavior.h: promoted from include/Draft by h05 (round 10). Proven by 2 rows that MATCH against it on main (0x0045ADDA, 0x0045ADE0);
+// DualWeaponBehavior.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x0045ADDA, 0x0045ADE0);
 // name, size, bases and virtual order are retail facts given below.
 // DualWeaponBehavior.h: the DualWeaponBehavior module. SIZE 0x28 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x0045AE55 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x0045AE55 calls UpdateModule first; it stores the
 // tables 0x00C417A4 at +0x0, 0x00BEFF90 at +0xC, 0x00C41798 at +0x10. Members are what xfer (0x0045AEC9) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -40,7 +40,7 @@ public:
 	Bool m_unk0x20;                                // +0x20; xfer Bool
 	UnsignedInt m_unk0x24;                         // +0x24; xfer UnsignedInt
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x28
 typedef char DualWeaponBehavior_size[(sizeof(DualWeaponBehavior) == 0x28) ? 1 : -1];

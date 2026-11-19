@@ -50,9 +50,9 @@ public:
 protected:
 	virtual void xfer(Xfer *xfer);						// 0x003A4DC0
 protected:
-	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x003A4CC7 (h05 r9)
+	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x003A4CC7
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x48
 

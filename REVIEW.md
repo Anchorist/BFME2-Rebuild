@@ -1,7 +1,7 @@
 # Review checklist
 
 For any reviewer, automatic or human, and for people sampling. Apply it to the pull request's diff
-only. Advisory: it is not a gate. The gates are deterministic machine checks (the match check, the text
+only. Advisory: it decides nothing. What decides is the deterministic machine checks (the match check, the text
 rules and the virtual-behaviour check); a reviewer comments, it never approves, merges or edits.
 
 ## How to answer

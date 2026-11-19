@@ -1,4 +1,4 @@
-// Diagnostic pilot import; object boundaries may be unproven.
+// Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 // FUNCTION: BFME2 0x004A2BD1 size=25 name=??1StealthDetectorUpdate@@UAE@XZ evidence=N:ledger
 // FUNCTION: BFME2 0x004A2BEA size=6 name=?name@StealthDetectorUpdate@@QBEPBDXZ evidence=N:ledger
 // FUNCTION: BFME2 0x004A2BF0 size=64 name=?allow@Rva004A2BF0@@QAE_NPAVObject@@@Z evidence=?:placeholder
@@ -142,51 +142,177 @@ void StealthDetectorUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
 
 
 
-UpdateSleepTime StealthDetectorUpdate::update(){
- const StealthDetectorUpdateModuleData *data=(const StealthDetectorUpdateModuleData *)m_moduleData;Object *self=getObject();
- if(self->testStatus((ObjectStatusTypes)0x58))return UPDATE_SLEEP_NONE;
- if(self->isEffectivelyDead())return UPDATE_SLEEP_FOREVER;
- if(self->testStatus((ObjectStatusTypes)2))return UPDATE_SLEEP_NONE;
- if(self->testStatus((ObjectStatusTypes)0x13))return UPDATE_SLEEP_FOREVER;
- Object *containedBy=self->m_containedBy;
- if(containedBy){ContainModuleInterface *contain=containedBy->m_contain;if(contain){if(contain->isGarrisonable()){if(!data->m_garrison)return (UpdateSleepTime)data->m_updateRate;}else if(!data->m_transport)return (UpdateSleepTime)data->m_updateRate;}}
- if(data->m_upgradeName.compare(AsciiString::TheEmptyString)!=0){const UpgradeTemplate *upgrade=TheUpgradeCenter->findUpgrade(data->m_upgradeName);if(!upgrade||!self->hasUpgrade(upgrade))return UPDATE_SLEEP_NONE;}
- float range=self->getVisionRange();if(data->m_detectionRange>0.0f)range=data->m_detectionRange;
- bool foundSomeone=false;
- ObjectIterator iter=ThePartitionManager->iterateObjectsInRange(&self->m_cachedPos,range,0,
-  PartitionFilterRelationship(self,3,false).link(PartitionFilterAcceptByKindOf(data->require(),data->forbid()).link(Rva00261513Filter(self,true,range).link(&PartitionFilterSameMapStatus(getObject())))),0);
- for(Object *them=iter.next();them;them=iter.next()){
-  if(them->isEffectivelyDead())continue;
-  bool forceUnstealth;
-  if(them->rva0028F4EF()==2&&!them->testModelConditionState((ModelConditionFlagType)0x12c))forceUnstealth=false;else forceUnstealth=true;
-  if(them->testModelConditionState((ModelConditionFlagType)0x12c)){static NameKeyType key_SpecialDisguiseUpdate=TheNameKeyGenerator->nameToKey("SpecialDisguiseUpdate");SpecialDisguiseUpdate *disguise=(SpecialDisguiseUpdate*)them->findUpdateModule(key_SpecialDisguiseUpdate);if(disguise)disguise->rva004B05F5(false);}
-  if(forceUnstealth&&!(unsigned char)them->rva002933CD()&&!them->testStatus((ObjectStatusTypes)0x11))forceUnstealth=false;else forceUnstealth=true;
-  TheGameLogic->getManager178()->detected(them,(Object*)self,data->m_updateRate+1,2);
-  Rva00373EC6 *stealth=(Rva00373EC6*)them->rva0028F4BC();
-  if(stealth&&them->testStatus((ObjectStatusTypes)0x12)){
-   foundSomeone=true;stealth->markAsDetected(data->m_updateRate+1,2,self,true);
-   if(data->m_cancelRing&&((Rva00373EC6*)stealth)->m_31)((Rva00373EC6*)stealth)->rva00374815();
-   if(data->grid()){ParticleSystemHandle sys=TheParticleSystemManager->createParticleSystem(data->grid(),true);
-    if(sys){Coord3D gridPosition;gridPosition.x=them->m_cachedPos.x;gridPosition.y=them->m_cachedPos.y;gridPosition.z=them->m_cachedPos.z;gridPosition.z=self->m_cachedPos.z+17.0f;gridPosition.x-=((int)gridPosition.x)%12;gridPosition.y-=((int)gridPosition.y)%12;sys.m_system->setPosition(&gridPosition);}}
-  }else{ContainModuleInterface *contain=them->m_contain;if(contain&&contain->isGarrisonable()&&contain->getStealthUnitsContained()){
-   ContainmentListView view=contain->getList();
-   for(_STL::list<Object *>::const_iterator item=view.objects().begin();item!=view.objects().end();++item){Object *rider=*item;Rva00373EC6 *riderStealth=(Rva00373EC6*)rider->rva0028F4BC();if(riderStealth){foundSomeone=true;if(self->getControllingPlayer()!=rider->getControllingPlayer()&&self->getRelationship(rider)!=(Relationship)2){riderStealth->markAsDetected(data->m_updateRate+2,2,self,true);TheGameLogic->getManager178()->detected(rider,(Object*)self,data->m_updateRate+2,2);}}}
-  }}
-  if(!forceUnstealth){Drawable *draw=((Thing*)them)->getDrawable();if(draw)draw->m_secondMaterialPassOpacity=1.0f;}
- }
- if(data->grid()&&self->getShroudStatusForPlayer(ThePlayerList->m_local->m_playerIndex)<=2){
-  Drawable *draw=((Thing*)self)->getDrawable();Coord3D bone;bone.x=-1.66f;bone.y=5.5f;bone.z=15.0f;if(draw)draw->getPristineBonePositions(data->bone().str(),0,&bone,0,1,0);
-  const ParticleSystemTemplate *ping=foundSomeone?data->bright():data->ping();
-  if(ping){ParticleSystemHandle sys=TheParticleSystemManager->createParticleSystem(ping,true);if(sys){if(draw)sys.m_system->attachToDrawable(draw);else sys.m_system->attachToObject(self);sys.operator->()->setPosition(&bone);}}
-  if(data->beacon()){ParticleSystemHandle sys=TheParticleSystemManager->createParticleSystem(data->beacon(),true);if(sys){if(draw)sys.m_system->attachToDrawable(draw);else sys.m_system->attachToObject(self);sys.operator->()->setPosition(&bone);}}
-  // Native temporary cleanup conditionally releases the referent; use the
-  // shared empty reference holder rather than a string-destructor alias.
-  BfmeAudioEventPrefix136 sound(OpaqueRefElement4(),INVALID_ID);if(foundSomeone)sound.assignSound(data->loudRef());else sound.assignSound(data->soundRef());sound.setObjectID(self->m_id);TheAudio->addAudioEvent(&sound);
- }
- // A compiled-out string local reproduces the retail EH state map and
- // saved secondary receiver home. This source shape is a codegen inference.
- if (0) { AsciiString unused; }
- return (UpdateSleepTime)data->m_updateRate;
+UpdateSleepTime StealthDetectorUpdate::update()
+{
+	const StealthDetectorUpdateModuleData *data = static_cast<const StealthDetectorUpdateModuleData *>(m_moduleData);
+	Object *self = getObject();
+	if (self->testStatus(OBJECT_STATUS_PHANTOM_STRUCTURE))
+		return UPDATE_SLEEP_NONE;
+	if (self->isEffectivelyDead())
+		return UPDATE_SLEEP_FOREVER;
+	if (self->testStatus(OBJECT_STATUS_UNDER_CONSTRUCTION))
+		return UPDATE_SLEEP_NONE;
+	if (self->testStatus(OBJECT_STATUS_SOLD))
+		return UPDATE_SLEEP_FOREVER;
+
+	Object *containedBy = self->m_containedBy;
+	if (containedBy)
+	{
+		ContainModuleInterface *contain = containedBy->getContain();
+		if (contain)
+		{
+			if (contain->isGarrisonable())
+			{
+				if (!data->m_garrison)
+					return (UpdateSleepTime)data->m_updateRate;
+			}
+			else if (!data->m_transport)
+				return (UpdateSleepTime)data->m_updateRate;
+		}
+	}
+
+	if (data->m_upgradeName.compare(AsciiString::TheEmptyString) != 0)
+	{
+		const UpgradeTemplate *upgrade = TheUpgradeCenter->findUpgrade(data->m_upgradeName);
+		if (!upgrade || !self->hasUpgrade(upgrade))
+			return UPDATE_SLEEP_NONE;
+	}
+
+	float range = self->getVisionRange();
+	if (data->m_detectionRange > 0.0f)
+		range = data->m_detectionRange;
+
+	bool foundSomeone = false;
+	ObjectIterator iter = ThePartitionManager->iterateObjectsInRange(&self->m_cachedPos, range, 0,
+		PartitionFilterRelationship(self, PartitionFilterRelationship::ALLOW_ENEMIES | PartitionFilterRelationship::ALLOW_NEUTRAL, false)
+			.link(PartitionFilterAcceptByKindOf(data->require(), data->forbid())
+				.link(Rva00261513Filter(self, true, range)
+					.link(&PartitionFilterSameMapStatus(getObject())))), 0);
+	for (Object *them = iter.next(); them; them = iter.next())
+	{
+		if (them->isEffectivelyDead())
+			continue;
+
+		bool forceUnstealth;
+		if (them->rva0028F4EF() == 2 && !them->testModelConditionState(MODELCONDITION_DISGUISED))
+			forceUnstealth = false;
+		else
+			forceUnstealth = true;
+
+		if (them->testModelConditionState(MODELCONDITION_DISGUISED))
+		{
+			static NameKeyType key_SpecialDisguiseUpdate = TheNameKeyGenerator->nameToKey("SpecialDisguiseUpdate");
+			SpecialDisguiseUpdate *disguise = static_cast<SpecialDisguiseUpdate *>(them->findUpdateModule(key_SpecialDisguiseUpdate));
+			if (disguise)
+				disguise->rva004B05F5(false);
+		}
+		if (forceUnstealth && !static_cast<unsigned char>(them->rva002933CD()) && !them->testStatus(OBJECT_STATUS_DETECTED))
+			forceUnstealth = false;
+		else
+			forceUnstealth = true;
+
+		TheGameLogic->getManager178()->detected(them, self, data->m_updateRate + 1, 2);
+		Rva00373EC6 *stealth = them->rva0028F4BC();
+		if (stealth && them->testStatus(OBJECT_STATUS_CAN_STEALTH))
+		{
+			foundSomeone = true;
+			stealth->markAsDetected(data->m_updateRate + 1, 2, self, true);
+			if (data->m_cancelRing && stealth->m_31)
+				stealth->rva00374815();
+
+			if (data->grid())
+			{
+				ParticleSystemHandle sys = TheParticleSystemManager->createParticleSystem(data->grid(), true);
+				if (sys)
+				{
+					Coord3D gridPosition;
+					gridPosition.x = them->m_cachedPos.x;
+					gridPosition.y = them->m_cachedPos.y;
+					gridPosition.z = self->m_cachedPos.z + 17.0f;
+					gridPosition.x -= static_cast<int>(gridPosition.x) % 12;
+					gridPosition.y -= static_cast<int>(gridPosition.y) % 12;
+					sys.m_system->setPosition(&gridPosition);
+				}
+			}
+		}
+		else
+		{
+			ContainModuleInterface *contain = them->getContain();
+			if (contain && contain->isGarrisonable() && contain->getStealthUnitsContained())
+			{
+				ContainmentListView view = contain->getList();
+				for (_STL::list<Object *>::const_iterator item = view.objects().begin(); item != view.objects().end(); ++item)
+				{
+					Object *rider = *item;
+					Rva00373EC6 *riderStealth = rider->rva0028F4BC();
+					if (riderStealth)
+					{
+						foundSomeone = true;
+						if (self->getControllingPlayer() != rider->getControllingPlayer() && self->getRelationship(rider) != ALLIES)
+						{
+							riderStealth->markAsDetected(data->m_updateRate + 2, 2, self, true);
+							TheGameLogic->getManager178()->detected(rider, self, data->m_updateRate + 2, 2);
+						}
+					}
+				}
+			}
+		}
+		if (!forceUnstealth)
+		{
+			Drawable *draw = them->Thing::getDrawable();
+			if (draw)
+				draw->m_secondMaterialPassOpacity = 1.0f;
+		}
+	}
+
+	if (data->grid() && self->getShroudStatusForPlayer(ThePlayerList->m_local->m_playerIndex) <= 2)
+	{
+		Drawable *draw = self->Thing::getDrawable();
+		Coord3D bone;
+		bone.x = -1.66f;
+		bone.y = 5.5f;
+		bone.z = 15.0f;
+		if (draw)
+			draw->getPristineBonePositions(data->bone().str(), 0, &bone, 0, 1, 0);
+
+		const ParticleSystemTemplate *ping = foundSomeone ? data->bright() : data->ping();
+		if (ping)
+		{
+			ParticleSystemHandle sys = TheParticleSystemManager->createParticleSystem(ping, true);
+			if (sys)
+			{
+				if (draw)
+					sys.m_system->attachToDrawable(draw);
+				else
+					sys.m_system->attachToObject(self);
+				sys->setPosition(&bone);
+			}
+		}
+		if (data->beacon())
+		{
+			ParticleSystemHandle sys = TheParticleSystemManager->createParticleSystem(data->beacon(), true);
+			if (sys)
+			{
+				if (draw)
+					sys.m_system->attachToDrawable(draw);
+				else
+					sys.m_system->attachToObject(self);
+				sys->setPosition(&bone);
+			}
+		}
+
+		BfmeAudioEventPrefix136 sound(OpaqueRefElement4(), INVALID_ID);
+		if (foundSomeone)
+			sound.assignSound(data->loudRef());
+		else
+			sound.assignSound(data->soundRef());
+		sound.setObjectID(self->m_id);
+		TheAudio->addAudioEvent(&sound);
+	}
+	// The compiler assigns this unused local a frame slot while planning cleanup.
+	// The live temporaries above must retain their observed frame layout.
+	if (0) { AsciiString unused; }
+	return (UpdateSleepTime)data->m_updateRate;
 }
 
 void StealthDetectorUpdate::loadPostProcess()

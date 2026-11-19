@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x134 and
 // constructor RVA 0x004B7FF1; buildFieldParse RVA 0x004B7F82 adds VA 0x00C58EA0 at +0x0 and UpgradeMuxData at +0x8.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 // Unresolved (byte storage up to the next member, named after the token):
 //   m_upgradeToRemove +0x118: INI::parseAsciiStringVectorAppend 0x0002E896

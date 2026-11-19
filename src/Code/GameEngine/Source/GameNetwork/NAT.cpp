@@ -13,6 +13,7 @@
 #include "GameNetwork/udp.h"
 #include "GameNetwork/FirewallHelper.h"
 #include "GameNetwork/GameSpy/PeerThread.h"
+#include "GameNetwork/GameSpy/StagingRoomGameInfo.h"
 #include "Common/GlobalData.h"
 #include "Common/AsciiString.h"
 #include "WWLib/systimer.h"
@@ -25,8 +26,6 @@ PortNegotiationSchema::~PortNegotiationSchema()
 {
 }
 
-class GameSpyStagingRoom;
-extern GameSpyStagingRoom *TheGameSpyGame;	// VA 0x00E02324 (a GameInfo; only its GameInfo members are used here)
 extern FirewallHelperClass *TheFirewallHelper;	// VA 0x00E063B0
 Int Rva005A671DNext();	// 0x005A671D (the next negotiation cookie; the map has no better name)
 extern UnsignedInt g_00DD35BC;	// VA 0x00DD35BC (the mangler retry back-off, 500)
@@ -955,12 +954,12 @@ void NAT::processGlobalMessage(Int slotNum, const char *options)
 
 	if (strncmp(ptr, "NATHOST", strlen("NATHOST")) == 0)
 	{
-		if (((GameInfo *)TheGameSpyGame)->getLocalSlotNum() < 0)
+		if (TheGameSpyGame->getLocalSlotNum() < 0)
 			return;
 		if (m_slotList == 0)
 		{
-			const BfmeNetAddress *localAddress = &((GameInfo *)TheGameSpyGame)->m_localAddress;
-			TheNAT->attachSlotList((GameInfo *)TheGameSpyGame, ((GameInfo *)TheGameSpyGame)->getLocalSlotNum(), localAddress->m_ip, 0, ((GameInfo *)TheGameSpyGame)->getLocalSlotNum() == 0);
+			const BfmeNetAddress *localAddress = &TheGameSpyGame->m_localAddress;
+			TheNAT->attachSlotList(TheGameSpyGame, TheGameSpyGame->getLocalSlotNum(), localAddress->m_ip, 0, TheGameSpyGame->getLocalSlotNum() == 0);
 		}
 		char name[200];
 		name[0] = 0;

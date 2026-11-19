@@ -1,5 +1,5 @@
 // OilSpillUpdate.h: the OilSpillUpdate module. SIZE 0x38 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x0048C1F7 calls FireWeaponUpdate first; it stores the
+// Target facts: the constructor 0x0048C1F7 calls FireWeaponUpdate first; it stores the
 // tables 0x00C4C380 at +0x0, 0x00BEFF90 at +0xC, 0x00C4C374 at +0x10. Members are what xfer (0x0048C415) transfers after FireWeaponUpdate::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

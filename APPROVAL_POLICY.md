@@ -1,7 +1,7 @@
 # Approval policy
 
 Deterministic: a pull request lands or it does not, decided by machine checks. No model is part of the
-gate. An automatic approver may comment the result of this policy; nothing depends on its status.
+decision. An automatic approver may comment the result of this policy; nothing depends on its status.
 
 ## Lands with no person
 

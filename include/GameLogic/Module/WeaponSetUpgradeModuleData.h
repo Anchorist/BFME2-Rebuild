@@ -1,10 +1,10 @@
-// WeaponSetUpgradeModuleData.h: promoted from include/Draft by h05 (round 10). Proven by 1 row that MATCH against it on main (0x004B56F6);
+// WeaponSetUpgradeModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x004B56F6);
 // name, size, bases and virtual order are retail facts given below.
 // WeaponSetUpgradeModuleData.h: the INI data of WeaponSetUpgrade. SIZE 0x128.
 // Target facts: ModuleFactory registers the module with operator new 0x128 and
 // constructor RVA 0x004B57AA; buildFieldParse RVA 0x004B56F6 adds VA 0x00C58020 at +0x0 and UpgradeMuxData at +0x8.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_WEAPON_SET_UPGRADE_MODULE_DATA_H

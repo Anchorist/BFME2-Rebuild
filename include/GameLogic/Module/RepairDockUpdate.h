@@ -1,5 +1,5 @@
 // RepairDockUpdate.h: the RepairDockUpdate module. SIZE 0x90 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004A118B calls DockUpdate first; it stores the
+// Target facts: the constructor 0x004A118B calls DockUpdate first; it stores the
 // tables 0x00C51C80 at +0x0, 0x00C51B20 at +0xC, 0x00C51D68 at +0x10, 0x00C51C30 at +0x20. Members are what xfer (0x004A1255) transfers after DockUpdate::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -34,7 +34,7 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	virtual Bool action(Object *docker, Object *drone);	// override: action slot 12 at +0x20 (0x004A12B6)
 
-	virtual Bool isRallyPointAfterDockType() { return true; }	// DockUpdateInterface slot 19: the shared `mov al,1; ret` fold 0x0050B5C6 (h05 r13)
+	virtual Bool isRallyPointAfterDockType() { return true; }	// DockUpdateInterface slot 19: the shared `mov al,1; ret` fold 0x0050B5C6
 protected:
 	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);
@@ -43,7 +43,7 @@ public:
 	ObjectID m_unk0x88;                            // +0x88; xfer ObjectID
 	Real m_unk0x8C;                                // +0x8C; xfer Real
 protected:
-	virtual void loadPostProcess() { DockUpdate::loadPostProcess(); }	// retail slot 0x004A0E47: a jmp to DockUpdate's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { DockUpdate::loadPostProcess(); }	// retail slot 0x004A0E47: a jmp to DockUpdate's, ICF-folded across classes
 };
 // SIZE 0x90
 typedef char RepairDockUpdate_size[(sizeof(RepairDockUpdate) == 0x90) ? 1 : -1];

@@ -1,5 +1,5 @@
 // RemoveUpgradeUpgrade.h: the RemoveUpgradeUpgrade module. SIZE 0x1C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004B7FA4 calls UpgradeModule first; it stores the
+// Target facts: the constructor 0x004B7FA4 calls UpgradeModule first; it stores the
 // tables 0x00C58E20 at +0x0, 0x00C57328 at +0xC, 0x00C58DD8 at +0x10, 0x00C58790 at +0x18. Members are what xfer (0x004B8710) transfers after UpgradeModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -52,7 +52,7 @@ protected:
 
 public:
 protected:
-	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpgradeModule's (h05)
+	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpgradeModule's
 };
 // SIZE 0x1C
 typedef char RemoveUpgradeUpgrade_size[(sizeof(RemoveUpgradeUpgrade) == 0x1C) ? 1 : -1];

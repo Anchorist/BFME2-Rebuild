@@ -1,11 +1,11 @@
-// Promoted from Draft by f03: m_deathAnimAndDuration is the CustomAnimAndDuration the parse function
+// Promoted from Draft: m_deathAnimAndDuration is the CustomAnimAndDuration the parse function
 // stores (constructor 0x004B425B writes -1, 0, 0 there; ObjectCreationUpgrade 0x004B463C reads its
 // animation type at +0x140 and its frame count at +0x144).
 // ObjectCreationUpgradeModuleData.h: the INI data of ObjectCreationUpgrade. SIZE 0x154.
 // Target facts: ModuleFactory registers the module with operator new 0x154 and
 // constructor RVA 0x004B425B; buildFieldParse RVA 0x004B4084 adds VA 0x00C57708 at +0x0 and UpgradeMuxData at +0x10.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_OBJECT_CREATION_UPGRADE_MODULE_DATA_H

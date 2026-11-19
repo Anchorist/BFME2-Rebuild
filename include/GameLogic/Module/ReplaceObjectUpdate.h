@@ -24,7 +24,7 @@ protected:
 	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);										// 0x004B29DE
 protected:
-	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's (h05)
+	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's
 };
 // SIZE 0x88
 typedef char ReplaceObjectUpdate_size[(sizeof(ReplaceObjectUpdate) == 0x88) ? 1 : -1];

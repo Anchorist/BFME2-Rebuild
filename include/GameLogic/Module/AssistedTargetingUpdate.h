@@ -1,5 +1,5 @@
 // AssistedTargetingUpdate.h: the AssistedTargetingUpdate module. SIZE 0x20 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x00486E8D calls UpdateModule first; it stores the
+// Target facts: the constructor 0x00486E8D calls UpdateModule first; it stores the
 // tables 0x00C4AF64 at +0x0, 0x00BEFF90 at +0xC, 0x00C4B1E0 at +0x10. Members are what xfer (0x004DF81B) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -39,7 +39,7 @@ protected:
 private:
 	void makeFeedbackLaser(const ThingTemplate *laser, const Object *from, const Object *to);	// 0x00486F35 (AAE)
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 };
 // SIZE 0x20
 typedef char AssistedTargetingUpdate_size[(sizeof(AssistedTargetingUpdate) == 0x20) ? 1 : -1];

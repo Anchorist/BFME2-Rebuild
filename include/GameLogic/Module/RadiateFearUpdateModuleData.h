@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x130 and
 // constructor RVA 0x0049C06C; buildFieldParse RVA 0x0049C0E4 adds VA 0x00C510B8 at +0x0 and UpgradeMuxData at +0x20.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_RADIATE_FEAR_UPDATE_MODULE_DATA_H

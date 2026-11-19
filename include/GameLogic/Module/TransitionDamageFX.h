@@ -1,5 +1,5 @@
 // TransitionDamageFX.h: the damage module that plays effects when an object's body changes damage state. SIZE 0xE0
-// (ModuleFactory operator new). Target facts (h05 modgen, f14): the constructor 0x004BA3EA calls DamageModule first, then
+// (ModuleFactory operator new). Target facts: the constructor 0x004BA3EA calls DamageModule first, then
 // stores the tables 0x00859AEC at +0x0, 0x00859A30 at +0xC and 0x00859A20 at +0x10, builds the neighbour list at +0xD4
 // (fill 0x00211E58) and zeroes the 48 particle-system IDs at +0x14 that xfer 0x004B98C6 transfers (four groups of twelve).
 #pragma once
@@ -31,7 +31,7 @@ protected:
 	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);
 	virtual ~TransitionDamageFX();
-	virtual void loadPostProcess() { DamageModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to DamageModule's (h05)
+	virtual void loadPostProcess() { DamageModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to DamageModule's
 
 public:
 	Int m_particleSystemIDs[4][12];				// +0x14; xfer loop 0x004B98C6 (4 groups of 12 ParticleSystemIDs)

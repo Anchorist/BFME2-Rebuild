@@ -1,5 +1,5 @@
 // ProjectileStreamUpdate.h: the ProjectileStreamUpdate module. SIZE 0x8C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x0033EE25 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x0033EE25 calls UpdateModule first; it stores the
 // tables 0x00C10DA8 at +0x0, 0x00BEFF90 at +0xC, 0x00C10D9C at +0x10. Members are what xfer (0x0033EF8E) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -54,7 +54,7 @@ public:
 	ObjectID m_targetObject;						// +0x7C
 	Coord3D m_targetPosition;						// +0x80; xfer Coord3D
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 };
 // SIZE 0x8C
 typedef char ProjectileStreamUpdate_size[(sizeof(ProjectileStreamUpdate) == 0x8C) ? 1 : -1];

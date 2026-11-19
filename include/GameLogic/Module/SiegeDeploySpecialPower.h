@@ -31,7 +31,7 @@ public:
 	virtual UpdateSleepTime update();										// 0x004C5E80 (UpdateModuleInterface slot 0, table 0x0085DCF0)
 	virtual bool isActive() const;											// 0x004C575F (SpecialPowerUpdateInterface slot 2)
 	virtual bool isReady() const;											// 0x004C5751 (SpecialPowerModuleInterface slot 1, this = the +0x24 subobject): !isActive()
-	virtual void specialPowerSlot19() {}										// SpecialPowerModuleInterface slot 19 (table 0x0085DC68): the shared `ret` 0x000B3FD0 (h05 r13)
+	virtual void specialPowerSlot19() {}										// SpecialPowerModuleInterface slot 19 (table 0x0085DC68): the shared `ret` 0x000B3FD0
 	virtual unsigned int specialPowerSlot20() const { return m_unk0x40; }			// slot 20: the shared getter 0x0030F2C7 (`mov eax,[ecx+0x1C]` on the +0x24 interface = +0x40)
 	virtual void stopSpecialPower();										// 0x004C5E41 (SpecialPowerModuleInterface slot 17)
 	void rva004C573C();														// 0x004C573C: tells the object's DynamicPortalBehaviour (the destructor and setPhase call it)
@@ -54,7 +54,7 @@ private:
 	Coord3D m_dockPosition;		// +0x64 xfer Coord3D from version 2
 	Bool m_stopRequested;		// +0x70 xfer bool; stopSpecialPower sets it in phases 2 and 3
 protected:
-	virtual void loadPostProcess() { SpecialPowerUpdateModule::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialPowerUpdateModule's (h05)
+	virtual void loadPostProcess() { SpecialPowerUpdateModule::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialPowerUpdateModule's
 };
 // SIZE 0x74
 typedef char SiegeDeploySpecialPower_size[(sizeof(SiegeDeploySpecialPower) == 0x74) ? 1 : -1];

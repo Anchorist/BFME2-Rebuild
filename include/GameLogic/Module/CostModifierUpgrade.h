@@ -2,7 +2,7 @@
 // four slots: empty, onBuildComplete, empty, shouldDoOnBuildComplete), so name, size, bases and
 // virtual order are established; the constructor 0x004B5A06 matches against it.
 // CostModifierUpgrade.h: the CostModifierUpgrade module. SIZE 0x24 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004B5A06 calls UpgradeModule first; it stores the
+// Target facts: the constructor 0x004B5A06 calls UpgradeModule first; it stores the
 // tables 0x00C4EF80 at +0x1C, 0x00C581CC at +0x0, 0x00C58110 at +0xC, 0x00C580C8 at +0x10, 0x00C58790 at +0x18, 0x00C580B8 at +0x1C. Members are what xfer (0x004B5E06) transfers after UpgradeModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -86,7 +86,7 @@ public:
 
 	Bool m_unk0x20;										// +0x20; xfer Bool; the constructor sets it, onBuildComplete sets it again, slot 3 returns it
 protected:
-	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpgradeModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpgradeModule's, ICF-folded across classes
 };
 // SIZE 0x24
 typedef char CostModifierUpgrade_size[(sizeof(CostModifierUpgrade) == 0x24) ? 1 : -1];

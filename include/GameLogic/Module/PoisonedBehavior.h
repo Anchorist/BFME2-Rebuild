@@ -48,7 +48,7 @@ protected:
 	Real m_poisonDamageAmount;				// 0x2C
 	Int m_deathType;						// 0x30
 public:
-	virtual DamageModuleInterface *getDamage() { return this; }	// BehaviorModuleInterface slot 4: retail's is the shared folded getter 0x004543A9 returning the +0x20 sub-object (h05, gen3 vtable-content list)
+	virtual DamageModuleInterface *getDamage() { return this; }	// BehaviorModuleInterface slot 4: retail's is the shared folded getter 0x004543A9 returning the +0x20 sub-object
 };
 // SIZE 0x34
 

@@ -1,5 +1,5 @@
 // ObjectCreationUpgrade.h: the ObjectCreationUpgrade module. SIZE 0x30 (ModuleFactory operator new).
-// Target facts (retail game.dat, f03):
+// Target facts (retail game.dat):
 // - The class is UpgradeMux (first base, +0x0, 8 bytes) and UpdateModule (+0x8, 0x20 bytes), in that order:
 //   constructor 0x004B40A6 calls ??0UpgradeMux on this, then ??0UpdateModule on this+8, and stores the tables
 //   0x00C57660 at +0x0 (the UpgradeMux table, 18 slots), 0x00C5762C at +0x8 (the module's), 0x00C57570 at +0x14

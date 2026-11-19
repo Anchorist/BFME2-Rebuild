@@ -38,7 +38,7 @@ private:
 	RadiusDecal m_deliveryDecal;				// +0x20
 	Bool m_killWhenNoLongerAttacking;			// +0x30
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x0039143F (retail slot 2 of the class table)
 };

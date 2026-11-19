@@ -1,5 +1,5 @@
 // PreorderCreate.h: the PreorderCreate module. SIZE 0x18 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004B9257 calls CreateModule first; it stores the
+// Target facts: the constructor 0x004B9257 calls CreateModule first; it stores the
 // tables 0x00C59674 at +0x0, 0x00BEF9C0 at +0xC, 0x00C59664 at +0x10. Members are what xfer (0x004851E3) transfers after CreateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -43,10 +43,10 @@ protected:
 
 public:
 public:
-	virtual void onBuildComplete();	// CreateModuleInterface slot 1: retail's table has the class's own, 0x004B9301 (not CreateModule's 0x00250A49) (f08)
-	virtual void onCreate() {}	// CreateModuleInterface slot 0: retail's is the shared empty body 0x000B3FD0; retail's table has this class's own (h05, gen3 vtable-content list)
+	virtual void onBuildComplete();	// CreateModuleInterface slot 1: retail's table has the class's own, 0x004B9301 (not CreateModule's 0x00250A49)
+	virtual void onCreate() {}	// CreateModuleInterface slot 0: retail's is the shared empty body 0x000B3FD0; retail's table has this class's own
 protected:
-	virtual void loadPostProcess() { CreateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to CreateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { CreateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to CreateModule's, ICF-folded across classes
 };
 // SIZE 0x18
 typedef char PreorderCreate_size[(sizeof(PreorderCreate) == 0x18) ? 1 : -1];

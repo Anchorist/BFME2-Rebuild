@@ -31,7 +31,7 @@ typedef char RespawnUpdate_base_size[(sizeof(UpdateModule) == 0x20) ? 1 : -1];
 class RespawnUpdate : public UpdateModule
 {
 public:
-	virtual DisabledMaskType getDisabledTypesToProcess() const;	// override: update slot 1 at +0x10 (retail 0x004DF396, DISABLEDMASK_ALL) (f08)
+	virtual DisabledMaskType getDisabledTypesToProcess() const;	// override: update slot 1 at +0x10 (retail 0x004DF396, DISABLEDMASK_ALL)
 	RespawnUpdate(Thing *thing, const ModuleData *moduleData);	// 0x004AF096
 	virtual NameKeyType getModuleNameKey() const;				// 0x004AF116
 	virtual Real getPercentReady(Int *remaining);				// 0x004AEFAD (primary slot 13)
@@ -63,7 +63,7 @@ public:
 	Bool m_waitForManualRespawn;	// Set when the selected rule disables AutoSpawn.
 	Bool m_unk41;												// +0x41
 public:
-	virtual UpdateSleepTime update();	// 0x004AF92F, UpdateModuleInterface slot 0; retail's table has this class's own (h05, gen3 vtable-content list)
+	virtual UpdateSleepTime update();	// 0x004AF92F, UpdateModuleInterface slot 0; retail's table has this class's own
 };
 // SIZE 0x44
 typedef char RespawnUpdate_size[(sizeof(RespawnUpdate) == 0x44) ? 1 : -1];

@@ -83,7 +83,7 @@ public:
 	Int m_caveIndex;													// 0x104
 	Team *m_originalTeam;												// 0x108
 protected:
-	virtual void loadPostProcess() { OpenContain::loadPostProcess(); }	// retail slot 0x004783D7: a jmp to OpenContain's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { OpenContain::loadPostProcess(); }	// retail slot 0x004783D7: a jmp to OpenContain's, ICF-folded across classes
 };
 // SIZE 0x10C
 

@@ -31,8 +31,8 @@ class Xfer;
 typedef char AutoHealBehavior_base_size[(sizeof(UpdateModule) == 0x20) ? 1 : -1];
 
 // The block the player scan callbacks (checkForAutoHeal 0x004527E5 and the helpers it calls) read: the module's KindOf
-// mask copied by value, the healing object, the list the callback fills and three of the module data's flags (f03,
-// from update 0x0045280B's two stack copies and ShouldHeal 0x004524E5).
+// mask copied by value, the healing object, the list the callback fills and three of the module data's flags
+// (from update 0x0045280B's two stack copies and ShouldHeal 0x004524E5).
 struct AutoHealPlayerScanHelper
 {
 	KindOfMaskType m_kindOf;											// +0x00 the data's KindOf
@@ -57,10 +57,10 @@ public:
 	virtual void onHealing(DamageInfo *damageInfo) {}				// DamageModuleInterface slot 1 (table 0x0083FC78): the shared `ret 4` 0x0047A69C
 	virtual void onBodyDamageStateChange(const DamageInfo *damageInfo, BodyDamageType oldState, BodyDamageType newState) {}	// slot 2: the shared `ret 0Ch` 0x000D1407
 	virtual UpdateSleepTime update();								// 0x0045280B; update interface slot 0 at +0x10
-	virtual DisabledMaskType getDisabledTypesToProcess() const { return DisabledMaskType(DisabledMaskType::kInit, 3); }	// UpdateModuleInterface slot 1 (table 0x0083FCD0): retail 0x004A2D67, the shared DISABLED_HELD body (h05 r13)
+	virtual DisabledMaskType getDisabledTypesToProcess() const { return DisabledMaskType(DisabledMaskType::kInit, 3); }	// UpdateModuleInterface slot 1 (table 0x0083FCD0): retail 0x004A2D67, the shared DISABLED_HELD body
 
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); upgradeMuxLoadPostProcess(); }	// retail slot 0x004B7BAA, the body AudioLoopUpgrade's shares (h05, gen3 vtable-content list)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); upgradeMuxLoadPostProcess(); }	// retail slot 0x004B7BAA, the body AudioLoopUpgrade's shares
 	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);
 

@@ -71,9 +71,9 @@ protected:
 	Bool m_isAttackObject;								// +0x441
 	Bool m_newOccupantsAreNewMembers;					// +0x442
 protected:
-	virtual void loadPostProcess() { AIUpdateInterface::loadPostProcess(); }	// retail slot 0x0049A7EE: a jmp to AIUpdateInterface's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { AIUpdateInterface::loadPostProcess(); }	// retail slot 0x0049A7EE: a jmp to AIUpdateInterface's, ICF-folded across classes
 protected:
-	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x0048F456 (h05 r9)
+	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x0048F456
 };
 // SIZE 0x444
 

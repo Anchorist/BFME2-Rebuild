@@ -36,7 +36,7 @@ protected:
 
 public:
 protected:
-	virtual void loadPostProcess() { BehaviorModule::loadPostProcess(); }	// retail slot 0x0058B03E: a jmp to BehaviorModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { BehaviorModule::loadPostProcess(); }	// retail slot 0x0058B03E: a jmp to BehaviorModule's, ICF-folded across classes
 };
 // SIZE 0x14
 typedef char RunOffMapBehavior_size[(sizeof(RunOffMapBehavior) == 0x14) ? 1 : -1];

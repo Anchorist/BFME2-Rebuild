@@ -10,7 +10,7 @@ project and compile to the reference code.
 ## Status
 
 The maintainers recorded these progress counts at
-**2026-11-19 17:05 UTC**, revision `e226a9b406` of their
+**2026-11-19 18:05 UTC**, revision `f6ff5b7e4a` of their
 working repository (the tree of this snapshot's `src/`, `include/`,
 `config/` and `expected/` is that revision or a later one).
 

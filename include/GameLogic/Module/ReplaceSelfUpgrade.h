@@ -2,7 +2,7 @@
 // four slots: empty, onBuildComplete, empty, shouldDoOnBuildComplete), so name, size, bases and
 // virtual order are established; the constructor 0x004B7045 matches against it.
 // ReplaceSelfUpgrade.h: the ReplaceSelfUpgrade module. SIZE 0x20 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004B7045 calls UpgradeModule first; it stores the
+// Target facts: the constructor 0x004B7045 calls UpgradeModule first; it stores the
 // tables 0x00C4EF80 at +0x1C, 0x00C58B10 at +0x0, 0x00C58110 at +0xC, 0x00C58AC8 at +0x10, 0x00C58790 at +0x18, 0x00C58AB8 at +0x1C. Members are what xfer (0x004B6FF7) transfers after UpgradeModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -84,7 +84,7 @@ public:
 protected:
 	virtual ~ReplaceSelfUpgrade() {}
 	virtual void upgradeRemovalImplementation() {}	// UpgradeMux slot 8: the shared empty body 0x000B3FD0	// the map spells it protected (??1ReplaceSelfUpgrade@@MAE@XZ, 0x004B70EB)
-	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpgradeModule's (h05)
+	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpgradeModule's
 };
 // SIZE 0x20
 typedef char ReplaceSelfUpgrade_size[(sizeof(ReplaceSelfUpgrade) == 0x20) ? 1 : -1];

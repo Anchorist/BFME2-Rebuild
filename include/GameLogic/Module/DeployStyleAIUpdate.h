@@ -1,9 +1,9 @@
-// Promoted from Draft by f03: the 0xC4-byte member at +0x3E4 (the map's Rva0026AFDAMember) is the AI update's record of
+// Promoted from Draft: the 0xC4-byte member at +0x3E4 (the map's Rva0026AFDAMember) is the AI update's record of
 // its most recent command, now AIStoredCommand (GameLogic/AIStoredCommand.h). The +0xC/+0x10/+0x20/+0x24 tables the
 // constructor stores are the interface subobjects AIUpdateInterface already has (UpdateModule at +0, AICommandInterface at
 // +0x20, CollideModuleInterface at +0x24), not new bases.
 // DeployStyleAIUpdate.h: the DeployStyleAIUpdate module. SIZE 0x4D8 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x0048E983 calls AIUpdateInterface first; it stores the
+// Target facts: the constructor 0x0048E983 calls AIUpdateInterface first; it stores the
 // tables 0x00C4CA00 at +0x0, 0x00BFA3C0 at +0xC, 0x00C4C9F4 at +0x10, 0x00C4C9F0 at +0x20, 0x00C52F88 at +0x24. Members are what xfer (0x0048E6F8) transfers after AIUpdateInterface::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -156,7 +156,7 @@ public:
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x0048EE8C)
 
 protected:
-	virtual void loadPostProcess() { AIUpdateInterface::loadPostProcess(); }	// slot 1: retail 0x0049A7EE, the fold of the AI updates' `jmp AIUpdateInterface::loadPostProcess` (h05 r9)
+	virtual void loadPostProcess() { AIUpdateInterface::loadPostProcess(); }	// slot 1: retail 0x0049A7EE, the fold of the AI updates' `jmp AIUpdateInterface::loadPostProcess`
 	virtual void xfer(Xfer *xfer);
 
 public:
