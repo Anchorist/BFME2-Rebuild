@@ -177,19 +177,24 @@ def publish(phase, admission=None, result=None):
             record = {"kind": "gate", "rules": decision["rules"]}
         elif decision["kind"] == "awaiting-approval":
             record = {"kind": "pending", "messages": ["A maintainer can approve Boat comparison by adding the boat-ok label."]}
-        elif decision["kind"] == "awaiting-wide":
-            record = {"kind": "pending", "messages": ["This patch requires the wide Boat comparison. The managed wide comparison has not been enabled."]}
-        elif decision["kind"] == "compile":
+        elif decision["kind"] in {"compile", "wide"}:
             record = {"kind": "infrastructure", "messages": [
                 "Boat compiler or native comparison did not produce a verified receipt. Re-run all jobs."]}
-        if decision["kind"] == "compile" and final_path.is_file():
+        if decision["kind"] in {"compile", "wide"} and final_path.is_file():
             verdict = read(final_path, 256 * 1024)
             identity |= {k: decision[k] for k in ("tree", "plan")}
             if any(verdict.get(key) != value for key, value in identity.items()):
                 raise ValueError("The compiler receipt did not match the admission.")
             record = verdict["report"]
-            write(out / "verdict.json", identity | {"counts": verdict["counts"], "functions": verdict["functions"],
-                                                   "kind": record["kind"]})
+            metadata = {"counts": verdict["counts"], "functions": verdict["functions"], "kind": record["kind"]}
+            if decision["kind"] == "wide":
+                matrix = verdict["matrix"]
+                if (set(matrix) != {"runners", "paired_results"} or type(matrix["runners"]) is not int
+                        or not 1 <= matrix["runners"] <= 16 or matrix["paired_results"] != 2 * record["judged"]):
+                    raise ValueError("The wide verdict lacks complete paired measurements.")
+                record["messages"].append(f"{matrix['runners']} Boat runners checked {matrix['paired_results']} paired TU results.")
+                metadata["matrix"] = matrix
+            write(out / "verdict.json", identity | metadata)
     report = quality_report(binding["base"], binding["head"], record) + "\n"
     (out / "summary.md").write_text(report)
     with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as stream:
@@ -198,7 +203,7 @@ def publish(phase, admission=None, result=None):
               "infrastructure": "error"}
     status = states[record["kind"]]
     message = {"success": "BFME II comparison passed", "failure": "BFME II check refused this patch",
-               "pending": "Waiting for required approval or wide comparison",
+               "pending": "Waiting for required approval",
                "error": ("Boat comparison unavailable. Re-run all jobs." if decision else
                          "Protected Git intake unavailable. Re-run all jobs.")}[status]
     # Keep the status pending if the event was superseded while preparing the report.

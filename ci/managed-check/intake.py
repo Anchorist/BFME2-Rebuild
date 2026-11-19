@@ -139,16 +139,17 @@ def main(work, out):
         write(out / "decision.json", {key: event[key] for key in ("number", "head", "base")}
               | {"version": 1, "repo": REPO_ID, "kind": "gate", "rules": [rejected.rule]})
         return
-    if not event["approved"] or len(plan["request_paths"]) > 8:
+    if not event["approved"]:
         write(out / "decision.json", {key: event[key] for key in ("number", "head", "base")}
-              | {"version": 1, "repo": REPO_ID,
-                 "kind": "awaiting-approval" if not event["approved"] else "awaiting-wide"})
+              | {"version": 1, "repo": REPO_ID, "kind": "awaiting-approval"})
         return
+    route = "compile" if len(plan["request_paths"]) <= 8 else "wide"
     write(out / "plan.json", plan)
     write(out / "decision.json", {key: plan[key] for key in ("number", "head", "base", "tree")}
-          | {"version": 1, "repo": REPO_ID, "kind": "compile", "plan": digest((out / "plan.json").read_bytes())})
+          | {"version": 1, "repo": REPO_ID, "kind": route, "plan": digest((out / "plan.json").read_bytes())})
     with Path(os.environ["GITHUB_OUTPUT"]).open("a") as output:
-        output.write("compile=true\n")
+        output.write("route=" + route + "\n")
+
 
 
 if __name__ == "__main__":

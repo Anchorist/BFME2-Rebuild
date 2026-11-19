@@ -36,6 +36,10 @@ def native_commands(git, judge, revision, paths, tools):
 def protected_judge(work, roots, baseline):
     os.environ.update(LANG="C", LC_ALL="C")
     judge = setup_home(work, roots, baseline)
+    # The sealed compiler supplies SDK headers only. Reuse the native
+    # inventory verifier against that header-only view.
+    judge.build.DXSDK_DIR = work / "bfme2-runner/repo/vendor/dxsdk-aug2005"
+    judge.build.DXSDK_MANIFEST = Path(__file__).with_name("dxsdk-includes.manifest")
     import stlport_overlay
     judge.stlport46_overlay = lambda: Path(roots["overlay"])
     stlport_overlay.TREE = Path(roots["stlport46"])
@@ -131,7 +135,7 @@ def difference(judge, obj, row, allow_listing):
         return None
 
 
-def make_report(git, judge, plan, tip, old, new, find_object):
+def make_report(git, judge, plan, tip, old, new, find_object, *, lookup_difference=None):
     from header_definitions import global_class_defs
 
     base = plan["base"]
@@ -152,8 +156,13 @@ def make_report(git, judge, plan, tip, old, new, find_object):
              "kind": "regression" if rules else "ok"}
     changed = set(plan["changed_paths"])
     prior = {"base_results": indexed_old, "results": new}
-    report = from_landing(state, prior, changed, lambda path, row, _raw, own: (
-        difference(judge, find_object(path), row, own) if find_object(path) else None), owners, edited=scope)
+    def first_difference(path, row, _raw, own):
+        if lookup_difference:
+            return lookup_difference(path, row, own)
+        obj = find_object(path)
+        return difference(judge, obj, row, own) if obj else None
+
+    report = from_landing(state, prior, changed, first_difference, owners, edited=scope)
     old_headers = RealHeaders(git, base, global_class_defs)
     new_headers = RealHeaders(git, tip, global_class_defs)
 
