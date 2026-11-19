@@ -21,280 +21,78 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
   statuses: write
 
 jobs:
   source-rules:
-    if: ${{ github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main' }}
-    runs-on: boat
+    if: github.ref == 'refs/heads/main'
+    runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 15
     concurrency:
       group: bfme-source-rules-${{ github.event.pull_request.number || inputs.pr_number }}
       cancel-in-progress: true
     outputs:
-      receipt: ${{ steps.evaluate.outputs.status }}
+      receipt: ${{ steps.publish.outputs.receipt }}
     env:
-      RUN_KIND: ${{ github.event_name == 'workflow_dispatch' && 'canary' || 'pr' }}
-      BASE_SHA: ${{ github.event.pull_request.base.sha || inputs.base_sha }}
-      HEAD_SHA: ${{ github.event.pull_request.head.sha || inputs.head_sha }}
-      PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
-      TOOLS_SHA: ${{ github.event.pull_request.base.sha || github.sha }}
-      GIT_CONFIG_NOSYSTEM: "1"
-      GIT_CONFIG_GLOBAL: /dev/null
-      GIT_TERMINAL_PROMPT: "0"
-      GIT_NO_REPLACE_OBJECTS: "1"
+      ARCHIVE_PR: ${{ inputs.pr_number }}
+      ARCHIVE_BASE: ${{ inputs.base_sha }}
+      ARCHIVE_HEAD: ${{ inputs.head_sha }}
     steps:
-      - name: Fetch the exact event objects into a bare store
+      - name: Load the source checks from protected main
+        id: trusted
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+          sparse-checkout: tools/gates
+          path: source-rule-tools
+
+      - name: Fetch protected main and the exact author head into a bare store
+        if: steps.trusted.outcome == 'success'
         id: fetch
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          for sha in "$BASE_SHA" "$HEAD_SHA" "$TOOLS_SHA"; do
-            [[ "$sha" =~ ^[0-9a-f]{40}$ ]]
-          done
-          [[ "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]
-          [[ "$GITHUB_REPOSITORY" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]
-          [[ "$GITHUB_SERVER_URL" == https://github.com ]]
-          [[ "$GITHUB_REF" == refs/heads/main ]]
-          [[ "$TOOLS_SHA" == "$GITHUB_SHA" ]]
-          base_source=$BASE_SHA
-          if [[ "$RUN_KIND" == canary ]]; then
-            base_source=refs/heads/canary/nt2-base
-          else
-            [[ "$RUN_KIND" == pr && "$TOOLS_SHA" == "$BASE_SHA" ]]
-          fi
+        run: python3 -I -S -B source-rule-tools/tools/gates/workflow.py fetch
 
-          scratch=$(mktemp -d "$RUNNER_TEMP/bfme-rules.XXXXXXXX")
-          git init -q --bare --template= "$scratch/objects.git"
-          basic=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
-          printf '::add-mask::%s\n' "$basic"
-          unset GH_TOKEN
-          GIT_CONFIG_COUNT=6 \
-          GIT_CONFIG_KEY_0=http.https://github.com/.extraheader \
-          GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $basic" \
-          GIT_CONFIG_KEY_1=credential.helper GIT_CONFIG_VALUE_1= \
-          GIT_CONFIG_KEY_2=http.followRedirects GIT_CONFIG_VALUE_2=false \
-          GIT_CONFIG_KEY_3=fetch.fsckObjects GIT_CONFIG_VALUE_3=true \
-          GIT_CONFIG_KEY_4=gc.auto GIT_CONFIG_VALUE_4=0 \
-          GIT_CONFIG_KEY_5=core.hooksPath GIT_CONFIG_VALUE_5=/dev/null \
-            git -C "$scratch/objects.git" fetch --quiet --depth=2 --no-tags --no-recurse-submodules --no-write-fetch-head -- \
-            "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git" \
-            "$base_source:refs/source-rules/base" \
-            "$TOOLS_SHA:refs/source-rules/tools" \
-            "+refs/pull/$PR_NUMBER/head:refs/source-rules/head" \
-            "+refs/pull/$PR_NUMBER/merge:refs/source-rules/candidate"
-          unset basic
-          printf 'scratch=%s\n' "$scratch" >> "$GITHUB_OUTPUT"
-
-      - name: Evaluate the base gate and write its report without credentials
+      - name: Evaluate the source rules without credentials
+        if: always() && !cancelled() && steps.trusted.outcome == 'success'
         id: evaluate
-        if: ${{ always() }}
         shell: bash
         env:
-          SCRATCH: ${{ steps.fetch.outputs.scratch }}
+          SOURCE_OBJECTS: ${{ steps.fetch.outputs.scratch }}
+          FETCH_REASON: ${{ steps.fetch.outputs.reason }}
         run: |
-          set -euo pipefail
-          python3 -I -S - <<'PY'
-          import json
-          import os
-          from pathlib import Path
-          import re
-          import subprocess
-          import sys
+          env -i PATH=/usr/bin:/bin HOME="$HOME" \
+            GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
+            GITHUB_REF="$GITHUB_REF" GITHUB_SHA="$GITHUB_SHA" GITHUB_EVENT_NAME="$GITHUB_EVENT_NAME" \
+            GITHUB_EVENT_PATH="$GITHUB_EVENT_PATH" GITHUB_API_URL="$GITHUB_API_URL" \
+            GITHUB_SERVER_URL="$GITHUB_SERVER_URL" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" SOURCE_OBJECTS="$SOURCE_OBJECTS" \
+            FETCH_REASON="$FETCH_REASON" ARCHIVE_PR="$ARCHIVE_PR" \
+            ARCHIVE_BASE="$ARCHIVE_BASE" ARCHIVE_HEAD="$ARCHIVE_HEAD" \
+            python3 -I -S -B source-rule-tools/tools/gates/workflow.py evaluate
 
-          ids = [f'G{i}' for i in range(1, 9)]
-          labels = [
-              'Paths', 'Generated annotations', 'Forbidden constructs', 'Stand-in types',
-              'Comments', 'One item', 'One definition', 'Address names',
-          ]
-          status_map = {'pass': 'success', 'fail': 'failure', 'blocked': 'failure', 'error': 'error'}
-          env = os.environ
-          states = dict.fromkeys(ids, 'error')
-          overall = 'error'
-          report = None
-          tree = None
-          policy = None
-          base, head, tools_commit = (env[k] for k in ('BASE_SHA', 'HEAD_SHA', 'TOOLS_SHA'))
-          try:
-              if not env['SCRATCH'] or not all(
-                  re.fullmatch(r'[0-9a-f]{40}', oid) for oid in (base, head, tools_commit)
-              ):
-                  raise ValueError('Missing exact event objects')
-              scratch = Path(env['SCRATCH'])
-              repo = scratch / 'objects.git'
-              clean_env = {
-                  'PATH': env['PATH'], 'HOME': str(scratch), 'LC_ALL': 'C',
-                  'GIT_CONFIG_NOSYSTEM': '1', 'GIT_CONFIG_GLOBAL': '/dev/null',
-                  'GIT_TERMINAL_PROMPT': '0', 'GIT_NO_REPLACE_OBJECTS': '1',
-              }
-
-              def git(*args):
-                  return subprocess.check_output(
-                      ['git', '-C', str(repo), *args], env=clean_env, stderr=subprocess.DEVNULL
-                  )
-
-              if env['GITHUB_REF'] != 'refs/heads/main' or tools_commit != env['GITHUB_SHA']:
-                  raise ValueError('The gate source is outside this protected main run')
-              if (git('rev-parse','refs/source-rules/base').strip().decode() != base
-                  or git('rev-parse','refs/source-rules/head').strip().decode() != head
-                  or git('rev-parse','refs/source-rules/tools').strip().decode() != tools_commit):
-                  raise ValueError('A bound ref changed during fetch')
-              candidate = git('rev-parse','refs/source-rules/candidate').strip().decode()
-              if git('show','-s','--format=%P',candidate).strip().decode() != f'{base} {head}':
-                  raise ValueError('The merge tree does not bind to the event pair')
-              if env['RUN_KIND'] == 'canary':
-                  # Only the coordinator's archived NT2 patch is permitted
-                  # to use an archive base under this protected main run.
-                  archive = {
-                      'src': '999f333a94ec38f7ce8ce8c727eefe77b7565908',
-                      'include': '0bfe0a354f581e47e4fe7aec8a6ac8b9085a27cb',
-                      'config': 'b318862dc0c9fd3c2d9c6a1eb9b6f2a00a6e631c',
-                      'expected': '039f6563b33ce33d6498570fdcd6241a51fba2bd',
-                  }
-                  nt2 = archive | {
-                      'src': 'a6de0044152e0a34f5d59b34aa2db3069c0389bb',
-                      'include': '311c9ff1c77399567880ecba712350ca6761a8fa',
-                  }
-                  for rev, pins in ((base, archive), (head, nt2), (candidate, nt2)):
-                      for root, digest in pins.items():
-                          if git('rev-parse',f'{rev}:{root}').strip().decode() != digest:
-                              raise ValueError('NT2 source or check data differs from the archived manifest')
-              elif env['RUN_KIND'] != 'pr' or tools_commit != base:
-                  raise ValueError('The production rules must come from the pull request base')
-              tree = git('rev-parse',candidate+'^{tree}').strip().decode()
-              base_tree = git('rev-parse',base+'^{tree}').strip().decode()
-              trusted = scratch / 'trusted'
-              trusted.mkdir()
-              for module in ('gate.py', 'cpp.py', 'definitions.py', 'git_objects.py',
-                             'ratchets.py', 'rules.py', 'config.json'):
-                  (trusted/module).write_bytes(git('cat-file','blob',f'{tools_commit}:tools/gates/{module}'))
-              code = subprocess.run(
-                  [sys.executable,'-E','-S','-B',str(trusted/'gate.py'),str(repo),base,candidate,
-                   '--json',str(scratch/'result.json'),'--report',str(scratch/'report.md')],
-                  cwd=trusted, env=clean_env,
-              ).returncode
-              result = json.loads((scratch/'result.json').read_bytes())
-              gates = result['gates']
-              statuses = {gate['id']:gate['status'] for gate in gates}
-              expected = {0: 'pass', 1: 'fail', 2: 'error'}[code]
-              if (len(gates) != len(ids) or set(statuses) != set(ids) or result['status'] != expected
-                  or not set(statuses.values()) <= set(status_map)
-                  or (expected == 'pass') != all(s == 'pass' for s in statuses.values())
-                  or (expected != 'error' and (result['head_tree'] != tree or result['base_tree'] != base_tree))):
-                  raise ValueError('Gate result disagrees with the exit code or tree binding')
-              policy = result.get('policy_sha256')
-              if expected != 'error' and not re.fullmatch(r'[0-9a-f]{64}', policy or ''):
-                  raise ValueError('Gate policy digest is missing')
-              report = (scratch/'report.md').read_bytes()
-              states = {gate: status_map[statuses[gate]] for gate in ids}
-              overall = status_map[expected]
-          except (OSError, KeyError, TypeError, ValueError, subprocess.CalledProcessError):
-              pass
-
-          if report is None:
-              rows = [f'| {gate} {label} | Error |' for gate, label in zip(ids, labels)]
-              report = ('| Gate | Result |\n| --- | --- |\n' + '\n'.join(rows) +
-                        '\n\n- <code>tools/gates/gate.py:1</code> **INTERNAL** The exact revisions or gate result could not be verified. Update against the base or rerun the check on the current head.\n').encode()
-          if len(report) > 1_000_000:
-              cut = report.rfind(b'\n', 0, 999_500)
-              report = report[:cut+1] + (
-                  b'\n- <code>tools/gates/gate.py:1</code> **REPORT** More findings exceed the job-summary limit. '
-                  b'Split the change and run the source gate locally for the full list.\n'
-              )
-          with Path(env['GITHUB_STEP_SUMMARY']).open('ab') as stream:
-              stream.write(report)
-              if env['RUN_KIND'] == 'canary' and all(
-                  re.fullmatch(r'[0-9a-f]{40}', oid) for oid in (base, head, tools_commit)
-              ):
-                  stream.write((
-                      f'\nCanary base `{base}`, author head `{head}`, and protected main tools '
-                      f'`{tools_commit}`.\n'
-                  ).encode('ascii'))
-
-          # The credentialed publisher receives only these fixed states and
-          # object identifiers. It never opens the Git store or report.
-          state = {'success':'pass', 'failure':'fail', 'error':'pending'}[overall]
-          result = {'base':base, 'head':head, 'tree':tree, 'tools_commit':tools_commit,
-                    'states':states, 'overall':overall, 'state':state, 'policy_sha256':policy}
-          with Path(env['GITHUB_OUTPUT']).open('a', encoding='utf-8') as stream:
-              stream.write('status=' + json.dumps(result, sort_keys=True, separators=(',', ':')) + '\n')
-          PY
-
-      - name: Publish the eight gate statuses and the aggregate
-        if: ${{ always() }}
+      - name: Recheck current main and publish source-rule statuses
+        if: always() && !cancelled() && steps.trusted.outcome == 'success'
+        id: publish
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          GATE_STATUS: ${{ steps.evaluate.outputs.status }}
+          RULE_STATUS: ${{ steps.evaluate.outputs.status }}
+        run: python3 -I -S -B source-rule-tools/tools/gates/workflow.py publish
+
+      - name: Report unavailable protected tools
+        if: always() && !cancelled() && steps.trusted.outcome != 'success'
+        shell: bash
         run: |
-          set -euo pipefail
-          python3 -I -S - <<'PY'
-          import json
-          import os
-          import re
-          import urllib.error
-          import urllib.request
-
-          env = os.environ
-          ids = [f'G{i}' for i in range(1, 9)]
-          states, overall = dict.fromkeys(ids, 'error'), 'error'
-          digest = re.compile(r'[0-9a-f]{40}')
-          if (env['GITHUB_API_URL'] != 'https://api.github.com'
-              or not all(digest.fullmatch(env[key]) for key in ('BASE_SHA', 'HEAD_SHA', 'TOOLS_SHA'))
-              or not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', env['GITHUB_REPOSITORY'])
-              or not env['GITHUB_RUN_ID'].isdigit()):
-              raise SystemExit('Invalid trusted event binding')
-          try:
-              receipt = json.loads(env['GATE_STATUS'])
-              supplied = receipt['states']
-              dispositions = {'success','failure','error'}
-              if (receipt['base'] == env['BASE_SHA'] and receipt['head'] == env['HEAD_SHA']
-                  and receipt['tools_commit'] == env['TOOLS_SHA']
-                  and set(supplied) == set(ids) and set(supplied.values()) <= dispositions
-                  and receipt['overall'] in dispositions
-                  and (receipt['overall'] == 'success') == all(x == 'success' for x in supplied.values())
-                  and (receipt['overall'] == 'error' or (
-                      digest.fullmatch(receipt['tree'])
-                      and re.fullmatch(r'[0-9a-f]{64}', receipt['policy_sha256'])))):
-                  states = {gate:supplied[gate] for gate in ids}
-                  overall = receipt['overall']
-          except (KeyError, TypeError, ValueError):
-              pass
-
-          class NoRedirect(urllib.request.HTTPRedirectHandler):
-              def redirect_request(self, req, fp, code, msg, headers, newurl):
-                  return None
-
-          repo = env['GITHUB_REPOSITORY']
-          endpoint = f"https://api.github.com/repos/{repo}/statuses/{env['HEAD_SHA']}"
-          run = f"https://github.com/{repo}/actions/runs/{env['GITHUB_RUN_ID']}"
-          opener = urllib.request.build_opener(NoRedirect())
-          publish_failed = False
-          for name, state in [*states.items(), ('source rules', overall)]:
-              if name == 'source rules' and publish_failed:
-                  state = 'error'
-              payload = json.dumps({
-                  'context': f'BFME II / {name}', 'state': state,
-                  'description': f"Source policy against {env['BASE_SHA'][:12]}",
-                  'target_url': run,
-              }).encode()
-              request = urllib.request.Request(endpoint, data=payload, headers={
-                  'Authorization': f"Bearer {env['GH_TOKEN']}",
-                  'Accept': 'application/vnd.github+json',
-                  'Content-Type': 'application/json',
-              })
-              try:
-                  with opener.open(request, timeout=15) as response:
-                      if response.status != 201:
-                          publish_failed = True
-              except (OSError, urllib.error.URLError):
-                  publish_failed = True
-                  print(f'Could not publish source-rule status {name}.')
-          if publish_failed:
-              raise SystemExit('Source-rule status publication failed')
-          if overall != 'success':
-              raise SystemExit('Source rules did not pass')
-          PY
-
+          {
+            printf '| Rule | Result |\n| --- | --- |\n'
+            for rule in 'G1 Paths' 'G2 Generated annotations' 'G3 Forbidden constructs' \
+              'G4 Stand-in types' 'G5 Comments' 'G6 One item' 'G7 One definition' 'G8 Address names'; do
+              printf '| %s | Error |\n' "$rule"
+            done
+            printf '\n**Binding [tools-unavailable]** The protected source check could not be loaded from this main revision.\n'
+          } >> "$GITHUB_STEP_SUMMARY"
