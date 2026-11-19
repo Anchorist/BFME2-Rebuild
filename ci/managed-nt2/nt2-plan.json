@@ -1,0 +1,287 @@
+{
+  "baseline_sha256": "f008b587570bad693981dc7218588c81d192a1e064b0f7f861539c51156a7640",
+  "candidate_tree": "db4dd53f174cca0baf0901272132bc05f978e751",
+  "changed_paths": [
+    "include/Common/GameLOD.h",
+    "include/Draft/GameLODManager.h",
+    "src/Code/GameEngine/Source/Common/GameLOD.cpp",
+    "src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptOptions.cpp",
+    "src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Menus/OptionsMenu.cpp"
+  ],
+  "checker": "513841a485f384d051de6cf28d2087d001104c71de9b2576be5710891ec5553e",
+  "compile": {
+    "base": [
+      {
+        "contract": "852ea1495bf7f6f593e7092e7b235901118b3967007c18534255b547e08d37cb",
+        "env": {
+          "INCLUDE": [
+            "vc/Vc7/include"
+          ],
+          "LANG": "C",
+          "LC_ALL": "C",
+          "LIB": [
+            "vc/Vc7/lib"
+          ],
+          "WINEDEBUG": "-all",
+          "WINEPATH": [
+            "vc/Vc7/bin",
+            "vc/Common7/IDE",
+            "vcruntime"
+          ]
+        },
+        "flags": [
+          "-nologo",
+          "-c",
+          "-O2",
+          "-GR-",
+          "-EHsc-",
+          "-O1",
+          "-arch:SSE",
+          "-G7",
+          "-DNDEBUG",
+          "-MD",
+          "-EHsc",
+          "-Gy",
+          "-showIncludes",
+          "-D_STLP_USE_STATIC_LIB",
+          "-D_STLP_USE_MALLOC",
+          "-D_BFME_RETAIL_TREE_INSERT_LAYOUT",
+          "-I@overlay/base",
+          "-I@stlport46/stlport",
+          "-Iinclude"
+        ],
+        "source": "396f7b1c33cfd6b613beaa8417acc5e367ba93fc0a47bf0fbf71ef7f167315f5",
+        "tu": "src/Code/GameEngine/Source/Common/GameLOD.cpp"
+      },
+      {
+        "contract": "6c028bc44d747d831e6ad0c26194573d4fc87c6cb028638cffeb03145a217c0c",
+        "env": {
+          "INCLUDE": [
+            "vc/Vc7/include"
+          ],
+          "LANG": "C",
+          "LC_ALL": "C",
+          "LIB": [
+            "vc/Vc7/lib"
+          ],
+          "WINEDEBUG": "-all",
+          "WINEPATH": [
+            "vc/Vc7/bin",
+            "vc/Common7/IDE",
+            "vcruntime"
+          ]
+        },
+        "flags": [
+          "-nologo",
+          "-c",
+          "-O2",
+          "-GR-",
+          "-EHsc-",
+          "-O1",
+          "-arch:SSE",
+          "-G7",
+          "-DNDEBUG",
+          "-MD",
+          "-EHsc",
+          "-Gy",
+          "-showIncludes",
+          "-O1",
+          "-D_STLP_USE_STATIC_LIB",
+          "-D_STLP_USE_MALLOC",
+          "-D_BFME_RETAIL_TREE_INSERT_LAYOUT",
+          "-I@overlay/base",
+          "-I@stlport46/stlport",
+          "-Iinclude"
+        ],
+        "source": "280ef6d1213775035b7494ae3e0c388dc4ed731cd2ed4626bc3ce68cf718ac6e",
+        "tu": "src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptOptions.cpp"
+      },
+      {
+        "contract": "9142f9db7b54ebb88634cbf0369dda729297498bf961eef6a718b63c5bc7503a",
+        "env": {
+          "INCLUDE": [
+            "vc/Vc7/include"
+          ],
+          "LANG": "C",
+          "LC_ALL": "C",
+          "LIB": [
+            "vc/Vc7/lib"
+          ],
+          "WINEDEBUG": "-all",
+          "WINEPATH": [
+            "vc/Vc7/bin",
+            "vc/Common7/IDE",
+            "vcruntime"
+          ]
+        },
+        "flags": [
+          "-nologo",
+          "-c",
+          "-O2",
+          "-GR-",
+          "-EHsc-",
+          "-O1",
+          "-arch:SSE",
+          "-G7",
+          "-DNDEBUG",
+          "-MD",
+          "-EHsc",
+          "-Gy",
+          "-showIncludes",
+          "-O1",
+          "-G7",
+          "-D_BFME_RETAIL_TREE_INSERT_LAYOUT",
+          "-D_STLP_USE_MALLOC",
+          "-D_STLP_USE_STATIC_LIB",
+          "-I@overlay/base",
+          "-I@stlport46/stlport",
+          "-Iinclude"
+        ],
+        "source": "def0dff6bfc1c53d626be39a9ac06907bcc8127f2e28f5d17c69391b4dad7b62",
+        "tu": "src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Menus/OptionsMenu.cpp"
+      }
+    ],
+    "head": [
+      {
+        "contract": "852ea1495bf7f6f593e7092e7b235901118b3967007c18534255b547e08d37cb",
+        "env": {
+          "INCLUDE": [
+            "vc/Vc7/include"
+          ],
+          "LANG": "C",
+          "LC_ALL": "C",
+          "LIB": [
+            "vc/Vc7/lib"
+          ],
+          "WINEDEBUG": "-all",
+          "WINEPATH": [
+            "vc/Vc7/bin",
+            "vc/Common7/IDE",
+            "vcruntime"
+          ]
+        },
+        "flags": [
+          "-nologo",
+          "-c",
+          "-O2",
+          "-GR-",
+          "-EHsc-",
+          "-O1",
+          "-arch:SSE",
+          "-G7",
+          "-DNDEBUG",
+          "-MD",
+          "-EHsc",
+          "-Gy",
+          "-showIncludes",
+          "-D_STLP_USE_STATIC_LIB",
+          "-D_STLP_USE_MALLOC",
+          "-D_BFME_RETAIL_TREE_INSERT_LAYOUT",
+          "-I@overlay/base",
+          "-I@stlport46/stlport",
+          "-Iinclude"
+        ],
+        "source": "3abbc96465970e651ef028250c8273d827aaef868c4fa89bee9e438704410e8c",
+        "tu": "src/Code/GameEngine/Source/Common/GameLOD.cpp"
+      },
+      {
+        "contract": "6c028bc44d747d831e6ad0c26194573d4fc87c6cb028638cffeb03145a217c0c",
+        "env": {
+          "INCLUDE": [
+            "vc/Vc7/include"
+          ],
+          "LANG": "C",
+          "LC_ALL": "C",
+          "LIB": [
+            "vc/Vc7/lib"
+          ],
+          "WINEDEBUG": "-all",
+          "WINEPATH": [
+            "vc/Vc7/bin",
+            "vc/Common7/IDE",
+            "vcruntime"
+          ]
+        },
+        "flags": [
+          "-nologo",
+          "-c",
+          "-O2",
+          "-GR-",
+          "-EHsc-",
+          "-O1",
+          "-arch:SSE",
+          "-G7",
+          "-DNDEBUG",
+          "-MD",
+          "-EHsc",
+          "-Gy",
+          "-showIncludes",
+          "-O1",
+          "-D_STLP_USE_STATIC_LIB",
+          "-D_STLP_USE_MALLOC",
+          "-D_BFME_RETAIL_TREE_INSERT_LAYOUT",
+          "-I@overlay/base",
+          "-I@stlport46/stlport",
+          "-Iinclude"
+        ],
+        "source": "51e3996413f53fac9fd0208582072054ff3360dd730601318b416ac5c3829a0b",
+        "tu": "src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptOptions.cpp"
+      },
+      {
+        "contract": "9142f9db7b54ebb88634cbf0369dda729297498bf961eef6a718b63c5bc7503a",
+        "env": {
+          "INCLUDE": [
+            "vc/Vc7/include"
+          ],
+          "LANG": "C",
+          "LC_ALL": "C",
+          "LIB": [
+            "vc/Vc7/lib"
+          ],
+          "WINEDEBUG": "-all",
+          "WINEPATH": [
+            "vc/Vc7/bin",
+            "vc/Common7/IDE",
+            "vcruntime"
+          ]
+        },
+        "flags": [
+          "-nologo",
+          "-c",
+          "-O2",
+          "-GR-",
+          "-EHsc-",
+          "-O1",
+          "-arch:SSE",
+          "-G7",
+          "-DNDEBUG",
+          "-MD",
+          "-EHsc",
+          "-Gy",
+          "-showIncludes",
+          "-O1",
+          "-G7",
+          "-D_BFME_RETAIL_TREE_INSERT_LAYOUT",
+          "-D_STLP_USE_MALLOC",
+          "-D_STLP_USE_STATIC_LIB",
+          "-I@overlay/base",
+          "-I@stlport46/stlport",
+          "-Iinclude"
+        ],
+        "source": "27de66acffbca1232648ee98ae2c664f98f473237bbe2e56a98fa93bf2c1a99f",
+        "tu": "src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Menus/OptionsMenu.cpp"
+      }
+    ]
+  },
+  "historical_base": "7e48e180cce4bcd5d70c3d506bb5bc90a05eb1da",
+  "historical_head": "b908cc254f35c5910cdf1e885eea9e90b6502235",
+  "image_sha256": "154f0ee3f79f129b5d2e09adaef61dd2fab208040bff6b64e7fb0e182181dcf6",
+  "patch_sha256": "3865e6f3db65123a6ffb7084a17a6ed95ead918821f7e343790f38d7b16dcd09",
+  "profile_sha256": "e1f176db430a157b71cfb2f1adffbe5d0464aecb25f7e8796a83e015232ba0e3",
+  "request_paths": [
+    "src/Code/GameEngine/Source/Common/GameLOD.cpp",
+    "src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptOptions.cpp",
+    "src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Menus/OptionsMenu.cpp"
+  ],
+  "trusted_expected": "pass"
+}

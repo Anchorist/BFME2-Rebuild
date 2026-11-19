@@ -1,0 +1,102 @@
+{
+  "counts": {
+    "gained": 0,
+    "lost_credit": 0,
+    "lost_proof": 0,
+    "lost_verified": 0,
+    "new_compiler_errors": 0,
+    "new_source_gates": 0
+  },
+  "expected": "pass",
+  "functions": [
+    {
+      "after": "MATCH / proven",
+      "before": "MATCH / proven",
+      "function": "GameLODManager::rva00202613",
+      "line": 118,
+      "path": "src/Code/GameEngine/Source/Common/GameLOD.cpp",
+      "rva": "0x00202613"
+    },
+    {
+      "after": "MATCH / proven",
+      "before": "MATCH / proven",
+      "function": "GameLODManager::rva00202633",
+      "line": 130,
+      "path": "src/Code/GameEngine/Source/Common/GameLOD.cpp",
+      "rva": "0x00202633"
+    },
+    {
+      "after": "MATCH / proven",
+      "before": "MATCH / proven",
+      "function": "GameLODManager::findAudioLODLevel",
+      "line": 143,
+      "path": "src/Code/GameEngine/Source/Common/GameLOD.cpp",
+      "rva": "0x002026A0"
+    },
+    {
+      "after": "MATCH / proven",
+      "before": "MATCH / proven",
+      "function": "GameLODManager::get",
+      "line": 154,
+      "path": "src/Code/GameEngine/Source/Common/GameLOD.cpp",
+      "rva": "0x002026C7"
+    },
+    {
+      "after": "MATCH / proven",
+      "before": "MATCH / proven",
+      "function": "GameLODManager::rva00202739",
+      "line": 179,
+      "path": "src/Code/GameEngine/Source/Common/GameLOD.cpp",
+      "rva": "0x00202739"
+    },
+    {
+      "after": "MATCH / proven",
+      "before": "MATCH / proven",
+      "function": "GameLODManager::rva0020276C",
+      "line": 191,
+      "path": "src/Code/GameEngine/Source/Common/GameLOD.cpp",
+      "rva": "0x0020276C"
+    },
+    {
+      "after": "MATCH / proven",
+      "before": "MATCH / proven",
+      "function": "GameLODManager::rva00202790",
+      "line": 203,
+      "path": "src/Code/GameEngine/Source/Common/GameLOD.cpp",
+      "rva": "0x00202790"
+    },
+    {
+      "after": "MATCH / unproven",
+      "before": "MATCH / unproven",
+      "function": "INI::parseStaticGameLODDefinition",
+      "line": 281,
+      "path": "src/Code/GameEngine/Source/Common/GameLOD.cpp",
+      "rva": "0x00202F05"
+    },
+    {
+      "after": "MATCH / unproven",
+      "before": "MATCH / unproven",
+      "function": "INI::parseAudioLODDefinition",
+      "line": 295,
+      "path": "src/Code/GameEngine/Source/Common/GameLOD.cpp",
+      "rva": "0x00202F8A"
+    },
+    {
+      "after": "MATCH / unproven",
+      "before": "MATCH / unproven",
+      "function": "AptOptions::rva00518FEA",
+      "line": 251,
+      "path": "src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptOptions.cpp",
+      "rva": "0x00518FEA"
+    },
+    {
+      "after": "MATCH / unproven",
+      "before": "MATCH / unproven",
+      "function": "OptionPreferences::getStaticGameDetail",
+      "line": 36,
+      "path": "src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Menus/OptionsMenu.cpp",
+      "rva": "0x002E427D"
+    }
+  ],
+  "report_sha256": "5d7985fa6c834786668a822dd9364a3abb7b520d7ab5c7b7c1dbde510e0ea99e"
+}

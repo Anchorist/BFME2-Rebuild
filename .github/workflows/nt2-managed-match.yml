@@ -1,0 +1,64 @@
+name: Managed native match · exact nt2 rehearsal
+
+on:
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        description: Exact private nt2 replay PR number
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: private-nt2-managed-match
+  cancel-in-progress: false
+
+jobs:
+  compare:
+    if: github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main'
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Check out protected workflow commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+      - name: Verify sealed compiler and standalone native engine
+        shell: bash
+        run: |
+          set -euo pipefail
+          (
+            cd ci/managed-nt2
+            sha256sum -c --quiet bundle.sha256
+            got=$(printf '%s\n' '?f@X@@QAEHXZ' | engine/gen/bin/demangle)
+            test "$got" = 'public: int __thiscall X::f(void)'
+          )
+          cd /opt/boat-compiler
+          printf '%s  %s\n' \
+            154f0ee3f79f129b5d2e09adaef61dd2fab208040bff6b64e7fb0e182181dcf6 image-inventory.json \
+            e1f176db430a157b71cfb2f1adffbe5d0464aecb25f7e8796a83e015232ba0e3 worker.json \
+            88888c03f6f12eedd455273f0cd131ef7637dba66f83503bf29ed89544b208ab /usr/local/libexec/bfme2-compiler/managed_probe.py \
+            3c5253ceace321aa6855d5f313a951f2db79ab00cbb06bcd78c0c80d08fa7630 /usr/local/libexec/bfme2-compiler/run | sha256sum -c --quiet
+          sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
+          sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Fetch exact approved private pull request as Git objects
+        shell: bash
+        env:
+          BFME_CANARY_PR: '${{ inputs.pull_request }}'
+          BFME_CANARY_READ_TOKEN: '${{ github.token }}'
+        run: python3 -B ci/managed-nt2/fetch.py "$RUNNER_TEMP/bfme-nt2"
+      - name: Compile in the isolated child and compare both exact trees
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "${BFME_CANARY_READ_TOKEN:-}"
+          test -z "${GITHUB_TOKEN:-}"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" TMPDIR="$RUNNER_TEMP" \
+            python3 -B ci/managed-nt2/measure.py "$RUNNER_TEMP/bfme-nt2"
+
