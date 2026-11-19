@@ -1,4 +1,5 @@
 """Fixed-origin GitHub input and status endpoints for the protected workflow."""
+import base64
 import os
 from pathlib import Path
 import re
@@ -31,7 +32,8 @@ def event():
     validate_pr(pr, number, head)
     if not HEX40.fullmatch(base):
         raise ValueError("The workflow revision is invalid.")
-    return {"number": number, "base": base, "head": head, "login": "bfme-boat", "uid": 1}
+    return {"number": number, "base": base, "head": head, "login": "bfme-boat", "uid": 1,
+            "event_association": pr.get("author_association")}
 
 
 def validate_pr(pr, number, head):
@@ -84,8 +86,12 @@ class GitHub:
             raise ValueError("GitHub did not acknowledge the expected commit status.")
 
 
-def admitted(pr):
-    return (pr.get("author_association") in {"OWNER", "MEMBER", "COLLABORATOR"}
+def admitted(pr, event_association=None):
+    head_repo = pr.get("head", {}).get("repo") or {}
+    roles = {"OWNER", "MEMBER", "COLLABORATOR"}
+    return (head_repo.get("id") == REPO_ID
+            or pr.get("author_association") in roles
+            or event_association in roles
             or any(label.get("name") == "boat-ok" for label in pr.get("labels", ())))
 
 
@@ -93,7 +99,7 @@ def fetch(work):
     binding = event()
     api = GitHub()
     pr = api.current(binding)
-    binding["approved"] = admitted(pr)
+    binding["approved"] = admitted(pr, binding["event_association"])
     work.mkdir(mode=0o700)
     git = Git(work / "source.git", initialize=True)
     base = Git(Path.cwd() / ".git")
@@ -119,6 +125,8 @@ def receive_refs(git, remote, binding, environment):
                      "+refs/heads/main:refs/ci/actual-main", f"+refs/pull/{number}/head:refs/ci/head",
                      env=environment, timeout=120, check=False)
     if result.returncode:
+        for line in masked_git_errors(result.stderr, environment.get("BFME_GIT_TOKEN")):
+            print("Protected Git fetch stderr | " + line, file=sys.stderr)
         code = result.stderr.lower()
         reasons = (
             (b"remote ref", "one exact repository ref is unavailable"),
@@ -135,6 +143,17 @@ def receive_refs(git, remote, binding, environment):
         raise Superseded()
 
 
+def masked_git_errors(stderr, token):
+    text = stderr.decode("utf-8", "replace")
+    if token:
+        basic = base64.b64encode(("x-access-token:" + token).encode()).decode("ascii")
+        text = text.replace(token, "***").replace(basic, "***")
+    text = re.sub(r"(?i)(?<=://)[^@/\\s]+@", "***@", text)
+    text = re.sub(r"(?i)\\b(?:gh[oprsu]_|github_pat_)[a-z0-9_]{12,}\\b", "***", text)
+    lines = ("".join(ch if ch.isprintable() else " " for ch in line) for line in text[:4096].splitlines())
+    return [line for line in lines if line.strip()][:24]
+
+
 def publish(phase, admission=None, result=None):
     from quality_format import quality_report
     binding = event()
@@ -147,7 +166,8 @@ def publish(phase, admission=None, result=None):
     final_path = result / "verdict.json"
     out = Path(os.environ["MANAGED_PUBLIC_REPORT"])
     out.mkdir(mode=0o700, exist_ok=True)
-    record = {"kind": "pending", "messages": ["The managed compiler or comparison did not return a complete receipt. Re-run this check."]}
+    record = {"kind": "infrastructure", "messages": [
+        "Protected source intake did not produce a verified receipt. Re-run all jobs."]}
     decision = read(decision_path, 4096) if decision_path.is_file() else None
     if decision:
         identity = {"version": 1, "repo": REPO_ID} | {k: binding[k] for k in ("base", "head", "number")}
@@ -159,7 +179,10 @@ def publish(phase, admission=None, result=None):
             record = {"kind": "pending", "messages": ["A maintainer can approve Boat comparison by adding the boat-ok label."]}
         elif decision["kind"] == "awaiting-wide":
             record = {"kind": "pending", "messages": ["This patch requires the wide Boat comparison. The managed wide comparison has not been enabled."]}
-        elif decision["kind"] == "compile" and final_path.is_file():
+        elif decision["kind"] == "compile":
+            record = {"kind": "infrastructure", "messages": [
+                "Boat compiler or native comparison did not produce a verified receipt. Re-run all jobs."]}
+        if decision["kind"] == "compile" and final_path.is_file():
             verdict = read(final_path, 256 * 1024)
             identity |= {k: decision[k] for k in ("tree", "plan")}
             if any(verdict.get(key) != value for key, value in identity.items()):
@@ -171,16 +194,19 @@ def publish(phase, admission=None, result=None):
     (out / "summary.md").write_text(report)
     with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as stream:
         stream.write(report)
-    states = {"ok": "success", "pending": "pending", "gate": "failure", "regression": "failure"}
+    states = {"ok": "success", "pending": "pending", "gate": "failure", "regression": "failure",
+              "infrastructure": "error"}
     status = states[record["kind"]]
     message = {"success": "BFME II comparison passed", "failure": "BFME II check refused this patch",
-               "pending": "Boat comparison incomplete. Re-run the check."}[status]
+               "pending": "Waiting for required approval or wide comparison",
+               "error": ("Boat comparison unavailable. Re-run all jobs." if decision else
+                         "Protected Git intake unavailable. Re-run all jobs.")}[status]
     # Keep the status pending if the event was superseded while preparing the report.
     latest = api.current(binding)
-    if status == "success" and not admitted(latest):
+    if status == "success" and not admitted(latest, binding.get("event_association")):
         raise Superseded()
     api.status(binding, status, f"{message} (main {binding['base'][:12]})")
-    if record["kind"] != "ok":
+    if status in {"failure", "error"}:
         raise SystemExit(1)
 
 

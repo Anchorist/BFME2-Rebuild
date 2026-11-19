@@ -67,7 +67,7 @@ def append_function(out, row, label, location):
 
 def quality_report(base, head, result):
     labels = {"ok": "Pass", "regression": "Fail", "gate": "Fail", "conflict": "Conflict",
-              "nothing": "No source change", "pending": "Pending"}
+              "nothing": "No source change", "pending": "Pending", "infrastructure": "Infrastructure failure"}
     out = [f"**BFME II / Boat — {labels[result['kind']]}**", "",
            f"Head {quoted(head[:12])} on main {quoted(base[:12])}."]
     edited = result.get("edited", [])

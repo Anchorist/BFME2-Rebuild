@@ -23,7 +23,7 @@ jobs:
       ((github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
         github.event.label.name == 'boat-ok')
     name: Start exact-head status
-    runs-on: boat
+    runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 5
     permissions:
       contents: read
@@ -54,7 +54,7 @@ jobs:
       ((github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
         github.event.label.name == 'boat-ok')
     name: Protected source intake
-    runs-on: boat
+    runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 5
     permissions:
       contents: read
@@ -148,7 +148,7 @@ jobs:
     needs: [pending, intake, compare]
     if: always() && !cancelled() && needs.intake.result != 'skipped'
     name: Report on the pull request head
-    runs-on: boat
+    runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 5
     permissions:
       contents: read
@@ -168,12 +168,14 @@ jobs:
         run: (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
       - name: Read this run's admission
         if: needs.intake.result == 'success'
+        continue-on-error: true
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: bfme-plan-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-plan'
       - name: Read this run's comparison
         if: needs.compare.result == 'success'
+        continue-on-error: true
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: bfme-verdict-${{ github.run_attempt }}
