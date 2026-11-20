@@ -29,13 +29,17 @@ jobs:
   source-rules:
     if: >-
       github.repository_id == '1464323350' &&
-      (vars.BFME_PR_COMPACT != 'yes' || github.event_name == 'merge_group') &&
+      (vars.BFME_PR_COMPACT != 'yes' || github.event_name == 'merge_group' ||
+       (vars.BFME_AUTO_ADMISSION == 'yes' && github.event_name == 'pull_request_target' &&
+           github.event.action != 'labeled' &&
+           github.event.pull_request.head.repo.id != 1464323350 &&
+           !contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association))) &&
       !(github.event_name == 'pull_request_target' && github.event.action == 'edited' &&
         github.event.changes.base.ref.from == null) &&
       ((github.event_name != 'merge_group' && github.ref == 'refs/heads/main') ||
        (github.event_name == 'merge_group' && vars.BFME_MERGE_QUEUE_ENABLED == 'yes' &&
         github.event.merge_group.base_ref == 'refs/heads/main'))
-    runs-on: ${{ (vars.BFME_PR_ORCHESTRATION_RUNNER || 'ubuntu-24.04') }}
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pull-requests: read
@@ -135,7 +139,7 @@ jobs:
   publish-source-rules:
     needs: source-rules
     if: always() && !cancelled() && needs.source-rules.result == 'success'
-    runs-on: ${{ (vars.BFME_PR_ORCHESTRATION_RUNNER || 'ubuntu-24.04') }}
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pull-requests: read

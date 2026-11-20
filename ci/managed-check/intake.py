@@ -7,6 +7,7 @@ import sys
 
 from common import PIN, REPO_ID, digest, policy, read, validate_binding, write
 from gitrepo import Change, Git, Refusal, safe_path
+from fork_admission import narrow
 from pool_compare import projection
 from pool_protocol import compiler_source_problem, decode, encode
 
@@ -157,16 +158,19 @@ def main(work, out):
               | {"version": 1, "repo": REPO_ID, "kind": "gate", "rules": [rejected.rule]}
               | ({"location": rejected.location} if rejected.location else {}))
         return
-    if not event["approved"]:
+    automatic = event.get("automatic_author") if narrow(plan) else None
+    if not event["approved"] and automatic is None:
+        kind = "awaiting-automatic" if narrow(plan) and event.get("automatic_pending") else "awaiting-approval"
         write(out / "decision.json", {key: event[key] for key in ("number", "head", "base")}
-              | {"version": 1, "repo": REPO_ID, "kind": "awaiting-approval"})
+              | {"version": 1, "repo": REPO_ID, "kind": kind})
         return
     route = "compile" if len(plan["request_paths"]) <= 8 else "wide"
     write(out / "plan.json", plan)
     write(out / "decision.json", {key: plan[key] for key in ("number", "head", "base", "tree")}
-          | {"version": 1, "repo": REPO_ID, "kind": route, "plan": digest((out / "plan.json").read_bytes())})
+          | {"version": 1, "repo": REPO_ID, "kind": route, "plan": digest((out / "plan.json").read_bytes())}
+          | ({"automatic_author": automatic} if automatic is not None else {}))
     with Path(os.environ["GITHUB_OUTPUT"]).open("a") as output:
-        output.write("route=" + route + "\n")
+        output.write("route=" + ("automatic" if automatic is not None else route) + "\n")
 
 
 

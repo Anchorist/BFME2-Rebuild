@@ -93,6 +93,32 @@ GRAPH_CHANGES += (INLINE_BINDING_GRAPH,) + tuple(
     for previous in (TRANSPORT_LOG_GRAPH, RESERVE_AND_LOG_GRAPH, COMBINED_LOG_GRAPH)
 )
 GRAPH_PATHS = set(COMBINED_LOG_GRAPH) | set(INLINE_BINDING_GRAPH)
+ADMISSION_GRAPH = {
+    "ci/managed-check/github_io.py": (
+        'c6c89dbd8ec2923e8d954d09d79b23fd344e1d2be9b0c90f332f9abe16132228',
+        '4a413fed5760e8e14e12c779961939d24111991ad7c888a3244a21810850edfa',
+    ),
+    "ci/managed-check/intake.py": (
+        '3391fb495dccd4cab7bf9610d337c25696e9f56a27985faad5fab26def666b18',
+        '4b8fa6c3272a24ed002fc6c16af5dccc0e4416fe17259a73a08f845a48028d04',
+    ),
+    "ci/managed-check/fork_admission.py": (
+        None,
+        '9d5d811357515f81e46ee729a1ced768846042f34711d1817712fcded00f45d7',
+    ),
+    "ci/managed-check/bundle.sha256": (
+        'd29b124bdb33956c3af86aed8f8ca50f36a1877acf4a00d291ba44eb852ad6a4',
+        'ca92c4cf6cd894d669c2c9876fee5f383f94d93daae987fe9ab7b45b16f7e51b',
+    ),
+}
+
+GRAPH_CHANGES += (ADMISSION_GRAPH,) + tuple(
+    advance_graph(previous, ADMISSION_GRAPH)
+    for previous in GRAPH_CHANGES
+    if previous[BUNDLE][1] == ADMISSION_GRAPH[BUNDLE][0]
+)
+GRAPH_PATHS |= set(ADMISSION_GRAPH)
+
 COMPACT_SCOPE = {"ci/managed-state/state_delta.py", "ci/managed-state/state_origin.py",
                  "ci/managed-state/bundle.sha256"}
 MAX_DIFF_BYTES = 4 * 1024**2

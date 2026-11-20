@@ -4,7 +4,8 @@ from pathlib import Path
 import sys
 
 from common import REPO, REPO_ID, read, write
-from github_status import GitHub, Superseded, admitted, event
+from github_status import GitHub, Superseded, event
+from fork_admission import authority, bot_dispatch, enabled, reservation_kind
 from gitrepo import Git, GitFailure
 
 
@@ -12,12 +13,15 @@ def bind(work):
     api = GitHub()
     binding = event(api)
     pr = api.current(binding)
-    binding["approved"] = admitted(pr, binding["event_association"])
+    binding.update(authority(pr, binding, os.environ))
     work.mkdir(mode=0o700)
     base = Git(Path.cwd() / ".git")
     if base.rev("HEAD") != binding["base"]:
         raise ValueError("The trusted checkout differs from the protected workflow revision.")
     write(work / "event.json", binding)
+    if binding.get("automatic_pending") and os.environ.get("GITHUB_EVENT_NAME") == "repository_dispatch":
+        with Path(os.environ["GITHUB_OUTPUT"]).open("a") as stream:
+            stream.write("automatic_external=yes\n")
 
 
 def fetch(work):
@@ -74,8 +78,10 @@ def publish(phase, admission=None, result=None):
     from quality_format import quality_report
     api = GitHub()
     binding = event(api)
-    api.current(binding)
+    pr = api.current(binding)
     if phase == "start":
+        if enabled(os.environ) and authority(pr, binding, os.environ).get("automatic_pending"):
+            return
         api.status(binding, "pending", "Waiting for protected intake and Boat comparison")
         from inline_status import CONTEXT as INLINE_CONTEXT
         api.status(binding, "pending", "Waiting for admitted inline-virtual evidence", context=INLINE_CONTEXT)
@@ -93,12 +99,19 @@ def publish(phase, admission=None, result=None):
             raise ValueError("The admission receipt came from a different pull request.")
         if decision["kind"] == "gate":
             record = {"kind": "gate", "rules": decision["rules"], "location": decision.get("location")}
+        elif decision["kind"] == "awaiting-automatic":
+            record = {"kind": "pending", "messages": [
+                "Waiting for automatic admission. See the Admission status for any hold."]}
         elif decision["kind"] == "awaiting-approval":
             record = {"kind": "pending", "messages": ["A maintainer can approve Boat comparison by adding the boat-ok label."]}
         elif decision["kind"] in {"compile", "wide"}:
             record = {"kind": "infrastructure", "messages": [
                 "Boat compiler or native comparison did not produce a verified receipt. Re-run all jobs."]}
-        if decision["kind"] in {"compile", "wide"} and final_path.is_file():
+        if "automatic_author" in decision and os.environ.get("BFME_AUTOMATIC_CLAIM") != "yes":
+            record = {"kind": "pending", "messages": [
+                "This run has no automatic reservation. See the Admission status."]}
+        if (decision["kind"] in {"compile", "wide"} and final_path.is_file()
+                and ("automatic_author" not in decision or os.environ.get("BFME_AUTOMATIC_CLAIM") == "yes")):
             verdict = read(final_path, 256 * 1024)
             identity |= {k: decision[k] for k in ("tree", "plan")}
             if any(verdict.get(key) != value for key, value in identity.items()):
@@ -125,8 +138,17 @@ def publish(phase, admission=None, result=None):
                          "Protected Git intake unavailable. Re-run all jobs.")}[status]
     # Keep the status pending if the event was superseded while preparing the report.
     latest = api.current(binding)
-    if status == "success" and not admitted(latest, binding.get("event_association")):
-        raise Superseded()
+    if decision and (decision["kind"] == "awaiting-automatic"
+                     or ("automatic_author" in decision and os.environ.get("BFME_AUTOMATIC_CLAIM") != "yes")):
+        return
+    if status == "success":
+        if "automatic_author" in (decision or {}):
+            if (not enabled(os.environ) or not bot_dispatch(os.environ)
+                    or os.environ.get("BFME_AUTOMATIC_CLAIM") != "yes" or reservation_kind(latest) is None
+                    or (latest.get("user") or {}).get("id") != decision["automatic_author"]):
+                raise Superseded()
+        elif not authority(latest, binding, os.environ)["approved"]:
+            raise Superseded()
     api.status(binding, status, f"{message} (main {binding['base'][:12]})")
     if status in {"failure", "error"}:
         raise SystemExit(1)
