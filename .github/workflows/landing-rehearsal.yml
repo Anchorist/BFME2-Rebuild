@@ -1,0 +1,71 @@
+name: BFME II landing rehearsal
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Open pull request number for a read-only rehearsal
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  rehearse:
+    if: github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main'
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 8
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: read
+      actions: read
+    env:
+      BFME_PR: '${{ inputs.pr_number }}'
+    steps:
+      - name: Read exact protected landing tools
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: |
+            ci/managed-check
+            ci/managed-nt2
+            tools/gates
+      - name: Read current head statuses and identify their protected producers
+        id: source
+        shell: bash
+        env:
+          BFME_READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -euo pipefail
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          python3 -B ci/managed-check/landing_read.py discover "$RUNNER_TEMP/bfme-landing"
+      - name: Download the successful match receipt
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: '${{ github.token }}'
+          run-id: '${{ steps.source.outputs.match_run }}'
+          name: bfme-report-${{ steps.source.outputs.match_attempt }}
+          path: '${{ runner.temp }}/bfme-landing/match'
+      - name: Download the measured inline result
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: '${{ github.token }}'
+          run-id: '${{ steps.source.outputs.match_run }}'
+          name: bfme-inline-report-${{ steps.source.outputs.match_attempt }}
+          path: '${{ runner.temp }}/bfme-landing/inline'
+      - name: Download the published source rules receipt
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: '${{ github.token }}'
+          run-id: '${{ steps.source.outputs.rules_run }}'
+          name: bfme-source-receipt-${{ steps.source.outputs.rules_attempt }}
+          path: '${{ runner.temp }}/bfme-landing/rules'
+      - name: Verify all three receipts and the latest exact-head review
+        shell: bash
+        env:
+          BFME_READ_TOKEN: '${{ github.token }}'
+          BFME_MAINTAINER_IDS: '${{ vars.BFME_MAINTAINER_IDS }}'
+        run: python3 -B ci/managed-check/landing_read.py verify "$RUNNER_TEMP/bfme-landing"
+
