@@ -1,13 +1,38 @@
-"""Use an exact parent snapshot only for fully tracked source modifications."""
+"""Carry an exact main-line ancestor across fully tracked input changes."""
 
+from hashlib import sha256
 from subprocess import CalledProcessError
 
-from state_snapshot import authoritative_units, git, load, safe_tu
+from state_snapshot import OID, authoritative_units, git, load, safe_tu
 from state_evidence import LIMIT, cached_pairs, header
 
-# This generated file is outside the compiler and checker inputs.
-READ_ONLY_REPORTS = {"docs/progress-card.md"}
+# These are orchestration and publication paths. The comparison inputs and
+# implementation retain full-refresh semantics. state.yml can be carried only
+# across the reviewed producer-v2 to resume transport revision.
+REPORT_DIRS = ("docs/", "worklist/", "ci/state/", "ci/progress/", "ci/alarms/",
+               "ci/nightly/", "ci/landing/", ".github/workflows/")
+STATE_FLOW = ".github/workflows/state.yml"
+TRANSPORT = {"ci/managed-state/state_delta.py", "ci/managed-state/state_fetch.py",
+             "ci/managed-state/state_workflow.py", "ci/managed-state/state_origin.py",
+             "ci/managed-state/bundle.sha256",
+             "ci/README.md"}
+RESUME_MIGRATION = ("5df8abc2a97aef390b5a0256a15e163ae4a312566c0ea893187da4a254aea8fc", "14286c7910816519777d5a46c720605d142dff009f5751843d4e4c5263e2111f")
 MAX_DIFF_BYTES = 4 * 1024**2
+ANCESTOR_LIMIT = 16
+
+
+def predecessors(root, main):
+    return git(root, "rev-list", "--first-parent", "--skip=1", "--max-count",
+               str(ANCESTOR_LIMIT), main).decode("ascii").splitlines()
+
+
+def publication_path(root, parent, main, file):
+    if file == STATE_FLOW:
+        fingerprints = tuple(sha256(git(root, "show", f"{rev}:{file}")).hexdigest()
+                             for rev in (parent, main))
+        return fingerprints == RESUME_MIGRATION
+    return (file in TRANSPORT or file.startswith(REPORT_DIRS)
+            or ("/" not in file and file.endswith(".md")))
 
 
 def source_changes(root, parent, main):
@@ -22,9 +47,11 @@ def source_changes(root, parent, main):
     changed = set()
     for meta, name in zip(parts[::2], parts[1::2], strict=True):
         file = name.decode("utf-8", "strict")
-        if file in READ_ONLY_REPORTS:
-            continue
         info = meta.split()
+        if (len(info) == 5 and info[0] in {b":100644", b":000000"}
+                and info[1] in {b"100644", b"000000"} and info[4] in {b"A", b"D", b"M"}
+                and publication_path(root, parent, main, file)):
+            continue
         # New/deleted paths, configuration, ledgers, and name or mode changes
         # may alter symbolic lookup or introduce an earlier include candidate.
         if (not file.startswith(("src/", "include/")) or len(info) != 5
@@ -51,11 +78,13 @@ def inherited(root, main, snapshot, *, warn=print):
     if not snapshot or not snapshot.is_file():
         return {}
     try:
-        parent = git(root, "rev-parse", "--verify", main + "^").decode().strip()
+        old = load(snapshot, LIMIT)
+        parent = old.get("sha", "")
+        if not isinstance(parent, str) or not OID.fullmatch(parent) or parent not in predecessors(root, main):
+            return {}
         if (changed := source_changes(root, parent, main)) is None:
             return {}
         tree = git(root, "rev-parse", parent + "^{tree}").decode().strip()
-        old = load(snapshot, LIMIT)
         units = authoritative_units(root, main)
         if set(old["evidence"]) != set(units):
             return {}

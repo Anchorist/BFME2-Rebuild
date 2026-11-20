@@ -1,9 +1,19 @@
 name: Measure protected main state
+run-name: >-
+  ${{ github.event_name == 'workflow_dispatch' && inputs.seed &&
+      format('Seed protected main state {0}', github.sha) ||
+      format('Measure protected main state {0}', github.sha) }}
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      seed:
+        description: "Finish one protected baseline even if main advances"
+        required: false
+        type: boolean
+        default: false
   repository_dispatch:
     types: [bfme-landed]
 
@@ -11,10 +21,17 @@ permissions: {}
 
 concurrency:
   group: >-
-    ${{ github.event_name == 'repository_dispatch' &&
-        format('bfme-protected-state-dispatch-{0}', github.run_id) ||
+    ${{ github.event_name == 'workflow_dispatch' && inputs.seed && 'bfme-protected-main-seed' ||
+        github.event_name == 'repository_dispatch' &&
+        (github.actor_id != '41898282' || github.event.client_payload.commit != github.sha ||
+         github.event.client_payload.parent == '' || github.event.client_payload.head == '' ||
+         github.event.client_payload.tree == '' || github.event.client_payload.number <= 0) &&
+        format('bfme-state-unbound-dispatch-{0}', github.run_id) ||
         'bfme-protected-main-state' }}
-  cancel-in-progress: true
+  cancel-in-progress: '${{ github.event_name != ''workflow_dispatch'' || !inputs.seed }}'
+
+env:
+  BFME_STATE_SEED: '${{ github.event_name == ''workflow_dispatch'' && inputs.seed }}'
 
 jobs:
   plan:
@@ -27,14 +44,26 @@ jobs:
       contents: read
       actions: read
     outputs:
+      active: '${{ steps.origin.outputs.active }}'
       batches: '${{ steps.plan.outputs.batches }}'
+      attempt: '${{ steps.plan.outputs.attempt }}'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: '${{ github.sha }}'
           persist-credentials: false
-          fetch-depth: 2
-      - name: Read the exact predecessor state
+          fetch-depth: 17
+      - name: Decide whether this current main needs measurement
+        id: origin
+        env:
+          BFME_READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected a valid protected state request. Found exit %s at line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
+          python3 -B ci/managed-state/state_origin.py admit
+      - name: Read an exact ancestor state
+        if: steps.origin.outputs.active == 'yes' && env.BFME_STATE_SEED != 'true'
         env:
           BFME_READ_TOKEN: '${{ github.token }}'
         run: |
@@ -45,18 +74,24 @@ jobs:
           (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
           python3 -B ci/managed-state/state_fetch.py "$RUNNER_TEMP/previous-state.json" --parent
       - name: Build the exact protected main plan
+        if: steps.origin.outputs.active == 'yes'
         id: plan
         env:
           STATE_BUDGET: '${{ vars.BFME_STATE_BUDGET_JOBS }}'
+          BFME_READ_TOKEN: '${{ github.token }}'
         run: |
           set -Eeuo pipefail
           trap 'rc=$?; printf "Expected the protected state step to finish. Found exit %s at line %s.\n" "$rc" "$LINENO" >&2' ERR
           (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          python3 -B ci/managed-state/state_origin.py check
+          unset BFME_READ_TOKEN
           mkdir "$RUNNER_TEMP/state-plan"
           python3 -B ci/managed-state/state_workflow.py plan "$RUNNER_TEMP/state-plan/state-plan.json" \
             "$RUNNER_TEMP/state-plan/carry.json" "$RUNNER_TEMP/previous-state.json"
+          printf 'attempt=%s\n' "$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: steps.origin.outputs.active == 'yes'
         with:
           name: bfme-state-plan-${{ github.run_attempt }}
           path: '${{ runner.temp }}/state-plan'
@@ -65,6 +100,7 @@ jobs:
 
   measure:
     needs: plan
+    if: needs.plan.outputs.active == 'yes'
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 40
     strategy:
@@ -79,9 +115,17 @@ jobs:
         with:
           ref: '${{ github.sha }}'
           persist-credentials: false
+      - name: Check current main before spending compiler time
+        env:
+          BFME_READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected current protected main. Found exit %s at line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
+          python3 -B ci/managed-state/state_origin.py check
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: bfme-state-plan-${{ github.run_attempt }}
+          name: bfme-state-plan-${{ needs.plan.outputs.attempt }}
           path: '${{ runner.temp }}/state-input'
       - name: Verify the protected state and compiler package
         run: |
@@ -101,9 +145,17 @@ jobs:
           trap 'rc=$?; printf "Expected the protected state step to finish. Found exit %s at line %s.\n" "$rc" "$LINENO" >&2' ERR
           test -z "${BFME_STATE_TOKEN:-}${GITHUB_TOKEN:-}"
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C             GITHUB_SHA="$GITHUB_SHA" TMPDIR="$RUNNER_TEMP"             python3 -B ci/managed-state/compare_main.py "$RUNNER_TEMP/state-input/state-plan.json"               "$BATCH" "$RUNNER_TEMP/state-shard-$BATCH.json" "$RUNNER_TEMP/base-shard-$BATCH.json"
+      - name: Check current main before retaining shard results
+        env:
+          BFME_READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected current protected main. Found exit %s at line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
+          python3 -B ci/managed-state/state_origin.py check
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: bfme-state-${{ github.run_attempt }}-shard-${{ matrix.batch }}
+          name: bfme-state-${{ needs.plan.outputs.attempt }}-shard-${{ matrix.batch }}-try-${{ github.run_attempt }}
           path: |
             ${{ runner.temp }}/state-shard-${{ matrix.batch }}.json
             ${{ runner.temp }}/base-shard-${{ matrix.batch }}.json
@@ -121,22 +173,40 @@ jobs:
         with:
           ref: '${{ github.sha }}'
           persist-credentials: false
+      - name: Check current main before joining receipts
+        env:
+          BFME_READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected current protected main. Found exit %s at line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
+          python3 -B ci/managed-state/state_origin.py check
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: bfme-state-plan-${{ github.run_attempt }}
+          name: bfme-state-plan-${{ needs.plan.outputs.attempt }}
           path: '${{ runner.temp }}/state-input'
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          pattern: bfme-state-${{ github.run_attempt }}-shard-*
+          pattern: bfme-state-${{ needs.plan.outputs.attempt }}-shard-*-try-*
           path: '${{ runner.temp }}/state-shards'
           merge-multiple: false
       - name: Join the complete main state
+        env:
+          BFME_STATE_PLAN_ATTEMPT: '${{ needs.plan.outputs.attempt }}'
         run: |
           set -Eeuo pipefail
           trap 'rc=$?; printf "Expected the protected state step to finish. Found exit %s at line %s.\n" "$rc" "$LINENO" >&2' ERR
           (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
           python3 -B ci/managed-state/state_workflow.py assemble "$RUNNER_TEMP/state-input/state-plan.json"             "$RUNNER_TEMP/state-shards" "$RUNNER_TEMP/state.json" "$RUNNER_TEMP/base-state.json" "$RUNNER_TEMP/state-input/carry.json"
+      - name: Check current main before retaining the complete state
+        env:
+          BFME_READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected current protected main. Found exit %s at line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
+          python3 -B ci/managed-state/state_origin.py check
       - name: Retain exact protected base comparison receipts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

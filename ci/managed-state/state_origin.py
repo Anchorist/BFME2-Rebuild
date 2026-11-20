@@ -1,0 +1,117 @@
+"""Keep normal state work on current main and authorize explicit protected seeds."""
+import os
+from pathlib import Path
+import sys
+import urllib.parse
+import urllib.request
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent / "managed-check"))
+from common import HEX40, REPO, REPO_ID, encoded, read
+from github_status import GitHub
+from state_delta import predecessors
+from state_fetch import WORKFLOW, select_artifact, select_run, verified_run
+
+SEED_TITLE = "Seed protected main state "
+MEASURING = {"requested", "queued", "pending", "waiting", "in_progress"}
+
+
+class Held(ValueError):
+    pass
+
+
+def is_seed(run, revisions):
+    sha = run.get("head_sha", "")
+    return (isinstance(sha, str) and HEX40.fullmatch(sha)
+            and sha in revisions and run.get("head_branch") == "main"
+            and run.get("event") == "workflow_dispatch" and run.get("path") == WORKFLOW
+            and (run.get("repository") or {}).get("id") == REPO_ID
+            and run.get("display_title") == SEED_TITLE + sha)
+
+
+def running_seed(api, revisions):
+    filters = urllib.parse.urlencode({"branch": "main", "event": "workflow_dispatch", "per_page": 20})
+    runs = api.call("actions/workflows/state.yml/runs?" + filters)["workflow_runs"]
+    return any(is_seed(run, revisions) and run.get("status") in MEASURING for run in runs)
+
+
+def main_ref(api):
+    current = api.call("git/ref/heads/main")["object"]["sha"]
+    if not isinstance(current, str) or not HEX40.fullmatch(current):
+        raise Held("Expected the full current main object. Found invalid GitHub ref metadata.")
+    return current
+
+
+def eligible(api, sha, seed, phase, *, root=None):
+    current = main_ref(api)
+    if not seed and current != sha:
+        detail = f"Expected current main {sha[:12]}. Found newer main {current[:12]}."
+        if phase == "admit":
+            print(detail)
+            return False
+        raise Held(detail)
+    if phase == "admit" and not seed:
+        run = select_run(api, sha)
+        if run and select_artifact(api, *run):
+            print(f"Main {sha[:12]} already has a successful exact state. No duplicate refresh.")
+            return False
+        ancestors = predecessors(root, sha)
+        if running_seed(api, {sha, *ancestors}):
+            print("A protected seed is already measuring a compatible main-line revision. Current refresh deferred.")
+            return False
+    return True
+
+
+def catch_up(api, event):
+    run = event.get("workflow_run") or {}
+    sha = run.get("head_sha", "")
+    if (not is_seed(run, {sha}) or not verified_run(run, sha)
+            or not select_artifact(api, run["id"], run["run_attempt"])):
+        raise Held("Expected a completed protected seed with its exact evidence. Found incompatible run metadata.")
+    if main_ref(api) == sha:
+        print("The successful seed still describes current main.")
+        return
+    endpoint = f"https://api.github.com/repos/{REPO}/actions/workflows/state.yml/dispatches"
+    request = urllib.request.Request(endpoint, data=encoded({"ref": "main", "inputs": {"seed": "false"}}),
+                                     headers={"Authorization": "Bearer " + api.token,
+                                              "Accept": "application/vnd.github+json",
+                                              "Content-Type": "application/json"})
+    with api.api.open(request, timeout=25) as response:
+        if response.status != 204:
+            raise Held("Expected GitHub to accept one current-main refresh. Found a different response.")
+    print("Requested one current-main refresh after the exact protected seed completed.")
+
+
+def run(phase):
+    env = os.environ
+    sha, event = env.get("GITHUB_SHA", ""), env.get("GITHUB_EVENT_NAME")
+    if (env.get("GITHUB_REPOSITORY") != REPO or env.get("GITHUB_REPOSITORY_ID") != str(REPO_ID)
+            or env.get("GITHUB_REF") != "refs/heads/main" or not HEX40.fullmatch(sha)):
+        raise Held("Expected the exact protected repository and main ref. Found another execution origin.")
+    api = GitHub()
+    if phase == "catch-up":
+        if event != "workflow_run":
+            raise Held("Expected a completed protected seed event. Found a different trigger.")
+        catch_up(api, read(env["GITHUB_EVENT_PATH"], 128 * 1024))
+        return
+    if phase not in {"admit", "check"} or event not in {"push", "repository_dispatch", "workflow_dispatch"}:
+        raise Held("Expected a protected main state entry point. Found another phase or trigger.")
+    if event == "repository_dispatch" and env.get("GITHUB_ACTOR_ID") != "41898282":
+        raise Held("Expected an automatic landing dispatch. Found a different dispatch identity.")
+    seed = event == "workflow_dispatch" and env.get("BFME_STATE_SEED") == "true"
+    result = eligible(api, sha, seed, phase, root=Path.cwd())
+    if phase == "admit":
+        with Path(env["GITHUB_OUTPUT"]).open("a") as stream:
+            stream.write(f"active={'yes' if result else 'no'}\n")
+
+
+if __name__ == "__main__":
+    try:
+        run(*sys.argv[1:])
+    except Held as error:
+        print(str(error), file=sys.stderr)
+        raise SystemExit(1) from None
+    except (OSError, ValueError, TypeError, KeyError) as error:
+        print(f"Expected fresh protected state metadata from GitHub. Found {type(error).__name__}.", file=sys.stderr)
+        raise SystemExit(1) from None
+

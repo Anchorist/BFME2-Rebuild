@@ -1,0 +1,36 @@
+name: Refresh main after a protected seed
+
+on:
+  workflow_run:
+    workflows: [Measure protected main state]
+    types: [completed]
+
+permissions: {}
+
+jobs:
+  refresh:
+    if: >-
+      github.repository == 'Open-BFME/BFME2-Rebuild' &&
+      vars.BFME_STATE_WORKFLOW_ENABLED == 'yes' &&
+      github.event.workflow_run.event == 'workflow_dispatch' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      startsWith(github.event.workflow_run.display_title, 'Seed protected main state ')
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+      - name: Request protected refresh if main moved
+        env:
+          BFME_READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected a completed exact protected seed. Found exit %s at line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
+          python3 -B ci/managed-state/state_origin.py catch-up

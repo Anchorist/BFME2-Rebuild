@@ -15,26 +15,44 @@ import zipfile
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "managed-check"))
 from common import HEX40, HEX64, REPO, REPO_ID
 from github_status import GitHub
-from gitrepo import Git, GitFailure
+from subprocess import CalledProcessError
+from state_delta import predecessors
 from state_evidence import LIMIT
 
 WORKFLOW = ".github/workflows/state.yml"
 RUN_ID = re.compile(r"[1-9][0-9]{0,19}\Z")
 
 
+def verified_run(item, sha):
+    return (item.get("path") == WORKFLOW and item.get("head_sha") == sha
+            and item.get("head_branch") == "main" and item.get("status") == "completed"
+            and item.get("event") in {"push", "workflow_dispatch", "repository_dispatch"}
+            and item.get("conclusion") == "success"
+            and (item.get("repository") or {}).get("id") == REPO_ID
+            and RUN_ID.fullmatch(str(item.get("id", "")))
+            and RUN_ID.fullmatch(str(item.get("run_attempt", ""))))
+
+
 def select_run(api, sha):
     filters = urllib.parse.urlencode({"head_sha": sha, "branch": "main", "status": "success",
                                       "per_page": 10})
     runs = api.call("actions/workflows/state.yml/runs?" + filters)["workflow_runs"]
-    for item in runs:
-        if (item.get("path") == WORKFLOW and item.get("head_sha") == sha
-                and item.get("head_branch") == "main" and item.get("status") == "completed"
-                and item.get("event") in {"push", "workflow_dispatch", "repository_dispatch"}
-                and item.get("conclusion") == "success"
-                and (item.get("repository") or {}).get("id") == REPO_ID
-                and RUN_ID.fullmatch(str(item.get("id", "")))
-                and RUN_ID.fullmatch(str(item.get("run_attempt", "")))):
-            return item["id"], item["run_attempt"]
+    return next(((row["id"], row["run_attempt"]) for row in runs if verified_run(row, sha)), None)
+
+
+def select_ancestor_artifact(api, shas):
+    filters = urllib.parse.urlencode({"branch": "main", "status": "success", "per_page": 50})
+    runs = api.call("actions/workflows/state.yml/runs?" + filters)["workflow_runs"]
+    by_base = {}
+    allowed = set(shas)
+    for row in runs:
+        sha = row.get("head_sha")
+        if sha in allowed and verified_run(row, sha):
+            by_base.setdefault(sha, (row["id"], row["run_attempt"]))
+    nearest = [by_base[sha] for sha in shas if sha in by_base][:3]
+    for run, attempt in nearest:
+        if artifact := select_artifact(api, run, attempt):
+            return artifact
     return None
 
 
@@ -103,21 +121,27 @@ def main(output, *, parent=False):
     if parent:
         if os.environ.get("GITHUB_EVENT_NAME") not in {"push", "workflow_dispatch", "repository_dispatch"}:
             raise ValueError("Only the trusted state workflow may carry the parent.")
-        checkout = Git(Path.cwd() / ".git")
         try:
-            sha = checkout.rev(sha + "^")
-        except GitFailure:
+            shas = predecessors(Path.cwd(), sha)
+        except (OSError, CalledProcessError):
+            print("The protected ancestry is unavailable.")
+            return
+        if not shas:
             print("Main has no predecessor in the state checkout.")
             return
     temporary = output.with_name(output.name + ".partial")
     try:
         api = GitHub()
-        run = select_run(api, sha)
-        ref = select_artifact(api, *run) if run else None
+        if parent:
+            ref = select_ancestor_artifact(api, shas)
+        else:
+            run = select_run(api, sha)
+            ref = select_artifact(api, *run) if run else None
         if ref:
             download(api, *ref, temporary)
             temporary.replace(output)
-            print("Downloaded state produced for this exact protected revision.")
+            print("Downloaded state from a protected ancestor." if parent
+                  else "Downloaded state produced for this exact protected revision.")
             return
     except (OSError, LookupError, TypeError, ValueError, zipfile.BadZipFile):
         # Storage URLs are signed, so never include exceptions or URLs in logs.

@@ -27,18 +27,46 @@ def make_checked_plan(root, main, budget, *, measured=None):
     return plan
 
 
-def assembled(root, plan, directory, attempt, *, required=None):
+def select_shards(plan, directory, plan_attempt, current_attempt):
+    attempt_format = r"[1-9][0-9]{0,19}"
+    if not all(re.fullmatch(attempt_format, value) for value in (plan_attempt, current_attempt)):
+        raise ValueError("Expected exact state plan and runner attempts. Found invalid attempt metadata.")
+    first, last = int(plan_attempt), int(current_attempt)
+    if first > last:
+        raise ValueError("Expected the current or earlier state plan. Found a future attempt.")
+    pattern = re.compile(rf"bfme-state-{first}-shard-(0|[1-9][0-9]{{0,2}})-try-({attempt_format})")
+    instances = {}
+    for path in directory.iterdir():
+        match = pattern.fullmatch(path.name)
+        if not match or path.is_symlink() or not path.is_dir():
+            raise ValueError("Expected immutable state shard directories. Found a foreign artifact.")
+        batch, attempt = map(int, match.groups())
+        if not (0 <= batch < len(plan["batches"]) and first <= attempt <= last):
+            raise ValueError("Expected a planned shard and valid attempt. Found a foreign artifact.")
+        if batch not in instances or instances[batch][0] < attempt:
+            instances[batch] = (attempt, path)
+    if set(instances) != set(range(len(plan["batches"]))):
+        raise ValueError("Expected every exact state shard. Found missing artifacts. Keep the prior state.")
+    reused = sum(attempt < last for attempt, _ in instances.values())
+    print(f"Joining {len(instances)} exact-plan state shards. Reused {reused} earlier-attempt artifacts.")
+    return [instances[index][1] for index in range(len(plan["batches"]))]
+
+
+def select_fresh_shards(plan, directory, attempt):
+    """The weekly independent full recompute only uses its own attempt."""
     if not re.fullmatch(r"[1-9][0-9]{0,19}", attempt):
-        raise ValueError("Use the exact Actions attempt.")
-    prefix = f"bfme-state-{attempt}-shard-"
-    expected = {prefix + str(index): index for index in range(len(plan["batches"]))}
-    if set(expected) != {path.name for path in directory.iterdir()}:
-        raise ValueError("Missing or foreign state shard artifacts. Keep the prior state.")
+        raise ValueError("Expected a valid Actions attempt. Found invalid metadata.")
+    wanted = [directory / f"bfme-state-{attempt}-shard-{index}"
+              for index in range(len(plan["batches"]))]
+    if (set(wanted) != set(directory.iterdir())
+            or any(path.is_symlink() or not path.is_dir() for path in wanted)):
+        raise ValueError("Expected every fresh parity shard. Found missing or foreign artifacts.")
+    return wanted
+
+
+def assembled(root, plan, shard_dirs, *, required=None):
     shards = []
-    for name, index in expected.items():
-        root_dir = directory / name
-        if root_dir.is_symlink() or not root_dir.is_dir():
-            raise ValueError("An unexpected state shard directory was returned.")
+    for index, root_dir in enumerate(shard_dirs):
         path = root_dir / f"state-shard-{index}.json"
         doc = load(path, MAX_SHARD_BYTES)
         if doc.get("batch") != index:
@@ -46,15 +74,14 @@ def assembled(root, plan, directory, attempt, *, required=None):
         shards.append(doc)
     return assemble(plan, shards, root, required=required)
 
- 
-def assemble_evidence(root, plan, directory, attempt):
+
+def assemble_evidence(root, plan, shard_dirs):
     main = plan["main"]
     tree = Git(root / ".git").value("rev-parse", main + "^{tree}")
     identity = header(main, tree)
     evidence = {}
     for index, paths in enumerate(plan["batches"]):
-        row = load(directory / f"bfme-state-{attempt}-shard-{index}" / f"base-shard-{index}.json",
-                   MAX_SHARD_BYTES)
+        row = load(shard_dirs[index] / f"base-shard-{index}.json", MAX_SHARD_BYTES)
         if (row.pop("plan", None) != digest(plan) or row.pop("batch", None) != index
                 or set(row["evidence"]) != set(paths)):
             raise ValueError("Exact base evidence has incomplete or foreign translation units.")
@@ -109,7 +136,13 @@ def main(mode, *args):
         plan = load(plan, MAX_PLAN_BYTES)
         if plan["main"] != main or plan["checker"] != PIN["checker"]:
             raise ValueError("The state plan names a different revision or protected checker.")
+        validate_plan(plan)
         attempt = os.environ["GITHUB_RUN_ATTEMPT"]
+        plan_attempt = os.environ.get("BFME_STATE_PLAN_ATTEMPT")
+        if plan_attempt is None:
+            shard_dirs = select_fresh_shards(plan, shards, attempt)
+        else:
+            shard_dirs = select_shards(plan, shards, plan_attempt, attempt)
         required = authoritative_units(root, main)
         tree = Git(root / ".git").value("rev-parse", main + "^{tree}")
         identity = header(main, tree)
@@ -123,13 +156,13 @@ def main(mode, *args):
                         for tu, entry in carry.items()]
             cached_pairs(saved, identity, commands)
         dirty = [tu for batch in plan["batches"] for tu in batch]
-        result = assembled(root, plan, shards, attempt, required=dirty)
+        result = assembled(root, plan, shard_dirs, required=dirty)
         carried_numeric = compact({"binding": {}, "results": [entry.get("wide_native", entry["native"]) | {"tu": tu}
                                                                 for tu, entry in carry.items()]},
                                   carry, prehashed=True)
         result["tus"] = merge(required, result["tus"], carried_numeric)
         if cache:
-            assembled_cache = assemble_evidence(root, plan, shards, attempt)
+            assembled_cache = assemble_evidence(root, plan, shard_dirs)
             assembled_cache["evidence"] = merge(required, assembled_cache["evidence"], carry)
             content = canonical(assembled_cache)
             if len(content) > LIMIT:
