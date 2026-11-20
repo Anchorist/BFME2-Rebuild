@@ -1,0 +1,169 @@
+name: Publish main state
+
+# Copies each completed measurement of main (made by "Measure protected main state",
+# .github/workflows/state.yml) to the `state` branch as one small file per source file.
+# Pushing to `state` with the Actions token starts no other workflow, so nothing loops,
+# and `main` is never written here.
+
+on:
+  workflow_run:
+    workflows: ["Measure protected main state"]
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Run of "Measure protected main state" to publish (empty: the newest for main)'
+        required: false
+        default: ''
+      drill:
+        description: 'Alarm test: break the input on purpose. The run must fail and open the alarm issue.'
+        type: boolean
+        default: false
+
+permissions: {}
+
+concurrency:
+  group: bfme-state-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' && vars.BFME_STATE_BRANCH_ENABLED == 'yes'
+    name: Publish the state branch
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      action: '${{ steps.resolve.outputs.action }}'
+      sha: '${{ steps.resolve.outputs.sha }}'
+      detail: '${{ steps.detail.outputs.detail }}'
+    steps:
+      - name: Check out main with its history
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify the state tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          for dir in ci/state ci/managed-state; do
+            if ! (cd "$dir" && sha256sum -c --quiet bundle.sha256); then
+              echo "::error::expected every file in $dir to match $dir/bundle.sha256, found a difference"
+              exit 1
+            fi
+          done
+      - name: Decide which measurement to publish
+        id: resolve
+        shell: bash
+        env:
+          EVENT: '${{ github.event_name }}'
+          RUN_ID: '${{ github.event.workflow_run.id }}'
+          RUN_ATTEMPT: '${{ github.event.workflow_run.run_attempt }}'
+          RUN_SHA: '${{ github.event.workflow_run.head_sha }}'
+          RUN_CONCLUSION: '${{ github.event.workflow_run.conclusion }}'
+          RUN_EVENT: '${{ github.event.workflow_run.event }}'
+          RUN_BRANCH: '${{ github.event.workflow_run.head_branch }}'
+          RUN_PATH: '${{ github.event.workflow_run.path }}'
+          MAIN_SHA: '${{ github.sha }}'
+          INPUT_RUN_ID: '${{ inputs.run_id }}'
+          READ_TOKEN: '${{ github.token }}'
+        run: python3 -B ci/state/resolve.py
+      - name: Alarm drill (only when asked)
+        if: inputs.drill == true
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '{}' > "$RUNNER_TEMP/drill.json"
+          echo "DRILL: publishing a deliberately empty input; this step must fail and open the alarm."
+          python3 -B ci/state/publish.py --snapshot "$RUNNER_TEMP/drill.json" --main "$GITHUB_SHA" --checkout .             2>&1 | tee "$RUNNER_TEMP/publish.log"
+      - name: Download the measurement
+        if: steps.resolve.outputs.action == 'publish'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: 'bfme-numeric-main-state-${{ steps.resolve.outputs.attempt }}'
+          path: '${{ runner.temp }}/state-input'
+          run-id: '${{ steps.resolve.outputs.run_id }}'
+          github-token: '${{ github.token }}'
+      - name: Publish one file per source file
+        id: publish
+        if: steps.resolve.outputs.action == 'publish'
+        shell: bash
+        env:
+          STATE_TOKEN: '${{ github.token }}'
+          SHA: '${{ steps.resolve.outputs.sha }}'
+        run: |
+          set -euo pipefail
+          input="$RUNNER_TEMP/state-input/state.json"
+          if ! test -f "$input"; then
+            echo "::error::expected state.json in the downloaded measurement, found: $(ls -A "$RUNNER_TEMP/state-input" | tr '\n' ' ')"
+            exit 1
+          fi
+          python3 -B ci/state/publish.py --snapshot "$input" --main "$SHA" --checkout . \
+            2>&1 | tee "$RUNNER_TEMP/publish.log"
+      - name: Keep the failure text for the alarm
+        id: detail
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo 'detail<<END_OF_DETAIL'
+            grep -h '^::error::' "$RUNNER_TEMP/publish.log" 2>/dev/null | sed 's/^::error:://' | head -c 1500 || true
+            echo
+            echo 'END_OF_DETAIL'
+          } >> "$GITHUB_OUTPUT"
+
+  alarms:
+    needs: publish
+    if: always() && github.ref == 'refs/heads/main' && needs.publish.result != 'skipped'
+    name: Open or close alarm issues
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Check out the alarm tool
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: ci/alarms
+      - name: Set the three state alarms from this run
+        shell: bash
+        env:
+          ALARM_TOKEN: '${{ github.token }}'
+          RESULT: '${{ needs.publish.result }}'
+          ACTION: '${{ needs.publish.outputs.action }}'
+          SHA: '${{ needs.publish.outputs.sha }}'
+          DETAIL: '${{ needs.publish.outputs.detail }}'
+          RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        run: |
+          set -euo pipefail
+          if ! (cd ci/alarms && sha256sum -c --quiet bundle.sha256); then
+            echo "::error::expected ci/alarms to match its bundle.sha256, found a difference"
+            exit 1
+          fi
+          echo "Publish job: result=$RESULT action=${ACTION:-none} main=${SHA:-unknown}"
+          alarm() { ALARM_TOKEN="$ALARM_TOKEN" python3 -B ci/alarms/alarm.py "$@" --run-url "$RUN_URL"; }
+          if [ "$RESULT" = success ]; then
+            alarm clear state-publish
+          else
+            alarm raise state-publish --detail "Expected the publish job to succeed (main ${SHA:-unknown}, decision ${ACTION:-none}), found: $RESULT. ${DETAIL}"
+          fi
+          if [ "$RESULT" = success ] && [ "$ACTION" = publish ]; then
+            alarm clear state-measure
+            alarm clear state-stale
+          elif [ "$ACTION" = measure-failed ]; then
+            alarm raise state-measure --detail "Expected the measurement of main $SHA to succeed, found it failed."
+          elif [ "$ACTION" = stale ]; then
+            alarm raise state-stale --detail "Expected a measurement of main $SHA within 3 hours of the commit, found none."
+          else
+            echo "Nothing to set: the publish job decided '$ACTION'."
+          fi

@@ -1,0 +1,227 @@
+name: Check main state against a full recompute
+
+# Once a week, measure every source file of the main commit that the `state` branch
+# describes, with nothing carried over, and require the result to equal the published
+# state byte for byte. A difference opens the alarm issue "Incremental state differs
+# from a full recompute". Uses the same tools as every push (ci/managed-state/).
+
+on:
+  schedule:
+    - cron: '17 4 * * 0'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: bfme-state-parity
+  cancel-in-progress: false
+
+jobs:
+  target:
+    if: >-
+      github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
+      vars.BFME_STATE_WORKFLOW_ENABLED == 'yes' && vars.BFME_STATE_BRANCH_ENABLED == 'yes'
+    name: Choose the commit to recompute
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      sha: '${{ steps.target.outputs.sha }}'
+      tree: '${{ steps.tree.outputs.tree }}'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Read the main commit the state branch describes
+        id: target
+        shell: bash
+        env:
+          READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -euo pipefail
+          (cd ci/state && sha256sum -c --quiet bundle.sha256) || { echo "::error::expected ci/state to match its bundle.sha256, found a difference"; exit 1; }
+          python3 -B ci/state/parity.py target
+      - name: Read its tree
+        id: tree
+        shell: bash
+        env:
+          SHA: '${{ steps.target.outputs.sha }}'
+        run: |
+          set -euo pipefail
+          tree=$(git rev-parse --verify "$SHA^{tree}") || { echo "::error::expected main commit $SHA in the history of main, found it missing"; exit 1; }
+          echo "tree=$tree" >> "$GITHUB_OUTPUT"
+
+  plan:
+    needs: target
+    name: Plan a full recompute
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      batches: '${{ steps.plan.outputs.batches }}'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ needs.target.outputs.sha }}'
+          persist-credentials: false
+      - name: Plan every source file, carrying nothing
+        id: plan
+        shell: bash
+        env:
+          TARGET: '${{ needs.target.outputs.sha }}'
+          STATE_BUDGET: '${{ vars.BFME_STATE_BUDGET_JOBS }}'
+        run: |
+          set -euo pipefail
+          (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          mkdir "$RUNNER_TEMP/state-plan"
+          GITHUB_SHA="$TARGET" python3 -B ci/managed-state/state_workflow.py plan "$RUNNER_TEMP/state-plan/state-plan.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-parity-plan-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/state-plan'
+          retention-days: 2
+          if-no-files-found: error
+
+  measure:
+    needs: [target, plan]
+    name: Measure batch ${{ matrix.batch }}
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        batch: '${{ fromJSON(needs.plan.outputs.batches) }}'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ needs.target.outputs.sha }}'
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-parity-plan-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/state-input'
+      - name: Verify the comparison tools and compiler image
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
+          cd /opt/boat-compiler
+          sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
+          sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Measure the assigned source files
+        shell: bash
+        env:
+          BATCH: '${{ matrix.batch }}'
+          TARGET: '${{ needs.target.outputs.sha }}'
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C GITHUB_SHA="$TARGET" TMPDIR="$RUNNER_TEMP" \
+            python3 -B ci/managed-state/compare_main.py "$RUNNER_TEMP/state-input/state-plan.json" \
+              "$BATCH" "$RUNNER_TEMP/state-shard-$BATCH.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-state-${{ github.run_attempt }}-shard-${{ matrix.batch }}
+          path: '${{ runner.temp }}/state-shard-${{ matrix.batch }}.json'
+          retention-days: 2
+          if-no-files-found: error
+
+  compare:
+    needs: [target, plan, measure]
+    name: Compare with the published state
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      result: '${{ steps.compare.outputs.result }}'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ needs.target.outputs.sha }}'
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-parity-plan-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/state-input'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: bfme-state-${{ github.run_attempt }}-shard-*
+          path: '${{ runner.temp }}/state-shards'
+          merge-multiple: false
+      - name: Join the full recompute
+        shell: bash
+        env:
+          TARGET: '${{ needs.target.outputs.sha }}'
+        run: |
+          set -euo pipefail
+          (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
+          GITHUB_SHA="$TARGET" python3 -B ci/managed-state/state_workflow.py assemble \
+            "$RUNNER_TEMP/state-input/state-plan.json" "$RUNNER_TEMP/state-shards" "$RUNNER_TEMP/full-state.json"
+      - name: Check out the comparison tool from main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          path: tools-main
+          persist-credentials: false
+          sparse-checkout: |
+            ci/state
+            ci/managed-state
+      - name: Require byte-for-byte equality
+        id: compare
+        shell: bash
+        env:
+          READ_TOKEN: '${{ github.token }}'
+          TARGET: '${{ needs.target.outputs.sha }}'
+          TREE: '${{ needs.target.outputs.tree }}'
+        run: |
+          set -euo pipefail
+          (cd tools-main/ci/state && sha256sum -c --quiet bundle.sha256)
+          python3 -B tools-main/ci/state/parity.py compare --snapshot "$RUNNER_TEMP/full-state.json" \
+            --main "$TARGET" --tree "$TREE" --report "$RUNNER_TEMP/parity.txt"
+
+  alarms:
+    needs: [target, plan, measure, compare]
+    if: always() && github.ref == 'refs/heads/main' && needs.target.result != 'skipped'
+    name: Open or close the parity alarm
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: ci/alarms
+      - name: Set the parity alarm
+        shell: bash
+        env:
+          ALARM_TOKEN: '${{ github.token }}'
+          RESULT: '${{ needs.compare.outputs.result }}'
+          JOBS: 'target=${{ needs.target.result }} plan=${{ needs.plan.result }} measure=${{ needs.measure.result }} compare=${{ needs.compare.result }}'
+          TARGET: '${{ needs.target.outputs.sha }}'
+          RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        run: |
+          set -euo pipefail
+          (cd ci/alarms && sha256sum -c --quiet bundle.sha256) || { echo "::error::expected ci/alarms to match its bundle.sha256, found a difference"; exit 1; }
+          echo "Parity: result=${RESULT:-none} jobs: $JOBS"
+          case "$RESULT" in
+            equal) python3 -B ci/alarms/alarm.py clear state-parity --run-url "$RUN_URL" ;;
+            inconclusive) echo "No published state for $TARGET; the alarm is left as it is." ;;
+            differs) python3 -B ci/alarms/alarm.py raise state-parity --run-url "$RUN_URL" \
+                       --detail "Expected the full recompute of main $TARGET to equal the state branch byte for byte, found differences. The run log lists the first files." ;;
+            *) python3 -B ci/alarms/alarm.py raise state-parity --run-url "$RUN_URL" \
+                 --detail "Expected the full recompute of main ${TARGET:-unknown} to complete, found: $JOBS" ;;
+          esac
