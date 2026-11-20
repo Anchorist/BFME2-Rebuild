@@ -59,6 +59,7 @@ FrameDataReturnType FrameData::allCommandsReady(Bool debugSpewage)
 			m_lastFailedCC = m_commandCount;
 		}
 	}
+	// More commands arrived than the frame announced: drop them all and ask for the frame again.
 	if (m_commandCount > m_frameCommandCount)
 	{
 		NetCommandRef *ref = m_commandList->m_first;
