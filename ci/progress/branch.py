@@ -3,8 +3,9 @@
     python3 -B ci/progress/branch.py read  --dir IN    (exports state, nightly and progress tips; prints main=...)
     python3 -B ci/progress/branch.py write --dir OUT --main SHA
 
-`read` writes IN/state/ (the newest state), IN/nightly.json (if the nightly branch exists)
-and IN/history.json (the previous card's history, if any), and GITHUB_OUTPUT main=<sha>.
+`read` writes IN/state/ (the newest state); from branch nightly, when present, IN/nightly.json,
+IN/link-missing.tsv and IN/game.json; IN/history.json (the previous card's history, if any);
+and GITHUB_OUTPUT main=<sha>.
 `write` makes one commit on `progress` holding exactly OUT's files, dated with the main
 commit's date, and pushes it as a fast-forward. Tokens: READ_TOKEN / WRITE_TOKEN.
 """
@@ -56,9 +57,13 @@ def read(directory, remote, token, out=print):
         main = store.published_main(git, state)
         nightly = fetch(git, NIGHTLY)
         if nightly:
-            found = git.run("cat-file", "blob", f"{nightly}:latest.json", check=False)
-            if found.returncode == 0:
-                (directory / "nightly.json").write_bytes(found.stdout)
+            # latest.json: the daily build; link-missing.tsv: names the daily link census found missing,
+            # with how many rebuilt objects wait on each; game/latest.json: the last game run folded in.
+            for source, target in (("latest.json", "nightly.json"), ("link-missing.tsv", "link-missing.tsv"),
+                                   ("game/latest.json", "game.json")):
+                found = git.run("cat-file", "blob", f"{nightly}:{source}", check=False)
+                if found.returncode == 0:
+                    (directory / target).write_bytes(found.stdout)
         progress = fetch(git, PROGRESS)
         if progress:
             found = git.run("cat-file", "blob", f"{progress}:history.json", check=False)

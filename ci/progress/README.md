@@ -22,6 +22,9 @@ bytes (the date shown comes from the inputs; see Order and date). A README can e
   (object id → source file `tu`).
 - **T**: the source tree of M (`src/`, `include/`).
 - **N**: the nightly result, `latest.json` on the branch `nightly` (written by `.github/workflows/nightly.yml`); optional.
+- **G**: the last game run, `game/latest.json` on the branch `nightly` (written by the nightly's fold-in from a game
+  run on a private machine, because the game's files cannot be published); optional.
+- **K**: the names the daily link census finds missing, `link-missing.tsv` on the branch `nightly`; optional.
 - **H**: `history.json` from the previous `progress` commit; optional.
 
 ## Definitions
@@ -47,10 +50,14 @@ and Finished functions. It says "Measured <day>": the later of the measured main
 of the nightly result N, so the card shows when it last changed. The workflow runs when a new state is
 published, when "Nightly build and compare" finishes, and once a day on its own schedule.
 
-**Front picture.** `progress.svg` takes Byte match and Linking as above, finished functions as the count above,
-rebuilt files that play identically = `N.files_substituted` when `N.simulation_equal` is true (otherwise a dash
-and "not run yet"), and source files compiled every day = `N.compile.compiled` (a dash and "not run yet" without it; the
-state's file count is not used, because the state can carry files without compiling them). With every figure present it is byte for byte the approved design (`tests/design-reference.svg`).
+**Front picture.** `progress.svg` takes Byte match and Linking as above (Linking counts `N.linking_unit`, names or
+functions; names when absent), finished functions as the count above, source files compiled every day =
+`N.compile.compiled` (a dash and "not run yet" without it; the state's file count is not used, because the state can
+carry files without compiling them), and rebuilt files that play identically = `G.files_substituted`, shown only
+when `G.simulation_equal` and `G.control_caught` are both true, `G.sha` is a commit of main, and `G.date` is at most
+7 days before the card's measured day; otherwise a dash with the reason (not run yet, differs from the original,
+control run not caught, commit not on main, last run N days ago). The card names where and when that game ran.
+With every figure present it is byte for byte the approved design (`tests/design-reference.svg`).
 
 **Went down** (alarm "A progress figure went down"): the numerator of byte match, linking, code proven
 linking or finished functions is lower than at the previous main commit in the history.
@@ -61,7 +68,11 @@ linking or finished functions is lower than at the previous main commit in the h
 seeds; both outputs must be byte-identical:
 
 - `--verdicts`: S, per file and function, as `generate.py` reads it (`worklist/inputs/verdicts.json`);
-- `--ranked`, `--unwritten`: the two dated tables in `worklist/` at M turned back into their input form
+- `--ranked`: from K when present: each missing name is mapped to the owned function that carries it in
+  `config/map.json` at M (`name` or `accepted_names`, which hold the linker's own spellings), with that function's
+  verdict on S as its state; names with no owned function, or claimed by two, are counted in the log and left out.
+  This fills `link_referrers_waiting` in files.tsv. Without K, the dated table in `worklist/` at M.
+- `--unwritten`: the dated table in `worklist/` at M turned back into its input form
   (`worklist/inputs/ranked.tsv`, `unwritten.tsv`). Every row is re-checked against the bodies in M and
   rows that now have a body drop out. The reports themselves are made outside this repository; the
   first line of each table keeps their measurement date and revision.

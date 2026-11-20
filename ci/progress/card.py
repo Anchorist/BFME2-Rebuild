@@ -42,8 +42,14 @@ BARS = (
      "final header. Counted in functions, not bytes: small functions are often finished first, so this "
      "figure can be ahead of the byte figures."),
 )
+LINK_MEANING = {
+    "names": "How many of the names the game needs to be assembled into one program our source already provides.",
+    "functions": "How many of the original program's functions our compiled source already supplies to a link "
+                 "of the whole game.",
+}
 HEADLINE = ("matched", "linking")  # the two figures the repository's front page names
 UNITS = {"matched": "bytes", "proven": "bytes", "linking": "names", "finished": "functions"}
+LINK_UNITS = ("names", "functions")  # what the daily build's Linking pair counts (its linking_unit field)
 # Readable names for the parts of the source tree (progress_card.subsystem labels).
 PART_NAMES = {
     "Libraries": "Game libraries", "Tools": "Tools", "fesl": "FESL (EA online library)",
@@ -92,7 +98,10 @@ def nightly_view(nightly):
             "equal_frames": frames if type(frames) is int and frames > 0 else None,
             "control_caught": nightly.get("control_caught") if type(nightly.get("control_caught")) is bool else None,
             "linking": pair if ok_pair else None, "result": result, **counts,
-            "game_live": stages.get("link_and_play") not in (None, "not live", "skipped"),
+            "linking_unit": nightly.get("linking_unit") if nightly.get("linking_unit") in LINK_UNITS else "names",
+            # "runs separately": the public build has no game run; the game runs elsewhere and is folded in.
+            "game_live": stages.get("link_and_play") not in (None, "not live", "skipped", "runs separately"),
+            "game_elsewhere": stages.get("link_and_play") == "runs separately",
             "files_substituted": nightly.get("files_substituted")
             if type(nightly.get("files_substituted")) is int and nightly["files_substituted"] >= 0 else None}
 
@@ -105,6 +114,8 @@ def nightly_sentence(night):
             built += f", {night['fully_matching']:,} of them match the original completely"
     else:
         built = ""
+    if night["result"] == "partial" and night["game_elsewhere"]:
+        return "Compiles; the game is run separately" + (f" ({built})." if built else ".")
     if night["result"] == "partial" and not night["game_live"]:
         return "Compiles; the game run is not live yet" + (f" ({built})." if built else ".")
     if night["result"] == "pass":
@@ -112,6 +123,18 @@ def nightly_sentence(night):
     if night["result"] == "fail":
         return "The nightly build failed" + (f" ({built})." if built else ".")
     return "Partly checked" + (f" ({built})." if built else ".")
+
+
+def game_sentence(game):
+    """The game run's own line: where and when it ran, and what it showed."""
+    where = (f"Game run on a private machine (the game's files cannot be published) on {human_date(game['date'])}, "
+             f"with the objects built from commit {commit_link(game['sha'])}")
+    if game["run_url"]:
+        where += f" by [the public nightly run]({game['run_url']})"
+    if game["shown"]:
+        functions = f" ({game['functions']:,} functions)" if game["functions"] is not None else ""
+        return where + f": {game['files']:,} rebuilt files{functions} play identically inside the original game."
+    return where + f": the identical-files figure is not shown ({game['reason']})."
 
 
 def human_date(stamp):
@@ -141,7 +164,56 @@ def part_order(item):
     return (name in LAST, -pair[1], name)
 
 
-def measure(checkout, state, nightly):
+GAME_MAX_AGE_DAYS = 7
+GAME_CHECKS = ("starts", "menu", "skirmish", "simulation_equal", "save_load", "control_caught")
+
+
+def game_view(game, checkout, main, measured_day):
+    """The last game run folded in (game/latest.json on branch nightly), and whether the card may show
+    its identical-files figure: only when the run equalled the original, its deliberately altered
+    control run was caught, it ran on a commit of main, and it is at most GAME_MAX_AGE_DAYS old
+    (counted from the card's own measured day, so the same inputs give the same card)."""
+    if not isinstance(game, dict) or not isinstance(game.get("sha"), str) or not isinstance(game.get("date"), str):
+        return None
+    sha, day = game["sha"], game["date"][:10]
+    if len(sha) != 40 or any(c not in "0123456789abcdef" for c in sha):
+        return None
+    try:
+        age = (datetime.strptime(measured_day, "%Y-%m-%d") - datetime.strptime(day, "%Y-%m-%d")).days
+    except ValueError:
+        return None
+    checks = {key: game.get(key) if type(game.get(key)) is bool else None for key in GAME_CHECKS}
+    files = game.get("files_substituted") if type(game.get("files_substituted")) is int else None
+    functions = game.get("functions") if type(game.get("functions")) is int else None
+    frames = game.get("equal_frames") if type(game.get("equal_frames")) is int else None
+    on_main = subprocess.run(["git", "-C", str(checkout), "merge-base", "--is-ancestor", sha, main],
+                             capture_output=True).returncode == 0
+    if checks["simulation_equal"] is not True:
+        reason = "differs from the original" if checks["simulation_equal"] is False else "not run yet"
+    elif checks["control_caught"] is not True:
+        reason = "control run not caught"
+    elif not on_main:
+        reason = "commit not on main"
+    elif age > GAME_MAX_AGE_DAYS:
+        reason = f"last run {age} days ago"
+    elif files is None:
+        reason = "not run yet"
+    else:
+        reason = None
+    # bfme2-nightly-game/1 names the public nightly run that built the objects: public_run_id (and run_url).
+    run = game.get("public_run_id")
+    url = game.get("run_url")
+    if isinstance(run, (int, str)) and str(run).isdecimal():
+        url = f"{REPO_URL}/actions/runs/{run}"
+    elif not (isinstance(url, str) and url.startswith(REPO_URL + "/actions/runs/")
+              and url[len(REPO_URL + "/actions/runs/"):].isdecimal()):
+        url = None
+    return {"sha": sha, "date": day, "files": files, "functions": functions, "equal_frames": frames,
+            "run_url": url,
+            "shown": reason is None, "reason": reason, **checks}
+
+
+def measure(checkout, state, nightly, game=None):
     git = Git(Path(checkout) / ".git")
     raw = card_measure(git, state["sha"], state, global_class_defs, None)
     night = nightly_view(nightly)
@@ -153,8 +225,10 @@ def measure(checkout, state, nightly):
             "linking": night["linking"] if night else None,
             "linking_main": night["sha"] if night and night["linking"] else None,
             "linking_date": night["date"] if night and night["linking"] else None,
+            "linking_unit": night["linking_unit"] if night and night["linking"] else "names",
             "subsystems": {k: list(v) for k, v in sorted(raw["components"].items())},
-            "drafts_in_use": raw["drafts_in_use"], "nightly": night, "files_measured": len(state["tus"])}
+            "drafts_in_use": raw["drafts_in_use"], "nightly": night, "files_measured": len(state["tus"]),
+            "game": game_view(game, checkout, state["sha"], max(days))}
 
 
 def history_with(previous, point):
@@ -210,7 +284,9 @@ def markdown(point, history):
              f"{commit_link(point['main'])} ({human_date(point['date'])}); the build checks run every day.", "",
              "![Progress](progress.svg)", "", "## The figures", "", "![The four figures](detail.svg)", ""]
     for key, label, meaning in BARS:
-        lines += [f"**{label}**: {text_bar(point[key])} {figure(point[key], UNITS[key])}  ", meaning]
+        unit = point["linking_unit"] if key == "linking" else UNITS[key]
+        lines += [f"**{label}**: {text_bar(point[key])} {figure(point[key], unit)}  ",
+                  LINK_MEANING[unit] if key == "linking" else meaning]
         if key == "linking" and point[key] is None:
             lines.append("Not measured yet: the daily build will report this figure.")
         elif key == "linking":
@@ -226,12 +302,16 @@ def markdown(point, history):
     else:
         lines += [f"Nightly build of commit {commit_link(night['sha'])} ({human_date(night['date'])}): "
                   + nightly_sentence(night), ""]
+        game = point.get("game")
+        if game:
+            lines += [game_sentence(game), ""]
+        source = game or night
         for key, label in CHECKLIST:
-            if key == "simulation_equal" and night["equal_frames"]:
-                label = f"Equals the original game for {night['equal_frames']:,} frames"
-            result = night[key]
+            if key == "simulation_equal" and source["equal_frames"]:
+                label = f"Equals the original game for {source['equal_frames']:,} frames"
+            result = source[key]
             lines.append(f"- {label}: " + ("passed" if result is True else "failed" if result is False else "not run yet"))
-        if night["control_caught"] is False:
+        if (game or night)["control_caught"] is False:
             lines.append("- Warning: a deliberately altered test run was not told apart from the original, "
                          "so tonight's comparison cannot be trusted.")
     lines += ["", "## By part of the game", "",
@@ -303,7 +383,8 @@ def bars_svg(point):
             source = (f" · daily build of {human_date(point['linking_date'])}"
                       if key == "linking" and point.get("linking_date") else "")
             out.append(f'<text class="t2" x="{pad}" y="{top + bar + 19}" font-size="15">'
-                       f'{point[key][0]:,} of {point[key][1]:,} {UNITS[key]}{esc(source)}</text>')
+                       f'{point[key][0]:,} of {point[key][1]:,} '
+                       f'{point["linking_unit"] if key == "linking" else UNITS[key]}{esc(source)}</text>')
         y += big if headline else small
     out.append("</svg>")
     return "\n".join(out) + "\n"
@@ -351,9 +432,9 @@ def history_svg(history):
     return "\n".join(out) + "\n"
 
 
-def build(checkout, state_read, nightly, previous_history):
+def build(checkout, state_read, nightly, previous_history, game=None):
     state = join(state_read)
-    point = measure(checkout, state, nightly)
+    point = measure(checkout, state, nightly, game)
     history = history_with(previous_history, point)
     return {
         "card.json": canonical(point),
@@ -370,6 +451,7 @@ def main():
     parser.add_argument("--checkout", default=".")
     parser.add_argument("--state-dir", required=True, help="a checkout or export of the state branch")
     parser.add_argument("--nightly", default="")
+    parser.add_argument("--game", default="", help="game/latest.json from branch nightly, when present")
     parser.add_argument("--previous-history", default="")
     parser.add_argument("--out", required=True)
     parser.add_argument("--drops", default="", help="file to write lines naming figures that went down")
@@ -379,7 +461,8 @@ def main():
         nightly = json.loads(Path(args.nightly).read_bytes()) if args.nightly and Path(args.nightly).is_file() else None
         previous = json.loads(Path(args.previous_history).read_bytes()) \
             if args.previous_history and Path(args.previous_history).is_file() else []
-        files, down = build(args.checkout, lambda p: (root / p).read_bytes(), nightly, previous)
+        game = json.loads(Path(args.game).read_bytes()) if args.game and Path(args.game).is_file() else None
+        files, down = build(args.checkout, lambda p: (root / p).read_bytes(), nightly, previous, game)
     except (Refused, ValueError, OSError, subprocess.CalledProcessError) as error:
         print(f"::error::progress card: expected a complete state and ledger for one main commit, found: {error}")
         return 1

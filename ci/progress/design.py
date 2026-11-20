@@ -32,9 +32,11 @@ def short_date(day):
     return f"{date} {MONTHS[month - 1]} {year}"
 
 
-def card(byte_pct, link_pair, finished, files_equal, date, files_compiled=3253):
+def card(byte_pct, link_pair, finished, files_equal, date, files_compiled=3253, equal_note=None,
+         link_unit="names"):
     """byte_pct: float; link_pair: (provided, needed) or None; finished: (done, total);
-    files_equal: int or None; date: '20 Nov 2026'; files_compiled: int or None."""
+    files_equal: int or None; date: '20 Nov 2026'; files_compiled: int or None;
+    equal_note: where and when the game ran (with a number) or why there is none (without one)."""
     link_pct = 100.0 * link_pair[0] / link_pair[1] if link_pair else None
     bw = 352
 
@@ -59,11 +61,14 @@ def card(byte_pct, link_pair, finished, files_equal, date, files_compiled=3253):
 <text class="muted" x="{x}" y="322" font-size="12">{small2}</text>'''
 
     if link_pair:
-        link_caption = f"of the names a full game needs: {link_pair[0]:,} of {link_pair[1]:,}"
+        link_caption = f"of the {link_unit} a full game needs: {link_pair[0]:,} of {link_pair[1]:,}"
     else:
         link_caption = "not measured yet; the daily build will report it"
     equal_big = f"{files_equal}" if files_equal is not None else "—"
-    equal_second = "inside the original game" if files_equal is not None else "inside the original game (not run yet)"
+    if files_equal is not None:
+        equal_second = equal_note or "inside the original game"
+    else:
+        equal_second = f"inside the original game ({equal_note or 'not run yet'})"
     compiled_big = f"{files_compiled:,}" if files_compiled is not None else "—"
     compiled_second = ("compared with the game every day" if files_compiled is not None
                        else "compared with the game every day (not run yet)")
@@ -83,13 +88,17 @@ def card(byte_pct, link_pair, finished, files_equal, date, files_compiled=3253):
 
 
 def from_point(point):
-    """The picture for one card measurement (card.measure)."""
+    """The picture for one card measurement (card.measure). The identical-files figure comes only from
+    the game record (card.game_view), with where and when that run happened."""
     night = point.get("nightly") or {}
-    equal = None
-    if night.get("simulation_equal") is True and type(night.get("files_substituted")) is int:
-        equal = night["files_substituted"]
+    game = point.get("game")
+    equal, note = None, None
+    if game and game["shown"]:
+        equal, note = game["files"], f"in the game, run privately {short_date(game['date'])}"
+    elif game:
+        note = game["reason"]
     # Only the daily build compiles every file; the state may carry files without compiling them.
     compiled = night.get("compiled") if type(night.get("compiled")) is int else None
     byte_pct = 100.0 * point["matched"][0] / point["matched"][1]
     return card(byte_pct, point["linking"], tuple(point["finished"]), equal, short_date(point["measured"]),
-                compiled)
+                compiled, note, point.get("linking_unit", "names"))

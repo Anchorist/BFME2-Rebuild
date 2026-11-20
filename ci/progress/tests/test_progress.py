@@ -64,8 +64,8 @@ class Tiny(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
-    def build(self, nightly=None, history=()):
-        return card.build(self.root, self.state.__getitem__, nightly, list(history))
+    def build(self, nightly=None, history=(), game=None):
+        return card.build(self.root, self.state.__getitem__, nightly, list(history), game)
 
 
 class CardTests(Tiny):
@@ -178,14 +178,73 @@ class CardTests(Tiny):
         night = {"sha": "f" * 40, "date": "2030-01-09", "result": "pass", "simulation_equal": True,
                  "files_substituted": 366, "compile": {"compiled": 3253, "files": 3253, "fully_matching": 407},
                  "provided_required_symbols": [5137, 8267]}
+        # The nightly's own game fields are not the source of the identical-files figure any more.
         svg = self.build(night)[0]["progress.svg"].decode()
         self.assertIn(">62.1%<", svg)
         self.assertIn("of the names a full game needs: 5,137 of 8,267", svg)
-        self.assertIn('font-weight="700">366</text>', svg)
+        self.assertIn("inside the original game (not run yet)", svg)
         self.assertIn('font-weight="700">3,253</text>', svg)
         self.assertIn("9 Jan 2030 · measured by machine", svg)
-        night["simulation_equal"] = False
-        self.assertIn("(not run yet)", self.build(night)[0]["progress.svg"].decode())
+        game = self.game(date="2030-01-08")
+        svg = self.build(night, game=game)[0]["progress.svg"].decode()
+        self.assertIn('font-weight="700">366</text>', svg)
+        self.assertIn("in the game, run privately 8 Jan 2030", svg)
+
+    def game(self, **change):
+        # The shape the nightly's result.py game_record() writes (schema bfme2-nightly-game/1).
+        record = {"schema": "bfme2-nightly-game/1", "sha": self.main, "date": "2030-01-08", "public_run_id": 123,
+                  "run_url": "https://github.com/Open-BFME/BFME2-Rebuild/actions/runs/123",
+                  "files_substituted": 366, "functions": 6187, "starts": True, "menu": True, "skirmish": True,
+                  "simulation_equal": True, "equal_frames": 9000, "save_load": True, "control_caught": True,
+                  "result": "pass", "headline": "plays", "image_sha256": "0" * 64,
+                  "tests": {"skirmish": {"status": "pass", "frames_compared": 9000, "frames_equal": 9000,
+                                         "first_divergent_frame": None}}}
+        record.update(change)
+        return record
+
+    def test_linking_unit_follows_the_daily_build(self):
+        night = {"sha": "f" * 40, "date": "2030-01-09", "result": "partial", "linking_unit": "functions",
+                 "provided_required_symbols": [14358, 41565]}
+        files = self.build(night)[0]
+        self.assertIn("of the functions a full game needs: 14,358 of 41,565", files["progress.svg"].decode())
+        self.assertIn("34.5% (14,358 of 41,565 functions)", files["README.md"].decode())
+        self.assertIn("functions our compiled source already supplies", files["README.md"].decode())
+        night["linking_unit"] = "anything else"
+        self.assertIn("of the names a full game needs", self.build(night)[0]["progress.svg"].decode())
+
+    def test_game_record_rule(self):
+        night = {"sha": "f" * 40, "date": "2030-01-10", "result": "partial",
+                 "stages": {"compile": "success", "link_and_play": "runs separately"}}
+        files = self.build(night, game=self.game())[0]
+        text = files["README.md"].decode()
+        self.assertIn("Game run on a private machine (the game's files cannot be published) on 8 January 2030, "
+                      f"with the objects built from commit [`{self.main[:12]}`]", text)
+        self.assertIn("by [the public nightly run](https://github.com/Open-BFME/BFME2-Rebuild/actions/runs/123)", text)
+        self.assertIn(": 366 rebuilt files (6,187 functions) play identically inside the original game.", text)
+        self.assertIn("- Starts: passed", text)
+        self.assertIn("- Equals the original game for 9,000 frames: passed", text)
+        self.assertIn("Compiles; the game is run separately.", text)
+        point = json.loads(files["card.json"])
+        self.assertTrue(point["game"]["shown"])
+        cases = [({"simulation_equal": False}, "differs from the original"),
+                 ({"simulation_equal": None}, "not run yet"),
+                 ({"control_caught": False}, "control run not caught"),
+                 ({"sha": "a" * 40}, "commit not on main"),
+                 ({"date": "2030-01-01"}, "last run 9 days ago")]
+        for change, reason in cases:
+            files = self.build(night, game=self.game(**change))[0]
+            svg = files["progress.svg"].decode()
+            self.assertIn(f"inside the original game ({reason})", svg, reason)
+            self.assertIn(f"the identical-files figure is not shown ({reason})", files["README.md"].decode())
+            self.assertNotIn('font-weight="700">366</text>', svg)
+        self.assertIsNone(json.loads(self.build(night, game={"sha": "x"})[0]["card.json"])["game"])
+        # Only run_url, or a foreign URL: the link follows run_url only when it is this repository's run.
+        only_url = self.game()
+        del only_url["public_run_id"]
+        self.assertIn("by [the public nightly run](https://github.com/Open-BFME/BFME2-Rebuild/actions/runs/123)",
+                      self.build(night, game=only_url)[0]["README.md"].decode())
+        only_url["run_url"] = "https://example.invalid/actions/runs/123"
+        self.assertNotIn("by [the public nightly run]", self.build(night, game=only_url)[0]["README.md"].decode())
 
     def test_drop_is_reported(self):
         before = {"main": "b" * 40, "date": "2000-01-01T00:00:00Z", "matched": [120, 150], "proven": [100, 150],
@@ -227,6 +286,23 @@ class WorklistInputTests(Tiny):
         self.assertEqual(verdicts["tus"][TU]["rows"]["0x401100"], ["PARTIAL", 40.0])
         with self.assertRaisesRegex(Refused, r"expected the state of main"):
             worklists.inputs(self.root, "f" * 40, self.state.__getitem__, out)
+
+
+class CensusInputTests(Tiny):
+    def test_census_rows_map_to_owner_and_verdict(self):
+        census = Path(self.tmp.name) / "link-missing.tsv"
+        census.write_text("# link census of " + "c" * 40 + " on 2030-01-09 objects=1 missing=3\n"
+                          "symbol\treferrers\tfirst_referrer\n"
+                          "?g@Foo@@QAEXXZ\t5\tsrc/x.cpp\n"
+                          "?h@Bar@@QAEXXZ\t2\tsrc/y.cpp\n"
+                          "_plain\t1\tsrc/z.c\n")
+        first, rows, counts = worklists.ranked_from_census(census, self.root, card.join(self.state.__getitem__))
+        self.assertEqual(first, "# generated=2030-01-09 standalone=" + "c" * 40)
+        self.assertEqual(rows, [["5", "owned:PARTIAL", "0x00401100", TU, "?g@Foo@@QAEXXZ", "src/x.cpp"]])
+        self.assertEqual(counts, {"names": 3, "mapped": 1, "no_owner": 2, "two_owners": 0})
+        census.write_text("# something else\nsymbol\treferrers\tfirst_referrer\n")
+        with self.assertRaisesRegex(Refused, r"expected a first line '# link census of"):
+            worklists.ranked_from_census(census, self.root, card.join(self.state.__getitem__))
 
 
 class BranchTests(Tiny):
