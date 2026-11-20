@@ -575,5 +575,149 @@ class FoldIn(unittest.TestCase):
         self.assertTrue(result.alarms(n)["nightly-build"]["failed"])
 
 
+class Linking(unittest.TestCase):
+    def fake(self, table):
+        import link_census
+        saved = link_census.coffsym.obj_symbols
+        link_census.coffsym.obj_symbols = lambda p: table[Path(p).name]
+        self.addCleanup(setattr, link_census.coffsym, "obj_symbols", saved)
+        return link_census
+
+    def test_census_counts(self):
+        def obj(defs, undefs, weak=None):
+            return {"defs": {n: [False, "code", 1, ".text", 1] for n in defs}, "undefs": undefs,
+                    "weak": weak or {}, "secs": {}}
+        table = {"a.obj": obj(["?f@@YAXXZ", "_shared"], ["?g@@YAXXZ", "_memcpy", "?gone@@YAXXZ", "___ImageBase"]),
+                 "b.obj": obj(["?g@@YAXXZ"], ["?f@@YAXXZ", "?gone@@YAXXZ", "__imp__CreateFileA@28"])}
+        lc = self.fake(table)
+        r = lc.census(["b.obj", "a.obj"], ["_memcpy", "__imp__CreateFileA@28"])
+        self.assertEqual((r["needed"], r["missing"], r["provided"], r["pair"]), (5, 1, 4, [4, 5]))
+        self.assertEqual(r["missing_by_kind"], {"c++": 1})
+
+    def test_census_is_order_independent(self):
+        def obj(defs, undefs):
+            return {"defs": {n: [False, "code", 1, ".text", 1] for n in defs}, "undefs": undefs, "weak": {}, "secs": {}}
+        table = {"a.obj": obj(["_x"], ["_y"]), "b.obj": obj(["_y"], ["_z"])}
+        lc = self.fake(table)
+        self.assertEqual(lc.census(["a.obj", "b.obj"], []), lc.census(["b.obj", "a.obj"], []))
+
+    def test_result_field_and_summary(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d, "link.json")
+            p.write_text(json.dumps({"objects": 3253, "needed": 8267, "missing": 3130, "provided": 5137,
+                                     "duplicates": 7, "missing_by_kind": {"c++": 3094, "c": 34, "import": 2}}))
+            link = result.read_link(str(p))
+        full = dict(CINFO, files=3253, compiled=3253)
+        n = result.build(full, None, dict(meta(game_job="skipped", live=False), link=link))
+        self.assertEqual(n["provided_required_symbols"], [5137, 8267])
+        self.assertIn("| Linking | 5,137 of 8,267 names", result.summary(n))
+        short = dict(full, files=3254)
+        n = result.build(short, None, dict(meta(game_job="skipped", live=False), link=link))
+        self.assertIsNone(n["provided_required_symbols"])
+        self.assertIn("expected one object for each of 3254 source files; found 3253", result.summary(n))
+        extra = dict(full, files=3252, compiled=3252)
+        self.assertIsNone(result.build(extra, None, dict(meta(game_job="skipped", live=False), link=link))
+                          ["provided_required_symbols"])
+
+    def test_bad_or_missing_census_means_not_measured(self):
+        self.assertIsNone(result.read_link(None))
+        self.assertIsNone(result.read_link("/nonexistent/link.json"))
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d, "link.json")
+            for bad in ({"needed": 10, "missing": 3, "provided": 8, "objects": 1, "duplicates": 0},
+                        {"needed": 0, "missing": 0, "provided": 0, "objects": 1, "duplicates": 0}, [1, 2]):
+                p.write_text(json.dumps(bad))
+                self.assertIsNone(result.read_link(str(p)), bad)
+        n = result.build(CINFO, None, meta(game_job="skipped", live=False))
+        self.assertIsNone(n["provided_required_symbols"])
+        self.assertIn("| Linking | not measured this run |", result.summary(n))
+
+    def test_names_file_is_sorted_and_unique(self):
+        names = [l for l in (NIGHTLY / "link-names/library-names.txt").read_text().splitlines()
+                 if l and not l.startswith("#")]
+        self.assertGreater(len(names), 1000)
+        self.assertEqual(names, sorted(set(names)))
+
+    def test_workflow_schedules_and_linking_steps(self):
+        wf = REPO / ".github/workflows/nightly.yml"
+        if not wf.exists():
+            self.skipTest("workflow not beside the package")
+        text = wf.read_text()
+        crons = re.findall(r"cron: '([^']+)'", text)
+        self.assertEqual(len(crons), 2)
+        compile_cron, fold_cron = crons
+        self.assertEqual(text.count(f"github.event.schedule != '{fold_cron}'"), 2)
+        self.assertEqual(text.count(f"github.event.schedule == '{fold_cron}'"), 1)
+        self.assertNotIn(f"'{compile_cron}' ||", text)
+        self.assertEqual(text.count("ci/nightly/link_census.py"), 2)
+        self.assertEqual(text.count('--link "$RUNNER_TEMP/link.json"'), 2)
+
+
+class ObjectSet(unittest.TestCase):
+    def make(self, root, shards):
+        import hashlib
+        for i, files in enumerate(shards):
+            d = Path(root) / f"nightly-shard-{i}-a1"
+            (d / "obj").mkdir(parents=True)
+            lines = []
+            for tu, body in files:
+                lines.append(json.dumps({"tu": tu}))
+                if body is None:
+                    continue
+                name = tu.replace("/", "_") + ".obj"
+                (d / "obj" / name).write_bytes(body)
+                (d / "obj" / (name + ".compile.json")).write_text(json.dumps(
+                    {"object_sha256": hashlib.sha256(body).hexdigest()}))
+            (d / "judge.jsonl").write_text("".join(line + "\n" for line in lines))
+
+    def run_set(self, shards, mutate=None):
+        import link_census
+        with tempfile.TemporaryDirectory() as d:
+            self.make(d, shards)
+            if mutate:
+                mutate(Path(d))
+            return link_census.object_set(d)
+
+    def test_exact_set(self):
+        got = self.run_set([[("src/a.cpp", b"A"), ("src/b.cpp", b"B")], [("src/c.c", b"C")]])
+        self.assertEqual([Path(p).name for p in got], ["src_a.cpp.obj", "src_b.cpp.obj", "src_c.c.obj"])
+
+    def test_extra_object_refused(self):
+        def add(d):
+            (d / "nightly-shard-0-a1/obj/src_x.cpp.obj").write_bytes(b"X")
+        with self.assertRaisesRegex(ValueError, "1 unrecorded"):
+            self.run_set([[("src/a.cpp", b"A")]], add)
+
+    def test_duplicate_replacing_missing_refused(self):
+        def swap(d):
+            (d / "nightly-shard-1-a1/obj/src_b.cpp.obj").unlink()
+            (d / "nightly-shard-1-a1/obj/src_a.cpp.obj").write_bytes(b"A")
+        with self.assertRaisesRegex(ValueError, "found src_a.cpp.obj 2 times"):
+            self.run_set([[("src/a.cpp", b"A")], [("src/b.cpp", b"B")]], swap)
+
+    def test_missing_object_refused(self):
+        def drop(d):
+            (d / "nightly-shard-0-a1/obj/src_b.cpp.obj").unlink()
+        with self.assertRaisesRegex(ValueError, "1 absent"):
+            self.run_set([[("src/a.cpp", b"A"), ("src/b.cpp", b"B")]], drop)
+
+    def test_changed_object_refused(self):
+        def change(d):
+            (d / "nightly-shard-0-a1/obj/src_a.cpp.obj").write_bytes(b"Z")
+        with self.assertRaisesRegex(ValueError, "match its compile receipt"):
+            self.run_set([[("src/a.cpp", b"A")]], change)
+
+    def test_file_judged_twice_refused(self):
+        with self.assertRaisesRegex(ValueError, "judged once"):
+            self.run_set([[("src/a.cpp", b"A")], [("src/a.cpp", None)]])
+
+    def test_compile_error_has_no_object(self):
+        def errored(d):
+            p = d / "nightly-shard-0-a1/judge.jsonl"
+            p.write_text(p.read_text().replace('{"tu": "src/b.cpp"}', '{"tu": "src/b.cpp", "error": "C2065"}'))
+        got = self.run_set([[("src/a.cpp", b"A"), ("src/b.cpp", None)]], errored)
+        self.assertEqual([Path(p).name for p in got], ["src_a.cpp.obj"])
+
+
 if __name__ == "__main__":
     unittest.main()

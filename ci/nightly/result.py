@@ -61,13 +61,45 @@ def machine_time(jobs):
     per_stage = {}
     for j in jobs:
         a, b = _ts(j.get("started_at")), _ts(j.get("completed_at"))
-        if a and b:
+        if a and b and b >= a and j.get("status", "completed") == "completed":
             name = j.get("name") or ""
             stage = ("compile" if name.startswith("Compile") else "link_and_play" if name.startswith("Link")
                      else "publish" if name.startswith("Publish") else "other")
             per_stage[stage] = round(per_stage.get(stage, 0) + (b - a).total_seconds() / 60, 1)
     return {"wall_minutes": round((max(ends) - min(starts)).total_seconds() / 60, 1) if starts and ends else None,
             "runner_minutes": per_stage, "jobs": len(jobs)}
+
+
+def read_link(path):
+    """The link census of this run, or None when it is absent or not in the expected form."""
+    try:
+        d = json.loads(Path(path).read_text()) if path else None
+    except (OSError, ValueError):
+        return None
+    if not isinstance(d, dict):
+        return None
+    keep = {k: d.get(k) for k in ("objects", "needed", "missing", "provided", "duplicates")}
+    if not all(type(v) is int and v >= 0 for v in keep.values()) or keep["needed"] <= 0 \
+            or keep["provided"] + keep["missing"] != keep["needed"]:
+        return None
+    by_kind = d.get("missing_by_kind")
+    keep["missing_by_kind"] = {str(k): v for k, v in by_kind.items() if type(v) is int} if isinstance(by_kind, dict) else {}
+    return keep
+
+
+def link_pair(link):
+    return [link["provided"], link["needed"]] if link and not link.get("refused") else None
+
+
+def check_link(link, compile_info):
+    """A census over any other object count than one per source file would miscount what is needed: refuse it."""
+    if not link:
+        return link
+    files = (compile_info or {}).get("files")
+    compiled = (compile_info or {}).get("compiled")
+    if type(files) is not int or files <= 0 or link["objects"] != files or compiled != files:
+        return dict(link, refused=f"expected one object for each of {files} source files; found {link['objects']}")
+    return link
 
 
 def check_rows(tests):
@@ -122,6 +154,7 @@ def build(compile_info, stage2, meta):
         sim_equal = True if all(s == "pass" for s in record_tests) and len(record_tests) == 4 else None
     ctl = (tests.get("control") or {}).get("status")
     ci = compile_info or {}
+    link = check_link(meta.get("link"), compile_info)
     compiled = f"{ci.get('compiled', 0)} of {ci.get('files', 0)} files compile, {ci.get('fully_matching', 0)} match completely"
     if result == "partial" and live:
         headline = (f"links and checks: {(s2.get('plan') or {}).get('files')} rebuilt files, 0 unresolved, "
@@ -142,7 +175,8 @@ def build(compile_info, stage2, meta):
         "schema": SCHEMA, "sha": meta["sha"], "date": meta.get("date"),
         "starts": flag.get(rows["starts"]), "menu": flag.get(rows["menu"]), "skirmish": flag.get(rows["maps"]),
         "save_load": flag.get(rows["save_load"]), "simulation_equal": sim_equal, "equal_frames": frames_equal if tests else None,
-        "control_caught": None if ctl is None else ctl == "pass", "provided_required_symbols": None,
+        "control_caught": None if ctl is None else ctl == "pass",
+        "provided_required_symbols": link_pair(link), "link_census": link,
         "commit": meta["sha"], "run_id": meta.get("run_id"), "run_url": meta.get("run_url"),
         "event": meta.get("event"), "result": result, "compile_ok": compile_ok,
         "games_skipped": bool(s2.get("games_skipped")),
@@ -205,6 +239,13 @@ def summary(n):
     L.append("| --- | --- |")
     L.append(f"| Compile | {n['stages']['compile']}: {c.get('compiled', '?')} of {c.get('files', '?')} files compiled, "
              f"{c.get('fully_matching', '?')} match completely |")
+    pair = n.get("provided_required_symbols")
+    if pair:
+        L.append(f"| Linking | {pair[0]:,} of {pair[1]:,} names the rebuilt program needs are provided "
+                 f"({100 * pair[0] / pair[1]:.1f}%); {pair[1] - pair[0]:,} missing |")
+    else:
+        why = (n.get("link_census") or {}).get("refused")
+        L.append(f"| Linking | not measured this run{': ' + why if why else ''} |")
     if n["stages"]["link_and_play"] == "not live":
         L.append("| Link and play | not live yet: the private game image for this stage is not configured |")
     elif n["stages"]["link_and_play"] == "runs separately":
@@ -242,6 +283,7 @@ def main():
     ap.add_argument("--game-job", required=True)
     ap.add_argument("--jobs")
     ap.add_argument("--shards-expected", type=int, required=True)
+    ap.add_argument("--link", help="link_census.py output; absent or unreadable means linking was not measured")
     ap.add_argument("--game-live", choices=["true", "false", "external"], required=True)
     a = ap.parse_args()
     s2p = Path(a.stage2) / "stage2.json"
@@ -253,7 +295,7 @@ def main():
     meta = {"sha": os.environ.get("NIGHTLY_SHA") or os.environ.get("GITHUB_SHA", ""), "run_id": run, "date": datetime.now(timezone.utc).strftime("%Y-%m-%d"), "event": os.environ.get("GITHUB_EVENT_NAME"),
             "run_url": f"{server}/{repo}/actions/runs/{run}" if run else None,
             "compile_job": a.compile_job, "game_job": a.game_job, "game_live": a.game_live == "true", "game_external": a.game_live == "external",
-            "machine": machine_time(jobs)}
+            "machine": machine_time(jobs), "link": read_link(a.link)}
     n = build(compile_summary(a.shards, meta["sha"], a.shards_expected), stage2, meta)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)

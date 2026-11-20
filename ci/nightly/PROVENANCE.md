@@ -27,4 +27,8 @@ new and no blocking findings, the same verdict as the hand run.
 `play.sh` follows the steps of the hand-run game job: per-run copies of the prefix and the small game files,
 private display, registry setup by `regset.py` (copied unchanged), then the test tool. `checks.py` compares
 checksum records the same way as the hand-run comparison: frames both records hold, equal count, first differing
-frame. The rest of `ci/nightly/` is new.
+frame. `link_census.py` runs the same resolution as the hand-run census of the rebuilt objects (the vendored
+`resolve.py` and `coffsym.py`), with the libraries given as the list of names they define
+(`link-names/library-names.txt`, 12,860 names from the 29 libraries and one helper object that census links). On the
+3,253 objects of the development commit that census last measured, it gives the same result: 3,130 names missing and
+7 defined twice. The rest of `ci/nightly/` is new.

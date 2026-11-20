@@ -9,7 +9,7 @@ name: Nightly build and compare
 on:
   schedule:
     - cron: '47 16 * * *'
-    - cron: '17 7 * * *'
+    - cron: '47 19 * * *'
   workflow_dispatch:
     inputs:
       fold_game_result:
@@ -30,7 +30,7 @@ jobs:
   compile:
     if: >-
       github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
-      github.event.schedule != '17 7 * * *' && !inputs.fold_game_result
+      github.event.schedule != '47 19 * * *' && !inputs.fold_game_result
     name: Compile shard ${{ matrix.shard }}
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 40
@@ -95,7 +95,7 @@ jobs:
     needs: [compile]
     if: >-
       always() && github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
-      github.event.schedule != '17 7 * * *' && !inputs.fold_game_result
+      github.event.schedule != '47 19 * * *' && !inputs.fold_game_result
     name: Publish the result and raise or clear alarms
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 15
@@ -116,6 +116,21 @@ jobs:
         with:
           pattern: nightly-shard-summary-*-a${{ github.run_attempt }}
           path: '${{ runner.temp }}/shards'
+      - name: Read the compiled objects
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: nightly-shard-[0-9]*-a${{ github.run_attempt }}
+          path: '${{ runner.temp }}/objects'
+      - name: Measure linking
+        shell: bash
+        run: |
+          set -uo pipefail
+          if ! python3 -B ci/nightly/link_census.py "$RUNNER_TEMP/objects" \
+               --names ci/nightly/link-names/library-names.txt --out "$RUNNER_TEMP/link.json"; then
+            echo "::warning::expected a linking figure from this run's objects; found none, so linking stays unmeasured tonight"
+            rm -f "$RUNNER_TEMP/link.json"
+          fi
       - name: Read this run's job times
         shell: bash
         env:
@@ -136,7 +151,7 @@ jobs:
           set -euo pipefail
           python3 -B ci/nightly/result.py "$RUNNER_TEMP/shards" none "$RUNNER_TEMP/result" \
             --compile-job '${{ needs.compile.result }}' --game-job skipped --game-live "$GAME_LIVE" \
-            --shards-expected "$SHARDS" --jobs "$RUNNER_TEMP/jobs.json" > /dev/null
+            --shards-expected "$SHARDS" --jobs "$RUNNER_TEMP/jobs.json" --link "$RUNNER_TEMP/link.json" > /dev/null
           cat "$RUNNER_TEMP/result/summary.md" >> "$GITHUB_STEP_SUMMARY"
       - name: Save nightly.json
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -171,7 +186,7 @@ jobs:
   fold-in:
     if: >-
       github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
-      (github.event.schedule == '17 7 * * *' || inputs.fold_game_result) && vars.BFME_NIGHTLY_GAME_REPO != ''
+      (github.event.schedule == '47 19 * * *' || inputs.fold_game_result) && vars.BFME_NIGHTLY_GAME_REPO != ''
     name: Publish the private game run's result
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 15
@@ -202,6 +217,25 @@ jobs:
           path: '${{ runner.temp }}/shards'
           run-id: '${{ steps.fold.outputs.run_id }}'
           github-token: '${{ github.token }}'
+      - name: Read the compiled objects of that run
+        if: steps.fold.outputs.fresh == 'true'
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: nightly-shard-[0-9]*-a${{ steps.fold.outputs.attempt }}
+          path: '${{ runner.temp }}/objects'
+          run-id: '${{ steps.fold.outputs.run_id }}'
+          github-token: '${{ github.token }}'
+      - name: Measure linking
+        if: steps.fold.outputs.fresh == 'true'
+        shell: bash
+        run: |
+          set -uo pipefail
+          if ! python3 -B ci/nightly/link_census.py "$RUNNER_TEMP/objects" \
+               --names ci/nightly/link-names/library-names.txt --out "$RUNNER_TEMP/link.json"; then
+            echo "::warning::expected a linking figure from that run's objects; found none, so linking stays unmeasured"
+            rm -f "$RUNNER_TEMP/link.json"
+          fi
       - name: Write nightly.json and the summary
         if: steps.fold.outputs.fresh == 'true'
         shell: bash
@@ -213,7 +247,7 @@ jobs:
         run: |
           set -euo pipefail
           curl -fsS -H "Authorization: Bearer $GH_TOKEN" -H 'Accept: application/vnd.github+json'             "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/runs/$RUN/jobs?per_page=100" -o "$RUNNER_TEMP/jobs.json"             || rm -f "$RUNNER_TEMP/jobs.json"
-          python3 -B ci/nightly/result.py "$RUNNER_TEMP/shards" "$RUNNER_TEMP/fold/stage2" "$RUNNER_TEMP/result"             --compile-job success --game-job '${{ steps.fold.outputs.game_job }}' --game-live true             --shards-expected "$SHARDS" --jobs "$RUNNER_TEMP/jobs.json" > /dev/null
+          python3 -B ci/nightly/result.py "$RUNNER_TEMP/shards" "$RUNNER_TEMP/fold/stage2" "$RUNNER_TEMP/result"             --compile-job success --game-job '${{ steps.fold.outputs.game_job }}' --game-live true             --shards-expected "$SHARDS" --jobs "$RUNNER_TEMP/jobs.json" --link "$RUNNER_TEMP/link.json" > /dev/null
           cat "$RUNNER_TEMP/result/summary.md" >> "$GITHUB_STEP_SUMMARY"
       - name: Publish to the nightly branch
         if: steps.fold.outputs.fresh == 'true'

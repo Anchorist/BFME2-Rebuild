@@ -33,7 +33,7 @@ PATTERNS = {
     "board-file": re.compile(r"\b(?:PROGRE[S]S\.md|team_finding[s]\.md|decl_queu[e]|rowclai[m])\b"),
     "attribution": re.compile(r"\b" + TAG + r"\s*(?:->|20\d\d-\d\d-\d\d|\d{1,2}:\d\dZ)"
                               r"|\bc[o]ordinator\s+20\d\d-\d\d-\d\d", re.I),
-    "lane-tag": re.compile(r"\b(?:" + TAG + r"|[l][01]\d/)\b"),
+    "lane-tag": re.compile(r"(?<![?@])\b(?:" + TAG + r"|[l][01]\d/)\b"),
     "role": re.compile(r"\bc[o]ordinator\b|\bthe f[l]eet\b|\bs[e]at\b", re.I),
     "clock-time": re.compile(r"\b\d{1,2}:\d{2}(?::\d{2})?(?:Z|\s?U[T]C)\b"),
     "email": re.compile(r"[\w.+-]+@(?!users\.noreply\.github\.com\b)[\w-]+(?:\.[\w-]+)*\.[a-z]{2,}\b"),

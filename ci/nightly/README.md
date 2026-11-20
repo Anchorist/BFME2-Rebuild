@@ -45,6 +45,8 @@ per kind of failure; a clean night closes it. Run by hand: **Actions → Nightly
 | `result` | `pass` (everything ran and held), `fail`, or `partial` (compiled; the game run is not live or has not run yet) |
 | `stages` | `compile` and `link_and_play`: the job results, `runs separately` or `not live` |
 | `compile` | files, compiled, compile_errors, fully_matching, shards, slowest/fastest shard seconds, `per_shard` machine facts |
+| `provided_required_symbols` | the Linking figure: `[provided, needed]` names (see "Linking" below); `null` when not measured |
+| `link_census` | its detail: objects read, needed, missing, provided, missing names by kind, duplicate definitions |
 | `files_substituted`, `functions` | rebuilt files and their functions in the linked image |
 | `plan`, `link`, `size_check` | planner counts, link result (image, unresolved, duplicates), blocking size findings |
 | `starts`, `menu`, `skirmish`, `save_load`, `simulation_equal`, `control_caught` | `true`, `false` or `null` (not run) |
@@ -56,6 +58,16 @@ per kind of failure; a clean night closes it. Run by hand: **Actions → Nightly
 A `partial` night is not a failure: everything that ran passed, and the game run has not reported. `starts` and
 `menu` are both shown by the first game reaching its first recorded frame: the test tool reaches a skirmish only
 through the main menu.
+
+## Linking
+
+Linking counts the distinct names (functions and data) that the rebuilt source files refer to, and a name counts as
+provided when one of our compiled files, or one of the standard and import libraries the original program also links,
+defines it. It is measured in the publish step of every compile run by `link_census.py`, from that run's own objects
+and the list of names those libraries define (`link-names/library-names.txt`), resolved the way the linker resolves
+them; no game file and no private machine is involved. At 100% every name the rebuilt code needs has a definition,
+so the program can be linked from this source alone. The figure rises when a missing function or variable is
+written, and the needed count can grow when newly written code refers to more names.
 
 ## Why a pull request cannot reach the game
 
@@ -89,5 +101,5 @@ only on the private image. The compile stage handles only public source and its 
 
 `compile_main.py` and `plan_shards.py` (part 1), `link_play.py`, `play.sh`, `regset.py`, `checks.py`, `planner/`
 (part 2, run by the private repository from this repository's code), `result.py`, `publish_branch.py`, `alarms.py`,
-`scrub.py` (all), `fold_in.py` (part 3). Image layout: [IMAGE.md](IMAGE.md). Origin of the planner files: [PROVENANCE.md](PROVENANCE.md).
+`scrub.py` (all), `fold_in.py` (part 3), `link_census.py` and `link-names/` (Linking). Image layout: [IMAGE.md](IMAGE.md). Origin of the planner files: [PROVENANCE.md](PROVENANCE.md).
 Tests: `python3 -B -m unittest discover -s ci/nightly/tests`.
