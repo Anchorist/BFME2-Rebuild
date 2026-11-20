@@ -64,6 +64,22 @@ def transfer(api, row, location, specs):
     retry(attempt)
 
 
+def restore_plan(api, run, plan_attempt, inputs):
+    name = f"bfme-state-plan-{plan_attempt}"
+    for pause in (0, 2, 5):
+        if pause:
+            sleep(pause)
+        response = retry(lambda: api.call(f"actions/runs/{run}/artifacts?name={name}&per_page=5"))
+        rows = [row for row in response["artifacts"] if row["name"] == name and not row["expired"]]
+        if len(rows) > 1:
+            raise ValueError("Expected one immutable state plan from this run.")
+        if rows:
+            transfer(api, rows[0], inputs, {"state-plan.json": MAX_PLAN_BYTES, "carry.json": LIMIT})
+            validate_plan(load(inputs / "state-plan.json", MAX_PLAN_BYTES))
+            return
+    raise ValueError("The exact plan artifact is unavailable.")
+
+
 def restore(api, run, plan_attempt, attempt, inputs, shards):
     def lookup():
         return chosen(artifact_rows(api, run), plan_attempt, attempt)
@@ -96,14 +112,18 @@ def restore(api, run, plan_attempt, attempt, inputs, shards):
     print(f"Restored one immutable plan and {len(results)} exact state shards.")
 
 
-def main(inputs, shards):
+def main(inputs, shards=None):
     args = [os.environ[key] for key in ("GITHUB_RUN_ID", "BFME_STATE_PLAN_ATTEMPT", "GITHUB_RUN_ATTEMPT")]
     if not all(re.fullmatch(r"[1-9][0-9]{0,19}", item) for item in args):
         raise ValueError("Expected exact Actions run and attempt numbers.")
     run, plan_attempt, attempt = map(int, args)
     if plan_attempt > attempt:
         raise ValueError("An assembly cannot read a future attempt.")
-    restore(GitHub(), run, plan_attempt, attempt, Path(inputs), Path(shards))
+    api = GitHub()
+    if shards is None:
+        restore_plan(api, run, plan_attempt, Path(inputs))
+    else:
+        restore(api, run, plan_attempt, attempt, Path(inputs), Path(shards))
 
 
 if __name__ == "__main__":

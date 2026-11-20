@@ -2,6 +2,7 @@
 import os
 from pathlib import Path
 import sys
+from subprocess import CalledProcessError
 import urllib.parse
 import urllib.request
 
@@ -9,7 +10,8 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "managed-check"))
 from common import HEX40, REPO, REPO_ID, encoded, read
 from github_status import GitHub
-from state_delta import predecessors
+from state_delta import REPORT_DIRS, predecessors
+from state_snapshot import git
 from state_fetch import WORKFLOW, select_artifact, select_run, verified_run
 
 SEED_TITLE = "Seed protected main state "
@@ -40,6 +42,24 @@ def main_ref(api):
     if not isinstance(current, str) or not HEX40.fullmatch(current):
         raise Held("Expected the full current main object. Found invalid GitHub ref metadata.")
     return current
+
+
+def report_only_push(root, sha, event):
+    """Classify the complete push diff; missing or untrusted evidence never skips."""
+    before = event.get("before")
+    if (event.get("ref") != "refs/heads/main" or event.get("after") != sha
+            or not isinstance(before, str) or not HEX40.fullmatch(before) or before == "0" * 40):
+        return False
+    try:
+        diff = git(root, "diff", "--name-only", "--no-renames", "--no-ext-diff", "-z",
+                   before, sha, "--")
+    except (OSError, CalledProcessError):
+        return False
+    names = diff.split(b"\0")
+    if names.pop() != b"":
+        return False
+    prefixes = tuple(prefix.encode("ascii") for prefix in REPORT_DIRS)
+    return bool(names) and all(name.startswith(prefixes) for name in names)
 
 
 def eligible(api, sha, seed, phase, *, root=None):
@@ -88,6 +108,13 @@ def run(phase):
     if (env.get("GITHUB_REPOSITORY") != REPO or env.get("GITHUB_REPOSITORY_ID") != str(REPO_ID)
             or env.get("GITHUB_REF") != "refs/heads/main" or not HEX40.fullmatch(sha)):
         raise Held("Expected the exact protected repository and main ref. Found another execution origin.")
+    if phase == "admit" and event == "push":
+        payload = read(env["GITHUB_EVENT_PATH"], 32 * 1024**2)
+        if report_only_push(Path.cwd(), sha, payload):
+            print("Only workflow, reporting, or documentation paths changed. Skipping state measurement.")
+            with Path(env["GITHUB_OUTPUT"]).open("a") as stream:
+                stream.write("active=no\n")
+            return
     api = GitHub()
     if phase == "catch-up":
         if event != "workflow_run":

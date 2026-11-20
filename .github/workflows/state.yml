@@ -43,7 +43,7 @@ jobs:
     if: >-
       inputs.recover_bootstrap != true && github.repository == 'Open-BFME/BFME2-Rebuild' &&
       github.ref == 'refs/heads/main' && vars.BFME_STATE_WORKFLOW_ENABLED == 'yes'
-    runs-on: boat-small/from=bfme2-compiler-v1
+    runs-on: '${{ vars.BFME_STATE_CONTROL_RUNNER || ''ubuntu-24.04'' }}'
     timeout-minutes: 5
     permissions:
       contents: read
@@ -57,7 +57,7 @@ jobs:
         with:
           ref: '${{ github.sha }}'
           persist-credentials: false
-          fetch-depth: 17
+          fetch-depth: 0
       - name: Decide whether this current main needs measurement
         id: origin
         env:
@@ -115,6 +115,7 @@ jobs:
         batch: '${{ fromJSON(needs.plan.outputs.batches) }}'
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -128,10 +129,14 @@ jobs:
           trap 'rc=$?; printf "Expected current protected main. Found exit %s at line %s.\n" "$rc" "$LINENO" >&2' ERR
           (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
           python3 -B ci/managed-state/state_origin.py check
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          name: bfme-state-plan-${{ needs.plan.outputs.attempt }}
-          path: '${{ runner.temp }}/state-input'
+      - name: Restore the exact protected plan with retry
+        env:
+          BFME_READ_TOKEN: '${{ github.token }}'
+          BFME_STATE_PLAN_ATTEMPT: '${{ needs.plan.outputs.attempt }}'
+        run: |
+          set -euo pipefail
+          (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
+          python3 -B ci/managed-state/state_transport.py "$RUNNER_TEMP/state-input"
       - name: Verify the protected state and compiler package
         run: |
           set -Eeuo pipefail
@@ -169,7 +174,7 @@ jobs:
 
   assemble:
     needs: [plan, measure]
-    runs-on: boat-small/from=bfme2-compiler-v1
+    runs-on: '${{ vars.BFME_STATE_CONTROL_RUNNER || ''ubuntu-24.04'' }}'
     timeout-minutes: 8
     permissions:
       contents: read
@@ -267,3 +272,22 @@ jobs:
           path: '${{ runner.temp }}/recovery/state.json'
           if-no-files-found: error
           retention-days: 7
+
+  publish:
+    needs: [plan, measure, assemble, recover]
+    if: >-
+      always() && !cancelled() && github.repository_id == '1464323350' &&
+      github.actor_id == '41898282' && github.ref == 'refs/heads/main' &&
+      (github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') &&
+      (needs.assemble.result == 'success' || needs.recover.result == 'success' ||
+       contains(needs.*.result, 'failure'))
+    permissions:
+      contents: write
+      actions: read
+      issues: write
+    uses: ./.github/workflows/state-publish.yml
+    with:
+      measured_run_id: '${{ format(''{0}'', github.run_id) }}'
+      measured_attempt: '${{ format(''{0}'', github.run_attempt) }}'
+      measured_conclusion: >-
+        ${{ (needs.assemble.result == 'success' || needs.recover.result == 'success') && 'success' || 'failure' }}
