@@ -38,7 +38,8 @@ jobs:
         env:
           BFME_READ_TOKEN: '${{ github.token }}'
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'printf "%s\n" "Landing discovery expected a verified protected bundle and three current checks. Found a refused or unavailable input." >&2' ERR
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
           python3 -B ci/managed-check/landing_read.py discover "$RUNNER_TEMP/bfme-landing"
       - name: Download the successful match receipt

@@ -26,15 +26,17 @@ class Waiting(ValueError):
 
 def pull(api, number, base):
     pr = api.call(f"pulls/{number}")
+    if pr.get("base", {}).get("ref", "").startswith("corpus/base-") or pr.get("head", {}).get("ref", "").startswith("corpus/case-"):
+        raise Waiting("Expected an ordinary pull request targeting main. Found a historical corpus fixture with no landing path.")
     observed = api.call("git/ref/heads/main")["object"]["sha"]
     if observed != base:
-        raise Waiting("Main moved. Request a new check on the current main.")
+        raise Waiting(f"Expected main {base[:12]}. Found a different main. Request fresh checks.")
     if (pr.get("number") != number or pr["base"]["repo"]["id"] != REPO_ID
             or pr["base"]["ref"] != "main" or pr["state"] != "open" or pr.get("draft") is not False):
-        raise Waiting("The pull request must be open, ready for review, and target main.")
+        raise Waiting("Expected an open, review-ready pull request targeting this main. Found an ineligible pull request.")
     head = pr["head"]["sha"]
     if not HEX40.fullmatch(head):
-        raise Waiting("The pull request head was unavailable from GitHub.")
+        raise Waiting("Expected the exact pull-request head SHA. Found missing or malformed metadata.")
     return pr, {"number": number, "base": base, "head": head}
 
 
@@ -51,28 +53,46 @@ def start_runs(api, binding):
     # Commit status entries can be written by other actors. They select a
     # candidate run only. The protected run and its artifacts prove the result.
     head = binding["head"]
-    status = api.call(f"commits/{head}/status?per_page=100")
-    if status.get("sha") != head:
-        raise Waiting("GitHub returned commit statuses for a different head.")
-    latest = latest_statuses(status["statuses"])
+    latest = {}
+    for page in range(1, 5):
+        entries = api.call(f"commits/{head}/statuses?per_page=100&page={page}")
+        if not isinstance(entries, list):
+            raise Waiting("Expected GitHub's status list with writer identities. Found a different response.")
+        latest.update({context: status for context, status in latest_statuses(entries).items()
+                       if context not in latest})
+        if len(latest) == len(FLOW) or len(entries) < 100:
+            break
     runs = {}
     for context in FLOW:
         status = latest.get(context, {})
+        state = status.get("state")
+        if state != "success":
+            found = state if state in {"pending", "failure", "error"} else "no current status"
+            raise Waiting(f"Expected {context} success on the exact head. Found {found}.")
+        if (status.get("creator") or {}).get("id") != BOT_ID:
+            raise Waiting(f"Expected {context} from GitHub Actions. Found a different or missing writer.")
         target = URL.fullmatch(status.get("target_url") or "")
-        if ((status.get("creator") or {}).get("id") != BOT_ID or not target or status.get("state") != "success"):
-            raise Waiting(f"Waiting for {context} to pass on the exact head.")
+        base_marker = f"(main {binding['base'][:12]})"
+        if not target or base_marker not in (status.get("description") or ""):
+            raise Waiting(f"Expected {context} to link its protected run on {binding['base'][:12]}. Found a stale or missing binding.")
         runs[context] = target[1]
     if runs[CONTEXT] != runs[INLINE]:
-        raise Waiting("Match and inline virtual must pass in the same protected run.")
+        raise Waiting("Expected match and inline virtual from the same run. Found different runs.")
     result = {}
     for context in (CONTEXT, RULES):
         run = api.call("actions/runs/" + runs[context])
         if (str(run.get("id")) != runs[context] or run.get("path") != FLOW[context]
-                or run.get("event") != "pull_request_target" or run.get("head_sha") != binding["base"]
+                or run.get("event") != "pull_request_target" or run.get("head_sha") != binding["head"]
                 or (run.get("repository") or {}).get("id") != REPO_ID
                 or run.get("status") != "completed" or run.get("conclusion") != "success"
                 or not NUMBER.fullmatch(str(run.get("run_attempt", "")))):
-            raise Waiting(f"Waiting for a successful protected {context} run on this main.")
+            raise Waiting(f"Expected a completed, successful protected {context} run for the PR head. Found incompatible run metadata.")
+        linked = run.get("pull_requests") or []
+        if linked and not any(item.get("number") == binding["number"]
+                              and (item.get("head") or {}).get("sha") == binding["head"]
+                              and (item.get("base") or {}).get("sha") == binding["base"]
+                              and (item.get("base") or {}).get("ref") == "main" for item in linked):
+            raise Waiting(f"Expected {context} to bind this PR and main. Found another associated pair.")
         result[context] = (runs[context], str(run["run_attempt"]))
     return result
 
@@ -180,6 +200,14 @@ if __name__ == "__main__":
     try:
         main(*sys.argv[1:])
     except (Waiting, Superseded, FileNotFoundError) as exc:
-        summary(f"Held. {str(exc) if isinstance(exc, Waiting) else 'The pair or its receipts are unavailable.'}")
+        detail = str(exc) if isinstance(exc, Waiting) else "Expected the exact current pair and receipts. Found changed or missing inputs."
+        print(f"Landing rehearsal held. {detail}", file=sys.stderr)
+        summary(f"Held. {detail}")
+        raise SystemExit(1) from None
+    except (OSError, ValueError, TypeError, KeyError, RuntimeError) as exc:
+        # Other exception text can include a path, token-related data, or a redirect.
+        detail = f"Expected verified landing inputs. Found a {type(exc).__name__} while checking them."
+        print(f"Landing rehearsal held. {detail}", file=sys.stderr)
+        summary(detail)
         raise SystemExit(1) from None
 
