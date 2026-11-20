@@ -161,6 +161,30 @@ def compute(main, rb, sub_objs, idx, in_rsp, replaced, obj_paths, extra_alt=(), 
             if add:
                 rb_local[rel] = sorted(set(rb_local.get(rel, [])) | set(add))
         rep["counts"]["content-guard:local"] = len(rep["content_guard"])
+
+
+    rep["table_guard"] = []
+    if cfg.get("table_guard"):
+        ref_data = {}
+        for o in ref_objs:
+            for n, d in main.objects[o].get("defs", {}).items():
+                if d[1] in ("data", "bss", "common"):
+                    ref_data.setdefault(n, (o, d))
+        for tu, rel in sorted(sub_objs.items()):
+            if tu in lib:
+                continue
+            chars = sec_chars(obj_paths[tu])
+            add = []
+            for n, d in idx[rel].get("defs", {}).items():
+                if not d[0] or d[1] != "data" or n not in ref_data or chars.get(d[4], 0) & SCN_WRITE:
+                    continue
+                o, rd = ref_data[n]
+                if rd[2] != d[2]:
+                    add.append(n)
+                    rep["table_guard"].append({"tu": tu, "name": n, "size": d[2], "reference_size": rd[2], "reference_definer": o})
+            if add:
+                rb_local[rel] = sorted(set(rb_local.get(rel, [])) | set(add))
+        rep["counts"]["table-guard:local"] = len(rep["table_guard"])
     rep["counts"] = dict(rep["counts"])
     return rb_local, rb_extern, exclude, rep
 

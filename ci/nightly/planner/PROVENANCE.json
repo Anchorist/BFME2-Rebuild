@@ -18,10 +18,10 @@
   "source_sha256": "1af787bf8db04b99a7978cf22298c080120997465b8e3f4d539cb6ef0ef17233"
  },
  "libguard.py": {
-  "output_sha256": "8c69b2993be42c9d5543d4166c31c39f858a5518a40badfcfe25e5cda4f447f9",
+  "output_sha256": "be7dde69feb010dcd5a71865d0ec7fad3d17cacdb895b2decae1bae1bbb3d884",
   "rewrites": 2,
   "source": "libguard.py",
-  "source_sha256": "581371141f8bd66c39f2ea9bdd113a948fde8e66f07c34a6f000bf6d77926e58"
+  "source_sha256": "977c1e148710684d09d0db5f6c1910fc82aee1389dec20e61761c7d2e571fa7f"
  },
  "localize2.py": {
   "output_sha256": "0d045a8b18ac5ea44540228ce56f74dcbcb1f4bde1b882a343240ca997496af5",

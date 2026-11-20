@@ -1,15 +1,17 @@
 # Nightly build and compare
 
-Every night at 03:17 UTC, `.github/workflows/nightly.yml` answers one question: **how much of the rebuilt
-source can replace the original program while the game plays exactly as the original does?**
+Every night answers one question: **how much of the rebuilt source can replace the original program while the game
+plays exactly as the original does?** It runs in two parts.
 
-1. **Compile** (8 parallel jobs on the compiler image `boat-small/from=bfme2-compiler-v1`). Every `.c` and
-   `.cpp` file under `src/` at the main commit is compiled with the same sealed compiler and judged with the same
-   comparison as a pull request. A file whose functions all match the original is a candidate.
-2. **Link, check and play** (one job on a private image that holds the game). The link planner starts from the
-   original program's own object files and substitutes every candidate file it can link safely. It then links
-   that image without forcing unresolved names, checks the size of every data object, and plays five fixed
-   games under Wine. Each game records a checksum of the whole game state every 25 frames:
+1. **Compile** (`.github/workflows/nightly.yml`, every night, 16 parallel jobs on the compiler image
+   `boat-small/from=bfme2-compiler-v1`). Every `.c` and `.cpp` file under `src/` at the main commit is compiled with
+   the same sealed compiler and judged with the same comparison as a pull request. A file whose functions all match
+   the original is a candidate. Each job has a 40-minute deadline and records its machine's CPU count, model, busy
+   and hypervisor-taken (steal) time, so a slow night shows whether a machine was slow or starved.
+2. **Link, check and play** (a separate private repository, two hours later, one machine that holds the game). The link
+   planner starts from the original program's own object files and substitutes every candidate file it can link
+   safely. It links that image without forcing unresolved names, checks the size of every data object, and plays
+   five fixed games under Wine. Each game records a checksum of the whole game state every 25 frames:
    | Test | What must happen |
    | --- | --- |
    | Udun, seed 1, to frame 1000 | all 40 checksums equal the original's |
@@ -17,50 +19,67 @@ source can replace the original program while the game plays exactly as the orig
    | Fords of Isen II, seed 2, to frame 1000 | all 40 checksums equal |
    | Udun, seed 1, to frame 5000 | all 200 checksums equal |
    | save at frame 600, load, play on | outcome pass, every checksum before the save and after the load equal |
-3. **Publish**: `nightly.json` and a readable summary go to the `nightly` branch, the run's job summary and the
-   `nightly-result-a<attempt>` artifact. Failures open or update one issue per kind of failure; a clean night closes it.
 
-Run it by hand: **Actions → Nightly build and compare → Run workflow** on `main`. `skip_game` stops after the
-size check. `probe` only checks that the private image starts and holds every input.
+Each part writes `nightly.json` and a readable summary to the `nightly` branch; the game run replaces the compile
+run's result for the same commit. Failures open or update one issue per kind of failure; a clean night closes it.
+Run part 1 by hand: **Actions → Nightly build and compare → Run workflow** on `main`.
 
 ## Where the result is
 
 - `git show origin/nightly:latest.json` (and `history/<date>-<commit>.json`, `SUMMARY.md`)
-- the run's summary page, and its `nightly-result-a<attempt>` artifact (90 days)
+- the compile run's summary page and its `nightly-result-a<attempt>` artifact (90 days)
 - issues titled `Alarm: Nightly build did not produce a checked image`, `Alarm: Nightly game run crashed or
   stopped early`, `Alarm: Nightly game state differs from the original`, `Alarm: Nightly comparison missed a
-  deliberate change`, opened and closed by the workflow
+  deliberate change`
 
 ## `nightly.json` (schema `bfme2-nightly/1`)
 
 | Field | Meaning |
 | --- | --- |
-| `sha`, `date`, `run_url` | main commit built, UTC date, the run |
-| `result` | `pass` (everything ran and held), `fail`, or `partial` (the game stage is not live, see below) |
-| `stages` | `compile`, `link_and_play`: the job results, or `not live` |
-| `compile` | files, compiled, compile_errors, fully_matching, shards, slowest_shard_s |
+| `headline` | one sentence, for example `compiles (3253 of 3253 files compile, 407 match completely); game run not live yet` |
+| `sha`, `date`, `run_url` | main commit built, UTC date, the public compile run |
+| `result` | `pass` (everything ran and held), `fail`, or `partial` (compiled; the game run is not live or has not run yet) |
+| `stages` | `compile` and `link_and_play`: the job results, `runs separately` or `not live` |
+| `compile` | files, compiled, compile_errors, fully_matching, shards, slowest/fastest shard seconds, `per_shard` machine facts |
 | `files_substituted`, `functions` | rebuilt files and their functions in the linked image |
 | `plan`, `link`, `size_check` | planner counts, link result (image, unresolved, duplicates), blocking size findings |
 | `starts`, `menu`, `skirmish`, `save_load`, `simulation_equal`, `control_caught` | `true`, `false` or `null` (not run) |
 | `equal_frames`, `frames` | checksum frames equal in total; per test first differing frame |
 | `tests` | per test: status `pass`, `differs`, `crash` or `control-blind`, frames compared and equal, a sentence |
 | `image_sha256`, `image_manifest_sha256` | the linked image and the private image's manifest |
-| `timings` | stage seconds, wall minutes and runner minutes per runner label |
+| `timings` | stage seconds, wall minutes and runner minutes per stage |
 
-`starts` and `menu` are both shown by the first game reaching its first recorded frame: the test tool reaches a
-skirmish only through the main menu.
+A `partial` night is not a failure: everything that ran passed, and the game run has not reported. `starts` and
+`menu` are both shown by the first game reaching its first recorded frame: the test tool reaches a skirmish only
+through the main menu.
+
+## Why a pull request cannot reach the game
+
+The game's files may not be published, so the machine image that holds them must never serve a job that someone
+outside the project can write. A workflow file cannot promise that by itself: anyone can open a pull request that
+adds a workflow, and on Boat a job asks for a machine image only by naming it in `runs-on`. Boat looks the name up
+among the saved images of the Boat organization that the repository's GitHub account is connected to; it has no
+setting that limits an image to one repository, workflow, branch or event. So the protection is where the image
+lives, not what our files say:
+
+1. The game image is saved in a **separate Boat organization** that is connected only to a separate **private**
+   repository. This repository's connection cannot see it: a job here that names it is refused before any machine
+   starts ("a `from=` snapshot that does not exist"). One deliberate probe from this repository shows that refusal.
+2. No file in this repository names a machine image that holds game files. The compile image holds the compiler and
+   public headers only.
+3. The private repository's workflow runs only on its own schedule or by hand. It reads this repository's public
+   compile results and publishes back counts, verdicts, frame numbers and hashes through a token stored only there.
+4. What it publishes passes `ci/nightly/scrub.py`: paths are cut to their last part and anything the public-text
+   check flags is removed. It never publishes an image, an object, a log or a checksum value.
 
 ## What stays private
 
-The original program's object files, the game's assets, the Wine prefixes and the original's checksum records
-live only on the private image. That stage uploads only `stage2.json`: counts, verdicts, frame numbers and hashes.
-It never uploads an image, an object, a log or a checksum value. The compile stage handles only public source and
-its own objects. No job a pull request can start reaches the private image: this workflow runs only on schedule and
-by hand on `main`.
+The original program's object files, the game's assets, the Wine prefixes and the original's checksum records live
+only on the private image. The compile stage handles only public source and its own objects.
 
-## Status
+## Files
 
-The compile stage needs nothing private and runs on the proven compiler image. The link-and-play stage runs only when
-the repository variable `BFME_NIGHTLY_GAME_RUNNER` names the private image's runner label. Until then each night is
-`partial` and says so in its summary. Image layout and how to rebuild it: [IMAGE.md](IMAGE.md). Origin of the
-planner files: [PROVENANCE.md](PROVENANCE.md). Tests: `python3 -B -m unittest discover -s ci/nightly/tests`.
+`compile_main.py` and `plan_shards.py` (part 1), `link_play.py`, `play.sh`, `regset.py`, `checks.py`, `planner/`
+(part 2, run by the private repository from this repository's code), `result.py`, `publish_branch.py`, `alarms.py`,
+`scrub.py` (both). Image layout: [IMAGE.md](IMAGE.md). Origin of the planner files: [PROVENANCE.md](PROVENANCE.md).
+Tests: `python3 -B -m unittest discover -s ci/nightly/tests`.

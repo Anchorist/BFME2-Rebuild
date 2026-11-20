@@ -1,7 +1,7 @@
 # Where the nightly's files come from
 
-`planner/` is the project's link planner, copied from the tool that builds the hybrid image by hand, as it stood on
-2026-11-20. It was copied mechanically, with no change to its logic:
+`planner/` is the project's link planner, copied from the tool that builds the hybrid image by hand, at the version
+whose SHA-256 values `planner/PROVENANCE.json` lists. It was copied mechanically, with no change to its logic:
 
 1. a fixed list of text replacements: file locations become the `NIGHTLY_*` environment settings that
    `link_play.py` sets, and environment switch names get the `NIGHTLY_` prefix;
@@ -20,7 +20,7 @@ replacements. Step 1 also renames one column header of the size check's report. 
 | `libguard.py` | keeps rebuilt library and inline copies from replacing the original's |
 | `extents.py` | the size check of every data object in the planned link |
 
-A replay of the copied planner against the hand-built inputs of main `04194f7449` reproduced the hand-built plan:
+A replay of the copied planner against the hand-built inputs of one development commit reproduced the hand-built plan:
 the same 366 files, an identical link response file, and byte-identical patched objects. The size check found no
 new and no blocking findings, the same verdict as the hand run.
 

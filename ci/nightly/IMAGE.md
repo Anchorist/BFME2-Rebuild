@@ -1,8 +1,9 @@
 # The private nightly image
 
 The link-and-play stage runs on a private Boat snapshot, `bfme2-nightly-v1`. It is built from the private game
-snapshot and holds a lawful copy of the game. It is never public and never serves a pull request. A new version
-gets a new name and must pass the probe (`Run workflow` with `probe`) before the repository variable points to it.
+snapshot and holds a lawful copy of the game. It is saved in a Boat organization connected only to the private
+repository that runs the game (see "Why a pull request cannot reach the game" in [README.md](README.md)). A new
+version gets a new name and must pass the private workflow's `probe` run before that workflow names it.
 
 ## Layout (`/opt/bfme2-nightly`)
 
@@ -13,7 +14,7 @@ gets a new name and must pass the probe (`Run workflow` with `probe`) before the
 | `toolchain/vc71/` | Visual Studio .NET 2003 root (`Vc7/bin/link.exe`, `Common7/IDE/mspdb71.dll`) |
 | `toolchain/linkwine/` | a Wine prefix for the linker (copied per run) |
 | `game/`, `prefix64/`, `py64/`, `appdata/` | the installed game, its Wine prefix, Windows Python and user data |
-| `harness/` | the game test tool (`tools/game_smoke.py` and the tables it reads, `baselines/.../game.dat`, equal to `baseline/game.dat`) |
+| `harness/` | the game test tool, which is not part of this repository (`tools/game_smoke.py` and the tables it reads, and a copy of `baseline/game.dat`) |
 | `records/` | the original program's recordings: `udun-1000.json`, `udun-5000.json`, `fords-1000.json`, `reload.json` |
 | `MANIFEST.sha256` | SHA-256 of every file above except the Wine prefixes and user data; checked at the start of every run |
 
@@ -27,6 +28,5 @@ game box uses (Boat `default`).
    prefixes and manifest) into it.
 2. Run the install script as root with the payload's expected SHA-256. It refuses a different payload, links the
    game install, creates the linker's Wine prefix, writes `MANIFEST.sha256` and checks that `link.exe` runs.
-3. Save the sandbox as `bfme2-nightly-v1`. Set the repository variable `BFME_NIGHTLY_GAME_RUNNER` to its runner
-   label only after the probe passes, and only if Boat serves that label to this repository's default-branch
-   workflows alone.
+3. Save the sandbox as `bfme2-nightly-v1` in the separate Boat organization, then run the private workflow with
+   `probe`. From this repository, a job that names the image must be refused.

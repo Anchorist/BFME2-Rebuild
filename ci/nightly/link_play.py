@@ -18,6 +18,7 @@ from time import monotonic
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from checks import TESTS, crc_compare, judge_test, reload_compare, merge_shards  # noqa: E402
+from scrub import scrub  # noqa: E402
 
 IMAGE = Path(os.environ.get("BFME_NIGHTLY_IMAGE", "/opt/bfme2-nightly"))
 
@@ -194,7 +195,8 @@ def main():
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     sha = os.environ.get("GITHUB_SHA", "")
-    result = {"stage": "link-and-play", "sha": sha, "timings": {}, "tests": {}, "stopped": None}
+    result = {"stage": "link-and-play", "sha": sha, "timings": {}, "tests": {}, "stopped": None,
+              "games_skipped": bool(a.no_game)}
     started = monotonic()
     try:
         result["image_manifest_sha256"] = verify_image(out)
@@ -211,7 +213,7 @@ def main():
         result["stopped"] = f"expected the step to finish; found {type(e).__name__}: {str(e)[:300]}"
         print(f"nightly link-and-play: {result['stopped']}", file=sys.stderr, flush=True)
     result["timings"]["stage_s"] = round(monotonic() - started, 1)
-    (out / "stage2.json").write_text(json.dumps(result, indent=1, sort_keys=True) + "\n")
+    (out / "stage2.json").write_text(json.dumps(scrub(result), indent=1, sort_keys=True) + "\n")
     return 0
 
 

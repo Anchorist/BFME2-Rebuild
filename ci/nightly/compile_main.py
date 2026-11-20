@@ -26,6 +26,33 @@ from plan_shards import assign, source_files  # noqa: E402
 BATCH = 8
 
 
+def cpu_times():
+    """(busy, steal, total) jiffies from /proc/stat, or None where it does not exist."""
+    try:
+        f = [int(x) for x in Path("/proc/stat").read_text().splitlines()[0].split()[1:]]
+    except (OSError, ValueError, IndexError):
+        return None
+    steal = f[7] if len(f) > 7 else 0
+    idle = f[3] + (f[4] if len(f) > 4 else 0)
+    return sum(f) - idle - steal, steal, sum(f)
+
+
+def host_facts(before, after):
+    """CPU count, model and the share of CPU time the hypervisor took (steal) while this shard ran."""
+    model = ""
+    try:
+        model = next((line.split(":", 1)[1].strip() for line in Path("/proc/cpuinfo").read_text().splitlines()
+                      if line.startswith("model name")), "")
+    except OSError:
+        pass
+    out = {"cpus": os.cpu_count(), "cpu_model": model[:80]}
+    if before and after and after[2] > before[2]:
+        total = after[2] - before[2]
+        out.update(busy_pct=round(100 * (after[0] - before[0]) / total, 1),
+                   steal_pct=round(100 * (after[1] - before[1]) / total, 1))
+    return out
+
+
 def fail(expected, found):
     print(f"nightly compile: expected {expected}; found {found}", file=sys.stderr, flush=True)
     raise SystemExit(1)
@@ -50,6 +77,7 @@ def main(shard, shards, out):
     except ValueError:
         fail(f"baseline/game.dat with SHA-256 {PIN['baseline_sha256']}", "a different file")
     started = monotonic()
+    cpu0 = cpu_times()
     tools = audit(PIN)
     out.mkdir(parents=True, exist_ok=True)
     (out / "obj").mkdir(exist_ok=True)
@@ -57,6 +85,7 @@ def main(shard, shards, out):
     mine = assign(sizes, shards)[shard]
     print(f"Nightly shard {shard + 1} of {shards}: {len(mine)} of {len(sizes)} source files.", flush=True)
     counts = {"files": len(mine), "compiled": 0, "compile_errors": 0, "fully_matching": 0}
+    batch_seconds = []
     with tempfile.TemporaryDirectory(prefix="bfme-nightly-") as name, open(out / "judge.jsonl", "w") as log:
         work = Path(name)
         git = Git(work / "source.git", initialize=True)
@@ -90,9 +119,13 @@ def main(shard, shards, out):
                 keep["rows"] = [{"rva": r.get("rva"), "status": r.get("status")} for r in res.get("rows", [])]
                 log.write(json.dumps(keep, sort_keys=True) + "\n")
             shutil.rmtree(job, ignore_errors=True)
+            batch_seconds.append(round(monotonic() - t0, 1))
             print(f"Nightly shard {shard + 1}: batch {begin // BATCH + 1}, {len(names)} files, "
                   f"{monotonic() - t0:.1f} s.", flush=True)
     counts["seconds"] = round(monotonic() - started, 1)
+    ordered = sorted(batch_seconds)
+    counts["batch_median_s"] = ordered[len(ordered) // 2] if ordered else None
+    counts["host"] = host_facts(cpu0, cpu_times())
     (out / "shard.json").write_text(json.dumps(dict(counts, shard=shard, shards=shards, sha=sha), sort_keys=True) + "\n")
     print("Nightly shard summary: " + json.dumps(counts, sort_keys=True), flush=True)
 

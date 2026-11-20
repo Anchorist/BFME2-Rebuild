@@ -1,6 +1,6 @@
 """Assemble nightly.json, the job summary and the alarm decisions from the stage outputs.
 
-  python3 -B ci/nightly/result.py SHARDS_DIR STAGE2_DIR OUT_DIR --compile-job RESULT --game-job RESULT --game-live true|false [--jobs JOBS.json]
+  python3 -B ci/nightly/result.py SHARDS_DIR STAGE2_DIR OUT_DIR --compile-job RESULT --game-job RESULT --game-live true|false|external [--jobs JOBS.json]
 
 SHARDS_DIR holds the compile shards' shard.json files, STAGE2_DIR the link-and-play stage2.json (absent when that
 stage did not run). RESULT is the GitHub job result (success, failure, cancelled, skipped). JOBS.json is the run's job
@@ -26,7 +26,11 @@ def compile_summary(shards_dir, sha, expected):
     infos = [json.loads(p.read_text()) for p in sorted(Path(shards_dir).glob("*/shard.json"))]
     s = {k: sum(int(i.get(k) or 0) for i in infos) for k in ("files", "compiled", "compile_errors", "fully_matching")}
     s.update(shards=len(infos), expected_shards=expected,
-             slowest_shard_s=max((i.get("seconds") or 0 for i in infos), default=None), problem=None)
+             slowest_shard_s=max((i.get("seconds") or 0 for i in infos), default=None),
+             fastest_shard_s=min((i.get("seconds") or 0 for i in infos), default=None), problem=None,
+             per_shard=[{"shard": i.get("shard"), "files": i.get("files"), "seconds": i.get("seconds"),
+                         "batch_median_s": i.get("batch_median_s"), **(i.get("host") or {})}
+                        for i in sorted(infos, key=lambda x: (str(type(x.get("shard"))), x.get("shard") or 0))])
     indices = sorted(i.get("shard") for i in infos if isinstance(i.get("shard"), int))
     foreign = sorted({i.get("sha") for i in infos} - {sha}, key=str)
     if not infos:
@@ -41,8 +45,11 @@ def compile_summary(shards_dir, sha, expected):
     return s
 
 
+STAMP = "%Y-%m-%dT%H:%M:%SZ"
+
+
 def _ts(value):
-    return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ") if value else None
+    return datetime.strptime(value, STAMP) if value else None
 
 
 def machine_time(jobs):
@@ -51,14 +58,16 @@ def machine_time(jobs):
         return None
     starts = [_ts(j.get("started_at")) for j in jobs if j.get("started_at")]
     ends = [_ts(j.get("completed_at")) for j in jobs if j.get("completed_at")]
-    per_label = {}
+    per_stage = {}
     for j in jobs:
         a, b = _ts(j.get("started_at")), _ts(j.get("completed_at"))
         if a and b:
-            label = ",".join(j.get("labels") or ["unknown"])
-            per_label[label] = round(per_label.get(label, 0) + (b - a).total_seconds() / 60, 1)
+            name = j.get("name") or ""
+            stage = ("compile" if name.startswith("Compile") else "link_and_play" if name.startswith("Link")
+                     else "publish" if name.startswith("Publish") else "other")
+            per_stage[stage] = round(per_stage.get(stage, 0) + (b - a).total_seconds() / 60, 1)
     return {"wall_minutes": round((max(ends) - min(starts)).total_seconds() / 60, 1) if starts and ends else None,
-            "runner_minutes": per_label, "jobs": len(jobs)}
+            "runner_minutes": per_stage, "jobs": len(jobs)}
 
 
 def check_rows(tests):
@@ -96,6 +105,8 @@ def build(compile_info, stage2, meta):
         result = "partial"
     elif stage2 is None or s2.get("stopped") or meta["game_job"] != "success":
         result = "fail"
+    elif s2.get("games_skipped") and linked and size_ok:
+        result = "partial"
     elif all(s == "pass" for s in statuses) and len(tests) == len(TEST_ORDER) and linked and size_ok:
         result = "pass"
     else:
@@ -110,14 +121,33 @@ def build(compile_info, stage2, meta):
     else:
         sim_equal = True if all(s == "pass" for s in record_tests) and len(record_tests) == 4 else None
     ctl = (tests.get("control") or {}).get("status")
+    ci = compile_info or {}
+    compiled = f"{ci.get('compiled', 0)} of {ci.get('files', 0)} files compile, {ci.get('fully_matching', 0)} match completely"
+    if result == "partial" and live:
+        headline = (f"links and checks: {(s2.get('plan') or {}).get('files')} rebuilt files, 0 unresolved, "
+                    f"0 blocking size findings; games not played this run")
+    elif result == "partial":
+        headline = (f"compiles ({compiled}); game run follows separately" if meta.get("game_external")
+                    else f"compiles ({compiled}); game run not live yet")
+    elif result == "pass":
+        headline = (f"plays identically: {(s2.get('plan') or {}).get('files')} rebuilt files, "
+                    f"{frames_equal} of {frames_compared} checksum frames equal, control caught")
+    elif not compile_ok:
+        headline = "compile stage failed: " + (ci.get("problem") or f"the compile jobs ended with {meta['compile_job']}")
+    else:
+        bad = [f"{t['name']} {t.get('status')}" for t in tests.values() if t.get("status") != "pass"]
+        headline = "game run failed: " + (s2.get("stopped") or ", ".join(bad) or f"stage ended with {meta['game_job']}")
     return {
+        "headline": headline,
         "schema": SCHEMA, "sha": meta["sha"], "date": meta.get("date"),
         "starts": flag.get(rows["starts"]), "menu": flag.get(rows["menu"]), "skirmish": flag.get(rows["maps"]),
         "save_load": flag.get(rows["save_load"]), "simulation_equal": sim_equal, "equal_frames": frames_equal if tests else None,
         "control_caught": None if ctl is None else ctl == "pass", "provided_required_symbols": None,
         "commit": meta["sha"], "run_id": meta.get("run_id"), "run_url": meta.get("run_url"),
         "event": meta.get("event"), "result": result, "compile_ok": compile_ok,
-        "stages": {"compile": meta["compile_job"], "link_and_play": meta["game_job"] if live else "not live"},
+        "games_skipped": bool(s2.get("games_skipped")),
+        "stages": {"compile": meta["compile_job"], "link_and_play": meta["game_job"] if live else
+                   ("runs separately" if meta.get("game_external") else "not live")},
         "compile": compile_info,
         "files_substituted": (s2.get("plan") or {}).get("files"),
         "functions": (s2.get("plan") or {}).get("functions"),
@@ -135,7 +165,7 @@ def build(compile_info, stage2, meta):
 def alarms(n):
     """{kind: {failed, detail}} for every kind this night measured."""
     out = {}
-    s2_ran = n["stages"]["link_and_play"] != "not live"
+    s2_ran = n["stages"]["link_and_play"] not in ("not live", "runs separately")
     build_failed = not n["compile_ok"] or (s2_ran and (n["link"] is None or not n["link"].get("image")
                                                        or (n["size_check"] or {}).get("blocking", 1) != 0))
     problem = (n["compile"] or {}).get("problem")
@@ -147,8 +177,9 @@ def alarms(n):
         detail = n.get("stopped") or ""
     if build_failed and not detail and s2_ran and n["stages"]["link_and_play"] != "success":
         detail = "the link-and-play stage ended with " + n["stages"]["link_and_play"]
-    out["nightly-build"] = {"failed": build_failed, "detail": detail or "built and checked"}
-    if s2_ran and not build_failed:
+    if build_failed or n["stages"]["link_and_play"] != "runs separately":
+        out["nightly-build"] = {"failed": build_failed, "detail": detail or "built and checked"}
+    if s2_ran and not build_failed and not n.get("games_skipped"):
         tests = n["tests"]
         crash = [t for t in tests.values() if t.get("status") == "crash"]
         differs = [t for t in tests.values() if t.get("status") == "differs"]
@@ -176,6 +207,8 @@ def summary(n):
              f"{c.get('fully_matching', '?')} match completely |")
     if n["stages"]["link_and_play"] == "not live":
         L.append("| Link and play | not live yet: the private game image for this stage is not configured |")
+    elif n["stages"]["link_and_play"] == "runs separately":
+        L.append("| Link and play | runs later in the private game run, which replaces this result |")
     else:
         lk = n["link"] or {}
         L.append(f"| Plan | {n['files_substituted']} files and {n['functions']} functions substituted |")
@@ -189,9 +222,14 @@ def summary(n):
     L.append("")
     if n.get("stopped"):
         L += [f"Stopped: {n['stopped']}", ""]
+    if c.get("per_shard"):
+        L.append(f"Compile shards took {round((c.get('fastest_shard_s') or 0) / 60, 1)} to "
+                 f"{round((c.get('slowest_shard_s') or 0) / 60, 1)} min; median batch of 8 files "
+                 f"{min(s.get('batch_median_s') or 0 for s in c['per_shard'])} to "
+                 f"{max(s.get('batch_median_s') or 0 for s in c['per_shard'])} s across machines.")
     run = (n["timings"] or {}).get("run") or {}
     if run:
-        L.append(f"Wall time {run.get('wall_minutes')} min; runner minutes {json.dumps(run.get('runner_minutes'))}.")
+        L.append(f"Wall time {run.get('wall_minutes')} min; runner minutes by stage {json.dumps(run.get('runner_minutes'))}.")
     return "\n".join(L) + "\n"
 
 
@@ -204,7 +242,7 @@ def main():
     ap.add_argument("--game-job", required=True)
     ap.add_argument("--jobs")
     ap.add_argument("--shards-expected", type=int, required=True)
-    ap.add_argument("--game-live", choices=["true", "false"], required=True)
+    ap.add_argument("--game-live", choices=["true", "false", "external"], required=True)
     a = ap.parse_args()
     s2p = Path(a.stage2) / "stage2.json"
     stage2 = json.loads(s2p.read_text()) if s2p.is_file() else None
@@ -212,7 +250,7 @@ def main():
     server, repo, run = os.environ.get("GITHUB_SERVER_URL", ""), os.environ.get("GITHUB_REPOSITORY", ""), os.environ.get("GITHUB_RUN_ID", "")
     meta = {"sha": os.environ.get("GITHUB_SHA", ""), "run_id": run, "date": datetime.now(timezone.utc).strftime("%Y-%m-%d"), "event": os.environ.get("GITHUB_EVENT_NAME"),
             "run_url": f"{server}/{repo}/actions/runs/{run}" if run else None,
-            "compile_job": a.compile_job, "game_job": a.game_job, "game_live": a.game_live == "true",
+            "compile_job": a.compile_job, "game_job": a.game_job, "game_live": a.game_live == "true", "game_external": a.game_live == "external",
             "machine": machine_time(jobs)}
     n = build(compile_summary(a.shards, meta["sha"], a.shards_expected), stage2, meta)
     out = Path(a.out)

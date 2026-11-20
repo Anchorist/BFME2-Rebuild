@@ -1,4 +1,5 @@
 """Offline tests of the nightly package: python3 -B -m unittest discover -s ci/nightly/tests"""
+from datetime import datetime, timedelta
 import json
 import os
 from pathlib import Path
@@ -233,11 +234,16 @@ class Result(unittest.TestCase):
         self.assertTrue(result.alarms(n)["nightly-build"]["failed"])
 
     def test_machine_time(self):
-        jobs = [{"started_at": "2026-11-20T03:17:00Z", "completed_at": "2026-11-20T03:37:00Z", "labels": ["boat-small/from=x"]},
-                {"started_at": "2026-11-20T03:38:00Z", "completed_at": "2026-11-20T04:38:00Z", "labels": ["boat/from=y"]}]
+        def at(minutes):
+            return (datetime(2026, 1, 1) + timedelta(minutes=minutes)).strftime(result.STAMP)
+        jobs = [{"name": "Compile shard 0", "started_at": at(0), "completed_at": at(20), "labels": ["private-label"]},
+                {"name": "Compile shard 1", "started_at": at(1), "completed_at": at(11), "labels": ["private-label"]},
+                {"name": "Link, check and play the image", "started_at": at(21), "completed_at": at(81),
+                 "labels": ["private-label"]}]
         m = result.machine_time(jobs)
         self.assertEqual(m["wall_minutes"], 81.0)
-        self.assertEqual(m["runner_minutes"], {"boat-small/from=x": 20.0, "boat/from=y": 60.0})
+        self.assertEqual(m["runner_minutes"], {"compile": 30.0, "link_and_play": 60.0})
+        self.assertNotIn("private-label", json.dumps(m))
 
     def test_output_is_deterministic(self):
         a = json.dumps(result.build(CINFO, stage2(), meta()), sort_keys=True)
@@ -342,25 +348,29 @@ class Publish(unittest.TestCase):
 
 
 class Package(unittest.TestCase):
-    FORBIDDEN = re.compile(r"(?i:pilot/|srv1|/home/|claude|bfme2-ops|bfme2-runner|next2|coordinator|\bseat\b|"
-                           r"[\w.+-]+@(?!users\.noreply\.github\.com)[\w-]+\.[a-z]{2,}|\bgate\b)|"
-                           r"\b(?:L0\d|L1\d|l0\d|l1\d|bt\d|gen\d+[a-z]?|dd\d|x12|m10|k1\d|f\d\d|h\d\d|ci1|pc1|nb1|ld1|gt1|pub\d)\b")
+    CHECK = REPO / "ci/public-text/check.py"
 
-    def files(self):
-        out = [p for p in NIGHTLY.rglob("*") if p.is_file() and "__pycache__" not in p.parts]
-        wf = REPO / ".github/workflows/nightly.yml"
-        return out + ([wf] if wf.exists() else [])
+    def test_no_internal_text(self):
+        if not self.CHECK.exists():
+            self.skipTest("ci/public-text/check.py not beside the package")
+        paths = [str(NIGHTLY)] + [str(p) for p in (REPO / ".github/workflows/nightly.yml", self.CHECK) if p.exists()]
+        r = subprocess.run([sys.executable, "-B", str(self.CHECK), *paths], cwd=REPO, capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stdout)
 
-    def test_no_private_strings(self):
-        bad = []
-        for p in self.files():
-            if p.name in ("test_nightly.py",):
-                continue
-            for i, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1):
-                m = self.FORBIDDEN.search(line)
-                if m:
-                    bad.append(f"{p.name}:{i}: {m.group(0)}")
-        self.assertEqual(bad, [])
+    def test_check_finds_planted_text(self):
+        if not self.CHECK.exists():
+            self.skipTest("ci/public-text/check.py not beside the package")
+        planted = ["see ~/" + "pi" + "lot/link", "ask n" + "b1 at 16:" + "06Z", "mail " + "someone" + "@" + "example.org",
+                   "the co" + "ordinator said", "run on s" + "rv1"]
+        with tempfile.TemporaryDirectory() as d:
+            for i, text in enumerate(planted):
+                Path(d, f"f{i}.md").write_text(text + "\n")
+            stamp = datetime(2026, 1, 1, 3, 17).strftime(result.STAMP)
+            Path(d, "ok.md").write_text(f"stamp {stamp} and noreply 1+x@users.noreply.github.com\n")
+            r = subprocess.run([sys.executable, "-B", str(self.CHECK), d], cwd=REPO, capture_output=True, text=True)
+        self.assertEqual(r.returncode, 1)
+        named = sorted(set(re.findall(r"(f\d+\.md|ok\.md):\d+: ", r.stdout)))
+        self.assertEqual(named, [f"f{i}.md" for i in range(len(planted))])
 
     def test_workflow_rules(self):
         wf = (REPO / ".github/workflows/nightly.yml")
@@ -371,10 +381,18 @@ class Package(unittest.TestCase):
         for line in text.splitlines():
             if "uses:" in line:
                 self.assertRegex(line, r"uses: [\w-]+/[\w-]+@[0-9a-f]{40}$")
-        play = text.split("  link-and-play:")[1].split("\n  publish:")[0]
-        self.assertNotIn("github.token", play)
-        self.assertNotIn("contents: write", play)
-        self.assertIn("persist-credentials: false", play)
+        # the public workflow names no machine image that holds game files, and no variable can supply one
+        for line in text.splitlines():
+            if "runs-on:" in line:
+                self.assertEqual(line.strip(), "runs-on: boat-small/from=bfme2-compiler-v1")
+        self.assertNotIn("bfme2-nightly", text)
+        self.assertNotIn("bfme2-game", text)
+        compile_job = text.split("\n  compile:")[1].split("\n  publish:")[0]
+        self.assertNotIn("github.token", compile_job)
+        self.assertNotIn("contents: write", compile_job)
+        self.assertIn("timeout-minutes: 40", compile_job)
+        shards = re.search(r"shard: \[([\d, ]+)\]", compile_job).group(1)
+        self.assertEqual([int(x) for x in shards.split(",")], list(range(int(re.search(r"SHARDS: '(\d+)'", text).group(1)))))
 
     def test_manifest_matches(self):
         m = NIGHTLY / "files.sha256"
@@ -399,6 +417,76 @@ class Package(unittest.TestCase):
         import hashlib
         for name, v in prov.items():
             self.assertEqual(hashlib.sha256((NIGHTLY / "planner" / name).read_bytes()).hexdigest(), v["output_sha256"])
+
+
+class Scrub(unittest.TestCase):
+    def test_paths_and_flagged_text(self):
+        import scrub
+        out = scrub.scrub({"stopped": "expected X; found OSError: /opt/bfme2-nightly/ref/index.pkl missing",
+                           "files": ["src/Code/GameEngine/A.cpp"], "n": 3,
+                           "detail": "see " + "~/" + "pi" + "lot/link/x and ask " + "n" + "b1"})
+        self.assertEqual(out["n"], 3)
+        self.assertEqual(out["files"], ["src/Code/GameEngine/A.cpp"])
+        self.assertIn("index.pkl missing", out["stopped"])
+        self.assertNotIn("/opt/", out["stopped"])
+        self.assertNotIn("pi" + "lot", out["detail"])
+        self.assertIn("[removed]", out["detail"])
+
+
+class External(unittest.TestCase):
+    def test_compile_night_when_game_runs_elsewhere(self):
+        m = dict(meta(game_job="skipped", live=False), game_external=True)
+        n = result.build(CINFO, None, m)
+        self.assertEqual((n["result"], n["stages"]["link_and_play"]), ("partial", "runs separately"))
+        self.assertTrue(n["headline"].endswith("game run follows separately"))
+        self.assertEqual(result.alarms(n), {})
+        self.assertIn("runs later in the private game run", result.summary(n))
+
+    def test_compile_failure_still_raises(self):
+        m = dict(meta(compile_job="failure", game_job="skipped", live=False), game_external=True)
+        a = result.alarms(result.build(CINFO, None, m))
+        self.assertTrue(a["nightly-build"]["failed"])
+
+    def test_headlines(self):
+        self.assertTrue(result.build(CINFO, None, meta(game_job="skipped", live=False))["headline"]
+                        .endswith("game run not live yet"))
+        self.assertTrue(result.build(CINFO, stage2(), meta())["headline"].startswith("plays identically"))
+        self.assertTrue(result.build(CINFO, stage2({"fords": "differs"}), meta())["headline"]
+                        .startswith("game run failed: fords differs"))
+
+
+class Machines(unittest.TestCase):
+    def test_per_shard_facts(self):
+        with tempfile.TemporaryDirectory() as d:
+            for i, (sec, steal) in enumerate(((600.0, 0.5), (1500.0, 48.0))):
+                p = Path(d) / f"nightly-shard-summary-{i}-a1"
+                p.mkdir()
+                (p / "shard.json").write_text(json.dumps({"sha": SHA, "shard": i, "shards": 2, "files": 1, "compiled": 1,
+                                                          "compile_errors": 0, "fully_matching": 0, "seconds": sec,
+                                                          "batch_median_s": sec / 25,
+                                                          "host": {"cpus": 2, "steal_pct": steal}}))
+            info = result.compile_summary(d, SHA, 2)
+        self.assertEqual((info["fastest_shard_s"], info["slowest_shard_s"]), (600.0, 1500.0))
+        self.assertEqual([s["steal_pct"] for s in info["per_shard"]], [0.5, 48.0])
+        n = result.build(info, None, meta(game_job="skipped", live=False))
+        self.assertIn("Compile shards took 10.0 to 25.0 min", result.summary(n))
+
+    def test_cpu_times_shape(self):
+        import compile_main
+        t = compile_main.cpu_times()
+        if t is None:
+            self.skipTest("no /proc/stat here")
+        facts = compile_main.host_facts(t, (t[0] + 50, t[1] + 50, t[2] + 200))
+        self.assertEqual((facts["busy_pct"], facts["steal_pct"]), (25.0, 25.0))
+
+
+class LinkOnly(unittest.TestCase):
+    def test_skip_game_is_partial_and_leaves_game_alarms(self):
+        s2 = dict(stage2(), tests={}, games_skipped=True)
+        n = result.build(CINFO, s2, meta())
+        self.assertEqual(n["result"], "partial")
+        self.assertTrue(n["headline"].startswith("links and checks: 323 rebuilt files"))
+        self.assertEqual(result.alarms(n), {"nightly-build": {"failed": False, "detail": "built and checked"}})
 
 
 if __name__ == "__main__":
