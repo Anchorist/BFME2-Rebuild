@@ -327,10 +327,18 @@ def table(decisions, main, live):
     return lines
 
 
-def wait_for_measurement(api, config, binding, clock, sleep):
-    deadline = clock() + MEASURE_WAIT_SECONDS
+def wait_for_measurement(api, config, binding, clock, sleep, check_first=False):
+    """Poll until fresh results on this main exist AND their producing runs have completed and bind.
+
+    A check posts its status a few seconds before its workflow run is marked completed, so a fresh status alone
+    is not enough: the protected run check in landing_read requires a completed run.
+    """
+    deadline = clock() + (MEASURE_WAIT_SECONDS if api.live else 0)
+    first = True
     while True:
-        sleep(POLL_SECONDS)
+        if not (first and check_first):
+            sleep(POLL_SECONDS)
+        first = False
         main = current_main(api)
         if main != binding["base"]:
             raise Held("main-moved", f"main {binding['base'][:12]} while measuring", f"main {main[:12]}")
@@ -338,7 +346,15 @@ def wait_for_measurement(api, config, binding, clock, sleep):
         if decision["head"] != binding["head"]:
             raise Held("head-changed", f"head {binding['head'][:12]}", f"head {decision['head'][:12]}")
         if decision["stage"] == "land":
-            return decision
+            try:
+                return decision, runs_for(api, binding, decision["inline"])
+            except Held as exc:
+                if exc.code != "run-binding":
+                    raise
+                print(f"Fresh results seen; waiting for their runs to complete ({exc.found[:120]}).")
+                if clock() >= deadline:
+                    raise
+                continue
         hard = [item for item in decision["reasons"] if item.code != "measuring"]
         if hard:
             raise hard[0]
@@ -394,14 +410,14 @@ def select(api, env, config, directory, clock=time.monotonic, sleep=time.sleep):
         dispatch(api, REMEASURE_EVENT, binding)
         status(api, pick["head"], "pending", f"Measuring on main {main[:12]} before landing")
         print(f"Requested a fresh measurement of #{pick['number']} on main {main[:12]}.")
-        try:
-            pick = wait_for_measurement(api, config, binding, clock, sleep)
-        except Held as exc:
-            report_hold(api, {"head": binding["head"], "reasons": [exc], "landing_status": None})
-            summary(lines + ["", f"#{binding['number']} held after re-measurement. {exc.line()}"])
-            output("action", "none")
-            return 0
-    runs = runs_for(api, binding, pick["inline"])
+    try:
+        pick, runs = wait_for_measurement(api, config, binding, clock, sleep,
+                                          check_first=pick["stage"] == "land")
+    except Held as exc:
+        report_hold(api, {"head": binding["head"], "reasons": [exc], "landing_status": None})
+        summary(lines + ["", f"#{binding['number']} held while waiting for its results. {exc.line()}"])
+        output("action", "none")
+        return 0
     Path(directory).mkdir(mode=0o700, parents=True)
     Path(directory, "binding.json").write_text(json.dumps(binding | {"runs": runs}, sort_keys=True) + "\n")
     for key, value in (("action", "land"), ("number", binding["number"]), ("match_run", runs["match"][0]),

@@ -312,6 +312,37 @@ class Land(unittest.TestCase):
         self.assertIn("Would merge #2 (squash) with expected head 7eb1cdbb67eb onto main 879a5be4f21d, "
                       "expecting one parent 879a5be4f21d and tree 44fa7dfb9e1d.", out)
 
+    def test_waits_for_a_fresh_status_whose_run_has_not_completed(self):
+        # Live trial 2026-11-20 run 44777584236: Boat posted success at 16:55:06, its run completed at 16:55:46.
+        api = FakeApi(live=True, main=MEASURED)
+        api.fx["actions/runs/44770182794"]["status"] = "in_progress"
+        api.fx["actions/runs/44770182794"]["conclusion"] = None
+        reads = {"n": 0}
+
+        def complete(fx):
+            reads["n"] += 1
+            if reads["n"] == 40:
+                fx["actions/runs/44770182794"]["status"] = "completed"
+                fx["actions/runs/44770182794"]["conclusion"] = "success"
+        api.after_read = [complete] * 10000
+        ticks = iter(range(0, 10**6, 20))
+        with tempfile.TemporaryDirectory() as tmp:
+            code, out = quiet(lander.run, ["select", tmp + "/w"], env(pr="2", mode="live"), api=api, config=CONFIG,
+                              clock=lambda: next(ticks), sleep=lambda s: None)
+            self.assertTrue(Path(tmp, "w/binding.json").is_file())
+        self.assertEqual(code, 0)
+        self.assertIn("waiting for their runs to complete", out)
+        self.assertIn("collecting its receipts", out)
+
+    def test_dry_run_does_not_wait_on_an_incomplete_run(self):
+        api = FakeApi(live=False, main=MEASURED)
+        api.fx["actions/runs/44770182794"]["status"] = "in_progress"
+        with tempfile.TemporaryDirectory() as tmp:
+            code, out = quiet(lander.run, ["select", tmp + "/w"], env(pr="2"), api=api, config=CONFIG,
+                              clock=lambda: 0, sleep=lambda s: self.fail("dry run slept"))
+        self.assertEqual((code, api.writes), (0, []))
+        self.assertIn("held while waiting for its results. run-binding", out)
+
     def test_dry_run_api_refuses_every_write(self):
         with self.assertRaises(ReadOnly):
             FakeApi(live=False).write("PUT", "pulls/2/merge", {})
@@ -394,9 +425,9 @@ class Land(unittest.TestCase):
         api = FakeApi(live=False, main=MEASURED, edit=pending)
         with tempfile.TemporaryDirectory() as tmp:
             if not lander.optional_inline_supported():
-                with self.assertRaises(lander.Held) as caught:
-                    quiet(lander.run, ["select", tmp + "/w"], env(pr="2"), api=api, config=CONFIG)
-                self.assertEqual(caught.exception.code, "inline-virtual-pending")
+                code, out = quiet(lander.run, ["select", tmp + "/w"], env(pr="2"), api=api, config=CONFIG)
+                self.assertEqual((code, api.writes), (0, []))
+                self.assertIn("inline-virtual-pending", out)
                 return
             self.prepare(tmp, api, drop_inline=True)
             self.assertEqual(json.loads(Path(tmp, "w/binding.json").read_text())["runs"]["inline"], "pending")
