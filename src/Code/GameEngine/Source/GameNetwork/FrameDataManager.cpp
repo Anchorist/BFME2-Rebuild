@@ -96,6 +96,7 @@ UnsignedInt FrameDataManager::getFrameCommandCount(UnsignedInt execFrame)
 // FUNCTION: BFME2 0x0058B7AF size=62 name=?zeroFrames@FrameDataManager@@QAEXII@Z evidence=N:ledger tier=B hypothesis:K
 void FrameDataManager::zeroFrames(UnsignedInt startingFrame, UnsignedInt numFrames)
 {
+	// The frames are kept in a ring, so the index wraps at FRAME_DATA_LENGTH.
 	UnsignedInt index = startingFrame % FRAME_DATA_LENGTH;
 	for (; numFrames > 0; --numFrames)
 	{
