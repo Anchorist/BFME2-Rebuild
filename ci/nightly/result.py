@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
+import tempfile
 
 SCHEMA = "bfme2-nightly/1"
 TEST_ORDER = ("udun", "control", "fords", "long", "save")
@@ -84,11 +85,54 @@ def read_link(path):
         return None
     by_kind = d.get("missing_by_kind")
     keep["missing_by_kind"] = {str(k): v for k, v in by_kind.items() if type(v) is int} if isinstance(by_kind, dict) else {}
+    dup = d.get("duplicate_names")
+    keep["duplicate_names"] = [str(x) for x in dup][:50] if isinstance(dup, list) else []
+    prog = d.get("program_functions")
+    if isinstance(prog, list) and len(prog) == 2 and all(type(v) is int and v >= 0 for v in prog) \
+            and prog[1] > 0 and prog[0] <= prog[1]:
+        keep["program_functions"] = prog
     return keep
 
 
-def link_pair(link):
-    return [link["provided"], link["needed"]] if link and not link.get("refused") else None
+def carried_link(previous, sha):
+    """The link census the compile run published for the same commit, when this run measured none."""
+    if not isinstance(previous, dict) or previous.get("sha") != sha:
+        return None
+    lc = previous.get("link_census")
+    if not isinstance(lc, dict):
+        return None
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+        json.dump({k: v for k, v in lc.items() if k != "refused"}, f)
+    try:
+        return read_link(f.name)
+    finally:
+        os.unlink(f.name)
+
+
+GAME_FIELDS = ("files_substituted", "functions", "starts", "menu", "skirmish", "simulation_equal", "equal_frames",
+               "save_load", "control_caught", "result", "headline", "image_sha256")
+
+
+def game_record(n):
+    """game/latest.json: the last game run's numbers and identities, written only by a run that played."""
+    if n["stages"]["link_and_play"] in ("not live", "runs separately") or n.get("games_skipped") or not n["tests"]:
+        return None
+    rec = {k: n.get(k) for k in GAME_FIELDS}
+    rec.update(schema="bfme2-nightly-game/1", sha=n["sha"], date=n.get("date"), public_run_id=n.get("run_id"),
+               run_url=n.get("run_url"), tests={k: {f: v.get(f) for f in ("status", "frames_compared", "frames_equal",
+                                                                         "first_divergent_frame")}
+                                               for k, v in n["tests"].items()})
+    return rec
+
+
+def link_pair(link, headline="referenced"):
+    """The card's Linking pair: names our written code refers to ("referenced"), or the original program's
+    functions ("program"); None when not measured or refused."""
+    if not link or link.get("refused"):
+        return None
+    if headline == "program":
+        return link.get("program_functions")
+    return [link["provided"], link["needed"]]
 
 
 def check_link(link, compile_info):
@@ -100,6 +144,32 @@ def check_link(link, compile_info):
     if type(files) is not int or files <= 0 or link["objects"] != files or compiled != files:
         return dict(link, refused=f"expected one object for each of {files} source files; found {link['objects']}")
     return link
+
+
+def linking_fields(link, meta):
+    """The card's Linking figure. Measured this run: its pair, linking_measured.this_run true. Not measured or refused
+    this run: the last good pair the nightly branch already shows, with the commit, date and run that measured it,
+    linking_measured.this_run false and the reason, so a failed run never erases a good published figure."""
+    headline = meta.get("linking_headline", "referenced")
+    unit = "functions" if headline == "program" else "names"
+    pair = link_pair(link, headline)
+    out = {"link_census": link, "linking_headline": headline, "linking_unit": unit}
+    if pair:
+        return dict(out, provided_required_symbols=pair, linking_measured={
+            "this_run": True, "sha": meta["sha"], "date": meta.get("date"), "run_url": meta.get("run_url")})
+    why = (link or {}).get("refused") or "this run measured no linking figure"
+    prev = meta.get("previous") if isinstance(meta.get("previous"), dict) else {}
+    old = prev.get("provided_required_symbols")
+    ok = (isinstance(old, list) and len(old) == 2 and all(type(v) is int for v in old) and 0 <= old[0] <= old[1]
+          and old[1] > 0 and prev.get("linking_unit", "names") == unit)
+    if not ok:
+        return dict(out, provided_required_symbols=None, linking_measured={"this_run": False, "reason": why})
+    source = prev.get("linking_measured") if isinstance(prev.get("linking_measured"), dict) else {}
+    if not source.get("sha"):
+        source = {"sha": prev.get("sha"), "date": prev.get("date"), "run_url": prev.get("run_url")}
+    return dict(out, provided_required_symbols=old, linking_measured={
+        "this_run": False, "reason": why, "sha": source.get("sha"), "date": source.get("date"),
+        "run_url": source.get("run_url")})
 
 
 def check_rows(tests):
@@ -176,7 +246,7 @@ def build(compile_info, stage2, meta):
         "starts": flag.get(rows["starts"]), "menu": flag.get(rows["menu"]), "skirmish": flag.get(rows["maps"]),
         "save_load": flag.get(rows["save_load"]), "simulation_equal": sim_equal, "equal_frames": frames_equal if tests else None,
         "control_caught": None if ctl is None else ctl == "pass",
-        "provided_required_symbols": link_pair(link), "link_census": link,
+        **linking_fields(link, meta),
         "commit": meta["sha"], "run_id": meta.get("run_id"), "run_url": meta.get("run_url"),
         "event": meta.get("event"), "result": result, "compile_ok": compile_ok,
         "games_skipped": bool(s2.get("games_skipped")),
@@ -239,13 +309,21 @@ def summary(n):
     L.append("| --- | --- |")
     L.append(f"| Compile | {n['stages']['compile']}: {c.get('compiled', '?')} of {c.get('files', '?')} files compiled, "
              f"{c.get('fully_matching', '?')} match completely |")
-    pair = n.get("provided_required_symbols")
-    if pair:
-        L.append(f"| Linking | {pair[0]:,} of {pair[1]:,} names the rebuilt program needs are provided "
-                 f"({100 * pair[0] / pair[1]:.1f}%); {pair[1] - pair[0]:,} missing |")
+    lc = n.get("link_census") or {}
+    if lc and not lc.get("refused"):
+        prog = lc.get("program_functions")
+        L.append(f"| Linking | {lc['provided']:,} of {lc['needed']:,} names our written code refers to are provided "
+                 f"({100 * lc['provided'] / lc['needed']:.1f}%); {lc['missing']:,} missing, {lc['duplicates']:,} defined twice |")
+        if prog:
+            L.append(f"| Whole program | {prog[0]:,} of {prog[1]:,} functions of the original program are defined "
+                     f"({100 * prog[0] / prog[1]:.1f}%) |")
     else:
-        why = (n.get("link_census") or {}).get("refused")
+        why = lc.get("refused")
         L.append(f"| Linking | not measured this run{': ' + why if why else ''} |")
+        lm, pair = n.get("linking_measured") or {}, n.get("provided_required_symbols")
+        if pair and not lm.get("this_run"):
+            L.append(f"| Linking shown | {pair[0]:,} of {pair[1]:,} from the earlier run of {lm.get('date')} "
+                     f"(commit {str(lm.get('sha'))[:10]}); the newest run did not measure it |")
     if n["stages"]["link_and_play"] == "not live":
         L.append("| Link and play | not live yet: the private game image for this stage is not configured |")
     elif n["stages"]["link_and_play"] == "runs separately":
@@ -285,6 +363,9 @@ def main():
     ap.add_argument("--shards-expected", type=int, required=True)
     ap.add_argument("--link", help="link_census.py output; absent or unreadable means linking was not measured")
     ap.add_argument("--game-live", choices=["true", "false", "external"], required=True)
+    ap.add_argument("--previous", help="the nightly branch's current latest.json (its link census is reused for the same commit)")
+    ap.add_argument("--linking-headline", choices=["referenced", "program"], default="referenced",
+                    help="which pair the card's Linking field carries")
     a = ap.parse_args()
     s2p = Path(a.stage2) / "stage2.json"
     stage2 = json.loads(s2p.read_text()) if s2p.is_file() else None
@@ -295,11 +376,22 @@ def main():
     meta = {"sha": os.environ.get("NIGHTLY_SHA") or os.environ.get("GITHUB_SHA", ""), "run_id": run, "date": datetime.now(timezone.utc).strftime("%Y-%m-%d"), "event": os.environ.get("GITHUB_EVENT_NAME"),
             "run_url": f"{server}/{repo}/actions/runs/{run}" if run else None,
             "compile_job": a.compile_job, "game_job": a.game_job, "game_live": a.game_live == "true", "game_external": a.game_live == "external",
-            "machine": machine_time(jobs), "link": read_link(a.link)}
+            "machine": machine_time(jobs), "link": read_link(a.link), "linking_headline": a.linking_headline}
+    if a.previous and Path(a.previous).is_file():
+        try:
+            meta["previous"] = json.loads(Path(a.previous).read_text())
+        except ValueError:
+            meta["previous"] = None
+    if meta["link"] is None and meta.get("previous") and a.game_live == "true":
+        # the fold-in publishes the game result for a commit the compile run already measured: reuse that census
+        meta["link"] = carried_link(meta["previous"], meta["sha"])
     n = build(compile_summary(a.shards, meta["sha"], a.shards_expected), stage2, meta)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     (out / "nightly.json").write_text(json.dumps(n, indent=1, sort_keys=True) + "\n")
+    game = game_record(n)
+    if game:
+        (out / "game.json").write_text(json.dumps(game, indent=1, sort_keys=True) + "\n")
     (out / "summary.md").write_text(summary(n))
     (out / "alarms.json").write_text(json.dumps(alarms(n), indent=1, sort_keys=True) + "\n")
     print(summary(n))

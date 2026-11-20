@@ -22,6 +22,8 @@ README = """# Nightly results
 
 Written only by `.github/workflows/nightly.yml`. `latest.json` is the newest night (format in
 `ci/nightly/README.md` on main), `SUMMARY.md` its readable summary, `history/` one file per night.
+`link-missing.tsv` lists the names the rebuilt code refers to that nothing defines yet, most referred first.
+`game/latest.json` is the last run that played the game; only such a run writes it.
 """
 
 
@@ -38,8 +40,13 @@ def files_for(result_dir):
     n = json.loads((Path(result_dir) / "nightly.json").read_text())
     day = time.strftime("%Y-%m-%d", time.gmtime())
     latest = (Path(result_dir) / "nightly.json").read_bytes()
-    return {"latest.json": latest, "SUMMARY.md": (Path(result_dir) / "summary.md").read_bytes(),
-            f"history/{day}-{n['commit'][:12]}.json": latest, "README.md": README.encode()}, n
+    files = {"latest.json": latest, "SUMMARY.md": (Path(result_dir) / "summary.md").read_bytes(),
+             f"history/{day}-{n['commit'][:12]}.json": latest, "README.md": README.encode()}
+    extra = {"link-missing.tsv": "link-missing.tsv", "game.json": "game/latest.json"}
+    for name, target in extra.items():
+        if (Path(result_dir) / name).is_file():
+            files[target] = (Path(result_dir) / name).read_bytes()
+    return files, n
 
 
 def main(result_dir):

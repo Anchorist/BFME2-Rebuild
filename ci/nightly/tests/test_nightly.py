@@ -20,6 +20,7 @@ import plan_shards  # noqa: E402
 import result  # noqa: E402
 
 SHA = "a" * 40
+CLEAN = {"rc": 0}
 
 
 def record(frames, bad=()):
@@ -55,35 +56,35 @@ class Compare(unittest.TestCase):
     def test_equal_run_passes(self):
         f = checks.crc_compare(record(self.frames), record(self.frames), 1000)
         self.assertEqual((f["frames_compared"], f["frames_equal"], f["first_divergent_frame"]), (40, 40, None))
-        v = checks.judge_test(checks.TESTS[0], f, 0)
+        v = checks.judge_test(checks.TESTS[0], f, 0, CLEAN)
         self.assertEqual(v["status"], "pass")
 
     def test_differing_frame_is_reported(self):
         f = checks.crc_compare(record(self.frames), record(self.frames, bad={300, 400}), 1000)
-        v = checks.judge_test(checks.TESTS[0], f, 0)
+        v = checks.judge_test(checks.TESTS[0], f, 0, CLEAN)
         self.assertEqual((v["status"], v["first_divergent_frame"]), ("differs", 300))
         self.assertIn("first differing frame 300", v["detail"])
 
     def test_short_run_is_a_crash(self):
         f = checks.crc_compare(record(self.frames), record(range(25, 501, 25)), 1000)
-        v = checks.judge_test(checks.TESTS[0], f, 1)
+        v = checks.judge_test(checks.TESTS[0], f, 1, CLEAN)
         self.assertEqual(v["status"], "crash")
         self.assertIn("expected 40 compared frames; found 20", v["detail"])
 
     def test_no_record_is_a_crash(self):
-        self.assertEqual(checks.judge_test(checks.TESTS[0], {}, 1)["status"], "crash")
+        self.assertEqual(checks.judge_test(checks.TESTS[0], {}, 1, CLEAN)["status"], "crash")
 
     def test_control_caught_at_its_frame_passes(self):
         ctl = next(t for t in checks.TESTS if t["name"] == "control")
         f = checks.crc_compare(record(self.frames), record(self.frames, bad=set(range(500, 1001, 25))), 1000)
-        self.assertEqual(checks.judge_test(ctl, f, 0)["status"], "pass")
+        self.assertEqual(checks.judge_test(ctl, f, 0, CLEAN)["status"], "pass")
 
     def test_control_not_caught_fails(self):
         ctl = next(t for t in checks.TESTS if t["name"] == "control")
         f = checks.crc_compare(record(self.frames), record(self.frames), 1000)
-        self.assertEqual(checks.judge_test(ctl, f, 0)["status"], "control-blind")
+        self.assertEqual(checks.judge_test(ctl, f, 0, CLEAN)["status"], "control-blind")
         f = checks.crc_compare(record(self.frames), record(self.frames, bad={250}), 1000)
-        self.assertEqual(checks.judge_test(ctl, f, 0)["status"], "control-blind")
+        self.assertEqual(checks.judge_test(ctl, f, 0, CLEAN)["status"], "control-blind")
 
     def test_until_limits_the_control(self):
         f = checks.crc_compare(record(range(25, 5001, 25)), record(range(25, 1001, 25)), 1000)
@@ -95,14 +96,14 @@ class Compare(unittest.TestCase):
 
     def test_reload(self):
         save = next(t for t in checks.TESTS if t["name"] == "save")
-        ctl = {"crcs": {"625": 1, "650": 2}, "crcs_before_load": {"25": 5}}
+        ctl = {"crcs": {str(f): f for f in range(625, 1126, 25)}, "crcs_before_load": {str(f): f for f in range(25, 176, 25)}}
         ok = checks.reload_compare(ctl, dict(ctl, outcome="pass"))
-        self.assertEqual(checks.judge_test(save, ok, 0)["status"], "pass")
-        bad = checks.reload_compare(ctl, {"outcome": "pass", "crcs": {"625": 1, "650": 9}, "crcs_before_load": {"25": 5}})
-        self.assertEqual(checks.judge_test(save, bad, 0)["status"], "differs")
-        crash = checks.reload_compare(ctl, {"outcome": "crash", "crcs_before_load": {"25": 5}})
-        self.assertEqual(checks.judge_test(save, crash, 0)["status"], "crash")
-        self.assertEqual(checks.judge_test(save, {}, 0)["status"], "crash")
+        self.assertEqual(checks.judge_test(save, ok, 0, CLEAN)["status"], "pass")
+        bad = checks.reload_compare(ctl, dict(ctl, outcome="pass", crcs=dict(ctl["crcs"], **{"650": 9})))
+        self.assertEqual(checks.judge_test(save, bad, 0, CLEAN)["status"], "differs")
+        crash = checks.reload_compare(ctl, {"outcome": "crash", "crcs_before_load": ctl["crcs_before_load"]})
+        self.assertEqual(checks.judge_test(save, crash, 0, CLEAN)["status"], "crash")
+        self.assertEqual(checks.judge_test(save, {}, 0, CLEAN)["status"], "crash")
 
 
 def write_shard(root, i, n, files, sha=SHA, matching=()):
@@ -649,8 +650,12 @@ class Linking(unittest.TestCase):
         self.assertEqual(text.count(f"github.event.schedule != '{fold_cron}'"), 2)
         self.assertEqual(text.count(f"github.event.schedule == '{fold_cron}'"), 1)
         self.assertNotIn(f"'{compile_cron}' ||", text)
-        self.assertEqual(text.count("ci/nightly/link_census.py"), 2)
-        self.assertEqual(text.count('--link "$RUNNER_TEMP/link.json"'), 2)
+        self.assertEqual(text.count("ci/nightly/link_census.py"), 1)
+        self.assertEqual(text.count('--link "$RUNNER_TEMP/link.json"'), 1)
+        self.assertEqual(text.count('--previous "$RUNNER_TEMP/previous.json"'), 2)
+        self.assertIn("--map config/map.json", text)
+        self.assertIn("link-missing.tsv", text)
+        self.assertNotIn("BFME_NIGHTLY_WORKERS", text)
 
 
 class ObjectSet(unittest.TestCase):
@@ -718,6 +723,280 @@ class ObjectSet(unittest.TestCase):
         got = self.run_set([[("src/a.cpp", b"A"), ("src/b.cpp", None)]], errored)
         self.assertEqual([Path(p).name for p in got], ["src_a.cpp.obj"])
 
+
+class GameExit(unittest.TestCase):
+    frames = range(25, 1001, 25)
+
+    def test_equal_frames_but_crash_at_exit_is_a_crash(self):
+        f = checks.crc_compare(record(self.frames), record(self.frames), 1000)
+        v = checks.judge_test(checks.TESTS[0], f, 0, {"rc": 3221225477})
+        self.assertEqual(v["status"], "crash")
+        self.assertIn("expected the game to exit with code 0; found 3221225477", v["detail"])
+
+    def test_missing_exit_record_is_a_crash(self):
+        f = checks.crc_compare(record(self.frames), record(self.frames), 1000)
+        self.assertEqual(checks.judge_test(checks.TESTS[0], f, 0, None)["status"], "crash")
+        self.assertEqual(checks.judge_test(checks.TESTS[0], f, 0, {})["status"], "crash")
+
+    def test_differs_stays_differs_whatever_the_exit(self):
+        f = checks.crc_compare(record(self.frames), record(self.frames, bad={300}), 1000)
+        self.assertEqual(checks.judge_test(checks.TESTS[0], f, 0, {"rc": 1})["status"], "differs")
+
+    def test_reload_needs_minimum_frames(self):
+        save = next(t for t in checks.TESTS if t["name"] == "save")
+        ctl = {"crcs": {str(f): f for f in range(625, 701, 25)}, "crcs_before_load": {str(f): f for f in range(25, 176, 25)}}
+        short = checks.reload_compare(ctl, dict(ctl, outcome="pass"))
+        v = checks.judge_test(save, short, 0, {"rc": 0})
+        self.assertEqual(v["status"], "crash")
+        self.assertIn("expected at least 20 checksum frames after the load; found 4", v["detail"])
+
+
+class Projection(unittest.TestCase):
+    def test_projection_and_packing_built_once(self):
+        import types
+        import compile_main
+        calls = {"projection": 0, "pack": 0}
+
+        def projection(git, revision):
+            calls["projection"] += 1
+            return {"src/a.cpp": "x"}, {"src/a.cpp": "h"}
+
+        def pack(files):
+            calls["pack"] += 1
+            return {"zlib": "z", "sha256": "s"}
+        measure_mod = types.SimpleNamespace(projection=projection, pack_sources=pack)
+        compare_mod = types.SimpleNamespace(projection=projection)
+        git = types.SimpleNamespace(path=Path("/repo.git"))
+        built = compile_main.memoize_projection(measure_mod, compare_mod)
+        for _ in range(26):
+            sources, _hashes = measure_mod.projection(git, SHA)
+            measure_mod.pack_sources(sources)
+        compare_mod.projection(git, SHA)
+        self.assertEqual(calls, {"projection": 1, "pack": 1})
+        self.assertEqual(len(built), 1)
+        measure_mod.projection(git, "b" * 40)
+        self.assertEqual(calls["projection"], 2)
+
+
+class LinkingDetail(unittest.TestCase):
+    def test_missing_table_format(self):
+        import link_census
+        table = link_census.missing_table({"?b@@YAXXZ": ["x.obj", "y.obj"], "?a@@YAXXZ": ["y.obj"],
+                                           "_c": ["x.obj", "y.obj"]},
+                                          {"x.obj": "src/x.cpp", "y.obj": "src/y.cpp"}, SHA, "2026-01-01", 3253)
+        lines = table.splitlines()
+        self.assertEqual(lines[0], f"# link census of {SHA} on 2026-01-01 objects=3253 missing=3")
+        self.assertEqual(lines[1], "symbol\treferrers\tfirst_referrer")
+        self.assertEqual(lines[2:], ["?b@@YAXXZ\t2\tsrc/x.cpp", "_c\t2\tsrc/x.cpp", "?a@@YAXXZ\t1\tsrc/y.cpp"])
+
+    def test_program_functions(self):
+        import link_census
+        m = {"rows": [{"rva": "0x1", "role": "owned", "name": "?f@@YAXXZ", "accepted_names": ["?f2@@YAXXZ"]},
+                      {"rva": "0x1", "role": "owned", "name": "?f@@YAXXZ"},
+                      {"rva": "0x2", "role": "owned", "name": "?g@@YAXXZ"},
+                      {"rva": "0x3", "role": "comdat", "name": "?h@@YAXXZ"}]}
+        self.assertEqual(link_census.program_functions(m, {"?f2@@YAXXZ", "?h@@YAXXZ"}), [1, 2])
+
+    def link(self, **extra):
+        return dict({"objects": 3253, "needed": 8317, "missing": 3136, "provided": 5181, "duplicates": 7,
+                     "missing_by_kind": {}, "duplicate_names": ["?x@@YAXXZ"], "program_functions": [14358, 41565]}, **extra)
+
+    def test_headline_switch_and_unit(self):
+        full = dict(CINFO, files=3253, compiled=3253)
+        base = dict(meta(game_job="skipped", live=False), link=self.link())
+        n = result.build(full, None, base)
+        self.assertEqual((n["provided_required_symbols"], n["linking_unit"]), ([5181, 8317], "names"))
+        n = result.build(full, None, dict(base, linking_headline="program"))
+        self.assertEqual((n["provided_required_symbols"], n["linking_unit"]), ([14358, 41565], "functions"))
+        text = result.summary(n)
+        self.assertIn("3,136 missing, 7 defined twice", text)
+        self.assertIn("| Whole program | 14,358 of 41,565 functions", text)
+
+    def test_carried_link_only_for_the_same_commit(self):
+        prev = {"sha": SHA, "link_census": self.link()}
+        self.assertEqual(result.carried_link(prev, SHA)["program_functions"], [14358, 41565])
+        self.assertIsNone(result.carried_link(prev, "b" * 40))
+        self.assertIsNone(result.carried_link({"sha": SHA, "link_census": {"needed": "x"}}, SHA))
+
+
+class GameRecord(unittest.TestCase):
+    def test_written_only_by_a_run_that_played(self):
+        self.assertIsNone(result.game_record(result.build(CINFO, None, meta(game_job="skipped", live=False))))
+        self.assertIsNone(result.game_record(result.build(
+            CINFO, None, dict(meta(game_job="skipped", live=False), game_external=True))))
+        skipped = dict(stage2(), tests={}, games_skipped=True)
+        self.assertIsNone(result.game_record(result.build(CINFO, skipped, meta())))
+        rec = result.game_record(result.build(CINFO, stage2(), meta()))
+        self.assertEqual((rec["sha"], rec["files_substituted"], rec["simulation_equal"], rec["control_caught"]),
+                         (SHA, 323, True, True))
+        self.assertEqual(rec["schema"], "bfme2-nightly-game/1")
+
+    def test_publish_writes_extra_files_only_when_present(self):
+        import publish_branch
+        with tempfile.TemporaryDirectory() as d:
+            n = result.build(CINFO, None, meta(game_job="skipped", live=False))
+            Path(d, "nightly.json").write_text(json.dumps(n))
+            Path(d, "summary.md").write_text("s")
+            files, _ = publish_branch.files_for(d)
+            self.assertNotIn("game/latest.json", files)
+            self.assertNotIn("link-missing.tsv", files)
+            Path(d, "game.json").write_text("{}")
+            Path(d, "link-missing.tsv").write_text("# x\n")
+            files, _ = publish_branch.files_for(d)
+            self.assertIn("game/latest.json", files)
+            self.assertIn("link-missing.tsv", files)
+
+
+class FoldInAlarm(unittest.TestCase):
+    def test_not_fresh_writes_the_alarm(self):
+        env = {k: v for k, v in os.environ.items() if k not in ("GAME_REPO", "GAME_TOKEN", "GH_TOKEN", "GITHUB_OUTPUT")}
+        with tempfile.TemporaryDirectory() as d:
+            r = subprocess.run([sys.executable, "-B", str(NIGHTLY / "fold_in.py"), d], env=env, capture_output=True,
+                               text=True)
+            alarm = json.loads(Path(d, "alarms.json").read_text())
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("fresh=false", r.stdout)
+        self.assertTrue(alarm["nightly-build"]["failed"])
+        self.assertIn("expected a fresh result from the private game run", alarm["nightly-build"]["detail"])
+
+class Startup(unittest.TestCase):
+    """The shard start-up exactly as the workflow step runs it, in the full repository layout."""
+
+    def test_self_check_in_repository_layout(self):
+        missing = [p for p in ("ci/managed-check/common.py", "ci/managed-nt2/gitrepo.py", "baseline/game.dat", ".git")
+                   if not (REPO / p).exists()]
+        self.assertEqual(missing, [], "run these tests in a full checkout of the candidate tree, not the package alone")
+        head = subprocess.run(["git", "-C", str(REPO), "rev-parse", "HEAD"], capture_output=True, text=True,
+                              check=True).stdout.strip()
+        with tempfile.TemporaryDirectory() as tmp:
+            env = {"PATH": "/usr/bin:/bin", "HOME": os.environ.get("HOME", tmp), "LANG": "C", "LC_ALL": "C",
+                   "TMPDIR": tmp, "GITHUB_SHA": head}
+            r = subprocess.run(["python3", "-B", "ci/nightly/compile_main.py", "--self-check"], cwd=REPO, env=env,
+                               capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("nightly compile self-check:", r.stdout)
+        self.assertNotIn("ModuleNotFoundError", r.stderr)
+
+    def test_self_check_reports_a_wrong_checkout(self):
+        if not (REPO / "ci/managed-check/common.py").exists():
+            self.skipTest("needs the full repository layout (see test_self_check_in_repository_layout)")
+        with tempfile.TemporaryDirectory() as tmp:
+            env = {"PATH": "/usr/bin:/bin", "HOME": os.environ.get("HOME", tmp), "LANG": "C", "LC_ALL": "C",
+                   "TMPDIR": tmp, "GITHUB_SHA": "0" * 40}
+            r = subprocess.run(["python3", "-B", "ci/nightly/compile_main.py", "--self-check"], cwd=REPO, env=env,
+                               capture_output=True, text=True)
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("expected the checkout at the workflow commit", r.stderr)
+
+
+class TrialWorkflow(unittest.TestCase):
+    def test_trial_publishes_nothing(self):
+        wf = REPO / ".github/workflows/nightly-trial.yml"
+        if not wf.exists():
+            self.skipTest("workflow not beside the package")
+        text = wf.read_text()
+        self.assertIn("\npermissions: {}\n", text)
+        self.assertIn("workflow_dispatch:", text)
+        for word in ("schedule:", "pull_request", "push:", "contents: write", "issues: write", "publish_branch.py",
+                     "alarms.py", "fold_in.py", "github.token", "secrets."):
+            self.assertNotIn(word, text)
+        self.assertIn("group: nightly-trial", text)
+        self.assertNotIn("name: nightly-shard-", text)
+        for line in text.splitlines():
+            if "runs-on:" in line:
+                self.assertEqual(line.strip(), "runs-on: boat-small/from=bfme2-compiler-v1")
+            if "uses:" in line:
+                self.assertRegex(line, r"uses: [\w-]+/[\w-]+@[0-9a-f]{40}$")
+        self.assertEqual(text.count("compile_main.py --self-check"), 1)
+
+    def test_nightly_runs_the_self_check_first(self):
+        text = (REPO / ".github/workflows/nightly.yml").read_text() if (REPO / ".github/workflows/nightly.yml").exists() else ""
+        if not text:
+            self.skipTest("workflow not beside the package")
+        self.assertLess(text.index("compile_main.py --self-check"), text.index('compile_main.py "$SHARD"'))
+
+
+class LastGoodLinking(unittest.TestCase):
+    link = {"objects": 3253, "needed": 8317, "missing": 3136, "provided": 5181, "duplicates": 7,
+            "missing_by_kind": {}, "duplicate_names": [], "program_functions": [14358, 41565]}
+    prev = {"sha": "c" * 40, "date": "2026-01-01", "run_url": "https://example.invalid/run/1",
+            "provided_required_symbols": [5181, 8317], "linking_unit": "names",
+            "linking_measured": {"this_run": True, "sha": "c" * 40, "date": "2026-01-01",
+                                 "run_url": "https://example.invalid/run/1"}}
+
+    def test_measured_this_run(self):
+        full = dict(CINFO, files=3253, compiled=3253)
+        n = result.build(full, None, dict(meta(game_job="skipped", live=False), link=self.link, previous=self.prev))
+        self.assertEqual(n["provided_required_symbols"], [5181, 8317])
+        self.assertTrue(n["linking_measured"]["this_run"])
+        self.assertEqual(n["linking_measured"]["sha"], SHA)
+
+    def test_failed_compile_keeps_the_last_good_figure_with_its_date(self):
+        n = result.build(CINFO, None, dict(meta(compile_job="failure", game_job="skipped", live=False),
+                                           previous=self.prev))
+        self.assertEqual(n["result"], "fail")
+        self.assertEqual(n["provided_required_symbols"], [5181, 8317])
+        lm = n["linking_measured"]
+        self.assertEqual((lm["this_run"], lm["sha"], lm["date"]), (False, "c" * 40, "2026-01-01"))
+        self.assertIn("measured no linking figure", lm["reason"])
+        self.assertIn("from the earlier run of 2026-01-01", result.summary(n))
+        self.assertTrue(n["headline"].startswith("compile stage failed"))
+
+    def test_carry_keeps_the_original_measurement_across_failed_runs(self):
+        once = result.build(CINFO, None, dict(meta(compile_job="failure", game_job="skipped", live=False),
+                                              previous=self.prev))
+        twice = result.build(CINFO, None, dict(meta(compile_job="failure", game_job="skipped", live=False),
+                                               previous=dict(once, sha="d" * 40, date="2026-01-02")))
+        self.assertEqual((twice["linking_measured"]["sha"], twice["linking_measured"]["date"]), ("c" * 40, "2026-01-01"))
+
+    def test_refused_census_carries_with_the_reason(self):
+        short = dict(CINFO, files=3254, compiled=3253)
+        n = result.build(short, None, dict(meta(game_job="skipped", live=False), link=self.link, previous=self.prev))
+        self.assertEqual(n["provided_required_symbols"], [5181, 8317])
+        self.assertIn("expected one object for each of 3254", n["linking_measured"]["reason"])
+
+    def test_no_carry_across_a_change_of_unit_or_without_history(self):
+        n = result.build(CINFO, None, dict(meta(compile_job="failure", game_job="skipped", live=False),
+                                           previous=self.prev, linking_headline="program"))
+        self.assertIsNone(n["provided_required_symbols"])
+        n = result.build(CINFO, None, meta(compile_job="failure", game_job="skipped", live=False))
+        self.assertIsNone(n["provided_required_symbols"])
+        self.assertFalse(n["linking_measured"]["this_run"])
+
+class WorkflowExpressions(unittest.TestCase):
+    """No dispatch input or matrix value is pasted into shell source: they reach the shell through env only."""
+
+    def test_no_untrusted_expression_in_run_lines(self):
+        import re as _re
+        checked = 0
+        for name in ("nightly.yml", "nightly-trial.yml"):
+            wf = REPO / ".github/workflows" / name
+            if not wf.exists():
+                continue
+            checked += 1
+            in_run, indent = False, 0
+            for line in wf.read_text().splitlines():
+                stripped = line.lstrip()
+                if in_run and stripped and len(line) - len(stripped) <= indent:
+                    in_run = False
+                if stripped.startswith("run:"):
+                    in_run, indent = True, len(line) - len(stripped)
+                    body = stripped[4:]
+                else:
+                    body = line if in_run else ""
+                for expr in _re.findall(r"\$\{\{([^}]*)\}\}", body):
+                    self.assertNotRegex(expr, r"inputs\.|matrix\.|github\.event", f"{name}: {line.strip()}")
+        if not checked:
+            self.skipTest("workflows not beside the package")
+
+    def test_trial_matrix_is_fixed(self):
+        wf = REPO / ".github/workflows/nightly-trial.yml"
+        if not wf.exists():
+            self.skipTest("workflow not beside the package")
+        text = wf.read_text()
+        self.assertIn("type: choice", text)
+        self.assertNotIn("type: string", text)
+        self.assertIn("fromJSON('[0, 1]')", text)
 
 if __name__ == "__main__":
     unittest.main()

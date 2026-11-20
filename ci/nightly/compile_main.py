@@ -1,13 +1,18 @@
 """Nightly stage 1: compile every source file of the checked-out main commit with the sealed compiler.
 
   python3 -B ci/nightly/compile_main.py SHARD SHARDS OUT_DIR
+  python3 -B ci/nightly/compile_main.py --self-check      (start-up only: imports, checkout, baseline; no compiler)
 
 Runs on the compiler image. Reuses the pull request check's own sealed-compiler audit, native compile commands and
 per-file judge (ci/managed-check, ci/managed-nt2) by import, so a nightly verdict is the same verdict a pull request
 gets. This shard takes the files whose position in the size-balanced assignment equals SHARD.
 
-Writes OUT_DIR/judge.jsonl (one judge result per file: functions, matches, rows, errors) and OUT_DIR/obj/ (the
-compiled objects with their compile receipts). Both come from public source only.
+The source projection (every file under src/ and include/, packed for the compiler) is the same for every batch of a
+run, so it is built once per runner and reused, not rebuilt for each batch of 8 files. Each batch logs its compiler
+and comparison seconds separately. The sealed compiler takes one request at a time on this image.
+
+Writes OUT_DIR/judge.jsonl (one judge result per file: functions, matches, rows, errors), OUT_DIR/obj/ (the
+compiled objects with their compile receipts) and OUT_DIR/shard.json. All come from public source only.
 """
 import json
 import os
@@ -19,7 +24,10 @@ from time import monotonic
 
 ROOT = Path(__file__).resolve().parent
 CHECK = ROOT.parent / "managed-check"
+ENGINE = ROOT.parent / "managed-nt2"
+# the same import path the managed check sets up (ci/managed-check/common.py): its own directory first, then the engine
 sys.path.insert(0, str(CHECK))
+sys.path.insert(1, str(ENGINE))
 
 from plan_shards import assign, source_files  # noqa: E402
 
@@ -58,15 +66,46 @@ def fail(expected, found):
     raise SystemExit(1)
 
 
-def main(shard, shards, out):
-    shard, shards, out = int(shard), int(shards), Path(out)
-    sha = os.environ.get("GITHUB_SHA", "")
-    from common import PIN
-    from compare import native_commands, protected_judge
-    from gitrepo import Git
-    from measure import audit, pin
-    from wide import measure_batch
+def memoize_projection(measure_mod, compare_mod):
+    """Build the source projection and its packed form once per process (same commit for every batch)."""
+    built, packed = {}, {}
+    original_projection, original_pack = measure_mod.projection, measure_mod.pack_sources
 
+    def projection(git, revision):
+        key = (str(git.path), revision)
+        if key not in built:
+            built[key] = original_projection(git, revision)
+        return built[key]
+
+    def pack_sources(files):
+        key = id(files)
+        if key not in packed or packed[key][0] is not files:
+            packed[key] = (files, original_pack(files))
+        return packed[key][1]
+
+    measure_mod.projection = compare_mod.projection = projection
+    measure_mod.pack_sources = pack_sources
+    return built
+
+
+def prepare():
+    """Everything a shard does before it first calls the sealed compiler: imports, the projection hook, the checkout
+    and baseline checks. Returns the modules and values the compile loop uses."""
+    sha = os.environ.get("GITHUB_SHA", "")
+    try:
+        from common import PIN
+        import compare as compare_mod
+        from compare import native_commands, protected_judge
+        from gitrepo import Git
+        import measure as measure_mod
+        from measure import audit, pin
+        from wide import measure_batch
+    except ImportError as e:
+        fail("the managed check modules importable from ci/managed-check and ci/managed-nt2", repr(e))
+    for name in ("projection", "pack_sources"):
+        if not callable(getattr(measure_mod, name, None)):
+            fail(f"measure.{name} to exist for the projection hook", "none")
+    built = memoize_projection(measure_mod, compare_mod)
     checkout = Git(Path.cwd() / ".git")
     head = checkout.rev("HEAD")
     if head != sha:
@@ -76,16 +115,32 @@ def main(shard, shards, out):
         pin(baseline, PIN["baseline_sha256"])
     except ValueError:
         fail(f"baseline/game.dat with SHA-256 {PIN['baseline_sha256']}", "a different file")
-    started = monotonic()
-    cpu0 = cpu_times()
-    tools = audit(PIN)
+    return dict(sha=sha, PIN=PIN, native_commands=native_commands, protected_judge=protected_judge, Git=Git,
+                audit=audit, measure_batch=measure_batch, built=built, checkout=checkout, baseline=baseline)
+
+
+def self_check():
+    """The shard start-up without the sealed compiler: proves the layout before any compile job is spent."""
+    p = prepare()
+    sizes = source_files(p["Git"](Path.cwd() / ".git"), p["sha"])
+    if not sizes:
+        fail("source files under src/ at the checked-out commit", "none")
+    print(f"nightly compile self-check: imports, projection hook, checkout {p['sha'][:12]}, baseline and "
+          f"{len(sizes)} source files are in place.", flush=True)
+
+
+def compile_files(files, out, label):
+    """Compile and judge `files` (sorted TU paths) into out/; returns counts and batch seconds."""
+    p = prepare()
+    sha, PIN, Git = p["sha"], p["PIN"], p["Git"]
+    native_commands, protected_judge, measure_batch = p["native_commands"], p["protected_judge"], p["measure_batch"]
+    built, checkout, baseline = p["built"], p["checkout"], p["baseline"]
+    tools = p["audit"](PIN)
     out.mkdir(parents=True, exist_ok=True)
     (out / "obj").mkdir(exist_ok=True)
-    sizes = source_files(checkout, sha)
-    mine = assign(sizes, shards)[shard]
-    print(f"Nightly shard {shard + 1} of {shards}: {len(mine)} of {len(sizes)} source files.", flush=True)
-    counts = {"files": len(mine), "compiled": 0, "compile_errors": 0, "fully_matching": 0}
+    counts = {"files": len(files), "compiled": 0, "compile_errors": 0, "fully_matching": 0}
     batch_seconds = []
+    split = {"compile": 0.0, "compare": 0.0}
     with tempfile.TemporaryDirectory(prefix="bfme-nightly-") as name, open(out / "judge.jsonl", "w") as log:
         work = Path(name)
         git = Git(work / "source.git", initialize=True)
@@ -93,7 +148,7 @@ def main(shard, shards, out):
         git.run("update-ref", "refs/heads/main", sha)
         judge = protected_judge(work / "home", tools, baseline)
         judge.BARE = git.path
-        commands = native_commands(git, judge, sha, mine, tools)
+        commands = native_commands(git, judge, sha, files, tools)
         for begin in range(0, len(commands), BATCH):
             batch = commands[begin:begin + BATCH]
             names = [c["tu"] for c in batch]
@@ -101,7 +156,8 @@ def main(shard, shards, out):
                         compile={"head": batch}, changed_paths=[])
             job = work / f"batch-{begin}"
             t0 = monotonic()
-            results = measure_batch(git, judge, "head", plan, tools, job)
+            spans = {}
+            results = measure_batch(git, judge, "head", plan, tools, job, timing=spans)
             if list(results) != names:
                 fail(f"a judge result for each of {len(names)} files", f"{len(results)} results")
             for tu in names:
@@ -120,8 +176,26 @@ def main(shard, shards, out):
                 log.write(json.dumps(keep, sort_keys=True) + "\n")
             shutil.rmtree(job, ignore_errors=True)
             batch_seconds.append(round(monotonic() - t0, 1))
-            print(f"Nightly shard {shard + 1}: batch {begin // BATCH + 1}, {len(names)} files, "
-                  f"{monotonic() - t0:.1f} s.", flush=True)
+            for stage in ("compile", "compare"):
+                split[stage] += spans.get(stage, 0.0)
+            print(f"Nightly {label}: batch {begin // BATCH + 1}, {len(names)} files, {batch_seconds[-1]:.1f} s "
+                  f"(compiler {spans.get('compile', 0.0):.1f} s, comparison {spans.get('compare', 0.0):.1f} s).", flush=True)
+    counts["projections_built"] = len(built)
+    counts["compiler_s"] = round(split["compile"], 1)
+    counts["comparison_s"] = round(split["compare"], 1)
+    return counts, batch_seconds
+
+
+def main(shard, shards, out):
+    shard, shards, out = int(shard), int(shards), Path(out)
+    sha = os.environ.get("GITHUB_SHA", "")
+    started = monotonic()
+    cpu0 = cpu_times()
+    from gitrepo import Git
+    sizes = source_files(Git(Path.cwd() / ".git"), sha)
+    mine = assign(sizes, shards)[shard]
+    print(f"Nightly shard {shard + 1} of {shards}: {len(mine)} of {len(sizes)} source files.", flush=True)
+    counts, batch_seconds = compile_files(mine, out, f"shard {shard + 1}")
     counts["seconds"] = round(monotonic() - started, 1)
     ordered = sorted(batch_seconds)
     counts["batch_median_s"] = ordered[len(ordered) // 2] if ordered else None
@@ -131,6 +205,9 @@ def main(shard, shards, out):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        fail("arguments SHARD SHARDS OUT_DIR", " ".join(sys.argv[1:]) or "none")
-    main(*sys.argv[1:])
+    if sys.argv[1:] == ["--self-check"]:
+        self_check()
+    elif len(sys.argv) == 4:
+        main(*sys.argv[1:])
+    else:
+        fail("arguments SHARD SHARDS OUT_DIR, or --self-check", " ".join(sys.argv[1:]) or "none")
