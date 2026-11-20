@@ -1,5 +1,4 @@
 """Fetch exact source objects and publish the managed check report."""
-import base64
 import os
 from pathlib import Path
 import re
@@ -10,37 +9,33 @@ from github_status import GitHub, Superseded, admitted, event
 from gitrepo import Git, GitFailure
 
 
-def fetch(work):
+def bind(work):
     api = GitHub()
     binding = event(api)
     pr = api.current(binding)
     binding["approved"] = admitted(pr, binding["event_association"])
     work.mkdir(mode=0o700)
-    git = Git(work / "source.git", initialize=True)
     base = Git(Path.cwd() / ".git")
     if base.rev("HEAD") != binding["base"]:
         raise ValueError("The trusted checkout differs from the protected workflow revision.")
-    ask = work / "askpass"
-    ask.write_text('#!/bin/sh\ncase "$1" in *Username*) printf "%s\\n" x-access-token ;;\n'
-                   '*Password*) printf "%s\\n" "$BFME_GIT_TOKEN" ;; *) exit 1 ;; esac\n')
-    ask.chmod(0o700)
-    try:
-        receive_refs(git, f"https://github.com/{REPO}.git", binding,
-                     {"GIT_ASKPASS": str(ask), "BFME_GIT_TOKEN": api.token})
-    finally:
-        ask.unlink()
     write(work / "event.json", binding)
 
 
-def receive_refs(git, remote, binding, environment):
+def fetch(work):
+    binding = read(work / "event.json", 4096)
+    git = Git(work / "source.git", initialize=True)
+    receive_refs(git, f"https://github.com/{REPO}.git", binding)
+
+
+def receive_refs(git, remote, binding):
     # Fetch into an empty bare repo. A depth-one checkout's alternate store
     # does not carry the checkout's shallow boundary into the receiving repo.
     number = binding["number"]
     result = git.run("fetch", "-q", "--no-tags", "--no-write-fetch-head", "--depth=128", "--", remote,
                      "+refs/heads/main:refs/ci/actual-main", f"+refs/pull/{number}/head:refs/ci/head",
-                     env=environment, timeout=120, check=False)
+                     timeout=120, check=False)
     if result.returncode:
-        for line in masked_git_errors(result.stderr, environment.get("BFME_GIT_TOKEN")):
+        for line in masked_git_errors(result.stderr):
             print("Protected Git fetch stderr | " + line, file=sys.stderr)
         code = result.stderr.lower()
         reasons = (
@@ -48,21 +43,18 @@ def receive_refs(git, remote, binding, environment):
             (b"authenti", "GitHub denied the read credential"),
             (b"permission denied", "GitHub denied repository read access"),
             (b"object", "the received Git object pack could not be verified"),
-            (b"size limit", "the transfer exceeded the private Git input allowance"),
+            (b"size limit", "the transfer exceeded the Git input allowance"),
             (b"unable to access", "the GitHub transfer could not connect"),
         )
         reason = next((reason for fragment, reason in reasons if fragment in code),
-                      "the authenticated Git transfer did not complete")
+                      "the Git transfer did not complete")
         raise GitFailure(f"Protected Git intake failed ({result.returncode}): {reason}.")
     if git.rev("refs/ci/head") != binding["head"] or git.rev("refs/ci/actual-main") != binding["base"]:
         raise Superseded()
 
 
-def masked_git_errors(stderr, token):
+def masked_git_errors(stderr):
     text = stderr.decode("utf-8", "replace")
-    if token:
-        basic = base64.b64encode(("x-access-token:" + token).encode()).decode("ascii")
-        text = text.replace(token, "***").replace(basic, "***")
     text = re.sub(r"(?i)(?<=://)[^@/\\s]+@", "***@", text)
     text = re.sub(r"(?i)\\b(?:gh[oprsu]_|github_pat_)[a-z0-9_]{12,}\\b", "***", text)
     lines = ("".join(ch if ch.isprintable() else " " for ch in line) for line in text[:4096].splitlines())
@@ -154,7 +146,9 @@ if __name__ == "__main__":
     os.umask(0o077)
     mode, *args = sys.argv[1:]
     try:
-        if mode == "fetch":
+        if mode == "bind":
+            bind(Path(args[0]))
+        elif mode == "fetch":
             fetch(Path(args[0]))
         elif mode == "start":
             publish(mode)

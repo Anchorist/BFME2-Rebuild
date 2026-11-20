@@ -84,7 +84,8 @@ def start_runs(api, binding, *, inline_required=True):
         run = api.call("actions/runs/" + runs[context])
         event = run.get("event")
         run_sha = {"pull_request_target": binding["head"], "repository_dispatch": binding["base"]}.get(event)
-        if (str(run.get("id")) != runs[context] or run.get("path") != FLOW[context]
+        expected = (FLOW[context], FLOW[CONTEXT]) if context == RULES and runs[context] == runs[CONTEXT] else (FLOW[context],)
+        if (str(run.get("id")) != runs[context] or run.get("path") not in expected
                 or run_sha is None or run.get("head_sha") != run_sha
                 or (run.get("repository") or {}).get("id") != REPO_ID
                 or run.get("status") != "completed" or run.get("conclusion") != "success"

@@ -11,8 +11,6 @@ from state_evidence import LIMIT, cached_pairs, header
 # across the reviewed producer-v2 to resume transport revision.
 REPORT_DIRS = ("docs/", "worklist/", "ci/state/", "ci/progress/", "ci/alarms/",
                "ci/nightly/", "ci/landing/", "ci/public-text/", ".github/workflows/")
-REPORT_FILES = {"README.md", "ci/managed-state/state_delta.py",
-                "ci/managed-state/state_origin.py", "ci/managed-state/bundle.sha256"}
 STATE_FLOW = ".github/workflows/state.yml"
 TRANSPORT = {"ci/managed-state/state_delta.py", "ci/managed-state/state_fetch.py",
              "ci/managed-state/state_workflow.py",
@@ -21,6 +19,23 @@ TRANSPORT = {"ci/managed-state/state_delta.py", "ci/managed-state/state_fetch.py
              "ci/managed-state/bundle.sha256",
              "ci/README.md"}
 RESUME_MIGRATION = ("5df8abc2a97aef390b5a0256a15e163ae4a312566c0ea893187da4a254aea8fc", "14286c7910816519777d5a46c720605d142dff009f5751843d4e4c5263e2111f")
+# The one-shot PR orchestration change leaves every comparison input intact.
+COMPACT_GRAPH = {
+    "ci/managed-check/landing_read.py": (
+        "fcbc657e031cff9f496470c5ad3fa7d01080357d3f277381584c48d35a3ce89f",
+        "c156b8a77e440fa8f87d017389d8aea9e164e236704eba2baf26d190821b1cc1",
+    ),
+    "ci/managed-check/github_io.py": (
+        "3a5c9373f5bb105a71b4f00a730a5361ac7b238372ccf7e7baadb51e17c6b744",
+        "af57df171f74d66f557535dfe2b702c194bd51219828060b60dca6ff210c5f77",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "8e8f38f80f0327372967ae319b28261bca972d0435dd21465875b03806fd9f12",
+        "21c6f500a947b2b957366fa346de2864cb3d017901e0e528bfd50220589abf82",
+    ),
+}
+COMPACT_SCOPE = {"ci/managed-state/state_delta.py", "ci/managed-state/state_origin.py",
+                 "ci/managed-state/bundle.sha256"}
 MAX_DIFF_BYTES = 4 * 1024**2
 ANCESTOR_LIMIT = 16
 
@@ -30,7 +45,25 @@ def predecessors(root, main):
                str(ANCESTOR_LIMIT), main).decode("ascii").splitlines()
 
 
+def compact_graph_change(root, parent, main):
+    try:
+        for path, expected in COMPACT_GRAPH.items():
+            observed = []
+            for revision in (parent, main):
+                tree = git(root, "ls-tree", revision, "--", path)
+                if not tree.startswith(b"100644 blob "):
+                    return False
+                observed.append(sha256(git(root, "show", f"{revision}:{path}")).hexdigest())
+            if tuple(observed) != expected:
+                return False
+    except (OSError, CalledProcessError):
+        return False
+    return True
+
+
 def publication_path(root, parent, main, file):
+    if file in COMPACT_GRAPH:
+        return compact_graph_change(root, parent, main)
     if file == STATE_FLOW:
         fingerprints = tuple(sha256(git(root, "show", f"{rev}:{file}")).hexdigest()
                              for rev in (parent, main))
@@ -97,7 +130,11 @@ def inherited(root, main, snapshot, *, warn=print):
                     for name in units]
         if not all(safe_tu(item["tu"]) for item in requests):
             return {}
-        return unaffected(cached_pairs(old, header(parent, tree), requests), changed)
+        identity = header(parent, tree)
+        prior_policy, graph_policy = COMPACT_GRAPH["ci/managed-check/bundle.sha256"]
+        if identity["policy"] == graph_policy and compact_graph_change(root, parent, main):
+            identity["policy"] = prior_policy
+        return unaffected(cached_pairs(old, identity, requests), changed)
     except (OSError, ValueError, TypeError, KeyError, AttributeError, CalledProcessError):
         warn("Previous exact state cannot be reused. A full initial refresh is required.")
         return {}
