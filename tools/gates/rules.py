@@ -14,6 +14,7 @@ from cpp import Source, decode, include_sites, matching
 from definitions import definitions, functions, type_sites
 from git_objects import ObjectError
 import ratchets
+import void_abi
 
 
 REGULAR = 'Keep the change as a regular, non-executable UTF-8 source or header file.'
@@ -512,12 +513,28 @@ def g3(ctx):
             yield Finding(edit.path, lines[0], 'G3', f'Added {label}.', FORBIDDEN_FIX)
 
 
+def stand_in_counts(source, path, index, base):
+    """Discount only exact built-in void-pointer slots proved by a protected row."""
+    kind = index.policy.kind(path)
+    if kind == "header":
+        claims = void_abi.header_candidates(source)
+    else:
+        claims = void_abi.candidates(source) if path.endswith(".cpp") else ()
+    if not claims:
+        return ratchets.counts(source)
+    ledger = index.base_ledger(index.repo.ledger_oid(base))
+    owned = ledger.unique_header_void_names if kind == "header" else ledger.void_abi_rows
+    exempt = {offset for binding, spans in claims if binding in owned for offset in spans}
+    return ratchets.counts(source, void_exempt=exempt)
+
+
 def g4(ctx):
     """Report positive deltas of explicit stand-in patterns across touched files."""
     totals = Counter()
     added = defaultdict(list)
     for edit in ctx.edits.values():
-        old, new = (ratchets.counts(source) for source in (edit.old, edit.new))
+        old, new = (stand_in_counts(source, edit.path, ctx.index, ctx.base)
+                    for source in (edit.old, edit.new))
         lines = edit.added_lines()
         for kind in ratchets.RULES:
             change = len(new[kind]) - len(old[kind])
@@ -702,6 +719,33 @@ class FileFacts:
     includes: tuple
 
 
+def address_components(spelling, pattern):
+    """Recognize exact names and whole components of compiler decorations."""
+    if not isinstance(spelling, str):
+        raise TypeError
+    if pattern.fullmatch(spelling):
+        yield spelling
+    if spelling.startswith("?"):
+        body = re.sub(r"^\?\?(?:[01]|_[7EGSR][0-4]?)|^\?{1,2}\$?", "", spelling, count=1)
+        head = body.split("@@", 1)[0]
+        yield from (item for item in head.split("@") if pattern.fullmatch(item))
+        # Signature components occur after V/U/T/W type encodings.
+        for item in re.findall(r"(?<!\w)[VUTW](\w+)@|[A-Z][VUTW]((?:_?G?Rva|_?rva|RVA)\w+)@", body):
+            name = next(value for value in item if value)
+            if pattern.fullmatch(name):
+                yield name
+    if spelling.startswith("_"):
+        name = spelling[1:].split("@", 1)[0]
+        if pattern.fullmatch(name):
+            yield name
+
+@dataclass(frozen=True)
+class LedgerNames:
+    accepted: frozenset[str]
+    void_abi_rows: frozenset[tuple[int, str]]
+    unique_header_void_names: frozenset[str]
+
+
 class Index:
     """An object-backed index. Replay advances it by tree delta to reuse parsed blobs."""
 
@@ -774,41 +818,44 @@ class Index:
                         yield path, line
 
     @lru_cache(maxsize=24)
-    def accepted(self, oid):
+    def base_ledger(self, oid):
         _, raw = self.repo.read_blob(oid, 1 << 30)
+        accepted, native_abi = set(), set()
         try:
-            rows = json.loads(raw)['rows']
-            accepted = set()
-            for row in rows:
-                spellings = [row['name'], *row['accepted_names']]
-                for full in spellings:
-                    if not isinstance(full, str):
-                        raise TypeError
-                    if self.policy.address.fullmatch(full):
-                        accepted.add(full)
-                    # Mangled MSVC symbols delimit whole source components with
-                    # '@'. Constructor/destructor owner is after ??0/??1; a
-                    # free C symbol may carry one leading decoration underscore.
-                    if full.startswith('?'):
-                        body = re.sub(r'^\?\?(?:[01]|_[7EGSR][0-4]?)|^\?{1,2}\$?', '', full, count=1)
-                        head = body.split('@@', 1)[0]
-                        for item in head.split('@'):
-                            if self.policy.address.fullmatch(item):
-                                accepted.add(item)
-                        # V/U/T/W type encodings after P/A/Q/etc type markers
-                        # in signature; do not admit arbitrary substrings.
-                        for item in re.findall(r'(?<!\w)[VUTW](\w+)@|[A-Z][VUTW]((?:_?G?Rva|_?rva|RVA)\w+)@', body):
-                            name = next(x for x in item if x)
-                            if self.policy.address.fullmatch(name):
-                                accepted.add(name)
-                    if full.startswith('_'):
-                        name = full[1:].split('@', 1)[0]
-                        if self.policy.address.fullmatch(name):
-                            accepted.add(name)
-            return accepted
+            for row in json.loads(raw)["rows"]:
+                for spelling in (row["name"], *row["accepted_names"]):
+                    accepted.update(address_components(spelling, self.policy.address))
+                    if (row.get("role") == "owned" and ("PAX" in spelling or "PBX" in spelling)
+                            and void_abi.DECORATED.fullmatch(spelling)):
+                        native_abi.add((int(row["rva"], 16), spelling))
         except (TypeError, ValueError, KeyError) as error:
-            raise ObjectError('The trusted base ledger has an invalid name table.') from error
+            raise ObjectError("The trusted base ledger has an invalid name table.") from error
+        addresses_per_name = Counter(spelling for _, spelling in native_abi)
+        unique = frozenset(spelling for spelling, count in addresses_per_name.items() if count == 1)
+        return LedgerNames(frozenset(accepted), frozenset(native_abi), unique)
 
+    def accepted(self, oid):
+        return self.base_ledger(oid).accepted
+
+    @lru_cache(maxsize=8)
+    def accepted_symbols(self, oid):
+        if oid is None:
+            return frozenset()
+        _, raw = self.repo.read_blob(oid, 128 << 20)
+        try:
+            symbols = json.loads(raw)["symbols"]
+            if not isinstance(symbols, dict):
+                raise TypeError
+            accepted = set()
+            for spelling, record in symbols.items():
+                candidates = record["candidates"]
+                if not isinstance(candidates, list):
+                    raise TypeError
+                if candidates:
+                    accepted.update(address_components(spelling, self.policy.address))
+            return frozenset(accepted)
+        except (TypeError, ValueError, KeyError) as error:
+            raise ObjectError("The trusted base symbol ledger has an invalid name table.") from error
 
 def g7(ctx):
     """Refuse source-local type definitions and duplicate shared definitions."""
@@ -867,6 +914,9 @@ def g8(ctx):
     if not new:
         return
     accepted = index.accepted(ctx.repo.ledger_oid(ctx.base))
+    if not new.keys() <= accepted:
+        oid = ctx.repo.ledger_oid(ctx.base, 'config/symbols.json', optional=True)
+        accepted |= index.accepted_symbols(oid)
     for name, places in sorted(new.items()):
         if name not in accepted:
             for path, line in places:

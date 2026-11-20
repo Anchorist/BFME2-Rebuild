@@ -123,9 +123,11 @@ class Git:
             raise ObjectError('Git returned an invalid blob record.')
         return size, data
 
-    def ledger_oid(self, tree):
-        record = dict(self.tree(tree, 'config/map.json')).get('config/map.json')
+    def ledger_oid(self, tree, path='config/map.json', *, optional=False):
+        record = dict(self.tree(tree, path)).get(path)
+        if record is None and optional:
+            return None
         if record is None or not record.regular:
-            raise ObjectError('The base ledger config/map.json is missing or not a regular file.')
+            raise ObjectError(f'The base ledger {path} is missing or not a regular file.')
         return record.oid
 

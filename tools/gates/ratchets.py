@@ -31,6 +31,7 @@ FUNDAMENTAL_CAST = {
     'unsigned', 'short', 'long', 'bool', 'float', 'double', '__int8', '__int16',
     '__int32', '__int64',
 }
+FLOATING_TARGETS = {("float",), ("double",), ("long", "double")}
 NAMED_CAST = {'reinterpret_cast', 'static_cast', 'const_cast', 'dynamic_cast'}
 NOT_CALL = {'sizeof', '__alignof', 'alignof', 'alignas', 'decltype', 'typeid', 'noexcept',
             'return', 'if', 'while', 'switch', 'case', 'for', 'static_assert',
@@ -169,7 +170,8 @@ def casts(source, groups, positions):
             if close is not None:
                 named_casts[end+1] = index
                 type_targets.append((source.tokens[index+1].stop, source.tokens[end].stop))
-                if call_end(source, groups, end+2, close) == close-1:
+                if (values[index+2:end] not in FLOATING_TARGETS
+                        and call_end(source, groups, end+2, close) == close-1):
                     positions['cast_call_result'].append(line)
         elif word == '(' and index in groups:
             close = groups[index]
@@ -180,9 +182,11 @@ def casts(source, groups, positions):
             if target:
                 positions['c_pointer_cast'].append(line)
             type_targets.append((source.tokens[index].stop, source.tokens[close].stop))
-            if call_end(source, groups, close+1, len(values)) is not None:
+            if (values[index+1:close] not in FLOATING_TARGETS
+                    and call_end(source, groups, close+1, len(values)) is not None):
                 positions['cast_call_result'].append(line)
-        elif (word in FUNDAMENTAL_CAST and values[index+1:index+2] == ('(',)
+        elif (word in FUNDAMENTAL_CAST and (word,) not in FLOATING_TARGETS
+              and values[index+1:index+2] == ('(',)
               and values[max(0,index-1):index] not in (('operator',), ('::',), ('.',), ('->',))):
             close = groups.get(index+1)
             if close is not None and call_end(source, groups, index+2, close) == close-1:
@@ -293,12 +297,14 @@ def derived_rhs(values, groups, c_casts, named_casts, aliases, begin, end):
     return False
 
 
-def counts(source):
+def counts(source, *, void_exempt=()):
     positions = {key: [] for key in RULES}
     groups = group_ends(source.ordered)
     c_casts, named_casts, type_targets = casts(source, groups, positions)
     target_index = 0
     for item in VOID_DECL.finditer(source.code):
+        if item.start() in void_exempt:
+            continue
         left = source.code[max(0, item.start()-160):item.start()]
         if re.search(r'\b(?:sizeof|alignof|__alignof)\s*\(?\s*$', left):
             continue

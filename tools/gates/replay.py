@@ -11,7 +11,7 @@ import sys
 from cpp import Source, decode
 from gate import encode, policy_at, policy_digest, report, verdict, write
 from git_objects import Git
-from rules import Index, forbidden
+from rules import Index, forbidden, stand_in_counts
 import ratchets
 
 
@@ -50,6 +50,7 @@ def inventory(git, policy, tip):
     unscannable = []
     files = 0
     tree = git.tree_oid(tip)
+    index = Index(git, policy)
     for path, entry in git.tree(tree, 'src', 'include'):
         if not policy.kind(path):
             continue
@@ -63,7 +64,7 @@ def inventory(git, policy, tip):
         except (UnicodeDecodeError, AttributeError):
             unscannable.append(path)
             continue
-        totals.update({key: len(lines) for key, lines in ratchets.counts(source).items()})
+        totals.update({key: len(lines) for key, lines in stand_in_counts(source, path, index, tree).items()})
         hits = Counter(key for _, _, _, key in forbidden(source, policy, path))
         if hits:
             forbidden_allowlist[path] = dict(hits)

@@ -9,6 +9,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from cpp import Source
+from definitions import definitions
 from gate import report, verdict
 from git_objects import Git
 from rules import Index, Policy, forbidden, paste_can_form
@@ -161,6 +162,169 @@ class Fixture(unittest.TestCase):
                     'const char *note = "a ## b";\n'
                     "// a ## b in the documentation\n")
         self.assert_gate("G3", "pass", self.compare({SEED: original}, {SEED: ordinary}))
+
+    def test_g7_later_declarators_inherit_cpp_top_level_const(self):
+        result = self.compare({"src/first.cpp": "const int Same = 7;\n", SEED: ""},
+                              {SEED: "const int Different = 1, Same = 2;\n"})
+        self.assert_gate("G7", "pass", result)
+        source = Source("const int a = 1, b = 2;\n")
+        self.assertEqual([(item.name, item.internal) for item in definitions(source)],
+                         [("a", True), ("b", True)])
+        self.assertEqual([(item.name, item.internal) for item in definitions(source, is_c=True)],
+                         [("a", False), ("b", False)])
+
+    def test_g7_each_declarator_keeps_its_own_pointer_const(self):
+        source = Source("const int *a = 0, b = 2, *c = 0, *const d = 0;\n")
+        self.assertEqual([(item.name, item.internal) for item in definitions(source)],
+                         [("a", False), ("b", True), ("c", False), ("d", True)])
+        result = self.compare({"src/first.cpp": "const int *same = 0;\n", SEED: ""},
+                              {SEED: "const int fresh = 0, *same = 0;\n"})
+        self.assertEqual(len(self.assert_gate("G7", "fail", result)), 1)
+
+    def test_g7_common_extern_and_later_definition(self):
+        source = Source("extern const int a, b = 2, c;\nconst int f(), d = 1;\n")
+        self.assertEqual([(item.name, item.internal) for item in definitions(source)],
+                         [("b", False), ("d", True)])
+
+    def test_g8_exact_accepted_symbol_ledger_key_and_component(self):
+        base_symbols = {"symbols": {"g_001234A1": {"candidates": [{}]},
+                                    "?rva001234A2@Example@@QAEHXZ": {"candidates": [{}]}}}
+        result = self.compare({SEED: "", "config/symbols.json": json.dumps(base_symbols)},
+                              {SEED: "extern int g_001234A1;\nextern int rva001234A2;\n"})
+        self.assert_gate("G8", "pass", result)
+
+    def test_g8_does_not_trust_fields_empty_records_or_changes_to_the_ledger(self):
+        prior = {"symbols": {"g_001234A3": {"candidates": []},
+                             "Named": {"candidates": [{"name": "g_001234A4"}]}},
+                 "unrelated": ["g_001234A5"]}
+        head = json.dumps({"symbols": {"g_001234A3": {"candidates": [{}]}}})
+        result = self.compare({SEED: "", "config/symbols.json": json.dumps(prior)},
+                              {SEED: "extern int g_001234A3, g_001234A4, g_001234A5;\n",
+                               "config/symbols.json": head})
+        self.assert_gate("G1", "fail", result)
+        self.assertEqual(len(self.assert_gate("G8", "fail", result)), 3)
+
+    def test_g4_scalar_floating_conversions_do_not_erase_a_pointer_type(self):
+        source = ("float f() { return float(getCount()); }\n"
+                  "double g() { return static_cast<double>(getCount()); }\n"
+                  "long double h() { return (long double)getCount(); }\n")
+        result = self.compare({SEED: ""}, {SEED: source})
+        self.assert_gate("G4", "pass", result)
+
+    def test_g4_retains_integral_pointer_and_unknown_type_casts(self):
+        source = ("int f() { return int(getCount()); }\n"
+                  "float *g() { return (float *)address(); }\n"
+                  "Q h() { return static_cast<Q>(thing()); }\n")
+        result = self.compare({SEED: ""}, {SEED: source})
+        findings = self.assert_gate("G4", "fail", result)
+        self.assertEqual({finding["line"] for finding in findings}, {1, 2, 3})
+        self.assertEqual(ratchets.counts(Source(source))["cast_call_result"], [1, 2, 3])
+
+    def test_g4_exact_protected_void_pointer_abi_exempts_only_signature_tokens(self):
+        name = "?lookup@@YAPBXPAX@Z"
+        marker = f"// FUNCTION: BFME2 0x00112233 size=4 name={name}\n"
+        old = marker + "int lookup(int n) { return n; }\n"
+        correct = marker + "const void *lookup(void *p) { return p; }\n"
+        base = {"rows": [{"rva": "0x00112233", "role": "owned", "name": name, "accepted_names": []}]}
+        left = {SEED: old, "config/map.json": json.dumps(base)}
+        self.assert_gate("G4", "pass", self.compare(left, {SEED: correct}))
+        body = correct.replace("{ return p; }", "{ void *shadow = p; return shadow; }")
+        result = self.compare(left, {SEED: body})
+        hit, = self.assert_gate("G4", "fail", result)
+        self.assertEqual(hit["line"], 2)
+        self.assertIn("increased by 1", hit["message"])
+
+    def test_g4_abi_does_not_follow_addresses_names_or_types_without_exact_agreement(self):
+        name = "?lookup@@YAPAXH@Z"
+        marker = f"// FUNCTION: BFME2 0x00112233 size=4 name={name}\n"
+        old = marker + "int lookup(int n) { return n; }\n"
+        correct = "void *lookup(int n) { return 0; }\n"
+        legitimate = {"rva": "0x00112233", "role": "owned", "name": name, "accepted_names": []}
+        for why, row, code in (
+            ("wrong address", {**legitimate, "rva": "0x00112234"}, correct),
+            ("unowned row", {**legitimate, "role": "comdat"}, correct),
+            ("different spelling", legitimate, correct.replace("lookup", "find")),
+            ("different signature", legitimate, correct.replace("int n", "void *n")),
+            ("pointer to pointer", legitimate, correct.replace("void *lookup", "void **lookup")),
+        ):
+            with self.subTest(why=why):
+                old_map = json.dumps({"rows": [row]})
+                result = self.compare({SEED: old, "config/map.json": old_map}, {SEED: marker + code})
+                self.assert_gate("G4", "fail", result)
+
+    def test_g4_exact_member_void_abi_preserves_qualifiers_and_argument_slots(self):
+        name = "?get@Cursor@@QBEPAXPBD@Z"
+        marker = f"// FUNCTION: BFME2 0x00112233 size=4 name={name}\n"
+        row = {"rva": "0x00112233", "role": "owned", "name": name, "accepted_names": []}
+        old = {SEED: marker + "int Cursor::get(const char *key) const { return 0; }\n",
+               "config/map.json": json.dumps({"rows": [row]})}
+        current = marker + "void *Cursor::get(const char *key) const { return 0; }\n"
+        self.assert_gate("G4", "pass", self.compare(old, {SEED: current}))
+        self.assert_gate("G4", "fail", self.compare(old, {SEED: current.replace(") const", ")")}))
+
+    def test_g4_header_declarations_bind_to_real_qualified_x86_slots(self):
+        path = "include/Job.h"
+        names = ("?move@Job@@QAEXPAX@Z", "?get@Inner@Job@@QBEPBXXZ",
+                 "?set@Job@@IAEXPBX@Z", "?shared@Job@@SAPAXXZ",
+                 "?step@Job@@UAEPAXXZ")
+        rows = [{"rva": hex(0x100 + i), "role": "owned", "name": name, "accepted_names": []}
+                for i, name in enumerate(names)]
+        old = {path: "", "config/map.json": json.dumps({"rows": rows})}
+        correct = ("#pragma once\n#ifndef PROJECT_JOB_H\n#define PROJECT_JOB_H\n"
+                   "class Job : public Parent {\n"
+                   "public:\n"
+                   " void move(void *target);\n"
+                   " struct Inner { const void *get() const; };\n"
+                   " static void *shared();\n"
+                   " virtual void *step();\n"
+                   "protected:\n"
+                   " void set(void const *target);\n"
+                   "};\n#endif\n")
+        self.assert_gate("G4", "pass", self.compare(old, {path: correct}))
+        unrelated = correct.replace("protected:", " void *storage;\nprotected:")
+        finding, = self.assert_gate("G4", "fail", self.compare(old, {path: unrelated}))
+        self.assertEqual(finding["line"], 10)
+
+    def test_g4_header_abi_does_not_follow_unproved_scopes_or_types(self):
+        path = "include/Job.h"
+        name = "?move@Job@@QAEXPAX@Z"
+        entry = {"rva": "0x00000010", "role": "owned", "name": name, "accepted_names": []}
+        old = {path: "", "config/map.json": json.dumps({"rows": [entry]})}
+        exact = "class Job { public: void move(void *value); };"
+        for invalid in (
+            exact.replace("Job", "Decoy"),
+            exact.replace("public", "private"),
+            exact.replace("void move", "static void move"),
+            exact.replace("void move", "virtual void move"),
+            exact.replace("void move", "void __stdcall move"),
+            exact.replace("*value", "*value, int flags"),
+            exact.replace("*value", "const *value"),
+            exact.replace("*value", "**value"),
+            exact.replace("value);", "value) const;"),
+            exact.replace("value);", "value) { return; }"),
+            exact.replace("public:", "public: void wrapper() { void move(void *value); } //\n"),
+            "namespace Other { " + exact + " }",
+            "#if CHOOSE\n" + exact + "\n#endif",
+            "#define move patch\n" + exact,
+            exact.replace(" };", " void move(void *again); };"),
+        ):
+            with self.subTest(invalid=invalid):
+                self.assert_gate("G4", "fail", self.compare(old, {path: invalid}))
+
+    def test_g4_header_abi_requires_one_protected_owned_address(self):
+        path = "include/Job.h"
+        name = "?move@Job@@QAEXPAX@Z"
+        entry = {"rva": "0x00000010", "role": "owned", "name": name, "accepted_names": []}
+        exact = "class Job { public: void move(void *value); };"
+        for rows in ([], [{**entry, "role": "comdat"}], [entry, {**entry, "rva": "0x00000011"}]):
+            with self.subTest(rows=rows):
+                self.assert_gate("G4", "fail", self.compare(
+                    {path: "", "config/map.json": json.dumps({"rows": rows})}, {path: exact}))
+        result = self.compare(
+            {path: "", "config/map.json": json.dumps({"rows": []})},
+            {path: exact, "config/map.json": json.dumps({"rows": [entry]})})
+        self.assert_gate("G1", "fail", result)
+        self.assert_gate("G4", "fail", result)
 
     def test_g1_limits(self):
         cfg = deepcopy(CONFIG)

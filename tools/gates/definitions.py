@@ -41,6 +41,14 @@ class Definition:
     internal: bool = False
 
 
+POINTER_DECLARATORS = {"*", "&", "&&"}
+
+
+def shared_type_prefix(prefix):
+    """Keep declaration specifiers shared by the following comma declarators."""
+    return prefix[:next((i for i, word in enumerate(prefix) if word in POINTER_DECLARATORS), len(prefix))]
+
+
 def defined_objects(tokens, namespace, is_c):
     """Yield explicit namespace-scope variable names, including C tentative definitions."""
     values = [t.value for t in tokens]
@@ -74,10 +82,11 @@ def defined_objects(tokens, namespace, is_c):
     boundaries.append(len(values) + 1)
     initializer.append(in_initializer)
 
+    common = []
     for index, (start, stop) in enumerate(zip(boundaries, boundaries[1:])):
         part = values[start:stop-1]
         part_tokens = tokens[start:stop-1]
-        if not part or ('extern' in values[:boundaries[1]-1] and not initializer[index]):
+        if not part:
             continue
         declaration = []
         pos = depth = 0
@@ -107,6 +116,8 @@ def defined_objects(tokens, namespace, is_c):
                     or inner[0] in ('true', 'false', 'nullptr', '&')
                 ):
                     break
+                if index == 0 and declaration:
+                    common = shared_type_prefix([part[i] for i in declaration[:-1]])
                 declaration = []
                 break
             if value == '<':
@@ -130,12 +141,18 @@ def defined_objects(tokens, namespace, is_c):
         if index == 0 and name_start == 0:
             continue
         spelling = ''.join(part[name_start:last+1])
-        prefix = part[:name_start]
+        prefix = [part[i] for i in declaration if i < name_start]
+        if index == 0:
+            common = shared_type_prefix(prefix)
+        else:
+            prefix = common + prefix
+        if 'extern' in prefix and not initializer[index]:
+            continue
         is_internal = (
             'static' in values[:boundaries[1]-1] and '::' not in spelling
             or '@anonymous' in namespace
         )
-        pointer = max((i for i, word in enumerate(prefix) if word in ('*', '&')), default=-1)
+        pointer = max((i for i, word in enumerate(prefix) if word in POINTER_DECLARATORS), default=-1)
         if not is_c and 'const' in prefix[pointer+1:] and 'extern' not in prefix and '::' not in spelling:
             is_internal = True
         yield Definition('global', '::'.join((*namespace, spelling)), part_tokens[last].line, is_internal)

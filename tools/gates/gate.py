@@ -14,7 +14,7 @@ from rules import Comparison, Finding, GATES, Index, Policy
 
 
 POLICY_FILES = ('cpp.py', 'definitions.py', 'gate.py', 'git_objects.py',
-                'ratchets.py', 'rules.py', 'config.json')
+                'ratchets.py', 'rules.py', 'config.json', 'void_abi.py')
 
 LABELS = (
     'Paths', 'Generated annotations', 'Forbidden constructs', 'Stand-in types',

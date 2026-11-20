@@ -55,8 +55,14 @@ including the policy, code and informational baseline, are maintainer changes.
   It can preserve an identical occurrence already in the base.
 - **G4** counts `void *` declaration and signature forms,
   `reinterpret_cast`, C-style pointer casts, arithmetic on explicit
-  `this` or simple byte-pointer aliases, and casts of direct call results.
-  The counts are five independent ratchets. A Draft deletion contributes
+  `this` or simple byte-pointer aliases, and casts of direct call results other than explicit primitive floating conversions.
+  An explicit void-pointer slot in an annotated function head must agree with the complete
+  protected compiler name and address. For a direct header member prototype, its full
+  name, access, calling convention and signature must resolve to one protected owned
+  address. The header allowance covers supported built-in encodings in ordinary headers
+  with no branching beyond a conventional include guard. Data members, function bodies,
+  and other unproved slots remain in the count. The counts are five independent ratchets.
+  A Draft deletion contributes
   its old count and zero new occurrences. Whole-tree totals in
   `baseline.json` are informational. For a PR verdict the check measures
   both trees afresh over the changed paths.
@@ -76,12 +82,14 @@ including the policy, code and informational baseline, are maintainer changes.
   before/after ownership logic. It prohibits new class, struct and union
   definitions at any source scope, including local or anonymous types.
   It distinguishes namespace identities,
-  declarations and file-local objects. It checks the full eligible tree,
+  declarations and file-local objects, including the individual linkage of comma
+  declarations. It checks the full eligible tree,
   including vendored paths. It reports explicit same-file duplicate
   globals and new same-name type or external object definitions with a
   surviving other owner.
 - **G8** indexes `name` and `accepted_names` from the base ledger at most once
-  per ledger blob. Recognized compiler decoration is removed from a name
+  per ledger blob. Exact symbol keys with candidates in the protected symbol ledger
+  can supply an accepted spelling. Recognized compiler decoration is removed from a name
   before checking the exact source component. Reusing a spelling already
   present in the base source tree does not introduce a new spelling.
 
