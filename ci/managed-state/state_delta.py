@@ -50,8 +50,30 @@ COMBINED_GRAPH = COMPACT_GRAPH | AUTOMATIC_GRAPH | {
     path: (COMPACT_GRAPH[path][0], AUTOMATIC_GRAPH[path][1])
     for path in COMPACT_GRAPH.keys() & AUTOMATIC_GRAPH.keys()
 }
-GRAPH_CHANGES = (COMPACT_GRAPH, AUTOMATIC_GRAPH, COMBINED_GRAPH)
-GRAPH_PATHS = set(COMBINED_GRAPH)
+TRANSPORT_LOG_GRAPH = {
+    "ci/managed-check/github_io.py": (
+        "af57df171f74d66f557535dfe2b702c194bd51219828060b60dca6ff210c5f77",
+        "c6c89dbd8ec2923e8d954d09d79b23fd344e1d2be9b0c90f332f9abe16132228",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "ef8d015ae4a4c3b169b9572299f4171b68e4661b22ce63bf2bc121accb2fb336",
+        "9f3ebd824a6efbef574e88ec7a738df50c9f0985056af1055ef6804fe6014112",
+    ),
+}
+
+
+def advance_graph(earlier, later):
+    overlap = earlier.keys() & later.keys()
+    if any(earlier[path][1] != later[path][0] for path in overlap):
+        raise ValueError("Orchestration graph preimages do not form a continuous chain.")
+    return earlier | later | {path: (earlier[path][0], later[path][1]) for path in overlap}
+
+
+RESERVE_AND_LOG_GRAPH = advance_graph(AUTOMATIC_GRAPH, TRANSPORT_LOG_GRAPH)
+COMBINED_LOG_GRAPH = advance_graph(COMBINED_GRAPH, TRANSPORT_LOG_GRAPH)
+GRAPH_CHANGES = (COMPACT_GRAPH, AUTOMATIC_GRAPH, COMBINED_GRAPH,
+                 TRANSPORT_LOG_GRAPH, RESERVE_AND_LOG_GRAPH, COMBINED_LOG_GRAPH)
+GRAPH_PATHS = set(COMBINED_LOG_GRAPH)
 COMPACT_SCOPE = {"ci/managed-state/state_delta.py", "ci/managed-state/state_origin.py",
                  "ci/managed-state/bundle.sha256"}
 MAX_DIFF_BYTES = 4 * 1024**2

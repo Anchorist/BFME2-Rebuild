@@ -1,7 +1,6 @@
 """Fetch exact source objects and publish the managed check report."""
 import os
 from pathlib import Path
-import re
 import sys
 
 from common import REPO, REPO_ID, read, write
@@ -35,8 +34,7 @@ def receive_refs(git, remote, binding):
                      "+refs/heads/main:refs/ci/actual-main", f"+refs/pull/{number}/head:refs/ci/head",
                      timeout=120, check=False)
     if result.returncode:
-        for line in masked_git_errors(result.stderr):
-            print("Protected Git fetch stderr | " + line, file=sys.stderr)
+        # Git diagnostics are transport data. Publish only a fixed reason.
         code = result.stderr.lower()
         reasons = (
             (b"remote ref", "one exact repository ref is unavailable"),
@@ -53,14 +51,6 @@ def receive_refs(git, remote, binding):
         raise Superseded()
 
 
-def masked_git_errors(stderr):
-    text = stderr.decode("utf-8", "replace")
-    text = re.sub(r"(?i)(?<=://)[^@/\\s]+@", "***@", text)
-    text = re.sub(r"(?i)\\b(?:gh[oprsu]_|github_pat_)[a-z0-9_]{12,}\\b", "***", text)
-    lines = ("".join(ch if ch.isprintable() else " " for ch in line) for line in text[:4096].splitlines())
-    return [line for line in lines if line.strip()][:24]
-
- 
 def wide_notes(matrix, units):
     if (not isinstance(matrix, dict) or set(matrix) not in (
             {"runners", "paired_results"}, {"runners", "paired_results", "recovery"})
