@@ -14,7 +14,7 @@ When it is finished, anyone can build the game from source, patch it and mod it.
 </p>
 
 <p align="center">
-<img src="docs/img/progress-card.svg" width="880" alt="Progress: byte match 25.7 percent, linking 62.1 percent, 10,054 of 41,565 functions finished, 366 rebuilt files play identically inside the original game">
+<img src="https://raw.githubusercontent.com/Open-BFME/BFME2-Rebuild/progress/progress.svg" width="880" alt="Live progress card: byte match, linking, functions finished, and what the daily run compiled">
 </p>
 
 <p align="center"><sub>
