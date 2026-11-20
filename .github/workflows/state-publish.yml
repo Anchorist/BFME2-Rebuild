@@ -11,7 +11,7 @@ on:
     types: [completed]
     branches: [main]
   schedule:
-    - cron: '7,37 * * * *'
+    - cron: '7 */3 * * *'
   workflow_dispatch:
     inputs:
       run_id:
@@ -31,7 +31,12 @@ concurrency:
 
 jobs:
   publish:
-    if: github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' && vars.BFME_STATE_BRANCH_ENABLED == 'yes'
+    # A cancelled or skipped measurement has nothing to publish: skip without starting a runner.
+    if: >-
+      github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
+      vars.BFME_STATE_BRANCH_ENABLED == 'yes' &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion != 'cancelled' && github.event.workflow_run.conclusion != 'skipped'))
     name: Publish the state branch
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 15
@@ -42,6 +47,7 @@ jobs:
       action: '${{ steps.resolve.outputs.action }}'
       sha: '${{ steps.resolve.outputs.sha }}'
       detail: '${{ steps.detail.outputs.detail }}'
+      new: '${{ steps.publish.outputs.new }}'
     steps:
       - name: Check out main with its history
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -55,7 +61,7 @@ jobs:
           set -euo pipefail
           for dir in ci/state ci/managed-state; do
             if ! (cd "$dir" && sha256sum -c --quiet bundle.sha256); then
-              echo "::error::expected every file in $dir to match $dir/bundle.sha256, found a difference"
+              echo "::error::expected every file in $dir to match $dir/bundle.sha256, found a difference (or the directory is missing)" | tee -a "$RUNNER_TEMP/publish.log"
               exit 1
             fi
           done
@@ -74,7 +80,7 @@ jobs:
           MAIN_SHA: '${{ github.sha }}'
           INPUT_RUN_ID: '${{ inputs.run_id }}'
           READ_TOKEN: '${{ github.token }}'
-        run: python3 -B ci/state/resolve.py
+        run: python3 -B ci/state/resolve.py 2>&1 | tee -a "$RUNNER_TEMP/publish.log"
       - name: Alarm drill (only when asked)
         if: inputs.drill == true
         shell: bash
@@ -82,7 +88,7 @@ jobs:
           set -euo pipefail
           printf '{}' > "$RUNNER_TEMP/drill.json"
           echo "DRILL: publishing a deliberately empty input; this step must fail and open the alarm."
-          python3 -B ci/state/publish.py --snapshot "$RUNNER_TEMP/drill.json" --main "$GITHUB_SHA" --checkout .             2>&1 | tee "$RUNNER_TEMP/publish.log"
+          python3 -B ci/state/publish.py --snapshot "$RUNNER_TEMP/drill.json" --main "$GITHUB_SHA" --checkout .             2>&1 | tee -a "$RUNNER_TEMP/publish.log"
       - name: Download the measurement
         if: steps.resolve.outputs.action == 'publish'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
@@ -106,7 +112,7 @@ jobs:
             exit 1
           fi
           python3 -B ci/state/publish.py --snapshot "$input" --main "$SHA" --checkout . \
-            2>&1 | tee "$RUNNER_TEMP/publish.log"
+            2>&1 | tee -a "$RUNNER_TEMP/publish.log"
       - name: Keep the failure text for the alarm
         id: detail
         if: always()
@@ -114,7 +120,11 @@ jobs:
         run: |
           {
             echo 'detail<<END_OF_DETAIL'
-            grep -h '^::error::' "$RUNNER_TEMP/publish.log" 2>/dev/null | sed 's/^::error:://' | head -c 1500 || true
+            if grep -q '^::error::' "$RUNNER_TEMP/publish.log" 2>/dev/null; then
+              grep -h '^::error::' "$RUNNER_TEMP/publish.log" | sed 's/^::error:://' | head -c 1500 || true
+            else
+              tail -n 5 "$RUNNER_TEMP/publish.log" 2>/dev/null | head -c 1500 || true
+            fi
             echo
             echo 'END_OF_DETAIL'
           } >> "$GITHUB_OUTPUT"
@@ -167,3 +177,12 @@ jobs:
           else
             echo "Nothing to set: the publish job decided '$ACTION'."
           fi
+
+  progress:
+    needs: publish
+    if: github.ref == 'refs/heads/main' && needs.publish.outputs.new == 'true'
+    name: Progress card and worklists for the new state
+    uses: ./.github/workflows/progress.yml
+    permissions:
+      contents: write
+      issues: write

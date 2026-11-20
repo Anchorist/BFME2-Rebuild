@@ -145,6 +145,20 @@ class PublishTests(Base):
         self.assertIn("newer than", self.lines[-1])
         self.assertEqual(git(self.remote, "rev-parse", "state"), commit2)
 
+    def test_new_flag_starts_progress_only_once(self):
+        sha = self.repo.commits[0]
+        path = self.save(snapshot(sha))
+        flags = []
+        for _ in range(2):
+            out = self.folder / "out.txt"
+            out.write_text("")
+            done = subprocess.run([sys.executable, "-B", str(HERE.parent / "publish.py"), "--snapshot", str(path),
+                                   "--main", sha, "--checkout", str(self.repo.path), "--remote", str(self.remote)],
+                                  capture_output=True, text=True, env=os.environ | ENV | {"GITHUB_OUTPUT": str(out)})
+            self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+            flags.append(re.search(r"^new=(\w+)$", out.read_text(), re.M).group(1))
+        self.assertEqual(flags, ["true", "false"])
+
     def test_same_main_same_commit_bytes(self):
         sha = self.repo.commits[0]
         other = self.folder / "other.git"
@@ -245,10 +259,13 @@ class AlarmTests(unittest.TestCase):
 
 
 class FakeRuns:
-    def __init__(self, runs):
+    def __init__(self, runs, artifacts=()):
         self.runs = runs
+        self.artifacts = list(artifacts)
 
     def get(self, path):
+        if "/artifacts?" in path:
+            return {"artifacts": self.artifacts}
         return {"workflow_runs": self.runs}
 
 
@@ -276,6 +293,12 @@ class ResolveTests(unittest.TestCase):
         self.assertEqual(resolve.from_main(FakeRuns([run(3, status="in_progress")]), main, 60)["action"], "wait")
         self.assertEqual(resolve.from_main(FakeRuns([]), main, 60)["action"], "wait")
         self.assertEqual(resolve.from_main(FakeRuns([]), main, 4 * 3600)["action"], "stale")
+        found = resolve.from_main(FakeRuns([run(1)]), main, 60)
+        with_artifact = FakeRuns([], [{"name": "bfme-numeric-main-state-1", "expired": False}])
+        self.assertEqual(resolve.require_artifact(with_artifact, found)["action"], "publish")
+        skipped = resolve.require_artifact(FakeRuns([], []), found)
+        self.assertEqual(skipped["action"], "wait")
+        self.assertIn("without artifact", skipped["why"])
         cancelled_then_ok = [run(1), run(2, conclusion="cancelled", created="2026-11-20T11:00:00Z")]
         self.assertEqual(resolve.from_main(FakeRuns(cancelled_then_ok), main, 60)["run_id"], "1")
 
@@ -311,6 +334,8 @@ class WorkflowRules(unittest.TestCase, WriteJobs):
             text = path.read_text()
             self.assertRegex(text, r"(?m)^permissions: \{\}$", path.name)
             for line in re.findall(r"uses: (\S+)", text):
+                if line.startswith("./.github/workflows/"):
+                    continue  # a workflow of this repository, read from the same commit
                 self.assertRegex(line, r"@[0-9a-f]{40}$", f"{path.name}: action not pinned: {line}")
             self.assertNotIn("secrets.", text, path.name)
             self.assertNotIn("pull_request", text, path.name)

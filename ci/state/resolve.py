@@ -85,6 +85,17 @@ def from_main(api, main, age_seconds, input_run=""):
     return {"action": "wait", "sha": main, "why": f"no measurement of main {main} yet; it is {age_seconds // 60} min old"}
 
 
+def require_artifact(api, result):
+    """A successful run whose jobs were all skipped has no measurement; that is not a failure to publish."""
+    name = f"bfme-numeric-main-state-{result['attempt']}"
+    found = api.get(f"actions/runs/{result['run_id']}/artifacts?name={name}&per_page=5")["artifacts"]
+    if any(a.get("name") == name and not a.get("expired") for a in found):
+        return result
+    return {"action": "wait", "sha": result["sha"],
+            "why": f"run {result['run_id']} finished without artifact {name} (its jobs were skipped or it expired); "
+                   "nothing to publish"}
+
+
 def main():
     env = os.environ
     if env.get("EVENT") == "workflow_run":
@@ -104,6 +115,9 @@ def main():
             print(f"::error::resolve: expected a numeric run id, found {run!r}")
             return 1
         result = from_main(api, main_sha, int(time.time()) - int(stamp.stdout), run)
+    if result["action"] == "publish":
+        api = api if env.get("EVENT") != "workflow_run" else Api(env["GITHUB_REPOSITORY"], env.pop("READ_TOKEN"))
+        result = require_artifact(api, result)
     print(f"Decision: {result['action']}: {result['why']}")
     with open(env["GITHUB_OUTPUT"], "a") as stream:
         for key in ("action", "run_id", "attempt", "sha"):

@@ -62,10 +62,10 @@ def publish(snapshot_path, main, checkout, remote, token, *, drill=False, attemp
                                       + " to equal this measurement, found differences: "
                                       + " | ".join(differences(wanted, found, 5)))
                     out(f"Already published: state {tip} describes main {main} with the same verdicts.")
-                    return tip, 0
+                    return tip, None
                 if previous and local(checkout, "merge-base", "--is-ancestor", main, previous)[0] == 0:
                     out(f"Skipped: the state branch already describes {previous}, which is newer than {main}.")
-                    return "", 0
+                    return "", None
                 old_index = json.loads(store.reader(git, tip)("index.json"))["files"]
             new_index = json.loads(files["index.json"])["files"]
             changed = sum(old_index.get(tu) != digest for tu, digest in new_index.items()) + \
@@ -103,7 +103,9 @@ def main():
     output = os.environ.get("GITHUB_OUTPUT")
     if output:
         with open(output, "a") as stream:
-            stream.write(f"state_commit={commit}\nchanged={changed}\n")
+            # new=true only when this run created a state commit; that is what starts the progress card.
+            created = changed is not None
+            stream.write(f"state_commit={commit}\nchanged={changed or 0}\nnew={'true' if created else 'false'}\n")
     return 0
 
 

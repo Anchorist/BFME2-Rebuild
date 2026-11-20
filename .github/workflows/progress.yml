@@ -1,0 +1,177 @@
+name: Progress card and worklists
+
+# Called by "Publish main state" after each newly published main state (and daily, for the nightly result), write the progress
+# card (PROGRESS.md, progress.svg, history.svg) and regenerate worklist/*.tsv for that main
+# commit, and put them on the `progress` branch. Nothing here writes `main`; a push with the
+# Actions token starts no other workflow, so nothing loops.
+
+on:
+  workflow_call:
+  schedule:
+    - cron: '41 5 * * *'
+  workflow_dispatch:
+    inputs:
+      drill:
+        description: 'Alarm test: corrupt one state record on purpose. The card and worklist steps must fail and open their alarm issues.'
+        type: boolean
+        default: false
+
+permissions: {}
+
+concurrency:
+  group: bfme-progress
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: >-
+      github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' && vars.BFME_STATE_BRANCH_ENABLED == 'yes'
+    name: Write the card and the worklists
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    outputs:
+      read: '${{ steps.read.outcome }}'
+      card: '${{ steps.card.outcome }}'
+      worklists: '${{ steps.worklists.outcome }}'
+      write: '${{ steps.write.outcome }}'
+      main: '${{ steps.read.outputs.main }}'
+      drops: '${{ steps.report.outputs.drops }}'
+      detail: '${{ steps.report.outputs.detail }}'
+    steps:
+      - name: Check out main with its history
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify the tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          for dir in ci/progress ci/state ci/managed-state; do
+            if ! (cd "$dir" && sha256sum -c --quiet bundle.sha256); then
+              echo "::error::expected every file in $dir to match $dir/bundle.sha256, found a difference (or the directory is missing)" | tee -a "$RUNNER_TEMP/log.txt"
+              exit 1
+            fi
+          done
+      - name: Read the state, the nightly result and the previous card
+        id: read
+        shell: bash
+        env:
+          READ_TOKEN: '${{ github.token }}'
+        run: python3 -B ci/progress/branch.py read --dir "$RUNNER_TEMP/in" 2>&1 | tee -a "$RUNNER_TEMP/log.txt"
+      - name: Alarm drill (only when asked)
+        if: inputs.drill == true
+        shell: bash
+        run: |
+          set -euo pipefail
+          victim=$(cd "$RUNNER_TEMP/in/state" && find files -type f -name '*.json' | LC_ALL=C sort | head -1)
+          printf ' ' >> "$RUNNER_TEMP/in/state/$victim"
+          echo "DRILL: appended one byte to $victim; the card and worklist steps must refuse it."
+      - name: Check out that main commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ steps.read.outputs.main }}'
+          path: at-main
+          persist-credentials: false
+      - name: Write the progress card
+        id: card
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B ci/progress/card.py --checkout . --state-dir "$RUNNER_TEMP/in/state" \
+            --nightly "$RUNNER_TEMP/in/nightly.json" --previous-history "$RUNNER_TEMP/in/history.json" \
+            --out "$RUNNER_TEMP/out" --drops "$RUNNER_TEMP/drops.txt" 2>&1 | tee -a "$RUNNER_TEMP/log.txt"
+      - name: Regenerate the worklists (two runs must agree)
+        id: worklists
+        if: always() && steps.read.outcome == 'success'
+        shell: bash
+        env:
+          MAIN: '${{ steps.read.outputs.main }}'
+        run: |
+          set -euo pipefail
+          python3 -B ci/progress/worklists.py --checkout at-main --main "$MAIN" \
+            --state-dir "$RUNNER_TEMP/in/state" --out "$RUNNER_TEMP/out/worklist" 2>&1 | tee -a "$RUNNER_TEMP/log.txt"
+      - name: Publish to the progress branch
+        id: write
+        if: steps.card.outcome == 'success' && steps.worklists.outcome == 'success'
+        shell: bash
+        env:
+          WRITE_TOKEN: '${{ github.token }}'
+          MAIN: '${{ steps.read.outputs.main }}'
+        run: |
+          set -euo pipefail
+          python3 -B ci/progress/branch.py write --dir "$RUNNER_TEMP/out" --main "$MAIN" --checkout . \
+            2>&1 | tee -a "$RUNNER_TEMP/log.txt"
+          cat "$RUNNER_TEMP/out/PROGRESS.md" >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep the text for the alarms
+        id: report
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo 'drops<<END_OF_TEXT'
+            head -c 1500 "$RUNNER_TEMP/drops.txt" 2>/dev/null || true
+            echo
+            echo 'END_OF_TEXT'
+            echo 'detail<<END_OF_TEXT'
+            if grep -q '^::error::' "$RUNNER_TEMP/log.txt" 2>/dev/null; then
+              grep -h '^::error::' "$RUNNER_TEMP/log.txt" | sed 's/^::error:://' | head -c 1500 || true
+            else
+              tail -n 5 "$RUNNER_TEMP/log.txt" 2>/dev/null | head -c 1500 || true
+            fi
+            echo
+            echo 'END_OF_TEXT'
+          } >> "$GITHUB_OUTPUT"
+
+  alarms:
+    needs: build
+    if: always() && github.ref == 'refs/heads/main' && needs.build.result != 'skipped'
+    name: Open or close alarm issues
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: ci/alarms
+      - name: Set the progress and worklist alarms
+        shell: bash
+        env:
+          ALARM_TOKEN: '${{ github.token }}'
+          READ: '${{ needs.build.outputs.read }}'
+          CARD: '${{ needs.build.outputs.card }}'
+          LISTS: '${{ needs.build.outputs.worklists }}'
+          WRITE: '${{ needs.build.outputs.write }}'
+          MAIN: '${{ needs.build.outputs.main }}'
+          DROPS: '${{ needs.build.outputs.drops }}'
+          DETAIL: '${{ needs.build.outputs.detail }}'
+          RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        run: |
+          set -euo pipefail
+          (cd ci/alarms && sha256sum -c --quiet bundle.sha256) || { echo "::error::expected ci/alarms to match its bundle.sha256, found a difference"; exit 1; }
+          echo "Build: read=${READ:-none} card=${CARD:-none} worklists=${LISTS:-none} write=${WRITE:-none} main=${MAIN:-unknown}"
+          alarm() { python3 -B ci/alarms/alarm.py "$@" --run-url "$RUN_URL"; }
+          if [ "$CARD" = success ] && [ "$WRITE" = success ]; then
+            alarm clear progress-failed
+          else
+            alarm raise progress-failed --detail "Expected the progress card for main ${MAIN:-unknown} to be written and published, found read=${READ:-none} card=${CARD:-none} publish=${WRITE:-none}. ${DETAIL}"
+          fi
+          if [ "$LISTS" = success ]; then
+            alarm clear worklist-failed
+          else
+            alarm raise worklist-failed --detail "Expected the worklists for main ${MAIN:-unknown} to regenerate twice with identical output, found ${LISTS:-not run}. ${DETAIL}"
+          fi
+          if [ "$CARD" = success ]; then
+            if [ -n "$(printf '%s' "$DROPS" | tr -d '[:space:]')" ]; then
+              alarm raise progress-down --detail "$DROPS"
+            else
+              alarm clear progress-down
+            fi
+          fi
