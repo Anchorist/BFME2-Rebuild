@@ -1,6 +1,6 @@
-# Where the README's numbers come from
+# Where the numbers come from
 
-Every figure in the README, how it was measured, where the record lives, and what a clone can reproduce.
+Every figure in the README and in [status.md](status.md), how it was measured, where the record lives, and what a clone can reproduce.
 "Working revision" means the maintainers' development revision the snapshot was exported from; it is not a
 commit in this repository, whose `src/`, `include/`, `config/` and `expected/` are that revision's tree.
 
