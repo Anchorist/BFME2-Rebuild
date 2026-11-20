@@ -232,6 +232,27 @@ class CardTests(Tiny):
         self.assertIn("not measured yet", card.build(self.root, self.state.__getitem__, failed, [], None,
                                                       None)[0]["progress.svg"].decode())
 
+    def test_carried_linking_is_credited_to_its_own_build(self):
+        """Nightly r10 shape: a run that measured no pair carries the last good one with linking_measured."""
+        carried = {"sha": "d" * 40, "date": "2030-01-10", "result": "fail", "run_id": 9,
+                   "provided_required_symbols": [5181, 8317], "linking_unit": "names",
+                   "linking_measured": {"this_run": False, "reason": "this run measured no linking figure",
+                                        "sha": "e" * 40, "date": "2030-01-09",
+                                        "run_url": "https://github.com/Open-BFME/BFME2-Rebuild/actions/runs/8"}}
+        files = self.build(carried)[0]
+        text = files["README.md"].decode()
+        self.assertIn(f"Measured by the daily build of commit [`{'e' * 12}`]", text)
+        self.assertIn("(9 January 2030)", text)
+        self.assertNotIn(f"Measured by the daily build of commit [`{'d' * 12}`]", text)
+        self.assertIn("5,181 of 8,317", files["progress.svg"].decode())
+        self.assertEqual(json.loads(files["card.json"])["linking_main"], "e" * 40)
+        # Measured this run: credited to this run.
+        fresh = dict(carried, linking_measured={"this_run": True, "sha": "d" * 40, "date": "2030-01-10"})
+        self.assertIn(f"commit [`{'d' * 12}`]", self.build(fresh)[0]["README.md"].decode().split("Measured by the daily build of ")[1][:30])
+        # Carried without its own identity: not shown.
+        bare = dict(carried, linking_measured={"this_run": False, "reason": "x"})
+        self.assertIn("not measured yet", self.build(bare)[0]["progress.svg"].decode())
+
     def test_game_record_rule(self):
         night = {"sha": "f" * 40, "date": "2030-01-10", "result": "partial",
                  "stages": {"compile": "success", "link_and_play": "runs separately"}}

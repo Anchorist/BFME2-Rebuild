@@ -94,10 +94,25 @@ def nightly_view(nightly):
               for key in ("compiled", "files", "fully_matching")}
     stages = nightly.get("stages") if isinstance(nightly.get("stages"), dict) else {}
     result = nightly.get("result") if nightly.get("result") in ("pass", "fail", "partial") else None
+    # linking_measured (nightly r10): which build measured the pair. A run that measured none carries the
+    # last good pair with that build's commit and date (this_run false); credit the pair to that build.
+    measured = nightly.get("linking_measured") if isinstance(nightly.get("linking_measured"), dict) else {}
+    source_sha, source_date = str(nightly["sha"])[:40], str(nightly.get("date", ""))[:25]
+    carried = measured.get("this_run") is False
+    if carried:
+        sha = measured.get("sha")
+        date = measured.get("date")
+        if not (isinstance(sha, str) and len(sha) == 40 and all(c in "0123456789abcdef" for c in sha)
+                and isinstance(date, str) and len(date) >= 10):
+            ok_pair = False  # a carried pair without its own build identity is not shown
+        else:
+            source_sha, source_date = sha, date[:25]
     return {"sha": str(nightly["sha"])[:40], "date": str(nightly.get("date", ""))[:25], **flags,
             "equal_frames": frames if type(frames) is int and frames > 0 else None,
             "control_caught": nightly.get("control_caught") if type(nightly.get("control_caught")) is bool else None,
             "linking": pair if ok_pair else None, "result": result, **counts,
+            "linking_sha": source_sha, "linking_source_date": source_date,
+            "linking_carried": carried and ok_pair,
             "linking_unit": nightly.get("linking_unit") if nightly.get("linking_unit") in LINK_UNITS else "names",
             # "runs separately": the public build has no game run; the game runs elsewhere and is folded in.
             "game_live": stages.get("link_and_play") not in (None, "not live", "skipped", "runs separately"),
@@ -229,8 +244,8 @@ def measure(checkout, state, nightly, game=None, linking=None):
     return {"main": state["sha"], "date": date, "measured": max(days),
             "matched": raw["matched_bytes"], "proven": raw["proven_bytes"], "finished": raw["finished_rows"],
             "linking": link["linking"] if link else None,
-            "linking_main": link["sha"] if link else None,
-            "linking_date": link["date"] if link else None,
+            "linking_main": link["linking_sha"] if link else None,
+            "linking_date": link["linking_source_date"] if link else None,
             "linking_unit": link["linking_unit"] if link else "names",
             "subsystems": {k: list(v) for k, v in sorted(raw["components"].items())},
             "drafts_in_use": raw["drafts_in_use"], "nightly": night, "files_measured": len(state["tus"]),
