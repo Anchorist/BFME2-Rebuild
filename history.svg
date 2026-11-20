@@ -19,5 +19,15 @@ text{font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif}
 <text class="t2" x="38" y="75.0" font-size="11" text-anchor="end">75%</text>
 <line class="grid" x1="44" x2="530" y1="20.0" y2="20.0"/>
 <text class="t2" x="38" y="24.0" font-size="11" text-anchor="end">100%</text>
-<text class="t2" x="287.0" y="122.0" font-size="13" text-anchor="middle">The chart starts once two main commits are measured.</text>
+<text class="t2" x="44" y="248" font-size="11">2026-11-20</text>
+<text class="t2" x="530" y="248" font-size="11" text-anchor="end">2026-11-20</text>
+<path class="s1" d="M44.0,171.6 L530.0,171.4" fill="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path class="s2" d="M44.0,189.5 L530.0,188.9" fill="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path class="s4" d="M44.0,174.7 L530.0,173.8" fill="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<rect class="d1" x="538" y="167.4" width="8" height="8" rx="2"/>
+<text class="t1" x="550" y="175.4" font-size="11">Code matched</text>
+<rect class="d4" x="538" y="181.4" width="8" height="8" rx="2"/>
+<text class="t1" x="550" y="189.4" font-size="11">Finished functions</text>
+<rect class="d2" x="538" y="195.4" width="8" height="8" rx="2"/>
+<text class="t1" x="550" y="203.4" font-size="11">Code proven</text>
 </svg>

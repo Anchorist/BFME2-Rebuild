@@ -1,4 +1,4 @@
-# measured_utc=2026-11-20T18:29:53Z revision=64fce00c1ee661f0ee508ad724887717cd302ecb left_out_duplicates=16
+# measured_utc=2026-11-20T19:03:33Z revision=69da5d7352386882778ba9c6ba4a5934ffdd3be5 left_out_duplicates=11
 header	classes_defined
 include/Draft/AABTreeLinkClass.h	AABTreeLinkClass
 include/Draft/AIAttackApproachTargetState00C12678.h	AIAttackApproachTargetState00C12678
@@ -22,7 +22,6 @@ include/Draft/AllowBannerSpawnUpgradeModuleData.h	AllowBannerSpawnUpgradeModuleD
 include/Draft/AnimationSoundClientBehaviorData.h	AnimationSoundClientBehaviorData
 include/Draft/AnimationSoundClientBehaviorModuleData.h	AnimationSoundClientBehaviorModuleData
 include/Draft/AnimationSoundModuleManager.h	AnimationSoundModuleManager
-include/Draft/AptMessengerOnline.h	AptMessengerOnline
 include/Draft/AptRadialMenu/Impl/ButtonShell.h	ButtonShell
 include/Draft/ArmySummaryDescriptionVisitor.h	ArmySummaryDescriptionVisitor
 include/Draft/AssetManagerImpl.h	AssetManagerImpl
@@ -72,10 +71,8 @@ include/Draft/BfmeThingTXA.h	BfmeThingTXA
 include/Draft/BridgeScaffoldBehaviorModuleData.h	BridgeScaffoldBehaviorModuleData
 include/Draft/BuildableHeroListUpgradeModuleData.h	BuildableHeroListUpgradeModuleData
 include/Draft/CallHelpOnDamageModuleData.h	CallHelpOnDamageModuleData
-include/Draft/CashHackSpecialPowerModuleData.h	none-parsed
 include/Draft/ClickReactionBehaviorData.h	ClickReactionBehaviorData
 include/Draft/CloudEffect.h	CloudEffect
-include/Draft/CountUpTransition.h	none-parsed
 include/Draft/CreateAHeroBling.h	CreateAHeroBling
 include/Draft/CreateAHeroBlingBinder.h	CreateAHeroBlingBinder
 include/Draft/DamageFieldUpdateModuleData.h	DamageFieldUpdateModuleData
@@ -168,7 +165,6 @@ include/Draft/FireLogicSystem.h	FireLogicSystem
 include/Draft/FormationTranslator.h	FormationTranslator
 include/Draft/FoundationAIUpdateModuleData.h	FoundationAIUpdateModuleData
 include/Draft/FreezePostLoadSoundsTransition.h	FreezePostLoadSoundsTransition
-include/Draft/FullFadeTransition.h	none-parsed
 include/Draft/GameSubTitle.h	GameSubTitle
 include/Draft/GarrisonObjectGroupOrder.h	GarrisonObjectGroupOrder
 include/Draft/GateProxyBehaviorModuleData.h	GateProxyBehaviorModuleData
@@ -249,7 +245,6 @@ include/Draft/Made002CCBCA.h	Made002CCBCA
 include/Draft/Made002CCC2D.h	Made002CCC2D
 include/Draft/Made002CCC90.h	Made002CCC90
 include/Draft/Made002CCCF3.h	Made002CCCF3
-include/Draft/MainMenuMediumScaleUpTransition.h	none-parsed
 include/Draft/MappedImageCache.h	MappedImageCache
 include/Draft/Mem04.h	Mem04
 include/Draft/MemoryReadFile.h	MemoryReadFile
@@ -283,7 +278,6 @@ include/Draft/PillageModule.h	PillageModule
 include/Draft/PillageModuleData.h	PillageModuleData
 include/Draft/PlayerAITypeSet.h	PlayerAITypeSet
 include/Draft/PlayerHealSpecialPowerModuleData.h	PlayerHealSpecialPowerModuleData
-include/Draft/PlayerTemplateStore.h	none-parsed
 include/Draft/PlayerUpgradeSpecialPowerModuleData.h	PlayerUpgradeSpecialPowerModuleData
 include/Draft/PlayingAudio.h	PlayingAudio
 include/Draft/PolyRemover.h	PolyRemover
@@ -1122,8 +1116,6 @@ include/Draft/Rva0057FE6B.h	Rva0057FE6B
 include/Draft/Rva005813E.h	Rva005813E
 include/Draft/Rva00582FC1.h	Rva00582FC1
 include/Draft/Rva005838B5.h	Rva005838B5
-include/Draft/Rva00584C42.h	Rva00584C42
-include/Draft/Rva005876D5.h	Rva005876D5
 include/Draft/Rva00588FFA.h	Rva00588FFA
 include/Draft/Rva00589079.h	Rva00589079
 include/Draft/Rva0058AD7A.h	Rva0058AD7A
@@ -1561,16 +1553,12 @@ include/Draft/Rva00C6F248Iface.h	Rva00C6F248Iface
 include/Draft/Rva00CE12FCMutex.h	Rva00CE12FCMutex
 include/Draft/Rva00CE1E14Base.h	Rva00CE1E14Base
 include/Draft/SaveMapPreview.h	SaveMapPreview
-include/Draft/ScoreScaleUpTransition.h	none-parsed
 include/Draft/ServiceHubImpl.h	ServiceHubImpl
 include/Draft/SiegeDockingBehaviorModuleData.h	SiegeDockingBehaviorModuleData
 include/Draft/SimpleObjectIterator.h	SimpleObjectIterator
 include/Draft/SkirmishAIData.h	SkirmishAIData
 include/Draft/SlaveWatcherBehaviorModuleData.h	SlaveWatcherBehaviorModuleData
-include/Draft/SpawnedModelConditionCreate.h	none-parsed
 include/Draft/SpecialEnemySenseUpdateModuleData.h	SpecialEnemySenseUpdateModuleData
-include/Draft/SpecialPowerTimerRefreshSpecialPower.h	none-parsed
-include/Draft/SpecialPowerUpdateModuleData.h	none-parsed
 include/Draft/StancesBehaviorModuleData.h	StancesBehaviorModuleData
 include/Draft/StatusBitsUpgradeIfEldestKindofModuleData.h	StatusBitsUpgradeIfEldestKindofModuleData
 include/Draft/StealthUpgradeModuleData.h	StealthUpgradeModuleData
@@ -1605,13 +1593,10 @@ include/Draft/SubsystemSlotBase.h	SubsystemSlotBase
 include/Draft/SubtitleEntry.h	SubtitleEntry
 include/Draft/SynchronizeGroupOrder.h	SynchronizeGroupOrder
 include/Draft/T1Base_005F3750.h	T1Base_005F3750
-include/Draft/TBuff.h	TBuff
 include/Draft/TScorch.h	TScorch
 include/Draft/TerrainFXShaderParameterSourceNamespace.h	TerrainFXShaderParameterSourceNamespace
 include/Draft/TerrainResourceClientBehavior.h	TerrainResourceClientBehavior
 include/Draft/ToggleHiddenSpecialAbilityUpdateModuleData.h	ToggleHiddenSpecialAbilityUpdateModuleData
-include/Draft/ToolTipUpgradeModuleData.h	none-parsed
-include/Draft/TransportAIUpdateModuleData.h	none-parsed
 include/Draft/TurretAIUpdateModuleData.h	TurretAIUpdateModuleData
 include/Draft/UnleashSpecialPowerModuleData.h	UnleashSpecialPowerModuleData
 include/Draft/UpgradeSoundSelectorClientBehavior.h	UpgradeSoundSelectorClientBehavior
