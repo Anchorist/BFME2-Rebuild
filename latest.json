@@ -1,0 +1,66 @@
+{
+ "checks": {
+  "control": "not run",
+  "maps": "not run",
+  "menu": "not run",
+  "save_load": "not run",
+  "starts": "not run"
+ },
+ "commit": "43c8eae0c787ba8ee27820669378d413b868ea6f",
+ "compile": {
+  "compile_errors": 0,
+  "compiled": 3253,
+  "expected_shards": 8,
+  "files": 3253,
+  "fully_matching": 407,
+  "problem": null,
+  "shards": 8,
+  "slowest_shard_s": 3184.6
+ },
+ "compile_ok": true,
+ "control_caught": null,
+ "date": "2026-11-20",
+ "equal_frames": null,
+ "event": "workflow_dispatch",
+ "files_substituted": null,
+ "frames": {
+  "compared": 0,
+  "equal": 0,
+  "first_divergent": {}
+ },
+ "functions": null,
+ "image_manifest_sha256": null,
+ "image_sha256": null,
+ "link": null,
+ "menu": null,
+ "plan": null,
+ "provided_required_symbols": null,
+ "result": "partial",
+ "run_id": "44777370926",
+ "run_url": "https://github.com/Open-BFME/BFME2-Rebuild/actions/runs/44777370926",
+ "save_load": null,
+ "schema": "bfme2-nightly/1",
+ "sha": "43c8eae0c787ba8ee27820669378d413b868ea6f",
+ "simulation_equal": null,
+ "size_check": null,
+ "skirmish": null,
+ "stages": {
+  "compile": "success",
+  "link_and_play": "not live"
+ },
+ "starts": null,
+ "stopped": null,
+ "tests": {},
+ "timings": {
+  "compile_slowest_shard_s": 3184.6,
+  "link_and_play": null,
+  "run": {
+   "jobs": 10,
+   "runner_minutes": {
+    "boat-small/from=bfme2-compiler-v1": 296.4,
+    "unknown": 0.0
+   },
+   "wall_minutes": 54.0
+  }
+ }
+}
