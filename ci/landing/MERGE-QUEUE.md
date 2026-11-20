@@ -1,45 +1,78 @@
-# Landing with GitHub's merge queue (public repository)
+# Landing with GitHub's merge queue
 
-Not built yet. This is the design for when the repository is public and `main` can sit behind a ruleset with a merge
-queue. Until then `.github/workflows/landing.yml` serializes landings itself.
+The landing workflow already supports the merge queue. It reads main's active rules on every run
+(`GET /repos/{repo}/rules/branches/main`):
 
-## Why switch
+- No `merge_queue` rule (today, and while the rules cannot be read): it merges directly. It measures again on
+  current main when needed, re-reads main right before the merge, and verifies the new commit.
+- A `merge_queue` rule is active: it adds each eligible pull request to the queue with its expected head
+  (GraphQL `enqueuePullRequest`, `expectedHeadOid`). GitHub then measures main plus that pull request on a queue
+  commit (`merge_group`) and merges exactly the commit it measured. The workflow no longer merges or re-measures.
 
-The serialized job checks main right before it merges and checks the new commit afterwards. The merge call itself
-cannot say "only if main is still X". GitHub's merge queue closes that gap on GitHub's side. It builds a temporary
-`gh-readonly-queue/main/...` commit of the current main plus the pull request. It runs the required checks on
-exactly that commit. It moves main to exactly that commit only if they pass. Nothing else can move main while the
-ruleset is active.
+The hold rules are the same in both modes: admission, header approval, rehearsal branches, `.github/` changes,
+drafts and the `landing-hold` label.
 
-## Settings (Settings → Rules → Rulesets, target `main`)
+## Who can move main
 
-- Require a pull request, one approval, and dismissal of stale approvals.
-- Require status checks `BFME II / Boat` and `BFME II / source rules`. Add `BFME II / Inline virtual` only when it
-  stops being report-only.
-- Require the merge queue: merge method squash, build concurrency 1, group size 1 at first, status timeout 30
-  minutes (wide changes measured 744 to 978 s).
-- No bypass actors. Header changes: a CODEOWNERS entry `include/ @<maintainers>` with "require review from code
-  owners" replaces `header_approvers`.
+`ruleset-main.json` (direct) and `ruleset-main-queue.json` (queue) require these statuses, each from GitHub Actions
+(integration 15368): `BFME II / Boat`, `BFME II / source rules` and `BFME II / Landing`. Only the landing workflow
+writes `BFME II / Landing` success:
 
-## Workflow changes
+- Direct mode: "Cleared to land on main X", on the exact head, immediately before it merges. It is withdrawn on
+  any hold.
+- Queue mode: "Cleared for the merge queue at head X" on the pull request, then "Cleared in the merge queue" on
+  the queue commit. The workflow's `group` job (event `merge_group`) writes the second only when it queued that
+  exact head itself. A pull request a person adds to the queue is refused there and leaves the queue.
 
-1. `managed-pr.yml` and `rules.yml` also run on `merge_group: types: [checks_requested]`. For that event the
-   protected base is `github.event.merge_group.base_sha`, and the candidate tree is the tree of
-   `github.event.merge_group.head_sha`. The tools and checkers still come from the base commit, never from the
-   queue commit. The queue commit is data. A group that changes protected paths fails with its rule name.
-2. Statuses are posted on the group's head SHA (`merge_group.head_sha`), with the same context names.
-3. Contributors keep their exact-head checks on `pull_request_target`, so they see results before queueing.
-4. `landing.yml` is reduced to adding eligible pull requests to the queue (GraphQL `enqueuePullRequest`, with the
-   expected head). It keeps the branch-name refusals and the report comment. It no longer merges or re-measures.
-5. The `push` trigger of `state.yml` fires for queue merges as usual. `bfme-landed` is no longer needed.
+So neither the merge button nor "Merge when ready" can move main for a pull request this workflow did not clear.
+The only exception is the bypass account named in the ruleset.
 
-## Throughput
+## What the check workflows need (owners: managed-pr.yml and rules.yml)
 
-With group size 1 the queue is serial like today's job: about 11 landings an hour for one-file changes. With group
-size N the queue tests N pull requests together and lands all of them when the group passes. A failing group is
-split and retested. Raise N only after the check workflows have run against queue commits for a week.
+Agreed contract: `merge_group: types: [checks_requested]`. Check out the tools from
+`github.event.merge_group.base_sha`, never from the queue commit. Read the queue head
+(`merge_group.head_sha`, ref `merge_group.head_ref`) as data only. Compare base to queue head. Post the same
+contexts on `head_sha`. No landing receipts.
 
-## Live proof before switching
+The ordinary pull-request checks stay required before a pull request may be queued. This matters: for `merge_group`
+runs, GitHub takes the workflow file from the queue commit, so a pull request that changes `.github/` or `ci/` must
+never reach the queue. The path refusal on the ordinary check, which is required, guarantees that.
 
-Open one good one-function pull request and one that changes a protected path. Queue both. The good one lands as
-exactly the queue commit. The refused one leaves the queue with its rule name, and main does not move.
+## Batch size
+
+Start strictly serial: `max_entries_to_build: 1` and `max_entries_to_merge: 1`.
+
+- With build concurrency above 1, entry N+1's queue commit also contains entry N's change, while `base_sha` stays
+  main. The source rules' per-pull-request path and scope limits (G1, G6) would then judge several pull requests
+  as one.
+- Serial throughput: a one-file check takes 3 to 4 minutes, so about 15 to 20 landings an hour. A header-sized
+  check takes 12 to 16 minutes, so about 4 an hour while one is at the front. The direct mode measured 2 min 15 s
+  to 2 min 42 s per one-file landing.
+- Raise `max_entries_to_build` to 3 only after both check workflows judge each queued pull request on its own
+  delta. That gives about 45 an hour when all pass. A failure rebuilds the entries behind it, so keep the depth
+  small while the failure rate is high. Keep `max_entries_to_merge` at 1, so every pull request stays one squash
+  commit credited to its author.
+- `check_response_timeout_minutes: 30` covers the measured 744 to 978 s wide checks.
+
+## Switch-over with no gap
+
+1. Now, before the flip: install this landing release. It merges directly, because the private repository's
+   rules are unreadable (HTTP 403).
+2. At the flip: `gh api -X POST repos/Open-BFME/BFME2-Rebuild/rulesets --input ci/landing/ruleset-main.json`.
+   The landing workflow keeps merging, and the ruleset now refuses every other way in.
+3. Install the `merge_group` handlers of `managed-pr.yml` and `rules.yml`. Nothing fires until the queue rule
+   exists.
+4. Switch, one API call that replaces the rules at once:
+   `gh api -X PUT repos/Open-BFME/BFME2-Rebuild/rulesets/<id> --input ci/landing/ruleset-main-queue.json`.
+   - The next landing run sees `merge_queue` and enqueues.
+   - A direct merge already in flight at that instant is refused by GitHub (HTTP 405). It is held with a named
+     reason and queued on the next run.
+   - Nothing lands outside the rules at any point, and no landing route is missing at any point.
+5. Proof: one good pull request lands as exactly its queue commit. A pull request added to the queue by hand
+   leaves it with `Held: not-queued-by-landing`. Main does not move for it.
+6. Rollback: the same PUT with `ruleset-main.json`.
+
+## Header approval in the queue
+
+Unchanged: the workflow checks it before queueing, and only workflow-queued pull requests pass the queue commit's
+`BFME II / Landing`.

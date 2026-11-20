@@ -13,6 +13,9 @@ on:
     types: [completed]
   repository_dispatch:
     types: [bfme-land-next]
+  # Only fires once main's ruleset turns on the merge queue (ci/landing/ruleset-main-queue.json).
+  merge_group:
+    types: [checks_requested]
   workflow_dispatch:
     inputs:
       mode:
@@ -30,12 +33,53 @@ on:
 permissions: {}
 
 concurrency:
-  group: bfme-landing
+  # One landing job at a time; each merge-queue commit gets its own group so a waiting landing run never
+  # replaces it.
+  group: "${{ github.event_name == 'merge_group' && format('bfme-landing-group-{0}', github.event.merge_group.head_sha) || 'bfme-landing' }}"
   cancel-in-progress: false
 
 jobs:
+  group:
+    if: >-
+      github.repository == 'Open-BFME/BFME2-Rebuild' && github.event_name == 'merge_group' &&
+      startsWith(github.ref, 'refs/heads/gh-readonly-queue/main/')
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: write
+    steps:
+      - name: Read the landing tools from the queue's base (main), never from the queue commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.event.merge_group.base_sha }}'
+          persist-credentials: false
+          sparse-checkout: |
+            ci/landing
+            ci/managed-check
+            ci/managed-nt2
+            tools/gates
+      - name: Verify the landing and receipt tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          for dir in ci/landing ci/managed-check; do
+            if ! (cd "$dir" && sha256sum -c --quiet bundle.sha256); then
+              echo "Expected every file listed in $dir/bundle.sha256 to match. Found a difference." >&2
+              exit 1
+            fi
+          done
+      - name: Clear the queue commit only if the landing workflow queued this exact pull request head
+        shell: bash
+        env:
+          BFME_LANDING_TOKEN: '${{ github.token }}'
+        run: python3 -B ci/landing/lander.py group "$RUNNER_TEMP/bfme-landing"
+
   land:
-    if: github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main'
+    if: >-
+      github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
+      github.event_name != 'merge_group'
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 45
     permissions:

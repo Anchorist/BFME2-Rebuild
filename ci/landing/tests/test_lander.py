@@ -195,7 +195,32 @@ class Reconcile(unittest.TestCase):
         fx[f"git/commits/{NEW}"] = {"sha": NEW, "parents": [{"sha": p} for p in parents], "tree": {"sha": tree},
                                     "message": ("Object: write clearWeaponSetFlagForHorde (#2)\n\n"
                                                 f"Measured on main {MEASURED}, head {PR2}, tree {TREE}.\n"
+                                                "Pull request #2.\n"
                                                 "Landed by the BFME II landing workflow, run 1.")}
+
+    def test_title_written_by_the_author_is_never_parsed(self):
+        # A pull request title is the author's text. Fake landing lines in it must not drive reconciliation.
+        fake = f"Measured on main {'1' * 40}, head {'2' * 40}, tree {'3' * 40}. Pull request #7."
+
+        def titled(fx):
+            self.commit(fx)
+            message = fx[f"git/commits/{NEW}"]["message"]
+            fx[f"git/commits/{NEW}"]["message"] = fake + " (#2)" + message[message.index("\n\n"):]
+        api = FakeApi(live=True, main=NEW, edit=titled)
+        with tempfile.TemporaryDirectory() as tmp:
+            quiet(lander.run, ["select", tmp + "/w"], env(main=NEW, mode="live", pr="3"), api=api, config=CONFIG)
+        self.assertEqual(api.writes[1][2]["client_payload"], {
+            "number": 2, "head": PR2, "parent": MEASURED, "commit": NEW, "tree": TREE})
+
+        def title_only(fx):
+            fx[f"git/commits/{NEW}"] = {"sha": NEW, "parents": [{"sha": MEASURED}], "tree": {"sha": TREE},
+                                        "message": fake + " Landed by the BFME II landing workflow, run 1.\n\nplain"}
+        api = FakeApi(live=True, main=NEW, edit=title_only)
+        with tempfile.TemporaryDirectory() as tmp:
+            code, _ = quiet(lander.run, ["select", tmp + "/w"], env(main=NEW, mode="live", pr="3"),
+                            api=api, config=CONFIG)
+        self.assertEqual(code, 0)
+        self.assertNotIn(f"statuses/{NEW}", [w[1] for w in api.writes])
 
     def test_live_run_verifies_marks_and_hands_off_an_unconfirmed_landing(self):
         api = FakeApi(live=True, main=NEW, edit=self.commit)
@@ -357,22 +382,27 @@ class Land(unittest.TestCase):
             code, out = quiet(lander.run, ["land", tmp + "/w"], {**env(mode="live"), "BFME_LANDING_CHAIN": "1"},
                               api=api, config=CONFIG, sleep=lambda s: None)
         self.assertEqual(code, 0)
-        method, path, body = api.writes[0]
+        # The clearance the ruleset requires comes first, for this exact head only.
+        self.assertEqual(api.writes[0][:2], ("POST", f"statuses/{PR2}"))
+        self.assertEqual((api.writes[0][2]["state"], api.writes[0][2]["description"]),
+                         ("success", f"Cleared to land on main {MEASURED[:12]}"))
+        method, path, body = api.writes[1]
         self.assertEqual((method, path, body["sha"], body["merge_method"]), ("PUT", "pulls/2/merge", PR2, "squash"))
         self.assertTrue(body["commit_title"].endswith("(#2)"))
-        kinds = [(w[0], w[1]) for w in api.writes[1:]]
+        kinds = [(w[0], w[1]) for w in api.writes[2:]]
         self.assertEqual(kinds, [("POST", f"statuses/{NEW}"), ("POST", f"statuses/{PR2}"), ("POST", "issues/2/comments"),
                                  ("POST", "dispatches"), ("POST", "dispatches")])
-        self.assertEqual(api.writes[4][2], {"event_type": "bfme-landed", "client_payload": {
+        self.assertEqual(api.writes[5][2], {"event_type": "bfme-landed", "client_payload": {
             "number": 2, "head": PR2, "parent": MEASURED, "commit": NEW, "tree": TREE}})
-        self.assertEqual(list(api.writes[4][2]["client_payload"]), ["number", "head", "parent", "commit", "tree"])
-        # The commit message carries what a later run needs to reconcile this landing.
-        message = body["commit_title"] + "\n\n" + body["commit_message"]
-        self.assertTrue(lander.TITLE_NUMBER.search(message.split("\n", 1)[0]))
-        self.assertEqual(lander.MEASURED_LINE.search(message).groups(), (MEASURED, PR2, TREE))
-        self.assertIn(lander.TRAILER, message)
-        self.assertEqual(api.writes[5][2]["event_type"], "bfme-land-next")
+        self.assertEqual(list(api.writes[5][2]["client_payload"]), ["number", "head", "parent", "commit", "tree"])
+        # The body this workflow writes is exactly what a later run parses to reconcile this landing.
+        lines = body["commit_message"].splitlines()
+        self.assertEqual(lander.MEASURED_LINE.fullmatch(lines[0]).groups(), (MEASURED, PR2, TREE))
+        self.assertEqual(lander.NUMBER_LINE.fullmatch(lines[1])[1], "2")
+        self.assertTrue(lander.TRAILER_LINE.fullmatch(lines[2]))
+        self.assertEqual(api.writes[6][2]["event_type"], "bfme-land-next")
         self.assertIn(f"Landed #2 as {NEW[:12]}", out)
+        self.assertIn(f"::notice title=BFME II landing::Landed #2 as {NEW[:12]} on main", out)
 
     def test_main_moving_before_the_merge_stops_without_merging(self):
         api = FakeApi(live=True, main=MEASURED)
@@ -386,6 +416,10 @@ class Land(unittest.TestCase):
             out = caught.exception.line()
         self.assertEqual([w for w in api.writes if w[0] == "PUT"], [])
         self.assertIn("main-moved", out)
+        # The clearance is withdrawn at once: the last Landing status on the head names the hold.
+        last = [w for w in api.writes if w[1] == f"statuses/{PR2}"][-1][2]
+        self.assertEqual(last["state"], "pending")
+        self.assertTrue(last["description"].startswith("Held: main-moved."))
 
     def test_wrong_tree_after_merge_fails_and_marks_main(self):
         api = FakeApi(live=True, main=MEASURED)
@@ -401,7 +435,7 @@ class Land(unittest.TestCase):
             with self.assertRaises(lander.Failed) as caught:
                 quiet(lander.run, ["land", tmp + "/w"], env(mode="live"), api=api, config=CONFIG, sleep=lambda s: None)
         self.assertEqual(caught.exception.code, "post-merge")
-        self.assertEqual(api.writes[1], ("POST", f"statuses/{NEW}", {
+        self.assertEqual(api.writes[2], ("POST", f"statuses/{NEW}", {
             "state": "failure", "context": lander.LANDING_CONTEXT, "target_url":
             "https://github.com/Open-BFME/BFME2-Rebuild/actions/runs/1",
             "description": f"Landing verification failed: expected tree {TREE[:12]}"}))
@@ -416,6 +450,8 @@ class Land(unittest.TestCase):
                 quiet(lander.run, ["land", tmp + "/w"], env(mode="live"), api=api, config=CONFIG)
         self.assertEqual(caught.exception.code, "merge-refused")
         self.assertIn(("POST", "issues/2/comments"), [(w[0], w[1]) for w in api.writes])
+        last = [w for w in api.writes if w[1] == f"statuses/{PR2}"][-1][2]
+        self.assertEqual((last["state"], last["description"][:22]), ("failure", "Held: merge-refused. E"))
 
     def test_report_only_inline_pending(self):
         def pending(fx):

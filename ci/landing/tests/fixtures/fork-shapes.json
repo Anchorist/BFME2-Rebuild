@@ -1,0 +1,80 @@
+{
+ "CONTRIBUTOR": {
+  "author_association": "CONTRIBUTOR",
+  "base": {
+   "ref": "trunk",
+   "repo": {
+    "fork": false,
+    "full_name": "cli/cli",
+    "id": 212613049
+   },
+   "sha": "e87ed4c751918d89c87b041913973770a770dc5c"
+  },
+  "draft": true,
+  "head": {
+   "ref": "maxbeizer-fix-project-scope-error",
+   "repo": {
+    "fork": true,
+    "full_name": "maxbeizer/cli",
+    "id": 407212424
+   },
+   "sha": "8097bcc1e3e4542cea482292db78c30e4f16d107"
+  },
+  "labels": [
+   {
+    "name": "needs-triage"
+   },
+   {
+    "name": "external"
+   }
+  ],
+  "maintainer_can_modify": true,
+  "mergeable": false,
+  "mergeable_state": "dirty",
+  "number": 14035,
+  "state": "open",
+  "user": {
+   "id": 2006658,
+   "type": "User"
+  }
+ },
+ "NONE": {
+  "author_association": "NONE",
+  "base": {
+   "ref": "trunk",
+   "repo": {
+    "fork": false,
+    "full_name": "cli/cli",
+    "id": 212613049
+   },
+   "sha": "f24a94ffcb8c344ed5db0e4fb9a4d1fffd42c256"
+  },
+  "draft": false,
+  "head": {
+   "ref": "fix/issue-14946-existing-linked-branch",
+   "repo": {
+    "fork": true,
+    "full_name": "lazerg/cli-2",
+    "id": 1464859085
+   },
+   "sha": "0a4c026604c7ea2d24c447e246900b0c004b5757"
+  },
+  "labels": [
+   {
+    "name": "external"
+   },
+   {
+    "name": "ready-for-review"
+   }
+  ],
+  "maintainer_can_modify": true,
+  "mergeable": true,
+  "mergeable_state": "blocked",
+  "number": 15111,
+  "state": "open",
+  "user": {
+   "id": 20501725,
+   "type": "User"
+  }
+ }
+}

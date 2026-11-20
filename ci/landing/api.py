@@ -36,12 +36,14 @@ class Api:
         self._token = token
         self.live = live
         self.root = f"https://api.github.com/repos/{repo}/"
+        self.graphql = "https://api.github.com/graphql"
         self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
         self.writes = []
 
     def _send(self, method, path, body):
         data = json.dumps(body, sort_keys=True).encode("utf-8") if body is not None else None
-        request = urllib.request.Request(self.root + path, data=data, method=method, headers={
+        url = self.graphql if path == "graphql" else self.root + path
+        request = urllib.request.Request(url, data=data, method=method, headers={
             "Authorization": "Bearer " + self._token,
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
@@ -73,3 +75,15 @@ class Api:
             raise ReadOnly(f"Expected no writes in dry-run mode. Found an attempted {method} {path}.")
         self.writes.append((method, path, body))
         return self._send(method, path, body)
+
+    def mutate(self, query, variables):
+        """A GraphQL mutation (writes, so live only). Returns the data object or raises with GitHub's message."""
+        if not self.live:
+            raise ReadOnly("Expected no writes in dry-run mode. Found an attempted GraphQL mutation.")
+        self.writes.append(("POST", "graphql", {"query": query, "variables": variables}))
+        code, payload = self._send("POST", "graphql", {"query": query, "variables": variables})
+        errors = (payload or {}).get("errors") if isinstance(payload, dict) else None
+        if code != 200 or errors or not isinstance((payload or {}).get("data"), dict):
+            detail = printable((errors or [{}])[0].get("message", "") if errors else "", 160)
+            raise ApiError(f"Expected HTTP 200 and data from the GraphQL mutation. Found HTTP {code} {detail}".rstrip() + ".")
+        return payload["data"]

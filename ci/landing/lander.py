@@ -28,6 +28,7 @@ sys.path.insert(1, str(HERE.parent / "managed-check"))
 import landing_read as lr  # noqa: E402
 from common import CONTEXT as BOAT, HEX40, REPO, REPO_ID, read  # noqa: E402
 from inline_status import CONTEXT as INLINE  # noqa: E402
+from github_status import admitted  # noqa: E402  (the compiler check's own admission rule)
 from api import Api, ApiError, ReadOnly, printable  # noqa: E402
 
 RULES = lr.RULES
@@ -48,8 +49,10 @@ MEASURE_WAIT_SECONDS = 1800         # wide changes measured 744 to 978 s
 POLL_SECONDS = 20
 MAX_OPEN_PULLS = 300
 TRAILER = "Landed by the BFME II landing workflow"
+# Reconciliation reads only the body this workflow writes (after the title, which a pull request author chooses).
 MEASURED_LINE = re.compile(r"Measured on main ([0-9a-f]{40}), head ([0-9a-f]{40}), tree ([0-9a-f]{40})\.")
-TITLE_NUMBER = re.compile(r"\(#([1-9][0-9]{0,8})\)\Z")
+NUMBER_LINE = re.compile(r"Pull request #([1-9][0-9]{0,8})\.")
+TRAILER_LINE = re.compile(re.escape(TRAILER) + r", run [0-9]{1,20}\.")
 
 
 class Held(Exception):
@@ -145,7 +148,8 @@ def evaluate(api, number, main, config):
     pr = api.call(f"pulls/{number}")
     head = (pr.get("head") or {}).get("sha", "")
     decision = {"number": number, "head": head, "title": printable(pr.get("title", ""), 120),
-                "author": (pr.get("user") or {}).get("login"), "stage": "hold", "reasons": [], "checks": {}}
+                "author": (pr.get("user") or {}).get("login"), "node_id": pr.get("node_id"),
+                "stage": "hold", "reasons": [], "checks": {}}
     reasons = decision["reasons"]
 
     def hold(code, expected, found, final=False):
@@ -158,16 +162,26 @@ def evaluate(api, number, main, config):
     if base.get("ref") != "main" or (base.get("repo") or {}).get("id") != REPO_ID:
         hold("not-main", "a pull request into this repository's main", f"base {printable(base.get('ref'), 60)}", True)
         return decision
+    head_repo = (pr.get("head") or {}).get("repo") or {}
+    decision["fork"] = head_repo.get("id") != REPO_ID
     head_ref = (pr.get("head") or {}).get("ref", "")
-    if head_ref.startswith(REFUSED_BRANCH_PREFIXES) and (number, head) not in config["exceptions"]:
+    # Rehearsal and corpus branches are ours. A fork's branch name is chosen by its author and decides nothing.
+    if (not decision["fork"] and head_ref.startswith(REFUSED_BRANCH_PREFIXES)
+            and (number, head) not in config["exceptions"]):
         hold("refused-branch", "an ordinary contributor branch",
              f"branch {printable(head_ref, 80)}, a rehearsal or corpus branch that never lands", True)
     if pr.get("draft") is not False:
-        hold("draft", "a pull request marked ready for review", "a draft")
+        hold("draft", "a pull request marked ready for review",
+             "a draft; choose Ready for review when you want it to land")
     if any(label.get("name") == HOLD_LABEL for label in pr.get("labels") or ()):
-        hold("hold-label", f"no {HOLD_LABEL} label", f"the {HOLD_LABEL} label")
-    if not (pr.get("head") or {}).get("repo"):
-        hold("head-repository-missing", "the pull request's source repository", "a deleted repository", True)
+        hold("hold-label", f"no {HOLD_LABEL} label", f"the {HOLD_LABEL} label, set by a maintainer")
+    if not head_repo:
+        hold("head-repository-missing", "the pull request's source repository",
+             "a deleted repository; open a new pull request from an existing fork", True)
+    elif not admitted(pr):
+        hold("awaiting-admission", "a maintainer to admit this pull request to the compiler check (label boat-ok)",
+             "no admission yet. A maintainer reads changes from new contributors before the compiler runs them; "
+             "you do not need to do anything")
     files = changed_files(api, number)
     if any(name.startswith(".github/") for name in files):
         hold("workflow-change", "no change under .github/", "a workflow change; a maintainer merges those by hand", True)
@@ -183,7 +197,8 @@ def evaluate(api, number, main, config):
             else:
                 if not approved:
                     hold("header-approval", f"an approval of head {head[:12]} by a listed header approver",
-                         "no such approval")
+                         "none yet. A maintainer listed in ci/landing/landing.json reviews every change under "
+                         "include/; a new push needs a new approval")
     if pr.get("mergeable") is False:
         hold("merge-conflict", "a pull request that merges cleanly into main",
              "a conflict; merge or rebase main into the branch", True)
@@ -206,9 +221,11 @@ def evaluate(api, number, main, config):
         if kind == "stale-success":
             stale = True
         elif kind == "fresh-failure":
-            hold("check-failure", f"{context} success on main {main[:12]}", "failure or error", True)
+            hold("check-failure", f"{context} success on main {main[:12]}",
+                 "failure; open that check's Details for the reason, then push a fix", True)
         elif kind == "stale-failure":
-            hold("check-failure", f"{context} success", "failure on an older main; push a fix to start a new check", True)
+            hold("check-failure", f"{context} success",
+                 "failure on an older main; open that check's Details, then push a fix to start a new check", True)
         elif kind == "pending":
             hold("measuring", f"{context} finished", "pending")
         else:
@@ -234,14 +251,25 @@ def main_failed_landing(api, main):
     return status and status.get("state") == "failure" and (status.get("creator") or {}).get("id") == lr.BOT_ID
 
 
+CLEARED = "Cleared to land on main"
+
+
 def report_hold(api, decision):
-    """Live only: keep one current BFME II / Landing status on the pull request head."""
-    if not api.live or not decision["reasons"]:
+    """Live only: keep one current BFME II / Landing status on the pull request head.
+
+    That status is also a required check of main's ruleset. "Cleared to land" exists only while this job merges
+    that exact head, so a clearance left behind by an interrupted run is withdrawn here.
+    """
+    if not api.live:
+        return
+    prior = decision.get("landing_status") or {}
+    if not decision["reasons"]:
+        if prior.get("state") == "success" and (prior.get("description") or "").startswith(CLEARED):
+            status(api, decision["head"], "pending", "Eligible; waiting for the landing job")
         return
     first = decision["reasons"][0]
     state = "failure" if first.final else "pending"
     text = printable(f"Held: {first.code}. Expected {first.expected}.", 140)
-    prior = decision.get("landing_status") or {}
     if prior.get("state") == state and prior.get("description") == text:
         return
     status(api, decision["head"], state, text)
@@ -300,6 +328,16 @@ def output(name, value):
     if path:
         with Path(path).open("a") as stream:
             stream.write(f"{name}={value}\n")
+
+
+def headline(text):
+    """One line for someone reading the Actions page: an annotation on the run plus the top of the summary."""
+    text = printable(text, 200).replace("::", ": ")
+    print(f"::notice title=BFME II landing::{text}")
+    path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if path:
+        with Path(path).open("a") as stream:
+            stream.write(f"### {text}\n\n")
 
 
 def summary(lines):
@@ -370,11 +408,99 @@ def timed_out(decision, main):
     return text.startswith("Held: measurement-timeout") and marker(main) in text
 
 
+ENQUEUE = ("mutation($pr: ID!, $head: GitObjectID!) { enqueuePullRequest(input: "
+           "{pullRequestId: $pr, expectedHeadOid: $head}) { mergeQueueEntry { position } } }")
+QUEUED = "Cleared for the merge queue at head"
+GROUP_REF = re.compile(r"refs/heads/gh-readonly-queue/main/pr-([1-9][0-9]{0,8})-([0-9a-f]{40})\Z")
+
+
+def group(api, env):
+    """merge_group: vouch for a queue commit only when this workflow queued that exact pull request head.
+
+    main's ruleset requires BFME II / Landing on the queue commit as well, so a pull request queued any other way
+    (a writer's "merge when ready") is drained from the queue with a named reason. Nothing from the queue commit is
+    run: the workflow checks these tools out from the group's base, which is main.
+    """
+    event = read(env["GITHUB_EVENT_PATH"], 2 * 1024**2).get("merge_group") or {}
+    sha, ref = event.get("head_sha") or "", event.get("head_ref") or ""
+    if not HEX40.fullmatch(sha):
+        raise Failed("merge-group", "a merge group with a 40-character head commit", "missing or malformed metadata")
+    found = GROUP_REF.fullmatch(ref)
+    if not found:
+        held = Held("merge-group-ref", "a queue ref refs/heads/gh-readonly-queue/main/pr-<number>-<head>",
+                    printable(ref, 100) or "no ref")
+    else:
+        number, head = int(found[1]), found[2]
+        pr = api.call(f"pulls/{number}")
+        landing = read_statuses(api, head).get(LANDING_CONTEXT) or {}
+        held = None
+        if pr.get("state") != "open" or (pr.get("head") or {}).get("sha") != head:
+            held = Held("head-changed", f"#{number} open at head {head[:12]}", "a different head or a closed pull request")
+        elif (landing.get("state") != "success" or landing.get("description") != f"{QUEUED} {head[:12]}"
+              or (landing.get("creator") or {}).get("id") != lr.BOT_ID):
+            held = Held("not-queued-by-landing", f"#{number} queued by the landing workflow at head {head[:12]}",
+                        "a pull request added to the queue another way")
+    if held:
+        status(api, sha, "failure", f"Held: {held.code}. Expected {held.expected}.")
+        headline(f"Merge group {sha[:12]} refused: {held.code}.")
+        summary([f"Refused merge group {sha[:12]}. {held.line()}"])
+        return 0
+    status(api, sha, "success", f"Cleared in the merge queue: #{number} head {head[:12]}")
+    headline(f"Merge group {sha[:12]} cleared for #{number} at head {head[:12]}.")
+    return 0
+
+
+def merge_queue_active(api):
+    """True when an active ruleset requires the merge queue on main.
+
+    The private Free repository answers 403 (rules unavailable); then the job merges directly. That is safe in both
+    directions: once a queue is required, GitHub refuses a direct merge (HTTP 405) and the job only holds.
+    """
+    try:
+        rules = api.call("rules/branches/main")
+    except ApiError:
+        return False
+    return isinstance(rules, list) and any(isinstance(rule, dict) and rule.get("type") == "merge_queue"
+                                           for rule in rules)
+
+
+def enqueue(api, decisions, main, lines):
+    """Merge-queue mode: add every eligible pull request to GitHub's queue with its expected head.
+
+    The queue measures main plus the pull request again (merge_group) and merges exactly what it measured, so this
+    job neither re-measures nor merges. The hold rules above (admission, header approval, refusals) still decide
+    what may enter the queue.
+    """
+    ready = [item for item in decisions if item["stage"] in {"land", "remeasure"}]
+    done, failed = [], []
+    for item in ready:
+        prior = (item.get("landing_status") or {}).get("description") or ""
+        if prior == f"{QUEUED} {item['head'][:12]}":
+            continue
+        if not api.live:
+            done.append(f"#{item['number']} (dry run: would queue)")
+            continue
+        # The ruleset requires this status on the pull request and on its queue commit (see group()).
+        status(api, item["head"], "success", f"{QUEUED} {item['head'][:12]}")
+        try:
+            api.mutate(ENQUEUE, {"pr": item["node_id"], "head": item["head"]})
+        except ApiError as exc:
+            held = Held("enqueue-refused", "GitHub to accept the pull request into the merge queue", str(exc)[:160])
+            report_hold(api, {"head": item["head"], "reasons": [held], "landing_status": None})
+            failed.append(f"#{item['number']}")
+            continue
+        done.append(f"#{item['number']}")
+    headline(f"Merge queue mode on main {main[:12]}: queued {', '.join(done) or 'nothing new'}"
+             + (f"; refused {', '.join(failed)}" if failed else "") + ".")
+    summary(lines)
+    output("action", "none")
+    return 0
+
+
 def select(api, env, config, directory, clock=time.monotonic, sleep=time.sleep):
     main = current_main(api)
     if env.get("GITHUB_SHA") != main:
-        summary([f"Superseded: this run started on main {env.get('GITHUB_SHA', '')[:12]}; main is now {main[:12]}. "
-                 "A newer run takes over."])
+        headline(f"Superseded: main moved to {main[:12]} after this run started; a newer run takes over.")
         output("action", "none")
         return 0
     reconcile(api, main)
@@ -389,20 +515,27 @@ def select(api, env, config, directory, clock=time.monotonic, sleep=time.sleep):
     for item in decisions:
         report_hold(api, item)
     lines = table(decisions, main, api.live)
+    if merge_queue_active(api):
+        return enqueue(api, decisions, main, lines)
     pick = (next((item for item in decisions if item["stage"] == "land"), None)
             or next((item for item in decisions if item["stage"] == "remeasure" and not timed_out(item, main)), None))
     if pick is None:
+        held = [f"#{item['number']} {item['reasons'][0].code}" for item in decisions if item["reasons"]]
+        headline(f"Nothing to land on main {main[:12]}: {len(decisions)} open pull request(s)"
+                 + (f"; held {', '.join(held[:6])}" if held else "") + ".")
         summary(lines + ["", "Nothing to land."])
         output("action", "none")
         return 0
     binding = {"number": pick["number"], "base": main, "head": pick["head"]}
     if pick["stage"] == "remeasure":
         if config["remeasure"] == "off":
+            headline(f"#{pick['number']} waits: measured on an older main and automatic re-measurement is off.")
             summary(lines + ["", f"#{pick['number']} needs a fresh measurement on main {main[:12]}; "
                              "automatic re-measurement is off. Push a commit or reopen the pull request."])
             output("action", "none")
             return 0
         if not api.live:
+            headline(f"Dry run: would re-measure #{pick['number']} on main {main[:12]}, then land it.")
             summary(lines + ["", f"Would send repository_dispatch {REMEASURE_EVENT} for #{pick['number']} "
                              f"head {pick['head'][:12]} on main {main[:12]} and wait for fresh results."])
             output("action", "none")
@@ -415,6 +548,7 @@ def select(api, env, config, directory, clock=time.monotonic, sleep=time.sleep):
                                           check_first=pick["stage"] == "land")
     except Held as exc:
         report_hold(api, {"head": binding["head"], "reasons": [exc], "landing_status": None})
+        headline(f"Held #{binding['number']}: {exc.code}. Expected {exc.expected}.")
         summary(lines + ["", f"#{binding['number']} held while waiting for its results. {exc.line()}"])
         output("action", "none")
         return 0
@@ -424,14 +558,34 @@ def select(api, env, config, directory, clock=time.monotonic, sleep=time.sleep):
                        ("match_attempt", runs["match"][1]), ("rules_run", runs["rules"][0]),
                        ("rules_attempt", runs["rules"][1]), ("inline", runs["inline"])):
         output(key, value)
+    headline(f"#{binding['number']} is measured on current main {main[:12]}; checking its receipts and merging next.")
     summary(lines + ["", f"Candidate #{binding['number']} head {binding['head'][:12]} on main {main[:12]}; "
                      "collecting its receipts."])
     return 0
 
 
 def land(api, env, config, directory, sleep=time.sleep):
+    """Merge the selected pull request. Any hold replaces its Landing status, so "Measuring" never stays behind."""
     directory = Path(directory)
     prior = read(directory / "binding.json", 4096)
+    try:
+        return land_bound(api, env, config, directory, prior, sleep)
+    except Failed:
+        raise
+    except Held as exc:
+        report_hold(api, {"head": prior["head"], "reasons": [exc], "landing_status": None})
+        raise
+    except (ApiError, OSError, ValueError, KeyError, TypeError):
+        if api.live:
+            try:
+                report_hold(api, {"head": prior["head"], "landing_status": None, "reasons": [Held(
+                    "interrupted", "a confirmed merge result", "an interrupted landing run; the next run checks main")]})
+            except (Held, ApiError, OSError):
+                pass
+        raise
+
+
+def land_bound(api, env, config, directory, prior, sleep):
     binding = {key: prior[key] for key in ("number", "base", "head")}
     if env.get("GITHUB_SHA") != binding["base"]:
         raise Failed("binding", f"a candidate measured on this run's main {env.get('GITHUB_SHA', '')[:12]}",
@@ -458,29 +612,34 @@ def land(api, env, config, directory, sleep=time.sleep):
         raise Held("receipt", "receipts for the same main, head and tree", str(exc)) from None
     tree = positions["tree"]
 
+    if not api.live:
+        main = current_main(api)
+        if main != binding["base"]:
+            raise Held("main-moved", f"main {binding['base'][:12]}, the commit the checks measured", f"main {main[:12]}")
+        headline(f"Dry run: would merge #{binding['number']} onto main {main[:12]}.")
+        summary([f"Would merge #{binding['number']} ({MERGE_METHOD}) with expected head {binding['head'][:12]} "
+                 f"onto main {main[:12]}, expecting one parent {main[:12]} and tree {tree[:12]}."])
+        return 0
+    # The ruleset requires this status from GitHub Actions, so only this job can make the head mergeable.
+    status(api, binding["head"], "success", f"{CLEARED} {binding['base'][:12]}")
     # Immediately before the merge: main must still be the measured commit.
     main = current_main(api)
     if main != binding["base"]:
         raise Held("main-moved", f"main {binding['base'][:12]}, the commit the checks measured", f"main {main[:12]}")
-    if not api.live:
-        summary([f"Would merge #{binding['number']} ({MERGE_METHOD}) with expected head {binding['head'][:12]} "
-                 f"onto main {main[:12]}, expecting one parent {main[:12]} and tree {tree[:12]}."])
-        return 0
-    pr_title = decision["title"]
     body = {"merge_method": MERGE_METHOD, "sha": binding["head"],
-            "commit_title": printable(f"{pr_title} (#{binding['number']})", 250),
+            "commit_title": printable(f"{decision['title']} (#{binding['number']})", 250),
             "commit_message": (f"Measured on main {binding['base']}, head {binding['head']}, tree {tree}.\n"
-                               f"Landed by the BFME II landing workflow, run {env.get('GITHUB_RUN_ID', '')}.")}
+                               f"Pull request #{binding['number']}.\n"
+                               f"{TRAILER}, run {env.get('GITHUB_RUN_ID', '0') or '0'}.")}
     code, payload = api.write("PUT", f"pulls/{binding['number']}/merge", body)
     message = printable((payload or {}).get("message", ""), 160)
     if code == 409:
-        raise Held("head-changed", f"head {binding['head'][:12]} at merge", f"GitHub refused: {message}")
+        raise Held("head-changed", f"head {binding['head'][:12]} at merge",
+                   f"a newer head; GitHub refused the merge ({message}). The new head is measured from scratch")
     if code == 405:
-        held = Held("merge-refused", "GitHub to merge the pull request", f"HTTP 405: {message}", True)
-        report_hold(api, {"head": binding["head"], "reasons": [held], "landing_status": None})
         comment(api, binding["number"], f"Held: GitHub would not merge this pull request ({message}). "
                 "If it conflicts with main, merge or rebase main into your branch and push.")
-        raise held
+        raise Held("merge-refused", "GitHub to merge the pull request", f"HTTP 405: {message}", True)
     if code != 200 or not (payload or {}).get("merged") or not HEX40.fullmatch((payload or {}).get("sha", "")):
         raise Failed("merge", "HTTP 200 and a merged commit", f"HTTP {code}: {message}")
     commit = payload["sha"]
@@ -499,6 +658,7 @@ def land(api, env, config, directory, sleep=time.sleep):
             notified.append(event)
         except Held as exc:
             print(exc.line(), file=sys.stderr)
+    headline(f"Landed #{binding['number']} as {commit[:12]} on main (parent {binding['base'][:12]}, tree verified).")
     summary([f"Landed #{binding['number']} as {commit[:12]} (parent {binding['base'][:12]}, tree {tree[:12]}). "
              f"Sent: {', '.join(notified) or 'nothing'}."])
     return 0
@@ -516,11 +676,12 @@ def reconcile(api, main):
     newest commit is one of those and has no BFME II / Landing status yet, verify it now, before anything else.
     """
     record = api.call(f"git/commits/{main}")
-    message = record.get("message") or ""
-    if TRAILER not in message or LANDING_CONTEXT in read_statuses(api, main):
+    # Only the body is ours; the title is the pull request author's and is never parsed.
+    lines = (record.get("message") or "").partition("\n\n")[2].splitlines()
+    if not any(TRAILER_LINE.fullmatch(line) for line in lines) or LANDING_CONTEXT in read_statuses(api, main):
         return
-    measured = MEASURED_LINE.search(message)
-    number = TITLE_NUMBER.search(message.split("\n", 1)[0].rstrip())
+    measured = next(filter(None, map(MEASURED_LINE.fullmatch, lines)), None)
+    number = next(filter(None, map(NUMBER_LINE.fullmatch, lines)), None)
     if not measured or not number:
         raise Failed("unreconciled-landing", f"main {main[:12]} to name its measured main, head, tree and pull request",
                      "a landing commit without them; a maintainer must check main")
@@ -570,9 +731,19 @@ def fail_after(api, binding, commit, expected, found):
 
 def run(argv, env, api=None, config=None, **kwargs):
     mode, directory = argv
-    if (env.get("GITHUB_REPOSITORY") != REPO or env.get("GITHUB_REPOSITORY_ID") != str(REPO_ID)
-            or env.get("GITHUB_REF") != "refs/heads/main"):
-        raise Failed("repository", "this repository's main branch", "another repository or ref")
+    if env.get("GITHUB_REPOSITORY") != REPO or env.get("GITHUB_REPOSITORY_ID") != str(REPO_ID):
+        raise Failed("repository", "this repository", "another repository")
+    if mode == "group":
+        # GitHub starts this for the merge queue; it only ever writes one status, so it always runs live.
+        if (env.get("GITHUB_EVENT_NAME") != "merge_group"
+                or not (env.get("GITHUB_REF") or "").startswith("refs/heads/gh-readonly-queue/main/")):
+            raise Failed("event", "a merge_group event for main's queue", "another event or ref")
+        if api is None:
+            api = Api(REPO, env.pop("BFME_LANDING_TOKEN", None), True)
+        api.run_id = env.get("GITHUB_RUN_ID", "")
+        return group(api, env)
+    if env.get("GITHUB_REF") != "refs/heads/main":
+        raise Failed("repository", "this repository's main branch", "another ref")
     live = env.get("BFME_LANDING_MODE") == "live"
     if api is None:
         api = Api(REPO, env.pop("BFME_LANDING_TOKEN", None), live)
@@ -582,7 +753,7 @@ def run(argv, env, api=None, config=None, **kwargs):
         return select(api, env, config, directory, **kwargs)
     if mode == "land":
         return land(api, env, config, directory, **kwargs)
-    raise Failed("mode", "select or land", printable(mode, 20))
+    raise Failed("mode", "select, land or group", printable(mode, 20))
 
 
 def main():
@@ -590,19 +761,23 @@ def main():
         return run(sys.argv[1:], os.environ)
     except Failed as exc:
         print(f"Landing stopped. {exc.line()}", file=sys.stderr)
+        headline(f"Stopped: {exc.code}. Expected {exc.expected}.")
         summary([f"Stopped. {exc.line()}"])
         return 1
     except Held as exc:
         print(f"Landing held. {exc.line()}", file=sys.stderr)
+        headline(f"Held: {exc.code}. Expected {exc.expected}.")
         summary([f"Held. {exc.line()}"])
         return 0
     except (lr.Waiting, ApiError, ReadOnly) as exc:
         print(f"Landing stopped. {printable(exc, 300)}", file=sys.stderr)
+        headline(f"Stopped: {printable(exc, 160)}")
         summary([f"Stopped. {printable(exc, 300)}"])
         return 1
     except (OSError, ValueError, KeyError, TypeError) as exc:
         detail = f"Expected readable landing inputs. Found a {type(exc).__name__} while reading them."
         print(f"Landing stopped. {detail}", file=sys.stderr)
+        headline(f"Stopped: {detail}")
         summary([f"Stopped. {detail}"])
         return 1
 
