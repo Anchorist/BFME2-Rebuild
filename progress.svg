@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="224" viewBox="0 0 640 224" role="img" aria-label="Progress: four bars">
+<style>
+.bg{fill:#fcfcfb}.t1{fill:#0b0b0b}.t2{fill:#52514e}.track{fill:#e4e3df}.fill{fill:#2a78d6}
+.grid{stroke:#e4e3df;stroke-width:1}.s1{stroke:#2a78d6}.s2{stroke:#eb6834}.s3{stroke:#1baf7a}.s4{stroke:#eda100}
+.d1{fill:#2a78d6}.d2{fill:#eb6834}.d3{fill:#1baf7a}.d4{fill:#eda100}
+@media (prefers-color-scheme: dark){.bg{fill:#1a1a19}.t1{fill:#f0efec}.t2{fill:#c3c2b7}.track{fill:#383835}
+.fill{fill:#3987e5}.grid{stroke:#383835}.s1{stroke:#3987e5}.s2{stroke:#d95926}.s3{stroke:#199e70}.s4{stroke:#c98500}
+.d1{fill:#3987e5}.d2{fill:#d95926}.d3{fill:#199e70}.d4{fill:#c98500}}
+text{font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif}
+</style>
+<rect class="bg" width="640" height="224" rx="6"/>
+<text class="t2" x="16" y="24" font-size="12">Main 64fce00c1ee6 · 2026-11-20</text>
+<text class="t1" x="16" y="54" font-size="14" font-weight="600">Code matched</text>
+<text class="t1" x="624" y="54" font-size="14" text-anchor="end">25.7%</text>
+<rect class="track" x="16" y="62" width="608" height="10" rx="4"/>
+<rect class="fill" x="16" y="62" width="156.2" height="10" rx="4"/>
+<text class="t1" x="16" y="100" font-size="14" font-weight="600">Code proven</text>
+<text class="t1" x="624" y="100" font-size="14" text-anchor="end">16.9%</text>
+<rect class="track" x="16" y="108" width="608" height="10" rx="4"/>
+<rect class="fill" x="16" y="108" width="102.8" height="10" rx="4"/>
+<text class="t1" x="16" y="146" font-size="14" font-weight="600">Linking</text>
+<text class="t1" x="624" y="146" font-size="14" text-anchor="end">not measured yet</text>
+<rect class="track" x="16" y="154" width="608" height="10" rx="4"/>
+<text class="t1" x="16" y="192" font-size="14" font-weight="600">Finished functions</text>
+<text class="t1" x="624" y="192" font-size="14" text-anchor="end">24.2%</text>
+<rect class="track" x="16" y="200" width="608" height="10" rx="4"/>
+<rect class="fill" x="16" y="200" width="147.1" height="10" rx="4"/>
+</svg>
