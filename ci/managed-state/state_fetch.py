@@ -1,12 +1,14 @@
 """Fetch only an authenticated state artifact for this checkout, with bounded input."""
 
 from hashlib import file_digest
+from http.client import HTTPException
 import os
 from pathlib import Path
 import re
 import shutil
 import sys
 import tempfile
+from time import sleep
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -71,7 +73,25 @@ def select_artifact(api, run, attempt):
     return row["id"], size, digest
 
 
-def download(api, artifact, archive_size, digest, output):
+def retry(operation):
+    for pause in (1, 3, 9, None):
+        try:
+            return operation()
+        except urllib.error.HTTPError as error:
+            if pause is None or error.code not in {404, 408, 429, 500, 502, 503, 504}:
+                raise ValueError("GitHub artifact transfer failed.") from None
+        except (HTTPException, OSError):
+            if pause is None:
+                raise ValueError("GitHub artifact transfer failed.") from None
+        except ValueError as error:
+            temporary = re.fullmatch(r"The GitHub API returned HTTP (408|429|50[0234])\.", str(error))
+            if not temporary or pause is None:
+                raise
+        sleep(pause)
+
+
+def download(api, artifact, archive_size, digest, output, *, members=None):
+    allowed = members if members is not None else {"base-state.json": LIMIT}
     if not 0 < archive_size <= LIMIT:
         raise ValueError("The state archive exceeds its allowance.")
     url = f"https://api.github.com/repos/{REPO}/actions/artifacts/{artifact}/zip"
@@ -105,12 +125,15 @@ def download(api, artifact, archive_size, digest, output):
         if file_digest(archive, "sha256").hexdigest() != digest:
             raise ValueError("GitHub artifact digest did not match.")
         with zipfile.ZipFile(archive) as bundle:
-            members = bundle.infolist()
-            if (len(members) != 1 or members[0].filename != "base-state.json"
-                    or not 0 < members[0].file_size <= LIMIT):
-                raise ValueError("The state package must contain one bounded JSON file.")
-            with bundle.open(members[0]) as source, output.open("xb") as target:
-                shutil.copyfileobj(source, target, 65536)
+            files = bundle.infolist()
+            if (len(files) != len(allowed) or {file.filename for file in files} != allowed.keys()
+                    or any(not 0 < file.file_size <= allowed[file.filename] for file in files)):
+                raise ValueError("The state package must contain exactly the expected bounded JSON files.")
+            for file in files:
+                destination = output / file.filename if members is not None else output
+                with bundle.open(file) as source, destination.open("xb") as target:
+                    shutil.copyfileobj(source, target, 65536)
+
 
 
 def main(output, *, parent=False):

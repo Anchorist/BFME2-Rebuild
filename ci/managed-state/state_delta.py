@@ -13,7 +13,9 @@ REPORT_DIRS = ("docs/", "worklist/", "ci/state/", "ci/progress/", "ci/alarms/",
                "ci/nightly/", "ci/landing/", ".github/workflows/")
 STATE_FLOW = ".github/workflows/state.yml"
 TRANSPORT = {"ci/managed-state/state_delta.py", "ci/managed-state/state_fetch.py",
-             "ci/managed-state/state_workflow.py", "ci/managed-state/state_origin.py",
+             "ci/managed-state/state_workflow.py",
+             "ci/managed-state/recovery-artifacts.json", "ci/managed-state/state_recover.py",
+             "ci/managed-state/state_transport.py", "ci/managed-state/state_origin.py",
              "ci/managed-state/bundle.sha256",
              "ci/README.md"}
 RESUME_MIGRATION = ("5df8abc2a97aef390b5a0256a15e163ae4a312566c0ea893187da4a254aea8fc", "14286c7910816519777d5a46c720605d142dff009f5751843d4e4c5263e2111f")

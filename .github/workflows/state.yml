@@ -14,6 +14,11 @@ on:
         required: false
         type: boolean
         default: false
+      recover_bootstrap:
+        description: "Rejoin the retained first protected bootstrap without compiling"
+        required: false
+        type: boolean
+        default: false
   repository_dispatch:
     types: [bfme-landed]
 
@@ -36,7 +41,7 @@ env:
 jobs:
   plan:
     if: >-
-      github.repository == 'Open-BFME/BFME2-Rebuild' &&
+      inputs.recover_bootstrap != true && github.repository == 'Open-BFME/BFME2-Rebuild' &&
       github.ref == 'refs/heads/main' && vars.BFME_STATE_WORKFLOW_ENABLED == 'yes'
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 5
@@ -168,6 +173,7 @@ jobs:
     timeout-minutes: 8
     permissions:
       contents: read
+      actions: read
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -181,15 +187,14 @@ jobs:
           trap 'rc=$?; printf "Expected current protected main. Found exit %s at line %s.\n" "$rc" "$LINENO" >&2' ERR
           (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
           python3 -B ci/managed-state/state_origin.py check
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          name: bfme-state-plan-${{ needs.plan.outputs.attempt }}
-          path: '${{ runner.temp }}/state-input'
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          pattern: bfme-state-${{ needs.plan.outputs.attempt }}-shard-*-try-*
-          path: '${{ runner.temp }}/state-shards'
-          merge-multiple: false
+      - name: Restore exact plan and shard artifacts with retry
+        env:
+          BFME_READ_TOKEN: '${{ github.token }}'
+          BFME_STATE_PLAN_ATTEMPT: '${{ needs.plan.outputs.attempt }}'
+        run: |
+          set -euo pipefail
+          (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
+          python3 -B ci/managed-state/state_transport.py "$RUNNER_TEMP/state-input" "$RUNNER_TEMP/state-shards"
       - name: Join the complete main state
         env:
           BFME_STATE_PLAN_ATTEMPT: '${{ needs.plan.outputs.attempt }}'
@@ -219,5 +224,46 @@ jobs:
         with:
           name: bfme-numeric-main-state-${{ github.run_attempt }}
           path: '${{ runner.temp }}/state.json'
+          if-no-files-found: error
+          retention-days: 7
+
+  recover:
+    if: >-
+      github.event_name == 'workflow_dispatch' && inputs.recover_bootstrap && !inputs.seed &&
+      github.repository == 'Open-BFME/BFME2-Rebuild' && github.repository_id == '1464323350' &&
+      github.ref == 'refs/heads/main' && vars.BFME_STATE_WORKFLOW_ENABLED == 'yes'
+    runs-on: '${{ vars.BFME_STATE_RECOVERY_RUNNER || ''ubuntu-24.04'' }}'
+    timeout-minutes: 12
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          fetch-depth: 8
+      - name: Recover the original immutable measurement
+        env:
+          BFME_READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -euo pipefail
+          (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          python3 -B ci/managed-state/state_origin.py check
+          python3 -B ci/managed-state/state_recover.py "$RUNNER_TEMP/recovery-input" "$RUNNER_TEMP/recovery"
+          python3 -B ci/managed-state/state_origin.py check
+      - name: Retain the exact protected comparison
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-exact-main-state-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/recovery/base-state.json'
+          if-no-files-found: error
+          retention-days: 7
+      - name: Retain the protected numeric state
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-numeric-main-state-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/recovery/state.json'
           if-no-files-found: error
           retention-days: 7
