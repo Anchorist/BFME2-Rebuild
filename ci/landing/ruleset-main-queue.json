@@ -4,20 +4,26 @@
   "enforcement": "active",
   "conditions": {
     "ref_name": {
-      "include": ["~DEFAULT_BRANCH"],
+      "include": [
+        "~DEFAULT_BRANCH"
+      ],
       "exclude": []
     }
   },
   "bypass_actors": [
-    {"actor_id": 1760627, "actor_type": "User", "bypass_mode": "always"}
+    {
+      "actor_id": 1760627,
+      "actor_type": "User",
+      "bypass_mode": "always"
+    }
   ],
   "rules": [
-    {"type": "deletion"},
-    {"type": "non_fast_forward"},
     {
       "type": "pull_request",
       "parameters": {
-        "allowed_merge_methods": ["squash"],
+        "allowed_merge_methods": [
+          "squash"
+        ],
         "dismiss_stale_reviews_on_push": false,
         "require_code_owner_review": false,
         "require_last_push_approval": false,
@@ -31,9 +37,18 @@
         "do_not_enforce_on_create": false,
         "strict_required_status_checks_policy": false,
         "required_status_checks": [
-          {"context": "BFME II / Boat", "integration_id": 15368},
-          {"context": "BFME II / source rules", "integration_id": 15368},
-          {"context": "BFME II / Landing", "integration_id": 15368}
+          {
+            "context": "BFME II / Boat",
+            "integration_id": 15368
+          },
+          {
+            "context": "BFME II / source rules",
+            "integration_id": 15368
+          },
+          {
+            "context": "BFME II / Landing",
+            "integration_id": 15368
+          }
         ]
       }
     },

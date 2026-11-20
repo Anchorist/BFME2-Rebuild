@@ -86,6 +86,32 @@ class Forks(unittest.TestCase):
         self.assertEqual(api.writes[0], ("POST", "dispatches", {"event_type": "bfme-remeasure", "client_payload": {
             "number": 2, "base": LIVE_MAIN, "head": PR2}}))
 
+    def test_new_commit_after_admission_names_readmission(self):
+        # boat-ok stays on the pull request, but the compiler check does not run a contributor's new commit by itself.
+        def pushed(fx):
+            as_fork("CONTRIBUTOR", labels=("boat-ok",))(fx)
+            new = "8" * 40
+            fx["pulls/2"]["head"]["sha"] = new
+            fx[f"commits/{new}/statuses?per_page=100&page=1"] = [
+                item for item in fx[f"commits/{PR2}/statuses?per_page=100&page=1"]
+                if item["context"] == lander.RULES]
+        decision = lander.evaluate(FakeApi(live=False, main=MEASURED, edit=pushed), 2, MEASURED, NO_EXCEPTIONS)
+        first = decision["reasons"][0]
+        self.assertEqual(first.code, "awaiting-readmission")
+        self.assertIn("remove and add the boat-ok label", first.expected)
+        self.assertIn("you do not need to do anything", first.found)
+        self.assertEqual(decision["stage"], "hold")
+
+    def test_member_fork_without_status_is_plain_no_status(self):
+        def member(fx):
+            as_fork()(fx)
+            fx["pulls/2"]["author_association"] = "MEMBER"
+            fx[f"commits/{PR2}/statuses?per_page=100&page=1"] = [
+                item for item in fx[f"commits/{PR2}/statuses?per_page=100&page=1"]
+                if item["context"] != lander.BOAT]
+        decision = lander.evaluate(FakeApi(live=False, main=MEASURED, edit=member), 2, MEASURED, NO_EXCEPTIONS)
+        self.assertEqual(decision["reasons"][0].code, "no-status")
+
     def test_deleted_fork_is_held(self):
         def gone(fx):
             as_fork(labels=("boat-ok",))(fx)

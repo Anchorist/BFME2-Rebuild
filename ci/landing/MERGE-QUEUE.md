@@ -14,9 +14,15 @@ drafts and the `landing-hold` label.
 
 ## Who can move main
 
-`ruleset-main.json` (direct) and `ruleset-main-queue.json` (queue) require these statuses, each from GitHub Actions
-(integration 15368): `BFME II / Boat`, `BFME II / source rules` and `BFME II / Landing`. Only the landing workflow
-writes `BFME II / Landing` success:
+main carries two rulesets.
+
+- A ruleset with no force-push and no deletion, and no bypass for anyone.
+- The landing ruleset, separate because a bypass covers every rule in its ruleset: `ruleset-main.json` (direct)
+  or `ruleset-main-queue.json` (queue). Changes only through pull requests (squash). Required statuses, each from
+  GitHub Actions (integration 15368): `BFME II / Boat`, `BFME II / source rules` and `BFME II / Landing`. One
+  named maintainer may bypass this ruleset only.
+
+Only the landing workflow writes `BFME II / Landing` success:
 
 - Direct mode: "Cleared to land on main X", on the exact head, immediately before it merges. It is withdrawn on
   any hold.
@@ -56,21 +62,24 @@ Start strictly serial: `max_entries_to_build: 1` and `max_entries_to_merge: 1`.
 
 ## Switch-over with no gap
 
-1. Now, before the flip: install this landing release. It merges directly, because the private repository's
-   rules are unreadable (HTTP 403).
-2. At the flip: `gh api -X POST repos/Open-BFME/BFME2-Rebuild/rulesets --input ci/landing/ruleset-main.json`.
-   The landing workflow keeps merging, and the ruleset now refuses every other way in.
-3. Install the `merge_group` handlers of `managed-pr.yml` and `rules.yml`. Nothing fires until the queue rule
+1. Direct mode, the landing workflow merging: the no-force-push/no-deletion ruleset, plus the landing ruleset
+   created with `gh api -X POST repos/Open-BFME/BFME2-Rebuild/rulesets --input ci/landing/ruleset-main.json`.
+   The landing workflow keeps merging, and the rulesets refuse every other way in.
+2. Install the `merge_group` handlers of `managed-pr.yml` and `rules.yml`. Nothing fires until the queue rule
    exists.
-4. Switch, one API call that replaces the rules at once:
-   `gh api -X PUT repos/Open-BFME/BFME2-Rebuild/rulesets/<id> --input ci/landing/ruleset-main-queue.json`.
+3. The switch itself produces the first real `merge_group` event, because the checks accept main only. It fails
+   closed: an unexpected queue payload or ref gets a failure status, the entry leaves the queue, and main does not
+   move. Watch the first queued pull request, and roll back (step 6) at the first unexplained refusal.
+4. Switch the landing ruleset only, one API call that replaces its rules at once:
+   `gh api -X PUT repos/Open-BFME/BFME2-Rebuild/rulesets/<landing ruleset id> --input
+   ci/landing/ruleset-main-queue.json`. The no-force-push/no-deletion ruleset is never touched.
    - The next landing run sees `merge_queue` and enqueues.
    - A direct merge already in flight at that instant is refused by GitHub (HTTP 405). It is held with a named
      reason and queued on the next run.
    - Nothing lands outside the rules at any point, and no landing route is missing at any point.
 5. Proof: one good pull request lands as exactly its queue commit. A pull request added to the queue by hand
    leaves it with `Held: not-queued-by-landing`. Main does not move for it.
-6. Rollback: the same PUT with `ruleset-main.json`.
+6. Rollback: the same PUT to the landing ruleset with `ruleset-main.json`.
 
 ## Header approval in the queue
 

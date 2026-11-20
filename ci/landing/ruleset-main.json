@@ -12,8 +12,6 @@
     {"actor_id": 1760627, "actor_type": "User", "bypass_mode": "always"}
   ],
   "rules": [
-    {"type": "deletion"},
-    {"type": "non_fast_forward"},
     {
       "type": "pull_request",
       "parameters": {

@@ -31,6 +31,7 @@ Each pull request carries a `BFME II / Landing` status:
 | Held reason | What to do |
 |---|---|
 | `awaiting-admission` | Nothing; a maintainer will look. |
+| `awaiting-readmission` | Nothing; a maintainer reads your new commit and starts its compiler check. |
 | `measuring` | Nothing; checks are running. |
 | `check-failure` | Open that check's Details, fix, push. |
 | `merge-conflict`, `merge-refused` | Merge or rebase `main` into your branch, push. |

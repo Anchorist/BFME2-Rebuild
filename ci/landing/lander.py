@@ -228,6 +228,13 @@ def evaluate(api, number, main, config):
                  "failure on an older main; open that check's Details, then push a fix to start a new check", True)
         elif kind == "pending":
             hold("measuring", f"{context} finished", "pending")
+        elif (context == BOAT and kind == "missing" and decision["fork"]
+              and pr.get("author_association") not in {"OWNER", "MEMBER", "COLLABORATOR"}):
+            # The compiler check runs a contributor's commit only when a maintainer starts it; boat-ok on an
+            # earlier commit does not start it for a new push.
+            hold("awaiting-readmission", f"a maintainer to admit commit {head[:12]} (remove and add the boat-ok label)",
+                 "no compiler check for this commit yet. A maintainer reads each new commit from a contributor "
+                 "before the compiler runs it; you do not need to do anything")
         else:
             hold("no-status", f"{context} from GitHub Actions on head {head[:12]}", kind)
     if not reasons:

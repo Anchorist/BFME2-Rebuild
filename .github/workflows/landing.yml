@@ -3,11 +3,13 @@ name: BFME II landing
 # One landing job at a time for the whole repository. This job is the only
 # thing that moves main: it merges a pull request only when the three checks
 # passed on its exact head and were measured against the main it merges onto.
+#
+# Runner cost: both jobs only call the GitHub API and run standard-library Python, so they use GitHub-hosted
+# runners and start no Boat runner at all. Runs start on a successful check completion (a failed check can make
+# nothing eligible), after each landing (bfme-land-next), on the merge queue, by hand, and hourly as a backstop.
 on:
-  # Backstop only: check completions (workflow_run) and the follow-up after each landing (bfme-land-next)
-  # start most runs. Every 15 minutes keeps idle runner use near 100 short runs a day.
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '17 * * * *'
   workflow_run:
     workflows: [BFME II Boat comparison, BFME II source rules]
     types: [completed]
@@ -32,19 +34,18 @@ on:
 
 permissions: {}
 
-concurrency:
-  # One landing job at a time; each merge-queue commit gets its own group so a waiting landing run never
-  # replaces it.
-  group: "${{ github.event_name == 'merge_group' && format('bfme-landing-group-{0}', github.event.merge_group.head_sha) || 'bfme-landing' }}"
-  cancel-in-progress: false
-
+# Concurrency is per job, not per workflow: a run whose job is skipped (for example a failed check's
+# workflow_run) must never replace a waiting landing run.
 jobs:
   group:
     if: >-
       github.repository == 'Open-BFME/BFME2-Rebuild' && github.event_name == 'merge_group' &&
       startsWith(github.ref, 'refs/heads/gh-readonly-queue/main/')
-    runs-on: boat-small/from=bfme2-compiler-v1
+    runs-on: ${{ vars.BFME_LANDING_RUNNER || 'ubuntu-24.04' }}
     timeout-minutes: 5
+    concurrency:
+      group: bfme-landing-group-${{ github.event.merge_group.head_sha }}
+      cancel-in-progress: false
     permissions:
       contents: read
       pull-requests: read
@@ -79,9 +80,14 @@ jobs:
   land:
     if: >-
       github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
-      github.event_name != 'merge_group'
-    runs-on: boat-small/from=bfme2-compiler-v1
+      github.event_name != 'merge_group' &&
+      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ${{ vars.BFME_LANDING_RUNNER || 'ubuntu-24.04' }}
     timeout-minutes: 45
+    # One landing job at a time for the whole repository; a newer trigger waits, it never cancels this one.
+    concurrency:
+      group: bfme-landing
+      cancel-in-progress: false
     permissions:
       contents: write
       pull-requests: write
