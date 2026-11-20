@@ -73,7 +73,26 @@ RESERVE_AND_LOG_GRAPH = advance_graph(AUTOMATIC_GRAPH, TRANSPORT_LOG_GRAPH)
 COMBINED_LOG_GRAPH = advance_graph(COMBINED_GRAPH, TRANSPORT_LOG_GRAPH)
 GRAPH_CHANGES = (COMPACT_GRAPH, AUTOMATIC_GRAPH, COMBINED_GRAPH,
                  TRANSPORT_LOG_GRAPH, RESERVE_AND_LOG_GRAPH, COMBINED_LOG_GRAPH)
-GRAPH_PATHS = set(COMBINED_LOG_GRAPH)
+INLINE_BINDING_GRAPH = {
+    "ci/managed-check/inline_virtual/inline_virtual_receipt.py": (
+        "7be4b2a0b897049c5cdbac32484d50ed794d34a112ff8f08c44e292483ca82ce",
+        "5b4f047643182c119cc83ba467453a5c007dbe8173a0d792b95dcc6aa2163fc1",
+    ),
+    "ci/managed-check/virtual_atoms.py": (
+        "e30a1ca021e2685efafbc0a0643b62e51ba85efd905526d06ab14c89ee19b9d0",
+        "f5924475fecdda9d79eec784041ebd6e509d7f75b21a7ed087b8c9d01bd3aeaa",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "9f3ebd824a6efbef574e88ec7a738df50c9f0985056af1055ef6804fe6014112",
+        "d29b124bdb33956c3af86aed8f8ca50f36a1877acf4a00d291ba44eb852ad6a4",
+    ),
+}
+
+GRAPH_CHANGES += (INLINE_BINDING_GRAPH,) + tuple(
+    advance_graph(previous, INLINE_BINDING_GRAPH)
+    for previous in (TRANSPORT_LOG_GRAPH, RESERVE_AND_LOG_GRAPH, COMBINED_LOG_GRAPH)
+)
+GRAPH_PATHS = set(COMBINED_LOG_GRAPH) | set(INLINE_BINDING_GRAPH)
 COMPACT_SCOPE = {"ci/managed-state/state_delta.py", "ci/managed-state/state_origin.py",
                  "ci/managed-state/bundle.sha256"}
 MAX_DIFF_BYTES = 4 * 1024**2

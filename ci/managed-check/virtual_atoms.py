@@ -107,5 +107,6 @@ def evaluate(document, atoms, *, expected, repo, candidate, baseline, scope_comp
                                     "authenticated_tus": len(covered[side]), "requested_owners": None}
     receipt, evidence = make_receipt(repo,binding,candidate,document["pins"]["policy_sha256"],
                                     reports["candidate"],reports["parent"],
-                                    scope_complete=scope_complete and received==expected_shards)
+                                    scope_complete=scope_complete and received==expected_shards,
+                                    direct_parent=True)
     return receipt, evidence, report_text(receipt, evidence)

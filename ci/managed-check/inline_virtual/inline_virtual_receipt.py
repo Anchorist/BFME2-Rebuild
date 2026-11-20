@@ -18,24 +18,37 @@ def receipt_key(binding):
     return sha256(encoded(binding)[:-1]).hexdigest()
 
 
-def validate_binding(repo, binding, candidate_pin):
+def validate_binding(repo, binding, candidate_pin, *, direct_parent=False):
     if set(binding) != {"head", "base", "tree"} or not all(
         isinstance(value, str) and PIN.fullmatch(value) for value in (*binding.values(), candidate_pin)
     ):
         raise ValueError("virtual receipt needs full head, base, tree and candidate pins")
     root = ["git", "--git-dir", os.fspath(repo)]
-    subprocess.run(
-        [*root, "merge-base", "--is-ancestor", binding["base"], candidate_pin],
-        check=True, stdout=subprocess.DEVNULL,
-    )
-    tree = subprocess.check_output([*root, "rev-parse", f"{candidate_pin}^{{tree}}"], text=True).strip()
+    if direct_parent:
+        # The managed job creates a synthetic commit on exactly the protected
+        # checkout. Verify its commit headers without walking a shallow history.
+        result = subprocess.run([*root, "cat-file", "commit", candidate_pin], capture_output=True)
+        if result.returncode:
+            raise ValueError("virtual receipt cannot read the admitted candidate commit")
+        headers = result.stdout.split(b"\n\n", 1)[0].split(b"\n")
+        parents = [line for line in headers if line.startswith(b"parent ")]
+        if parents != [b"parent " + binding["base"].encode("ascii")]:
+            raise ValueError("virtual receipt candidate has a different protected parent")
+        tree = headers[0].removeprefix(b"tree ").decode("ascii")
+    else:
+        subprocess.run(
+            [*root, "merge-base", "--is-ancestor", binding["base"], candidate_pin],
+            check=True, stdout=subprocess.DEVNULL,
+        )
+        tree = subprocess.check_output([*root, "rev-parse", f"{candidate_pin}^{{tree}}"], text=True).strip()
     if tree != binding["tree"]:
         raise ValueError("virtual receipt tree differs from the admitted compiler projection")
 
 
-def make_receipt(repo, binding, candidate_pin, policy_sha256, head_report, base_report, *, scope_complete):
+def make_receipt(repo, binding, candidate_pin, policy_sha256, head_report, base_report, *,
+                 scope_complete, direct_parent=False):
     """The trusted planner supplies the admitted binding and recomputed closure."""
-    validate_binding(repo, binding, candidate_pin)
+    validate_binding(repo, binding, candidate_pin, direct_parent=direct_parent)
     if not isinstance(policy_sha256, str) or not HASH.fullmatch(policy_sha256):
         raise ValueError("virtual receipt policy is unpinned")
     evidence = evaluate(head_report, base_report, expected_head=candidate_pin,
