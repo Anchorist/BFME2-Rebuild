@@ -356,7 +356,7 @@ jobs:
     needs: wide-plan
     if: >-
       ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) &&
-      (needs.wide-plan.result == 'success')
+      (always() && !cancelled() && needs.wide-plan.result == 'success')
     name: Compare wide shard ${{ matrix.index }}
     continue-on-error: true
     timeout-minutes: 12
@@ -583,7 +583,7 @@ jobs:
     needs: wide-plan
     if: >-
       ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) &&
-      (needs.wide-plan.result == 'success')
+      (always() && !cancelled() && needs.wide-plan.result == 'success')
     name: Reassign paired files on reserve ${{ matrix.slot }}
     continue-on-error: true
     timeout-minutes: 14
@@ -681,7 +681,7 @@ jobs:
     needs: wide-plan
     if: >-
       ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) &&
-      (needs.wide-plan.result == 'success')
+      (always() && !cancelled() && needs.wide-plan.result == 'success')
     name: Freeze, recover and verify wide receipts
     continue-on-error: true
     timeout-minutes: 15
@@ -944,12 +944,20 @@ jobs:
           else
             path="$RUNNER_TEMP/bfme-inline-unavailable/inline-status.json"
           fi
-          python3 -B ci/managed-check/inline_status.py "$path" "$RUNNER_TEMP/bfme-admission-status/decision.json"
+          rc=0
+          python3 -B ci/managed-check/inline_status.py "$path" "$RUNNER_TEMP/bfme-admission-status/decision.json" || rc=$?
+          if [[ "$rc" == 2 ]]; then
+            printf '%s\n' 'Stale measurement: the pull request or protected main moved before publication.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          exit "$rc"
 
   report:
     needs: [pending, intake, compare, wide-plan, wide-join]
     if: always() && !cancelled() && needs.intake.result != 'skipped' && (vars.BFME_PR_COMPACT == 'yes' || (needs.wide-plan.result != 'success' || needs.wide-join.outputs.complete == 'true'))
     name: Report on the pull request head
+    outputs:
+      stale: ${{ (steps.native.outputs.stale == 'yes' || steps.publish.outputs.stale == 'yes') && 'yes' || 'no' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -994,6 +1002,7 @@ jobs:
           name: bfme-verdict-wide-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-verdict'
       - name: Publish job summary and exact-head commit status
+        id: native
         if: (needs.wide-plan.result != 'success' || needs.wide-join.outputs.complete == 'true')
         shell: bash
         env:
@@ -1002,7 +1011,14 @@ jobs:
         run: |
           set -Eeuo pipefail
           trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
-          python3 -B ci/managed-check/github_io.py finish "$RUNNER_TEMP/bfme-admission-status" "$RUNNER_TEMP/bfme-verdict"
+          rc=0
+          python3 -B ci/managed-check/github_io.py finish "$RUNNER_TEMP/bfme-admission-status" "$RUNNER_TEMP/bfme-verdict" || rc=$?
+          if [[ "$rc" == 2 ]]; then
+            printf '%s\n' 'Stale measurement: the pull request or protected main moved before publication.' >> "$GITHUB_STEP_SUMMARY"
+            printf "stale=yes\n" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          exit "$rc"
       - name: Retain readable summary for the owner
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -1033,7 +1049,13 @@ jobs:
           else
             path="$RUNNER_TEMP/bfme-inline-unavailable/inline-status.json"
           fi
-          python3 -B ci/managed-check/inline_status.py "$path" "$RUNNER_TEMP/bfme-admission-status/decision.json"
+          rc=0
+          python3 -B ci/managed-check/inline_status.py "$path" "$RUNNER_TEMP/bfme-admission-status/decision.json" || rc=$?
+          if [[ "$rc" == 2 ]]; then
+            printf '%s\n' 'Stale measurement: the pull request or protected main moved before publication.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          exit "$rc"
       - name: Recheck current main and publish source-rule statuses
         id: publish
         if: always() && !cancelled() && vars.BFME_PR_COMPACT == 'yes' && needs.intake.outputs.source_decision != ''
@@ -1041,15 +1063,24 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RULE_STATUS: ${{ needs.intake.outputs.source_decision }}
-        run: python3 -I -S -B tools/gates/workflow.py publish
+        run: |
+          set -euo pipefail
+          rc=0
+          python3 -I -S -B tools/gates/workflow.py publish || rc=$?
+          if [[ "$rc" == 1 ]] && sed -n 's/^receipt=//p' "$GITHUB_OUTPUT" |
+              jq -e '.state == "pending" and (.reason == "main-moved" or .reason == "pull-request-moved")' >/dev/null; then
+            printf 'stale=yes\n' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          exit "$rc"
       - name: Retain the exact checked source-rules decision
-        if: always() && !cancelled() && vars.BFME_PR_COMPACT == 'yes' && steps.publish.outcome == 'success' && (github.event_name == 'pull_request_target' || github.event_name == 'repository_dispatch')
+        if: always() && !cancelled() && vars.BFME_PR_COMPACT == 'yes' && steps.publish.outcome == 'success' && steps.publish.outputs.stale != 'yes' && (github.event_name == 'pull_request_target' || github.event_name == 'repository_dispatch')
         shell: bash
         env:
           SOURCE_RULE_RECEIPT: '${{ steps.publish.outputs.receipt }}'
         run: python3 -I -S -B tools/gates/landing_receipt.py "$RUNNER_TEMP/bfme-source-receipt"
       - name: Upload the exact source-rules decision
-        if: always() && !cancelled() && vars.BFME_PR_COMPACT == 'yes' && steps.publish.outcome == 'success' && (github.event_name == 'pull_request_target' || github.event_name == 'repository_dispatch')
+        if: always() && !cancelled() && vars.BFME_PR_COMPACT == 'yes' && steps.publish.outcome == 'success' && steps.publish.outputs.stale != 'yes' && (github.event_name == 'pull_request_target' || github.event_name == 'repository_dispatch')
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: bfme-source-receipt-${{ github.run_attempt }}
@@ -1297,12 +1328,20 @@ jobs:
           else
             path="$RUNNER_TEMP/bfme-inline-unavailable/inline-status.json"
           fi
-          python3 -B ci/managed-check/inline_status.py "$path" "$RUNNER_TEMP/bfme-admission-status/decision.json"
+          rc=0
+          python3 -B ci/managed-check/inline_status.py "$path" "$RUNNER_TEMP/bfme-admission-status/decision.json" || rc=$?
+          if [[ "$rc" == 2 ]]; then
+            printf '%s\n' 'Stale measurement: the pull request or protected main moved before publication.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          exit "$rc"
 
   fallback-report:
     needs: [pending, intake, compare, wide-plan, wide-join, wide-fallback]
     if: always() && !cancelled() && needs.intake.result != 'skipped' && (needs.wide-plan.result == 'success' && needs.wide-join.outputs.complete != 'true')
     name: Report verified wide fallback on the pull request head
+    outputs:
+      stale: ${{ steps.native.outputs.stale }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -1346,6 +1385,7 @@ jobs:
           name: bfme-verdict-wide-fallback-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-verdict'
       - name: Publish job summary and exact-head commit status
+        id: native
         shell: bash
         env:
           BFME_STATUS_TOKEN: '${{ github.token }}'
@@ -1353,7 +1393,14 @@ jobs:
         run: |
           set -Eeuo pipefail
           trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
-          python3 -B ci/managed-check/github_io.py finish "$RUNNER_TEMP/bfme-admission-status" "$RUNNER_TEMP/bfme-verdict"
+          rc=0
+          python3 -B ci/managed-check/github_io.py finish "$RUNNER_TEMP/bfme-admission-status" "$RUNNER_TEMP/bfme-verdict" || rc=$?
+          if [[ "$rc" == 2 ]]; then
+            printf '%s\n' 'Stale measurement: the pull request or protected main moved before publication.' >> "$GITHUB_STEP_SUMMARY"
+            printf "stale=yes\n" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          exit "$rc"
       - name: Retain readable summary for the owner
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -1362,3 +1409,49 @@ jobs:
           path: '${{ runner.temp }}/bfme-report'
           if-no-files-found: ignore
           retention-days: 7
+
+
+  stale-refresh:
+    needs: [intake, report, fallback-report]
+    if: >-
+      always() && !cancelled() && github.repository_id == '1464323350' && github.ref == 'refs/heads/main' &&
+      vars.BFME_AUTO_ADMISSION != 'yes' && github.event_name == 'pull_request_target' &&
+      github.actor_id == '1760627' && github.triggering_actor == 'Ancalgonn' && github.run_attempt == '1' &&
+      (needs.intake.outputs.route == 'compile' || needs.intake.outputs.route == 'wide') &&
+      (needs.report.outputs.stale == 'yes' || needs.fallback-report.outputs.stale == 'yes')
+    name: Request a fresh admitted comparison
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - name: Rebind the same admitted head to the new protected main
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          [[ "$NUMBER" =~ ^[1-9][0-9]*$ && "$HEAD_SHA" =~ ^[a-f0-9]{40}$ && "$GITHUB_SHA" =~ ^[a-f0-9]{40}$ ]]
+          repo=Open-BFME/BFME2-Rebuild
+          base=$(gh api "repos/$repo/git/ref/heads/main" --jq '.object.sha')
+          [[ "$base" =~ ^[a-f0-9]{40}$ ]]
+          if [[ "$base" == "$GITHUB_SHA" ]]; then
+            echo 'Protected main is unchanged. The current head event will start its own check.'
+            exit 0
+          fi
+          pr=$(gh api "repos/$repo/pulls/$NUMBER")
+          if ! jq -e --arg head "$HEAD_SHA" '
+              .state == "open" and .head.sha == $head and .base.ref == "main" and .base.repo.id == 1464323350 and
+              (.head.repo.id == 1464323350 or .author_association == "OWNER" or .author_association == "MEMBER" or
+               .author_association == "COLLABORATOR" or any(.labels[]; .name == "boat-ok"))
+            ' <<< "$pr" >/dev/null; then
+            echo 'The previously admitted head is no longer current or approved.'
+            exit 0
+          fi
+          jq -n --argjson number "$NUMBER" --arg head "$HEAD_SHA" --arg base "$base" \
+            '{event_type: "bfme-remeasure", client_payload: {number: $number, head: $head, base: $base}}' |
+            gh api --method POST "repos/$repo/dispatches" --input -
+          printf 'Requested a fresh comparison of the admitted head on main %s.\n' "${base:0:12}" >> "$GITHUB_STEP_SUMMARY"
