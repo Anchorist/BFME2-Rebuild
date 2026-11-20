@@ -212,6 +212,26 @@ class CardTests(Tiny):
         night["linking_unit"] = "anything else"
         self.assertIn("of the names a full game needs", self.build(night)[0]["progress.svg"].decode())
 
+    def test_failed_night_keeps_the_last_measured_linking(self):
+        failed = {"sha": "d" * 40, "date": "2030-01-10", "result": "fail", "run_id": 9,
+                  "provided_required_symbols": None}
+        older = {"sha": "e" * 40, "date": "2030-01-09", "result": "partial", "run_id": 8,
+                 "provided_required_symbols": [5181, 8317]}
+        files = card.build(self.root, self.state.__getitem__, failed, [], None, older)[0]
+        svg = files["progress.svg"].decode()
+        self.assertIn("of the names a full game needs: 5,181 of 8,317", svg)
+        text = files["README.md"].decode()
+        self.assertIn(f"Measured by the daily build of commit [`{'e' * 12}`]", text)
+        self.assertIn("(9 January 2030)", text)
+        self.assertIn("The nightly build failed", text)  # the failed night is still reported as failed
+        # A newer valid pair wins over the older record.
+        fresh = dict(failed, result="partial", provided_required_symbols=[5200, 8317])
+        self.assertIn("5,200 of 8,317", card.build(self.root, self.state.__getitem__, fresh, [], None,
+                                                    older)[0]["progress.svg"].decode())
+        # No pair anywhere: the honest dash.
+        self.assertIn("not measured yet", card.build(self.root, self.state.__getitem__, failed, [], None,
+                                                      None)[0]["progress.svg"].decode())
+
     def test_game_record_rule(self):
         night = {"sha": "f" * 40, "date": "2030-01-10", "result": "partial",
                  "stages": {"compile": "success", "link_and_play": "runs separately"}}
@@ -286,6 +306,44 @@ class WorklistInputTests(Tiny):
         self.assertEqual(verdicts["tus"][TU]["rows"]["0x401100"], ["PARTIAL", 40.0])
         with self.assertRaisesRegex(Refused, r"expected the state of main"):
             worklists.inputs(self.root, "f" * 40, self.state.__getitem__, out)
+
+
+class LastLinkingTests(unittest.TestCase):
+    def test_newest_record_with_a_pair(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name) / "n"
+        (root / "history").mkdir(parents=True)
+        records = {"2030-01-08-aaaaaaaaaaaa.json": {"run_id": 7, "provided_required_symbols": [1, 2]},
+                   "2030-01-09-bbbbbbbbbbbb.json": {"run_id": 8, "provided_required_symbols": [3, 4]},
+                   "2030-01-10-cccccccccccc.json": {"run_id": 9, "provided_required_symbols": None},
+                   "2030-01-10-dddddddddddd.json": {"run_id": "x", "provided_required_symbols": [5, 6]},
+                   "2030-01-11-eeeeeeeeeeee.json": [],
+                   "2030-01-11-ffffffffffff.json": "not a record",
+                   "2030-01-12-000000000000.json": {"run_id": {"nested": 1}, "provided_required_symbols": [7, 8]}}
+        for name, record in records.items():
+            (root / "history" / name).write_text(json.dumps(record))
+        git(root.parent, "init", "-q", "-b", "nightly", str(root))
+        git(root, "add", "-A")
+        git(root, "commit", "-q", "-m", "n")
+        repo = branch.store.Git(root / ".git", str(root))
+        (root / "history" / "2030-01-11-gggggggggggg.json").write_text("{not json")
+        git(root, "add", "-A")
+        git(root, "commit", "-q", "-m", "broken")
+        found = json.loads(branch.last_linking(repo, "HEAD"))  # malformed records are skipped, never fatal
+        self.assertEqual(found["run_id"], 8)
+        latest = Path(tmp.name) / "latest.json"
+        latest.write_text(json.dumps({"provided_required_symbols": [1, 2]}))
+        self.assertTrue(branch.latest_has_pair(latest))
+        for bad in ("[]", "{}", "{not json", json.dumps({"provided_required_symbols": None})):
+            latest.write_text(bad)
+            self.assertFalse(branch.latest_has_pair(latest), bad)
+        self.assertFalse(branch.latest_has_pair(Path(tmp.name) / "absent.json"))
+        # A nightly commit with no history/ at all gives nothing.
+        (root / "history" / "2030-01-08-aaaaaaaaaaaa.json").unlink()
+        git(root, "rm", "-q", "-r", "history")
+        git(root, "commit", "-q", "-m", "empty")
+        self.assertIsNone(branch.last_linking(repo, "HEAD"))
 
 
 class CensusInputTests(Tiny):

@@ -213,19 +213,25 @@ def game_view(game, checkout, main, measured_day):
             "shown": reason is None, "reason": reason, **checks}
 
 
-def measure(checkout, state, nightly, game=None):
+def measure(checkout, state, nightly, game=None, linking=None):
     git = Git(Path(checkout) / ".git")
     raw = card_measure(git, state["sha"], state, global_class_defs, None)
     night = nightly_view(nightly)
+    # The Linking pair comes from the newest night that measured it: a failed night carries none, so
+    # the last measured pair (history/ on branch nightly) stands, labelled with its own build.
+    link = night if night and night["linking"] else None
+    if link is None:
+        older = nightly_view(linking)
+        link = older if older and older["linking"] else None
     date = main_date(checkout, state["sha"])
     # The day a visitor reads: the later of the measured commit's date and the daily build's date.
     days = [date[:10]] + ([night["date"][:10]] if night and len(night["date"]) >= 10 else [])
     return {"main": state["sha"], "date": date, "measured": max(days),
             "matched": raw["matched_bytes"], "proven": raw["proven_bytes"], "finished": raw["finished_rows"],
-            "linking": night["linking"] if night else None,
-            "linking_main": night["sha"] if night and night["linking"] else None,
-            "linking_date": night["date"] if night and night["linking"] else None,
-            "linking_unit": night["linking_unit"] if night and night["linking"] else "names",
+            "linking": link["linking"] if link else None,
+            "linking_main": link["sha"] if link else None,
+            "linking_date": link["date"] if link else None,
+            "linking_unit": link["linking_unit"] if link else "names",
             "subsystems": {k: list(v) for k, v in sorted(raw["components"].items())},
             "drafts_in_use": raw["drafts_in_use"], "nightly": night, "files_measured": len(state["tus"]),
             "game": game_view(game, checkout, state["sha"], max(days))}
@@ -432,9 +438,9 @@ def history_svg(history):
     return "\n".join(out) + "\n"
 
 
-def build(checkout, state_read, nightly, previous_history, game=None):
+def build(checkout, state_read, nightly, previous_history, game=None, linking=None):
     state = join(state_read)
-    point = measure(checkout, state, nightly, game)
+    point = measure(checkout, state, nightly, game, linking)
     history = history_with(previous_history, point)
     return {
         "card.json": canonical(point),
@@ -452,6 +458,7 @@ def main():
     parser.add_argument("--state-dir", required=True, help="a checkout or export of the state branch")
     parser.add_argument("--nightly", default="")
     parser.add_argument("--game", default="", help="game/latest.json from branch nightly, when present")
+    parser.add_argument("--linking", default="", help="the newest nightly history record with a Linking pair")
     parser.add_argument("--previous-history", default="")
     parser.add_argument("--out", required=True)
     parser.add_argument("--drops", default="", help="file to write lines naming figures that went down")
@@ -462,7 +469,8 @@ def main():
         previous = json.loads(Path(args.previous_history).read_bytes()) \
             if args.previous_history and Path(args.previous_history).is_file() else []
         game = json.loads(Path(args.game).read_bytes()) if args.game and Path(args.game).is_file() else None
-        files, down = build(args.checkout, lambda p: (root / p).read_bytes(), nightly, previous, game)
+        linking = json.loads(Path(args.linking).read_bytes()) if args.linking and Path(args.linking).is_file() else None
+        files, down = build(args.checkout, lambda p: (root / p).read_bytes(), nightly, previous, game, linking)
     except (Refused, ValueError, OSError, subprocess.CalledProcessError) as error:
         print(f"::error::progress card: expected a complete state and ledger for one main commit, found: {error}")
         return 1

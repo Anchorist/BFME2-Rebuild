@@ -10,6 +10,7 @@ and GITHUB_OUTPUT main=<sha>.
 commit's date, and pushes it as a fast-forward. Tokens: READ_TOKEN / WRITE_TOKEN.
 """
 import argparse
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -46,6 +47,47 @@ def export(git, commit, target):
     subprocess.run(["tar", "-x", "-C", str(target)], input=archive, check=True)
 
 
+def valid_pair(pair):
+    return (isinstance(pair, list) and len(pair) == 2 and all(type(n) is int for n in pair)
+            and 0 <= pair[0] <= pair[1] and pair[1] > 0)
+
+
+def latest_has_pair(path):
+    try:
+        record = json.loads(Path(path).read_bytes())
+    except (OSError, ValueError):
+        return False
+    return isinstance(record, dict) and valid_pair(record.get("provided_required_symbols"))
+
+
+def last_linking(git, commit, limit=400):
+    """The newest record under history/ on branch nightly (highest public run id) that carries a valid
+    Linking pair, as bytes; None when there is none."""
+    names = git.run("ls-tree", "--name-only", f"{commit}:history", check=False)
+    if names.returncode:
+        return None
+    best, best_run = None, -1
+    for name in sorted(names.stdout.decode().split())[-limit:]:
+        if not name.endswith(".json"):
+            continue
+        blob = git.run("cat-file", "blob", f"{commit}:history/{name}", check=False)
+        if blob.returncode or len(blob.stdout) > 1024 * 1024:
+            continue
+        try:
+            record = json.loads(blob.stdout)
+        except ValueError:
+            continue
+        if not isinstance(record, dict):
+            continue  # any other JSON value is not a nightly record
+        try:
+            run = int(str(record.get("run_id")))
+        except ValueError:
+            continue
+        if valid_pair(record.get("provided_required_symbols")) and run > best_run:
+            best, best_run = blob.stdout, run
+    return best
+
+
 def read(directory, remote, token, out=print):
     directory = Path(directory)
     with tempfile.TemporaryDirectory() as folder:
@@ -64,6 +106,11 @@ def read(directory, remote, token, out=print):
                 found = git.run("cat-file", "blob", f"{nightly}:{source}", check=False)
                 if found.returncode == 0:
                     (directory / target).write_bytes(found.stdout)
+            # A failed night writes latest.json without a Linking pair; then keep the last measured one.
+            if not latest_has_pair(directory / "nightly.json"):
+                last = last_linking(git, nightly)
+                if last is not None:
+                    (directory / "linking.json").write_bytes(last)
         progress = fetch(git, PROGRESS)
         if progress:
             found = git.run("cat-file", "blob", f"{progress}:history.json", check=False)

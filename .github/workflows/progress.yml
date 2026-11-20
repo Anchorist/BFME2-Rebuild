@@ -92,6 +92,7 @@ jobs:
           set -euo pipefail
           python3 -B ci/progress/card.py --checkout . --state-dir "$RUNNER_TEMP/in/state" \
             --nightly "$RUNNER_TEMP/in/nightly.json" --game "$RUNNER_TEMP/in/game.json" \
+            --linking "$RUNNER_TEMP/in/linking.json" \
             --previous-history "$RUNNER_TEMP/in/history.json" \
             --out "$RUNNER_TEMP/out" --drops "$RUNNER_TEMP/drops.txt" 2>&1 | tee -a "$RUNNER_TEMP/log.txt"
       - name: Regenerate the worklists (two runs must agree)
