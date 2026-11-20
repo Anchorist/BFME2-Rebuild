@@ -2,7 +2,6 @@
 
 import base64
 from dataclasses import dataclass
-from html import escape
 from http.client import HTTPException
 import json
 import os
@@ -10,43 +9,43 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+from urllib.parse import quote
 import tempfile
+from urllib.error import HTTPError
 import urllib.request
 
 OID = re.compile(r"[0-9a-f]{40}")
 DIGEST = re.compile(r"[0-9a-f]{64}")
-SLUG = re.compile(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+")
+REPOSITORY = "Open-BFME/BFME2-Rebuild"
+REPOSITORY_ID = 1464323350
+MAIN_REF = "refs/heads/main"
+QUEUE_REF = re.compile(r"refs/heads/gh-readonly-queue/main/[A-Za-z0-9][A-Za-z0-9._-]{0,200}")
 LABELS = (
     "Paths", "Generated annotations", "Forbidden constructs", "Stand-in types",
-    "Comments", "One item", "One definition", "Address names",
+    "Comments", "Change scope", "One definition", "Address names",
 )
 RULES = dict(zip((f"G{i}" for i in range(1, 9)), LABELS, strict=True))
+# Both jobs load these siblings from the selected protected checkout.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from source_report import public_text, public_report
+
 API = "https://api.github.com"
-ARCHIVE = "canary/nt2-base"
-ARCHIVE_ROOTS = {
-    "src": "999f333a94ec38f7ce8ce8c727eefe77b7565908",
-    "include": "0bfe0a354f581e47e4fe7aec8a6ac8b9085a27cb",
-    "config": "b318862dc0c9fd3c2d9c6a1eb9b6f2a00a6e631c",
-    "expected": "039f6563b33ce33d6498570fdcd6241a51fba2bd",
-}
-NT2_ROOTS = ARCHIVE_ROOTS | {
-    "src": "a6de0044152e0a34f5d59b34aa2db3069c0389bb",
-    "include": "311c9ff1c77399567880ecba712350ca6761a8fa",
-}
 REASONS = {
-    "unexpected-event": "Start the check from an open pull request to main.",
+    "unexpected-event": "This check needs an open pull request to main or a current merge queue candidate.",
     "tools-unavailable": "The protected source check could not be loaded from this main revision.",
     "current-state-unavailable": "GitHub could not verify the current pull request and protected main. Start a new check.",
     "pull-request-moved": "The author head changed, the pull request closed, or its target changed. Use a check for the current pull request.",
     "main-moved": "Main advanced while this check was running. Start a new check on current main.",
-    "archive-moved": "The archived NT2 base moved. Ask a maintainer to verify the archive.",
+    "queue-moved": "The merge queue replaced this candidate; GitHub will check the replacement.",
+    "queue-history": "The queued change is missing its recorded main commit; ask a maintainer to requeue it.",
+    "fork-unavailable": "The source check could not read this fork without credentials while the repository is private.",
+    "queue-private": "This source check for merge groups is enabled when the repository is public.",
     "missing-ref": "GitHub could not find the pull request commit or main branch. Check the branch and start a new run.",
     "fetch-unavailable": "GitHub's Git transfer did not complete. Start a new check.",
     "merge-history": "This check could not find one shared base commit for your branch and main. Rebase on main and push the updated branch.",
     "merge-conflict": "The author head conflicts with protected main. Resolve the conflict and push the updated branch.",
     "merge-unavailable": "Git could not compose the exact author head with protected main. Start a new check.",
     "merge-ref-mismatch": "GitHub and this check produced different merges for the same commits. Ask a maintainer to verify the pull request.",
-    "archive-projection": "The archived NT2 inputs differ from the pinned archive manifest. Ask a maintainer to verify the archive.",
     "check-unavailable": "The protected source check did not produce a verified result. Start a new check.",
     "status-unavailable": "GitHub did not acknowledge every source status. Start a new check.",
 }
@@ -76,24 +75,20 @@ def read_json(path, limit):
 class Binding:
     repo: str
     repo_id: int
-    number: int
+    number: int | None
     base: str
     head: str
     tools_commit: str
-    branch: str
+    queue_ref: str | None = None
 
     @property
     def identity(self):
         return {"base": self.base, "head": self.head, "tools_commit": self.tools_commit}
 
-    @property
-    def archived(self):
-        return self.branch == ARCHIVE
-
     def check_pr(self, pr):
         try:
             valid = (pr["number"] == self.number and pr["state"] == "open"
-                     and pr["base"]["ref"] == self.branch
+                     and pr["base"]["ref"] == "main"
                      and pr["base"]["repo"]["id"] == self.repo_id
                      and pr["head"]["sha"] == self.head)
         except (KeyError, TypeError):
@@ -106,31 +101,40 @@ def event(env):
     try:
         repo = env["GITHUB_REPOSITORY"]
         repo_id = int(env["GITHUB_REPOSITORY_ID"])
-        tools = env["GITHUB_SHA"]
-        if (not SLUG.fullmatch(repo) or repo_id <= 0 or not is_oid(tools)
-                or env["GITHUB_REF"] != "refs/heads/main"
+        sha = env["GITHUB_SHA"]
+        name = env["GITHUB_EVENT_NAME"]
+        ref = env["GITHUB_REF"]
+        if (repo.casefold() != REPOSITORY.casefold() or repo_id != REPOSITORY_ID or not is_oid(sha)
                 or env["GITHUB_SERVER_URL"] != "https://github.com"
                 or env["GITHUB_API_URL"] != API):
             raise ValueError
-        if env["GITHUB_EVENT_NAME"] == "pull_request_target":
+        if name == "merge_group":
+            group_event = read_json(env["GITHUB_EVENT_PATH"], 2 * 1024**2)
+            group = group_event["merge_group"]
+            base = group["base_sha"]
+            if (group_event["action"] != "checks_requested"
+                    or group_event["repository"]["id"] != repo_id
+                    or group["base_ref"] != MAIN_REF or not is_oid(base) or base == sha
+                    or group["head_sha"] != sha or group["head_ref"] != ref
+                    or not QUEUE_REF.fullmatch(ref) or ".." in ref or ref.endswith((".", ".lock"))):
+                raise ValueError
+            return Binding(repo, repo_id, None, base, sha, base, ref)
+        if ref != MAIN_REF:
+            raise ValueError
+        if name == "pull_request_target":
             pr = read_json(env["GITHUB_EVENT_PATH"], 2 * 1024**2)["pull_request"]
-            binding = Binding(repo, repo_id, pr["number"], tools, pr["head"]["sha"], tools, "main")
+            binding = Binding(repo, repo_id, pr["number"], sha, pr["head"]["sha"], sha)
             binding.check_pr(pr)
-        elif env["GITHUB_EVENT_NAME"] == "repository_dispatch":
+        elif name == "repository_dispatch":
             event_data = read_json(env["GITHUB_EVENT_PATH"], 2 * 1024**2)
             payload = event_data["client_payload"]
             if (event_data["action"] != "bfme-remeasure" or not isinstance(payload, dict)
                     or set(payload) != {"number", "head", "base"}
                     or not is_oid(payload["base"]) or not is_oid(payload["head"])):
                 raise ValueError
-            if payload["base"] != tools:
+            if payload["base"] != sha:
                 raise CheckUnavailable("main-moved")
-            binding = Binding(repo, repo_id, payload["number"], tools, payload["head"], tools, "main")
-        elif env["GITHUB_EVENT_NAME"] == "workflow_dispatch":
-            number = env["ARCHIVE_PR"]
-            if not re.fullmatch(r"[1-9][0-9]{0,8}", number):
-                raise ValueError
-            binding = Binding(repo, repo_id, int(number), env["ARCHIVE_BASE"], env["ARCHIVE_HEAD"], tools, ARCHIVE)
+            binding = Binding(repo, repo_id, payload["number"], sha, payload["head"], sha)
         else:
             raise ValueError
         if (type(binding.number) is not int or not 0 < binding.number < 10**9
@@ -158,9 +162,10 @@ class GitHub:
         self.token = token
         self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
 
-    def call(self, path, body=None):
+    def call(self, path, body=None, *, missing=None):
+        suffix = f"/{path}" if path else ""
         request = urllib.request.Request(
-            f"{API}/repos/{self.binding.repo}/{path}",
+            f"{API}/repos/{self.binding.repo}{suffix}",
             data=json.dumps(body).encode("ascii") if body is not None else None,
             headers={"Authorization": f"Bearer {self.token}",
                      "Accept": "application/vnd.github+json", "Content-Type": "application/json"},
@@ -174,31 +179,55 @@ class GitHub:
             if len(raw) > 2 * 1024**2:
                 raise CheckUnavailable(reason)
             return json.loads(raw)
+        except HTTPError as exc:
+            raise CheckUnavailable(missing if exc.code == 404 and missing else reason) from None
         except (HTTPException, OSError, ValueError):
             raise CheckUnavailable(reason) from None
 
     def current(self):
         binding = self.binding
-        binding.check_pr(self.call(f"pulls/{binding.number}"))
+        pr = None
+        if binding.number is not None:
+            pr = self.call(f"pulls/{binding.number}")
+            binding.check_pr(pr)
         try:
             if self.call("git/ref/heads/main")["object"]["sha"] != binding.tools_commit:
                 raise CheckUnavailable("main-moved")
-            if binding.archived and self.call(f"git/ref/heads/{ARCHIVE}")["object"]["sha"] != binding.base:
-                raise CheckUnavailable("archive-moved")
+            if binding.queue_ref:
+                path = "git/ref/" + quote(binding.queue_ref.removeprefix("refs/"), safe="/")
+                if self.call(path, missing="queue-moved")["object"]["sha"] != binding.head:
+                    raise CheckUnavailable("queue-moved")
         except (KeyError, TypeError):
             raise CheckUnavailable("current-state-unavailable") from None
+        return pr
+
+    def transport(self, pr):
+        metadata = self.call("")
+        if (not isinstance(metadata, dict) or metadata.get("id") != self.binding.repo_id
+                or type(metadata.get("private")) is not bool):
+            raise CheckUnavailable("current-state-unavailable")
+        if not metadata["private"]:
+            return "public"
+        if self.binding.queue_ref:
+            raise CheckUnavailable("queue-private")
+        # In a private repository, allow credentialed Git only for changes
+        # GitHub confirms live in this same repository.
+        head_repo = pr.get("head", {}).get("repo")
+        if not isinstance(head_repo, dict) or head_repo.get("id") != self.binding.repo_id:
+            raise CheckUnavailable("fork-unavailable")
+        return "private"
 
     def status(self, name, state, run):
         if not re.fullmatch(r"[1-9][0-9]{0,20}", run):
             raise CheckUnavailable("status-unavailable")
         context = f"BFME II / {name}"
         binding = self.binding
-        branch = "archive" if binding.archived else "main"
         label = RULES.get(name, "Source rules")
-        outcome = {"success": "passed", "failure": "needs a fix", "error": "could not finish"}[state]
+        outcome = {"success": f"{label} passed", "failure": f"Fix needed for {label.lower()}",
+                   "error": f"{label} could not finish"}[state]
         result = self.call(
             f"statuses/{binding.head}",
-            {"state": state, "context": context, "description": f"{label} {outcome} ({branch} {binding.base[:12]})",
+            {"state": state, "context": context, "description": f"{outcome} (main {binding.base[:12]})",
              "target_url": f"https://github.com/{binding.repo}/actions/runs/{run}"},
         )
         if not isinstance(result, dict) or result.get("state") != state or result.get("context") != context:
@@ -253,15 +282,19 @@ def receive(git, binding, remote, token=None):
                 "GIT_CONFIG_VALUE_0": f"AUTHORIZATION: basic {basic}"}
     number = binding.number
     base_ref = "+refs/heads/main:refs/source-rules/main"
-    head_ref = f"+refs/pull/{number}/head:refs/source-rules/head"
-    archive_refs = [f"+refs/heads/{ARCHIVE}:refs/source-rules/archive"] if binding.archived else []
+    candidate_ref = binding.queue_ref or f"refs/pull/{number}/head"
+    head_ref = f"+{candidate_ref}:refs/source-rules/head"
     options = ("fetch", "-q", "--depth=128", "--no-tags", "--no-recurse-submodules", "--no-write-fetch-head")
-    run_options = {"extra_env": auth, "quota": bool(auth)}
-    received = git.run(*options, "--", remote, base_ref, head_ref, *archive_refs, **run_options)
+    run_options = {"extra_env": auth, "quota": True}
+    received = git.run(*options, "--", remote, base_ref, head_ref, **run_options)
     if received.returncode:
         missing = b"remote ref" in received.stderr.lower()
-        raise CheckUnavailable("missing-ref" if missing else "fetch-unavailable")
+        if missing:
+            raise CheckUnavailable("queue-moved" if binding.queue_ref else "missing-ref")
+        raise CheckUnavailable("fetch-unavailable")
     verify_received(git, binding)
+    if binding.queue_ref:
+        return
     # This ref is optional. Its absence must never cancel an otherwise usable fetch.
     try:
         git.run(*options, "--", remote, f"+refs/pull/{number}/merge:refs/source-rules/merge",
@@ -272,9 +305,7 @@ def receive(git, binding, remote, token=None):
 
 def verify_received(git, binding):
     refs = {"refs/source-rules/main": (binding.tools_commit, "main-moved"),
-            "refs/source-rules/head": (binding.head, "pull-request-moved")}
-    if binding.archived:
-        refs["refs/source-rules/archive"] = (binding.base, "archive-moved")
+            "refs/source-rules/head": (binding.head, "queue-moved" if binding.queue_ref else "pull-request-moved")}
     for ref, (expected, reason) in refs.items():
         actual = git.rev(ref, optional=True)
         if actual is None:
@@ -286,6 +317,12 @@ def verify_received(git, binding):
 def compose(git, binding):
     """Use the comparison runner's unique ancestor and three-way tree merge."""
     base, head = binding.base, binding.head
+    if binding.queue_ref:
+        ancestry = git.run("merge-base", "--is-ancestor", base, head)
+        if ancestry.returncode:
+            raise CheckUnavailable("queue-history")
+        # GitHub already composed this candidate. Use its tree unchanged.
+        return git.rev(head, "tree"), "queue-candidate"
     ancestors = git.run("merge-base", "--all", base, head)
     if ancestors.returncode not in {0, 1}:
         raise CheckUnavailable("merge-unavailable")
@@ -314,11 +351,6 @@ def compose(git, binding):
                 if git.rev(reported, "tree") != tree:
                     raise CheckUnavailable("merge-ref-mismatch")
                 origin = "verified-merge-ref"
-    if binding.archived:
-        for ref, pins in ((base, ARCHIVE_ROOTS), (head, NT2_ROOTS), (tree, NT2_ROOTS)):
-            for path, digest in pins.items():
-                if git.value("rev-parse", "--verify", f"{ref}:{path}", optional=True) != digest:
-                    raise CheckUnavailable("archive-projection")
     return tree, origin
 
 
@@ -355,25 +387,36 @@ def verified_tools(binding):
         raise CheckUnavailable("tools-unavailable")
 
 
-def acquire(env):
+def authorize(env):
+    """Check only GitHub metadata and select the least-privileged transfer."""
     try:
         binding = event(env)
         verified_tools(binding)
         api = GitHub(binding, env.pop("GH_TOKEN", None))
-        api.current()
+        output(env, "transport", api.transport(api.current()))
+    except CheckUnavailable as exc:
+        output(env, "reason", exc.reason)
+    except (AttributeError, KeyError, OSError, TypeError, ValueError, subprocess.SubprocessError):
+        output(env, "reason", "current-state-unavailable")
+
+
+def acquire(env):
+    try:
+        binding = event(env)
+        verified_tools(binding)
+        transport, token = env.get("SOURCE_TRANSPORT"), env.pop("GH_TOKEN", None)
+        if transport == "public":
+            if token:
+                raise CheckUnavailable("fetch-unavailable")
+        elif transport != "private" or binding.queue_ref or not token or not re.fullmatch(r"[A-Za-z0-9_.-]{15,2048}", token):
+            raise CheckUnavailable("fetch-unavailable")
         scratch = Path(tempfile.mkdtemp(prefix="bfme-rules.", dir=env["RUNNER_TEMP"]))
-        receive(Git(scratch / "objects.git"), binding, f"https://github.com/{binding.repo}.git", api.token)
+        receive(Git(scratch / "objects.git"), binding, f"https://github.com/{binding.repo}.git", token)
         output(env, "scratch", scratch)
     except CheckUnavailable as exc:
         output(env, "reason", exc.reason)
     except (OSError, KeyError, ValueError, subprocess.SubprocessError):
         output(env, "reason", "fetch-unavailable")
-
-
-def public_text(text):
-    return escape(json.dumps(text, ensure_ascii=True)[1:-1]).translate(
-        str.maketrans({char: f"&#{ord(char)};" for char in "[]()*_`|\\\\@#"})
-    )
 
 
 def append_advisory(report, repo, base, tree, scratch):
@@ -420,11 +463,11 @@ def evaluate_bound(binding, scratch):
     repo = Git(scratch / "objects.git")
     verify_received(repo, binding)
     tree, projection = compose(repo, binding)
-    result_file, report_file = scratch / "result.json", scratch / "report.md"
+    result_file = scratch / "result.json"
     proc = subprocess.run(
         [sys.executable, "-E", "-S", "-B", str(Path(__file__).with_name("gate.py")),
-         str(repo.repo), binding.base, tree, "--json", str(result_file), "--report", str(report_file)],
-        env=isolated_env(scratch), cwd=scratch, timeout=480,
+         str(repo.repo), binding.base, tree, "--json", str(result_file), "--report", os.devnull],
+        env=isolated_env(scratch), cwd=scratch, capture_output=True, timeout=480,
     )
     expected = {0: "pass", 1: "fail"}.get(proc.returncode)
     if expected is None:
@@ -440,22 +483,8 @@ def evaluate_bound(binding, scratch):
             or not DIGEST.fullmatch(result["policy_sha256"])):
         raise CheckUnavailable("check-unavailable")
 
-    # Keep the measured rule modules unchanged. The public report uses the
-    # same findings with the owner's table heading.
-    with report_file.open("rb") as stream:
-        raw = stream.read(950_001)
-    heading = b"| Gate | Result |\n"
-    if not raw.startswith(heading):
-        raise CheckUnavailable("check-unavailable")
-    if len(raw) > 950_000:
-        raw = raw[:raw.rfind(b"\n", 0, 949_500) + 1] + (
-            b"\n**Report [size-limit]** Findings exceed the job summary limit. Split the change and run the source checks locally.\n"
-        )
-    report = "| Rule | Result |\n" + raw[len(heading):].decode("utf-8")
+    report = public_report(items, RULES)
     report = append_advisory(report, repo, binding.base, tree, scratch)
-    if binding.archived:
-        report += (f"\nCanary base {binding.base}, author head {binding.head}, "
-                   f"and protected main tools {binding.tools_commit}.\n")
     return binding.identity | {
         "tree": tree, "projection": projection, "policy_sha256": result["policy_sha256"], "state": expected,
         "overall": status_map[expected], "states": {rule: status_map[statuses[rule]] for rule in RULES},
@@ -481,16 +510,21 @@ def evaluate(env):
 
 
 def evaluation(receipt, binding):
-    if any(receipt.get(key) != value for key, value in binding.identity.items()):
+    if not isinstance(receipt, dict) or any(receipt.get(key) != value for key, value in binding.identity.items()):
         raise ValueError
     states = receipt["states"]
     overall = receipt["overall"]
+    projections = {"queue-candidate"} if binding.queue_ref else {
+        "verified-merge-ref", "composed-missing-merge-ref", "composed-stale-merge-ref",
+    }
+    verdict_keys = binding.identity.keys() | {"tree", "projection", "policy_sha256", "state", "overall", "states"}
     valid_verdict = (
-        overall in {"success", "failure"} and set(states) == set(RULES)
+        receipt.keys() == verdict_keys and overall in {"success", "failure"} and set(states) == set(RULES)
         and set(states.values()) <= {"success", "failure"}
         and (overall == "success") == all(state == "success" for state in states.values())
         and receipt["state"] == {"success": "pass", "failure": "fail"}[overall]
         and is_oid(receipt["tree"]) and DIGEST.fullmatch(receipt["policy_sha256"])
+        and receipt["projection"] in projections
     )
     valid_error = receipt == pending(binding, receipt.get("reason")) and receipt.get("reason") in REASONS
     if not (valid_verdict or valid_error):
@@ -507,6 +541,7 @@ def publish(env):
     prior_reason = supplied.get("reason") if isinstance(supplied, dict) else None
     try:
         binding = event(env)
+        verified_tools(binding)
         try:
             receipt = evaluation(supplied, binding)
         except (AttributeError, KeyError, TypeError, ValueError):
@@ -544,7 +579,7 @@ def publish(env):
 
 def main():
     os.umask(0o077)
-    actions = {"fetch": acquire, "evaluate": evaluate, "publish": publish}
+    actions = {"authorize": authorize, "fetch": acquire, "evaluate": evaluate, "publish": publish}
     return actions[sys.argv[1]](os.environ)
 
 

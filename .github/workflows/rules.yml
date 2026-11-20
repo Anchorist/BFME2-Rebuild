@@ -6,61 +6,104 @@ on:
     types: [opened, reopened, synchronize, ready_for_review, edited]
   repository_dispatch:
     types: [bfme-remeasure]
-  workflow_dispatch:
-    inputs:
-      pr_number:
-        description: Exact archived NT2 pull request number
-        required: true
-        type: string
-      base_sha:
-        description: Exact canary/nt2-base commit
-        required: true
-        type: string
-      head_sha:
-        description: Exact unmodified NT2 author head
-        required: true
-        type: string
+  merge_group:
+    types: [checks_requested]
+    branches: [main]
 
 permissions: {}
 
+concurrency:
+  group: >-
+    bfme-source-rules-${{ (github.event_name == 'pull_request_target' && github.event.action == 'edited' &&
+      github.event.changes.base.ref.from == null && format('metadata-{0}', github.run_id)) ||
+      (github.event_name == 'merge_group' && format('queue-{0}', github.sha)) ||
+      (github.event_name == 'repository_dispatch' && format('remeasure-{0}-{1}-{2}',
+        github.event.client_payload.number, github.event.client_payload.head,
+        github.event.client_payload.base)) || github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  SOURCE_TOOLS_SHA: ${{ github.event_name != 'merge_group' && github.sha || github.event.merge_group.base_sha }}
+
 jobs:
   source-rules:
-    if: github.ref == 'refs/heads/main'
-    runs-on: boat-small/from=bfme2-compiler-v1
+    if: >-
+      github.repository_id == '1464323350' &&
+      !(github.event_name == 'pull_request_target' && github.event.action == 'edited' &&
+        github.event.changes.base.ref.from == null) &&
+      ((github.event_name != 'merge_group' && github.ref == 'refs/heads/main') ||
+       (github.event_name == 'merge_group' && vars.BFME_MERGE_QUEUE_ENABLED == 'yes' &&
+        github.event.merge_group.base_ref == 'refs/heads/main'))
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pull-requests: read
-      statuses: write
     timeout-minutes: 15
-    concurrency:
-      group: >-
-        bfme-source-rules-${{ github.event_name == 'repository_dispatch' &&
-          format('remeasure-{0}-{1}-{2}', github.event.client_payload.number,
-            github.event.client_payload.head, github.event.client_payload.base) ||
-          github.event.pull_request.number || inputs.pr_number }}
-      cancel-in-progress: true
     outputs:
-      receipt: ${{ steps.publish.outputs.receipt }}
-    env:
-      ARCHIVE_PR: ${{ inputs.pr_number }}
-      ARCHIVE_BASE: ${{ inputs.base_sha }}
-      ARCHIVE_HEAD: ${{ inputs.head_sha }}
+      decision: ${{ steps.evaluate.outputs.status }}
     steps:
+      - name: Verify the protected tools revision
+        env:
+          QUEUE_READ_TOKEN: ${{ github.event_name == 'merge_group' && github.token || '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$SOURCE_TOOLS_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Expected an exact protected commit. Found a missing or invalid revision." >&2
+            exit 1
+          fi
+          if [[ "$GITHUB_EVENT_NAME" == merge_group ]]; then
+            if [[ "${GITHUB_REPOSITORY,,}" != open-bfme/bfme2-rebuild ||
+                  "$GITHUB_SERVER_URL" != https://github.com ||
+                  "$GITHUB_API_URL" != https://api.github.com ]]; then
+              echo "Expected the GitHub source repository. Found a different repository or service." >&2
+              exit 1
+            fi
+            if ! main=$(curl --fail --silent --proto '=https' --connect-timeout 8 --max-time 25 \
+                  --config - "https://api.github.com/repos/$GITHUB_REPOSITORY/git/ref/heads/main" \
+                  <<< "header = \"Authorization: Bearer $QUEUE_READ_TOKEN\"" | jq -er '.object.sha') ||
+                [[ "$SOURCE_TOOLS_SHA" != "$main" ]]; then
+              echo "Expected the queued change's base to be current protected main. Found a moved or unavailable main." >&2
+              exit 1
+            fi
+          fi
+
       - name: Load the source checks from protected main
         id: trusted
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ env.SOURCE_TOOLS_SHA }}
           persist-credentials: false
           fetch-depth: 1
           sparse-checkout: tools/gates
           path: source-rule-tools
 
-      - name: Fetch protected main and the exact author head into a bare store
-        if: steps.trusted.outcome == 'success'
-        id: fetch
+      - name: Confirm the current change and repository visibility
+        id: authorize
         shell: bash
         env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -I -S -B source-rule-tools/tools/gates/workflow.py authorize
+
+      - name: Fetch public Git objects without credentials
+        if: steps.authorize.outputs.transport == 'public'
+        id: fetch-public
+        shell: bash
+        run: |
+          env -i PATH=/usr/bin:/bin HOME="$HOME" RUNNER_TEMP="$RUNNER_TEMP" \
+            GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
+            GITHUB_REF="$GITHUB_REF" GITHUB_SHA="$GITHUB_SHA" GITHUB_EVENT_NAME="$GITHUB_EVENT_NAME" \
+            GITHUB_EVENT_PATH="$GITHUB_EVENT_PATH" GITHUB_API_URL="$GITHUB_API_URL" \
+            GITHUB_SERVER_URL="$GITHUB_SERVER_URL" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            SOURCE_TRANSPORT=public \
+            python3 -I -S -B source-rule-tools/tools/gates/workflow.py fetch
+
+      - name: Receive same-repository changes in the private repository
+        if: steps.authorize.outputs.transport == 'private'
+        id: fetch-private
+        shell: bash
+        env:
+          SOURCE_TRANSPORT: private
           GH_TOKEN: ${{ github.token }}
         run: python3 -I -S -B source-rule-tools/tools/gates/workflow.py fetch
 
@@ -69,8 +112,8 @@ jobs:
         id: evaluate
         shell: bash
         env:
-          SOURCE_OBJECTS: ${{ steps.fetch.outputs.scratch }}
-          FETCH_REASON: ${{ steps.fetch.outputs.reason }}
+          SOURCE_OBJECTS: ${{ steps.fetch-public.outputs.scratch || steps.fetch-private.outputs.scratch }}
+          FETCH_REASON: ${{ steps.authorize.outputs.reason || steps.fetch-public.outputs.reason || steps.fetch-private.outputs.reason }}
         run: |
           env -i PATH=/usr/bin:/bin HOME="$HOME" \
             GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
@@ -78,17 +121,68 @@ jobs:
             GITHUB_EVENT_PATH="$GITHUB_EVENT_PATH" GITHUB_API_URL="$GITHUB_API_URL" \
             GITHUB_SERVER_URL="$GITHUB_SERVER_URL" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" SOURCE_OBJECTS="$SOURCE_OBJECTS" \
-            FETCH_REASON="$FETCH_REASON" ARCHIVE_PR="$ARCHIVE_PR" \
-            ARCHIVE_BASE="$ARCHIVE_BASE" ARCHIVE_HEAD="$ARCHIVE_HEAD" \
+            FETCH_REASON="$FETCH_REASON" \
             python3 -I -S -B source-rule-tools/tools/gates/workflow.py evaluate
 
+      - name: Report unavailable protected tools
+        if: always() && !cancelled() && steps.trusted.outcome != 'success'
+        shell: bash
+        run: |
+          echo "Expected the source checks from current protected main. Found an unavailable tools checkout or a stale base." \
+            >> "$GITHUB_STEP_SUMMARY"
+
+  publish-source-rules:
+    needs: source-rules
+    if: always() && !cancelled() && needs.source-rules.result == 'success'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: write
+    timeout-minutes: 5
+    steps:
+      - name: Verify the protected tools revision
+        env:
+          QUEUE_READ_TOKEN: ${{ github.event_name == 'merge_group' && github.token || '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$SOURCE_TOOLS_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Expected an exact protected commit. Found a missing or invalid revision." >&2
+            exit 1
+          fi
+          if [[ "$GITHUB_EVENT_NAME" == merge_group ]]; then
+            if [[ "${GITHUB_REPOSITORY,,}" != open-bfme/bfme2-rebuild ||
+                  "$GITHUB_SERVER_URL" != https://github.com ||
+                  "$GITHUB_API_URL" != https://api.github.com ]]; then
+              echo "Expected the GitHub source repository. Found a different repository or service." >&2
+              exit 1
+            fi
+            if ! main=$(curl --fail --silent --proto '=https' --connect-timeout 8 --max-time 25 \
+                  --config - "https://api.github.com/repos/$GITHUB_REPOSITORY/git/ref/heads/main" \
+                  <<< "header = \"Authorization: Bearer $QUEUE_READ_TOKEN\"" | jq -er '.object.sha') ||
+                [[ "$SOURCE_TOOLS_SHA" != "$main" ]]; then
+              echo "Expected the queued change's base to be current protected main. Found a moved or unavailable main." >&2
+              exit 1
+            fi
+          fi
+
+      - name: Load the source checks from protected main
+        id: trusted
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ env.SOURCE_TOOLS_SHA }}
+          persist-credentials: false
+          fetch-depth: 1
+          sparse-checkout: tools/gates
+          path: source-rule-tools
+
       - name: Recheck current main and publish source-rule statuses
-        if: always() && !cancelled() && steps.trusted.outcome == 'success'
         id: publish
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          RULE_STATUS: ${{ steps.evaluate.outputs.status }}
+          RULE_STATUS: ${{ needs.source-rules.outputs.decision }}
         run: python3 -I -S -B source-rule-tools/tools/gates/workflow.py publish
 
       - name: Retain the exact checked source-rules decision
@@ -106,18 +200,9 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      - name: Report unavailable protected tools
+      - name: Explain an unavailable status writer checkout
         if: always() && !cancelled() && steps.trusted.outcome != 'success'
         shell: bash
         run: |
-          {
-            printf '| Rule | Result |\n| --- | --- |\n'
-            for rule in 'G1 Paths' 'G2 Generated annotations' 'G3 Forbidden constructs' \
-              'G4 Stand-in types' 'G5 Comments' 'G6 One item' 'G7 One definition' 'G8 Address names'; do
-              printf '| %s | Error |\n' "$rule"
-              if [[ "$rule" == 'G4 Stand-in types' ]]; then
-                printf '| G4b Type swaps | Unavailable (advisory) |\n'
-              fi
-            done
-            printf '\n**Binding [tools-unavailable]** The protected source check could not be loaded from this main revision.\n'
-          } >> "$GITHUB_STEP_SUMMARY"
+          echo "Source results were not published because protected main moved or its tools could not be loaded." \
+            >> "$GITHUB_STEP_SUMMARY"
