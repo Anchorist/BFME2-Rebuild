@@ -117,7 +117,7 @@ class CardTests(Tiny):
     def test_reader_facing_text(self):
         text = self.build()[0]["README.md"].decode()
         self.assertTrue(text.startswith("# Battle for Middle-earth II rebuild: progress\n"))
-        self.assertRegex(text, r"Last measured: \*\*\d{1,2} [A-Z][a-z]+ \d{4}, \d\d:\d\d UTC\*\*")
+        self.assertRegex(text, r"Measured \*\*\d{1,2} [A-Z][a-z]+ \d{4}\*\*\. The code figures describe commit ")
         self.assertIn(f"[`{self.main[:12]}`](https://github.com/Open-BFME/BFME2-Rebuild/commit/{self.main})", text)
         self.assertIn("Counted in functions, not bytes", text)
         self.assertNotRegex(text, r"\b(checker|unk|Unplaced|PROGRESS)\b")
@@ -125,12 +125,74 @@ class CardTests(Tiny):
         self.assertEqual(card.human_date("2001-02-03"), "3 February 2001")
         self.assertIn("| Game engine: Common | 66.7% (100 of 150 bytes) |", text)
 
+    def test_headline_order_date_and_picture(self):
+        files = self.build({"sha": "e" * 40, "date": "2030-01-09", "result": "partial",
+                            "provided_required_symbols": [7, 10]})[0]
+        text = files["README.md"].decode()
+        self.assertLess(text.index("**Byte match**"), text.index("**Linking**"))
+        self.assertLess(text.index("**Linking**"), text.index("**Code proven**"))
+        self.assertIn("Measured **9 January 2030**.", text)  # the nightly is newer than the commit
+        self.assertIn("70.0% (7 of 10 names)", text)
+        svg = files["detail.svg"].decode()
+        self.assertIn("Measured 9 January 2030", svg)
+        self.assertLess(svg.index(">Byte match<"), svg.index(">Linking<"))
+        self.assertIn('font-size="24" font-weight="600">Byte match<', svg)
+        self.assertIn('font-size="19" font-weight="600">Code proven<', svg)
+        self.assertIn("prefers-color-scheme: dark", svg)
+        self.assertIn('<rect class="bg"', svg)
+        plain = self.build()[0]
+        self.assertIn("Not measured yet: the daily build will report this figure.\n", plain["README.md"].decode())
+        self.assertNotIn("links the game", plain["README.md"].decode())
+        # The nightly measured another commit: its Linking value is attributed to that build.
+        self.assertIn(f"Measured by the daily build of commit [`{'e' * 12}`]", text)
+        self.assertIn("(9 January 2030), which can be newer or older", text)
+        self.assertIn("| 70.00% (build `eeeeeee`) |", text)
+        self.assertIn("7 of 10 names · daily build of 9 January 2030", svg)
+        point = json.loads(files["card.json"])
+        self.assertEqual(point["linking_main"], "e" * 40)
+        # Same commit: no build label in the history table.
+        same = self.build({"sha": self.main, "date": "2030-01-09", "result": "partial",
+                           "provided_required_symbols": [7, 10]})[0]["README.md"].decode()
+        self.assertNotIn("(build `", same)
+        self.assertIn(">not measured yet<", plain["detail.svg"].decode())
+
+    def test_front_picture_is_the_approved_design(self):
+        """Same numbers, same bytes as the approved README design."""
+        made = card.design.card(25.7, (5137, 8267), (10054, 41565), 366, "20 Nov 2026")
+        self.assertEqual(made, (HERE / "design-reference.svg").read_text(encoding="utf-8"))
+
+    def test_front_picture_from_measurements(self):
+        files = self.build()[0]
+        svg = files["progress.svg"].decode()
+        self.assertIn(">BYTE MATCH<", svg)
+        self.assertIn(">66.7%<", svg)
+        self.assertIn("not measured yet; the daily build will report it", svg)
+        self.assertIn("inside the original game (not run yet)", svg)
+        self.assertIn(">1<", svg)  # functions finished
+        self.assertIn("· measured by machine, daily at noon ET", svg)
+        self.assertIn("prefers-color-scheme: light", svg)
+        self.assertIn("Byte match", files["detail.svg"].decode())
+        # No nightly: the state's file count is never shown as files compiled.
+        self.assertIn('x="592" y="286" font-size="24" font-weight="700">—</text>', svg)
+        self.assertIn("compared with the game every day (not run yet)", svg)
+        night = {"sha": "f" * 40, "date": "2030-01-09", "result": "pass", "simulation_equal": True,
+                 "files_substituted": 366, "compile": {"compiled": 3253, "files": 3253, "fully_matching": 407},
+                 "provided_required_symbols": [5137, 8267]}
+        svg = self.build(night)[0]["progress.svg"].decode()
+        self.assertIn(">62.1%<", svg)
+        self.assertIn("of the names a full game needs: 5,137 of 8,267", svg)
+        self.assertIn('font-weight="700">366</text>', svg)
+        self.assertIn('font-weight="700">3,253</text>', svg)
+        self.assertIn("9 Jan 2030 · measured by machine", svg)
+        night["simulation_equal"] = False
+        self.assertIn("(not run yet)", self.build(night)[0]["progress.svg"].decode())
+
     def test_drop_is_reported(self):
         before = {"main": "b" * 40, "date": "2000-01-01T00:00:00Z", "matched": [120, 150], "proven": [100, 150],
                   "linking": None, "finished": [1, 2]}
         files, down = self.build(history=[before])
         self.assertEqual(len(down), 1)
-        self.assertRegex(down[0], r"^Code matched: expected at least 120 .* found 100 ")
+        self.assertRegex(down[0], r"^Byte match: expected at least 120 .* found 100 ")
         self.assertEqual(len(json.loads(files["history.json"])), 2)
 
     def test_corrupt_state_is_refused(self):
@@ -195,7 +257,9 @@ class WorkflowRules(unittest.TestCase):
         self.assertNotRegex(text.lower(), r"\bgate\b")
         self.assertEqual(set(re.findall(r"persist-credentials: (\S+)", text)), {"false"})
         self.assertIn("  workflow_call:\n", text)
-        self.assertNotIn("workflow_run", text)
+        self.assertIn('workflow_run:\n    workflows: ["Nightly build and compare"]\n'
+                      '    types: [completed]\n    branches: [main]\n', text)
+        self.assertIn("    - cron: '37 17 * * *'\n", text)
         caller = (ROOT / ".github/workflows/state-publish.yml").read_text()
         self.assertIn("uses: ./.github/workflows/progress.yml", caller)
         self.assertIn("needs.publish.outputs.new == 'true'", caller)

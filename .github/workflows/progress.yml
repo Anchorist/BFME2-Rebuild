@@ -1,12 +1,18 @@
 name: Progress card and worklists
 
-# Called by "Publish main state" after each newly published main state (and daily, for the nightly result), write the progress
-# card (README.md, progress.svg, history.svg) and regenerate worklist/*.tsv for that main
-# commit, and put them on the `progress` branch. Nothing here writes `main`; a push with the
+# Write the progress card (README.md, progress.svg, history.svg) and regenerate worklist/*.tsv
+# for the newest measured main commit, and put them on the `progress` branch. Runs when
+# "Publish main state" writes a new state (it calls this workflow), when the daily
+# "Nightly build and compare" finishes (so the card shows that day's build and linking
+# result), and once a day on the schedule below as a fallback. Nothing here writes `main`; a push with the
 # Actions token starts no other workflow, so nothing loops.
 
 on:
   workflow_call:
+  workflow_run:
+    workflows: ["Nightly build and compare"]
+    types: [completed]
+    branches: [main]
   schedule:
     - cron: '37 17 * * *'
   workflow_dispatch:
@@ -24,8 +30,11 @@ concurrency:
 
 jobs:
   build:
+    # A cancelled or skipped nightly changes nothing on the card: skip without starting a runner.
     if: >-
-      github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' && vars.BFME_STATE_BRANCH_ENABLED == 'yes'
+      github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' && vars.BFME_STATE_BRANCH_ENABLED == 'yes' &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion != 'cancelled' && github.event.workflow_run.conclusion != 'skipped'))
     name: Write the card and the worklists
     runs-on: '${{ vars.BFME_STATE_PUBLISH_RUNNER || ''ubuntu-24.04'' }}'
     timeout-minutes: 30

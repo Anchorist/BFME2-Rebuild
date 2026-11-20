@@ -26,21 +26,23 @@ from gitrepo import Git  # noqa: E402  (ci/managed-state)
 from progress_card import card_measure, subsystem  # noqa: E402,F401
 from source_definitions import global_class_defs  # noqa: E402
 from layout import Refused, canonical, join  # noqa: E402  (ci/state)
+import design  # noqa: E402  (ci/progress/design.py: the front-page picture)
 
 HISTORY_LIMIT = 2000
 BARS = (
-    ("matched", "Code matched",
+    ("matched", "Byte match",
      "How much of the original game's code, by size, our source code compiles back to byte for byte."),
-    ("proven", "Code proven",
-     "How much of the code, by size, is matched and also confirmed at every place it refers to other "
-     "code or data, so the match cannot be a coincidence."),
     ("linking", "Linking",
      "How many of the names the game needs to be assembled into one program our source already provides."),
+    ("proven", "Code proven",
+     "How much of the code, by size, is byte-matched and also confirmed at every place it refers to other "
+     "code or data, so the match cannot be a coincidence."),
     ("finished", "Finished functions",
      "Functions that are proven, sit in a properly named source file, and belong to a class declared in a "
      "final header. Counted in functions, not bytes: small functions are often finished first, so this "
-     "figure can be ahead of the two above."),
+     "figure can be ahead of the byte figures."),
 )
+HEADLINE = ("matched", "linking")  # the two figures the repository's front page names
 UNITS = {"matched": "bytes", "proven": "bytes", "linking": "names", "finished": "functions"}
 # Readable names for the parts of the source tree (progress_card.subsystem labels).
 PART_NAMES = {
@@ -90,7 +92,9 @@ def nightly_view(nightly):
             "equal_frames": frames if type(frames) is int and frames > 0 else None,
             "control_caught": nightly.get("control_caught") if type(nightly.get("control_caught")) is bool else None,
             "linking": pair if ok_pair else None, "result": result, **counts,
-            "game_live": stages.get("link_and_play") not in (None, "not live", "skipped")}
+            "game_live": stages.get("link_and_play") not in (None, "not live", "skipped"),
+            "files_substituted": nightly.get("files_substituted")
+            if type(nightly.get("files_substituted")) is int and nightly["files_substituted"] >= 0 else None}
 
 
 def nightly_sentence(night):
@@ -141,16 +145,22 @@ def measure(checkout, state, nightly):
     git = Git(Path(checkout) / ".git")
     raw = card_measure(git, state["sha"], state, global_class_defs, None)
     night = nightly_view(nightly)
-    return {"main": state["sha"], "date": main_date(checkout, state["sha"]),
+    date = main_date(checkout, state["sha"])
+    # The day a visitor reads: the later of the measured commit's date and the daily build's date.
+    days = [date[:10]] + ([night["date"][:10]] if night and len(night["date"]) >= 10 else [])
+    return {"main": state["sha"], "date": date, "measured": max(days),
             "matched": raw["matched_bytes"], "proven": raw["proven_bytes"], "finished": raw["finished_rows"],
             "linking": night["linking"] if night else None,
+            "linking_main": night["sha"] if night and night["linking"] else None,
+            "linking_date": night["date"] if night and night["linking"] else None,
             "subsystems": {k: list(v) for k, v in sorted(raw["components"].items())},
-            "drafts_in_use": raw["drafts_in_use"], "nightly": night}
+            "drafts_in_use": raw["drafts_in_use"], "nightly": night, "files_measured": len(state["tus"])}
 
 
 def history_with(previous, point):
     rows = {row["main"]: row for row in previous if isinstance(row, dict) and "main" in row}
-    rows[point["main"]] = {key: point[key] for key in ("main", "date", "matched", "proven", "linking", "finished")}
+    rows[point["main"]] = {key: point[key] for key in ("main", "date", "matched", "proven", "linking",
+                                                       "linking_main", "finished")}
     ordered = sorted(rows.values(), key=lambda r: (r["date"], r["main"]))
     return ordered[-HISTORY_LIMIT:]
 
@@ -196,10 +206,18 @@ def markdown(point, history):
     lines = ["# Battle for Middle-earth II rebuild: progress", "",
              "How much of the original game (version 1.06) has been rebuilt as source code that compiles back "
              "to the same machine code. Measured automatically after every change; nobody edits this page.", "",
-             f"Last measured: **{human_date(point['date'])}**, on commit {commit_link(point['main'])}.", "",
-             "![Progress](progress.svg)", ""]
+             f"Measured **{human_date(point['measured'])}**. The code figures describe commit "
+             f"{commit_link(point['main'])} ({human_date(point['date'])}); the build checks run every day.", "",
+             "![Progress](progress.svg)", "", "## The figures", "", "![The four figures](detail.svg)", ""]
     for key, label, meaning in BARS:
-        lines += [f"**{label}**: {text_bar(point[key])} {figure(point[key], UNITS[key])}  ", meaning, ""]
+        lines += [f"**{label}**: {text_bar(point[key])} {figure(point[key], UNITS[key])}  ", meaning]
+        if key == "linking" and point[key] is None:
+            lines.append("Not measured yet: the daily build will report this figure.")
+        elif key == "linking":
+            lines.append(f"Measured by the daily build of commit {commit_link(point['linking_main'])} "
+                         f"({human_date(point['linking_date'])}), which can be newer or older than the commit "
+                         f"the other figures describe.")
+        lines.append("")
     lines += ["## Does the rebuilt game run?", ""]
     night = point["nightly"]
     if night is None:
@@ -217,18 +235,21 @@ def markdown(point, history):
             lines.append("- Warning: a deliberately altered test run was not told apart from the original, "
                          "so tonight's comparison cannot be trusted.")
     lines += ["", "## By part of the game", "",
-              "Code matched, by size, in each part of the source tree, largest part first.", "",
-              "| Part | Matched | Bar |", "| --- | ---: | --- |"]
+              "Byte match, by size, in each part of the source tree, largest part first.", "",
+              "| Part | Byte match | Bar |", "| --- | ---: | --- |"]
     for name, pair in sorted(point["subsystems"].items(), key=part_order):
         lines.append(f"| {part_name(name)} | {figure(pair, 'bytes')} | {text_bar(pair)} |")
     lines += ["", f"Provisional class declarations still in use (files under `include/Draft/` that some source "
                   f"file includes): {point['drafts_in_use']:,}. Each should become a final header.", "",
               "## Over time", "", "![Progress over time](history.svg)", "",
-              "| Commit | Measured | Matched | Proven | Linking | Finished |",
+              "| Commit | Date | Byte match | Linking | Proven | Finished |",
               "| --- | --- | ---: | ---: | ---: | ---: |"]
     for row in reversed(history[-30:]):
-        cells = [f"{pct(row[k]):.2f}%" if pct(row.get(k)) is not None else "—"
-                 for k in ("matched", "proven", "linking", "finished")]
+        cells = [f"{pct(row.get(k)):.2f}%" if pct(row.get(k)) is not None else "—"
+                 for k, _, _ in BARS]
+        linking_main = row.get("linking_main")
+        if cells[1] != "—" and linking_main and linking_main != row["main"]:
+            cells[1] += f" (build `{linking_main[:7]}`)"
         lines.append(f"| {commit_link(row['main'])} | {human_date(row['date'])} | " + " | ".join(cells) + " |")
     lines += ["", f"How each figure is computed, with its exact formula: [ci/progress/README.md]({REPO_URL}/blob/main/ci/progress/README.md).", ""]
     return "\n".join(lines)
@@ -250,44 +271,68 @@ def esc(text):
 
 
 def bars_svg(point):
-    width, row = 640, 46
-    height = 40 + row * len(BARS)
-    out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="Progress: four bars">',
-           STYLE, f'<rect class="bg" width="{width}" height="{height}" rx="6"/>',
-           f'<text class="t2" x="16" y="24" font-size="12">Battle for Middle-earth II rebuild · '
-           f'{esc(human_date(point["date"]))} · commit {point["main"][:12]}</text>']
-    for i, (key, label, _) in enumerate(BARS):
-        y = 40 + i * row
+    """Two large headline bars (byte match, linking), then two smaller ones. Opaque background, so the
+    picture reads the same on light and dark pages; the colours follow the reader's colour scheme."""
+    width, pad = 830, 24
+    inner = width - 2 * pad
+    big, small = 90, 58
+    rows = [(key, label, key in HEADLINE) for key, label, _ in BARS]
+    height = 68 + sum(big if headline else small for _, _, headline in rows) + 8
+    out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" '
+           f'role="img" aria-label="{esc(svg_summary(point))}">',
+           STYLE, f'<rect class="bg" width="{width}" height="{height}" rx="8"/>',
+           f'<text class="t1" x="{pad}" y="36" font-size="20" font-weight="600">Battle for Middle-earth II rebuild</text>',
+           f'<text class="t2" x="{width - pad}" y="36" font-size="18" text-anchor="end">'
+           f'Measured {esc(human_date(point["measured"]))}</text>']
+    y = 68
+    for key, label, headline in rows:
         value = pct(point[key])
-        shown = "not measured yet" if value is None else f"{value:.1f}%"
-        out.append(f'<text class="t1" x="16" y="{y + 14}" font-size="14" font-weight="600">{esc(label)}</text>')
-        out.append(f'<text class="t1" x="{width - 16}" y="{y + 14}" font-size="14" text-anchor="end">{shown}</text>')
-        out.append(f'<rect class="track" x="16" y="{y + 22}" width="{width - 32}" height="10" rx="4"/>')
+        size, bar = (24, 20) if headline else (19, 12)
+        out.append(f'<text class="t1" x="{pad}" y="{y + size}" font-size="{size}" font-weight="600">{esc(label)}</text>')
+        if value is None:
+            out.append(f'<text class="t2" x="{width - pad}" y="{y + size}" font-size="{size - 4}" text-anchor="end">not measured yet</text>')
+        else:
+            out.append(f'<text class="t1" x="{width - pad}" y="{y + size}" font-size="{size + (6 if headline else 0)}" '
+                       f'font-weight="600" text-anchor="end">{value:.1f}%</text>')
+        top = y + size + 10
+        out.append(f'<rect class="track" x="{pad}" y="{top}" width="{inner}" height="{bar}" rx="{bar // 2}"/>')
         if value:
-            w = max(4.0, (width - 32) * value / 100)
-            out.append(f'<rect class="fill" x="16" y="{y + 22}" width="{w:.1f}" height="10" rx="4"/>')
+            w = max(float(bar), inner * value / 100)
+            out.append(f'<rect class="fill" x="{pad}" y="{top}" width="{w:.1f}" height="{bar}" rx="{bar // 2}"/>')
+        if headline and value is not None:
+            source = (f" · daily build of {human_date(point['linking_date'])}"
+                      if key == "linking" and point.get("linking_date") else "")
+            out.append(f'<text class="t2" x="{pad}" y="{top + bar + 19}" font-size="15">'
+                       f'{point[key][0]:,} of {point[key][1]:,} {UNITS[key]}{esc(source)}</text>')
+        y += big if headline else small
     out.append("</svg>")
     return "\n".join(out) + "\n"
 
 
+def svg_summary(point):
+    parts = [f"{label} {'not measured yet' if pct(point[key]) is None else f'{pct(point[key]):.1f}%'}"
+             for key, label, _ in BARS]
+    return f"Battle for Middle-earth II rebuild, measured {human_date(point['measured'])}: " + ", ".join(parts)
+
+
 def history_svg(history):
-    width, height, left, right, top, bottom = 640, 260, 44, 110, 20, 36
+    width, height, left, right, top, bottom = 830, 300, 52, 150, 24, 40
     plot_w, plot_h = width - left - right, height - top - bottom
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="Progress over time, percent">',
            STYLE, f'<rect class="bg" width="{width}" height="{height}" rx="6"/>']
     for tick in (0, 25, 50, 75, 100):
         y = top + plot_h * (1 - tick / 100)
         out.append(f'<line class="grid" x1="{left}" x2="{left + plot_w}" y1="{y:.1f}" y2="{y:.1f}"/>')
-        out.append(f'<text class="t2" x="{left - 6}" y="{y + 4:.1f}" font-size="11" text-anchor="end">{tick}%</text>')
+        out.append(f'<text class="t2" x="{left - 6}" y="{y + 4:.1f}" font-size="13" text-anchor="end">{tick}%</text>')
     points = history[-365:]
     if len(points) < 2:
-        out.append(f'<text class="t2" x="{left + plot_w / 2}" y="{top + plot_h / 2}" font-size="13" text-anchor="middle">The chart starts once two main commits are measured.</text>')
+        out.append(f'<text class="t2" x="{left + plot_w / 2}" y="{top + plot_h / 2}" font-size="15" text-anchor="middle">The chart starts once two main commits are measured.</text>')
     else:
         stamps = [datetime.strptime(r["date"], "%Y-%m-%dT%H:%M:%SZ").timestamp() for r in points]
         lo, hi = stamps[0], max(stamps[-1], stamps[0] + 1)
         x = lambda s: left + plot_w * (s - lo) / (hi - lo)  # noqa: E731
-        out.append(f'<text class="t2" x="{left}" y="{height - 12}" font-size="11">{points[0]["date"][:10]}</text>')
-        out.append(f'<text class="t2" x="{left + plot_w}" y="{height - 12}" font-size="11" text-anchor="end">{points[-1]["date"][:10]}</text>')
+        out.append(f'<text class="t2" x="{left}" y="{height - 12}" font-size="13">{esc(human_date(points[0]["date"][:10]))}</text>')
+        out.append(f'<text class="t2" x="{left + plot_w}" y="{height - 12}" font-size="13" text-anchor="end">{esc(human_date(points[-1]["date"][:10]))}</text>')
         labels = []
         for n, (key, label, _) in enumerate(BARS, 1):
             series = [(x(s), pct(r.get(key))) for s, r in zip(stamps, points) if pct(r.get(key)) is not None]
@@ -298,10 +343,10 @@ def history_svg(history):
             labels.append([top + plot_h * (1 - series[-1][1] / 100), n, label])
         labels.sort()
         for i in range(1, len(labels)):  # keep end labels at least 14 px apart
-            labels[i][0] = max(labels[i][0], labels[i - 1][0] + 14)
+            labels[i][0] = max(labels[i][0], labels[i - 1][0] + 18)
         for y, n, label in labels:
             out.append(f'<rect class="d{n}" x="{left + plot_w + 8}" y="{y - 4:.1f}" width="8" height="8" rx="2"/>')
-            out.append(f'<text class="t1" x="{left + plot_w + 20}" y="{y + 4:.1f}" font-size="11">{esc(label)}</text>')
+            out.append(f'<text class="t1" x="{left + plot_w + 20}" y="{y + 5:.1f}" font-size="14">{esc(label)}</text>')
     out.append("</svg>")
     return "\n".join(out) + "\n"
 
@@ -314,7 +359,8 @@ def build(checkout, state_read, nightly, previous_history):
         "card.json": canonical(point),
         "history.json": canonical(history),
         "README.md": markdown(point, history).encode(),
-        "progress.svg": bars_svg(point).encode(),
+        "progress.svg": design.from_point(point).encode(),
+        "detail.svg": bars_svg(point).encode(),
         "history.svg": history_svg(history).encode(),
     }, drops(history, point)
 
