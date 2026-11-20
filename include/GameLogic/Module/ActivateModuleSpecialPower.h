@@ -36,10 +36,10 @@ protected:
 	virtual void xfer(Xfer *xfer);
 
 public:
-	virtual void onObjectCreated();					// 0x004CDF1D, primary table 0x0085FC88 slot 5: wakes the module when it has an object
-	virtual void onExit(bool a, bool b);				// 0x004CDF00, slot 13 (public in the map: UAE): the base's exit, then wakes the module
-	virtual void triggerAbilityEffect();			// 0x004CDEED, slot 17
-	void SetWakeState(int state);				// 0x004CDDBA
+	virtual void onObjectCreated();					// Primary table 0x0085FC88 slot 5: wakes the module when it has an object
+	virtual void onExit(bool a, bool b);				// Slot 13 (public in the map: UAE): the base's exit, then wakes the module
+	virtual void triggerAbilityEffect();			// Slot 17
+	void SetWakeState(int state);
 protected:
 	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF (table 0x0085FC88): a jmp to SpecialAbilityUpdate's 0x00497805
 };

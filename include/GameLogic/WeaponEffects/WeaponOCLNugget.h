@@ -18,7 +18,7 @@ class INI;
 class WeaponOCLNugget : public WeaponEffectNugget
 {
 public:
-	WeaponOCLNugget();										// 0x0050968B
+	WeaponOCLNugget();
 	virtual ~WeaponOCLNugget();								// 0, deleting dtor 0x005096AB
 	virtual Bool canAffectObject(const ProjectileNuggetFireInfo *info, Object *victim);	// 1, 0x00508925
 	virtual Bool slot02(const ProjectileNuggetFireInfo *info, Int arg);	// 2, 0x00507943

@@ -33,8 +33,8 @@ class RebuildHoleBehavior : public UpdateModule, public DieModuleInterface, publ
 {
 public:
 	RebuildHoleBehavior(Thing *thing, const ModuleData *moduleData);					// 0x00483271
-	virtual NameKeyType getModuleNameKey() const;										// 0x004832D7
-	virtual ~RebuildHoleBehavior();														// 0x0048353E
+	virtual NameKeyType getModuleNameKey() const;
+	virtual ~RebuildHoleBehavior();
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x00483645)
 	virtual void onDie(const DamageInfo *);	// override: onDie slot 0 at +0x20 (0x004835FB)
 	virtual DieModuleInterface *getDie() { return this; }	// override: BehaviorModuleInterface slot 7 (retail 0x004543A9: the null-checked interface pointer)
@@ -45,8 +45,8 @@ public:
 	virtual void setSlot4Flag(bool flag);												// override: slot 4 at +0x24 (0x00210CD3)
 	virtual RebuildHoleBehaviorInterface *getRebuildHoleBehaviorInterface();			// primary slot 13, 0x00483322 (own new slot)
 
-	static RebuildHoleBehaviorInterface *getRebuildHoleBehaviorInterfaceFromObject(Object *obj);	// 0x004831CB
-	void newWorkerRespawnProcess(Object *oldWorker);									// 0x0048337A
+	static RebuildHoleBehaviorInterface *getRebuildHoleBehaviorInterfaceFromObject(Object *obj);
+	void newWorkerRespawnProcess(Object *oldWorker);
 
 protected:
 	virtual const char *GetSnapshotName() const;

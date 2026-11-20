@@ -10,6 +10,18 @@
 
 #include "GameClient/GameWindow.h"
 
+class DisplayString;
+
+// The static text's user data (GameWindow::winGetUserData): the display string that draws the text (set by
+// GadgetStaticTextSetFont 0x0032143D, read by GadgetStaticTextGetText 0x00321599) and the centering flag, which the
+// script parser reads from the window block at 0x00315283.
+struct _TextData
+{
+	DisplayString *m_text;	// +0x00
+	bool m_centered;	// +0x04
+};
+typedef struct _TextData TextData;
+
 class AsciiString;
 class UnicodeString;
 class GameFont;

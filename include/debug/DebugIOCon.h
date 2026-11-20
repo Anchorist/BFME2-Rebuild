@@ -17,7 +17,7 @@ void DebugFreeMemory(void *ptr);
 class DebugIOCon : public DebugIOInterface
 {
 public:
-	DebugIOCon();																// 0x00040C40
+	DebugIOCon();
 	virtual ~DebugIOCon();														// slot 0: 0x00040E20 (deleting), body 0x00040860
 
 	virtual int Read(char *buf, int maxchar);									// slot 1: 0x000408D0
@@ -31,7 +31,7 @@ public:
 		DebugFreeMemory(this);
 	}
 
-	static DebugIOInterface *Create();											// 0x00040E50
+	static DebugIOInterface *Create();
 
 private:
 	bool m_allocatedConsole;													// +4

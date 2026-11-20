@@ -10,7 +10,7 @@ below.
 ## Counts
 
 The maintainers recorded these progress counts at
-**2026-11-20**, revision `d0411931d7` of their
+**2026-11-20**, revision `23df34315f` of their
 working repository (the tree of this snapshot's `src/`, `include/`,
 `config/` and `expected/` is that revision or a later one).
 
@@ -23,24 +23,24 @@ for an unknown real name ([naming](naming.md)).
 
 | Measure | At that snapshot |
 | --- | ---: |
-| Owned functions credited MATCH | 15,065 / 41,565 |
-| Credited functions with proven references | 11,766 |
-| Whole objects VERIFIED | 155 / 2,154 |
-| Headers outside `include/Draft/` | 1,687 |
-| Owned function names classified as real / placeholder | 23,563 / 18,002 |
+| Owned functions credited MATCH | 15,252 / 41,565 |
+| Credited functions with proven references | 11,900 |
+| Whole objects VERIFIED | 157 / 2,151 |
+| Headers outside `include/Draft/` | 1,690 |
+| Owned function names classified as real / placeholder | 23,561 / 18,004 |
 
-36% of the owned functions had match credit at that snapshot.
+37% of the owned functions had match credit at that snapshot.
 
-Source files with code: **824 named** and **337 still named by
+Source files with code: **839 named** and **327 still named by
 address** (under `src/unk/`, waiting for evidence of their real name and
-place). Another 2,093 files hold only generated
-annotations and no code yet (1,854 address-named, 239
+place). Another 2,085 files hold only generated
+annotations and no code yet (1,838 address-named, 247
 named); they are scaffolds, counted apart.
 
-In this snapshot's tree, **9 Draft headers are in use** (included by
-some file; these are the ones to retire). Another 2,114 Drafts are
+In this snapshot's tree, **7 Draft headers are in use** (included by
+some file; these are the ones to retire). Another 2,113 Drafts are
 unused generated layout guesses: 2,103 are kept as leads for classes not
-written yet and 11 are dead copies of headers that now exist outside
+written yet and 10 are dead copies of headers that now exist outside
 `include/Draft/`. See the [worklist](../worklist/README.md).
 
 See [the checker verdicts](ledger-and-checks.md#read-the-verdict) for how

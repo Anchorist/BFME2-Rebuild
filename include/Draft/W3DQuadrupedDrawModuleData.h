@@ -2,11 +2,11 @@
 // DRAFT: N:ledger; S:fields 4/4; agrees: N:ledger,S:best-field-set
 #pragma once
 #include <stddef.h>
-#include "Draft/W3DScriptedModelDrawModuleData.h"
+#include "GameLogic/Module/W3DModelDrawModuleData.h"
 enum ObjectID;
 class Xfer;
 #pragma pack(push,1) // DRAFT layout policy; all known offsets asserted below
-class W3DQuadrupedDrawModuleData : public ::W3DScriptedModelDrawModuleData {
+class W3DQuadrupedDrawModuleData : public ::W3DModelDrawModuleData {
 public:
   virtual ~W3DQuadrupedDrawModuleData(); // slot=0x0 target=0x0006526C mangled=??_GW3DQuadrupedDrawModuleData@@UAEPAXI@Z
   virtual void vfunc_0x04(); // slot=0x4 target=0x000B3FD0 mangled=??1Region2D@@QAE@XZ
@@ -39,7 +39,6 @@ public:
   virtual void vfunc_0x70(); // slot=0x70 target=0x000D43D0 mangled=?ControlBarInput@@YA?AW4WindowMsgHandledType@@PAVGameWindow@@III@Z
   virtual void vfunc_0x74(); // slot=0x74 target=0x000D43D0 mangled=?ControlBarInput@@YA?AW4WindowMsgHandledType@@PAVGameWindow@@III@Z
   virtual void vfunc_0x78(); // slot=0x78 target=0x0006520B mangled=?get@Rva0006520BByteField@@QBEEXZ
-  unsigned char m_unkTo0x188[0x188 - sizeof(::W3DScriptedModelDrawModuleData)]; // DRAFT: fills to binary field offset, not a claim of base size
   unsigned char LeftFrontFootBone[0x4]; // offset=0x188 evidence=B+S token=LeftFrontFootBone entry=0x007CBB28
   unsigned char RightFrontFootBone[0x4]; // offset=0x18C evidence=B+S token=RightFrontFootBone entry=0x007CBB38
   unsigned char LeftRearFootBone[0x4]; // offset=0x190 evidence=B+S token=LeftRearFootBone entry=0x007CBB48
@@ -51,7 +50,6 @@ typedef char check_W3DQuadrupedDrawModuleData_RightFrontFootBone[offsetof(W3DQua
 typedef char check_W3DQuadrupedDrawModuleData_LeftRearFootBone[offsetof(W3DQuadrupedDrawModuleData,LeftRearFootBone)==0x190?1:-1];
 typedef char check_W3DQuadrupedDrawModuleData_RightRearFootBone[offsetof(W3DQuadrupedDrawModuleData,RightRearFootBone)==0x194?1:-1];
 // DRAFT STILL NEEDS:
-// - agreed base allocation size unknown; padding anchored to first binary field minus compiler sizeof(base)
 // - binary allocation size unknown
 // - field LeftFrontFootBone uses binary-sized storage; C++ type unresolved
 // - field LeftRearFootBone uses binary-sized storage; C++ type unresolved

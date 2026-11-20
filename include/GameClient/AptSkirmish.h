@@ -30,11 +30,11 @@ class AptSkirmish : public _bfme_AptGameWindow, public MpGameSetupOwner
 {
 public:
 	AptSkirmish(void *, int);						// 0x00522B0E
-	virtual ~AptSkirmish();							// 0x00521977
+	virtual ~AptSkirmish();
 
-	virtual void MpOwnerGetLocalPlayerName(UnicodeString &);	// 0x00521720: slot 14
-	virtual bool MPOwnerValidatGameInfo(GameInfo *);			// 0x0052180E
-	virtual int OnUpdateData();						// 0x00522290
+	virtual void MpOwnerGetLocalPlayerName(UnicodeString &);	// Slot 14
+	virtual bool MPOwnerValidatGameInfo(GameInfo *);
+	virtual int OnUpdateData();
 	// The MpGameSetupOwner overrides this screen's table at VA 0x008678B0 holds directly (the bodies never touch `this`).
 	virtual bool MpOwnerSelectColor(GameSlot *, int);			// 0x005216CB: slot 4
 	virtual bool MpOwnerSelectMap(const AsciiString &);			// 0x00521C5A: slot 7
@@ -45,31 +45,31 @@ public:
 	virtual bool MpOwnerSelectTeam(GameSlot *, int);			// 0x005216ED: slot 12
 	virtual void MpOwnerPrintMessage(const UnicodeString &, int);	// 0x00521AC8: slot 17 (the map spells it showError)
 	virtual void slot18(bool, int);								// 0x00521B48: slot 18 (the setup panel starts the game: gives the heroes their create-a-hero data)
-	virtual int rva005231B0(int, unsigned int, unsigned int);	// 0x005231B0
-	virtual void rva00523303();						// 0x00523303
+	virtual int rva005231B0(int, unsigned int, unsigned int);
+	virtual void rva00523303();
 
 	bool InitSetupPanel();							// 0x005216A6: gives the embedded setup panel the skirmish game
-	void OnInitialized(const char *);				// 0x00521741
-	void rva0052174E(const char *);					// 0x0052174E
-	void StartGame(const char *);					// 0x00521756
-	void OnStatsMenu(const char *);					// 0x00521763
-	void OnProfilePopupCancel(const char *);		// 0x00521770
-	void OnExitStatsScreen(const char *);			// 0x00521826
-	void rva00521841();								// 0x00521841
-	void InitCreateAHeroOnStartGame();				// 0x005218AF
-	void OnAddProfileAccept(const char *);			// 0x00521B56
-	void StartGameAfterCDCheck();					// 0x00521CFF
-	void OnClosed(const char *);					// 0x00521E65
-	void OnNewProfileMenu(const char *);			// 0x00521E76
-	void rva00522556();								// 0x00522556
-	void OnDeleteProfileMenu(const char *);			// 0x0052266B
-	void OnChangeProfileMenu(const char *);			// 0x00522681
-	void OnDeleteProfile(const char *);				// 0x00522833
-	void OnChangeProfile(const char *);				// 0x005229D3
-	void rva00522A91();								// 0x00522A91
-	UnicodeString GetListboxProfileSelectedName();	// 0x00522697
-	int rva00523178(int, unsigned int, unsigned int);	// 0x00523178: the screen's key handler
-	static void OpenScreen(int mode);				// 0x0052192D: pushes "Skirmish.apt" unless the screen is open
+	void OnInitialized(const char *);
+	void rva0052174E(const char *);
+	void StartGame(const char *);
+	void OnStatsMenu(const char *);
+	void OnProfilePopupCancel(const char *);
+	void OnExitStatsScreen(const char *);
+	void rva00521841();
+	void InitCreateAHeroOnStartGame();
+	void OnAddProfileAccept(const char *);
+	void StartGameAfterCDCheck();
+	void OnClosed(const char *);
+	void OnNewProfileMenu(const char *);
+	void rva00522556();
+	void OnDeleteProfileMenu(const char *);
+	void OnChangeProfileMenu(const char *);
+	void OnDeleteProfile(const char *);
+	void OnChangeProfile(const char *);
+	void rva00522A91();
+	UnicodeString GetListboxProfileSelectedName();
+	int rva00523178(int, unsigned int, unsigned int);	// The screen's key handler
+	static void OpenScreen(int mode);				// Pushes "Skirmish.apt" unless the screen is open
 
 	AptMpGameSetup m_setup;							// +0x288
 	unsigned char m_helper[0x30];					// +0x668

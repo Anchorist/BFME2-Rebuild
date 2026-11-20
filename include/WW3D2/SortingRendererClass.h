@@ -22,8 +22,8 @@ class SortingRendererClass
 {
 	static bool _EnableTriangleDraw;
 
-	static void Flush_Sorting_Pool();									// 0x0012E8C0
-	static void Insert_To_Sorting_Pool(SortingNodeStruct *state);		// 0x0012D480
+	static void Flush_Sorting_Pool();
+	static void Insert_To_Sorting_Pool(SortingNodeStruct *state);
 
 public:
 	static void Insert_Triangles(
@@ -40,10 +40,10 @@ public:
 		unsigned vertex_count,
 		unsigned layerCount);											// 0x00130410
 
-	static void Flush();												// 0x0012F190
-	static void Deinit();												// 0x00130A20
+	static void Flush();
+	static void Deinit();
 
-	static void SetMinVertexBufferSize(unsigned val);					// 0x0012D2D0
+	static void SetMinVertexBufferSize(unsigned val);
 
 	static void _Enable_Triangle_Draw(bool enable) { _EnableTriangleDraw = enable; }
 	static bool _Is_Triangle_Draw_Enabled() { return _EnableTriangleDraw; }

@@ -15,7 +15,7 @@ class ProfileId
 	ProfileId &operator=(const ProfileId &);
 
 public:
-	ProfileId(const char *name, const char *descr, const char *unit, int precision, int exp10);	// 0x006C5C60
+	ProfileId(const char *name, const char *descr, const char *unit, int precision, int exp10);
 
 	static ProfileId *GetFirst() { return first; }
 	ProfileId *GetNext() const { return m_next; }
@@ -23,8 +23,8 @@ public:
 	const char *GetUnit() const { return m_unit ? m_unit : ""; }
 	const char *GetDescr() const { return m_descr ? m_descr : ""; }
 
-	void Increment(double add);																// 0x006C5DA0
-	void Maximum(double max);																// 0x006C5E00
+	void Increment(double add);
+	void Maximum(double max);
 
 	double GetCurrentValue()
 	{
@@ -45,11 +45,11 @@ public:
 		return true;
 	}
 
-	const char *AsString(double v) const;													// 0x006C60A0
+	const char *AsString(double v) const;
 
-	static void Shutdown();																	// 0x006C6360
-	static int FrameStart();																// 0x006C61B0
-	static void FrameEnd(int which, int mixIndex);											// 0x006C6220
+	static void Shutdown();
+	static int FrameStart();
+	static void FrameEnd(int which, int mixIndex);
 	static void ClearTotals()
 	{
 		for (ProfileId *cur = first; cur; cur = cur->m_next)

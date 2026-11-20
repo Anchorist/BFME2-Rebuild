@@ -18,15 +18,15 @@ class ModuleData;
 class FireSpreadUpdate : public UpdateModule
 {
 public:
-	FireSpreadUpdate(Thing *thing, const ModuleData *moduleData);	// 0x0048B769
+	FireSpreadUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;					// slot 4, 0x0048B690 (the map spells it as a static: rva00048B690)
-	virtual UpdateSleepTime update();								// 0x0048B7FD
+	virtual UpdateSleepTime update();
 
-	void startFireSpreading();										// 0x0048B938
-	UnsignedInt calcNextSpreadDelay();								// 0x0048B7D9
+	void startFireSpreading();
+	UnsignedInt calcNextSpreadDelay();
 
 protected:
-	virtual const char *GetSnapshotName() const;					// 0x0048B68A
+	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);									// slot 3, 0x004DF81B: Version1, then UpdateModule's
 protected:
 	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes

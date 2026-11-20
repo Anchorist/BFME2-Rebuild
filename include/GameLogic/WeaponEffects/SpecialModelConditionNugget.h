@@ -11,6 +11,8 @@
 #define BFME2_SPECIALMODELCONDITIONNUGGET_H
 
 #include "GameLogic/WeaponEffects/WeaponEffectNugget.h"
+#include "Common/AsciiString.h"
+#include "Common/Vector.h"
 
 class INI;
 
@@ -26,11 +28,11 @@ public:
 	virtual Bool slot07() const;	// 7, 0x0047A699
 	virtual void friend_postProcessLoad();	// 8, 0x0050B928
 
-	// 0x00508D2F: the INI parse callback the parser calls with (ini, nugget, NULL, NULL); it
+	// The INI parse callback the parser calls with (ini, nugget, NULL, NULL); it
 	// reads the base table and this class's table together.
 	static void parseFromINI(INI *ini, void *instance, void *store, const void *userData);
 
-	void *m_modelConditionNames[3];					// 0x128 ModelConditionNames (STLport vector<AsciiString>)
+	_STL::vector<AsciiString> m_modelConditionNames;	// 0x128 ModelConditionNames
 	UnsignedInt m_modelConditionDuration;					// 0x134 ModelConditionDuration (duration)
 };
 // SIZE 0x138

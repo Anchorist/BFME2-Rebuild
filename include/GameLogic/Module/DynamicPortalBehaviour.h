@@ -31,7 +31,7 @@ public:
 
 	virtual void onDie(const DamageInfo *damage);
 	virtual void onCreate() {}							// shared empty body 0x000B3FD0
-	virtual void onBuildComplete();					// 0x0046132F
+	virtual void onBuildComplete();
 	virtual void vslot02() {}							// shared empty body 0x000B3FD0
 	virtual Bool shouldDoOnBuildComplete() const { return true; }	// 0x0050B5C6
 

@@ -107,7 +107,7 @@ protected:
 	virtual void XferData(UnsignedInt type, void *data, UnsignedInt size) = 0;	// slot 38
 };
 
-// Free helper (old repo XferObjectID): transfers an ObjectID through the int overload.
+// Free helper: transfers an ObjectID through the int overload.
 Xfer &XferObjectID(Xfer *xfer, ObjectID *objectID);
 // Free helper 0x00305C32: transfers a Relationship held in an int (PlayerRelationMap::xfer 0x002ADEBE and TeamRelationMap::xfer 0x003A2AA6 call it for each entry).
 void XferRelationship(Xfer *xfer, Int *relationship);

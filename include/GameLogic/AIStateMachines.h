@@ -11,8 +11,8 @@ class AttackMeleeStateMachine : public StateMachine
 {
 public:
 	AttackMeleeStateMachine(Object *owner, Int, UnsignedInt);	// 0x0034316A
-	virtual ~AttackMeleeStateMachine();	// 0x0033FAFA
-	const char *name() const;	// 0x0033FB05
+	virtual ~AttackMeleeStateMachine();
+	const char *name() const;
 
 protected:
 	virtual const char *GetSnapshotName() const;	// slot 2, 0x0033FB05
@@ -79,8 +79,8 @@ class AttackContesterStateMachine : public StateMachine
 {
 public:
 	AttackContesterStateMachine(Object *owner, Int, UnsignedInt);	// 0x00343756
-	virtual ~AttackContesterStateMachine();	// 0x0033FB84
-	const char *name() const;	// 0x0033FB8F
+	virtual ~AttackContesterStateMachine();
+	const char *name() const;
 
 protected:
 	virtual const char *GetSnapshotName() const;	// slot 2, 0x0033FB8F
@@ -92,8 +92,8 @@ class AttackFireWhileChargingMachine : public StateMachine
 {
 public:
 	AttackFireWhileChargingMachine(Object *owner, Int, UnsignedInt, Bool);	// 0x00343838
-	virtual ~AttackFireWhileChargingMachine();	// 0x0033FB95
-	const char *name() const;	// 0x0033FBA0
+	virtual ~AttackFireWhileChargingMachine();
+	const char *name() const;
 
 protected:
 	virtual const char *GetSnapshotName() const;	// slot 2, 0x0033FBA0
@@ -104,8 +104,8 @@ protected:
 class AttackPositionStateMachine : public StateMachine
 {
 public:
-	virtual ~AttackPositionStateMachine();	// 0x0033FBA6
-	const char *name() const;	// 0x0033FBB1
+	virtual ~AttackPositionStateMachine();
+	const char *name() const;
 
 protected:
 	virtual const char *GetSnapshotName() const;	// slot 2, 0x0033FBB1
@@ -118,8 +118,8 @@ protected:
 class AttackPositionHordeStateMachine : public StateMachine
 {
 public:
-	virtual ~AttackPositionHordeStateMachine();	// 0x0033FBB7
-	const char *name() const;	// 0x0033FC04, current symbol for slot 2
+	virtual ~AttackPositionHordeStateMachine();
+	const char *name() const;	// Current symbol for slot 2
 
 protected:
 	virtual const char *GetSnapshotName() const;	// slot 2, 0x0033FC04
@@ -131,8 +131,8 @@ class BackAwayAndCowerStateMachine : public StateMachine
 {
 public:
 	BackAwayAndCowerStateMachine(Object *owner, Object *, UnsignedInt);	// 0x003444CE
-	virtual ~BackAwayAndCowerStateMachine();	// 0x003402D0
-	const char *name() const;	// 0x003402DB
+	virtual ~BackAwayAndCowerStateMachine();
+	const char *name() const;
 
 protected:
 	virtual const char *GetSnapshotName() const;	// slot 2, 0x003402DB

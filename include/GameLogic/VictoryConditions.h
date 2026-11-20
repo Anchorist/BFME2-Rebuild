@@ -40,17 +40,17 @@ class VictoryConditions : public VictoryConditionsInterface
 {
 public:
 	VictoryConditions();									// 0x0042017F
-	virtual ~VictoryConditions();							// 0x004201FA
+	virtual ~VictoryConditions();
 	virtual void init() { reset(); }						// 0x000D20D6 forwards through slot 9.
 	virtual void reset();									// 0x0041FE86
-	virtual void update();									// 0x00420388
+	virtual void update();
 
-	virtual Bool hasAchievedVictory(Player *player);			// 0x0041FEEB
-	virtual Bool hasBeenDefeated(Player *player);			// 0x0041FF6E
-	virtual Bool hasSinglePlayerBeenDefeated(Player *player);	// 0x0042090C
-	virtual void cachePlayerPtrs();							// 0x0041FFAD
-	virtual Bool isLocalAlliedVictory();					// 0x0042008F
-	virtual Bool isLocalAlliedDefeat();						// 0x004200CB
+	virtual Bool hasAchievedVictory(Player *player);
+	virtual Bool hasBeenDefeated(Player *player);
+	virtual Bool hasSinglePlayerBeenDefeated(Player *player);
+	virtual void cachePlayerPtrs();
+	virtual Bool isLocalAlliedVictory();
+	virtual Bool isLocalAlliedDefeat();
 	virtual Bool isLocalDefeat();							// 0x004200FD, observer guard plus local defeat flag.
 	virtual Bool amIObserver() const;						// 0x004201CE, reads +0x86.
 	virtual UnsignedInt getEndFrame() const;				// 0x0036750C, reads +0x6C.
@@ -64,7 +64,7 @@ public:
 	virtual Bool rva00094AE3() const;							// Reads +0x91.
 	virtual void updateEndGameDisplay();					// 0x0041FE63 hides the timed-out display.
 
-	Bool testDefeat(Player *player);							// 0x004207D4
+	Bool testDefeat(Player *player);
 
 private:
 	Bool m_endGameShowing;									// +0x10, showEndGame sets it and hideEndGame clears it.

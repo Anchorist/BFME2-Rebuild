@@ -14,15 +14,15 @@
 class AttachedModelFXNugget : public FXNugget
 {
 public:
-	AttachedModelFXNugget();										// 0x001E084A
+	AttachedModelFXNugget();
 
 	virtual void doFXPos(const Coord3D *primary, const Matrix3D *primaryMtx, Real primarySpeed,
 		const Coord3D *secondary) const {}								// 1, empty (fold 0x001F01E8)
 	virtual void doFXObj(const Object *primary, const Object *secondary) const;	// 2, 0x001E0878
 	virtual void GetAssetList(AssetList &assets, Int context) const;		// 3, 0x001E1709
 
-	static void buildFieldParse(MultiIniFieldParse &p);					// 0x001DFBE8
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001E168D
+	static void buildFieldParse(MultiIniFieldParse &p);
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	AsciiString m_modelname;							// 0x148 Modelname (parseAsciiString)
 	Bool m_randomlyRotate;							// 0x14C RandomlyRotate (parseBool)

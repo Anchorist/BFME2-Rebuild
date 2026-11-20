@@ -1,10 +1,8 @@
-// FakePathfindPortalBehaviour.h: the FakePathfindPortalBehaviour module. SIZE 0x38 (ModuleFactory operator new).
-// Target facts: the constructor 0x00461944 calls UpdateModule first; it stores the
-// tables 0x00C1C780 at +0x20, 0x00C4EF80 at +0x24, 0x00C42C1C at +0x0, 0x00C42B60 at +0xC, 0x00C42B54 at +0x10, 0x00C42B50 at +0x20, 0x00C42B40 at +0x24. Members are what xfer (0x00461B1B) transfers after UpdateModule::xfer,
-// typed by the Xfer slot each goes through, in that order; m_unk names are offsets
-// (no map or donor name established). Bytes xfer does not touch are gaps.
-// Not established: interface tables at +0x20, +0x24 (their vptrs sit in the gaps there).
-// Not established: transfers xfer makes that this view cannot place: slot10 ?, slot4 ?, Char ?, slot4 ?.
+// FakePathfindPortalBehaviour: the FakePathfindPortalBehaviour update module. SIZE 0x38: UpdateModule (0x20), two
+// interface table pointers and other bytes xfer does not touch (byte gap at +0x20), then the three Bools that xfer
+// (0x00461B1B) saves at +0x30..+0x32. The constructor (0x00461944) runs UpdateModule's constructor and installs the
+// tables. xfer also makes transfers this view cannot place: two reads through slot 10 and two through slot 4, and a
+// Char.
 #pragma once
 #ifndef BFME2_FAKE_PATHFIND_PORTAL_BEHAVIOUR_H
 #define BFME2_FAKE_PATHFIND_PORTAL_BEHAVIOUR_H

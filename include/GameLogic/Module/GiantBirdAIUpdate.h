@@ -84,24 +84,24 @@ public:
 	virtual AIUpdateInterface *vslot098() { return this; }	// 98, 0x0047A6A9
 	virtual Bool vslot146() { return false; }			// 146, 0x0047A699
 
-	virtual NameKeyType getModuleNameKey() const;				// 0x0036B89B
-	const char *name() const;									// 0x0036B8E0, non-virtual, returns "GiantBirdAIUpdate"
-	virtual UpdateSleepTime update();							// 0x0036B103
-	virtual void onCollide(Object *other, const Coord3D *loc, const Coord3D *normal);	// 0x003698CD
+	virtual NameKeyType getModuleNameKey() const;
+	const char *name() const;									// non-virtual, returns "GiantBirdAIUpdate"
+	virtual UpdateSleepTime update();
+	virtual void onCollide(Object *other, const Coord3D *loc, const Coord3D *normal);
 	virtual Bool isIdle() const;								// slot 110, 0x003681DC: busy while flag bit 0 of +0x4B8 is set
 	Bool isUnk0x558Clear() const;								// 0x00368594, returns !m_unk0x558 (role name)
 	void clearUnk0x558();										// 0x0036859F (role name)
 	Int getUnk0x4B8Bit6() const;								// 0x003685A7, flag bit 6 of +0x4B8 (role name)
 	Int getUnk0x4B8Bit8() const;								// 0x003685B4, flag bit 8 of +0x4B8 (role name)
-	void setUnk0x4B8Bit(Int bit, Bool value);					// 0x0036748E, sets or clears one flag bit of +0x4B8 (role name)
+	void setUnk0x4B8Bit(Int bit, Bool value);					// Sets or clears one flag bit of +0x4B8 (role name)
 	void setUnk0x4B8Bit5(Bool value);							// 0x0036940A (role name)
 	void setUnk0x4B8Bit6(Bool value);							// 0x003685C1 (role name)
 	void setUnk0x4B8Bit7(Bool value);							// 0x00368654 (role name)
 
 protected:
-	virtual ~GiantBirdAIUpdate();								// 0x0036B8E6
-	virtual void xfer(Xfer *xfer);								// 0x0036AC73
-	virtual AIStateMachine *makeStateMachine();					// 0x0036819D
+	virtual ~GiantBirdAIUpdate();
+	virtual void xfer(Xfer *xfer);
+	virtual AIStateMachine *makeStateMachine();
 	virtual void privateFaceObject(Object *obj, CommandSourceType cmdSource);	// slot 69, 0x003698A5
 	virtual void privateFacePosition(const Coord3D *pos, CommandSourceType cmdSource);	// slot 70, 0x003698BB
 	void faceTowards(const Coord3D *pos, CommandSourceType cmdSource, Bool isObject);	// 0x00368E95 (role name)
@@ -136,8 +136,8 @@ class GiantBirdGuardMachine : public AIGuardMachine
 {
 public:
 	GiantBirdGuardMachine(Object *owner);			// 0x00368A13 (`new 0x74`)
-	virtual ~GiantBirdGuardMachine();			// 0x00367F8D
-	const char *name() const;					// 0x00367F98, non-virtual, returns "GiantBirdGuardMachine"
+	virtual ~GiantBirdGuardMachine();
+	const char *name() const;					// non-virtual, returns "GiantBirdGuardMachine"
 	virtual StateMachine *makeSubMachine();		// slot 9: the same body as GiantBirdAIStateMachine's, folded by /OPT:ICF into 0x00367F9E
 
 protected:
@@ -148,7 +148,7 @@ class AIAttackSwoopThenIdleStateMachine : public StateMachine
 {
 public:
 	AIAttackSwoopThenIdleStateMachine(Object *owner, UnsignedInt name);	// 0x003676A2
-	virtual ~AIAttackSwoopThenIdleStateMachine();	// 0x003677B3
+	virtual ~AIAttackSwoopThenIdleStateMachine();
 
 	virtual Bool isInAttackState() const;		// slot 11, 0x0036890E
 
@@ -164,9 +164,9 @@ class AIGiantBirdAttackState : public State
 {
 public:
 	AIGiantBirdAttackState(StateMachine *machine, Int unk) : State(machine, 0xFF874822), m_unk0x20(unk) {}	// 0x003675AC (COMDAT; the map's table is 0x00C173C0)
-	virtual StateReturnType onEnter();				// 0x003699CA
-	virtual void onExit(StateExitType status);		// 0x0036939B
-	virtual StateReturnType update();				// 0x00369DED
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 protected:
 	virtual void xfer(Xfer *xfer);					// 0x0036937A
 	virtual const char *GetSnapshotName() const;	// 0x003675D0, returns "AIGiantBirdAttack"
@@ -206,7 +206,7 @@ class GiantBirdDieState : public State
 {
 public:
 	GiantBirdDieState(StateMachine *machine);	// 0x003678F7
-	virtual StateReturnType onEnter();			// 0x00367914
+	virtual StateReturnType onEnter();
 	virtual StateReturnType update();			// 0x0036CC7A (shared body)
 
 protected:
@@ -219,13 +219,13 @@ class AIGiantBirdFollowThruState : public State
 public:
 	AIGiantBirdFollowThruState(StateMachine *machine, Bool flag) : State(machine, 0xDE23E437), m_flag20(flag), m_unk0x24(0) {}	// 0x003675D6 (COMDAT; CRC-32 "AIGiantBirdFollowThruState")
 	virtual StateReturnType onEnter();			// 0x0036C6AF
-	virtual void onExit(StateExitType status);	// 0x00369418
-	virtual StateReturnType update();			// 0x00369EA3
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 	virtual Bool unknownQuery13() const { return true; }	// slot 13 (the shared `return true` 0x0050B5C6)
 
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x003675FE
-	virtual void xfer(Xfer *xfer);				// 0x00367604
+	virtual void xfer(Xfer *xfer);
 
 	Bool m_flag20;								// +0x20
 	Int m_unk0x24;								// +0x24, version 2
@@ -236,13 +236,13 @@ class AIGiantBirdSwoopState : public State
 public:
 	AIGiantBirdSwoopState(StateMachine *machine, Int mode, Bool flag)
 		: State(machine, 0x826EAA22), m_mode(mode), m_flag30(flag), m_unk0x34(0), m_unk0x38(1.0f) {}	// 0x0036756A (COMDAT; the Real is VA 0x00BBB8D8)
-	virtual StateReturnType onEnter();			// 0x0036BDF2
-	virtual void onExit(StateExitType status);	// 0x003692ED
-	virtual StateReturnType update();			// 0x0036C201
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x003675A6
-	virtual void xfer(Xfer *xfer);				// 0x0036929D
+	virtual void xfer(Xfer *xfer);
 
 	Int m_mode;									// +0x20, xfer'd as 4 raw bytes
 	Coord3D m_swoopPosition;					// +0x24
@@ -269,9 +269,9 @@ class GiantBirdNormalFlightState : public State
 {
 public:
 	GiantBirdNormalFlightState(StateMachine *machine, Bool flag20, Bool flag21);	// 0x00367539
-	virtual StateReturnType onEnter();			// 0x00369064
-	virtual void onExit(StateExitType status);	// 0x00369217
-	virtual StateReturnType update();			// 0x0036914D
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x00367564
@@ -285,15 +285,15 @@ class GiantBirdAttackMoveToState : public GiantBirdNormalFlightState
 {
 public:
 	GiantBirdAttackMoveToState(StateMachine *machine);	// 0x003677BE
-	virtual ~GiantBirdAttackMoveToState();		// 0x0036783F
+	virtual ~GiantBirdAttackMoveToState();
 	virtual Bool isGuardIdle() const;			// slot 9, 0x003678D6: true unless the attack-move machine's state is attacking
-	virtual StateReturnType onEnter();			// 0x0036960E
-	virtual void onExit(StateExitType status);	// 0x0036964D
-	virtual StateReturnType update();			// 0x00369669
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x00367839
-	virtual void xfer(Xfer *xfer);				// 0x0036788E
+	virtual void xfer(Xfer *xfer);
 
 	CommandSourceType m_commandSource;			// +0x24
 	StateMachine *m_attackMoveMachine;			// +0x28
@@ -305,11 +305,11 @@ class GiantBirdGuardReturnState : public GiantBirdNormalFlightState
 {
 public:
 	GiantBirdGuardReturnState(StateMachine *machine);	// 0x00367EE1
-	virtual StateReturnType onEnter();			// 0x0036A7DB
+	virtual StateReturnType onEnter();
 
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x00367F13
-	virtual void xfer(Xfer *xfer);				// 0x00368015
+	virtual void xfer(Xfer *xfer);
 
 	UnsignedInt m_nextReturnScanTime;			// +0x24
 	Coord3D m_returnPosition;					// +0x28
@@ -320,14 +320,14 @@ class GiantBirdGuardOuterState : public State
 {
 public:
 	GiantBirdGuardOuterState(StateMachine *machine);	// 0x00367E92
-	virtual StateReturnType onEnter();			// 0x0036A5BB
+	virtual StateReturnType onEnter();
 	void enable();								// 0x00368129 (role name): sets m_unk0x40
 	Bool attackStateQuery();					// 0x00368004 (role name): false without an attack state, else the attack state's slot 18 (AIAttackState::rva003413A1)
-	virtual StateReturnType update();			// 0x0036A75C
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x00367EDB
-	virtual void xfer(Xfer *xfer);				// 0x003680E9
+	virtual void xfer(Xfer *xfer);
 
 	GiantBirdExitConditions m_exitConditions;	// +0x20
 	AIAttackState *m_attackState;				// +0x3C

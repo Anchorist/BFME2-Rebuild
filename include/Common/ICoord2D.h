@@ -2,7 +2,6 @@
 #include <stddef.h>
 // SIZE 0x8, no base or virtual functions. Retail buildRegion 0x0030F8A2,
 // appendPixelArgument 0x0030F9D8 and text transfer 0x0060DB58 read two ints.
-// Old private views and Lib/ICoord2D.h agree on the component names.
 struct ICoord2D
 {
     int x; // 0x0

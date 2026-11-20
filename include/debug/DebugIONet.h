@@ -15,7 +15,7 @@ void DebugFreeMemory(void *ptr);
 class DebugIONet : public DebugIOInterface
 {
 public:
-	DebugIONet();																// 0x0003F4A0
+	DebugIONet();
 	virtual ~DebugIONet();														// slot 0: 0x0003F810 (deleting), body 0x0003F4F0
 
 	virtual int Read(char *buf, int maxchar);									// slot 1: 0x0003F550
@@ -28,7 +28,7 @@ public:
 		DebugFreeMemory(this);
 	}
 
-	static DebugIOInterface *Create();											// 0x0003F7B0
+	static DebugIOInterface *Create();
 
 private:
 	void *m_pipe;																// +4 (HANDLE)

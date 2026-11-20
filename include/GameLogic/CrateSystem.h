@@ -44,9 +44,9 @@ public:
 	CrateTemplate();													// 0x0035CC36
 	CrateTemplate &operator=(const CrateTemplate &that);				// 0x0035CE52
 
-	void setName(AsciiString name);										// 0x0035C972 (out of line: a retail row)
+	void setName(AsciiString name);										// (out of line: a retail row)
 
-	static void parseCrateCreationEntry(INI *ini, void *instance, void *store, const void *userData);	// 0x0035CD23
+	static void parseCrateCreationEntry(INI *ini, void *instance, void *store, const void *userData);
 
 	// 0x00C162A0: six entries (CreationChance +0x14, VeterancyLevel +0x18, KilledByType
 	// +0x1C, CrateObject, KillerScience +0x38, OwnedByMaker +0x40).
@@ -55,7 +55,7 @@ public:
 protected:
 	// Protected; CrateSystem's destructor deletes its templates.
 	friend class CrateSystem;
-	virtual ~CrateTemplate();											// 0x0035CCCA
+	virtual ~CrateTemplate();
 
 public:
 	AsciiString m_name;													// 0x10
@@ -76,17 +76,17 @@ class CrateSystem : public SubsystemInterface
 {
 public:
 	CrateSystem();														// 0x0035CAD6
-	virtual ~CrateSystem();												// 0x0035CB07
+	virtual ~CrateSystem();
 
 	virtual void init() { reset(); }	// 0x000D20D6: `mov eax,[ecx]; jmp [eax+0x24]`, a tail call to reset (slot 9)
 	virtual void reset();												// 0x0035C9CF
 	virtual void update() {}
 
-	CrateTemplate *friend_findCrateTemplate(AsciiString name);			// 0x0035CA2F
-	CrateTemplate *newCrateTemplate(AsciiString name);					// 0x0035CF2C
-	CrateTemplate *newCrateTemplateOverride(CrateTemplate *crateToOverride);	// 0x0035CEA6
+	CrateTemplate *friend_findCrateTemplate(AsciiString name);
+	CrateTemplate *newCrateTemplate(AsciiString name);
+	CrateTemplate *newCrateTemplateOverride(CrateTemplate *crateToOverride);
 
-	static void parseCrateTemplateDefinition(INI *ini);					// 0x0035CFEA
+	static void parseCrateTemplateDefinition(INI *ini);
 
 	std::vector<CrateTemplate *> m_crateTemplateVector;					// 0x0C
 };

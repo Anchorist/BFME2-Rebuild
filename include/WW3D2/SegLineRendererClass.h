@@ -52,18 +52,18 @@ public:
 	};
 
 	SegLineRendererClass();										// 0x00191140
-	void Reset_Line();											// 0x00191260
-	void Scale(float scale);									// 0x00191280
-	void Init(const W3dEmitterLinePropertiesStruct &props);		// 0x00191390
-	void Set_Current_UV_Offset(const Vector2 &offset);			// 0x00191460
+	void Reset_Line();
+	void Scale(float scale);
+	void Init(const W3dEmitterLinePropertiesStruct &props);
+	void Set_Current_UV_Offset(const Vector2 &offset);
 	SegLineRendererClass(const SegLineRendererClass &src);		// 0x00191B50
-	~SegLineRendererClass();									// 0x001911C0
+	~SegLineRendererClass();
 	SegLineRendererClass &operator=(const SegLineRendererClass &that);	// 0x001912F0
 
-	void Set_Texture(TextureClass *texture);					// 0x001911E0
-	void Render(RenderInfoClass &rinfo, const Matrix3D &transform, unsigned int point_count, Vector3 *points, const SphereClass &obj_sphere, Vector4 *rgbas = 0);	// 0x00191C10
-	void Set_Texture_Tile_Factor(float factor);					// 0x00191230
-	void Set_UV_Offset_Rate(const Vector2 &rate);				// 0x0015E610
+	void Set_Texture(TextureClass *texture);
+	void Render(RenderInfoClass &rinfo, const Matrix3D &transform, unsigned int point_count, Vector3 *points, const SphereClass &obj_sphere, Vector4 *rgbas = 0);
+	void Set_Texture_Tile_Factor(float factor);
+	void Set_UV_Offset_Rate(const Vector2 &rate);
 
 	TextureAsset Get_Texture() const;					// 0x00191210
 	ShaderClass Get_Shader() const { return Shader; }
@@ -102,7 +102,7 @@ public:
 	friend class StreakLineClass;
 
 private:
-	VertexFormatXYZDUV1 *getVertexBuffer(unsigned int number);	// 0x001912B0
+	VertexFormatXYZDUV1 *getVertexBuffer(unsigned int number);
 
 	TextureAsset Texture;					// +0x00 the handle (one factory pointer); released by the destructor
 	ShaderClass Shader;						// +0x04

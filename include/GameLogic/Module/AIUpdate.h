@@ -66,6 +66,7 @@ class Player;
 class Path;
 class TurretAI;
 class AIStateMachine;
+class Rva00263404Source;
 class AttackPriorityInfo;
 class PathfindServicesInterface;
 class DozerAIInterface;
@@ -536,7 +537,7 @@ public:
 	virtual Bool rva00262BA9();	// slot 138, ?:placeholder ?rva00262BA9@AIUpdateInterface@@UAE_NXZ
 	virtual void micropathToPosition(const Coord3D *);	// slot 139, N:ledger ?micropathToPosition@AIUpdateInterface@@UAEXPBUCoord3D@@@Z
 	virtual void doPathfind(PathfindServicesInterface *);	// slot 140, N:ledger ?doPathfind@AIUpdateInterface@@UAEXPAVPathfindServicesInterface@@@Z
-	virtual void vslot141();	// slot 141, target 0x00263404 ?rva00263404@AIUpdateInterface@@UAEXPAVRva00263404Source@@@Z
+	virtual void rva00263404(Rva00263404Source *source);	// slot 141: calls its argument's virtual slot 6 and works on a path; the role is not established, so the ledger's own name stays
 	virtual Bool chooseLocomotorSet(Int);	// slot 142, N:ledger ?chooseLocomotorSet@AIUpdateInterface@@UAE_NH@Z
 	virtual CommandSourceType vslot143() const { return m_lastCommandSource; }	// slot 143, folded `mov eax,[ecx+48h]; ret` 0x005C4AFD
 	virtual void vslot144() {}	// slot 144, the shared `ret` 0x000B3FD0

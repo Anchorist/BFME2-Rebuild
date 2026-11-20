@@ -13,15 +13,15 @@ class AptCampaignReview : public _bfme_AptGameWindow
 {
 public:
 	AptCampaignReview(void *);						// 0x00512AC8
-	virtual ~AptCampaignReview();					// 0x00512894
+	virtual ~AptCampaignReview();
 
-	void Continue(const char *);					// 0x00512823
-	void TotalCampaignScore(int, char *, bool);		// 0x00512838: extern handler, prints the campaign score with "%d"
-	void playerSideType(int, char *, bool);			// 0x00512864: extern handler, "evil" or "good"
-	void DisplayVictoryLevel();						// 0x00512948: sets the APT:CmpgnRevResult text
+	void Continue(const char *);
+	void TotalCampaignScore(int, char *, bool);		// Extern handler, prints the campaign score with "%d"
+	void playerSideType(int, char *, bool);			// Extern handler, "evil" or "good"
+	void DisplayVictoryLevel();						// Sets the APT:CmpgnRevResult text
 	virtual WindowMsgHandledType system(unsigned int message, unsigned int data1, unsigned int data2);	// GameWindow slot 2, 0x005127F3
 	virtual GameWindowFactory getWindowFactory();	// GameWindow slot 7, 0x00512C82
-	static bool OpenScreen();						// 0x0051291C
+	static bool OpenScreen();
 };
 typedef char AptCampaignReviewSizeCheck[sizeof(AptCampaignReview)==0x27C ? 1 : -1];
 

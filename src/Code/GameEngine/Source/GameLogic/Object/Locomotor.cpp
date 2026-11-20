@@ -919,7 +919,7 @@ void LocomotorSet::addLocomotor(const LocomotorTemplate *lt, Bool flag)
 // FUNCTION: BFME2 0x001E8A38 size=92 name=?aiIdle@AICommandInterface@@QAEXW4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiIdle(CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)5, cmdSource);
+	AICommandParms parms(AICMD_IDLE, cmdSource);
 	aiDoCommand(&parms);
 }
 

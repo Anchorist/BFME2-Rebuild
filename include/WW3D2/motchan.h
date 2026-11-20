@@ -25,8 +25,8 @@ class ChunkLoadClass;
 class MotionChannelClass
 {
 public:
-	MotionChannelClass();						// 0x00195AB0
-	bool Load_W3D(ChunkLoadClass &cload);				// 0x00195AE0
+	MotionChannelClass();
+	bool Load_W3D(ChunkLoadClass &cload);
 	int Get_Channel_Memory_Usage();					// 0x00195BC0
 	int Get_Pivot() const { return PivotIdx; }
 	void Set_Pivot(int pivot) { PivotIdx = pivot; }
@@ -72,7 +72,7 @@ private:
 			}
 		}
 	}
-	void Free();							// 0x001960C0
+	void Free();
 
 	int PivotIdx;							// +0x00
 	int Type;							// +0x04
@@ -88,8 +88,8 @@ private:
 class BitChannelClass
 {
 public:
-	BitChannelClass();						// 0x00195BE0
-	bool Load_W3D(ChunkLoadClass &cload);				// 0x00195C00
+	BitChannelClass();
+	bool Load_W3D(ChunkLoadClass &cload);
 	int Get_Channel_Memory_Usage();					// 0x00195CC0
 	int Get_Pivot() const { return PivotIdx; }
 	void Set_Pivot(int pivot) { PivotIdx = pivot; }
@@ -122,14 +122,14 @@ private:
 class TimeCodedMotionChannelClass
 {
 public:
-	TimeCodedMotionChannelClass();					// 0x00195CE0
+	TimeCodedMotionChannelClass();
 	~TimeCodedMotionChannelClass() { Free(); }
-	bool Load_W3D(ChunkLoadClass &cload);				// 0x00195D00
-	int Get_Channel_Memory_Usage();					// 0x00195DC0
+	bool Load_W3D(ChunkLoadClass &cload);
+	int Get_Channel_Memory_Usage();
 
 private:
-	void set_identity(float *setvec);				// 0x00195DD0
-	void Free();							// 0x001960E0
+	void set_identity(float *setvec);
+	void Free();
 
 	int PivotIdx;							// +0x00
 	int Type;							// +0x04
@@ -145,12 +145,12 @@ class TimeCodedBitChannelClass
 {
 	friend class HCompressedAnimClass;
 public:
-	TimeCodedBitChannelClass();					// 0x00195E00
+	TimeCodedBitChannelClass();
 	~TimeCodedBitChannelClass() { Free(); }
-	bool Load_W3D(ChunkLoadClass &cload);				// 0x00195E20
+	bool Load_W3D(ChunkLoadClass &cload);
 	void Free();							// folded with MotionChannelClass::Free at 0x001960C0
-	int Get_Channel_Memory_Usage();					// 0x00195EE0
-	int Get_Bit(int frame);						// 0x00195EF0
+	int Get_Channel_Memory_Usage();
+	int Get_Bit(int frame);
 
 private:
 	int PivotIdx;							// +0x00
@@ -193,11 +193,11 @@ typedef char AdaptiveDeltaQuaternionCacheSize[(sizeof(AdaptiveDeltaCacheStruct<4
 class AdaptiveDeltaMotionChannelClass
 {
 public:
-	AdaptiveDeltaMotionChannelClass();				// 0x00195F60
+	AdaptiveDeltaMotionChannelClass();
 	~AdaptiveDeltaMotionChannelClass() { Free(); }
-	bool Load_W3D(ChunkLoadClass &cload);				// 0x00195FF0
+	bool Load_W3D(ChunkLoadClass &cload);
 	void Free();							// folded with TimeCodedMotionChannelClass::Free at 0x001960E0
-	int Get_Channel_Memory_Usage();					// 0x001960B0
+	int Get_Channel_Memory_Usage();
 
 	void Get_Vector(float frame, float *value, AdaptiveDeltaCacheStruct<1> &cache);
 	void Get_QuatVector(float frame, Quaternion &value, AdaptiveDeltaCacheStruct<4> &cache);

@@ -14,15 +14,15 @@
 class CameraShakerVolumeFXNugget : public FXNugget
 {
 public:
-	CameraShakerVolumeFXNugget();										// 0x001E0714
+	CameraShakerVolumeFXNugget();
 
 	virtual void doFXPos(const Coord3D *primary, const Matrix3D *primaryMtx, Real primarySpeed,
 		const Coord3D *secondary) const;								// 1, 0x001E0760
 	virtual void doFXObj(const Object *primary, const Object *secondary) const;	// 2, 0x001E079E
 	virtual void GetAssetList(AssetList &assets, Int context) const {}		// 3, empty (fold 0x0050B238)
 
-	static void buildFieldParse(MultiIniFieldParse &p);					// 0x001DFBA6
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001E1595
+	static void buildFieldParse(MultiIniFieldParse &p);
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	Coord3D m_unk0x148;			// 0x148 not in the field table; the ctor zeroes it as three Reals
 	Real m_radius;									// 0x154 Radius (parseReal)

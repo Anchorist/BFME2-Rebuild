@@ -15,7 +15,7 @@ class FXList;
 class CloudBreakSpecialPowerModuleData : public SpecialPowerModuleData
 {
 public:
-	CloudBreakSpecialPowerModuleData();								// 0x004C479A
+	CloudBreakSpecialPowerModuleData();
 
 	Real m_cloudBreakRadius;										// +0x7C CloudBreakRadius
 	const FXList *m_cloudBreakFX;									// +0x80 CloudBreakFX

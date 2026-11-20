@@ -47,27 +47,27 @@ class W3DDebrisDraw : public DrawModule, public DebrisDrawInterface
 public:
 	W3DDebrisDraw(Thing *thing, const ModuleData *moduleData);				// 0x000B1C41
 
-	virtual NameKeyType getModuleNameKey() const;							// 0x000B1C97
-	virtual void doDrawModule(const Matrix3D *transformMtx);				// 0x000B1A37
+	virtual NameKeyType getModuleNameKey() const;
+	virtual void doDrawModule(const Matrix3D *transformMtx);
 	// Slots 12 and 35: bodies 0x000B19C3 / 0x000B19D4 (`if (m_shadow) m_shadow->m_enabled / m_invisible = flag`) are owned by the map's
 	// placeholder classes Gen_00750550 / Gen_00750570 and wait for their rename; the declarations keep the table right.
 	virtual void setShadowsEnabled(Bool enable);							// 0x000B19C3 (map: Gen_00750550::bfmeSet)
 	virtual void releaseShadows() {}										// slot 13, folded `ret`
 	virtual void allocateShadows() {}										// slot 14, folded `ret`
 	virtual void setFullyObscuredByShroud(Bool fullyObscured);				// 0x000B19D4 (map: Gen_00750570::bfmeSet)
-	virtual void reactToTransformChange(const Matrix3D *oldMtx, const Coord3D *oldPos, Real oldAngle);	// 0x000B1A14
+	virtual void reactToTransformChange(const Matrix3D *oldMtx, const Coord3D *oldPos, Real oldAngle);
 	virtual void reactToGeometryChange() {}									// slot 39, folded `ret`
 	virtual DebrisDrawInterface *getDebrisDrawInterface() { return this; }	// slot 44 (0x000CA841)
 	virtual const DebrisDrawInterface *getDebrisDrawInterface() const { return this; }	// slot 43
-	virtual void setModelName(AsciiString name, Int color, ShadowType shadowType);	// 0x000B1EEB
+	virtual void setModelName(AsciiString name, Int color, ShadowType shadowType);
 	virtual void setAnimNames(AsciiString initial, AsciiString flying, AsciiString final,
 		const FXList *finalFX);												// 0x000B207F
 
 protected:
-	virtual ~W3DDebrisDraw();												// 0x000B1CE2
+	virtual ~W3DDebrisDraw();
 	virtual void loadPostProcess() { DrawModule::loadPostProcess(); }	// slot 1: retail table 0x007C97A8 holds 0x0058B03E (`jmp 0x000B3FD0`, DrawModule's empty body), ICF-folded with the module bases'
-	virtual const char *GetSnapshotName() const;							// 0x000B1CDC
-	virtual void xfer(Xfer *xfer);											// 0x000B1DC3
+	virtual const char *GetSnapshotName() const;
+	virtual void xfer(Xfer *xfer);
 
 public:
 	enum AnimStateType { INITIAL, FLYING, FINAL, STATECOUNT };

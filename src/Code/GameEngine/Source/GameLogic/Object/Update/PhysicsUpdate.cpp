@@ -27,9 +27,6 @@
 class Coord3D;
 namespace _STL { template<> Coord3D *allocator<Coord3D>::allocate(size_type,const void *); }
 // GameLogic/Object/Update/PhysicsUpdate.cpp: retail translation unit (skeleton).
-// Write each function below its FUNCTION annotation, in this (retail) order.
-// Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
-// Shared types belong in include/; no class or struct with a body in this file.
 // cl: /GX /EHsc- /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_CRTIMP=
 #include "GameLogic/Module/AIUpdate.h"
 extern "C" double __cdecl fabs(double);

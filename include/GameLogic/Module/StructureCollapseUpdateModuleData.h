@@ -32,7 +32,7 @@ public:
 	StructureCollapseUpdateModuleData();
 	// 0x00256B94
 	static void buildFieldParse(MultiIniFieldParse &parse);
-	static ModuleData *friend_newModuleData(INI *ini);	// 0x00256BEA
+	static ModuleData *friend_newModuleData(INI *ini);
 	static void parseOCL(INI *ini, void *instance, void *store, const void *userData);
 	static void parseFXList(INI *ini, void *instance, void *store, const void *userData);
 

@@ -23,14 +23,14 @@ class INI;
 class AttackNugget : public ObjectCreationNugget
 {
 public:
-	AttackNugget();																// 0x001F05C1
+	AttackNugget();
 	// No user-declared dtor: retail's 0x001F0622 skips the own-table store an explicit one makes.
 
 	virtual void create(const Object *primaryObj, const Coord3D *primary, const Coord3D *secondary,
 		UnsignedInt lifetimeFrames) const;										// 3, 0x001F0AD4
 	virtual void GetAssetList(AssetList &assets, void *context) const {}		// 4, empty (fold 0x0050B238; the base's slot is pure)
 
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001F0D96
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	RadiusDecalTemplate m_deliveryDecalTemplate;								// 0x04 DeliveryDecal
 	Real m_deliveryDecalRadius;													// 0x38 DeliveryDecalRadius

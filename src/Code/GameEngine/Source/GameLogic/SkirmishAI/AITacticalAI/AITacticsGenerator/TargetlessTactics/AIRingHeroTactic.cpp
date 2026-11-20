@@ -6,6 +6,13 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=no-edge-evidence right=rests-on:name; proof_first=false
 // Hypothesis rules: hypothesis:cohesion
+
+// Edges: left=no-edge-evidence right=no-edge-evidence; proof_first=false
+// Hypothesis rules: hypothesis:K, hypothesis:name:invented
+// FUNCTION: BFME2 0x005AC7E1 size=11 name=??1AIRingHeroTactic@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
+
+// FUNCTION: BFME2 0x005AC7EC size=94 name=??0AIRingHeroTactic@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:invented
+
 // FUNCTION: BFME2 0x005AC866 size=140 name=?cleanUp@AIRingHeroTactic@@UAEXXZ evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x005AC8F2 size=50 name=?create@AIRingHeroTactic@@UAEPAVAITactic@@XZ evidence=N:ledger tier=A
@@ -23,6 +30,14 @@ AITactic *AIRingHeroTactic::create()
 // FUNCTION: BFME2 0x005ACA97 size=332 name=?canRun@AIRingHeroTactic@@UAE_NPAX@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x005ACBE3 size=28 name=?run@AIRingHeroTactic@@UAEXXZ evidence=N:ledger tier=A
+void AIRingHeroTactic::run()
+{
+	m_unk0x64 = 0;
+	m_active = true;
+	m_unk0x60 = false;
+	weHaveGollum();
+	enemyHasRingHeroUpgrade();
+}
 
 // FUNCTION: BFME2 0x005ACBFF size=229 name=?update@AIRingHeroTactic@@UAEXXZ evidence=N:ledger tier=B hypothesis:cohesion
 

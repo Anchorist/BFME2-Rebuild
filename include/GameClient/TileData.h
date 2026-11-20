@@ -31,14 +31,14 @@ protected:
 
 public:
 	TileData();									// 0x00111850
-	virtual ~TileData();						// 0x0011172A
+	virtual ~TileData();
 
 	RefCountClass *getGapCountedRef();			// 0x00111772: the counted pointer, with a reference added
 	RefCountClass *getGapCounted() const;		// 0x00111784
 	void setGapCounted(RefCountClass *object);	// 0x0011178B
-	void updateMips();							// 0x00111883
+	void updateMips();
 	void setFromRgba(const UnsignedByte *src, Int srcPitch);	// 0x00111A05: fills every level from 64 x 64 BGRA pixels, srcPitch bytes a row
-	bool hasRGBDataForWidth(int width);			// 0x001117B4 (Zero Hour's name; the width of one of the seven mip levels, 64 down to 1)
+	bool hasRGBDataForWidth(int width);			// (Zero Hour's name; the width of one of the seven mip levels, 64 down to 1)
 };
 // SIZE 0x2AB8
 typedef char TileDataSize[(sizeof(TileData) == 0x2AB8) ? 1 : -1];

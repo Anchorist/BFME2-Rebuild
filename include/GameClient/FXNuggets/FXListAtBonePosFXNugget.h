@@ -21,11 +21,11 @@ public:
 	virtual void doFXObj(const Object *primary, const Object *secondary) const;	// 2, 0x001E2DB3
 	virtual void GetAssetList(AssetList &assets, Int context) const;		// 3, 0x001E129B
 
-	static void buildFieldParse(MultiIniFieldParse &p);					// 0x001DFCF4
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001E1814
+	static void buildFieldParse(MultiIniFieldParse &p);
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 protected:
-	// 0x001E2DD6: plays m_fx at the object's bones; doFXObj runs it with 0, then 1.
+	// Plays m_fx at the object's bones; doFXObj runs it with 0, then 1.
 	void doFxAtBones(const Object *obj, Int pass) const;
 
 public:

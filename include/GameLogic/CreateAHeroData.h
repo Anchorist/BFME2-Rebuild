@@ -28,7 +28,7 @@ class Image;
 enum { CAH_MAX_EXP_LEVELS = 15 };
 
 // Named stat values (+0x50): the key is a stat's name, the payload its value.
-// The payload's type name is the old decomp's; it is kept so the instantiated
+// The payload's type name must stay so that the instantiated
 // map symbols keep retail's identity.
 struct TreeHintPayload001F8ACB
 {

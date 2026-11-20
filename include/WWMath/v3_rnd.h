@@ -46,12 +46,12 @@ protected:
 class Vector3SolidBoxRandomizer : public Vector3Randomizer
 {
 public:
-	Vector3SolidBoxRandomizer(const Vector3 &extents);				// 0x007230F0
+	Vector3SolidBoxRandomizer(const Vector3 &extents);
 	virtual unsigned int Class_ID() const { return CLASSID_SOLIDBOX; }
-	virtual void Get_Vector(Vector3 &vector);					// 0x00723150
-	virtual float Get_Maximum_Extent();						// 0x007231C0
-	virtual void Scale(float scale);						// 0x007231F0
-	virtual Vector3Randomizer *Clone() const;					// 0x00723690
+	virtual void Get_Vector(Vector3 &vector);
+	virtual float Get_Maximum_Extent();
+	virtual void Scale(float scale);
+	virtual Vector3Randomizer *Clone() const;
 	virtual const Vector3 &Get_Extents() const { return Extents; }			// slot 6: 0x00723140
 
 private:
@@ -62,13 +62,13 @@ private:
 class Vector3SolidSphereRandomizer : public Vector3Randomizer
 {
 public:
-	Vector3SolidSphereRandomizer(float radius);					// 0x00723230
+	Vector3SolidSphereRandomizer(float radius);
 	Vector3SolidSphereRandomizer(const Vector3SolidSphereRandomizer &other) : Radius(other.Radius) {}
 	virtual unsigned int Class_ID() const { return CLASSID_SOLIDSPHERE; }
-	virtual void Get_Vector(Vector3 &vector);					// 0x00723260
+	virtual void Get_Vector(Vector3 &vector);
 	virtual float Get_Maximum_Extent() { return Radius; }				// 0x007234A0
 	virtual void Scale(float scale) { scale = (scale > 0.0f) ? scale : 0.0f; Radius *= scale; }	// 0x00723320
-	virtual Vector3Randomizer *Clone() const;					// 0x007235F0
+	virtual Vector3Randomizer *Clone() const;
 	virtual float Get_Radius() const { return Radius; }				// slot 6: 0x007234A0
 
 protected:
@@ -79,13 +79,13 @@ protected:
 class Vector3HollowSphereRandomizer : public Vector3Randomizer
 {
 public:
-	Vector3HollowSphereRandomizer(float radius);					// 0x00723350
+	Vector3HollowSphereRandomizer(float radius);
 	Vector3HollowSphereRandomizer(const Vector3HollowSphereRandomizer &other) : Radius(other.Radius) {}
 	virtual unsigned int Class_ID() const { return CLASSID_HOLLOWSPHERE; }	// 0x0013C5F0
-	virtual void Get_Vector(Vector3 &vector);					// 0x00723380
+	virtual void Get_Vector(Vector3 &vector);
 	virtual float Get_Maximum_Extent() { return Radius; }
 	virtual void Scale(float scale) { scale = (scale > 0.0f) ? scale : 0.0f; Radius *= scale; }
-	virtual Vector3Randomizer *Clone() const;					// 0x00723630
+	virtual Vector3Randomizer *Clone() const;
 	virtual float Get_Radius() const { return Radius; }
 
 private:
@@ -96,13 +96,13 @@ private:
 class Vector3SolidCylinderRandomizer : public Vector3Randomizer
 {
 public:
-	Vector3SolidCylinderRandomizer(float extent, float radius);			// 0x00723450
+	Vector3SolidCylinderRandomizer(float extent, float radius);
 	Vector3SolidCylinderRandomizer(const Vector3SolidCylinderRandomizer &other) : Extent(other.Extent), Radius(other.Radius) {}
 	virtual unsigned int Class_ID() const { return CLASSID_SOLIDCYLINDER; }	// 0x0013C650
-	virtual void Get_Vector(Vector3 &vector);					// 0x007234B0
-	virtual float Get_Maximum_Extent();						// 0x00723570
-	virtual void Scale(float scale);						// 0x007235A0
-	virtual Vector3Randomizer *Clone() const;					// 0x00723660
+	virtual void Get_Vector(Vector3 &vector);
+	virtual float Get_Maximum_Extent();
+	virtual void Scale(float scale);
+	virtual Vector3Randomizer *Clone() const;
 	virtual float Get_Radius() const { return Radius; }				// slot 6: 0x00723490
 	virtual float Get_Height() const { return Extent; }				// slot 7: 0x007234A0
 

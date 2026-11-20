@@ -6,6 +6,6 @@ class PartitionFilterIsFlying : public PartitionFilter
 {
 public:
  PartitionFilterIsFlying() {}
- virtual bool allow(Object *);	// 0x00260E01
+ virtual bool allow(Object *);
 };
 // SIZE 0x08

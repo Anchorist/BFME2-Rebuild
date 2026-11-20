@@ -386,8 +386,8 @@ public:
 	// 0x0028E0F9 (Zero Hour's, without the angle): not when disabled; the store's check
 	// unless forced; then rva0028C4B6 and the module's doSpecialPowerAtLocation (slot 12).
 	void doSpecialPowerAtLocation(const SpecialPowerTemplate *spt, const Coord3D *loc, UnsignedInt commandOptions, Bool forceUsable);
-	void doSpecialPower(const SpecialPowerTemplate *spt, UnsignedInt commandOptions, Bool forceUsable);	// 0x0028DF48
-	void doSpecialPowerAtObject(const SpecialPowerTemplate *spt, Object *target, UnsignedInt commandOptions, Bool forceUsable);	// 0x0028E01F
+	void doSpecialPower(const SpecialPowerTemplate *spt, UnsignedInt commandOptions, Bool forceUsable);
+	void doSpecialPowerAtObject(const SpecialPowerTemplate *spt, Object *target, UnsignedInt commandOptions, Bool forceUsable);
 	void rva0028C4B6();								// 0x0028C4B6
 	// 0x0028B204: INVALID_ID once TheGameLogic's frame passes the expiration.
 	ObjectID getSoleHealingBenefactor() const;
@@ -543,8 +543,8 @@ public:
 	void doCommandButtonAtPosition(const CommandButton *button, const Coord3D *pos, Int arg, Int flag);	// 0x00297149
 	void rva00297000(const CommandButton *button, Object *obj, Int arg, Int flag);	// 0x00297000
 	void clearAndSetModelConditionFlagsForHorde(const int *clear, const int *set);
-	void setWeaponSetFlagForHorde(WeaponSetType flag);	// 0x00293DAC: sets the flag on the horde leader and on every member of its horde
-	void clearWeaponSetFlagForHorde(WeaponSetType flag);	// 0x00293E08: clears it the same way
+	void setWeaponSetFlagForHorde(WeaponSetType flag);	// sets the flag on the horde leader and on every member of its horde
+	void clearWeaponSetFlagForHorde(WeaponSetType flag);	// clears it the same way
 	void rva0028CFB2(const int *clear, const int *set);
 	void rva0028AE6D();
 	void rva0028EBDA(Bool flag);							// 0x0028EBDA
@@ -583,10 +583,10 @@ public:
 	void rva00294C1A(Object *victim, Bool flag, Real amount);	// 0x00294C1A
 	void setModelConditionStateForHorde(ModelConditionFlagType flag);
 	void clearModelConditionStateForHorde(ModelConditionFlagType flag);
-	void clearAndSetModelConditionStateForHorde(ModelConditionFlagType clearFlag, ModelConditionFlagType setFlag);	// 0x00293AAB
-	void clearModelConditionFlagsForHorde(const int *flags);	// 0x00293BBF
-	void setModelConditionFlagsForHorde(const int *flags);	// 0x00293C1B
-	void replaceModelConditionFlagsForHorde(const int *flags, Bool forceDrawableUpdate);	// 0x00293CD9
+	void clearAndSetModelConditionStateForHorde(ModelConditionFlagType clearFlag, ModelConditionFlagType setFlag);
+	void clearModelConditionFlagsForHorde(const int *flags);
+	void setModelConditionFlagsForHorde(const int *flags);
+	void replaceModelConditionFlagsForHorde(const int *flags, Bool forceDrawableUpdate);
 	Object *rva002931F5(Bool checkProducer);					// 0x002931F5
 	Real rva002615E3(const Coord3D *pos);				// 0x002615E3 (map: placeholder owner Rva000CBA20): squared distance in x and y from the position (+0x38) to pos
 	CanAttackResult getAbleToUseWeaponAgainstTarget(AbleToAttackType t, const Object *victim, const Coord3D *pos, CommandSourceType cmdSource) const;	// 0x0028AF2B

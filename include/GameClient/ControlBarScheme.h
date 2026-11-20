@@ -62,12 +62,12 @@ class ControlBarScheme
 public:
 	ControlBarScheme();					// 0x00320291
 	~ControlBarScheme();				// 0x0032002C
-	void init();						// 0x0031ED2C
-	void update();						// 0x0031F872
-	void updateAnim(ControlBarSchemeAnimation *anim);	// 0x0031F799
+	void init();
+	void update();
+	void updateAnim(ControlBarSchemeAnimation *anim);
 	void drawForeground(Coord2D multiplier, ICoord2D offset);	// 0x0031F89E
 	void drawBackground(Coord2D multiplier, ICoord2D offset);	// 0x0031F96F
-	void reset();						// 0x0031FAF0
+	void reset();
 	void addAnimation(ControlBarSchemeAnimation *animation);	// 0x003200A2
 	void addImage(ControlBarSchemeImage *image);				// 0x003200BC
 
@@ -151,16 +151,16 @@ class ControlBarSchemeManager
 {
 public:
 	ControlBarSchemeManager();			// 0x003200EB
-	~ControlBarSchemeManager();			// 0x003204D9
-	void init();						// 0x00320205
+	~ControlBarSchemeManager();
+	void init();
 	void update();						// 0x0031FA8E (Zero Hour's name)
-	ControlBarScheme *findControlBarScheme(AsciiString name);		// 0x0031FC08
-	ControlBarScheme *newControlBarScheme(AsciiString name);		// 0x0032053E
-	void setControlBarScheme(AsciiString name);						// 0x0031FC6A
-	void setControlBarSchemeByPlayerTemplate(const PlayerTemplate *playerTemplate, bool useSmall);	// 0x0031FD0D
-	void setControlBarSchemeByPlayer(Player *player);				// 0x0031FE49
-	void drawForeground(ICoord2D offset);							// 0x0031FA9A
-	void drawBackground(ICoord2D offset);							// 0x0031FAC5
+	ControlBarScheme *findControlBarScheme(AsciiString name);
+	ControlBarScheme *newControlBarScheme(AsciiString name);
+	void setControlBarScheme(AsciiString name);
+	void setControlBarSchemeByPlayerTemplate(const PlayerTemplate *playerTemplate, bool useSmall);
+	void setControlBarSchemeByPlayer(Player *player);
+	void drawForeground(ICoord2D offset);
+	void drawBackground(ICoord2D offset);
 
 	// INI block parser 0x001DB68C passes this table (VA 0x00C0CD88).
 	static const FieldParse m_controlBarSchemeFieldParseTable[];

@@ -27,6 +27,8 @@
 #include <stddef.h>
 #include "Common/GameType.h"
 #include "GameLogic/ObjectFilter.h"
+#include "Common/AsciiString.h"
+#include "Common/Vector.h"
 
 class WeaponTemplate;
 class AssetList;
@@ -56,8 +58,8 @@ public:
 	UnsignedByte m_unk0x04[0x80];						// 0x004 a 0x80-byte set (ctor 0x001EAE6F)
 	UnsignedByte m_unk0x84[0x80];						// 0x084 a 0x80-byte set (ctor 0x001EAE6F)
 	const WeaponTemplate *m_weaponTemplate;				// 0x104 the owner, set by the parser
-	void *m_requiredUpgradeNames[3];					// 0x108 STLport vector<AsciiString>
-	void *m_forbiddenUpgradeNames[3];					// 0x114 STLport vector<AsciiString>
+	_STL::vector<AsciiString> m_requiredUpgradeNames;	// 0x108 RequiredUpgradeNames: the upgrades a source must own
+	_STL::vector<AsciiString> m_forbiddenUpgradeNames;	// 0x114 ForbiddenUpgradeNames: the upgrades that rule a source out
 	ObjectFilter m_specialObjectFilter;					// 0x120 SpecialObjectFilter
 	Bool m_addedToOverride;								// 0x124 ctor false; WeaponTemplate::addNugget copies the template's m_isOverride here
 };

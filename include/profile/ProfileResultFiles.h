@@ -16,8 +16,8 @@ void *ProfileReAllocMemory(void *oldPtr, unsigned int newSize);	// 0x006C54B0
 class ProfileResultFileCSV : public ProfileResultInterface
 {
 public:
-	ProfileResultFileCSV(const char *fileName = 0);					// 0x006C75A0
-	static ProfileResultInterface *Create(int argn, const char *const *argv);	// 0x006C80B0
+	ProfileResultFileCSV(const char *fileName = 0);
+	static ProfileResultInterface *Create(int argn, const char *const *argv);
 	virtual void WriteResults();									// slot 0: 0x006C7A60
 	virtual void Delete();											// slot 1: 0x006C74C0
 	virtual const char *GetName() const;							// slot 2: 0x006C75F0
@@ -29,8 +29,8 @@ private:
 class ProfileResultFileDOT : public ProfileResultInterface
 {
 public:
-	ProfileResultFileDOT(const char *fileName = 0, const char *frameName = 0, int foldThreshold = 999);	// 0x006C6ED0
-	static ProfileResultInterface *Create(int argn, const char *const *argv);	// 0x006C7C50
+	ProfileResultFileDOT(const char *fileName = 0, const char *frameName = 0, int foldThreshold = 999);
+	static ProfileResultInterface *Create(int argn, const char *const *argv);
 	virtual void WriteResults();									// slot 0: 0x006C6F70
 	virtual void Delete();											// slot 1: 0x006C74C0
 	virtual const char *GetName() const;							// slot 2: 0x006C7580
@@ -44,9 +44,9 @@ private:
 class ProfileResultFileGTT : public ProfileResultInterface
 {
 public:
-	ProfileResultFileGTT(const char *fileName = 0, const char *frameName = 0, int foldThreshold = 100);	// 0x006C74D0
-	static ProfileResultInterface *Create(int argn, const char *const *argv);	// 0x006C7D10
-	bool MarkVisited(unsigned int first, unsigned int second);		// 0x006C7440: true when the pair was already marked
+	ProfileResultFileGTT(const char *fileName = 0, const char *frameName = 0, int foldThreshold = 100);
+	static ProfileResultInterface *Create(int argn, const char *const *argv);
+	bool MarkVisited(unsigned int first, unsigned int second);		// True when the pair was already marked
 	virtual void WriteResults();									// slot 0: 0x006C8120
 	virtual void Delete();											// slot 1: 0x006C74C0
 	virtual const char *GetName() const;							// slot 2: 0x006C7590

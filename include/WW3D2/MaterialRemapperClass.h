@@ -23,12 +23,12 @@ class MaterialRemapperClass
 {
 public:
 	MaterialRemapperClass(MaterialInfoClass *src, MaterialInfoClass *dest);	// 0x0016EF20
-	~MaterialRemapperClass(void);							// 0x0016F170
+	~MaterialRemapperClass(void);
 
-	VertexMaterialClass *Remap_Vertex_Material(VertexMaterialClass *src);		// 0x0016ECD0
-	void Remap_Mesh(const MeshMatDescClass *srcmeshmatdesc, MeshMatDescClass *destmeshmatdesc);	// 0x0016F220
+	VertexMaterialClass *Remap_Vertex_Material(VertexMaterialClass *src);
+	void Remap_Mesh(const MeshMatDescClass *srcmeshmatdesc, MeshMatDescClass *destmeshmatdesc);
 
-	TextureAsset Remap_Texture(const TextureAsset &src);		// 0x0016EC00
+	TextureAsset Remap_Texture(const TextureAsset &src);
 
 private:
 	struct VmatRemapStruct

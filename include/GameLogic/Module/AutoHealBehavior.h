@@ -50,13 +50,13 @@ public:
 	virtual UpgradeModuleInterface *getUpgrade() { return this; }
 	AutoHealBehavior(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
-	void stopHealing();									// 0x004523B6
-	void rva004523CC();									// 0x004523CC: clears m_stopped, gives the self upgrade, wakes the module now
-	void pulseHealObject(Object *target, Bool doFX);				// 0x004526C6: one heal pulse onto a target
-	virtual void onDamage(DamageInfo *damageInfo);					// 0x0045266B: DamageModuleInterface at +0x28 (table 0x00C3FC78)
+	void stopHealing();
+	void rva004523CC();									// Clears m_stopped, gives the self upgrade, wakes the module now
+	void pulseHealObject(Object *target, Bool doFX);				// One heal pulse onto a target
+	virtual void onDamage(DamageInfo *damageInfo);					// DamageModuleInterface at +0x28 (table 0x00C3FC78)
 	virtual void onHealing(DamageInfo *damageInfo) {}				// DamageModuleInterface slot 1 (table 0x0083FC78): the shared `ret 4` 0x0047A69C
 	virtual void onBodyDamageStateChange(const DamageInfo *damageInfo, BodyDamageType oldState, BodyDamageType newState) {}	// slot 2: the shared `ret 0Ch` 0x000D1407
-	virtual UpdateSleepTime update();								// 0x0045280B; update interface slot 0 at +0x10
+	virtual UpdateSleepTime update();								// Update interface slot 0 at +0x10
 	virtual DisabledMaskType getDisabledTypesToProcess() const { return DisabledMaskType(DisabledMaskType::kInit, 3); }	// UpdateModuleInterface slot 1 (table 0x0083FCD0): retail 0x004A2D67, the shared DISABLED_HELD body
 
 protected:

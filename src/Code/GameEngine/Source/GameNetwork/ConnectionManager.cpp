@@ -1,5 +1,6 @@
-// cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS /D_CRTIMP=
+// cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS /D_CRTIMP= /Isrc/gamespy-sdk/GameSpy /Isrc/gamespy-sdk/GameSpy/gstats
 // stlport46
+// psdk
 // bfmealloc_alloconly
 // Portions derived from Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 #include <new>
@@ -21,6 +22,7 @@
 #include "GameNetwork/NetPacket.h"
 #include "GameNetwork/NetRequestPlayerLeaveCommandMsg.h"
 #include "GameNetwork/NetInformPlayerLeaveFrameCommandMsg.h"
+#include "GameNetwork/NetAckStage1CommandMsg.h"
 #include "GameNetwork/NetAckStage2CommandMsg.h"
 #include "GameNetwork/NetAckBothCommandMsg.h"
 #include "GameNetwork/NetRequestFrameDataCommandMsg.h"
@@ -29,6 +31,13 @@
 #include "GameNetwork/NetFileAnnounceCommandMsg.h"
 #include "GameNetwork/NetWrapperCommandMsg.h"
 #include "GameNetwork/NetGameSpyStatsAuthKeyCommandMsg.h"
+#include "GameNetwork/NetRequestGameSpyStatsAuthKeyCommandMsg.h"
+#include "GameNetwork/GameSpy/BuddyThread.h"
+#include "gstats.h"
+#undef strdup
+#undef _strdup
+#include <stdlib.h>
+#include <string.h>
 #include "GameNetwork/GameSpy/StagingRoomGameInfo.h"
 #include "GameNetwork/NetCommandWrapperList.h"
 #include "Common/FileSystem.h"
@@ -47,6 +56,7 @@
 #include "Common/StlAlgobase.h"
 #include "WWLib/systimer.h"
 
+extern UnsignedInt g_007ED97C;
 extern UnsignedInt g_00E043F4;		// VA 0x00E043F4 (the map's name; written by hasPacketRouterFrameStall)
 Bool Rva00581318Get(NetCommandMsg *msg);	// 0x00581318 (the map has no better name)
 void Rva004CF145();		// 0x004CF145 (plays the "player left" sound; the map has no better name)
@@ -76,7 +86,51 @@ static inline const T &maxOf(const T &a, const T &b)
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
 // FUNCTION: BFME2 0x004CEF58 size=106 name=?rva004CEF58@ConnectionManager@@QAEEH@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-class
+UnsignedByte ConnectionManager::rva004CEF58(Int slot)
+{
+	if ((UnsignedInt)slot == m_localSlot)
+		return 1;
+	Connection *conn = m_connections[slot];
+	if (conn == 0)
+		return 1;
+	if (conn->m_unk0x34C == 0)
+	{
+		conn->m_unk0x34C = timeGetTime();
+		return 1;
+	}
+	UnsignedInt now = timeGetTime();
+	UnsignedInt frame = TheGameLogic->getFrame();
+	UnsignedInt timeout;
+	if (frame < g_007ED97C)
+		timeout = TheWritableGlobalData->m_networkDisconnectTime << 2;
+	else
+		timeout = TheWritableGlobalData->m_networkDisconnectTime;
+	UnsignedInt elapsed = now - (UnsignedInt)conn->m_unk0x34C;
+	return (UnsignedByte)(timeout >= elapsed);
+}
 // FUNCTION: BFME2 0x004CEFC2 size=112 name=?rva004CEFC2@ConnectionManager@@QAEEHI@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-class
+UnsignedByte ConnectionManager::isSlotWithinTimeout(Int slot, UnsignedInt timeoutParam)
+{
+	if ((UnsignedInt)slot == m_localSlot)
+		return 1;
+	Connection *conn = m_connections[slot];
+	if (conn == 0)
+		return 1;
+	if (conn->m_unk0x34C == 0)
+	{
+		conn->m_unk0x34C = timeGetTime();
+		return 1;
+	}
+	UnsignedInt now = timeGetTime();
+	UnsignedInt frame = TheGameLogic->getFrame();
+	UnsignedInt timeout;
+	if (frame >= g_007ED97C)
+		timeout = timeoutParam;
+	else
+		timeout = TheWritableGlobalData->m_networkDisconnectTime << 2;
+	UnsignedInt elapsed = now - (UnsignedInt)conn->m_unk0x34C;
+	return (UnsignedByte)(timeout >= elapsed);
+}
 // FUNCTION: BFME2 0x004CF032 size=81 name=?init@BFMEConnectionManager@@QAEXXZ evidence=N:ledger
 void ConnectionManager::slot2()
 {
@@ -115,6 +169,12 @@ Int ConnectionManager::isPlayerSlotActive(Int seat)
 }
 
 // FUNCTION: BFME2 0x004CF0FB size=24 name=?rva004CF0FB@Rva004CF0FB@@QAEHH@Z evidence=?:placeholder
+Int ConnectionManager::getSlotFrameLimit(Int slot)
+{
+	if ((UnsignedInt)slot >= 8)
+		return 1;
+	return (Int)m_unk0x120A0[slot];
+}
 
 // FUNCTION: BFME2 0x004CF113 size=50 name=?attachTransport@BFMEConnectionManager@@QAEXPAVTransport@@@Z evidence=N:ledger
 void ConnectionManager::attachTransport(Transport *transport)
@@ -1537,6 +1597,89 @@ void ConnectionManager::doRelay()
 }
 
 // FUNCTION: BFME2 0x004D342A size=802 name=?update@ConnectionManager@@UAEX_NH@Z evidence=N:ledger
+void ConnectionManager::update(Bool isInGame, Int frameAdvanced)
+{
+	if (m_localAddress.isEmpty())
+		return;
+
+	if (m_transport != 0)
+		m_transport->doRecv(0);
+
+	if (isInGame)
+	{
+		if (m_disconnectManager != 0)
+			m_disconnectManager->update(this);
+		doRelay();
+		if (frameAdvanced)
+		{
+			if (TheNetwork != 0 && TheNetwork->vslotFC() &&
+				m_localSlot == m_packetRouterSlot)
+				m_unk0x1205C = TheGameLogic->getFrame() + 1;
+			else
+				sendFrameInfo(true);
+		}
+	}
+
+	if (TheGameSpyGame != 0 && TheGameSpyBuddyMessageQueue != 0 && m_unk0x12135)
+	{
+		if (TheGameSpyGame->m_hasStatsGame)
+		{
+			if (strcmp(GetChallenge(TheGameSpyGame->m_statsGame), "NULLGAME") != 0)
+			{
+				char *challenge = strdup(GetChallenge(TheGameSpyGame->m_statsGame));
+				NetRequestGameSpyStatsAuthKeyCommandMsg *msg = new NetRequestGameSpyStatsAuthKeyCommandMsg;
+				msg->setPlayerID(m_localSlot);
+				msg->setTimestamp(TheGameLogic->m_unk0x38);
+				msg->setExecutionFrame((UnsignedInt)-1);
+				if (DoesCommandRequireACommandID(msg->getNetCommandType()))
+					msg->setID(GenerateNextCommandID());
+				msg->setName(AsciiString(challenge));
+				sendLocalCommandDirect(msg, (UnsignedByte)~(1 << m_localSlot));
+				msg->detach();
+
+				char *secret = strdup(TheGameSpyBuddyMessageQueue->get());
+				char response[64];
+				GenerateAuthA(challenge, secret, response);
+				GameSpyGameSlot *slot = TheGameSpyGame->getGameSpySlot(TheGameSpyGame->getLocalSlotNum());
+				if (slot != 0 && slot->getAuthKey().getLength() == 0)
+				{
+					slot->setAuthKey(AsciiString(response));
+					slot->setLastString(AsciiString(TheGameSpyBuddyMessageQueue->vslot2C()));
+				}
+				free(challenge);
+				free(secret);
+				m_unk0x12135 = false;
+			}
+		}
+		else
+			m_unk0x12135 = false;
+	}
+
+	sendKeepAliveCommand();
+
+	for (Int i = 0; i < 8; ++i)
+	{
+		if (m_connections[i] != 0)
+		{
+			m_connections[i]->doSend(m_unk0x12134);
+			if (m_connections[i]->m_quitValue <= TheGameLogic->getFrame() &&
+				m_connections[i]->isQueueEmpty())
+			{
+				delete m_connections[i];
+				m_connections[i] = 0;
+			}
+		}
+		if (m_frameData[i] != 0 && m_frameData[i]->getIsQuitting() &&
+			m_frameData[i]->getQuitFrame() == TheGameLogic->getFrame())
+		{
+			::delete m_frameData[i];
+			m_frameData[i] = 0;
+		}
+	}
+
+	if (m_transport != 0)
+		m_transport->doSend();
+}
 
 
 // FUNCTION: BFME2 0x004D374C size=12 name=?get@Rva004D374CCmpBoolField@@QBE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path

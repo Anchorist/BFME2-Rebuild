@@ -482,11 +482,50 @@ const CommandButton *CommandSet::getCommandButton(int index) const
 // FUNCTION: BFME2 0x00409F1B size=104 name=?rva00409F1B@CommandSet@@QAEXHH@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 
 // FUNCTION: BFME2 0x00409F83 size=29 name=?ResetCommandSet@CommandSet@@QAEXXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+void CommandSet::ResetCommandSet()
+{
+	if (m_mode == 1)
+	{
+		m_commandCount = 0;
+		for (Int slot = 0; slot < 32; ++slot)
+			m_command[slot] = NULL;
+	}
+}
 
 // FUNCTION: BFME2 0x00409FA0 size=44 name=?SetCommandButton@CommandSet@@QAEXHH@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+void CommandSet::SetCommandButton(int button, int slot)
+{
+	if (m_mode == 1 && (unsigned int)slot < 32)
+	{
+		m_command[slot] = (const CommandButton *)button;
+		if ((unsigned int)slot + 1 > m_commandCount)
+			m_commandCount = slot + 1;
+	}
+}
 
 // FUNCTION: BFME2 0x00409FCC size=46 name=?refreshIfStale@CommandSet@@QAEXXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+void CommandSet::refreshIfStale()
+{
+	// A button the INI reloaded is looked up again by name.
+	for (Int slot = 0; slot < 32; ++slot)
+	{
+		const CommandButton *button = m_command[slot];
+		if (button && button->getReloadState() >= 1)
+			m_command[slot] = TheControlBar->findCommandButton(button->m_name);
+	}
+}
 
 // FUNCTION: BFME2 0x00409FFA size=93 name=??0CommandSet@@QAE@ABVAsciiString@@H@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+CommandSet::CommandSet(const AsciiString &name, int mode)
+	: m_name(name),
+	m_commandCount(32),
+	m_mode(mode)
+{
+	for (int i = 0; i < 32; ++i)
+		m_command[i] = NULL;
+}
 
 // FUNCTION: BFME2 0x0040A057 size=59 name=??1CommandSet@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+CommandSet::~CommandSet()
+{
+}

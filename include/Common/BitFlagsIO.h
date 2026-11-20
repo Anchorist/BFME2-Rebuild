@@ -1,6 +1,6 @@
 // BitFlagsIO.h: the INI side of BitFlags, template members defined once for every
 // instantiation. WorldBuilder 1.06's assert text names this header
-// (`..\GameEngine\Source\Common/BitFlagsIO.h`, bf1 2026-11-17); a file that emits one of
+// (`..\GameEngine\Source\Common/BitFlagsIO.h`); a file that emits one of
 // these instantiations includes it and instantiates the members retail placed there.
 //
 // Target facts (one copy per instantiation, same bytes apart from the name table):

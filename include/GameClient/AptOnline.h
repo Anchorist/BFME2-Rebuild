@@ -21,9 +21,9 @@ public:
 	class OnlineQuickMatch;							// the sub-screens the shell hosts
 	class OnlineHome;
 
-	void Options(const char *);						// 0x00516EC0: "AptOnline::Options" opens the options screen
-	void ExternFunc(int query, char *value, bool set);	// 0x00517207: the Apt variables "OnlineShellStartScreen" (0, read only) and "OnlineAdvMode" (1, the GameSpy misc preference InAdvMode)
-	void ShellExit(const char *);					// 0x00516ED3: "AptOnline::ShellExit" forgets the two pending screen ids and re-enables the window manager
+	void Options(const char *);						// "AptOnline::Options" opens the options screen
+	void ExternFunc(int query, char *value, bool set);	// The Apt variables "OnlineShellStartScreen" (0, read only) and "OnlineAdvMode" (1, the GameSpy misc preference InAdvMode)
+	void ShellExit(const char *);					// "AptOnline::ShellExit" forgets the two pending screen ids and re-enables the window manager
 
 	bool m_active;									// +0x27C (set by 0x00516EA7, cleared by 0x005174E4)
 	unsigned char m_pad27D[3];

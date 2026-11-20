@@ -49,7 +49,7 @@ typedef char WorkerAIInterface_size[(sizeof(WorkerAIInterface) == 0x4) ? 1 : -1]
 class WorkerAIUpdate : public AIUpdateInterface, public DozerAIInterface, public SupplyTruckAIInterface, public WorkerAIInterface	// +0x3E4, +0x3E8, +0x3EC
 {
 public:
-	WorkerAIUpdate(Thing *thing, const ModuleData *moduleData);					// 0x004AA3AB
+	WorkerAIUpdate(Thing *thing, const ModuleData *moduleData);
 
 	// The primary table 0x00854190 returns the dozer, supply and worker interfaces
 	// at +0x3E4, +0x3E8 and +0x3EC (slots 92-95 and 99-100).
@@ -60,31 +60,31 @@ public:
 	virtual const WorkerAIInterface *getWorkerAIInterface() const { return this; }
 	virtual WorkerAIInterface *getWorkerAIInterface() { return this; }
 
-	virtual NameKeyType getModuleNameKey() const;								// 0x004A9B06
-	virtual UpdateSleepTime update();											// 0x004AA92B
-	virtual void onDelete();													// 0x004AAB0B (shared with DozerAIInterface slot 0)
+	virtual NameKeyType getModuleNameKey() const;
+	virtual UpdateSleepTime update();
+	virtual void onDelete();													// (shared with DozerAIInterface slot 0)
 
 	// DozerAIInterface
-	virtual DozerTask getMostRecentCommand();									// 0x004A9838
-	virtual Bool isTaskPending(DozerTask task);									// 0x004A97EE
-	virtual ObjectID getTaskTarget(DozerTask task);								// 0x004A97FE
-	virtual void newTask(DozerTask task, Object *target);						// 0x004AADB1
-	virtual void internalTaskComplete(DozerTask task);							// 0x004A9809
-	virtual void internalCancelTask(DozerTask task);							// 0x004AB050
-	virtual void internalTaskCompleteOrCancelled(DozerTask task);				// 0x004AAA87
-	virtual const Coord3D *getDockPoint(DozerTask task, DozerDockPoint point);	// 0x004A9875
-	virtual Bool canAcceptNewRepair(Object *obj);								// 0x004AAA09
-	virtual void aiDoCommand(const AICommandParms *parms);						// 0x004AB09D (AICommandInterface slot 0, at +0x20)
+	virtual DozerTask getMostRecentCommand();
+	virtual Bool isTaskPending(DozerTask task);
+	virtual ObjectID getTaskTarget(DozerTask task);
+	virtual void newTask(DozerTask task, Object *target);
+	virtual void internalTaskComplete(DozerTask task);
+	virtual void internalCancelTask(DozerTask task);
+	virtual void internalTaskCompleteOrCancelled(DozerTask task);
+	virtual const Coord3D *getDockPoint(DozerTask task, DozerDockPoint point);
+	virtual Bool canAcceptNewRepair(Object *obj);
+	virtual void aiDoCommand(const AICommandParms *parms);						// (AICommandInterface slot 0, at +0x20)
 
 	// SupplyTruckAIInterface (+0x3E8; bodies take the interface as this)
-	virtual Bool loseOneBox();													// 0x004A98AC
-	virtual Bool isForcedIntoWantingState() const;								// 0x004A9BB0
+	virtual Bool loseOneBox();
+	virtual Bool isForcedIntoWantingState() const;
 	virtual Bool getHarvestTrees() const;										// 0x004A973B
 	virtual Real getHarvestActivationRange() const;								// 0x004A9748
 	virtual UnsignedInt getHarvestPreparationTime() const;						// 0x004A9755
 	virtual UnsignedInt getHarvestActionTime() const;							// 0x004A9762
 	virtual Real getWarehouseScanDistance() const;								// 0x004A9715
-	Bool isSupplyTruckBrainActiveAndBusy();										// 0x004A98D6
+	Bool isSupplyTruckBrainActiveAndBusy();
 
 	virtual void cancelTask(DozerTask task);									// slot 13, 0x004A97D3 (placeholder row, body below)
 	virtual Real getBoredTime() const;											// slot 2, 0x004A964C
@@ -103,19 +103,19 @@ protected:
 	virtual void privateHarvest(const Coord3D *pos, CommandSourceType cmdSource);	// 52, 0x004A979F
 	virtual void privateRepair(Object *obj, CommandSourceType cmdSource);			// 44, 0x004A9BDE
 	virtual void privateResumeConstruction(Object *obj, CommandSourceType cmdSource);	// 45, the same body as DozerAIUpdate's 0x00488B1A (folded)
-	Bool findGoodBuildOrRepairPosition(const Object *me, const Object *target, Coord3D &pos);	// 0x004AA4FE
-	Object *findGoodBuildOrRepairPositionAndTarget(Object *me, Object *target, Coord3D &pos);	// 0x004AABB4
+	Bool findGoodBuildOrRepairPosition(const Object *me, const Object *target, Coord3D &pos);
+	Object *findGoodBuildOrRepairPositionAndTarget(Object *me, Object *target, Coord3D &pos);
 
 	void resetSupplyTruckMachine();												// 0x004A9914 (role name): the +0x4C8 machine back to its default state
 	void resetDozerMachine();													// 0x004A991F (role name): the +0x4C4 machine back to its default state
 	const WorkerAIUpdateModuleData *getWorkerAIUpdateModuleData() const { return static_cast<const WorkerAIUpdateModuleData *>(getModuleData()); }	// inline
 
 private:
-	void createMachines();														// 0x004A9ED5 (the map spells it private: AAE)
+	void createMachines();														// (the map spells it private: AAE)
 
 protected:
-	virtual const char *GetSnapshotName() const;								// 0x004A9B4B
-	virtual void xfer(Xfer *xfer);												// 0x004AA1DB
+	virtual const char *GetSnapshotName() const;
+	virtual void xfer(Xfer *xfer);
 
 public:
 	DozerTaskRecord m_tasks[3];													// +0x3F0, +0x3F8, +0x400 (interface +0xC)

@@ -29,8 +29,8 @@ int compareRangeNoCase(const char *a, int alen, const char *b, int blen, CharCom
 struct WideCharCompare
 {
 	char m_unused;
-	int compare(const unsigned short *a, const unsigned short *b, int count) const;			// 0x000052F8
-	int compareNoCase(const unsigned short *a, const unsigned short *b, int count) const;	// 0x00005344
+	int compare(const unsigned short *a, const unsigned short *b, int count) const;
+	int compareNoCase(const unsigned short *a, const unsigned short *b, int count) const;
 };
 
 int compareRange(const unsigned short *a, int alen, const unsigned short *b, int blen, WideCharCompare tag);			// 0x0000586D

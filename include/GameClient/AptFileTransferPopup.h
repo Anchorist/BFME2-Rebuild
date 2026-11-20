@@ -16,7 +16,7 @@ class GameInfo;
 class FileTransfer : public AptCallbackHost
 {
 public:
-	void PlayerColor(int slot, char *result, bool skip);			// 0x00583034: the apparent colour of a slot as a decimal ("0" out of range)
+	void PlayerColor(int slot, char *result, bool skip);			// The apparent colour of a slot as a decimal ("0" out of range)
 
 	GameInfo *m_game;												// +0x58
 };
@@ -24,8 +24,8 @@ public:
 class AptFileTransferPopup : public FileTransfer
 {
 public:
-	void ProcessProgress(int playerIndex, int completionPercent, UnicodeString statusText);	// 0x00583121: shows the player's status text and bar
-	void rva00583202(int totalSeconds);								// 0x00583202: shows the remaining time as minutes and seconds
+	void ProcessProgress(int playerIndex, int completionPercent, UnicodeString statusText);	// Shows the player's status text and bar
+	void rva00583202(int totalSeconds);								// Shows the remaining time as minutes and seconds
 
 	int m_displaySlot[8];											// +0x5C
 };

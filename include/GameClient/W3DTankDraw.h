@@ -24,9 +24,9 @@ protected:
 	virtual void loadPostProcess();											// 1: 0x000CEA39
 	virtual const char *GetSnapshotName() const;							// 2: 0x000CEA33
 	virtual void xfer(Xfer *xfer);											// 3: 0x000CE03C
-	void updateTreadObjects();												// 0x000CE16A
-	void tossEmitters();													// 0x000CE7B4
-	void createEmitters();													// 0x000CE837
+	void updateTreadObjects();
+	void tossEmitters();
+	void createEmitters();
 };
 
 #endif

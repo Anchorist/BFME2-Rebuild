@@ -50,11 +50,11 @@ public:
 	virtual void init();
 	virtual void reset();
 	virtual void update();
-	static void parseMetaMap(INI *ini);	// 0x001DB5A2
+	static void parseMetaMap(INI *ini);
 
 protected:
-	GameMessage::Type findGameMessageMetaType(const char *name);	// 0x001DB3FE
-	MetaMapRec *getMetaMapRec(GameMessage::Type type);				// 0x001DB537
+	GameMessage::Type findGameMessageMetaType(const char *name);
+	MetaMapRec *getMetaMapRec(GameMessage::Type type);
 
 	MetaMapRec *m_recs;						// +0x0C head of the record list (cleared by the constructor)
 };

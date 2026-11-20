@@ -14,10 +14,10 @@ class TileData;
 class TerrainTextureClass : public TextureClass
 {
 public:
-	void setLOD(int LOD);																// 0x000EF2A0
-	int updateFlat(WorldHeightMap *htMap, int xOrigin, int yOrigin, int pixelsPerCell, int cellWidth, int cellHeight);	// 0x000EF2C1
-	int updateFlatDXT1(WorldHeightMap *htMap, int xOrigin, int yOrigin, int pixelsPerCell, int cellWidth, int cellHeight);	// 0x000EF4A3
-	int updateCliff(TileData **tiles, int a, int b, int c, int d);						// 0x000EF63F
+	void setLOD(int LOD);
+	int updateFlat(WorldHeightMap *htMap, int xOrigin, int yOrigin, int pixelsPerCell, int cellWidth, int cellHeight);
+	int updateFlatDXT1(WorldHeightMap *htMap, int xOrigin, int yOrigin, int pixelsPerCell, int cellWidth, int cellHeight);
+	int updateCliff(TileData **tiles, int a, int b, int c, int d);
 };
 
 #endif

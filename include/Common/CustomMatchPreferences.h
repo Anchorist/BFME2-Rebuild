@@ -22,15 +22,15 @@ public:
 	CustomMatchPreferences(int mode);									// 0x0054F52F
 	virtual ~CustomMatchPreferences();								// slot 0, 0x0054F508 (deleting 0x0054F513)
 	void setLobbyRoomID(Int id);									// 0x0054F7C0 (the map holds it as rva0054F7C0 on GameModePreferences; it writes the key getLobbyRoomID reads)
-	Int getLobbyRoomID();											// 0x0054F5A4 (the map holds it as rva0054F5A4 on GameModePreferences)
-	AsciiString getLastLadderAddr();											// 0x005DF4B9
-	UnsignedShort getLastLadderPort();											// 0x005DF50A
-	Bool getDisallowAsianText();												// 0x0054F5DE
-	Bool getDisallowNonAsianText();												// 0x0054F63A
-	void setLastLadder(const AsciiString &addr, UnsignedShort port);			// 0x0054F696
-	void setUsesLongGameList(Bool val);										// 0x0054F745
-	void setDisallowAsianText(Bool val);										// 0x0054F825
-	void setDisallowNonAsianText(Bool val);										// 0x0054F8A0
+	Int getLobbyRoomID();											// (the map holds it as rva0054F5A4 on GameModePreferences)
+	AsciiString getLastLadderAddr();
+	UnsignedShort getLastLadderPort();
+	Bool getDisallowAsianText();
+	Bool getDisallowNonAsianText();
+	void setLastLadder(const AsciiString &addr, UnsignedShort port);
+	void setUsesLongGameList(Bool val);
+	void setDisallowAsianText(Bool val);
+	void setDisallowNonAsianText(Bool val);
 };
 typedef char CustomMatchPreferences_size[(sizeof(CustomMatchPreferences) == 0x1C) ? 1 : -1];
 

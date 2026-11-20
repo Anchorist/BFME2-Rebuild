@@ -1,32 +1,149 @@
-// BuddyThread.h: the queue the lobby code uses to talk to the GameSpy buddy thread (Zero Hour's
-// GameSpyBuddyMessageQueueInterface / GameSpyBuddyMessageQueue / BuddyThreadClass by role and member order,
-// GPL-3.0-or-later; offsets and slots are retail's).
-// Portions derived from Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-// Target facts (code RVAs; table addresses are VAs):
-//  - The queue is GameSpyInfo's twin of the peer queue (TheGameSpyBuddyMessageQueue, VA 0x00E05FBC): createNewMessageQueue
-//    0x00551B28 allocates 0x74 bytes and runs its constructor 0x00551A94. Its table has thirteen slots: 0 deleting destructor
-//    0x00551B02, 1 startThread 0x00550FDD, 2 endThread 0x00550B4C, 3 isThreadRunning 0x00550609 (the peer queue's folded copy:
-//    forwards to the thread's 0x006105E0), 4 isConnected 0x00550618, 5 0x003889E8 (the peer queue's
-//    isConnected body, folded), 6 addRequest 0x00551B5A, 7 getRequest 0x0055106D, 8 addResponse 0x00551BA7, 9 getResponse
-//    0x005510D3, 10 getLocalProfileID 0x00550626, 11 and 12 the two string getters 0x005508F0 / 0x00550904. The layout follows
-//    the peer queue's: the request mutex at +4, the response mutex at +0xC, two queues (a deque each, 0x28 bytes) at +0x14 and
-//    +0x3C, the thread pointer at +0x64, a mutex at +0x68 and a cleared dword at +0x70 (the constructor 0x00551A94 builds the three
-//    mutexes with 0x006139F0 and the two queues with 0x00551A06 / 0x00551A1B).
-//  - The thread (BuddyThreadClass: its table's slots are the deleting destructor 0x00551323, ThreadClass::Execute 0x006104B0 and
-//    Thread_Function 0x00552027) keeps a flag byte at +0x52 (isConnected reads it), the local profile id at +0x54 and the two
-//    std::strings at +0x84 and +0x90 that the string getters return the character pointers of (a getter answers "" without a
-//    thread). Its other members are not recovered.
+// BuddyThread.h: the queue the lobby code uses to talk to the GameSpy buddy thread.
+// Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 #pragma once
 #ifndef BFME2_BUDDYTHREAD_H
 #define BFME2_BUDDYTHREAD_H
 
+#include <stddef.h>
 #include <string>
+#include <queue>
 #include "Common/GameType.h"
 #include "WWLib/thread.h"
 #include "WWLib/mutex.h"
 
-class BuddyRequest;
-class BuddyResponse;
+enum { MAX_BUDDY_CHAT_LEN = 128 };
+
+typedef int GPProfile;
+typedef int GPEnum;
+typedef int GPResult;
+typedef int GPErrorCode;
+
+class BuddyRequest
+{
+public:
+	enum
+	{
+		BUDDYREQUEST_LOGIN,
+		BUDDYREQUEST_RELOGIN,
+		BUDDYREQUEST_LOGOUT,
+		BUDDYREQUEST_MESSAGE,
+		BUDDYREQUEST_LOGINNEW,
+		BUDDYREQUEST_ADDBUDDY,
+		BUDDYREQUEST_DELBUDDY,
+		BUDDYREQUEST_OKADD,
+		BUDDYREQUEST_DENYADD,
+		BUDDYREQUEST_SETSTATUS,
+		BUDDYREQUEST_DELETEACCT,
+		BUDDYREQUEST_MAX
+	} buddyRequestType;
+
+	union
+	{
+		struct
+		{
+			GPProfile recipient;
+			WideChar text[MAX_BUDDY_CHAT_LEN];
+		} message;
+
+		struct
+		{
+			char nick[31];
+			char email[51];
+			char password[31];
+			Bool hasFirewall;
+		} login;
+
+		struct
+		{
+			GPProfile id;
+			WideChar text[MAX_BUDDY_CHAT_LEN];
+		} addbuddy;
+
+		struct
+		{
+			GPProfile id;
+		} profile;
+
+		struct
+		{
+			GPEnum status;
+			char statusString[256];
+			char locationString[256];
+		} status;
+
+		unsigned char m_raw[0x2B4];
+	} arg;
+};
+typedef char BuddyRequestSize[(sizeof(BuddyRequest) == 0x2B8) ? 1 : -1];
+
+class BuddyResponse
+{
+public:
+	enum
+	{
+		BUDDYRESPONSE_LOGIN,
+		BUDDYRESPONSE_DISCONNECT,
+		BUDDYRESPONSE_MESSAGE,
+		BUDDYRESPONSE_REQUEST,
+		BUDDYRESPONSE_STATUS,
+		BUDDYRESPONSE_MAX
+	} buddyResponseType;
+
+	GPProfile profile;
+	GPResult result;
+
+	union
+	{
+		struct
+		{
+			UnsignedInt date;
+			char nick[31];
+			WideChar text[MAX_BUDDY_CHAT_LEN];
+		} message;
+
+		struct
+		{
+			char nick[31];
+			char email[51];
+			char countrycode[3];
+			WideChar text[1025];
+		} request;
+
+		struct
+		{
+			GPResult result;
+			GPErrorCode errorCode;
+			char errorString[MAX_BUDDY_CHAT_LEN];
+			GPEnum fatal;
+		} error;
+
+		struct
+		{
+			char nick[31];
+			char email[51];
+			char countrycode[3];
+			char location[256];
+			GPEnum status;
+			char statusString[256];
+		} status;
+	} arg;
+};
+typedef char BuddyResponseSize[(sizeof(BuddyResponse) == 0x864) ? 1 : -1];
+
+// Owning pointer holder used for thread synchronization locks (zeroes the pointer before delete).
+template <class T>
+class OwnedLockPtr
+{
+public:
+	OwnedLockPtr() : m_lock(0) {}
+	~OwnedLockPtr() { clear(); }
+	void clear();
+	void reset(T *newLock);
+
+private:
+	T *m_lock;
+};
+
 class BuddyThreadClass;
 
 class GameSpyBuddyMessageQueueInterface
@@ -37,58 +154,73 @@ public:
 	virtual void endThread() = 0;											// slot 0x08
 	virtual Bool isThreadRunning() = 0;										// slot 0x0C
 	virtual Bool isConnected() = 0;											// slot 0x10
-	virtual Bool vslot14() = 0;												// slot 0x14 (0x003889E8, shared with the peer queue's isConnected; name not evidenced)
+	virtual Bool vslot14() = 0;												// slot 0x14 (isConnecting)
 	virtual void addRequest(const BuddyRequest &request) = 0;				// slot 0x18
 	virtual Bool getRequest(BuddyRequest &request) = 0;						// slot 0x1C
 	virtual void addResponse(const BuddyResponse &response) = 0;			// slot 0x20
 	virtual Bool getResponse(BuddyResponse &response) = 0;					// slot 0x24
 	virtual Int getLocalProfileID() = 0;									// slot 0x28
-	virtual const char *vslot2C() const = 0;										// slot 0x2C (0x005508F0: the thread's string at +0x84; name not evidenced)
-	virtual const char *get() const = 0;										// slot 0x30 (0x00550904: the thread's string at +0x90; the map evidences the name get)
-	static GameSpyBuddyMessageQueueInterface *createNewMessageQueue();		// 0x00551B28
+	virtual const char *vslot2C() const = 0;								// slot 0x2C
+	virtual const char *get() const = 0;									// slot 0x30
+	static GameSpyBuddyMessageQueueInterface *createNewMessageQueue();
 };
 
 class GameSpyBuddyMessageQueue : public GameSpyBuddyMessageQueueInterface
 {
 public:
-	GameSpyBuddyMessageQueue();												// 0x00551A94
-	virtual ~GameSpyBuddyMessageQueue();									// slot 0x00, deleting 0x00551B02
-	virtual void startThread();												// slot 0x04, 0x00550FDD
-	virtual void endThread();												// slot 0x08, 0x00550B4C
-	virtual Bool isThreadRunning();											// slot 0x0C, 0x00550609
-	virtual Bool isConnected();												// slot 0x10, 0x00550618
-	virtual Bool vslot14();													// slot 0x14, 0x003889E8
-	virtual void addRequest(const BuddyRequest &request);					// slot 0x18, 0x00551B5A
-	virtual Bool getRequest(BuddyRequest &request);							// slot 0x1C, 0x0055106D
-	virtual void addResponse(const BuddyResponse &response);				// slot 0x20, 0x00551BA7
-	virtual Bool getResponse(BuddyResponse &response);						// slot 0x24, 0x005510D3
-	virtual Int getLocalProfileID();										// slot 0x28, 0x00550626
-	virtual const char *vslot2C() const;											// slot 0x2C, 0x005508F0
-	virtual const char *get() const;											// slot 0x30, 0x00550904
+	GameSpyBuddyMessageQueue();
+	virtual ~GameSpyBuddyMessageQueue();									// slot 0x00
+	virtual void startThread();												// slot 0x04
+	virtual void endThread();												// slot 0x08
+	virtual Bool isThreadRunning();											// slot 0x0C
+	virtual Bool isConnected();												// slot 0x10
+	virtual Bool vslot14();													// slot 0x14
+	virtual void addRequest(const BuddyRequest &request);					// slot 0x18
+	virtual Bool getRequest(BuddyRequest &request);							// slot 0x1C
+	virtual void addResponse(const BuddyResponse &response);				// slot 0x20
+	virtual Bool getResponse(BuddyResponse &response);						// slot 0x24
+	virtual Int getLocalProfileID();										// slot 0x28
+	virtual const char *vslot2C() const;									// slot 0x2C
+	virtual const char *get() const;										// slot 0x30
 
 	MutexClass m_requestMutex;												// +0x04
 	MutexClass m_responseMutex;												// +0x0C
-	unsigned char m_requests[0x28];											// +0x14 (a queue<BuddyRequest>, a deque; not typed until BuddyRequest is recovered)
-	unsigned char m_responses[0x28];										// +0x3C (a queue<BuddyResponse>)
+	_STL::queue<BuddyRequest> m_requests;									// +0x14
+	_STL::queue<BuddyResponse> m_responses;									// +0x3C
 	BuddyThreadClass *m_thread;												// +0x64
-	MutexClass m_unk0x68;													// +0x68 (the constructor 0x00551A94 builds it like the other two)
-	UnsignedInt m_unk0x70;													// +0x70 (the constructor clears it)
+	MutexClass m_threadMutex;												// +0x68
+	OwnedLockPtr<MutexClass::LockClass> m_threadLock;						// +0x70
 };
-// SIZE 0x74
+typedef char GameSpyBuddyMessageQueueSize[(sizeof(GameSpyBuddyMessageQueue) == 0x74) ? 1 : -1];
 
-// The GameSpy buddy thread, partly recovered: only the members the queue's rows read are declared.
 class BuddyThreadClass : public ThreadClass
 {
 public:
-	unsigned char m_unk0x50[2];												// +0x50 (the base ThreadClass is 0x50 bytes)
+	BuddyThreadClass(MutexClass *mutex);
+	virtual ~BuddyThreadClass() {}
+	virtual void Thread_Function();
+
+	void waitForThreadReady();
+
+	Bool m_isNewAccount;													// +0x50
+	Bool m_isConnecting;													// +0x51
 	Bool m_isConnected;														// +0x52
 	unsigned char m_pad0x53;												// +0x53
 	Int m_profileID;														// +0x54
-	unsigned char m_unk0x58[0x2C];											// +0x58
+	Int m_lastErrorCode;													// +0x58
+	Bool m_isDeleting;														// +0x5C
+	unsigned char m_pad0x5D[3];												// +0x5D
+	_STL::string m_nick;													// +0x60
+	_STL::string m_email;													// +0x6C
+	_STL::string m_password;												// +0x78
 	_STL::string m_unk0x84;													// +0x84
 	_STL::string m_unk0x90;													// +0x90
+	MutexClass *m_networkLock;												// +0x9C
+	CriticalSectionClass m_criticalSection;									// +0xA0
+	OwnedLockPtr<CriticalSectionClass::LockClass> m_ownedLock;				// +0xA8
 };
+typedef char BuddyThreadClassSize[(sizeof(BuddyThreadClass) == 0xAC) ? 1 : -1];
 
-extern GameSpyBuddyMessageQueueInterface *TheGameSpyBuddyMessageQueue;		// VA 0x00E05FBC
+extern GameSpyBuddyMessageQueueInterface *TheGameSpyBuddyMessageQueue;
 
 #endif

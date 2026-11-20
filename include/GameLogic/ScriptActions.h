@@ -29,7 +29,7 @@ public:
   void doMoveCameraAlongWaypointPath(const AsciiString &pathLabel, Real sec, Real cameraStutterSec, Real easeIn, Real easeOut, Real unk, Int mode);	// 0x003BB0C7
   void doRadarCreateEvent(Coord3D *position, void *eventType);	// 0x003BB76E
   void doStopPlayingSound(const AsciiString &soundName);	// 0x003BC510
-  ScriptActions();	// 0x003BD56C
+  ScriptActions();
   virtual ~ScriptActions();	// slot 0, 0x003BD582 (deleting 0x003BE5AD)
   virtual void init() { reset(); }
   virtual void reset();	// slot 9, 0x003BA8AC
@@ -39,63 +39,63 @@ public:
   virtual void rva003BCC37(bool);	// slot 16, 0x003BCC37
   virtual void rva003C35F7(int, int);	// slot 17, 0x003C35F7
   // Non-virtual action methods (public, QAE); the comment is the retail RVA.
-  void doPlayerHunt(const AsciiString &name);				// 0x003BB29D
-  void doRevealMapEntire(const AsciiString &name);	// 0x003BB94C
-  void doShroudMapEntire(const AsciiString &name);	// 0x003BBA59
-  void doPlayerDisableBaseConstruction(const AsciiString &name);	// 0x003BB31D
-  void doPlayerDisableUnitConstruction(const AsciiString &name);	// 0x003BB39E
-  void doPlayerEnableBaseConstruction(const AsciiString &name);	// 0x003BB3DC
-  void doPlayerEnableUnitConstruction(const AsciiString &name);	// 0x003BB45D
-  void doPlayerGarrisonAllBuildings(const AsciiString &name);	// 0x003BBD84
-  void doPlayerExitAllBuildings(const AsciiString &name);	// 0x003BBDC4
-  void doNamedDelete(Parameter *unit);	// 0x003BB49B
-  void doNamedKill(Parameter *unit);	// 0x003BB4F7
-  void doEnableInput();	// 0x003BBB36
-  void doRadarRefresh();	// 0x003BC1A0
-  void doTeamHunt(const AsciiString &team);	// 0x003BF8B4
-  void doTeamKill(const AsciiString &team);	// 0x003BFD5A
-  void doNamedSetStoppingDistance(Parameter *unit, float stoppingDistance);	// 0x003BBF51
-  void doNamedDamage(const Parameter &unit, int amount);	// 0x003BFA77
-  void doNamedSetSpecialPowerCountdown(Parameter *unit, const AsciiString &specialPower, int seconds);	// 0x003C3EC5
-  void doNamedAddSpecialPowerCountdown(Parameter *unit, const AsciiString &specialPower, int seconds);	// 0x003C3F9E
-  void doTeamStopSequentialScript(const AsciiString &team);	// 0x003C0C3E
-  void doUnitStopSequentialScript(Parameter *unit);	// 0x003BC259
-  void doSetMoney(const AsciiString &name, int amount);	// 0x003BC048
-  void doGiveMoney(const AsciiString &name, int amount);	// 0x003BC0A7
-  void doDisableSpecialPowerDisplay();	// 0x003BBF8F
-  void doEnableSpecialPowerDisplay();	// 0x003BBFA0
-  void doNamedHideSpecialPowerDisplay(Parameter *unit);	// 0x003BBFB1
-  void doNamedShowSpecialPowerDisplay(Parameter *unit);	// 0x003BBFD6
-  void doMoviePlayRadar(const AsciiString &movieName);	// 0x003BB61E
-  void doAudioSetVolume(int whichToAffect, float newVolumeLevel);	// 0x003BBFFB
-  void doDamageTeamMembers(const AsciiString &team, float amount);	// 0x003BE9DB
-  void doModifyBuildableStatus(const AsciiString &objectType, int buildableStatus);	// 0x003BC4AB
-  void doRotateCamera(float rotations, float sec, float easeIn, float easeOut);	// 0x003BAECA
-  void doStopCameraFollowUnit();	// 0x003BAAD6
-  void doFreezeTime();	// 0x003BBEDE
-  void doUnfreezeTime();	// 0x003BBEE9
+  void doPlayerHunt(const AsciiString &name);
+  void doRevealMapEntire(const AsciiString &name);
+  void doShroudMapEntire(const AsciiString &name);
+  void doPlayerDisableBaseConstruction(const AsciiString &name);
+  void doPlayerDisableUnitConstruction(const AsciiString &name);
+  void doPlayerEnableBaseConstruction(const AsciiString &name);
+  void doPlayerEnableUnitConstruction(const AsciiString &name);
+  void doPlayerGarrisonAllBuildings(const AsciiString &name);
+  void doPlayerExitAllBuildings(const AsciiString &name);
+  void doNamedDelete(Parameter *unit);
+  void doNamedKill(Parameter *unit);
+  void doEnableInput();
+  void doRadarRefresh();
+  void doTeamHunt(const AsciiString &team);
+  void doTeamKill(const AsciiString &team);
+  void doNamedSetStoppingDistance(Parameter *unit, float stoppingDistance);
+  void doNamedDamage(const Parameter &unit, int amount);
+  void doNamedSetSpecialPowerCountdown(Parameter *unit, const AsciiString &specialPower, int seconds);
+  void doNamedAddSpecialPowerCountdown(Parameter *unit, const AsciiString &specialPower, int seconds);
+  void doTeamStopSequentialScript(const AsciiString &team);
+  void doUnitStopSequentialScript(Parameter *unit);
+  void doSetMoney(const AsciiString &name, int amount);
+  void doGiveMoney(const AsciiString &name, int amount);
+  void doDisableSpecialPowerDisplay();
+  void doEnableSpecialPowerDisplay();
+  void doNamedHideSpecialPowerDisplay(Parameter *unit);
+  void doNamedShowSpecialPowerDisplay(Parameter *unit);
+  void doMoviePlayRadar(const AsciiString &movieName);
+  void doAudioSetVolume(int whichToAffect, float newVolumeLevel);
+  void doDamageTeamMembers(const AsciiString &team, float amount);
+  void doModifyBuildableStatus(const AsciiString &objectType, int buildableStatus);
+  void doRotateCamera(float rotations, float sec, float easeIn, float easeOut);
+  void doStopCameraFollowUnit();
+  void doFreezeTime();
+  void doUnfreezeTime();
 protected:
-  void doNamedCustomColor(Parameter *unit, int color);	// 0x003BB596 (IAE)
-  void doTeamExitAll(const AsciiString &team);	// 0x003BEFFA (IAE)
-  void doUnitForceEmotion(Parameter *unit, int index, float value);	// 0x003BD2CE (IAE)
-  void doTeamForceEmotion(Parameter *team, int index, float value);	// 0x003C375A (IAE)
-  void doTeamAttackArea(const AsciiString &team, const AsciiString &area);	// 0x003BEF20 (IAE)
-  void doTeamAttackTeam(const AsciiString &team, const AsciiString &victim);	// 0x003BED59 (IAE)
-  void doSetTeamState(const AsciiString &team, const AsciiString &state);	// 0x003BEC9B (IAE)
-  void updateTeamSetAttitude(const AsciiString &team, Int attitude);	// 0x003BEE5E (IAE)
-  void doSetUnitReference(const AsciiString &reference, Parameter *unit, bool byName);	// 0x003C2019 (IAE)
-  void doTeamIdleForFramecount(const AsciiString &team, int framecount, bool seconds);	// 0x003C0C71 (IAE)
-  void doTeamSetRepulsor(const AsciiString &team, bool repulsor);	// 0x003BEED1 (IAE)
-  void doDisplayText(const AsciiString &displayText);	// 0x003BFD88 (IAE)
-  void doTeamSpinForFramecount(const AsciiString &team, int framecount);	// 0x003C0FEA (IAE)
-  void doIdleAllPlayerUnits(const AsciiString &name);	// 0x003BBB7E (IAE)
-  void doSetStoppingDistance(const AsciiString &team, float stoppingDistance);	// 0x003C062D (IAE)
-  void doBorderSwitch(int borderToUse);	// 0x003BC3A8 (IAE)
-  void doResumeSupplyTruckingForIdleUnits(const AsciiString &name);	// 0x003BBBF0 (IAE)
-  void doSetUnitReferenceToHomeBaseOfPlayer(const AsciiString &playerName, const AsciiString &unitReference, bool flag);	// 0x003BCE69 (IAE)
-  void doSetCounterToPlayerOwnershipOfUnitsWithModelCondition(const AsciiString &playerName, const AsciiString &kindName, const AsciiString &counterName);	// 0x003C2F9C (IAE)
-  void doUnitStandGround(Parameter *unit, Parameter *standGround);	// 0x003C60E8 (IAE; the unit, and for a horde each member)
-  void doTeamStandGround(Parameter *team, Parameter *standGround);	// 0x003C6191 (IAE)
+  void doNamedCustomColor(Parameter *unit, int color);
+  void doTeamExitAll(const AsciiString &team);
+  void doUnitForceEmotion(Parameter *unit, int index, float value);
+  void doTeamForceEmotion(Parameter *team, int index, float value);
+  void doTeamAttackArea(const AsciiString &team, const AsciiString &area);
+  void doTeamAttackTeam(const AsciiString &team, const AsciiString &victim);
+  void doSetTeamState(const AsciiString &team, const AsciiString &state);
+  void updateTeamSetAttitude(const AsciiString &team, Int attitude);
+  void doSetUnitReference(const AsciiString &reference, Parameter *unit, bool byName);
+  void doTeamIdleForFramecount(const AsciiString &team, int framecount, bool seconds);
+  void doTeamSetRepulsor(const AsciiString &team, bool repulsor);
+  void doDisplayText(const AsciiString &displayText);
+  void doTeamSpinForFramecount(const AsciiString &team, int framecount);
+  void doIdleAllPlayerUnits(const AsciiString &name);
+  void doSetStoppingDistance(const AsciiString &team, float stoppingDistance);
+  void doBorderSwitch(int borderToUse);
+  void doResumeSupplyTruckingForIdleUnits(const AsciiString &name);
+  void doSetUnitReferenceToHomeBaseOfPlayer(const AsciiString &playerName, const AsciiString &unitReference, bool flag);
+  void doSetCounterToPlayerOwnershipOfUnitsWithModelCondition(const AsciiString &playerName, const AsciiString &kindName, const AsciiString &counterName);
+  void doUnitStandGround(Parameter *unit, Parameter *standGround);	// (IAE; the unit, and for a horde each member)
+  void doTeamStandGround(Parameter *team, Parameter *standGround);
 public:
   void deleteAllUnmanned();	// 0x003C1FAD (map placeholder ?Rva003C1FADDestroy@ScriptActions@@QAEXXZ; Zero Hour's name and body: destroys every object disabled DISABLED_UNMANNED)
   bool m_suppressNewWindows;
@@ -136,7 +136,7 @@ protected:
 public:
   void doTeamExitAllBuildings(const AsciiString &);	// 0x003C8E2B
 protected:
-  void doTeamAvailableForRecruitment(const AsciiString &, Bool);	// 0x003C01AB
+  void doTeamAvailableForRecruitment(const AsciiString &, Bool);
 protected:
   void doTeamSetRecruitableFlags(const AsciiString &, Int);	// 0x003C0F09
 public:
@@ -161,8 +161,8 @@ public:
   void doSetCounterToPlayersMoney(Parameter *pPlayerParm, Parameter *pCounterParm);	// 0x003C2BC0
   void doSetCounterToUnitExperience(Parameter *pUnitParm, Parameter *pCounterParm);	// 0x003C2C8F
 protected:
-  void doCounterMathCounter(Parameter *, Parameter *, Parameter *);	// 0x003C2950
-  void doCounterMathValue(Parameter *, Parameter *, Parameter *);	// 0x003C29D0
+  void doCounterMathCounter(Parameter *, Parameter *, Parameter *);
+  void doCounterMathValue(Parameter *, Parameter *, Parameter *);
 public:
   void doPlayerSetScienceAvailability(const AsciiString &playerName, const AsciiString &scienceName, const AsciiString &availability);	// 0x003BC785
   void doPlayerGrantUpgrade(const AsciiString &playerName, const AsciiString &upgradeName);	// 0x003BB1A4
@@ -172,9 +172,9 @@ public:
 public:
   void doNamedSetHeld(Parameter *unit, Bool held);	// 0x003BBF23
 protected:
-  void doTeamSetOverrideRelationToTeam(const AsciiString &, const AsciiString &, Object *);	// 0x003C0983
+  void doTeamSetOverrideRelationToTeam(const AsciiString &, const AsciiString &, Object *);
 public:
-  void doTeamSetOverrideRelationToPlayer(const AsciiString &, const AsciiString &, Object *);	// 0x003C43F3
+  void doTeamSetOverrideRelationToPlayer(const AsciiString &, const AsciiString &, Object *);
 public:
   void doTeamUseCommandButtonOnNamed(const AsciiString &teamName, const AsciiString &commandButtonName, Parameter *unit);	// 0x003C1020
   void doTeamGuardTeam(const AsciiString &teamName, const AsciiString &targetTeamName);	// 0x003C2A29
@@ -184,61 +184,61 @@ protected:
 public:
   void doSetCounterToPlayerCommandPointCap(Parameter *pPlayerParm, Parameter *pCounterParm);	// 0x003C2D90
 protected:
-  void doTeamGuard(const AsciiString &);	// 0x003C88CB
+  void doTeamGuard(const AsciiString &);
 protected:
-  void doTeamGuardInTunnelNetwork(const AsciiString &);	// 0x003C9BAD
-  void doTeamGuardForFramecount(const AsciiString &, Int, Bool);	// 0x003C9363
+  void doTeamGuardInTunnelNetwork(const AsciiString &);
+  void doTeamGuardForFramecount(const AsciiString &, Int, Bool);
 protected:
 protected:
 public:
   void doTeamWanderInPlace(const AsciiString &teamName);	// 0x003C8B62
 public:
-  void doPlayerSellEverything(const AsciiString &playerName);	// 0x003BB2DF
-  void doPlayerKill(const AsciiString &playerName);	// 0x003BB518
-  void doScreenShake(Int intensity);	// 0x003BC47A
+  void doPlayerSellEverything(const AsciiString &playerName);
+  void doPlayerKill(const AsciiString &playerName);
+  void doScreenShake(Int intensity);
   void doNamedFlash(Parameter *unit, Int timeInSeconds, RGBColor *color);	// 0x003BB5B7 (NAMED_FLASH, TEAM_FLASH and NAMED_FLASH_WHITE share it)
 protected:
-  void doCameoFlash(const AsciiString &buttonName, Int timeInSeconds);	// 0x003BB556
-  void doTeamEnterNamed(const AsciiString &teamName, const AsciiString &unitDestName);	// 0x003BEF8D
+  void doCameoFlash(const AsciiString &buttonName, Int timeInSeconds);
+  void doTeamEnterNamed(const AsciiString &teamName, const AsciiString &unitDestName);
 public:
   void doTeamGuardPosition(const AsciiString &teamName, const AsciiString &waypointName);	// 0x003BF71E (TEAM_GUARD_POSITION)
   void doTeamGuardArea(const AsciiString &teamName, const AsciiString &areaName, const AsciiString &waypointName);	// 0x003BF813 (TEAM_GUARD_AREA)
 protected:
-  void doTeamFollowWaypoints(const AsciiString &teamName, const AsciiString &waypointPathLabel, Bool asTeam, Bool inFormation);	// 0x003BF39F
-  void doTeamAttackMoveFollowWaypoints(const AsciiString &teamName, const AsciiString &waypointPathLabel, Bool asTeam, Bool inFormation);	// 0x003BF4CF
+  void doTeamFollowWaypoints(const AsciiString &teamName, const AsciiString &waypointPathLabel, Bool asTeam, Bool inFormation);
+  void doTeamAttackMoveFollowWaypoints(const AsciiString &teamName, const AsciiString &waypointPathLabel, Bool asTeam, Bool inFormation);
 public:
   void doTeamWander(const AsciiString &teamName, const AsciiString &pathLabel);	// 0x003C8ABF (TEAM_WANDER)
   void doTeamPanic(const AsciiString &teamName, const AsciiString &pathLabel);	// 0x003C8BCB (TEAM_PANIC)
   void doMoviePlayFullScreen(const AsciiString &movieName, Bool unused);	// 0x003BFFEC (MOVIE_PLAY_FULLSCREEN)
 protected:
-  void doNamedEnableCameraFading(Parameter *unit, Bool enable);	// 0x003BBD02
-  void doTeamRemoveOverrideRelationToTeam(const AsciiString &, const AsciiString &);	// 0x003C09DA
-  void doTeamRemoveAllOverrideRelations(const AsciiString &);	// 0x003C0A2E
+  void doNamedEnableCameraFading(Parameter *unit, Bool enable);
+  void doTeamRemoveOverrideRelationToTeam(const AsciiString &, const AsciiString &);
+  void doTeamRemoveAllOverrideRelations(const AsciiString &);
 public:
   void doSetCounterToPlayerCommandPointsInUse(Parameter *pPlayerParm, Parameter *pCounterParm);	// 0x003C2CD8
 protected:
-  void doNamedExitAll(Parameter *unit);	// 0x003C86C5
-  void doNamedGuard(Parameter *unit);	// 0x003C886A
-  void doNamedFaceNamed(Parameter *unit, const AsciiString &targetName);	// 0x003C99C1
-  void doNamedFaceWaypoint(Parameter *unit, const AsciiString &waypointName);	// 0x003C9A24
-  void doNamedAttackArea(Parameter *unit, const AsciiString &areaName);	// 0x003C8351
-  void doNamedAttackAreaForSeconds(Parameter *unit, const AsciiString &areaName, Int seconds);	// 0x003C83AD
-  void doNamedAttackTeam(Parameter *unit, const AsciiString &teamName);	// 0x003C841F
-  void doNamedEnterNamed(Parameter *unit, const AsciiString &transportName);	// 0x003C8669
-  void doUnitGuardForFramecount(Parameter *unit, Int framecount, Bool seconds);	// 0x003C9298
-  void doUnitIdleForFramecount(Parameter *unit, Int framecount, Bool seconds);	// 0x003C9311
-  void doNamedSetRepulsor(Parameter *unit, Bool repulsor);	// 0x003BEEAE
-  void doNamedFollowWaypoints(Parameter *unit, const AsciiString &pathLabel);	// 0x003C86FA
-  void doUnitGuardPosition(Parameter *unit, const AsciiString &waypointName);	// 0x003C8964
+  void doNamedExitAll(Parameter *unit);
+  void doNamedGuard(Parameter *unit);
+  void doNamedFaceNamed(Parameter *unit, const AsciiString &targetName);
+  void doNamedFaceWaypoint(Parameter *unit, const AsciiString &waypointName);
+  void doNamedAttackArea(Parameter *unit, const AsciiString &areaName);
+  void doNamedAttackAreaForSeconds(Parameter *unit, const AsciiString &areaName, Int seconds);
+  void doNamedAttackTeam(Parameter *unit, const AsciiString &teamName);
+  void doNamedEnterNamed(Parameter *unit, const AsciiString &transportName);
+  void doUnitGuardForFramecount(Parameter *unit, Int framecount, Bool seconds);
+  void doUnitIdleForFramecount(Parameter *unit, Int framecount, Bool seconds);
+  void doNamedSetRepulsor(Parameter *unit, Bool repulsor);
+  void doNamedFollowWaypoints(Parameter *unit, const AsciiString &pathLabel);
+  void doUnitGuardPosition(Parameter *unit, const AsciiString &waypointName);
 public:
   void doModCameraLookToward(const AsciiString *waypointName);	// 0x003C4D5C (CAMERA_MOD_LOOK_TOWARD)
-  void doPlayerDisableFactories(const AsciiString &playerName, const AsciiString &objectList);	// 0x003BB35B (Player::setObjectsEnabled(list, false) on every player of the mask)
-  void doPlayerEnableFactories(const AsciiString &playerName, const AsciiString &objectList);	// 0x003BB41A
+  void doPlayerDisableFactories(const AsciiString &playerName, const AsciiString &objectList);	// (Player::setObjectsEnabled(list, false) on every player of the mask)
+  void doPlayerEnableFactories(const AsciiString &playerName, const AsciiString &objectList);
   void doTeamGrantUpgrade(const AsciiString &teamName, const AsciiString &upgradeName);	// 0x003C2121 (role name; executeAction case 403 passes the team and upgrade strings; Team::rva0039DB31 applies the upgrade to the members; map placeholder Rva003C2121Grant)
 protected:
-  void doTeamEnableStealth(const AsciiString &teamName, Bool enable);	// 0x003C058A (script status bit 8 on every member, set to !enable)
+  void doTeamEnableStealth(const AsciiString &teamName, Bool enable);	// (script status bit 8 on every member, set to !enable)
   void doTeamSetScriptStatus20(const AsciiString &teamName, Bool value);	// 0x003C05DE (map placeholder rva003C05DE; script status bit 0x20 on every member; role name)
-  void doNamedEnableStealth(Parameter *unit, Bool enable);	// 0x003BBD39 (script status bit 8, set to !enable)
+  void doNamedEnableStealth(Parameter *unit, Bool enable);	// (script status bit 8, set to !enable)
   void doNamedSetScriptStatus20(Parameter *unit, Bool value);	// 0x003BBD61 (map placeholder rva003BBD61; script status bit 0x20; role name)
 public:
   void doNamedAddExperience(Parameter *unit, Int amount);	// 0x003BC903 (role name; ExperienceTracker::rva0039B315 grants the experience; map placeholder Rva003BC903Do)
@@ -263,34 +263,34 @@ public:
   void doNamedFireSpecialPower2DAtNamed(Parameter *unit, Parameter *target);	// 0x003BCCC6
   void doNamedSetExperienceTrackerValue(Parameter *unit, Int value);	// 0x003BC96F
   void doPlayerAddSkillPoints(const AsciiString &player, Int value);	// 0x003BC7EF
-  void doWaterChangeHeight(Parameter *waterName, Real height);	// 0x003BC306
-  void doWaterChangeHeightOverTime(Parameter *waterName, Real newHeight, Real time, Real damage);	// 0x003BC33D
+  void doWaterChangeHeight(Parameter *waterName, Real height);
+  void doWaterChangeHeightOverTime(Parameter *waterName, Real newHeight, Real time, Real damage);
 public:
   void doRevealMapAtWaypoint(const AsciiString &waypointName, Real radius, const AsciiString &playerName, const AsciiString &revealName);	// 0x003BC9E0
   void doRevealMapAtWaypointPermanent(const AsciiString &waypointName, const AsciiString &playerName, const AsciiString &revealName);	// 0x003BCA12
   void doCameraShakeAtWaypoint(const AsciiString &waypointName, Real power, Real duration, Real radius);	// 0x003BCAF6
-  void bfmeGoFGE(void *unit, void *status, Bool set);	// 0x003C38CA
+  void bfmeGoFGE(void *unit, void *status, Bool set);
 public:
-  void doNamedStopSpecialPowerCountdown(Parameter *unit, const AsciiString &specialPower, void *stop);	// 0x003C3E75
-  void doNamedFireSpecialPowerAtWaypoint(Parameter *unit, const AsciiString &specialPower, void *waypoint);	// 0x003C4003
-  void doNamedFireSpecialPowerAtNamed(Parameter *unit, const AsciiString &specialPower, const AsciiString &target);	// 0x003C4245
+  void doNamedStopSpecialPowerCountdown(Parameter *unit, const AsciiString &specialPower, void *stop);
+  void doNamedFireSpecialPowerAtWaypoint(Parameter *unit, const AsciiString &specialPower, void *waypoint);
+  void doNamedFireSpecialPowerAtNamed(Parameter *unit, const AsciiString &specialPower, const AsciiString &target);
 protected:
-  void doPlayerSetSpecialPowerCountdown(const AsciiString &player, const AsciiString &specialPower, Int seconds);	// 0x003C3F26
+  void doPlayerSetSpecialPowerCountdown(const AsciiString &player, const AsciiString &specialPower, Int seconds);
 public:
-  void doFireSpecialPowerAtWaypoint(const AsciiString &player, const AsciiString &specialPower, const AsciiString &waypoint);	// 0x003C41BA
+  void doFireSpecialPowerAtWaypoint(const AsciiString &player, const AsciiString &specialPower, const AsciiString &waypoint);
 public:
-  Bool FireSpecialPowerAtPosition(const AsciiString &player, const SpecialPowerTemplate *power, const Coord3D *position);	// 0x003C069B
+  Bool FireSpecialPowerAtPosition(const AsciiString &player, const SpecialPowerTemplate *power, const Coord3D *position);
 public:
   void doRotateCameraStopAtEnd(Real rotations, Real sec, Real easeIn, Real easeOut);	// 0x003BAF95
   void doRotateCameraTowardObject(Parameter *unit, Real sec, Real holdSec, Real easeIn, Real easeOut, Real extra);	// 0x003BAFE8
   void doRotateCameraTowardWaypoint(const AsciiString &waypointName, Real sec, Real easeIn, Real easeOut, Bool reverseRotation);	// 0x003BB05F
 public:
-  void doSetWarehouseValue(const AsciiString &warehouseName, Int cashValue);	// 0x003C0E87
+  void doSetWarehouseValue(const AsciiString &warehouseName, Int cashValue);
 protected:
-  void doSetCaveIndex(const AsciiString &caveName, Int caveIndex);	// 0x003C0E32
+  void doSetCaveIndex(const AsciiString &caveName, Int caveIndex);
 protected:
-  void doNamedSetTeam(Parameter *unit, const AsciiString &teamName);	// 0x003BED01
-  void doNamedBuildStructureAtWaypoint(Parameter *unit, const AsciiString &structure, Real angle, const AsciiString &waypoint);	// 0x003BC123
+  void doNamedSetTeam(Parameter *unit, const AsciiString &teamName);
+  void doNamedBuildStructureAtWaypoint(Parameter *unit, const AsciiString &structure, Real angle, const AsciiString &waypoint);
 public:
   void doNamedCloseGate(Parameter *unit);	// 0x003BCD45
   void doNamedOpenGate(Parameter *unit);	// 0x003BCDD7
@@ -306,23 +306,23 @@ protected:
 public:
   void doAffectSkillPointsModifier(const AsciiString &playerName, Real newModifier);	// 0x003BCBC7
 public:
-  void doTeamDelete(const AsciiString &teamName, Int ignoreDead);	// 0x003BFAC3
+  void doTeamDelete(const AsciiString &teamName, Int ignoreDead);
   void doViewFilterFade(Bool enable, Int frames);	// 0x003BBE91
   void doCameraEnableSlaveMode(const AsciiString &thingTemplateName, const AsciiString &boneName);	// 0x003BCADA
   void doCameraDisableSlaveMode();	// 0x003BCAE8
 public:
-  void doCameraSetDefault(Real pitch, Real angle, Real maxHeight);	// 0x003BC22E
-  void doBlackWhiteMode(Bool startBWMode, Int frames);	// 0x003BBE44
+  void doCameraSetDefault(Real pitch, Real angle, Real maxHeight);
+  void doBlackWhiteMode(Bool startBWMode, Int frames);
 public:
-  void doZoomCamera(Real zoom, Real sec, Real easeIn, Real easeOut);	// 0x003BAB7A
+  void doZoomCamera(Real zoom, Real sec, Real easeIn, Real easeOut);
   void doModCameraMoveToSelection();	// 0x003BAE04 (Zero Hour's name: the camera's final move to the average position of the selected drawables)
   void doPitchCameraVariant(Real pitch, Real sec, Real easeIn, Real easeOut);	// 0x003BABCB (View slot 60; role name)
   void doCameraNudge(Parameter *unused);	// 0x003BACCA (two View::scrollBy calls with +-0.0001; role name)
   void doSetupCamera(const AsciiString &waypointName, Real zoom, Real pitch, const AsciiString &lookAtWaypointName);	// 0x003BAD15 (Zero Hour's name)
   void doCameraMotionBlurJump(const AsciiString &waypointName, Bool saturate);	// 0x003BB7FE (Zero Hour's name)
   void doCameraMotionBlur(Bool zoomIn, Bool saturate);	// 0x003BB898 (Zero Hour's name)
-  void doSetBorderShroud(Bool setting);	// 0x003BBB51
-  void doLetterBoxMode(Bool immediate);	// 0x003BBE04
+  void doSetBorderShroud(Bool setting);
+  void doLetterBoxMode(Bool immediate);
   void doCameraSetOffset2D(Real x, Real y);	// 0x003BCC08 (View slot 111 with a Coord2D; role name)
   void doTacticalViewFlag1(Bool flag);	// 0x003BCFE7 (View slot 147 forwarder; role name)
   void doTacticalViewFlag2(Bool flag);	// 0x003BCFF5 (slot 148)
@@ -331,37 +331,37 @@ public:
   void doLivingWorldSetFlag();	// 0x003BCC94 (LivingWorld slot 10 with true; role name)
 public:
   void doResetCamera(const AsciiString &waypointName, Real sec, Real easeIn, Real easeOut);	// 0x003C4E28
-  void doPlayerRemoveOverrideRelationToTeam(const AsciiString& playerName, const AsciiString& otherTeam);	// 0x003C43A3
-  void doTeamRemoveOverrideRelationToPlayer(const AsciiString& teamName, const AsciiString& otherPlayer);	// 0x003C4449
+  void doPlayerRemoveOverrideRelationToTeam(const AsciiString& playerName, const AsciiString& otherTeam);
+  void doTeamRemoveOverrideRelationToPlayer(const AsciiString& teamName, const AsciiString& otherPlayer);
 protected:
-  void doNamedAttackFollowWaypoints(Parameter *unit, const AsciiString &pathLabel);	// 0x003C87F1
-  void doNamedFollowWaypointsExact(Parameter *unit, const AsciiString &pathLabel);	// 0x003C8773
-  void doTeamFollowWaypointsExact(const AsciiString& teamName, Int waypointPathLabel, Bool asTeam);	// 0x003BF5FE
+  void doNamedAttackFollowWaypoints(Parameter *unit, const AsciiString &pathLabel);
+  void doNamedFollowWaypointsExact(Parameter *unit, const AsciiString &pathLabel);
+  void doTeamFollowWaypointsExact(const AsciiString& teamName, Int waypointPathLabel, Bool asTeam);
 public:
-  void bfmeLinkObjectsA70(void *oldOwnerName, void *newOwnerName);	// 0x003BB667 (map ledger name; hands the first player's assets to the second)
+  void bfmeLinkObjectsA70(void *oldOwnerName, void *newOwnerName);	// (map ledger name; hands the first player's assets to the second)
 public:
-  void doDisableCountdownTimerDisplay();	// 0x003BC107
-  void doEnableCountdownTimerDisplay();	// 0x003BC115
+  void doDisableCountdownTimerDisplay();
+  void doEnableCountdownTimerDisplay();
 protected:
-  void doTeamAttackNamed(const AsciiString &teamName, const AsciiString &unitName);	// 0x003C3B7D
+  void doTeamAttackNamed(const AsciiString &teamName, const AsciiString &unitName);
 public:
   void doSetControlBarOverride(const AsciiString &buttonName, const AsciiString &objectType, Int slot);	// 0x003BCB7A
   void doTeamGuardSupplyCenter(const AsciiString *teamName, Int minSupplies);	// 0x003C1F6C
-  void doPlayerSetOverrideRelationToTeam(const AsciiString& playerName, const AsciiString& otherTeam, Object *relation);	// 0x003C4350 (the map's third parameter type; the value is a Relationship)
+  void doPlayerSetOverrideRelationToTeam(const AsciiString& playerName, const AsciiString& otherTeam, Object *relation);	// (the map's third parameter type; the value is a Relationship)
 public:
   void excludePlayerFromScoreScreen(const AsciiString &playerName);	// 0x003BB6C0
   void doObjectTypeListMaintenance(const AsciiString &objectList, const AsciiString &objectType, Bool addObject);	// 0x003BC9D5
 protected:
-  void doNamedFireWeaponFollowingWaypointPath(const AsciiString &unit, const AsciiString &waypointPath);	// 0x003C9206
+  void doNamedFireWeaponFollowingWaypointPath(const AsciiString &unit, const AsciiString &waypointPath);
 protected:
-  void doAffectObjectPanelFlagsTeam(const AsciiString& teamName, const AsciiString& flagName, Bool enable);	// 0x003C5C93
+  void doAffectObjectPanelFlagsTeam(const AsciiString& teamName, const AsciiString& flagName, Bool enable);
 protected:
-  void doTeamFaceNamed(const AsciiString &teamName, const AsciiString &faceUnitName);	// 0x003C9A80
-  void doTeamFaceWaypoint(const AsciiString &teamName, const AsciiString &faceWaypointName);	// 0x003C9B19
+  void doTeamFaceNamed(const AsciiString &teamName, const AsciiString &faceUnitName);
+  void doTeamFaceWaypoint(const AsciiString &teamName, const AsciiString &faceWaypointName);
 public:
   void doChooseVictimAlwaysUsesNormal(Bool enable);	// 0x003BCC6E
 protected:
-  void doPlayerForceEmotion(Parameter *playerParm, Int emotion, Real duration);	// 0x003C37C0
+  void doPlayerForceEmotion(Parameter *playerParm, Int emotion, Real duration);
 protected:
   void doUnitSetScriptCondition(const AsciiString &unit, Int kind, Bool set);	// 0x003C0D6A (role name; the map spells it rva003C0D6A)	// 0x003C0D6A
 protected:
@@ -371,23 +371,23 @@ public:
 public:
   void doPitchCameraDegrees(Real degrees, Real sec, Real easeIn, Real easeOut);	// 0x003BAC6D (role name; the map spells it rva003BAC6D: View slot 62 pitchCamera with the angle converted from degrees; the ledger name doPitchCamera belongs to 0x003BAC1C, which calls zoomCamera)	// 0x003BAC6D
 public:
-  void doPitchCamera(Real zoom, Real sec, Real easeIn, Real easeOut);	// 0x003BAC1C (ledger name; body is zoomCamera, slot 61)	// 0x003BAC1C
+  void doPitchCamera(Real zoom, Real sec, Real easeIn, Real easeOut);	// (ledger name; body is zoomCamera, slot 61)	// 0x003BAC1C
 protected:
   void doSetTeamReference(const AsciiString &reference, Parameter *teamParm, bool byName);	// 0x003C20CA (role name; the map spells it rva003C20CA: the team counterpart of doSetUnitReference, IAE)	// 0x003C20CA
 protected:
-  void doEnablePlanningMode(unsigned char enable);	// 0x003BD424	// 0x003BD424
-  void doFlashSpellStoreButton(Int seconds);	// 0x003BD42F	// 0x003BD42F
-  void doFlashObjectivesButton(Int seconds);	// 0x003BD444	// 0x003BD444
-  void doFlashPlanningModeButton(Int seconds);	// 0x003BD459	// 0x003BD459
-  void doHeroSelectButtonFlash(Int slot, Int seconds);	// 0x003BD270	// 0x003BD270
-  void doSelectBuilderButtonFlash(Int seconds);	// 0x003BD28D	// 0x003BD28D
+  void doEnablePlanningMode(unsigned char enable);	// // 0x003BD424
+  void doFlashSpellStoreButton(Int seconds);	// // 0x003BD42F
+  void doFlashObjectivesButton(Int seconds);	// // 0x003BD444
+  void doFlashPlanningModeButton(Int seconds);	// // 0x003BD459
+  void doHeroSelectButtonFlash(Int slot, Int seconds);	// // 0x003BD270
+  void doSelectBuilderButtonFlash(Int seconds);	// // 0x003BD28D
 public:
   void doEvaEnabledDisabled(unsigned char setEnabled);	// 0x003BCA5D (Zero Hour's name; the map spells it Rva003BCA5DSet)	// 0x003BCA5D
 public:
-  void doObjectRadarCreateEvent(Parameter *unitParm, void *eventType);	// 0x003BB79D
-  void doTeamRadarCreateEvent(const AsciiString *teamName, void *eventType);	// 0x003C00CE
+  void doObjectRadarCreateEvent(Parameter *unitParm, void *eventType);
+  void doTeamRadarCreateEvent(const AsciiString *teamName, void *eventType);
 public:
-  void doMilitaryCaption(Int briefing, Real duration);	// 0x003BBEF4
+  void doMilitaryCaption(Int briefing, Real duration);
 public:
   void doBuildUpgrade(const AsciiString &playerName, const AsciiString &upgradeName);	// 0x003BB163
 public:
@@ -396,25 +396,25 @@ public:
   void doRevealMapEntirePermanently(Bool reveal, const AsciiString &playerName);	// 0x003BB9C6
   void doPlayerRelatesPlayer(const AsciiString &sourcePlayerName, Int relationship, const AsciiString &targetPlayerName);	// 0x003BB713
 protected:
-  void doTeamGarrisonSpecificBuilding(const AsciiString &teamName, const AsciiString &buildingName, Bool instant);	// 0x003C65F7
+  void doTeamGarrisonSpecificBuilding(const AsciiString &teamName, const AsciiString &buildingName, Bool instant);
 protected:
-  void putUnitInContain(Object *unit, ContainModuleInterface *contain, Bool flag);	// 0x003C5334
+  void putUnitInContain(Object *unit, ContainModuleInterface *contain, Bool flag);
 public:
   void doMoveCameraTo(const AsciiString &waypointName, Real sec, Real cameraStutterSec, Real easeIn, Real easeOut);	// 0x003BAAE4
 public:
   void doTeamFlash(const AsciiString *teamName, Int timeInSeconds, RGBColor *color);	// 0x003BFF50
 protected:
-  void doUnitStartSequentialScript(Parameter *unitParameter, const AsciiString &scriptName, Int timesToLoop);	// 0x003C0A6B
+  void doUnitStartSequentialScript(Parameter *unitParameter, const AsciiString &scriptName, Int timesToLoop);
 protected:
-  void doTeamStartSequentialScript(const AsciiString &teamName, const AsciiString &scriptName, Int timesToLoop);	// 0x003C0B44
+  void doTeamStartSequentialScript(const AsciiString &teamName, const AsciiString &scriptName, Int timesToLoop);
 public:
   void doSetCounterToUnitsDestroyed(Parameter *playerParameter, Parameter *templateParameter, Parameter *counterParameter);	// 0x003C2E61
 protected:
-  void doPlaySoundEffect(const AsciiString &sound);	// 0x003BD5E0
-  void doSoundPlayFromNamed(const AsciiString &sound, const AsciiString &unitName);	// 0x003BD72F
-  void doSpeechPlay(const AsciiString &speechName, Bool allowOverlap);	// 0x003BD7E2
+  void doPlaySoundEffect(const AsciiString &sound);
+  void doSoundPlayFromNamed(const AsciiString &sound, const AsciiString &unitName);
+  void doSpeechPlay(const AsciiString &speechName, Bool allowOverlap);
 protected:
-  void doForceObjectSelection(const AsciiString& teamName, const AsciiString& objectType, Bool centerInView, const AsciiString& audioToPlay);	// 0x003C5AB8
+  void doForceObjectSelection(const AsciiString& teamName, const AsciiString& objectType, Bool centerInView, const AsciiString& audioToPlay);
 protected:
 public:
   void doSetCounterToUnitsDestroyedOfKind(Parameter *playerParameter, Parameter *kindOfParameter, Parameter *counterParameter);	// 0x003C2EC9
@@ -424,9 +424,9 @@ public:
   void doCameraFollowNamed(Parameter *unitParameter, Bool snapToUnit, Real play);	// 0x003BC1B2
   void doCameraTetherNamed(Parameter *unitParameter, Bool snapToUnit, Real play);	// 0x003BAA46
 protected:
-  void doPlaySoundEffectAtTeam(const AsciiString &sound, const AsciiString &teamName);	// 0x003BE8DC
+  void doPlaySoundEffectAtTeam(const AsciiString &sound, const AsciiString &teamName);
 protected:
-  void doPlaySoundEffectAt(const AsciiString &sound, const AsciiString &waypointName);	// 0x003BD679
+  void doPlaySoundEffectAt(const AsciiString &sound, const AsciiString &waypointName);
 public:
   void doSetReverbRoomType(const AsciiString &roomType);	// 0x003BB62C
 public:
@@ -438,7 +438,7 @@ public:
 public:
   void doTeamStop(const AsciiString &teamName, Bool shouldDisband);	// 0x003C08CC: TEAM_STOP / TEAM_STOP_AND_DISBAND (retail action templates 178 and 179; Zero Hour doTeamStop)
 protected:
-  void doMergeTeamIntoTeam(const AsciiString &teamSrcName, const AsciiString &teamDestName);	// 0x003C01E2
+  void doMergeTeamIntoTeam(const AsciiString &teamSrcName, const AsciiString &teamDestName);
 public:
   void doNamedUseCommandButtonOnNearestEnemyBuilding(Parameter *unitParameter, const AsciiString &commandButtonName);	// 0x003BDE5D: NAMED_USE_COMMANDBUTTON_ON_NEAREST_ENEMY_BUILDING (retail action template 427; no Zero Hour function, the named-unit twin of the TEAM_ ones)
 public:
@@ -447,11 +447,11 @@ public:
   void doNamedUseCommandButtonOnNearestEnemyBuildingClass(Parameter *unitParameter, const AsciiString &commandButtonName, Int kindOfBit);	// 0x003BDFA5: NAMED_USE_COMMANDBUTTON_ON_NEAREST_ENEMY_BUILDING_CLASS (retail action template 428; Zero Hour has the TEAM_ twin doTeamUseCommandButtonOnNearestBuildingClass)
 public:
 protected:
-  void doTeamCaptureNearestUnownedFactionUnit(const AsciiString &teamName);	// 0x003C1D70
+  void doTeamCaptureNearestUnownedFactionUnit(const AsciiString &teamName);
 protected:
-  void doMoveUnitTowardsNearest(const AsciiString &unitName, const AsciiString &objectType, AsciiString triggerName);	// 0x003C9404
+  void doMoveUnitTowardsNearest(const AsciiString &unitName, const AsciiString &objectType, AsciiString triggerName);
 protected:
-  void doMoveTeamTowardsNearest(const AsciiString &teamName, const AsciiString &objectType, AsciiString triggerName);	// 0x003C967C
+  void doMoveTeamTowardsNearest(const AsciiString &teamName, const AsciiString &objectType, AsciiString triggerName);
 public:
-  void doDestroyAllContained(Parameter *unitParameter, Int damageType);	// 0x003BC421
+  void doDestroyAllContained(Parameter *unitParameter, Int damageType);
 };

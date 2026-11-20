@@ -15,11 +15,11 @@
 class AIHarvestPrepareSiteState : public State
 {
 public:
-	AIHarvestPrepareSiteState(StateMachine *machine);	// 0x00544C03
-	virtual StateReturnType onEnter();					// 0x00544E3B
+	AIHarvestPrepareSiteState(StateMachine *machine);
+	virtual StateReturnType onEnter();
 	virtual void onExit(StateExitType status);			// 0x005450B5
-	virtual StateReturnType update();					// 0x00544FC6
-	virtual void xfer(Xfer *xfer);						// 0x00544AB3 (shared; the map spells it public, UAE)
+	virtual StateReturnType update();
+	virtual void xfer(Xfer *xfer);						// (shared; the map spells it public, UAE)
 
 protected:
 	virtual const char *GetSnapshotName() const;		// 0x00544C24
@@ -34,7 +34,7 @@ public:
 	AIHarvestWorkSiteState(StateMachine *machine);		// 0x00544C2A
 	virtual StateReturnType onEnter();					// 0x00544E76
 	virtual void onExit(StateExitType status);			// 0x005451F3
-	virtual StateReturnType update();					// 0x005450D3
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// 0x00544C4B

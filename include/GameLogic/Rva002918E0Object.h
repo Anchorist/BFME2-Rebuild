@@ -11,8 +11,8 @@
 class Rva002918E0Object
 {
 public:
-	void rva004B239A(UnsignedByte a, UnsignedByte b);	// 0x004B239A
-	void set(UnsignedByte value);						// 0x004B23B3
+	void rva004B239A(UnsignedByte a, UnsignedByte b);
+	void set(UnsignedByte value);
 };
 
 #endif

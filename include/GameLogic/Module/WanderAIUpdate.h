@@ -122,7 +122,7 @@ public:
 protected:
 	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);
-	virtual AIStateMachine *makeStateMachine();		// 0x004A93C9
+	virtual AIStateMachine *makeStateMachine();
 
 public:
 protected:

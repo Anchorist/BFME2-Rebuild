@@ -198,7 +198,7 @@ typedef UnsignedInt PlayerMaskType;
 class DamageInfoInput
 {
 public:
-	DamageInfoInput();							// 0x00263653: out of line, stores the table and the defaults named in the header comment
+	DamageInfoInput();							// out of line, stores the table and the defaults named in the header comment
 	virtual void xfer(Xfer *xfer);				// slot 0, 0x004D6FC4
 
 	ObjectID m_sourceID;						// 0x04

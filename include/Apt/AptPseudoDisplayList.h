@@ -63,9 +63,9 @@ public:
     // 0x006F6AC0 (map name rva006F6AC0 on a placeholder class): the node at a depth and the node before the place it
     // would go; either out parameter may come back null.
     void FindInst(int nDepth, AptPseudoCIH_t **ppPrev, AptPseudoCIH_t **ppItem);
-    // 0x006F8380: inserts a node, first removing any node already at its depth.
+    // Inserts a node, first removing any node already at its depth.
     void Insert(AptPseudoCIH_t *pItem);
-    // 0x006F6B80: links pItem after pPrev (the old name for it is Insert(prev, item)).
+    // Links pItem after pPrev (the old name for it is Insert(prev, item)).
     void Insert(AptPseudoCIH_t *pPrev, AptPseudoCIH_t *pItem);
     // 0x006F7C70 (the map names it Rva006F7C70Free: a stdcall free function over a placeholder item type, but retail calls it with
     // this in ecx and the node on the stack): unlinks a node and frees it.
@@ -78,9 +78,9 @@ public:
     // 0x006E2A00 (the map files it as rva006E2A00 on Rva006E2A00; the old name for it is Destroy): the destructor's body plus the pool free of the 8-byte list
     // when bit 0 of the flag is set (AptCIH::jumpToFrame 0x006E2C10 destroys its temporary list with Destroy(1)); returns this.
     AptPseudoDisplayList *Destroy(int flags);
-    // 0x006F83F0: removes pOld when given, then links pItem after pPrev (the map name is kept).
+    // Removes pOld when given, then links pItem after pPrev (the map name is kept).
     void rva006F83F0(AptPseudoCIH_t *pItem, AptPseudoCIH_t *pPrev, AptPseudoCIH_t *pOld);
-    // 0x006F8430: removes the node at a depth (the map name is kept).
+    // Removes the node at a depth (the map name is kept).
     void rva006F8430(int nDepth);
 
     AptPseudoCIH_t *pHead; // 0x00: the sentinel node the list hangs from (the constructor 0x006E00E0 allocates it with four zero arguments)

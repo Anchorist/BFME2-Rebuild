@@ -48,13 +48,13 @@ public:
 		ST_MAX
 	};
 
-	W3DShaderManager(void);								// 0x00075480
-	static void shutdown(void);							// 0x0007684A
-	static int getShaderPasses(ShaderTypes shader);		// 0x00075649
+	W3DShaderManager(void);
+	static void shutdown(void);
+	static int getShaderPasses(ShaderTypes shader);
 	static void resetShader(ShaderTypes shader);		// 0x00075695
-	static void startRenderToTexture(void);				// 0x00075BD8
-	static IDirect3DTexture8 *endRenderToTexture(void);	// 0x00075D52
-	static IDirect3DTexture8 *getRenderTexture(void);	// 0x00075E36
+	static void startRenderToTexture(void);
+	static IDirect3DTexture8 *endRenderToTexture(void);
+	static IDirect3DTexture8 *getRenderTexture(void);
 	static bool isRenderingToTexture(void) { return m_renderingToTexture; }		// out-of-line copy 0x000A60EA
 	static bool canRenderToTexture(void) { return m_oldRenderSurface && m_newRenderSurface; }	// out-of-line copy 0x000F630C
 

@@ -3,6 +3,7 @@
 #define DEFINE_COMMAND_OPTION_NAMES
 #define DEFINE_GUI_COMMMAND_NAMES
 #include "Common/INI.h"
+#include "Common/INIException.h"
 #include "Common/NameKeyGenerator.h"
 #include "GameClient/InGameUI.h"
 #include "debug/Debug.h"
@@ -39,6 +40,21 @@ void rva0035AED4(INI *ini, void *instance, void *store, const void *userData)
 }
 
 // FUNCTION: BFME2 0x0035AF62 size=110 name=?parseCommand@CommandButton@@SAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+void CommandButton::parseCommand(INI *ini, void *instance, void *store, const void *userData)
+{
+	const char *token = ini->getNextToken();
+
+	for (Int i = 0; TheGuiCommandNames[i]; i++)
+	{
+		if (_strcmpi(TheGuiCommandNames[i], token) == 0)
+		{
+			*(Int *)store = i;
+			return;
+		}
+	}
+
+	throw INIException(3, "Command '%s' not found", token);
+}
 
 // FUNCTION: BFME2 0x0035AFD0 size=20 name=?rva0035AFD0@Rva0035AFD0@@QAEHXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 

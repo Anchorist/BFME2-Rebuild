@@ -55,13 +55,13 @@ typedef char SpawnBehavior_base_size[(sizeof(UpdateModule) == 0x20) ? 1 : -1];
 class SpawnBehavior : public UpdateModule, public SpawnBehaviorInterface, public DieModuleInterface, public DamageModuleInterface, public SpawnSlaveWalkInterface, public UpgradeMux
 {
 public:
-	SpawnBehavior(Thing *thing, const ModuleData *moduleData);	// 0x0045F581
+	SpawnBehavior(Thing *thing, const ModuleData *moduleData);
 
 	// BehaviorModuleInterface slot 42 returns the slave-walk interface at +0x2C.
 	virtual SpawnSlaveWalkInterface *slot42() { return this; }
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	const char *name() const; // 0x0045F6CD
+	const char *name() const;
 	virtual ~SpawnBehavior();
 
 	// BehaviorModuleInterface (+0x0C) getters: retail 0x00C425F0 slots 4, 7, 10 and 30 return the interface subobjects (shared one-line stubs)
@@ -72,40 +72,40 @@ public:
 
 	// SpawnBehaviorInterface (+0x20)
 	virtual Bool maySpawnSelfTaskAI(Real maxSelfTaskersRatio);									// 0x0045F2F8
-	virtual void onSpawnDeath(ObjectID deadSlave, DamageInfo *damageInfo);			// 0x0045FCFB
-	virtual Object *getClosestSlave(const Coord3D *position);							// 0x0045F87C
-	virtual void orderSlavesToAttackTarget(Object *target, Int maxShotsToFire, CommandSourceType cmdSource);	// 0x0046070E
-	virtual void orderSlavesToAttackPosition(const Coord3D *position, Int maxShotsToFire, CommandSourceType cmdSource);	// 0x00460757
-	virtual CanAttackResult getCanAnySlavesAttackSpecificTarget(AbleToAttackType attackType, const Object *target, CommandSourceType cmdSource);	// 0x0045F8E0
-	virtual CanAttackResult getCanAnySlavesUseWeaponAgainstTarget(AbleToAttackType attackType, const Object *victim, const Coord3D *pos, CommandSourceType cmdSource);	// 0x0045F93D
-	virtual Bool canAnySlavesAttack();													// 0x0045F99E
-	virtual void orderSlavesToGoIdle(CommandSourceType cmdSource);						// 0x004607A0
-	virtual void onDelete();												// 0x0045F75D (public: UAE)
+	virtual void onSpawnDeath(ObjectID deadSlave, DamageInfo *damageInfo);
+	virtual Object *getClosestSlave(const Coord3D *position);
+	virtual void orderSlavesToAttackTarget(Object *target, Int maxShotsToFire, CommandSourceType cmdSource);
+	virtual void orderSlavesToAttackPosition(const Coord3D *position, Int maxShotsToFire, CommandSourceType cmdSource);
+	virtual CanAttackResult getCanAnySlavesAttackSpecificTarget(AbleToAttackType attackType, const Object *target, CommandSourceType cmdSource);
+	virtual CanAttackResult getCanAnySlavesUseWeaponAgainstTarget(AbleToAttackType attackType, const Object *victim, const Coord3D *pos, CommandSourceType cmdSource);
+	virtual Bool canAnySlavesAttack();
+	virtual void orderSlavesToGoIdle(CommandSourceType cmdSource);
+	virtual void onDelete();												// (public: UAE)
 	virtual void disable();																// 0x0045F37D
-	virtual void rva0045FD9F();															// 0x0045FD9F
+	virtual void rva0045FD9F();
 	virtual Bool rva00498802();														// 0x00498802 (shared byte getter)
-	virtual void rva004601CC();															// 0x004601CC
+	virtual void rva004601CC();
 
 	// DieModuleInterface (+0x24), DamageModuleInterface (+0x28), the slave walk (+0x2C)
-	virtual void onDie(const DamageInfo *damageInfo);									// 0x0045F7B5
-	virtual void onDamage(DamageInfo *damageInfo);										// 0x0045FDF3
+	virtual void onDie(const DamageInfo *damageInfo);
+	virtual void onDamage(DamageInfo *damageInfo);
 	virtual void onHealing(DamageInfo *damageInfo);										// 0x0047A69C (shared `ret 4`)
-	virtual void onBodyDamageStateChange(const DamageInfo *damageInfo, BodyDamageType oldState, BodyDamageType newState);	// 0x004604D5
-	virtual Int rva0045FE4A(Int (*callback)(Object *, void *), void *userData);		// 0x0045FE4A
+	virtual void onBodyDamageStateChange(const DamageInfo *damageInfo, BodyDamageType oldState, BodyDamageType newState);
+	virtual Int rva0045FE4A(Int (*callback)(Object *, void *), void *userData);
 
 	// UpdateModule
-	virtual UpdateSleepTime update();													// 0x004602F4
+	virtual UpdateSleepTime update();
 
-	Bool shouldTryToSpawn();															// 0x0045F3F8
-	Bool reclaimOrphanSpawn();															// 0x0045F9D8
-	void computeAggregateStates();														// 0x0045FE9A
-	Object *rva0045F4D7();																// 0x0045F4D7 (public, placeholder name)
-	void rva00460175(Int arg);															// 0x00460175 (public, placeholder name)
+	Bool shouldTryToSpawn();
+	Bool reclaimOrphanSpawn();
+	void computeAggregateStates();
+	Object *rva0045F4D7();																// (public, placeholder name)
+	void rva00460175(Int arg);															// (public, placeholder name)
 
 protected:
-	virtual void xfer(Xfer *xfer);														// 0x00460586
-	virtual void loadPostProcess();														// 0x0045F382
-	virtual void getUpgradeActivationMasks(UpgradeMaskType &activation, UpgradeMaskType &conflicting) const;	// 0x0045F45F
+	virtual void xfer(Xfer *xfer);
+	virtual void loadPostProcess();
+	virtual void getUpgradeActivationMasks(UpgradeMaskType &activation, UpgradeMaskType &conflicting) const;
 	virtual void performUpgradeFX();													// 0x0045F46A
 	// UpgradeMux slot 8 (0x004B471F) calls slot 9 with false to clear the executed flag.
 	virtual void upgradeRemovalImplementation() { setUpgradeExecuted(false); }
@@ -113,7 +113,7 @@ protected:
 	virtual Bool requiresAllActivationUpgrades() const;								// 0x0045F479
 	virtual Bool requiresAllConflictingUpgrades() const;								// 0x0045F483
 	virtual void processUpgradeRemoval() { ((const SpawnBehaviorModuleData *)getModuleData())->m_upgradeMuxData.muxDataProcessUpgradeRemoval(getObject()); }	// slot 15: retail 0x0045F46A, ICF-folded with performUpgradeFX (both call the mux data's `ret 4` 0x0047A69C)
-	Bool createSpawn();																// 0x0045FA57 (AAE: private in retail)
+	Bool createSpawn();																// (AAE: private in retail)
 
 private:
 public:

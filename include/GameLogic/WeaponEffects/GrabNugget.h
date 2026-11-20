@@ -25,7 +25,7 @@ public:
 	virtual void doEffectPosition(const ProjectileNuggetFireInfo *info, const Coord3D *pos);	// 6, 0x0050B238
 	virtual Bool slot07() const;	// 7, 0x0047A699
 
-	// 0x0050A7E5: the INI parse callback the parser calls with (ini, nugget, NULL, NULL); it
+	// The INI parse callback the parser calls with (ini, nugget, NULL, NULL); it
 	// reads the base table and this class's table together.
 	static void parseFromINI(INI *ini, void *instance, void *store, const void *userData);
 

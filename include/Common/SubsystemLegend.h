@@ -27,13 +27,13 @@ class SubsystemLegend : public SubsystemInterface
 {
 public:
 	SubsystemLegend();								// 0x0022E0E5
-	virtual ~SubsystemLegend();						// 0x001B4D16
+	virtual ~SubsystemLegend();
 	virtual void init();								// 0x001B4CD0 calls the entry-list clear.
 	virtual void reset() {}							// Slot 9: bare ret.
 	virtual void update() {}							// Slot 10: bare ret.
 
 	IniLoadFileList *rva001B49C4(AsciiString name);		// Lookup by subsystem name.
-	void parseLoadSubsystem(INI *ini);					// 0x001B4D7F
+	void parseLoadSubsystem(INI *ini);
 
 private:
 	_STL::list<IniLoadFileList> m_entries;				// +0x0C, traversed by 0x001B49C4.

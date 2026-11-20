@@ -24,11 +24,11 @@ public:
 	}
 	virtual void Render_Delayed_Procedural_Material_Passes(void) {}			// 6: folded empty body
 
-	void Add_Visible_Skin(MeshClass *mesh);						// 0x00143CB0
+	void Add_Visible_Skin(MeshClass *mesh);
 
 private:
-	void Reset(void);								// 0x001444B0
-	void clearVisibleSkinList(void);						// 0x00143C60
+	void Reset(void);
+	void clearVisibleSkinList(void);
 
 	unsigned int VisibleVertexCount;		// +0xE8
 	int Field_EC;					// +0xEC cleared with the list; role not seen yet

@@ -19,9 +19,9 @@ class ModuleData;
 class TooltipUpgradeModuleData : public UpgradeModuleData
 {
 public:
-	TooltipUpgradeModuleData();										// 0x0025588E
-	static void buildFieldParse(MultiIniFieldParse &parse);			// 0x004B7A2E
-	static ModuleData *friend_newModuleData(INI *ini);				// 0x002558E9
+	TooltipUpgradeModuleData();
+	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	AsciiString m_displayName;										// +0x118 DisplayName
 	AsciiString m_description;										// +0x11C Description

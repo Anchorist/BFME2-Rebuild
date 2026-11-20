@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "Common/OptionPreferences.h"
 #include "GameClient/AptOptions.h"
+#include "GameClient/GadgetSlider.h"
 #include "GameClient/Shell.h"
 #include "Apt/BfmeAptWindowManager.h"
 #include "GameClient/GadgetComboBox.h"
@@ -26,6 +27,13 @@ extern int g_Va00A04908;
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K
 // FUNCTION: BFME2 0x00518246 size=21 name=?GadgetSliderGetPosition@@YAHPAVGameWindow@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
+int GadgetSliderGetPosition(GameWindow *slider)
+{
+	SliderData *data = (SliderData *)slider->winGetUserData();
+	if (data)
+		return data->m_position;
+	return -1;
+}
 // FUNCTION: BFME2 0x0051825B size=7 name=?get@Rva0051825BDwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x00518262 size=21 name=?Rva00518262Enable@@YAXXZ evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x00518277 size=52 name=?AdvancedOptionNum@AptOptions@@QAEXHPAD_N@Z evidence=N:ledger tier=B hypothesis:K

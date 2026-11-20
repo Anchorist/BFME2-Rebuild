@@ -1,6 +1,5 @@
 // UpdateModule.h: SAGE base of update modules. SIZE 0x20.
-// Target facts (old repo Code/GameEngine/Include/GameLogic/Module/UpdateModule.h,
-// re-read from the image): an UpdateModule has THREE vtable subobjects. The
+// Target facts (re-read from the image): an UpdateModule has THREE vtable subobjects. The
 // ctor ??0UpdateModule (0x00253390) is, in this order,
 //   call ??0BehaviorModule            ; leaves 0x00BEEA7C at +0, 0x00BEE9C0 at +0x0C
 //   mov  [esi+0x10], 0x00BE2B78       ; UpdateModuleInterface's own 3-purecall table

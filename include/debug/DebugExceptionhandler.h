@@ -14,12 +14,12 @@ class DebugExceptionhandler
 {
 public:
 	// The exception name; `explanation` receives the long text (it must hold 512 bytes).
-	static const char *GetExceptionType(struct _EXCEPTION_POINTERS *exptr, char *explanation);	// 0x0003C7A0
-	static long __stdcall ExceptionFilter(struct _EXCEPTION_POINTERS *exptr);			// 0x0003DCD0
+	static const char *GetExceptionType(struct _EXCEPTION_POINTERS *exptr, char *explanation);
+	static long __stdcall ExceptionFilter(struct _EXCEPTION_POINTERS *exptr);
 
 private:
-	static void LogFPURegisters(Debug &dbg, struct _EXCEPTION_POINTERS *exptr);			// 0x0003CD30
-	static void LogRegisters(Debug &dbg, struct _EXCEPTION_POINTERS *exptr);			// 0x0003DA20
+	static void LogFPURegisters(Debug &dbg, struct _EXCEPTION_POINTERS *exptr);
+	static void LogRegisters(Debug &dbg, struct _EXCEPTION_POINTERS *exptr);
 };
 
 #endif

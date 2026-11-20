@@ -30,11 +30,11 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x00403CA8)
 
-	Bool rva00403382(Int attrKind, Real *value, Int flag);				// 0x00403382 (Object::rva0028C149 forwards to it)
-	Bool rva00403448(Int a, Real *value, Int b, Int c);				// 0x00403448 (Object::rva0028C15E forwards to it)
-	Bool addModifierToPool(const AsciiString &name, Int strength);		// 0x00403E72 (Object::addAttributeModifierToPool 0x0028EA91)
-	void rva00403744(const AsciiString &name);						// 0x00403744 (map placeholder; Object::removeAttributeModifierFromPool 0x0028EB42 calls it)
-	void rva00403415(Int *flags, Int frame);							// 0x00403415 (map ?rva00403415@AttributeModifierPoolUpdate@@QAEXPAHH@Z; SpecialPowerModule::ApplyPowerToObject 0x00493EA7 passes the anti-category mask and the frame)
+	Bool rva00403382(Int attrKind, Real *value, Int flag);				// (Object::rva0028C149 forwards to it)
+	Bool rva00403448(Int a, Real *value, Int b, Int c);				// (Object::rva0028C15E forwards to it)
+	Bool addModifierToPool(const AsciiString &name, Int strength);		// (Object::addAttributeModifierToPool 0x0028EA91)
+	void rva00403744(const AsciiString &name);						// (map placeholder; Object::removeAttributeModifierFromPool 0x0028EB42 calls it)
+	void rva00403415(Int *flags, Int frame);							// (map ?rva00403415@AttributeModifierPoolUpdate@@QAEXPAHH@Z; SpecialPowerModule::ApplyPowerToObject 0x00493EA7 passes the anti-category mask and the frame)
 
 protected:
 	virtual const char *GetSnapshotName() const;

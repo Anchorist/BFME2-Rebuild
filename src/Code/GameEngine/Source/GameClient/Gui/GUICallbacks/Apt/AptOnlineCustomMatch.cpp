@@ -42,6 +42,10 @@ extern int GameSpyColor[29];
 // FUNCTION: BFME2 0x0059EBFE size=82 name=?rva0059EBFE@AptOnlineCustomMatch@@UAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-neighbour-class+pointers-mixed
 // FUNCTION: BFME2 0x0059EC50 size=21 name=?rva0059EC50@AptOnlineCustomMatch@@UAE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-neighbour-class+pointers-mixed
 // FUNCTION: BFME2 0x0059EC65 size=13 name=?PlayGame@AptOnlineCustomMatch@@QAEXPBD@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers+class
+void AptOnlineCustomMatch::PlayGame(const char *)
+{
+	m_state = 7;
+}
 // FUNCTION: BFME2 0x0059EC72 size=59 name=?rva0059EC72@AptOnlineCustomMatch@@QAEXH@Z evidence=?:placeholder tier=A
 void AptOnlineCustomMatch::rva0059EC72(int)
 {

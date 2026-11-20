@@ -29,7 +29,7 @@ public:
 	CreateCrateDieModuleData();
 	virtual ~CreateCrateDieModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
-	static ModuleData *friend_newModuleData(INI *ini);	// 0x0025739D
+	static ModuleData *friend_newModuleData(INI *ini);
 	static void parseCrateData(INI *ini, void *instance, void *store, const void *userData);
 
 	std::list<AsciiString> m_crateNameList;                // +0x38 CrateNameList

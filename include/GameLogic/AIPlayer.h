@@ -63,7 +63,7 @@ class AIPlayer : public Snapshot
 {
 	friend class Player;
 public:
-	AIPlayer(Player *p);							// 0x004F04FC
+	AIPlayer(Player *p);
 	virtual ~AIPlayer();							// slot 0, 0x004F07E6 (deleting 0x004F111C)
 
 	virtual void computeSuperweaponTarget(const SpecialPowerTemplate *power, Coord3D *pos, Int playerNdx, Real weaponRadius);	// slot 4, 0x004F1D38
@@ -81,14 +81,14 @@ public:
 
 	Bool getBaseCenter(Coord3D *pos) const { *pos = m_baseCenter; return m_baseCenterSet; }
 
-	void buildUpgrade(const AsciiString &upgrade);	// 0x004F2C14
-	void aiPreTeamDestroy(const Team *team);		// 0x004F0819
+	void buildUpgrade(const AsciiString &upgrade);
+	void aiPreTeamDestroy(const Team *team);
 	GameDifficulty getAIDifficulty() const;		// out of line: Player::getPlayerDifficulty 0x002A9BF2 calls the shared 4-byte getter 0x005C4ACD (reads +0x2C)
-	Bool isSupplySourceAttacked();					// 0x004F1138 (Player 0x002A9CB8 forwards to it)
+	Bool isSupplySourceAttacked();					// (Player 0x002A9CB8 forwards to it)
 	Bool isSupplySourceSafe(Int minSupplies);		// 0x004F2BEE
-	Bool isLocationSafe(const Coord3D *pos, const ThingTemplate *thing);	// 0x004F08A8
-	void guardSupplyCenter(Team *team, Int minSupplies);	// 0x004F2ABC
-	static void getPlayerStructureBounds(Region2D *bounds, Int playerNdx);	// 0x004F1B8C
+	Bool isLocationSafe(const Coord3D *pos, const ThingTemplate *thing);
+	void guardSupplyCenter(Team *team, Int minSupplies);
+	static void getPlayerStructureBounds(Region2D *bounds, Int playerNdx);
 
 	// Zero Hour's MAKE_DLINK_HEAD(TeamInQueue, TeamBuildQueue) and (TeamInQueue, TeamReadyQueue).
 	// BFME 2 keeps these out of line (rows 0x004F03DF..0x004F04C0; the ready-queue pair at
@@ -101,17 +101,17 @@ public:
 	{
 		return DLINK_ITERATOR<TeamInQueue>(m_dlinkhead_TeamReadyQueue.m_head, &TeamInQueue::dlink_next_TeamReadyQueue);
 	}
-	Bool isInList_TeamBuildQueue(TeamInQueue *o) const;		// 0x004F03DF
-	Bool isInList_TeamReadyQueue(TeamInQueue *o) const;		// 0x004EF373
-	void prependTo_TeamBuildQueue(TeamInQueue *o);			// 0x004F03EF
-	void prependTo_TeamReadyQueue(TeamInQueue *o);			// 0x004EF383
-	void removeFrom_TeamBuildQueue(TeamInQueue *o);			// 0x004F040F
-	void removeFrom_TeamReadyQueue(TeamInQueue *o);			// 0x004F0479
-	void removeAll_TeamBuildQueue(void (*p)(TeamInQueue *o));	// 0x004F042F
-	void removeAll_TeamReadyQueue(void (*p)(TeamInQueue *o));	// 0x004F0499
-	void reverse_TeamBuildQueue();							// 0x004F0456
-	void flip();											// 0x004F04C0
-	void clearTeamsInQueue();								// 0x004F05D6
+	Bool isInList_TeamBuildQueue(TeamInQueue *o) const;
+	Bool isInList_TeamReadyQueue(TeamInQueue *o) const;
+	void prependTo_TeamBuildQueue(TeamInQueue *o);
+	void prependTo_TeamReadyQueue(TeamInQueue *o);
+	void removeFrom_TeamBuildQueue(TeamInQueue *o);
+	void removeFrom_TeamReadyQueue(TeamInQueue *o);
+	void removeAll_TeamBuildQueue(void (*p)(TeamInQueue *o));
+	void removeAll_TeamReadyQueue(void (*p)(TeamInQueue *o));
+	void reverse_TeamBuildQueue();
+	void flip();
+	void clearTeamsInQueue();
 
 protected:
 	virtual void loadPostProcess() {}				// slot 1, the shared empty body 0x000B3FD0
@@ -130,17 +130,17 @@ protected:
 	virtual Bool isAGoodIdeaToBuildTeam(TeamPrototype *proto);	// slot 25, 0x004F1566
 	virtual void processTeamBuilding();				// slot 26, 0x004EF4A1
 
-	static Int getPlayerSuperweaponValue(Coord3D *center, Int playerNdx, Real radius);	// 0x004F1256
-	Object *findFactory(const ThingTemplate *thing, Bool busyOK, Int *buildIndex);	// 0x004F09CF
-	Bool isPossibleToBuildTeam(TeamPrototype *proto, Bool requireIdleFactory, Bool &needMoney);	// 0x004F0B42
-	Bool rva004F13D8(TeamPrototype *proto);			// 0x004F13D8, BFME 2's (the map's placeholder; isAGoodIdeaToBuildTeam accepts the team when it is true)
-	Bool dozerInQueue();							// 0x004F19D3
-	void checkForSupplyCenter(BuildListInfo *info, Object *bldg);	// 0x004F29E9
-	void computeCenterAndRadiusOfBase(Coord3D *center, Real *radius);	// 0x004F1801
-	void queueSupplyTruck();						// 0x004F37B0
-	void queueUnits();								// 0x004F46A9
-	void updateBridgeRepair();						// 0x004F418A
-	Object *findSupplyCenter(Int minSupplies);		// 0x004F21D5
+	static Int getPlayerSuperweaponValue(Coord3D *center, Int playerNdx, Real radius);
+	Object *findFactory(const ThingTemplate *thing, Bool busyOK, Int *buildIndex);
+	Bool isPossibleToBuildTeam(TeamPrototype *proto, Bool requireIdleFactory, Bool &needMoney);
+	Bool rva004F13D8(TeamPrototype *proto);			// BFME 2's (the map's placeholder; isAGoodIdeaToBuildTeam accepts the team when it is true)
+	Bool dozerInQueue();
+	void checkForSupplyCenter(BuildListInfo *info, Object *bldg);
+	void computeCenterAndRadiusOfBase(Coord3D *center, Real *radius);
+	void queueSupplyTruck();
+	void queueUnits();
+	void updateBridgeRepair();
+	Object *findSupplyCenter(Int minSupplies);
 
 	struct DLINKHEAD_TeamBuildQueue
 	{

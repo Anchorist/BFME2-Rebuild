@@ -28,20 +28,20 @@ class DX8MeshRendererClass
 {
 public:
 	DX8MeshRendererClass(void);							// 0x00145AA0
-	~DX8MeshRendererClass(void);							// 0x00147F60
+	~DX8MeshRendererClass(void);
 
-	void Init(void);								// 0x00144530
-	void Shutdown(void);								// 0x00148010
-	void Flush(void);								// 0x00148030
-	void Clear_Pending_Delete_Lists(void);						// 0x00144580
-	void Log_Statistics_String(bool only_visible);					// 0x00145F20
-	static void Request_Log_Statistics(void);					// 0x00143D00
-	void Register_Mesh_Type(MeshModelClass *mmc);					// 0x00145C30
-	void Unregister_Mesh_Type(MeshModelClass *mmc);					// 0x001445E0
+	void Init(void);
+	void Shutdown(void);
+	void Flush(void);
+	void Clear_Pending_Delete_Lists(void);
+	void Log_Statistics_String(bool only_visible);
+	static void Request_Log_Statistics(void);
+	void Register_Mesh_Type(MeshModelClass *mmc);
+	void Unregister_Mesh_Type(MeshModelClass *mmc);
 	void Set_Camera(CameraClass *cam) { Camera = cam; }
 	CameraClass *Peek_Camera(void) { return Camera; }
 	void Enable_Lighting(bool enable) { EnableLighting = enable; }
-	void Invalidate(bool shutdown = false);						// 0x00145FA0
+	void Invalidate(bool shutdown = false);
 
 protected:
 	// The categories and containers queue themselves on the delete lists when their last member goes.

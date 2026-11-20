@@ -12,10 +12,10 @@ class AsciiString;
 class AptGuiFX
 {
 public:
-	static void OnInitialized(const char *);							// 0x003808E8: marks the effects initialised
-	static void MoveToolTip(float x, float y);							// 0x003807F3
-	static void ShowToolTip(void *, AsciiString *, int, int, int);		// 0x003808F0
-	static void Init();													// 0x00380B0C
+	static void OnInitialized(const char *);							// Marks the effects initialised
+	static void MoveToolTip(float x, float y);
+	static void ShowToolTip(void *, AsciiString *, int, int, int);
+	static void Init();
 };
 
 #endif

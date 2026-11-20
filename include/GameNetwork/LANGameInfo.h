@@ -24,14 +24,14 @@ public:
 	virtual LANGameSlot *slot5() { return this; }
 	// The destructor is implicit and virtual (retail's 0x00447B0E releases m_serial, runs ~LANPlayer 0x00447ACA on m_user and ~GameSlot 0x002294FD
 	// without storing a vtable, which is how MSVC 7.1 compiles an implicit destructor); slot 0 is its deleting copy 0x0044818B.
-	Bool isLocalPlayer() const;								// 0x0044770F
+	Bool isLocalPlayer() const;
 	Bool isPlayer(UnicodeString userName) const;				// 0x004481A7 (the map holds it as isPlayer on a placeholder class: GameSlot::isPlayer(UnicodeString) with the compare's operands swapped)
 	LANPlayer *getUser();									// 0x004479B1 (Zero Hour's LANGameSlot::getUser: fills m_user from the slot and returns it for a human slot; the map holds it as rva004479B1 on GameSlot)
 	LANGameSlot &operator=(const LANGameSlot &that);		// 0x00447B58 (the map holds it as rva00447B58 on a placeholder class)
 	void setSerial(AsciiString serial);						// 0x00581740 (the map holds it as setSerial on the placeholder class Rva00581777AsciiField)
 	AsciiString getSerial() const;							// 0x00581777
-	void setLogin(AsciiString login);						// 0x0024955E (translates the name into m_user's login)
-	void setHost(AsciiString host);							// 0x00249595 (translates the name into m_user's host)
+	void setLogin(AsciiString login);						// (translates the name into m_user's login)
+	void setHost(AsciiString host);							// (translates the name into m_user's host)
 	void setUserLogin(UnicodeString login);					// 0x00447A5C (assigns m_user's login; the map holds it as rva00447A5C)
 	void setUserHost(UnicodeString host);					// 0x00447A93 (assigns m_user's host; the map holds it as rva00447A93)
 
@@ -45,10 +45,13 @@ typedef char LANGameSlotSize[(sizeof(LANGameSlot) == 0x1D0) ? 1 : -1];
 class LANGameInfo : public GameInfo
 {
 public:
-	LANGameInfo();											// 0x004481D4
+	LANGameInfo();
 	virtual LANGameInfo *slot4() { return this; }
 	virtual Int slot7() const { return 3; }
 	const LANGameSlot *getLANSlot(Int slotNum) const;
+	Bool amIHost() const;									// 0x004477C7
+	Int getSlotNum(UnicodeString userName);					// 0x004483BC
+	void setSlot(Int slotNum, LANGameSlot slotInfo);		// 0x00448352
 	void setSlotLastHeard(Int slotNum, UnsignedInt time);	// 0x00248D35 (stamps a slot's last-heard time; the map has no better name)
 	virtual const char *GetSnapshotName() const;			// slot 2, 0x00448276 (the class name; the map holds it as name@Rva00448276Named)
 	virtual const Image *rva00401015(Int kind);			// slot 6, 0x00447BE0 (the lobby status image of a column: the lock for a game in progress, the base class's otherwise)
@@ -64,7 +67,7 @@ public:
 	void setLastHeard(UnsignedInt lastHeard) { m_lastHeard = lastHeard; }
 	const BfmeNetAddress *getHostAddress() const { return &m_LANSlot[0].m_address; }	// +0x114
 	const BfmeNetAddress *getAddress(Int slot) const { return &m_LANSlot[slot].m_address; }
-	void setName(UnicodeString name);						// 0x00449A81 (stores the game name at +4)
+	void setName(UnicodeString name);						// (stores the game name at +4)
 
 	LANGameSlot m_LANSlot[8];								// +0x0DC
 	LANGameInfo *m_next;									// +0xF5C (RemoveGame 0x00449913 walks it)

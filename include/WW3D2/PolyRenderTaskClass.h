@@ -17,7 +17,7 @@ class PolyRenderTaskClass
 {
 public:
 	PolyRenderTaskClass(DX8PolygonRendererClass *renderer, MeshClass *mesh);	// 0x00143890
-	~PolyRenderTaskClass(void);							// 0x001438B0
+	~PolyRenderTaskClass(void);
 
 	DX8PolygonRendererClass *Peek_Polygon_Renderer(void) { return Renderer; }
 	MeshClass *Peek_Mesh(void) { return Mesh; }

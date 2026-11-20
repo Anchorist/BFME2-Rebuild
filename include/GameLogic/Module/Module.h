@@ -7,7 +7,7 @@
 //   0x10 UpdateModuleInterface   (UpdateModule, sizeof 0x20)
 // so a class with all three bases has its vptrs at 0x00/0x0C/0x10 and its own
 // fields at 0x14+. ??0UpdateModule (0x00253390) stores exactly those three.
-// Target facts (old repo Code/GameEngine/Include/Common/Module.h): no Module
+// Target facts: no Module
 // vftable survives; ObjectModule's 0x00C07E1C has 10 slots, DrawableModule's
 // 11, so Module has 9: Snapshot's 0-3, 4 getModuleNameKey (pure; compared by
 // Object::findModule 0x0028B6D6, which is `mov eax,[ecx]; call [eax+0x10]`),
@@ -49,12 +49,12 @@ public:
 	virtual void onDelete() {}												// slot 8
 
 	// Zero Hour Module.h: the INI tag's name key. Object::rva0028F2C4 0x0028F2C4 compares
-	// [[module+4]+4] (m_moduleData->m_moduleTagNameKey) against its argument (f04 decl block 22:20).
+	// [[module+4]+4] (m_moduleData->m_moduleTagNameKey) against its argument.
 	NameKeyType getModuleTagNameKey() const { return getModuleData()->getModuleTagNameKey(); }
 
 protected:
 	// Snapshot slot 1: Zero Hour's empty out-of-line Module::loadPostProcess. Retail's ObjectModule
-	// table 0x00807E1C holds the shared empty `ret` 0x000B3FD0 there, not __purecall (m08 P13 aliases
+	// table 0x00807E1C holds the shared empty `ret` 0x000B3FD0 there, not __purecall (the map aliases
 	// ?loadPostProcess@Module@@MAEXXZ onto 0x000B3FD0). Defined with ObjectModule's constructor.
 	virtual void loadPostProcess();
 	// Snapshot slot 3: Zero Hour's Module::xfer is the version stamp alone; ObjectModule's and DrawableModule's

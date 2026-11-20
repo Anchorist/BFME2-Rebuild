@@ -23,37 +23,37 @@ class RegistryClass
 {
 public:
 	RegistryClass(const char *sub_key, bool create = true);			// 0x0060F190
-	~RegistryClass();							// 0x0060F210
+	~RegistryClass();
 
 	bool Is_Valid() { return IsValid; }
 
-	int Get_Int(const char *name, int def_value = 0);			// 0x0060F230
-	void Set_Int(const char *name, int value);				// 0x0060F390
-	bool Get_Bool(const char *name, bool def_value = false);		// 0x0060F280
-	void Set_Bool(const char *name, bool value);				// 0x0060F2F0
-	float Get_Float(const char *name, float def_value = 0);			// 0x0060F330
+	int Get_Int(const char *name, int def_value = 0);
+	void Set_Int(const char *name, int value);
+	bool Get_Bool(const char *name, bool def_value = false);
+	void Set_Bool(const char *name, bool value);
+	float Get_Float(const char *name, float def_value = 0);
 	void Set_Float(const char *name, float value);
-	int Get_Bin_Size(const char *name);					// 0x0060F3C0
-	void Get_Bin(const char *name, void *buffer, int buffer_size);		// 0x0060F3F0
-	void Set_Bin(const char *name, const void *buffer, int buffer_size);	// 0x0060F420
+	int Get_Bin_Size(const char *name);
+	void Get_Bin(const char *name, void *buffer, int buffer_size);
+	void Set_Bin(const char *name, const void *buffer, int buffer_size);
 	char *Get_String(const char *name, char *value, int value_size, const char *default_string = 0);	// 0x0060F450
 	void Get_String(const char *name, StringClass &string, const char *default_string = 0);		// 0x0060FC80
 	void Get_String(const unsigned short *name, WideStringClass &string, const unsigned short *default_string = 0);	// 0x0060FD00
 	void Set_String(const char *name, const char *value);			// 0x0060F4C0
 	void Set_String(const unsigned short *name, const unsigned short *value);	// 0x0060F520
-	void Delete_Value(const char *name);					// 0x0060F500
+	void Delete_Value(const char *name);
 	void Get_Value_List(DynamicVectorClass<StringClass> &list);		// 0x00610110
-	void Deleta_All_Values();						// 0x00610300
+	void Deleta_All_Values();
 
-	static bool Exists(const char *sub_key);				// 0x0060F150
-	static void Save_Registry(const char *filename, char *path);		// 0x0060F920
-	static void Delete_Registry_Tree(char *path);				// 0x0060FA30
-	static void Load_Registry(const char *filename, char *old_path, char *new_path);	// 0x0060FDC0
+	static bool Exists(const char *sub_key);
+	static void Save_Registry(const char *filename, char *path);
+	static void Delete_Registry_Tree(char *path);
+	static void Load_Registry(const char *filename, char *old_path, char *new_path);
 
 private:
-	static void Save_Registry_Values(void *key, char *path, INIClass *ini);	// 0x0060F560
-	static void Save_Registry_Tree(char *path, INIClass *ini);		// 0x0060F750
-	static void Delete_Registry_Values(void *key);				// 0x0060F9B0
+	static void Save_Registry_Values(void *key, char *path, INIClass *ini);
+	static void Save_Registry_Tree(char *path, INIClass *ini);
+	static void Delete_Registry_Values(void *key);
 
 	int Key;				// +0x00
 	bool IsValid;				// +0x04

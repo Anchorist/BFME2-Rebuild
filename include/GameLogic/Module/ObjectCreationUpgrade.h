@@ -36,16 +36,16 @@ public:
 	ObjectCreationUpgrade(Thing *thing, const ModuleData *moduleData);		// 0x004B40A6
 	virtual NameKeyType getModuleNameKey() const;							// 0x004B3FF5
 protected:
-	virtual UpdateSleepTime update();										// 0x004B42DB; update interface slot 0 at +0x18 (protected: the map spells ?update@ObjectCreationUpgrade@@MAE?AW4UpdateSleepTime@@XZ)
+	virtual UpdateSleepTime update();										// Update interface slot 0 at +0x18 (protected: the map spells ?update@ObjectCreationUpgrade@@MAE?AW4UpdateSleepTime@@XZ)
 public:
 	virtual UpdateModuleInterface *getUpdate() { return this; }				// 0x004B3FBA: retail's own copy adjusts from the +0x14 interface back to the object and forward to +0x18
 	virtual UpgradeModuleInterface *getUpgrade() { return this; }			// 0x004B3FC7: the UpgradeMux at +0
 
 protected:
-	virtual ~ObjectCreationUpgrade();										// 0x004B3F90
-	virtual void loadPostProcess();											// 0x004B3FCB
+	virtual ~ObjectCreationUpgrade();
+	virtual void loadPostProcess();
 	virtual const char *GetSnapshotName() const;							// 0x004B3FB4
-	virtual void xfer(Xfer *xfer);											// 0x004B421D
+	virtual void xfer(Xfer *xfer);
 
 	// UpgradeMux (table 0x00C57660 at +0x0)
 	virtual Bool wouldUpgrade(const BitFlags<128> &keyMask) const;			// slot 2, 0x004B4130
@@ -59,7 +59,7 @@ protected:
 	virtual void processUpgradeRemoval() { ((const ObjectCreationUpgradeModuleData *)getModuleData())->m_upgradeMuxData.muxDataProcessUpgradeRemoval(getObject()); }	// slot 15: retail 0x004B4075, ICF-folded with performUpgradeFX (both call the mux data's `ret 4` 0x0047A69C)
 
 public:
-	// 0x004B463C: slot 8's body (the map spells it a non-virtual member of this class, `this` is the UpgradeMux at +0): clears the
+	// Slot 8's body (the map spells it a non-virtual member of this class, `this` is the UpgradeMux at +0): clears the
 	// pending creation, and when the data says DestroyWhenSold kills the object the SlaveWatcherBehavior module watches, then
 	// plays the data's death animation as a special model condition on it.
 	void rva004B463C();

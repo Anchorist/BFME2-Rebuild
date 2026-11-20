@@ -26,7 +26,7 @@ class TunnelContainModuleData : public HordeGarrisonContainModuleData
 public:
 	TunnelContainModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
-	static ModuleData *friend_newModuleData(INI *ini);	// 0x00257A0A
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_timeForFullHeal;                                // +0xD4 TimeForFullHeal; duration
 };

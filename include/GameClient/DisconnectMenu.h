@@ -15,9 +15,9 @@
 class DisconnectMenu : public _bfme_AptGameWindow
 {
 public:
-	void updateVotes(Int slot, Int votes);					// 0x0051318E
-	void rva00512EDD(Int position, UnicodeString name);	// 0x00512EDD (shows a disconnected player at a screen position; the map holds it as AptDisconnectScreen::rva00512EDD)
-	void rva00513497(Int slot, UnicodeString name);			// 0x00513497 (sets a player's name on the screen; the map has no better name)
+	void updateVotes(Int slot, Int votes);
+	void rva00512EDD(Int position, UnicodeString name);	// (shows a disconnected player at a screen position; the map holds it as AptDisconnectScreen::rva00512EDD)
+	void rva00513497(Int slot, UnicodeString name);			// (sets a player's name on the screen; the map has no better name)
 	void showChat(UnicodeString text);						// 0x00513138
 
 	GameWindow *m_chatBox;									// +0x27C ("ChatBox")

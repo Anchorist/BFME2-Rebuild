@@ -455,7 +455,7 @@ void AptDisplayList::rva006F76B0()
 
 // FUNCTION: BFME2 0x006F7720 size=643 name=?rva006F7720Sub@AptAnimationPoolData@@QAEXPAXH@Z evidence=?:placeholder tier=A
 extern unsigned int g_bfmeExtra1282Flags; // VA 0x00E17718: bit 2 selects the clip-stack visitor 0x006F73A0 over 0x006F7330
-void *rva006F73A0(void *context, void *item, int mode); // 0x006F73A0
+void *rva006F73A0(void *context, void *item, int mode);
 typedef void (__cdecl *AptDisplayVisitor)(AptRenderingContext *context, AptCIH *item, int mode);
 void AptDisplayList::rva006F7720Sub(AptRenderingContext *context, int flag)
 {

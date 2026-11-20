@@ -32,7 +32,7 @@ public:
 	void clear() { for (int i = 0; i < FIELD_COUNT; ++i) m_field[i] = 1.0f; }
 	Real getField(Field f) const { return m_field[f]; }
 	void setField(Field f, Real v) { m_field[f] = v; }
-	void appendBonuses(WeaponBonus &bonus) const;					// 0x002C96F7
+	void appendBonuses(WeaponBonus &bonus) const;
 
 private:
 	Real m_field[FIELD_COUNT];	// 0x00

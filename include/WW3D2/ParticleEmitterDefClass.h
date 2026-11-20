@@ -39,7 +39,7 @@ class ParticleEmitterDefClass
 public:
 	ParticleEmitterDefClass();											// 0x001B1350
 	ParticleEmitterDefClass(const ParticleEmitterDefClass &src);		// 0x001B1FD0
-	virtual ~ParticleEmitterDefClass();									// 0x001B1770
+	virtual ~ParticleEmitterDefClass();
 	const ParticleEmitterDefClass &operator=(const ParticleEmitterDefClass &src);	// 0x001B17F0
 
 	virtual bool Load_W3D(ChunkLoadClass &chunk_load);					// slot 1: 0x001AF910

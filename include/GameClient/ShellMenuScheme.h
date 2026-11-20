@@ -48,10 +48,10 @@ class ShellMenuScheme
 {
 public:
 	ShellMenuScheme();										// 0x0020066C
-	~ShellMenuScheme();										// 0x002006B0
+	~ShellMenuScheme();
 
-	void draw();											// 0x00200506
-	void addImage(ShellMenuSchemeImage *schemeImage);		// 0x002007BE
+	void draw();
+	void addImage(ShellMenuSchemeImage *schemeImage);
 	void addLine(ShellMenuSchemeLine *schemeLine);
 
 	AsciiString m_name;										// +0x00
@@ -70,12 +70,12 @@ public:
 
 	void init();
 	void update();											// folded empty body 0x000B3FD0
-	void setShellMenuScheme(AsciiString name);				// 0x002005DE
+	void setShellMenuScheme(AsciiString name);
 	void draw();
 	const FieldParse *getFieldParse() const { return m_shellMenuSchemeFieldParseTable; }
 	static const FieldParse m_shellMenuSchemeFieldParseTable[];	// 0x00BE29EC
-	static void parseImagePart(INI *ini, void *instance, void *store, const void *userData);	// 0x00200842
-	ShellMenuScheme *newShellMenuScheme(AsciiString name);	// 0x002008C8
+	static void parseImagePart(INI *ini, void *instance, void *store, const void *userData);
+	ShellMenuScheme *newShellMenuScheme(AsciiString name);
 
 private:
 	typedef _STL::list<ShellMenuScheme *> ShellMenuSchemeList;

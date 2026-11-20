@@ -103,9 +103,61 @@ void GameWindow::playComboBoxClickSound()
 	}
 }
 
-Int getListboxEntryBasedOnCoord(GameWindow *listbox, Int x, Int y, Int &row, Int &column);
+static Int getListboxEntryBasedOnCoord(GameWindow *listbox, Int x, Int y, Int &row, Int &column);
 
 // FUNCTION: BFME2 0x00323E95 size=218 name=?getListboxEntryBasedOnCoord@@YAHPAVGameWindow@@HHAAH1@Z evidence=N:ledger tier=B hypothesis:K
+static Int getListboxEntryBasedOnCoord(GameWindow *listbox, Int x, Int y, Int &row, Int &column)
+{
+	Int winx, winy, i;
+	Int pos;
+	WinInstanceData *instData = listbox->winGetInstanceData();
+	GadgetListBoxData *list = (GadgetListBoxData *)listbox->winGetUserData();
+
+	listbox->winGetScreenPosition(&winx, &winy);
+
+	// Adjust for the title if present.
+	if (instData->getTextLength())
+		winy += TheWindowManager->winFontHeight(instData->getFont()) + 1;
+
+	pos = -2;
+
+	for (i = 0; ; i++)
+	{
+		if (i > 0)
+			if (list->m_entries[i - 1].m_top > (list->m_clientHeight + list->m_scrollTop))
+			{
+				pos = -1;
+				break;
+			}
+
+		if (i == list->m_numEntries)
+		{
+			pos = -1;
+			break;
+		}
+
+		if (list->m_entries[i].m_top > (y - winy + list->m_scrollTop))
+			break;
+	}
+
+	column = -1;
+	if (pos == -2)
+	{
+		pos = i;
+		Int total = 0;
+		for (i = 0; i < list->m_numColumns; i++)
+		{
+			total += list->m_columnWidths[i];
+			if (x - winx < total)
+			{
+				column = i;
+				break;
+			}
+		}
+	}
+	row = pos;
+	return pos;
+}
 
 // FUNCTION: BFME2 0x00323F6F size=9 name=?GadgetListBoxGetEntryBasedOnXY@@YAHPAVGameWindow@@HHAAH1@Z evidence=N:ledger tier=B hypothesis:K
 
@@ -269,7 +321,7 @@ void GadgetListBoxSetFont(GameWindow *g, GameFont *font)
 int GadgetListBoxGetListLength(GameWindow *window)
 {
 	GadgetListBoxData *data = (GadgetListBoxData *)window->winGetUserData();
-	if (data->m_hasLength)
+	if (data->m_multiSelect)
 		return data->m_listLength;
 	return 1;
 }
@@ -633,7 +685,7 @@ void computeTotalHeight(GameWindow *window)
 void GadgetListBoxAddMultiSelect(GameWindow *listbox)
 {
 	GadgetListBoxData *listboxData = (GadgetListBoxData *)listbox->winGetUserData();
-	if (listboxData == 0 || listboxData->m_hasLength)
+	if (listboxData == 0 || listboxData->m_multiSelect)
 		return;
 	listboxData->m_selections = new Int[listboxData->m_listLength];
 	if (listboxData->m_selections == 0)
@@ -642,7 +694,7 @@ void GadgetListBoxAddMultiSelect(GameWindow *listbox)
 		return;
 	}
 	memset(listboxData->m_selections, -1, listboxData->m_listLength * sizeof(Int));
-	listboxData->m_hasLength = true;
+	listboxData->m_multiSelect = true;
 	listbox->winSetInputFunc(GadgetListBoxMultiInput);
 }
 
@@ -774,14 +826,14 @@ void GadgetListBoxRemoveMultiSelect(GameWindow *listbox)
 {
 	GadgetListBoxData *listData = (GadgetListBoxData *)listbox->winGetUserData();
 
-	if (listData->m_hasLength)
+	if (listData->m_multiSelect)
 	{
 		if (listData->m_selections)
 		{
 			delete[] listData->m_selections;
 			listData->m_selections = 0;
 		}
-		listData->m_hasLength = false;
+		listData->m_multiSelect = false;
 		listbox->winSetInputFunc(GadgetListBoxInput);
 	}
 }
@@ -811,7 +863,7 @@ void GadgetListBoxSetListLength(GameWindow *listbox, Int newLength)
 	{
 		if (listboxData->m_scrollTop > newLength)
 			listboxData->m_scrollTop = newLength;
-		if (listboxData->m_selectPos > newLength || listboxData->m_hasLength)
+		if (listboxData->m_selectPos > newLength || listboxData->m_multiSelect)
 			listboxData->m_selectPos = -1;
 		if (listboxData->m_insertPos > newLength)
 			listboxData->m_insertPos = newLength;
@@ -854,7 +906,7 @@ void GadgetListBoxSetListLength(GameWindow *listbox, Int newLength)
 	if (listboxData->m_entries == 0)
 		return;
 
-	if (listboxData->m_hasLength)
+	if (listboxData->m_multiSelect)
 	{
 		GadgetListBoxRemoveMultiSelect(listbox);
 		GadgetListBoxAddMultiSelect(listbox);

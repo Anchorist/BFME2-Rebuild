@@ -15,7 +15,7 @@ class ProfileFastCS
 	volatile unsigned int m_Flag;
 	static void *testEvent;						// 0x00A0C774
 
-	void ThreadSafeSetFlag();					// 0x006C5EF0
+	void ThreadSafeSetFlag();
 	void ThreadSafeClearFlag()
 	{
 		m_Flag = 0;

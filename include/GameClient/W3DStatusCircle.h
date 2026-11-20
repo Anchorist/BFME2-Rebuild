@@ -21,7 +21,7 @@ class VertexMaterialClass;
 class W3DStatusCircle : public RenderObjClass
 {
 public:
-	W3DStatusCircle(void);																	// 0x0008E54F
+	W3DStatusCircle(void);
 	virtual ~W3DStatusCircle(void);															// slot 1
 	virtual RenderObjClass *Clone(void) const;												// slot 2
 	virtual int Class_ID(void) const;														// slot 3
@@ -29,7 +29,7 @@ public:
 	virtual void Get_Obj_Space_Bounding_Sphere(SphereClass &sphere) const;					// slot 67: 0x0008E5B0
 	virtual void Get_Obj_Space_Bounding_Box(AABoxClass &aabox) const;						// slot 68: 0x0008E5F4
 
-	static void setColor(int r, int g, int b) { m_needUpdate = true; m_diffuse = (b) + (g << 8) + (r << 16); }	// 0x0004C41F
+	static void setColor(int r, int g, int b) { m_needUpdate = true; m_diffuse = (b) + (g << 8) + (r << 16); }
 
 protected:
 	int m_numTriangles;			// +0xC4 dimensions of list

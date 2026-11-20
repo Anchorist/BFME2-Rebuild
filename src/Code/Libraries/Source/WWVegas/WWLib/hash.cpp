@@ -3,17 +3,17 @@
 #include "WWLib/HashTableClass.h"
 #include "WWLib/HashableClass.h"
 #include "WWLib/crc.h"
-// Tier A; object=O00613B90 evidence=W flags=align=A
-// Extent is a hypothesis; only Object VERIFIED establishes recovery.
-// Edges: left=unknown-rows right=unknown-rows
-// WWLib's chained hash table. Buckets are keyed by the case-insensitive string
-// CRC masked to the table size, and the table array is released with scalar
-// operator delete (0x0002FD60) after scalar operator new (0x0002FDA0).
+
+
+
+// WWLib's chained hash table groups keys by their case-insensitive string CRC.
+// Each bucket holds the head of its collision chain.
+// Reference object O00613B90.
 // FUNCTION: BFME2 0x00613B90 size=11 name=??1HashTableClass@@QAE@XZ evidence=N:ledger
 
 HashTableClass::~HashTableClass(void)
 {
-	::operator delete(HashTable);
+	delete[] HashTable;
 }
 
 // FUNCTION: BFME2 0x00613BA0 size=34 name=?Reset@HashTableClass@@QAEXXZ evidence=N:ledger
@@ -50,7 +50,7 @@ void HashTableIteratorClass::Advance_Next(void)
 HashTableClass::HashTableClass(int size)
 {
 	HashTableSize = size;
-	HashTable = (HashableClass **)::operator new(HashTableSize * sizeof(HashableClass *));
+	HashTable = new HashableClass *[HashTableSize];
 	Reset();
 }
 

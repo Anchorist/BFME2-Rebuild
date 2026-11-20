@@ -14,15 +14,15 @@
 class TintDrawableFXNugget : public FXNugget
 {
 public:
-	TintDrawableFXNugget();										// 0x001E0986
+	TintDrawableFXNugget();
 
 	virtual void doFXPos(const Coord3D *primary, const Matrix3D *primaryMtx, Real primarySpeed,
 		const Coord3D *secondary) const {}								// 1, empty (fold 0x001F01E8)
 	virtual void doFXObj(const Object *primary, const Object *secondary) const;	// 2, 0x001E09D8
 	virtual void GetAssetList(AssetList &assets, Int context) const {}		// 3, empty (fold 0x0050B238)
 
-	static void buildFieldParse(MultiIniFieldParse &p);					// 0x001DFCD3
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001E1798
+	static void buildFieldParse(MultiIniFieldParse &p);
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	RGBColor m_color;								// 0x148 Color (Rva001DFC2AParse)
 	UnsignedInt m_preColorTime;						// 0x154 PreColorTime (parseUnsignedInt)

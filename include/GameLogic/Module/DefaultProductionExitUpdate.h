@@ -28,16 +28,16 @@ class DefaultProductionExitUpdate : public UpdateModule, public ExitInterface	//
 {
 public:
 	virtual ExitInterface *getUpdateExitInterface() { return this; }
-	DefaultProductionExitUpdate(Thing *thing, const ModuleData *moduleData);	// 0x00487FC7
+	DefaultProductionExitUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual ~DefaultProductionExitUpdate();
 	virtual NameKeyType getModuleNameKey() const;						// 0x00487F82
 	virtual const char *GetSnapshotName() const;						// 0x00487F5A
 	virtual UpdateSleepTime update() { return UPDATE_SLEEP_FOREVER; }
 
 	// ExitInterface
-	virtual void exitObjectViaDoor(Object *newObj, ExitDoorType exitDoor);	// 0x00488099
-	virtual void setRallyPoint(const Coord3D *pos);						// 0x00487F60
-	virtual const Coord3D *getRallyPoint() const;						// 0x00487F75
+	virtual void exitObjectViaDoor(Object *newObj, ExitDoorType exitDoor);
+	virtual void setRallyPoint(const Coord3D *pos);
+	virtual const Coord3D *getRallyPoint() const;
 	// Primary-table slot 13 (table 0x0084B2AC has 14 slots): 0x004A6642, shared with the other production exits; the
 	// ledger's name, one Coord3D argument (not ExitInterface's two-argument getExitPosition).
 	virtual Bool getExitPosition(Coord3D &exitPosition) const;
@@ -49,7 +49,7 @@ public:
 	virtual Bool getNaturalRallyPoint(Coord3D &rallyPoint, Bool offset) const;	// 9: folded with QueueProductionExitUpdate's 0x004A027A
 
 protected:
-	virtual void xfer(Xfer *xfer);										// 0x0048805B
+	virtual void xfer(Xfer *xfer);
 
 public:
 	Coord3D m_rallyPoint;												// +0x24

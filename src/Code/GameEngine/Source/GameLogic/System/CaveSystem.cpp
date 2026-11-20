@@ -1,5 +1,6 @@
 // cl: /O1 /EHs /EHc- /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_CRTIMP=
 // stlport46
+// Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 #include "GameLogic/CaveSystem.h"
 #include "Common/Xfer.h"
 #include "Common/XferException.h"
@@ -11,6 +12,32 @@ CaveSystem *TheCaveSystem = NULL;
 // Edges: left=unknown-rows right=unknown-rows
 // The cave subsystem: a vector of tunnel trackers at +0x10, one per cave.
 // FUNCTION: BFME2 0x0042755D size=89 name=?canSwitchIndexToIndex@CaveSystem@@QAE_NII@Z evidence=X:map request (link (from standalone link 0cf3e833)) tier=B hypothesis:mm1-held-object-same-path
+Bool CaveSystem::canSwitchIndexToIndex(UnsignedInt oldIndex, UnsignedInt newIndex)
+{
+	// A switch is only allowed while neither cave still holds passengers.
+	TunnelTracker *oldTracker = NULL;
+	if (m_tunnelTrackerVector.size() > oldIndex)
+		oldTracker = m_tunnelTrackerVector[oldIndex];
+	if (oldTracker)
+	{
+		UnsignedInt count = oldTracker->getContainCount(0);
+		if (count > 0)
+			return false;
+	}
+
+	TunnelTracker *newTracker = NULL;
+	if (m_tunnelTrackerVector.size() > newIndex)
+		newTracker = m_tunnelTrackerVector[newIndex];
+	if (newTracker)
+	{
+		UnsignedInt count = newTracker->getContainCount(0);
+		if (count > 0)
+			return false;
+	}
+
+	return true;
+}
+
 // FUNCTION: BFME2 0x004275B6 size=30 name=?getTunnelTrackerForCaveIndex@CaveSystem@@QAEPAVTunnelTracker@@I@Z evidence=N:ledger
 
 TunnelTracker *CaveSystem::getTunnelTrackerForCaveIndex(UnsignedInt index)

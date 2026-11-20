@@ -37,18 +37,18 @@ public:
 	AptScoreScreen(void *);							// 0x0051D1E6
 	virtual ~AptScoreScreen();						// 0x0051D4B2 (deleting destructor's body)
 
-	void OnInitialized(const char *);				// 0x0051BF75: takes the focus unless the screen is finished
-	void Continue(const char *);					// 0x0051BFB6: tells the living world and finishes the screen (step 3)
-	void Timeline(const char *);					// 0x0051BF9B
-	void RestartGame(const char *);					// 0x0051BFA9
-	void OnButtonRenameAccept(int);					// 0x0051C17E: stores the typed name in the renamed unit and its list row
-	void RenameCancel(const char *);				// 0x0051BFD2
-	void objectiveChecked(int index, char *result, bool skip);	// 0x0051BFF4: Apt query "objectiveChecked%d"
-	void InitGadgets(const char *name, void *argument, GameWindow *window);	// 0x0051C7CC
-	void heroVetUpgrade(int index, char *result, bool skip);	// 0x0051C992: Apt query "heroVetUpgrade%d"
-	void rva0051BF2D();								// 0x0051BF2D: finishes the screen once the +0x284 flag was already set
-	static bool OpenScreen(int mode, AptScoreObjectives *objectives);	// 0x0051E262
-	void CollectGameData();							// 0x0051DE3D
+	void OnInitialized(const char *);				// Takes the focus unless the screen is finished
+	void Continue(const char *);					// Tells the living world and finishes the screen (step 3)
+	void Timeline(const char *);
+	void RestartGame(const char *);
+	void OnButtonRenameAccept(int);					// Stores the typed name in the renamed unit and its list row
+	void RenameCancel(const char *);
+	void objectiveChecked(int index, char *result, bool skip);	// Apt query "objectiveChecked%d"
+	void InitGadgets(const char *name, void *argument, GameWindow *window);
+	void heroVetUpgrade(int index, char *result, bool skip);	// Apt query "heroVetUpgrade%d"
+	void rva0051BF2D();								// Finishes the screen once the +0x284 flag was already set
+	static bool OpenScreen(int mode, AptScoreObjectives *objectives);
+	void CollectGameData();
 
 	int m_step;										// +0x27C
 	int m_mode;										// +0x280

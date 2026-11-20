@@ -62,39 +62,39 @@ FirewallHelperClass *createFirewallHelper();				// 0x00595143 (Zero Hour's name:
 class FirewallHelperClass
 {
 public:
-	FirewallHelperClass();									// 0x00594CDD
+	FirewallHelperClass();
 	virtual ~FirewallHelperClass();							// slot 0, 0x00595D0B (deleting)
 
-	void *findSpareSocketByPort(UnsignedShort port);		// 0x00594D77 (returns the entry; the map types it void *)
-	Bool openSpareSocket(UnsignedShort port);				// 0x00595089
-	UnsignedShort getNextTemporarySourcePort(Int step);		// 0x0059539B
-	UnsignedShort getManglerResponse(UnsignedShort port, Int wait);	// 0x00594E07
-	Bool behaviorDetectionUpdate();							// 0x00595D2D
-	Bool detectionBeginUpdate();							// 0x00595452
-	Bool detectionTest1Update();							// 0x00595685
-	Bool detectionTest2Update();							// 0x0059573C
-	Bool detectionTest3Update();							// 0x005957D5
-	Bool detectionTest3WaitForResponsesUpdate();			// 0x005958AC
+	void *findSpareSocketByPort(UnsignedShort port);		// (returns the entry; the map types it void *)
+	Bool openSpareSocket(UnsignedShort port);
+	UnsignedShort getNextTemporarySourcePort(Int step);
+	UnsignedShort getManglerResponse(UnsignedShort port, Int wait);
+	Bool behaviorDetectionUpdate();
+	Bool detectionBeginUpdate();
+	Bool detectionTest1Update();
+	Bool detectionTest2Update();
+	Bool detectionTest3Update();
+	Bool detectionTest3WaitForResponsesUpdate();
 	Int getNATPortAllocationScheme(Int numPorts, UnsignedShort *originalPorts, UnsignedShort *mangledPorts, Int &relativeDelta, Bool &looksGood);	// 0x00594F19 (Zero Hour's name; the map holds it under the placeholder class Rva00594F19)
-	Bool detectionTest4Stage1Update();						// 0x00595A9F
-	Bool detectionTest4Stage2Update();						// 0x00595B97
-	static void getManglerName(Int manglerIndex, char *name);	// 0x005953F4
-	void flagNeedToRefresh(Bool refresh);							// 0x00595F80
+	Bool detectionTest4Stage1Update();
+	Bool detectionTest4Stage2Update();
+	static void getManglerName(Int manglerIndex, char *name);
+	void flagNeedToRefresh(Bool refresh);
 	Bool readFirewallBehavior();							// 0x00595D95 (Zero Hour's readFirewallBehavior with a result: a stored "needs refresh" flag resets the behavior; false restarts detection; the map holds it under the placeholder class Rva00595D95)
 	Int getBehaviorAndRestart();							// 0x00594EFC (clears the detection state and returns the behavior: the map holds it on a placeholder class)
 	UnsignedShort getSourcePortAllocationDelta() const;		// 0x00594F07 (the word at +0xC; Zero Hour's name)
 	void reset();											// 0x0059515C (the destructor's tail call; Zero Hour's name)
 	void closeAllSpareSockets();							// 0x0059510D
-	void rva00594EEF();										// 0x00594EEF (back to a simple firewall, detection restarts: the map has no better name)
-	UnsignedByte rva00594F0C();								// 0x00594F0C (detection finished; returns 1)
-	Bool rva00595213(UDP *udp, unsigned long mangler, UnsignedShort firstPort, UnsignedShort secondPort, Bool flag);	// 0x00595213 (sendToManglerFromPort over an open socket)
-	Bool rva005952C4(void *message, UnsignedShort length, UnsignedShort *result);	// 0x005952C4 (the receiver Transport::doRecv offers every datagram first; true means it was consumed; the map holds it on the placeholder class Rva00594DC0)
+	void rva00594EEF();										// (back to a simple firewall, detection restarts: the map has no better name)
+	UnsignedByte rva00594F0C();								// (detection finished; returns 1)
+	Bool rva00595213(UDP *udp, unsigned long mangler, UnsignedShort firstPort, UnsignedShort secondPort, Bool flag);	// (sendToManglerFromPort over an open socket)
+	Bool rva005952C4(void *message, UnsignedShort length, UnsignedShort *result);	// (the receiver Transport::doRecv offers every datagram first; true means it was consumed; the map holds it on the placeholder class Rva00594DC0)
 	void byteAdjust(ManglerMessage *message);				// 0x00594DC0 (the map holds it under the placeholder class Rva00594DC0: converts a received message to host order)
 	Bool sendToManglerFromPort(unsigned long mangler, UnsignedShort sourcePort, UnsignedShort firstPort, UnsignedShort secondPort, Bool flag);	// 0x0059517F (the map holds it under the placeholder class Rva0059517F)
 	void closeSpareSocket(UnsignedShort port);				// 0x0059534A (Zero Hour's name)
 
 private:
-	ManglerMessage *findEmptyMessage();						// 0x00594D9C
+	ManglerMessage *findEmptyMessage();
 
 	static Int m_sourcePortPool;							// VA 0x00DD31F4
 

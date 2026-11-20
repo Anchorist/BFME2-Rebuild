@@ -94,15 +94,15 @@ protected:
 public:
 	Script() throw();					// 0x003B417E (retail's default constructor, no row in the map yet: ScriptList::xfer 0x003B4716 builds the empty script it reads broken entries into)
 	Script(const Script &that);			// 0x003B7448
-	Script *duplicate() const;			// 0x003B7550
-	void updateFrom(Script *source);		// 0x003B3668
+	Script *duplicate() const;
+	void updateFrom(Script *source);
 	OrCondition *findPreviousOrCondition(OrCondition *curOr) const;	// 0x003B260F
 	void deleteAction(Int list, ScriptAction *action);	// 0x003B25CD: list 0 is the true list, 1 the false list (Zero Hour's deleteAction/deleteFalseAction)
-	void deleteOrCondition(OrCondition *cond);	// 0x003B258F: unlinks the OR group from the list at +0x30 and frees it
-	Bool parse(DataChunkInput &file, unsigned short version);	// 0x003B79F1
-	AsciiString getUiText();			// 0x003B6AB2
+	void deleteOrCondition(OrCondition *cond);	// Unlinks the OR group from the list at +0x30 and frees it
+	Bool parse(DataChunkInput &file, unsigned short version);
+	AsciiString getUiText();
 	void GetAssetList(AssetList *assets, AssetLoadMode *mode);	// 0x003B3836 (the things the actions name: units, objects, the unit lines of a named team template)
-	AsciiString getConditionTeamName() const;	// 0x002041E1 (Zero Hour's accessor; +0x44)
+	AsciiString getConditionTeamName() const;	// (Zero Hour's accessor; +0x44)
 	void setConditionTeamName(AsciiString teamName);	// 0x002041FC (Zero Hour's setter)
 	void setPhaseMaskWord(const Int *word);		// 0x003B2534 (the map's placeholder rva003B2534: stores the word at +0x24)
 

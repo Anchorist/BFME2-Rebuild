@@ -28,7 +28,7 @@ public:
 	virtual void update(void) {}	// slot 10: the same folded empty body
 	void reset(void);
 	TunnelTracker *getTunnelTrackerForCaveIndex(UnsignedInt index);
-	Bool canSwitchIndexToIndex(UnsignedInt oldIndex, UnsignedInt newIndex);	// 0x0042755D (donor name; map placeholder)
+	Bool canSwitchIndexToIndex(UnsignedInt oldIndex, UnsignedInt newIndex);	// (donor name; map placeholder)
 	void registerNewCave(Int theIndex);
 	void unregisterCave(Int theIndex);
 

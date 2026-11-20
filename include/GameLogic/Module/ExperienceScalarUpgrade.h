@@ -22,14 +22,14 @@ class ExperienceScalarUpgrade : public UpgradeModule
 {
 public:
 	ExperienceScalarUpgrade(Thing *thing, const ModuleData *moduleData);	// 0x004B61C6
-	virtual ~ExperienceScalarUpgrade();									// 0x004B611C
-	virtual NameKeyType getModuleNameKey() const;						// 0x004B6142
+	virtual ~ExperienceScalarUpgrade();
+	virtual NameKeyType getModuleNameKey() const;
 
 protected:
-	virtual const char *GetSnapshotName() const;						// 0x004B613C
+	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);
-	virtual void upgradeImplementation();								// 0x004B6213
-	virtual void upgradeRemovalImplementation();						// 0x004B6236
+	virtual void upgradeImplementation();
+	virtual void upgradeRemovalImplementation();
 protected:
 	virtual void loadPostProcess() { UpgradeModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpgradeModule's, ICF-folded across classes
 };

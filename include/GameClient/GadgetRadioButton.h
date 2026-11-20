@@ -10,6 +10,15 @@
 
 #include "GameClient/GameWindow.h"
 
+// The radio button's user data (GameWindow::winGetUserData): only the group, which the script parser
+// reads from the window block at 0x0031522E, is established.
+struct _RadioButtonData
+{
+	int m_unk0x00;		// +0x00
+	int m_group;		// +0x04
+};
+typedef struct _RadioButtonData RadioButtonData;
+
 class AsciiString;
 class UnicodeString;
 class GameFont;

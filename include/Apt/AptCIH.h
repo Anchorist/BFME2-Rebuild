@@ -47,7 +47,7 @@ struct AptMCInfo
 struct AptCIHDepthBits
 {
     int nDepth : 17;
-    int nCreated : 14;       // the creation stamp 0x006F91F0 stores and 0x006F9410 compares (the old decomp's reading of the same bits)
+    int nCreated : 14;       // the creation stamp 0x006F91F0 stores and 0x006F9410 compares
     unsigned int mTop : 1;
 };
 

@@ -27,8 +27,8 @@ public:
 	virtual Bool vslot08();								// slot 2, 0x004D55FC
 	virtual AsciiString getContentsAsAsciiString();		// slot 3, 0x004D5D55
 
-	void addArgument(GameMessageArgumentDataType type, GameMessageArgumentType argument);	// 0x004D5A7A
-	GameMessage *constructGameMessage();				// 0x004D68C6
+	void addArgument(GameMessageArgumentDataType type, GameMessageArgumentType argument);
+	GameMessage *constructGameMessage();
 
 	UnsignedInt m_unk0x1C;								// +0x1C
 	UnsignedInt m_unk0x20;								// +0x20

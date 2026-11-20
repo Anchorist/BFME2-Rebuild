@@ -34,13 +34,13 @@ public:
 	HijackerUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	void setIsInVehicle(Bool inVehicle);			// 0x004A3F81
-	void setTargetObject(const Object *target);		// 0x003A4341 (public QAE in the map)
-	Object *getTargetObject() const;				// 0x003A445C (public QBE; update 0x004A40DB asks it for the object to follow)
+	void setIsInVehicle(Bool inVehicle);
+	void setTargetObject(const Object *target);		// (public QAE in the map)
+	Object *getTargetObject() const;				// (public QBE; update 0x004A40DB asks it for the object to follow)
 
 protected:
 	virtual void xfer(Xfer *xfer);
-	virtual void loadPostProcess();   // 0x004A40BB: UpdateModule::loadPostProcess, then the target from the ID at +0x20
+	virtual void loadPostProcess();   // UpdateModule::loadPostProcess, then the target from the ID at +0x20
 
 public:
 	ObjectID m_targetID;                            // +0x20; xfer ObjectID
@@ -49,7 +49,7 @@ public:
 	Bool m_isInVehicle;                                // +0x31; xfer Bool; setIsInVehicle 0x004A3F81 stores its Bool here (bytes equal)
 	Bool m_wasTargetAirborne;                                // +0x32; xfer Bool
 public:
-	virtual UpdateSleepTime update();	// 0x004A40DB, UpdateModuleInterface slot 0; retail's table has this class's own
+	virtual UpdateSleepTime update();	// UpdateModuleInterface slot 0; retail's table has this class's own
 };
 // SIZE 0x34
 typedef char HijackerUpdate_size[(sizeof(HijackerUpdate) == 0x34) ? 1 : -1];

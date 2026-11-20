@@ -15,15 +15,15 @@
 class HordeTransportContain : public TransportContain
 {
 public:
-	HordeTransportContain(Thing *thing, const ModuleData *moduleData);	// 0x00477003
+	HordeTransportContain(Thing *thing, const ModuleData *moduleData);
 
-	virtual NameKeyType getModuleNameKey() const;						// 0x00477185
+	virtual NameKeyType getModuleNameKey() const;
 	virtual void orderAllPassengersToExit(CommandSourceType cmdSource);	// ContainModuleInterface 32, 0x004772B8 (forwards to the horde exit helper at +0xFD)
 	virtual void containSlot62();
 
 protected:
 	virtual const char *GetSnapshotName() const;						// 0x00477098
-	virtual void xfer(Xfer *xfer);										// 0x0047714A
+	virtual void xfer(Xfer *xfer);
 
 public:
 	UnsignedByte m_unk0x11C[4];											// 0x11C not established

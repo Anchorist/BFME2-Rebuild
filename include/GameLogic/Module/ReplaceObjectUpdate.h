@@ -17,12 +17,12 @@ class Xfer;
 class ReplaceObjectUpdate : public SpecialAbilityUpdate
 {
 public:
-	ReplaceObjectUpdate(Thing *thing, const ModuleData *moduleData);	// 0x004B2987
-	virtual NameKeyType getModuleNameKey() const;						// 0x004B29FF
+	ReplaceObjectUpdate(Thing *thing, const ModuleData *moduleData);
+	virtual NameKeyType getModuleNameKey() const;
 
 protected:
 	virtual const char *GetSnapshotName() const;
-	virtual void xfer(Xfer *xfer);										// 0x004B29DE
+	virtual void xfer(Xfer *xfer);
 protected:
 	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's
 };

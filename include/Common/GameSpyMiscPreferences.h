@@ -15,7 +15,7 @@ class GameSpyMiscPreferences : public UserPreferences
 {
 public:
 	GameSpyMiscPreferences();									// 0x00559711 (loads GeneralsOnline\GSMiscPref<profile>.ini)
-	virtual ~GameSpyMiscPreferences();							// 0x005596EA
+	virtual ~GameSpyMiscPreferences();
 
 	Int getLocale();											// 0x00559782
 	void setLocale(Int val);									// 0x005597CB

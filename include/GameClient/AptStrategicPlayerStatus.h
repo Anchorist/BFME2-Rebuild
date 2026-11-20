@@ -24,11 +24,11 @@
 class StrategicPlayerStatus : public _bfme_AptGameWindow
 {
 public:
-	void OnCloseWindow(const char *);				// 0x00523481
-	void rva00523438(int, char *, bool);			// 0x00523438: extern handler, writes "%d" of m_stat[index]
-	void rva0052373A(int, char *, bool);			// 0x0052373A: extern handler, writes "0x%x" of an enemy colour
-	static void rva005234AD();						// 0x005234AD: opens the window when the game state allows
-	static void rva00523592();						// 0x00523592: closes the open window or opens it
+	void OnCloseWindow(const char *);
+	void rva00523438(int, char *, bool);			// Extern handler, writes "%d" of m_stat[index]
+	void rva0052373A(int, char *, bool);			// Extern handler, writes "0x%x" of an enemy colour
+	static void rva005234AD();						// Opens the window when the game state allows
+	static void rva00523592();						// Closes the open window or opens it
 
 	int m_stat0;									// +0x27C
 	int m_stat1;									// +0x280
@@ -41,7 +41,7 @@ class AptStrategicPlayerStatus : public StrategicPlayerStatus
 {
 public:
 	AptStrategicPlayerStatus(void *);				// 0x00523825
-	virtual ~AptStrategicPlayerStatus();			// 0x00523775
+	virtual ~AptStrategicPlayerStatus();
 };
 
 #endif

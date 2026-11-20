@@ -20,12 +20,12 @@ class DeflectSpecialPower : public SpecialPowerUpdateModule, public CollideModul
 {
 public:
 	DeflectSpecialPower(Thing *thing, const ModuleData *moduleData);	// 0x004C545D
-	virtual ~DeflectSpecialPower();										// 0x004C54BE
-	virtual NameKeyType getModuleNameKey() const;						// 0x004C54F0
+	virtual ~DeflectSpecialPower();
+	virtual NameKeyType getModuleNameKey() const;
 	virtual CollideModuleInterface *getCollide();						// BehaviorModuleInterface slot 1, 0x004C54B1: this as its CollideModule base
 
 protected:
-	virtual void xfer(Xfer *xfer);										// 0x004C5571
+	virtual void xfer(Xfer *xfer);
 
 	Bool m_unk0x3C;		// +0x3C xfer bool
 	Bool m_unk0x3D;		// +0x3D xfer bool

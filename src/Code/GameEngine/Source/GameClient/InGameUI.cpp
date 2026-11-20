@@ -874,8 +874,67 @@ bool InGameUI::canSelectedObjectsEffectivelyUseWeapon(const CommandButton *comma
 }
 
 // FUNCTION: BFME2 0x0029CEB1 size=279 name=?selectMatchingAcrossScreen@InGameUI@@UAEHXZ evidence=N:ledger tier=A
+int InGameUI::selectMatchingAcrossScreen()
+{
+	if (TheLivingWorldLogic && TheLivingWorldLogic->isSelectionLocked())
+		return 0;
+
+	IRegion2D region;
+	ICoord2D origin;
+	ICoord2D size;
+
+	TheTacticalView->getOrigin(&origin.x, &origin.y);
+	size.x = TheTacticalView->getWidth();
+	size.y = TheTacticalView->getHeight();
+
+	unidentifiedSlot101(&origin.x, &size.x, &region.lo.x);
+
+	Int numSelected = selectMatchingAcrossRegion(&region);
+	if (numSelected == -1)
+	{
+		UnicodeString message = TheGameText->fetch("GUI:NothingSelected");
+		TheInGameUI->multiplayerMessage(message);
+	}
+	else if (numSelected == 0)
+	{
+	}
+	else
+	{
+		UnicodeString message = TheGameText->fetch("GUI:SelectedAcrossScreen");
+		TheInGameUI->multiplayerMessage(message);
+	}
+	return numSelected;
+}
 
 // FUNCTION: BFME2 0x0029CFC8 size=285 name=?selectMatchingAcrossMap@InGameUI@@UAEHXZ evidence=N:ledger tier=A
+int InGameUI::selectMatchingAcrossMap()
+{
+	if (TheLivingWorldLogic && TheLivingWorldLogic->isSelectionLocked())
+		return 0;
+
+	Int numSelected = selectMatchingAcrossRegion(NULL);
+	if (numSelected == -1)
+	{
+		UnicodeString message = TheGameText->fetch("GUI:NothingSelected");
+		TheInGameUI->multiplayerMessage(message);
+	}
+	else if (numSelected == 0)
+	{
+		// Nothing new was selected: say so, unless a structure is what is selected already.
+		Drawable *draw = TheInGameUI->getFirstSelectedDrawable();
+		if (!draw || !draw->getObject() || !draw->getObject()->isKindOf(KINDOF_STRUCTURE))
+		{
+			UnicodeString message = TheGameText->fetch("GUI:SelectedAcrossMap");
+			TheInGameUI->multiplayerMessage(message);
+		}
+	}
+	else
+	{
+		UnicodeString message = TheGameText->fetch("GUI:SelectedAcrossMap");
+		TheInGameUI->multiplayerMessage(message);
+	}
+	return numSelected;
+}
 
 // FUNCTION: BFME2 0x0029D0E5 size=283 name=?updateFloatingText@InGameUI@@IAEXXZ evidence=N:ledger tier=A
 

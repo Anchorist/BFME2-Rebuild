@@ -5,5 +5,75 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=no-edge-evidence right=unknown-rows; proof_first=false
 // Hypothesis rules: none; hard membership, hypothetical extent
+
+// Edges: left=unknown-rows right=no-edge-evidence; proof_first=false
+// Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:name:invented
+#include "GameLogic/Module/DetachableRiderBody.h"
+#include "Common/NameKeyGenerator.h"
+#include "GameLogic/Module/DetachableRiderBodyModuleData.h"
+#include "Common/Xfer.h"
+// FUNCTION: BFME2 0x004C1BCE size=6 name=?name@Rva004C1BCENamed@@QBEPBDXZ evidence=?:placeholder tier=B hypothesis:cohesion
+const char *DetachableRiderBody::GetSnapshotName() const
+{
+	return "DetachableRiderBody";
+}
+
+// FUNCTION: BFME2 0x004C1BD4 size=16 name=?rva004C1BD4@DetachableRiderBody@@UAEPAVUpgradeMux@@XZ evidence=?:placeholder tier=B hypothesis:cohesion
+UpgradeMux *DetachableRiderBody::getUpgrade()
+{
+	return this;
+}
+
+// FUNCTION: BFME2 0x004C1BE4 size=69 name=?getModuleNameKey@DetachableRiderBody@@UBE?AW4NameKeyType@@XZ evidence=N:ledger tier=B hypothesis:name:invented
+NameKeyType DetachableRiderBody::getModuleNameKey() const
+{
+	static NameKeyType TheDetachableRiderBodyNameKey = TheNameKeyGenerator->nameToKey("DetachableRiderBody");
+	return TheDetachableRiderBodyNameKey;
+}
+
+// FUNCTION: BFME2 0x004C1C29 size=42 name=?getUpgradeActivationMasks@DetachableRiderBody@@MBEXAAUUpgradeMaskType@@0@Z evidence=N:ledger tier=B hypothesis:cohesion
+void DetachableRiderBody::getUpgradeActivationMasks(UpgradeMaskType &activation, UpgradeMaskType &conflicting) const
+{
+	const UpgradeMuxData *mux = &((const DetachableRiderBodyModuleData *)getModuleData())->m_upgradeMuxData;
+	activation = mux->m_triggeredBy;
+	conflicting = mux->m_conflictsWith;
+}
+
+// FUNCTION: BFME2 0x004C1C53 size=21 name=?performUpgradeFX@DetachableRiderBody@@MAEXXZ evidence=N:ledger tier=B hypothesis:cohesion
+void DetachableRiderBody::performUpgradeFX()
+{
+	((const DetachableRiderBodyModuleData *)getModuleData())->m_upgradeMuxData.performUpgradeFX(getObject());
+}
+
+// FUNCTION: BFME2 0x004C1C68 size=13 name=?requiresAllActivationUpgrades@DetachableRiderBody@@MBE_NXZ evidence=N:ledger tier=B hypothesis:cohesion
+Bool DetachableRiderBody::requiresAllActivationUpgrades() const
+{
+	return ((const DetachableRiderBodyModuleData *)getModuleData())->m_upgradeMuxData.m_requiresAllTriggers;
+}
+
+// FUNCTION: BFME2 0x004C1C75 size=13 name=?requiresAllConflictingUpgrades@DetachableRiderBody@@MBE_NXZ evidence=N:ledger tier=B hypothesis:cohesion
+Bool DetachableRiderBody::requiresAllConflictingUpgrades() const
+{
+	return ((const DetachableRiderBodyModuleData *)getModuleData())->m_upgradeMuxData.m_requiresAllConflictingTriggers;
+}
+
+// FUNCTION: BFME2 0x004C1C82 size=109 name=??0DetachableRiderBody@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:cohesion
+DetachableRiderBody::DetachableRiderBody(Thing *thing, const ModuleData *moduleData) :
+	ActiveBody(thing, moduleData)
+{
+	if (((const DetachableRiderBodyModuleData *)getModuleData())->m_startsActive)
+		giveSelfUpgrade();
+}
+
+// FUNCTION: BFME2 0x004C1D0B size=62 name=?xfer@DetachableRiderBody@@MAEXPAVXfer@@@Z evidence=N:ledger tier=B hypothesis:cohesion
+void DetachableRiderBody::xfer(Xfer *xfer)
+{
+	Xfer::Version version(1, 2);
+	*xfer == version;
+	ActiveBody::xfer(xfer);
+	if (version.m_minimum >= 2)
+		UpgradeMux::upgradeMuxXfer(xfer);
+}
+
 // FUNCTION: BFME2 0x004C1D49 size=322 name=?attemptDamage@DetachableRiderBody@@UAEXPAVDamageInfo@@@Z evidence=N:ledger tier=A
 

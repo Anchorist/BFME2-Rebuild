@@ -20,9 +20,9 @@ class Xfer;
 class ObjectRepulsorHelper : public ObjectHelper
 {
 public:
-	ObjectRepulsorHelper(Thing *thing, const ModuleData *moduleData);	// 0x0028CAB4
+	ObjectRepulsorHelper(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;				// slot 4, 0x0028CADE
-	virtual UpdateSleepTime update();							// 0x004DF897
+	virtual UpdateSleepTime update();
 
 protected:
 	virtual void loadPostProcess();								// slot 1 (0x00483CEF: tail-jumps to ObjectHelper's)

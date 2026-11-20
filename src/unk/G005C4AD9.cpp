@@ -1,9 +1,16 @@
+// cl: /O1
+#include "GameClient/GameWindow.h"
+#include "GameClient/WinInstanceData.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G005C4AD9 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x005C4AD9 size=4 name=?get@Rva005C4AD9LeaField@@QBEPAXXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x005C4ADD size=4 name=?get@Rva005C4ADDFloatField@@QBEMXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x005C4AE9 size=4 name=?winGetWindowId@GameWindow@@QAEHXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+int GameWindow::winGetWindowId()
+{
+	return m_instData.m_id;
+}
 // FUNCTION: BFME2 0x005C4AED size=4 name=?get@GameWindow@@QBEHXZ evidence=S:strong (position+fit) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x005C4B01 size=4 name=?get@Rva005C4B01FloatField@@QBEMXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x005C4B05 size=11 name=?Rva005C4B05OrBits@@YAXPAII@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

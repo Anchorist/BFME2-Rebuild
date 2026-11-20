@@ -1,6 +1,7 @@
 // cl: /O1
 // stlport46
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
+#include "GameLogic/Object/LocomotorSet.h"
 #include "Common/Thing.h"
 #include "GameLogic/AIPathfind.h"
 #include "GameLogic/Bridge.h"
@@ -900,6 +901,12 @@ template Int Pathfinder::iterateCellsAlongLine<MADStruct>(const Coord3D *, const
 // FUNCTION: BFME2 0x002F71A6 size=4605 name=?internal_findHierarchicalPath@Pathfinder@@IAEPAVPath@@_NHPAVObject@@PBVCoord3D@@200PAU4@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 
 // FUNCTION: BFME2 0x002F83A3 size=43 name=?FindHierarchicalPath@Pathfinder@@IAEPAVPath@@_NABVLocomotorSet@@PAVObject@@PBVCoord3D@@30@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
+Path *Pathfinder::FindHierarchicalPath(Bool a, const LocomotorSet &locomotorSet, Object *obj, const Coord3D *from, const Coord3D *to, Bool c)
+{
+	Int surfaces = locomotorSet.m_validLocomotorSurfaces;
+	Coord3D unused;
+	return internal_findHierarchicalPath(a, surfaces, obj, from, to, c, false, &unused);
+}
 
 // FUNCTION: BFME2 0x002F83CE size=39 name=?FindClosestHierarchicalPath@Pathfinder@@IAEPAVPath@@_NABVLocomotorSet@@PAVObject@@PBVCoord3D@@30PAU5@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 

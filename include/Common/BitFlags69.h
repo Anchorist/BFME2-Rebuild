@@ -1,5 +1,5 @@
 // BitFlags69.h: the 69-kind flag set SAGE passes to Thing::isAnyKindOf.
-// Target facts (old repo ThreatFinderUpdate.cpp): the set is seven 32-bit words
+// Target facts: the set is seven 32-bit words
 // (0x1C bytes), zeroed by its constructor and set bit-by-bit through set().
 #pragma once
 #ifndef BFME2_BITFLAGS69_H

@@ -34,9 +34,9 @@ public:
 	StrafeAreaUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual ~StrafeAreaUpdate();
 
-	virtual NameKeyType getModuleNameKey() const;		// 0x003A4CCD
-	virtual UpdateSleepTime update();					// 0x003A4FDA
-	Bool rva003A4F21(const Coord3D *from, const Coord3D *to);	// 0x003A4F21
+	virtual NameKeyType getModuleNameKey() const;
+	virtual UpdateSleepTime update();
+	Bool rva003A4F21(const Coord3D *from, const Coord3D *to);
 	const char *name() const;							// 0x003A4CC7
 
 	Coord3D m_target;									// 0x20

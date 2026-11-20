@@ -149,6 +149,7 @@ public:
 	Bool rva001FD4E1(NameKeyType key, Int *outIndex);				// 0x001FD4E1: index of the template named by key
 	const PlayerTemplate *getNthPlayerTemplate(Int index) const;	// 0x001FD3C6
 
+	const _STL::set<Int> &getPlayableIndices() const { return m_playableIndices; }
 	static void parsePlayerTemplateDefinition(INI *ini);			// 0x001FEFEC
 
 private:

@@ -35,20 +35,20 @@ public:
 	Render2DSentenceClass();													// 0x00157E80
 	~Render2DSentenceClass();													// 0x00157C70
 
-	virtual void Reset();														// 0x00155A20
+	virtual void Reset();
 
-	bool Set_Wrapping_Width(float width);										// 0x00105D3B
-	bool Set_Word_Wrap_Centered(bool centered);									// 0x00105D63
+	bool Set_Wrapping_Width(float width);
+	bool Set_Word_Wrap_Centered(bool centered);
 	bool Set_Default_Scale(float x, float y);									// 0x00154320 ("name: inferred")
 	bool Set_Target_Size(float width, float height);							// 0x00154370 ("name: inferred")
-	void Set_Font(FontCharsClass *font);										// 0x001542D0
-	void Set_Clipping_Rect(const RectClass &rect);								// 0x00105D96
-	Vector2 Get_Formatted_Text_Extents(const unsigned short *text);				// 0x00159FF0
-	void Set_Location(const Vector2 &location);									// 0x00154EF0
+	void Set_Font(FontCharsClass *font);
+	void Set_Clipping_Rect(const RectClass &rect);
+	Vector2 Get_Formatted_Text_Extents(const unsigned short *text);
+	void Set_Location(const Vector2 &location);
 
 	// The sentence builder the extents query calls (0x00159700): the Draw_Sentence helper that
 	// lays the text out left to right; hotKey/lineEnd are out parameters (may be null).
-	Vector2 Build_Sentence_Not_Centered(const unsigned short *text, int *hotKey, int *lineEnd, bool measureOnly);	// 0x00159700
+	Vector2 Build_Sentence_Not_Centered(const unsigned short *text, int *hotKey, int *lineEnd, bool measureOnly);
 
 private:
 	struct SentenceDataStruct

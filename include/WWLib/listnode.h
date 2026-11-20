@@ -26,8 +26,8 @@ public:
 
 	GenericNode *Next() const { return NextNode; }
 	GenericNode *Prev() const { return PrevNode; }
-	bool Is_Valid() const { return this != 0 && NextNode != 0 && PrevNode != 0; }	// 0x00116DF0
-	GenericNode *Next_Valid() const							// 0x0060FC20
+	bool Is_Valid() const { return this != 0 && NextNode != 0 && PrevNode != 0; }
+	GenericNode *Next_Valid() const
 	{
 		return ((NextNode && NextNode->NextNode) ? NextNode : (GenericNode *)0);
 	}
@@ -41,7 +41,7 @@ public:
 			NextNode = 0;
 		}
 	}
-	void Link(GenericNode *node)						// 0x00615E20
+	void Link(GenericNode *node)
 	{
 		node->Unlink();
 		node->NextNode = NextNode;
@@ -63,15 +63,15 @@ public:
 	{
 		FirstNode.Link(&LastNode);
 	}
-	virtual ~GenericList()						// 0x006163A0
+	virtual ~GenericList()
 	{
 		while (FirstNode.Next()->Is_Valid()) FirstNode.Next()->Unlink();
 	}
 
 	GenericNode *First() const { return FirstNode.Next(); }
 	GenericNode *Last() const { return LastNode.Prev(); }
-	bool Is_Empty() const { return !FirstNode.Next()->Is_Valid(); }	// 0x00615B20
-	void Add_Tail(GenericNode *node) { LastNode.Prev()->Link(node); }	// 0x00615E70
+	bool Is_Empty() const { return !FirstNode.Next()->Is_Valid(); }
+	void Add_Tail(GenericNode *node) { LastNode.Prev()->Link(node); }
 
 private:
 	GenericNode FirstNode;		// +0x04

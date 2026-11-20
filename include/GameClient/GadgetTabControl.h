@@ -15,14 +15,21 @@ class UnicodeString;
 class GameFont;
 class Image;
 
-// The tab control's own data (what the window's user data points at). Only the sub-pane table is recovered:
+// The tab control's own data (what the window's user data points at). The sub-pane table is recovered:
 // GadgetTabControlResizeSubPanes 0x00327287 walks eight pane pointers starting at +0x14, and
-// GadgetTabControlFixupSubPaneList 0x003272E2 fills that table from the window's children.
-// The rest of the struct and its SIZE are not recovered here.
+// GadgetTabControlFixupSubPaneList 0x003272E2 fills that table from the window's children. The script parser
+// (0x00315367) writes the five tab settings, the eight disabled flags and the pane border in the order of the
+// window block's keys. The rest of the struct and its SIZE are not recovered here.
 struct TabControlData
 {
-	unsigned char m_unrecovered[0x14];	// +0x00
+	int m_tabOrientation;				// +0x00 TABORIENTATION
+	int m_tabEdge;						// +0x04 TABEDGE
+	int m_tabWidth;						// +0x08 TABWIDTH
+	int m_tabHeight;					// +0x0C TABHEIGHT
+	int m_tabCount;						// +0x10 TABCOUNT
 	GameWindow *m_subPanes[8];			// +0x14
+	bool m_subPaneDisabled[8];			// +0x34 PANEDISABLED
+	int m_paneBorder;					// +0x3C PANEBORDER
 };
 
 void GadgetTabControlComputeTabRegion(GameWindow *);	// 0x00327099

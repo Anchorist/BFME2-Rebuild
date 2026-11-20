@@ -12,6 +12,13 @@
 #include "GameLogic/Object.h"
 #include "WWMath/Matrix3D.h"
 // FUNCTION: BFME2 0x0045E9AA size=74 name=??0ShipSlowDeathBehavior@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+ShipSlowDeathBehavior::ShipSlowDeathBehavior(Thing *thing, const ModuleData *moduleData)
+	: SlowDeathBehavior(thing, moduleData)
+{
+	m_pitchRate = 0.0f;
+	m_rollRate = 0.0f;
+	m_rotation = 0.0f;
+}
 // FUNCTION: BFME2 0x0045E9F4 size=6 name=?Rva45E9F4Get@@YAHXZ evidence=?:placeholder
 const char *ShipSlowDeathBehavior::GetSnapshotName() const
 {

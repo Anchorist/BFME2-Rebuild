@@ -45,10 +45,10 @@ class GateOpenAndCloseBehavior : public GatePrimary, public UpdateModule
 {
 public:
 	GateOpenAndCloseBehavior(Thing *thing, const ModuleData *moduleData);	// 0x0049889C
-	virtual ~GateOpenAndCloseBehavior();				// 0x00498798
-	virtual NameKeyType getModuleNameKey() const;		// 0x00498857
-	virtual void onObjectCreated();						// 0x0049936A
-	virtual UpdateSleepTime update();					// 0x0049947A
+	virtual ~GateOpenAndCloseBehavior();
+	virtual NameKeyType getModuleNameKey() const;
+	virtual void onObjectCreated();
+	virtual UpdateSleepTime update();
 	virtual bool rva00498BAF(Object *object);			// slot 1, 0x00498BAF
 	virtual bool slot6() const;							// slot 6
 	virtual void open();								// slot 7, 0x004991CB
@@ -56,10 +56,10 @@ public:
 	virtual void rva00498806();							// slot 9
 	virtual unsigned char slot10() const;				// slot 10
 
-	void changeWantOpenCount(int delta);				// 0x00498831
-	bool rva00498980();									// 0x00498980 (threshold for the state)
-	Player *getControllingPlayer() const;				// 0x004989D7
-	Relationship getRelationship(const Player *player) const;	// 0x004989DF
+	void changeWantOpenCount(int delta);
+	bool rva00498980();									// (threshold for the state)
+	Player *getControllingPlayer() const;
+	Relationship getRelationship(const Player *player) const;
 	Real getM34() const;							// 0x004987FA
 	Real getM38() const;							// 0x004987FE
 	Bool getM30() const;							// 0x00498802
@@ -68,15 +68,15 @@ public:
 	Bool selectLinkedObject();							// 0x00498CB1: selects the linked object (m_linkedObjectId at +0x24) for the local player
 	void resetProgress();								// 0x0049881D: level 0, stamped with the logic frame (m_transitionProgress, m_stateFrame)
 	const Coord3D *getPosition() const;					// 0x004989EE: the object's position (m_object at +0xC, Thing::m_cachedPos at +0x38)
-	const char *name() const;							// 0x004987F4
+	const char *name() const;
 
 protected:
-	virtual void xfer(Xfer *xfer);						// 0x00498BCB
+	virtual void xfer(Xfer *xfer);
 
 private:
 	void rva004989F5();
-	void setOpenCloseState(int state);					// 0x00498AB2
-	void rva00498FAA();									// 0x00498FAA
+	void setOpenCloseState(int state);
+	void rva00498FAA();
 	void rva0049924B(bool flag);
 	void rva004992D5(bool a, bool b);
 

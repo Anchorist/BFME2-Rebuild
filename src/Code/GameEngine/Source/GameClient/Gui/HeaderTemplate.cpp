@@ -1,4 +1,4 @@
-// cl: /O1
+// cl: /O1 /EHs /EHc-
 #include <list>
 #include <new>
 #include <stddef.h>

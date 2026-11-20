@@ -27,7 +27,7 @@ public:
 		UnsignedInt lifetimeFrames) const;										// 3, 0x001F0188
 	virtual void GetAssetList(AssetList &assets, void *context) const;			// 4, 0x001F01B9
 
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001F0D61
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	const WeaponTemplate *m_weapon;												// 0x04 Weapon
 };

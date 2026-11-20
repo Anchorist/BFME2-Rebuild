@@ -32,14 +32,14 @@ class DiscreteCircle
 	int m_yPosDoubled;		// +0x10
 
 public:
-	DiscreteCircle(int xCenter, int yCenter, int radius);				// 0x002DF93D
+	DiscreteCircle(int xCenter, int yCenter, int radius);
 	const VecHorzLine &getEdges() const { return m_edges; }
 	int getEdgeCount() const { return m_edges.size(); }
-	void drawCircle(ScanlineDrawFunc functionToDrawWith, void *parmToPass);	// 0x002DF82C
+	void drawCircle(ScanlineDrawFunc functionToDrawWith, void *parmToPass);
 
 protected:
-	void generateEdgePairs(int xCenter, int yCenter, int radius);			// 0x002DF8CF
-	void removeDuplicates();							// 0x002DF872
+	void generateEdgePairs(int xCenter, int yCenter, int radius);
+	void removeDuplicates();
 };
 // SIZE 0x14
 

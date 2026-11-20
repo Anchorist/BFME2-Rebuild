@@ -18,8 +18,8 @@ class EmotionTrackerUpdateEntry
 {
 public:
 	EmotionTrackerUpdateEntry();			// 0x004DC920 (out of line, 205 B)
-	void rva004DC788(const EmotionTrackerUpdateEntry &other);	// 0x004DC788 (map ?rva004DC788@Rva004DC920@@QAEXABV1@@Z, 246 B): copies another entry
-	void rva004DCAD2(INI *ini);			// 0x004DCAD2 (map ?rva004DCAD2@Rva004DCAD2@@QAEXPAVINI@@@Z): parses an OVERRIDE block into the entry
+	void rva004DC788(const EmotionTrackerUpdateEntry &other);	// (map ?rva004DC788@Rva004DC920@@QAEXABV1@@Z, 246 B): copies another entry
+	void rva004DCAD2(INI *ini);			// (map ?rva004DCAD2@Rva004DCAD2@@QAEXPAVINI@@@Z): parses an OVERRIDE block into the entry
 	~EmotionTrackerUpdateEntry();			// 0x004DC9ED (out of line: EmotionTrackerUpdateModuleData's destructor 0x004B1285 calls it before the delete)
 	AsciiString getAttributeModifierName() const;
 	AsciiString getEventName() const;

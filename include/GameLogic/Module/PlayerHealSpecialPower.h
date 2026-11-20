@@ -57,7 +57,7 @@ public:
 	virtual void doSpecialPower(unsigned int commandOptions);	// override: doSpecialPower slot 10 at +0x10 (0x004C8198)
 	virtual void doSpecialPowerAtObject(Object *object, unsigned int commandOptions);	// override: doSpecialPowerAtObject slot 11 at +0x10 (0x004C8175)
 	virtual void doSpecialPowerAtLocation(const Coord3D *location, unsigned int commandOptions);	// override: doSpecialPowerAtLocation slot 12 at +0x10 (0x004C8155)
-	void rva004C8095(const Coord3D *position);	// 0x004C8095 (map: placeholder; the three do-special-power overrides call it after the base's)
+	void rva004C8095(const Coord3D *position);	// (map: placeholder; the three do-special-power overrides call it after the base's)
 
 protected:
 	virtual const char *GetSnapshotName() const;

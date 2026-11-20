@@ -10,6 +10,13 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=rests-on:name; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:Z, hypothesis:name:Z
+EnumeratedIP::EnumeratedIP()
+{
+	m_IPstring.set("");
+	m_next = 0;
+	m_IP = 0;
+}
+
 // FUNCTION: BFME2 0x0050BFFD size=49 name=?rva0050BFFD@Rva0050BFFD@@QAEXVAsciiString@@@Z evidence=?:placeholder tier=B hypothesis:K
 void EnumeratedIP::setIPstring(AsciiString ip)
 {

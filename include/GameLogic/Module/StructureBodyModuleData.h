@@ -26,7 +26,7 @@ class StructureBodyModuleData : public ActiveBodyModuleData
 public:
 	StructureBodyModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
-	static ModuleData *friend_newModuleData(INI *ini);	// 0x0025708C
+	static ModuleData *friend_newModuleData(INI *ini);
 
 };
 // SIZE 0x64

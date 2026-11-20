@@ -28,6 +28,7 @@ class AttackPriorityInfo : public Snapshot
 public:
 	Real getPriority(const Object *source, const Object *target, Bool applyCombatChain) const;	// 0x00357CDE
 	void setPriority(const ThingTemplate *tmpl, Int priority);		// 0x00358333
+	void reset();											// clears the name, restores the default priority 1 and destroys the priority map
 	// 0x00357025: adds the combat-chain bonus; its helpers are not named yet.
 	Real doModPriorityByCombatChain(Real priority, const Object *source, const Object *target) const;
 

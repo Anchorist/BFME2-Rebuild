@@ -18,7 +18,7 @@ public:
 	NetDisconnectPlayerCommandMsg();					// 0x004D57F1
 
 	void setDisconnectSlot(UnsignedByte slot);			// 0x0046EDE3
-	void setDisconnectFrame(UnsignedInt frame);			// 0x005739F6
+	void setDisconnectFrame(UnsignedInt frame);
 	UnsignedByte getDisconnectSlot();							// 0x004C54EC (folded byte getter at +0x1C)
 	UnsignedInt getDisconnectFrame();							// 0x00091A56 (folded dword getter at +0x24)
 

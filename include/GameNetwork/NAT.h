@@ -41,40 +41,40 @@ public:
 	Bool isReady() const;									// 0x005A6709 (the map keeps it as Rva005A6709::rva005A6709; callers test al)
 	Bool isConnectionFinished() const;								// 0x005A6732
 	void setHostSlot(UnsignedShort slot);							// 0x005A683C
-	UnsignedInt get(UnsignedInt slot) const;						// 0x005A684F (the port of the slot's address record)
+	UnsignedInt get(UnsignedInt slot) const;						// (the port of the slot's address record)
 	void setLocalPort(Short port);									// 0x005A6869
 	Bool isWaitingToBegin() const;									// 0x005A687F
-	void setConnectionState(Int first, Int second, Int cookie, Int state);	// 0x005A688C
-	void processPlayerJoin(Int slot);								// 0x005A6903
-	void processPlayerLeave(Int slot);								// 0x005A695F
-	void reconnectPlayers(Int first, Int second, Int resetRetries);	// 0x005A69C0
+	void setConnectionState(Int first, Int second, Int cookie, Int state);
+	void processPlayerJoin(Int slot);
+	void processPlayerLeave(Int slot);
+	void reconnectPlayers(Int first, Int second, Int resetRetries);
 	void reconnectStalePairs();									// 0x005A6CA5 (reconnects the pairs whose last ping is older than 12 seconds)
 	void retryFailedPairs();										// 0x005A6D47 (reconnects the pairs whose retries ran over the limit)
 	void copyAddressesToSlots();									// 0x005A6A4C
-	void probeMangler();											// 0x005A6A83
-	void attachSlotList(GameInfo *game, Int localSlot, UnsignedInt localIP, UnsignedInt unused, Bool isHost);	// 0x005A6B14
-	void rva005A7974(UnsignedShort port, void *targetSlot);		// 0x005A7974 (sends the PORT request for the target slot; the map has no better name)
-	void sendPings();												// 0x005A6EF2
-	void notifyTargetOfProbe(void *slot);							// 0x005A73DE (the map types it Rva005A7A96Slot *)
-	void notifyConnectionFromTargetDone();							// 0x005A74D8
-	void notifyConnectionToTargetFailed();							// 0x005A7683
-	void notifyHostMyNATCreated(Int hostSlot);						// 0x005A7829
-	void notifyNATHostSlot();										// 0x005A7C9C
-	void processUDPPacket();										// 0x005A7EDC
-	void sendAProbeToTarget();										// 0x005A831E
-	void findMyMangledPort();										// 0x005A8405
-	void processManglerResponse(UnsignedShort mangledPort);			// 0x005A854C
-	void targetNotifyMeIWasProbed(Int slot);						// 0x005A8666
-	void gotTargetMangledPort(Int slot, UnsignedShort mangledPort, Int mangledAddress);	// 0x005A86C0
-	Int connectionUpdate();											// 0x005A879B
-	void StartNegotiationAction(Int target, Int cookie);			// 0x005A89C2
-	void processGlobalMessage(Int slotNum, const char *options);	// 0x005A8ABF
-	Bool SetUDPSocketForSlot(UnsignedShort port, UnsignedShort slot, const BfmeNetAddress *address);	// 0x005A6DAC
+	void probeMangler();
+	void attachSlotList(GameInfo *game, Int localSlot, UnsignedInt localIP, UnsignedInt unused, Bool isHost);
+	void rva005A7974(UnsignedShort port, void *targetSlot);		// (sends the PORT request for the target slot; the map has no better name)
+	void sendPings();
+	void notifyTargetOfProbe(void *slot);							// (the map types it Rva005A7A96Slot *)
+	void notifyConnectionFromTargetDone();
+	void notifyConnectionToTargetFailed();
+	void notifyHostMyNATCreated(Int hostSlot);
+	void notifyNATHostSlot();
+	void processUDPPacket();
+	void sendAProbeToTarget();
+	void findMyMangledPort();
+	void processManglerResponse(UnsignedShort mangledPort);
+	void targetNotifyMeIWasProbed(Int slot);
+	void gotTargetMangledPort(Int slot, UnsignedShort mangledPort, Int mangledAddress);
+	Int connectionUpdate();
+	void StartNegotiationAction(Int target, Int cookie);
+	void processGlobalMessage(Int slotNum, const char *options);
+	Bool SetUDPSocketForSlot(UnsignedShort port, UnsignedShort slot, const BfmeNetAddress *address);
 	AsciiString getConnectionStateName(Int state);					// 0x005A6E7A
 	void setCurrentConnectionState(Int state);						// 0x005A6C90
 
 protected:
-	void generatePortNumbers(GameSlot **slotList, Int localSlot);	// 0x005A678E
+	void generatePortNumbers(GameSlot **slotList, Int localSlot);
 
 public:
 	Transport *m_transport;											// +0x04

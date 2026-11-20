@@ -8,6 +8,7 @@
 
 #include "GameLogic/Module/ModuleData.h"
 
+class FXList;
 class MultiIniFieldParse;
 
 class PhysicsBehaviorModuleData : public ModuleData
@@ -38,8 +39,8 @@ public:
 	Real m_firstPercentHeight;				// 0x44
 	Real m_secondPercentHeight;				// 0x48
 	Real m_gravityMult;						// 0x4C
-	void *m_groundHitFX;					// 0x50
-	void *m_groundBounceFX;					// 0x54
+	const FXList *m_groundHitFX;					// 0x50 GroundHitFX (INI::parseFXList)
+	const FXList *m_groundBounceFX;					// 0x54 GroundBounceFX (INI::parseFXList)
 	Bool m_allowBouncing;					// 0x58
 	Bool m_killWhenRestingOnGround;			// 0x59
 };

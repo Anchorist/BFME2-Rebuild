@@ -13,8 +13,8 @@ class StrategicStatsPreferences : public ProfilePreferences
 {
 public:
 	StrategicStatsPreferences(const UnicodeString &profilePath);	// 0x00537DBC
-	virtual void loadProfileStats(const UnicodeString &profilePath);	// 0x00537D9A
-	static bool deleteStatsFile(const UnicodeString &profilePath);	// 0x0053789A
+	virtual void loadProfileStats(const UnicodeString &profilePath);
+	static bool deleteStatsFile(const UnicodeString &profilePath);
 };
 
 #endif

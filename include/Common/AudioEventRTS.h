@@ -7,9 +7,9 @@
 class Xfer;
 struct OpaqueRefElement4;
 // Target constructors2D97D6/2DA461, destructor2D9A43 and table803908 identify
-// the old BfmeAudioEventPrefix136/BfmeStringTailRecord144 views as AudioEventRTS.
-// Size88, one deleting destructor slot2DA070. Seven synthesized AudioEventRTS
-// views plus the complete constructor/copy views establish the member order.
+// the class as AudioEventRTS.
+// Size88, one deleting destructor slot2DA070. The constructor and copy
+// establish the member order.
 // Names from ZH or WB are used only where their reads/stores agree.
 class Coord3D;
 class AudioEventRTS

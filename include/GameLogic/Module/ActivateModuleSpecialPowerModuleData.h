@@ -35,7 +35,7 @@ class ActivateModuleSpecialPowerModuleData : public SpecialAbilityUpdateModuleDa
 public:
 	ActivateModuleSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
-	static ModuleData *friend_newModuleData(INI *ini);	// 0x00256DC5
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	std::vector<ActivateModuleWakeEntry> m_wakeList;       // +0xC8 (8-byte {key, mode} entries; SetWakeState 0x004CDDBA walks begin..end)
 };

@@ -50,13 +50,13 @@ public:
 
 	// The fade rates the module data's FadeTimeInSeconds and WaitBeforeFadeInSeconds give (1 / seconds / client fps); both
 	// stay untouched while the object was produced within three frames of the module's creation and has no producer.
-	void rva004B4DBF(Real *fadeRate, Real *waitRate);					// 0x004B4DBF
+	void rva004B4DBF(Real *fadeRate, Real *waitRate);
 	// True when neither the object nor its player already holds one of the conflicting upgrades.
-	UnsignedByte rva004B4E56();											// 0x004B4E56
+	UnsignedByte rva004B4E56();
 	// Show (0x004B4EC3) or hide (0x004B4F11) each named sub-object with the fade rates; the list is a vector<AsciiString>.
-	Bool rva004B4EC3(Drawable *draw, void *names, Real fadeRate, Real waitRate);	// 0x004B4EC3
-	Bool rva004B4F11(Drawable *draw, void *names, Real fadeRate, Real waitRate);	// 0x004B4F11
-	Bool swapTextures(Drawable *draw, Int restore);						// 0x004B4F91
+	Bool rva004B4EC3(Drawable *draw, void *names, Real fadeRate, Real waitRate);
+	Bool rva004B4F11(Drawable *draw, void *names, Real fadeRate, Real waitRate);
+	Bool swapTextures(Drawable *draw, Int restore);
 	virtual Bool isSubObjectsUpgrade() { return true; }				// UpgradeMux slot 4: retail 0x0050B5C6 (`mov al,1`), as in Zero Hour
 
 protected:

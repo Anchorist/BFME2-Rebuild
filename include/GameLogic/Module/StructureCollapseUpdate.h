@@ -62,14 +62,14 @@ public:
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004A46BF)
 	virtual DisabledMaskType getDisabledTypesToProcess() const;	// override: update slot 1 at +0x10 (0x004A4580)
 	virtual DieModuleInterface *getDie() { return this; }	// override: BehaviorModuleInterface slot 7 (retail 0x004543A9: the null-checked interface pointer)
-	virtual void onDie(const DamageInfo *damageInfo);	// 0x004A466E, DieModuleInterface slot 0 (this = +0x20)
+	virtual void onDie(const DamageInfo *damageInfo);	// DieModuleInterface slot 0 (this = +0x20)
 
 protected:
 	virtual void xfer(Xfer *xfer);
-	void beginStructureCollapse(const DamageInfo *damageInfo);	// 0x004A459B (IAE)
-	void doCollapseDoneStuff();					// 0x004A44B1 (IAE)
-	Real getCollapseHeight() const;					// 0x004A438B (IBE): module height, or the template geometry's max height when destroyed when done
-	void doPhaseStuff(StructureCollapsePhaseType phase, const Coord3D *pos);	// 0x004A43E9 (IAE): declared for beginStructureCollapse
+	void beginStructureCollapse(const DamageInfo *damageInfo);
+	void doCollapseDoneStuff();
+	Real getCollapseHeight() const;					// (IBE): module height, or the template geometry's max height when destroyed when done
+	void doPhaseStuff(StructureCollapsePhaseType phase, const Coord3D *pos);	// (IAE): declared for beginStructureCollapse
 
 public:
 	UnsignedInt m_collapseFrame;                   // +0x24; xfer UnsignedInt; beginStructureCollapse 0x004A459B stores the frame the collapse starts

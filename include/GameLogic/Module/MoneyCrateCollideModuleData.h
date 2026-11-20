@@ -24,7 +24,7 @@ class MoneyCrateCollideModuleData : public CrateCollideModuleData
 public:
 	MoneyCrateCollideModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
-	static ModuleData *friend_newModuleData(INI *ini);	// 0x00256310
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UnsignedInt m_moneyProvided;                           // +0x5C MoneyProvided
 };

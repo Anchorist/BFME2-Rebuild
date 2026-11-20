@@ -85,12 +85,12 @@ public:
 	KindOfMaskType *getNthOnlyAgainstMask(WeaponSlotType n);		// 0x002C74D9
 	ModelConditionFlags *getNthOnlyInCondition(WeaponSlotType n);	// 0x002C74EA
 
-	void parseWeaponTemplateSet(INI *ini, const ThingTemplate *tmpl);	// 0x002C8C7B
+	void parseWeaponTemplateSet(INI *ini, const ThingTemplate *tmpl);
 
 private:
-	static void parseWeapon(INI *ini, void *instance, void *store, const void *userData);			// 0x002C726C
-	static void parseAutoChoose(INI *ini, void *instance, void *store, const void *userData);		// 0x002C729F
-	static void parsePreferredAgainst(INI *ini, void *instance, void *store, const void *userData);	// 0x002C8C16
+	static void parseWeapon(INI *ini, void *instance, void *store, const void *userData);
+	static void parseAutoChoose(INI *ini, void *instance, void *store, const void *userData);
+	static void parsePreferredAgainst(INI *ini, void *instance, void *store, const void *userData);
 
 public:
 	// The OnlyAgainst (0x002C8C47) and OnlyInCondition (0x002C883E) parsers are

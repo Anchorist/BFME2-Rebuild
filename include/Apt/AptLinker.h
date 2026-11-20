@@ -57,7 +57,7 @@ typedef char AptLinkNodeSize[(sizeof(BfmeNodeVMU) == 8) ? 1 : -1];
 class BfmeListVMU
 {
 public:
-    // 0x006D1C90: removes the node an iterator names (the iterator is a pointer to the node pointer).
+    // Removes the node an iterator names (the iterator is a pointer to the node pointer).
     void bfmeEraseVMU(BfmeNodeVMU **it);
     // 0x006D15B0 (the map files it as rva006D15B0 on the placeholder class Rva006D15B0Stack): pushes a node for a link on the head and takes a count on the link.
     void pushLink(AptLoadLink *const *link);
@@ -75,7 +75,7 @@ typedef char AptLinkListSize[(sizeof(BfmeListVMU) == 4) ? 1 : -1];
 class AptLinker : public BfmeListVMU
 {
 public:
-    void Load(const EAStringC &file, EAStringC target); // 0x006D1F80
+    void Load(const EAStringC &file, EAStringC target);
     // 0x006D2580 (the map files it as bfmeDrop on the placeholder class BfmeTracker4310): erases the node whose link targets the given clip.
     void bfmeDrop(AptCIH *target);
     // 0x006D1450 (the map files it as rva006D1450 on AptLinker): registers a counted file handle on the linker's pending vector (at +4) unless it is there already.

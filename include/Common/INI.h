@@ -1,8 +1,8 @@
 // INI.h: SAGE INI reader, field-parse tables and the shared field parsers.
 // Target facts: a module data's buildFieldParse passes its FieldParse table and
-// offset 0 to MultiIniFieldParse::add (old repo ModuleDataBuildFieldParse.cpp,
-// FIELD_PROC); FieldParse entries are 0x10 bytes {token, parse, userData, offset}
-// (old repo Code/GameEngine/Include/Common/INI/FieldParse.h). Parser names are
+// offset 0 to MultiIniFieldParse::add (FIELD_PROC);
+// FieldParse entries are 0x10 bytes {token, parse, userData, offset}.
+// Parser names are
 // Zero Hour's INI.h spellings.
 #pragma once
 #ifndef BFME2_INI_H
@@ -59,6 +59,7 @@ public:
     static void parseDrawGroupNumberDefinition(INI *);
     static void parseOnlineChatColorDefinition(INI *); // 0x001EF471, GameNetwork/GameSpy/Chat.cpp
     static void parseMultiplayerSettingsDefinition(INI *);
+    static void parseMultiplayerColorDefinition(INI *);
     static void parseTerrainRoadDefinition(INI *);
     static void parseTerrainBridgeDefinition(INI *);
     static void parseControlBarSchemeDefinition(INI *);
@@ -68,6 +69,7 @@ public:
     // Retail block callbacks 0x001EFFC6 and 0x001F0016.
     static void parseObjectDefinition(INI *);
     static void parseObjectReskinDefinition(INI *);
+    static void parseChildObjectDefinition(INI *);
     void initFromINI(void *,const FieldParse *);
     // 0x0002DEB5: builds a MultiIniFieldParse through proc, then initFromINIMulti.
     // Every ModuleFactory friend_newModuleData factory calls this on a non-null ini.
@@ -82,7 +84,7 @@ public:
 	const char *getNextToken(const char *seps = 0);
     File *m_file;
     AsciiString m_filename;
-    INILoadType m_loadType; // +8, old canonical INI.h and MiscEvaData parser
+    INILoadType m_loadType; // +8
     unsigned int m_previousLine,m_currentLine; //getLineNum2BBED/getPreviousLineNum2BC29
     char m_buffer[0x404]; //14
     const char *m_seps,*m_sepsPercent; //418/41C

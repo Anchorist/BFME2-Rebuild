@@ -37,9 +37,9 @@ class AIDockMachine : public StateMachine
 {
 public:
 	AIDockMachine(Object *owner);				// 0x005448A1
-	virtual ~AIDockMachine();					// 0x005440BC
+	virtual ~AIDockMachine();
 
-	static Bool ableToAdvance(State *thisState, void *userData);	// 0x005440F6
+	static Bool ableToAdvance(State *thisState, void *userData);
 	virtual void halt();						// slot 15, 0x005440CD: cancels the dock, then StateMachine::halt
 
 	Int m_approachPosition;						// +0x3C; the move-to-entry state resets it to -1
@@ -54,9 +54,9 @@ class AIDockWaitForClearanceState : public State
 {
 public:
 	AIDockWaitForClearanceState(StateMachine *machine);	// 0x00544095 (name hash 0xD2719020)
-	virtual StateReturnType onEnter();			// 0x0054420A
-	virtual StateReturnType update();			// 0x00544218
-	virtual void onExit(StateExitType status);	// 0x0054428B
+	virtual StateReturnType onEnter();
+	virtual StateReturnType update();
+	virtual void onExit(StateExitType status);
 
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x005440B6
@@ -78,11 +78,11 @@ class AIDockApproachState : public AIInternalMoveToState
 public:
 	AIDockApproachState(StateMachine *machine) : AIInternalMoveToState(machine, 0x26F20F3B) {}
 	virtual StateReturnType onEnter();			// 0x00544133 (map placeholder Rva005447ED: the ctor 0x005447ED stores table 0x00C69AB0)
-	virtual void onExit(StateExitType status);	// 0x005441AF
-	virtual StateReturnType update();			// 0x00544348
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
-	virtual void xfer(Xfer *xfer);				// 0x00341979 (AIStates.cpp): version 1, then the move state's
+	virtual void xfer(Xfer *xfer);				// (AIStates.cpp): version 1, then the move state's
 
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x0054480A
@@ -150,12 +150,12 @@ class AIDockProcessDockState : public State
 {
 public:
 	AIDockProcessDockState(StateMachine *machine) : State(machine, 0x90B65C1D), m_nextDockActionFrame(0), m_droneID(INVALID_ID) {}
-	virtual StateReturnType onEnter();			// 0x00544646
-	virtual StateReturnType update();			// 0x00544B96
-	virtual void onExit(StateExitType status);	// 0x00544670
+	virtual StateReturnType onEnter();
+	virtual StateReturnType update();
+	virtual void onExit(StateExitType status);
 
-	void setNextDockActionFrame();				// 0x005445FF
-	Object *findMyDrone();						// 0x00544B41
+	void setNextDockActionFrame();
+	Object *findMyDrone();
 
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x005445F9

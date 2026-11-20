@@ -76,9 +76,9 @@ class AIDeadState : public State
 {
 public:
 	AIDeadState(StateMachine *machine) : State(machine, 0x1F4FA782) {}					// 0x0033F51D (CRC-32 0x1F4FA782)
-	virtual StateReturnType onEnter();					// 0x0034707A
-	virtual void onExit(StateExitType status);			// 0x00347110
-	virtual StateReturnType update();					// 0x0033FF05
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// 0x0033F53A
@@ -90,9 +90,9 @@ class AICowerState : public State
 {
 public:
 	AICowerState(StateMachine *machine) : State(machine, 0x16C0B5AF) {}				// 0x0033F7C8 (CRC-32 0x16C0B5AF)
-	virtual StateReturnType onEnter();					// 0x00344598
-	virtual void onExit(StateExitType status);			// 0x003402FC
-	virtual StateReturnType update();					// 0x00352BD0
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 	virtual Bool unknownQuery17() const;				// slot 17 (shared 0x0050B5C6, true)
 
 protected:
@@ -106,8 +106,8 @@ class AIQuarrelState : public State
 public:
 	AIQuarrelState(StateMachine *machine) : State(machine, 0x1373A8A0) {}				// 0x0033F7EB (CRC-32 0x1373A8A0)
 	virtual StateReturnType onEnter();					// 0x00347E4C
-	virtual void onExit(StateExitType status);			// 0x00340342
-	virtual StateReturnType update();					// 0x0034036F
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// 0x0033F808
@@ -123,9 +123,9 @@ class AIWaitUntilFinishedFiringState : public State
 {
 public:
 	AIWaitUntilFinishedFiringState(StateMachine *machine) : State(machine, 0xE4F2D93D) {}
-	virtual StateReturnType onEnter();					// 0x00345F94
-	virtual void onExit(StateExitType status);			// 0x00341391
-	virtual StateReturnType update();					// 0x0034133E
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 	virtual Bool unknownQuery15() const;				// slot 15 (shared 0x0050B5C6)
 
 protected:
@@ -143,7 +143,7 @@ public:
 	AIFaceDirectionState(StateMachine *machine) : State(machine, 0x6649A02E), m_desiredAngle(0.0f) {}
 	virtual StateReturnType onEnter();					// 0x00342572
 	virtual void onExit(StateExitType status);			// 0x003425A0
-	virtual StateReturnType update();					// 0x003425BF
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// 0x0034256C
@@ -162,12 +162,12 @@ public:
 	AIIdleState(StateMachine *machine, Int shouldLookForTargets)
 		: State(machine, 0x8821F22E), m_initialSleepOffset(0xFFFF), m_unk0x22(5), m_inited(shouldLookForTargets == 0), m_shouldLookForTargets(false) {}	// 0x0033FE65 (map placeholder Rva0033FE65; CRC-32 "AIIdleState" 0x8821F22E)
 	virtual StateReturnType onEnter();					// 0x00346FD0
-	virtual StateReturnType update();					// 0x0035389E
+	virtual StateReturnType update();
 	virtual Bool isAttack() const;						// slot 8 (shared 0x0050B5C6, true)
 
 protected:
 	virtual const char *GetSnapshotName() const;		// 0x0033FE9D
-	virtual void xfer(Xfer *xfer);						// 0x0033FEA3
+	virtual void xfer(Xfer *xfer);
 
 	UnsignedShort m_initialSleepOffset;					// +0x20
 	UnsignedShort m_unk0x22;							// +0x22, version 2
@@ -175,7 +175,7 @@ protected:
 	Bool m_shouldLookForTargets;						// +0x25
 
 private:
-	void doInitIdleState();								// 0x0034405D
+	void doInitIdleState();
 };
 // SIZE 0x28
 
@@ -186,12 +186,12 @@ class AIFaceState : public AIIdleState
 {
 public:
 	AIFaceState(StateMachine *machine, Int faceType);	// 0x00342FCD (calls AIIdleState's; states 36, 37, 59 pass 1, 0, 2)
-	virtual void onExit(StateExitType status);			// 0x003423A6
-	virtual StateReturnType update();					// 0x0035487E
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// 0x00342FF2
-	virtual void xfer(Xfer *xfer);						// 0x0034236F
+	virtual void xfer(Xfer *xfer);
 
 	UnsignedInt m_unk0x28;								// +0x28
 	Bool m_canTurnInPlace;								// +0x2C
@@ -205,14 +205,14 @@ class AIRampageState : public State
 {
 public:
 	AIRampageState(StateMachine *machine) : State(machine, 0x0CAC7338), m_unk0x20(false), m_unk0x24(0), m_unk0x28((UnsignedInt)-1) {}			// 0x0033F80E (map placeholder; CRC-32 0x0CAC7338)
-	virtual StateReturnType onEnter();					// 0x0034BD1B
-	virtual void onExit(StateExitType status);			// 0x0034BDF8
-	virtual StateReturnType update();					// 0x0034FE10
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 	void fireRampageWeapon(Object *obj);				// 0x0034BE57 (the map files it as rva0034BE57): with the rampage flag set it fires the current weapon at the object's own position when ready; otherwise it sets the flag and object status 0xD when the weapon is ready
 
 protected:
 	virtual const char *GetSnapshotName() const;		// 0x0033F837
-	virtual void xfer(Xfer *xfer);						// 0x00342469
+	virtual void xfer(Xfer *xfer);
 
 	Bool m_unk0x20;										// +0x20
 	UnsignedInt m_unk0x24;								// +0x24
@@ -226,13 +226,13 @@ class AIExitState : public State
 {
 public:
 	AIExitState(StateMachine *machine, Bool unk) : State(machine, 0xDFB3DBC7), m_entryToClear(INVALID_ID), m_unk0x24(unk) {}		// 0x0033F64E (map placeholder; CRC-32 0xDFB3DBC7)
-	virtual StateReturnType onEnter();					// 0x00341B11
-	virtual void onExit(StateExitType status);			// 0x0035118A
-	virtual StateReturnType update();					// 0x00341B4E
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// 0x0033F676
-	virtual void xfer(Xfer *xfer);						// 0x00341ACD
+	virtual void xfer(Xfer *xfer);
 
 	ObjectID m_entryToClear;							// +0x20
 	Bool m_unk0x24;										// +0x24, version 2
@@ -245,14 +245,14 @@ class AIHordeExitState : public State
 {
 public:
 	AIHordeExitState(StateMachine *machine, Bool unk) : State(machine, 0x55A8130B), m_unk0x20(unk) {}	// 0x0033F5B9 (map placeholder; CRC-32 0x55A8130B)
-	virtual StateReturnType onEnter();					// 0x00341A1B
-	virtual void onExit(StateExitType status);			// 0x00341A61
-	virtual StateReturnType update();					// 0x003462E1
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 	virtual Bool unknownQuery12() const;				// slot 12 (shared 0x0050B5C6, true)
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x00341A95
+	virtual void xfer(Xfer *xfer);
 
 	Bool m_unk0x20;										// +0x20, version 2
 };
@@ -270,7 +270,7 @@ public:
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x00341237
+	virtual void xfer(Xfer *xfer);
 
 	Bool m_unk0x20;										// +0x20
 	Bool m_canTurnInPlace;								// +0x21
@@ -282,13 +282,13 @@ protected:
 class AIAttackPositionAimAtTargetState : public State
 {
 public:
-	StateReturnType updateInternal(Bool unk);			// 0x0034A570; update 0x0034A871 passes false
-	virtual StateReturnType update();					// 0x0034A871
+	StateReturnType updateInternal(Bool unk);			// Update 0x0034A871 passes false
+	virtual StateReturnType update();
 	virtual void onExit(StateExitType status);
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x00341275
+	virtual void xfer(Xfer *xfer);
 
 	Bool m_unk0x20;										// +0x20
 	Bool m_unk0x21;										// +0x21
@@ -302,12 +302,12 @@ class AIUncontrollableCower : public AICowerState
 {
 public:
 	AIUncontrollableCower(StateMachine *machine);		// 0x00340391
-	virtual StateReturnType onEnter();					// 0x00347EA8
-	virtual void onExit(StateExitType status);			// 0x00347EFA
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x003403B3
+	virtual void xfer(Xfer *xfer);
 
 	Bool m_unk0x20;										// +0x20
 };
@@ -319,13 +319,13 @@ class AIGoingIdleState : public State
 {
 public:
 	AIGoingIdleState(StateMachine *machine);			// 0x0033F701
-	virtual ~AIGoingIdleState();						// 0x00341E22
-	virtual StateReturnType onEnter();					// 0x00341E48
-	virtual StateReturnType update();					// 0x00488988 (the map spells it non-virtual)
+	virtual ~AIGoingIdleState();
+	virtual StateReturnType onEnter();
+	virtual StateReturnType update();					// (the map spells it non-virtual)
 
 protected:
 	virtual const char *GetSnapshotName() const;		// 0x0033F71E
-	virtual void xfer(Xfer *xfer);						// 0x00341E2D
+	virtual void xfer(Xfer *xfer);
 };
 // SIZE 0x20
 
@@ -340,13 +340,13 @@ public:
 	AIGuardState(StateMachine *machine);				// 0x0033F6DA
 	virtual StateReturnType onEnter();
 	virtual void onExit(StateExitType status);
-	virtual StateReturnType update();					// 0x00341DFC
-	virtual Bool isAttack() const;						// 0x00341D81
+	virtual StateReturnType update();
+	virtual Bool isAttack() const;
 
 	virtual Bool isGuardIdle() const;					// slot 9 (fold 0x0050B5C6, returns true)
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x00341D9B
+	virtual void xfer(Xfer *xfer);
 
 	StateMachine *m_guardMachine;						// +0x20
 };
@@ -355,7 +355,7 @@ class AIAttackSquadState : public State
 {
 public:
 	AIAttackSquadState(StateMachine *machine, Int unk);	// 0x0033F4DF
-	virtual ~AIAttackSquadState();						// 0x0034149B (halts and deletes the machine)
+	virtual ~AIAttackSquadState();						// (halts and deletes the machine)
 	virtual StateReturnType onEnter();
 	virtual StateReturnType update();
 
@@ -365,7 +365,7 @@ public:
 	virtual Bool unknownQuery15() const;				// slot 15, 0x0033F504
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x003414F6
+	virtual void xfer(Xfer *xfer);
 
 	StateMachine *m_attackSquadMachine;					// +0x20
 	Bool m_unk0x24;										// +0x24: the ctor 0x0033F4DF clears it (SIZE 0x28 from AIStateMachine's new)
@@ -376,17 +376,17 @@ class AIAttackAreaState : public State
 {
 public:
 	AIAttackAreaState(StateMachine *machine);			// 0x0033F79D
-	virtual ~AIAttackAreaState();						// 0x00342228
+	virtual ~AIAttackAreaState();
 	virtual StateReturnType onEnter();
-	virtual void onExit(StateExitType status);			// 0x0034234C
-	virtual StateReturnType update();					// 0x0034680D
-	virtual Bool isAttack() const;						// 0x003422EF
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
+	virtual Bool isAttack() const;
 
 	virtual Bool isGuardIdle() const;					// slot 9 (AIAttackState's body 0x0034B167)
 	virtual Bool unknownQuery14() const;				// slot 14 (fold 0x0050B5C6)
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x00342283
+	virtual void xfer(Xfer *xfer);
 
 	StateMachine *m_attackMachine;						// +0x20
 	UnsignedInt m_nextEnemyScanTime;					// +0x24
@@ -400,15 +400,15 @@ class AIGuardRetaliateState : public State
 {
 public:
 	AIGuardRetaliateState(StateMachine *machine);		// 0x0033F724
-	virtual ~AIGuardRetaliateState();					// 0x00341E70
-	virtual StateReturnType onEnter();					// 0x003463DA
+	virtual ~AIGuardRetaliateState();
+	virtual StateReturnType onEnter();
 
 	virtual void onExit(StateExitType status);			// slot 5 (0x00342120, shared with the tunnel guard)
 	virtual StateReturnType update();					// slot 6, 0x00341F5D
 	virtual Bool isGuardIdle() const;					// slot 9 (fold 0x0050B5C6)
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x00341ECB
+	virtual void xfer(Xfer *xfer);
 
 	AIGuardRetaliateMachine *m_retaliateMachine;		// +0x20
 };
@@ -417,15 +417,15 @@ class AITunnelNetworkGuardState : public State
 {
 public:
 	AITunnelNetworkGuardState(StateMachine *machine);	// 0x0033F74B
-	virtual ~AITunnelNetworkGuardState();				// 0x00341F99
-	virtual StateReturnType onEnter();					// 0x00342086
-	virtual StateReturnType update();					// 0x00346487
+	virtual ~AITunnelNetworkGuardState();
+	virtual StateReturnType onEnter();
+	virtual StateReturnType update();
 
 	virtual void onExit(StateExitType status);			// slot 5, 0x00342120
 	virtual Bool isGuardIdle() const;					// slot 9 (fold 0x0050B5C6)
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x00341FF4
+	virtual void xfer(Xfer *xfer);
 
 	AITNGuardMachine *m_guardMachine;					// +0x20
 };
@@ -437,9 +437,9 @@ class AIHuntState : public State
 {
 public:
 	AIHuntState(StateMachine *machine);				// 0x0033F772
-	virtual ~AIHuntState();								// 0x00342157
-	virtual void onExit(StateExitType status);			// 0x003421F4
-	virtual StateReturnType update();					// 0x003464D1
+	virtual ~AIHuntState();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 	virtual StateReturnType onEnter();					// slot 4, 0x003421B2
 	virtual Bool isAttack() const;						// slot 8 (the area state's body 0x003422EF)
@@ -460,12 +460,12 @@ class AIAttackMeleeHordeWaitPathState : public State
 {
 public:
 	AIAttackMeleeHordeWaitPathState(StateMachine *machine) : State(machine, 0xF17C0982), m_unk0x20(0), m_unk0x24(0) {}	// 0x0033F38B (map placeholder; CRC-32 0xF17C0982)
-	virtual StateReturnType onEnter();					// 0x00345076
-	virtual StateReturnType update();					// 0x003450DB
+	virtual StateReturnType onEnter();
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x0034074C
+	virtual void xfer(Xfer *xfer);
 
 	UnsignedInt m_unk0x20;								// +0x20
 	Int m_unk0x24;										// +0x24, version 2
@@ -481,14 +481,14 @@ class AIMoveToStateSA : public AIInternalMoveToState
 {
 public:
 	AIMoveToStateSA(StateMachine *machine);				// 0x003400CE
-	virtual StateReturnType onEnter();					// 0x0034C8C5
+	virtual StateReturnType onEnter();
 	virtual void onExit(StateExitType status);			// slot 5, 0x0034BA5F (folded forwarder)
-	virtual StateReturnType update();					// 0x00347A51
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x0034007E
-	virtual Bool computePath();							// 0x00347959
+	virtual void xfer(Xfer *xfer);
+	virtual Bool computePath();
 
 	UnsignedInt m_unk0x4C;								// +0x4C
 	Bool m_unk0x50;										// +0x50
@@ -503,14 +503,14 @@ protected:
 class AIAttackFireDuringApproachState : public AIInternalMoveToState
 {
 public:
-	virtual StateReturnType onEnter();					// 0x0034D4A2
+	virtual StateReturnType onEnter();
 	virtual void onExit(StateExitType status);			// slot 5, 0x0034BA5F (folded forwarder)
 	virtual StateReturnType update();					// slot 6, 0x003508C0
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x0034081A
-	virtual Bool computePath();							// 0x00350497
+	virtual void xfer(Xfer *xfer);
+	virtual Bool computePath();
 
 	UnsignedInt m_unk0x4C;								// +0x4C
 	Coord3D m_unk0x50;									// +0x50
@@ -522,14 +522,14 @@ protected:
 class AIAttackMeleeApproachState : public AIInternalMoveToState
 {
 public:
-	virtual StateReturnType onEnter();					// 0x0034D5B7
+	virtual StateReturnType onEnter();
 	virtual void onExit(StateExitType status);			// slot 5, 0x0034BA5F (folded forwarder)
 	virtual StateReturnType update();					// slot 6, 0x003497C2
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x0034087C
-	virtual Bool computePath();							// 0x00345393
+	virtual void xfer(Xfer *xfer);
+	virtual Bool computePath();
 
 	UnsignedInt m_unk0x4C;								// +0x4C
 	Coord3D m_unk0x50;									// +0x50
@@ -541,14 +541,14 @@ protected:
 class AIAttackMeleeSquishState : public AIInternalMoveToState
 {
 public:
-	virtual StateReturnType onEnter();					// 0x0034D886
-	virtual void onExit(StateExitType status);			// 0x003497C7
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
 	virtual StateReturnType update();					// slot 6, 0x0034DC00
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x00340A92
-	virtual Bool computePath();							// 0x003408C4
+	virtual void xfer(Xfer *xfer);
+	virtual Bool computePath();
 
 	UnsignedInt m_unk0x4C;								// +0x4C
 	Coord3D m_unk0x50;									// +0x50
@@ -562,13 +562,13 @@ class AIMoveAndEvacuateState : public AIInternalMoveToState
 {
 public:
 	AIMoveAndEvacuateState(StateMachine *machine);		// 0x00342D76
-	virtual StateReturnType onEnter();					// 0x0034EB7E
-	virtual void onExit(StateExitType status);			// 0x00349FD0
-	virtual StateReturnType update();					// 0x00353C27
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x00340E70
+	virtual void xfer(Xfer *xfer);
 
 	Coord3D m_origin;									// +0x4C
 };
@@ -580,13 +580,13 @@ class AIMoveAndDeleteState : public AIInternalMoveToState
 {
 public:
 	AIMoveAndDeleteState(StateMachine *machine);		// 0x00342DAB
-	virtual StateReturnType onEnter();					// 0x0034ECDB
-	virtual void onExit(StateExitType status);			// 0x0034A0CB
-	virtual StateReturnType update();					// 0x0034A02D
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x00340F42
+	virtual void xfer(Xfer *xfer);
 
 	Bool m_appendGoalPosition;							// +0x4C
 };
@@ -599,13 +599,13 @@ class AIWanderInPlaceState : public AIInternalMoveToState
 {
 public:
 	AIWanderInPlaceState(StateMachine *machine);		// 0x00342CBF
-	virtual StateReturnType onEnter();					// 0x0034F2F7
-	virtual void onExit(StateExitType status);			// 0x0034A364
-	virtual StateReturnType update();					// 0x0034F3EB
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x003411BD
+	virtual void xfer(Xfer *xfer);
 
 	Coord3D m_origin;									// +0x4C
 	Int m_unk0x58;										// +0x58
@@ -619,12 +619,12 @@ class AIEnterAndAttackState : public AIInternalMoveToState
 {
 public:
 	AIEnterAndAttackState(StateMachine *machine);		// 0x00342EFA
-	virtual StateReturnType onEnter();					// 0x0034FD0D
-	virtual StateReturnType update();					// 0x003546FD
+	virtual StateReturnType onEnter();
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2
-	virtual void xfer(Xfer *xfer);						// 0x00341994
+	virtual void xfer(Xfer *xfer);
 
 	ObjectID m_unk0x4C;									// +0x4C
 	ObjectID m_unk0x50;									// +0x50
@@ -640,14 +640,14 @@ class AIDockState : public State
 {
 public:
 	AIDockState(StateMachine *machine);					// 0x0033F540
-	virtual ~AIDockState();								// 0x0034159A
-	virtual StateReturnType onEnter();					// 0x00341695
-	virtual void onExit(StateExitType status);			// 0x00341723
-	virtual StateReturnType update();					// 0x00341770
+	virtual ~AIDockState();
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
-	virtual const char *GetSnapshotName() const;		// 0x0033F565
-	virtual void xfer(Xfer *xfer);						// 0x003415F5
+	virtual const char *GetSnapshotName() const;
+	virtual void xfer(Xfer *xfer);
 
 	StateMachine *m_dockMachine;						// +0x20
 	Bool m_usingPrecisionMovement;						// +0x24
@@ -664,14 +664,14 @@ class AIBackAwayAndCowerState : public State
 {
 public:
 	AIBackAwayAndCowerState(StateMachine *machine);	// 0x0033F33D
-	virtual ~AIBackAwayAndCowerState();					// 0x003401E4
-	virtual StateReturnType onEnter();					// 0x00347C38
-	virtual void onExit(StateExitType status);			// 0x0034025E
-	virtual StateReturnType update();					// 0x0034022F
+	virtual ~AIBackAwayAndCowerState();
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
-	virtual const char *GetSnapshotName() const;		// 0x0033F35E
-	virtual void xfer(Xfer *xfer);						// 0x0034027D
+	virtual const char *GetSnapshotName() const;
+	virtual void xfer(Xfer *xfer);
 
 	BackAwayAndCowerStateMachine *m_cowerMachine;		// +0x20
 };
@@ -684,16 +684,16 @@ protected:
 class AIAttackMeleeHordeWaitState : public State
 {
 public:
-	AIAttackMeleeHordeWaitState(StateMachine *machine);	// 0x0033F364
-	const char *name() const;							// 0x0033F385
-	virtual StateReturnType onEnter();					// 0x00344F57
-	virtual void onExit(StateExitType status);			// 0x00345207
-	virtual StateReturnType update();					// 0x003492BD
+	AIAttackMeleeHordeWaitState(StateMachine *machine);
+	const char *name() const;
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 	virtual void unknownNotify16();						// slot 16, 0x00340744
 
 protected:
 	virtual const char *GetSnapshotName() const;		// slot 2, 0x0033F385
-	virtual void xfer(Xfer *xfer);						// 0x0034071A
+	virtual void xfer(Xfer *xfer);
 
 	UnsignedInt m_unk0x20;								// +0x20
 };
@@ -714,7 +714,7 @@ class AIMoveOutOfTheWayState : public AIInternalMoveToState
 {
 public:
 	AIMoveOutOfTheWayState(StateMachine *machine);			// 0x00342826
-	virtual StateReturnType onEnter();						// 0x0034C994
+	virtual StateReturnType onEnter();
 	virtual void onExit(StateExitType status);				// 0x00347AAC
 	virtual StateReturnType update();						// 0x00349D8D
 
@@ -732,13 +732,13 @@ class AIMoveAndTightenState : public AIInternalMoveToState
 public:
 	AIMoveAndTightenState(StateMachine *machine);						// 0x00342843
 	AIMoveAndTightenState(StateMachine *machine, UnsignedInt name);	// 0x0034286E
-	virtual StateReturnType onEnter();						// 0x0034C9ED
-	virtual StateReturnType update();						// 0x00347AE8
+	virtual StateReturnType onEnter();
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00342868
 	virtual void xfer(Xfer *xfer);							// 0x00340123
-	virtual Bool computePath();								// 0x00340158
+	virtual Bool computePath();
 
 	Int m_okToRepathTimes;									// +0x4C (Zero Hour's name): the derived computePaths count it down
 	Bool m_checkForPath;									// +0x50 (Zero Hour's name)
@@ -753,12 +753,12 @@ class AIMoveAwayFromRepulsorsState : public AIMoveAndTightenState
 {
 public:
 	AIMoveAwayFromRepulsorsState(StateMachine *machine);			// 0x00342892 (CRC-32 0xD5F5D4FA)
-	virtual StateReturnType onEnter();						// 0x0034CAF6
-	virtual void onExit(StateExitType status);				// 0x00347BA3
-	virtual StateReturnType update();						// 0x00347BD2
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
-	virtual Bool computePath();								// 0x003401AF
+	virtual Bool computePath();
 };
 // SIZE 0x54
 
@@ -766,12 +766,12 @@ class AIMoveAwayPanicState : public AIMoveAndTightenState
 {
 public:
 	AIMoveAwayPanicState(StateMachine *machine);			// 0x003428AF (CRC-32 0xE3F474A1)
-	virtual StateReturnType onEnter();						// 0x0034CA53
+	virtual StateReturnType onEnter();
 	virtual void onExit(StateExitType status);				// 0x00347BA3 (shared)
-	virtual StateReturnType update();						// 0x00347B3D
+	virtual StateReturnType update();
 
 protected:
-	virtual Bool computePath();								// 0x0034017A
+	virtual Bool computePath();
 };
 // SIZE 0x54
 
@@ -779,12 +779,12 @@ class AIFearState : public AIMoveAndTightenState
 {
 public:
 	AIFearState(StateMachine *machine);						// 0x003428CC (CRC-32 0xE4366E82)
-	virtual StateReturnType onEnter();						// 0x00354D0D
-	virtual void onExit(StateExitType status);				// 0x00347E0A
-	virtual StateReturnType update();						// 0x00347CA3
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
-	virtual Bool computePath();								// 0x0034029B
+	virtual Bool computePath();
 
 	UnsignedInt m_unk0x54;									// +0x54
 	UnsignedInt m_unk0x58;									// +0x58
@@ -795,14 +795,14 @@ class AIMoveAwayAndCowerState : public AIMoveAndTightenState
 {
 public:
 	AIMoveAwayAndCowerState(StateMachine *machine);			// 0x00342FF8 (CRC-32 0x0C947CC9)
-	virtual StateReturnType onEnter();						// 0x0034CBAB
-	virtual void onExit(StateExitType status);				// 0x00347F48
-	virtual StateReturnType update();						// 0x00347F76
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00343015
 	virtual void xfer(Xfer *xfer);							// 0x00340411
-	virtual Bool computePath();								// 0x003403DC
+	virtual Bool computePath();
 };
 // SIZE 0x54
 
@@ -814,9 +814,9 @@ class AIBurningDeathState : public AIInternalMoveToState
 {
 public:
 	AIBurningDeathState(StateMachine *machine);				// 0x00342CFC
-	virtual StateReturnType onEnter();						// 0x0035017B
+	virtual StateReturnType onEnter();
 	virtual void onExit(StateExitType status);				// 0x00346B6D
-	virtual StateReturnType update();						// 0x0035025B
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00342CF6 (folded)
@@ -834,11 +834,11 @@ class AIFollowWaypointPathState : public AIInternalMoveToState
 public:
 	AIFollowWaypointPathState(StateMachine *machine, Bool asGroup);				// 0x00342BAE
 	AIFollowWaypointPathState(StateMachine *machine, Bool asGroup, Bool unk);	// 0x00342BFC
-	virtual StateReturnType onEnter();						// 0x0034ED7B
-	virtual void onExit(StateExitType status);				// 0x0034A0D7
-	const Waypoint *getNextWaypoint();						// 0x00340F7C
-	Real calcExtraPathDistance();							// 0x00340FCD
-	void computeGoal(Bool useGroupOffsets);					// 0x00345D00
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	const Waypoint *getNextWaypoint();
+	Real calcExtraPathDistance();
+	void computeGoal(Bool useGroupOffsets);
 
 protected:
 	virtual void xfer(Xfer *xfer);							// 0x0034103B (tables 0x00C12930 and 0x00C12998)
@@ -868,9 +868,9 @@ class AIFollowWaypointPathStateAndEvacuate : public AIFollowWaypointPathState
 {
 public:
 	AIFollowWaypointPathStateAndEvacuate(StateMachine *machine, Bool asGroup);	// 0x00342C47
-	virtual StateReturnType onEnter();						// 0x0034F004
-	virtual void onExit(StateExitType status);				// 0x0034A105
-	virtual StateReturnType update();						// 0x003541F4
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00342C63
@@ -881,9 +881,9 @@ class AIWanderState : public AIFollowWaypointPathState
 {
 public:
 	AIWanderState(StateMachine *machine);					// 0x00342C97
-	virtual StateReturnType onEnter();						// 0x0034F1E1
-	virtual void onExit(StateExitType status);				// 0x0034A323
-	virtual StateReturnType update();						// 0x0034A1BB
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00342CB9
@@ -898,9 +898,9 @@ class AIPanicState : public AIFollowWaypointPathState
 {
 public:
 	AIPanicState(StateMachine *machine);					// 0x00342D19
-	virtual StateReturnType onEnter();						// 0x0034F505
-	virtual void onExit(StateExitType status);				// 0x0034A4DB
-	virtual StateReturnType update();						// 0x0034A38E
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00342D3B
@@ -916,9 +916,9 @@ class AIFollowWaypointPathExactState : public AIInternalMoveToState
 {
 public:
 	AIFollowWaypointPathExactState(StateMachine *machine, Bool asGroup);	// 0x00342C69
-	virtual StateReturnType update();						// 0x0034A167
-	virtual void onExit(StateExitType status);				// 0x0034A121 (slot 5: base onExit, then the AI's completed waypoint, path-through-units off, locomotor flag bit 1 cleared)
-	virtual void xfer(Xfer *xfer);							// 0x00341114
+	virtual StateReturnType update();
+	virtual void onExit(StateExitType status);				// (slot 5: base onExit, then the AI's completed waypoint, path-through-units off, locomotor flag bit 1 cleared)
+	virtual void xfer(Xfer *xfer);
 
 	const Waypoint *m_lastWaypoint;							// +0x4C (Zero Hour name; the xfer transfers its ID)
 	UnsignedInt m_unk0x50;									// +0x50
@@ -934,12 +934,12 @@ protected:
 class AIFollowPathState : public AIInternalMoveToState
 {
 public:
-	virtual StateReturnType onEnter();						// 0x0034DEF8 (AIFollowPathAndEvacuateState::onEnter 0x0035014D tail-calls it)
+	virtual StateReturnType onEnter();						// (AIFollowPathAndEvacuateState::onEnter 0x0035014D tail-calls it)
 	AIFollowPathState(StateMachine *machine, UnsignedInt name);	// 0x00342D41
-	virtual void onExit(StateExitType status);				// 0x00349D92
+	virtual void onExit(StateExitType status);
 
 protected:
-	virtual Bool computePath();								// 0x00345B89
+	virtual Bool computePath();
 	virtual void xfer(Xfer *xfer);							// 0x00340CB0: version 2; unless a light CRC Int +0x4C, Bools +0x50/+0x51, (v2) Int +0x54
 public:
 
@@ -957,8 +957,8 @@ class AIFollowPathAndEvacuateState : public AIFollowPathState
 {
 public:
 	AIFollowPathAndEvacuateState(StateMachine *machine);	// 0x00342E35
-	virtual StateReturnType onEnter();						// 0x0035014D: chooses the evacuate locomotor set, then the follow-path state's onEnter
-	virtual void onExit(StateExitType status);				// 0x0034C0B4
+	virtual StateReturnType onEnter();						// Chooses the evacuate locomotor set, then the follow-path state's onEnter
+	virtual void onExit(StateExitType status);
 
 protected:
 	virtual void xfer(Xfer *xfer);							// 0x0034252C: version 1 and the follow-path state's xfer
@@ -975,8 +975,8 @@ protected:
 class AIFollowPathAsTeamState : public AIInternalMoveToState
 {
 public:
-	AIFollowPathAsTeamState(StateMachine *machine, Bool unk, UnsignedInt name);	// 0x0034E307
-	virtual void onExit(StateExitType status);				// 0x00349E15
+	AIFollowPathAsTeamState(StateMachine *machine, Bool unk, UnsignedInt name);
+	virtual void onExit(StateExitType status);
 	virtual Bool isGuardIdle() const;						// slot 9, 0x00340E39
 
 	Int m_unk0x4C;											// +0x4C (the constructor 0x0034E307 zeroes it)
@@ -1001,9 +1001,9 @@ protected:
 class AIAttackMoveToState : public AIMoveToState
 {
 public:
-	AIAttackMoveToState(StateMachine *machine);				// 0x0034EBE8
-	virtual StateReturnType onEnter();						// 0x0034EC7B
-	virtual void onExit(StateExitType status);				// 0x0034A011
+	AIAttackMoveToState(StateMachine *machine);
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
 	virtual Bool isGuardIdle() const;						// slot 9, 0x00340F25 (true while the attack-move machine is not in an attack state)
 
 	Int m_unk0x50;											// +0x50 (the command source: onEnter stores AIUpdateInterface slot 143's value; version 2 transfers it with XferCommandSourceType 0x00305C02)
@@ -1025,9 +1025,9 @@ protected:
 class AIAttackFollowWaypointPathState : public AIFollowWaypointPathState
 {
 public:
-	AIAttackFollowWaypointPathState(StateMachine *machine, Bool asGroup);	// 0x0034F153
-	virtual StateReturnType onEnter();						// 0x0034F1C4
-	virtual void onExit(StateExitType status);				// 0x0034A19F
+	AIAttackFollowWaypointPathState(StateMachine *machine, Bool asGroup);
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
 
 protected:
 	virtual void xfer(Xfer *xfer);							// 0x0034117C: version 1, the waypoint state's xfer, the machine's snapshot
@@ -1062,12 +1062,12 @@ class AIMoveOntoWallState : public State
 public:
 	AIMoveOntoWallState(StateMachine *machine);				// 0x0033FC1B
 	virtual ~AIMoveOntoWallState();							// deleting 0x00343CBA
-	virtual StateReturnType onEnter();						// 0x00343D63
+	virtual StateReturnType onEnter();
 	virtual StateReturnType update();						// 0x0033FC9D
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x0033FC3C
-	virtual void xfer(Xfer *xfer);							// 0x00343CD6
+	virtual void xfer(Xfer *xfer);
 
 	UnsignedInt m_unk0x20;									// +0x20
 };
@@ -1079,13 +1079,13 @@ class AIHarvestState : public State
 public:
 	AIHarvestState(StateMachine *machine);					// 0x0033F56B
 	virtual ~AIHarvestState();								// deleting 0x00342E90
-	virtual StateReturnType onEnter();						// 0x00341891
-	virtual void onExit(StateExitType status);				// 0x003418EA
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
 	virtual StateReturnType update();						// 0x00341770 (the body AIDockState's table shares)
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x0033F590
-	virtual void xfer(Xfer *xfer);							// 0x003417F1
+	virtual void xfer(Xfer *xfer);
 
 	StateMachine *m_harvestMachine;							// +0x20
 	UnsignedInt m_unk0x24;									// +0x24
@@ -1151,9 +1151,9 @@ class AIHordeEnterState : public State
 {
 public:
 	AIHordeEnterState(StateMachine *machine);				// 0x0033F596
-	virtual StateReturnType onEnter();						// 0x00346214
-	virtual void onExit(StateExitType status);				// 0x003462AE
-	virtual StateReturnType update();						// 0x003419C7
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 	virtual Bool unknownQuery11() const;					// slot 11 (shared 0x0050B5C6, true)
 
 protected:
@@ -1169,10 +1169,10 @@ class AIPickUpCrateState : public AIInternalMoveToState
 {
 public:
 	AIPickUpCrateState(StateMachine *machine);				// 0x00342B87
-	virtual StateReturnType update();						// 0x0034DEDE
+	virtual StateReturnType update();
 
 protected:
-	virtual Bool computePath();								// 0x00345B5F
+	virtual Bool computePath();
 
 	virtual void xfer(Xfer *xfer);							// 0x00340C2D: version 1, the move state's xfer, Int +0x4C, Coord3D +0x20
 
@@ -1188,8 +1188,8 @@ class AIMoveToPositionAndDieState : public AIInternalMoveToState
 {
 public:
 	AIMoveToPositionAndDieState(StateMachine *machine);		// 0x00342DD2
-	virtual StateReturnType onEnter();						// 0x0034FFBE
-	virtual StateReturnType update();						// 0x003513C9
+	virtual StateReturnType onEnter();
+	virtual StateReturnType update();
 
 protected:
 	virtual void xfer(Xfer *xfer);							// 0x00342502: version 1, the move state's xfer, Bool +0x4C
@@ -1210,9 +1210,9 @@ class AIMoveToPositionAndEnterState : public AIMoveToState
 {
 public:
 	AIMoveToPositionAndEnterState(StateMachine *machine);	// 0x00346CDD
-	virtual StateReturnType onEnter();						// 0x00350020
-	virtual void onExit(StateExitType status);				// 0x0034C035
-	virtual StateReturnType update();						// 0x00354945
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00346CF5
@@ -1223,7 +1223,7 @@ class AIMoveToAndEvacuateState : public AIMoveToState
 {
 public:
 	AIMoveToAndEvacuateState(StateMachine *machine);		// 0x00342DF9
-	virtual void onExit(StateExitType status);				// 0x0034C098
+	virtual void onExit(StateExitType status);
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00342E11
@@ -1244,7 +1244,7 @@ class AIMoveForBoarding : public AIMoveToState
 {
 public:
 	AIMoveForBoarding(StateMachine *machine);				// 0x00343077
-	virtual StateReturnType onEnter();						// 0x00350164: chooses the evacuate locomotor set, then AIMoveToState::onEnter
+	virtual StateReturnType onEnter();						// Chooses the evacuate locomotor set, then AIMoveToState::onEnter
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x0034308F
@@ -1258,8 +1258,8 @@ class AIPrepareForBoarding : public State
 {
 public:
 	AIPrepareForBoarding(StateMachine *machine);			// 0x00342619
-	virtual StateReturnType onEnter();						// 0x0034263C
-	virtual StateReturnType update();						// 0x00354C6B
+	virtual StateReturnType onEnter();
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00342636
@@ -1273,7 +1273,7 @@ public:
 	AIRotateFiringarc(StateMachine *machine);				// 0x003426AB
 	virtual StateReturnType onEnter();						// 0x003426CE
 	virtual void onExit(StateExitType status);				// 0x0034270C
-	virtual StateReturnType update();						// 0x0034274A
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x003426C8
@@ -1301,7 +1301,7 @@ class AIAttackFireWeaponState : public State
 public:
 	AIAttackFireWeaponState(StateMachine *machine, Int unk);	// 0x0033F483 (CRC-32 0x7252E66D)
 	virtual StateReturnType onEnter();				// slot 4, 0x0034A879
-	virtual void onExit(StateExitType status);				// 0x0034B08A
+	virtual void onExit(StateExitType status);
 	virtual StateReturnType update();				// slot 6, 0x0034AAC8
 
 protected:
@@ -1357,16 +1357,16 @@ public:
 		m_approachTimestamp = 0;
 		m_unk0x68 = 0;
 	}
-	virtual StateReturnType onEnter();						// 0x0034CD3A
-	virtual void onExit(StateExitType status);				// 0x0034894C
-	virtual StateReturnType update();						// 0x003488AF
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 	virtual Bool isAttack() const { return m_unk0x71; }		// slot 8, the shared getter 0x002259EF
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00342972
-	virtual void xfer(Xfer *xfer);							// 0x0034048B
-	virtual Bool computePath();								// 0x0034804E
-	StateReturnType updateInternal();						// 0x00348356
+	virtual void xfer(Xfer *xfer);
+	virtual Bool computePath();
+	StateReturnType updateInternal();
 
 	Coord3D m_prevVictimPos;								// +0x4C
 	Coord3D m_unk0x58;										// +0x58
@@ -1385,7 +1385,7 @@ class AIAttackMeleeHordeApproachTargetState : public AIInternalMoveToState
 {
 public:
 	AIAttackMeleeHordeApproachTargetState(StateMachine *machine);	// 0x003429B9 (CRC-32 0xFA014ECE)
-	virtual void onExit(StateExitType status);				// 0x0034921C
+	virtual void onExit(StateExitType status);
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x003429F4
@@ -1415,15 +1415,15 @@ public:
 		m_prevVictimPos.z = 0;
 		m_approachTimestamp = 0;
 	}
-	virtual StateReturnType onEnter();						// 0x0034D345
-	virtual void onExit(StateExitType status);				// 0x003495FD
-	virtual StateReturnType update();						// 0x003495A1
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00342A4A
-	virtual void xfer(Xfer *xfer);							// 0x00340797
-	virtual Bool computePath();								// 0x00345246
-	StateReturnType updateInternal();						// 0x0034939E
+	virtual void xfer(Xfer *xfer);
+	virtual Bool computePath();
+	StateReturnType updateInternal();
 
 	Coord3D m_prevVictimPos;								// +0x4C
 	UnsignedInt m_approachTimestamp;						// +0x58
@@ -1439,7 +1439,7 @@ class AIAttackMeleeEngageState : public AIInternalMoveToState
 {
 public:
 	AIAttackMeleeEngageState(StateMachine *machine, Int unk);	// 0x00342B1A (CRC-32 0x26AB28F6)
-	virtual void onExit(StateExitType status);				// 0x00349D26
+	virtual void onExit(StateExitType status);
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00340C27
@@ -1450,12 +1450,12 @@ class AIBackAwayState : public AIMoveAndTightenState
 {
 public:
 	AIBackAwayState(StateMachine *machine);					// 0x0034301B
-	virtual void onExit(StateExitType status);				// 0x00347FFE
+	virtual void onExit(StateExitType status);
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x0034303C
 	virtual void xfer(Xfer *xfer);							// 0x00340461: version 1; Bool +0x54, then AIMoveAndTightenState's
-	virtual Bool computePath();								// 0x0034042C (AIMoveAwayPanicState::computePath's twin, "ComputePath9")
+	virtual Bool computePath();								// (AIMoveAwayPanicState::computePath's twin, "ComputePath9")
 
 	Bool m_unk0x54;											// +0x54
 };
@@ -1464,7 +1464,7 @@ class AIChargeTargetState : public AIInternalMoveToState
 {
 public:
 	AIChargeTargetState(StateMachine *machine);				// 0x00343042
-	virtual void onExit(StateExitType status);				// 0x0034BEC3
+	virtual void onExit(StateExitType status);
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x00343071

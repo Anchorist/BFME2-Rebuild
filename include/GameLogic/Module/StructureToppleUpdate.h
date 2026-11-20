@@ -67,23 +67,23 @@ class StructureToppleUpdate : public UpdateModule, public DieModuleInterface
 {
 public:
 	StructureToppleUpdate(Thing *thing, const ModuleData *moduleData);	// 0x004A5556
-	virtual ~StructureToppleUpdate();									// 0x004A54A8
-	virtual NameKeyType getModuleNameKey() const;						// 0x004A5511
-	virtual void onDie(const DamageInfo *damageInfo);					// 0x004A5E5B
+	virtual ~StructureToppleUpdate();
+	virtual NameKeyType getModuleNameKey() const;
+	virtual void onDie(const DamageInfo *damageInfo);
 	virtual UpdateSleepTime update();									// override: update slot 0 at +0x10 (0x004A6042)
 	virtual DieModuleInterface *getDie() { return this; }				// override: BehaviorModuleInterface slot 7 (retail 0x004543A9: the null-checked interface pointer)
 
 protected:
-	virtual const char *GetSnapshotName() const;						// 0x004A54C8
-	void beginStructureTopple(const DamageInfo *damageInfo);			// 0x004A5C8C (IAE)
-	virtual void xfer(Xfer *xfer);										// 0x004A58BD
-	void doAngleFX(Real fromAngle, Real toAngle);						// 0x004A57DB (IAE)
-	void doPhaseStuff(StructureTopplePhaseType phase, const Coord3D *position);	// 0x004A584B (IAE)
-	void doToppleStartFX(Object *obj, const DamageInfo *damageInfo);	// 0x004A5B09 (IAE)
-	void doToppleDoneStuff();											// 0x004A5628 (IAE)
-	void doDamageLine(Object *building, const WeaponTemplate *weaponTemplate, Real jcos, Real jsin, Real facingWidth, Real toppleAngle);	// 0x004A5947 (IAE)
-	void doToppleDelayBurstFX();										// 0x004A5B61 (IAE)
-	void applyCrushingDamage(Real theta);								// 0x004A5EAC (IAE)
+	virtual const char *GetSnapshotName() const;
+	void beginStructureTopple(const DamageInfo *damageInfo);
+	virtual void xfer(Xfer *xfer);
+	void doAngleFX(Real fromAngle, Real toAngle);
+	void doPhaseStuff(StructureTopplePhaseType phase, const Coord3D *position);
+	void doToppleStartFX(Object *obj, const DamageInfo *damageInfo);
+	void doToppleDoneStuff();
+	void doDamageLine(Object *building, const WeaponTemplate *weaponTemplate, Real jcos, Real jsin, Real facingWidth, Real toppleAngle);
+	void doToppleDelayBurstFX();
+	void applyCrushingDamage(Real theta);
 
 public:
 	UnsignedInt m_toppleFrame;												// +0x24

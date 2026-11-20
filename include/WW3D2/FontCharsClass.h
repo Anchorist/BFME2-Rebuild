@@ -63,31 +63,31 @@ struct FontCharsClassCharDataStruct
 class FontCharsClass : public RefCountClass
 {
 public:
-	FontCharsClass();										// 0x00157950
+	FontCharsClass();
 	virtual ~FontCharsClass();								// slot 1: 0x00157390, deleting dtor 0x00157AB0
 
-	void Initialize_GDI_Font(const char *name, float point_size, bool is_bold, int grid);	// 0x001551C0
-	bool Is_Font(const char *name, float point_size, bool is_bold, int grid);				// 0x00154840
+	void Initialize_GDI_Font(const char *name, float point_size, bool is_bold, int grid);
+	bool Is_Font(const char *name, float point_size, bool is_bold, int grid);
 	const char *Get_Name() const { return Name; }
 	int Get_Char_Height() const { return CharHeight; }
 	int Get_Extra_Overlap() const { return PixelOverlap; }
-	int Get_Char_Width(unsigned short c);					// 0x00158710
-	int Get_Char_Metric(unsigned short c);					// 0x00158690
-	int Get_Char_Spacing(unsigned short c);					// 0x00158760
-	void Blit_Char(unsigned short c, unsigned short *dest, int dest_stride, int x, int y);	// 0x001587C0
-	void Blit_Char_Thai(unsigned short c, unsigned short *dest, int dest_stride, int x, int y);	// 0x001588A0
-	const FontCharsClassCharDataStruct *loadCharacterData(unsigned short c);	// 0x00158580
+	int Get_Char_Width(unsigned short c);
+	int Get_Char_Metric(unsigned short c);
+	int Get_Char_Spacing(unsigned short c);
+	void Blit_Char(unsigned short c, unsigned short *dest, int dest_stride, int x, int y);
+	void Blit_Char_Thai(unsigned short c, unsigned short *dest, int dest_stride, int x, int y);
+	const FontCharsClassCharDataStruct *loadCharacterData(unsigned short c);
 
 	FontCharsClass *AlternateUnicodeFont;					// +0x08 (public: W3DFontLibrary::loadFontData stores it)
 
 private:
-	void Create_GDI_Font(const char *face);					// 0x00154630
-	void Free_Character_Arrays();							// 0x00154890
-	const FontCharsClassCharDataStruct *Get_Char_Data(unsigned short c);		// 0x00158520
-	void ensureCharPage(unsigned short c);					// 0x00155220
-	const FontCharsClassCharDataStruct *loadCharBitmap(unsigned short c);		// 0x00156A60
-	const FontCharsClassCharDataStruct *Store_Thai_GDI_Glyph(unsigned short c);	// 0x00157FF0
-	void Update_Current_Buffer(int width);					// 0x00156490
+	void Create_GDI_Font(const char *face);
+	void Free_Character_Arrays();
+	const FontCharsClassCharDataStruct *Get_Char_Data(unsigned short c);
+	void ensureCharPage(unsigned short c);
+	const FontCharsClassCharDataStruct *loadCharBitmap(unsigned short c);
+	const FontCharsClassCharDataStruct *Store_Thai_GDI_Glyph(unsigned short c);
+	void Update_Current_Buffer(int width);
 
 	StringClass Name;										// +0x0C
 	DynamicVectorClass<FontCharsBuffer *> Buffers;			// +0x10 glyph pages

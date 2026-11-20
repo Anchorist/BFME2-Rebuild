@@ -21,7 +21,7 @@ class CivilianSpawnUpdateModuleData : public ModuleData
 {
 public:
 	CivilianSpawnUpdateModuleData();
-	virtual ~CivilianSpawnUpdateModuleData();						// 0x0047FABF
+	virtual ~CivilianSpawnUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
 	static ModuleData *friend_newModuleData(INI *ini);
 

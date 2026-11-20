@@ -53,6 +53,15 @@ NameKeyType CastleBehavior::rva0003955DA()
 // FUNCTION: BFME2 0x0039567C size=10 name=?get@Rva0039567CCmpBoolField@@QBE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x00395686 size=61 name=?rva00395686@CastleSystem@@QAE_NPAVPlayer@@PAVThingTemplate@@@Z evidence=P:provisional (wb-file) tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003956C3 size=37 name=?GetArmyIDFromClosestObject@CastleBehavior@@QAEPAXXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+void *CastleBehavior::GetArmyIDFromClosestObject()
+{
+	Object *castle = getObject();
+	Player *owner = castle->getControllingPlayer();
+	Object *closest = owner->findClosestObjectToPosWithValidLivingWorldArmyID(castle->getPosition());
+	if (closest != NULL)
+		return (void *)closest->m_armySummaryKey;
+	return NULL;
+}
 // FUNCTION: BFME2 0x003956E8 size=32 name=?loadPostProcess@Rva003956E8@@UAEXXZ evidence=?:placeholder
 
 // FUNCTION: BFME2 0x00395708 size=81 name=?rva000395708@CastleBehavior@@SAPAVModule@@PAVObject@@@Z evidence=?:placeholder

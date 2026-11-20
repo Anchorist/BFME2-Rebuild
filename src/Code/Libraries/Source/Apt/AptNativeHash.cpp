@@ -101,7 +101,7 @@ void AptNativeHash::DestroyGCPointers()
     }
 }
 
-// The destructor (retail 0x0070A840, 100 bytes; the row has no skeleton line): frees every key and the slot array without releasing the values and
+// The destructor (retail 0x0070A840, 100 bytes): frees every key and the slot array without releasing the values and
 // without touching the prototypes (ClearData does that).
 AptNativeHash::~AptNativeHash()
 {

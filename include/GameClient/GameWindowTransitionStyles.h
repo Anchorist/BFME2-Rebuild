@@ -12,7 +12,7 @@ public:
     ReverseSoundTransition();
     virtual ~ReverseSoundTransition();
     virtual void init(GameWindow *);       // 0x0035D4DB
-    virtual void update(int);              // 0x0035D4E6
+    virtual void update(int);
     virtual void reverse();
     virtual void draw() {}
     virtual void skip();                   // 0x0035D512
@@ -167,10 +167,10 @@ class TextTypeTransition : public Transition {
 public:
     TextTypeTransition();
     virtual ~TextTypeTransition();
-    virtual void init(GameWindow *);       // 0x0035FDCA
-    virtual void update(int);              // 0x0035FE72
+    virtual void init(GameWindow *);
+    virtual void update(int);
     virtual void reverse();
-    virtual void draw();                   // 0x0035FF1D
+    virtual void draw();
     virtual void skip();
 protected:
     int m_startFrame,m_endFrame; //10,14

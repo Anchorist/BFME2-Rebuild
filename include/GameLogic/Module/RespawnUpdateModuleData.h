@@ -36,8 +36,8 @@ public:
 	static void buildFieldParse(MultiIniFieldParse &parse);
 	virtual const RespawnUpdateModuleData *slot28() const { return this; }
 	virtual Bool slot13() const { return true; }
-	Int calcCostToBuild(Int level);							// 0x004AF531
-	Int calcTimeToBuild(UnsignedInt level);					// 0x004AF5AC
+	Int calcCostToBuild(Int level);
+	Int calcTimeToBuild(UnsignedInt level);
 
 	ObjectFilter m_autoRespawnAtObjectFilter;              // +0x8 AutoRespawnAtObjectFilter
 	ModelConditionFlags m_deathAnim;                             // +0xC DeathAnim

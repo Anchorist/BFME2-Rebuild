@@ -20,7 +20,7 @@ class ImmortalBody : public ActiveBody
 public:
 	ImmortalBody(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
-	virtual void internalChangeHealth(Real amount, DamageInfo *damageInfo);	// 0x004C0918 (+0x10 slot 32)
+	virtual void internalChangeHealth(Real amount, DamageInfo *damageInfo);	// (+0x10 slot 32)
 
 protected:
 	virtual void loadPostProcess() { ActiveBody::loadPostProcess(); }	// slot 1: retail 0x004C202F, a jmp to ActiveBody's (0x004BF40F), ICF-folded across the ActiveBody subclasses

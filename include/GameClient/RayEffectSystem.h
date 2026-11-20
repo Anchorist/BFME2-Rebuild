@@ -18,15 +18,15 @@ struct RayEffectData
 class RayEffectSystem : public SubsystemInterface
 {
 public:
-	RayEffectSystem();						// 0x002CEE96
+	RayEffectSystem();
 	virtual ~RayEffectSystem();					// deleting slot 0x002CEEE6
 	virtual void init();						// slot 1, 0x002CEE63
 	virtual void reset() { init(); }					// slot 9, 0x005CB260 dispatches virtual slot 1
 	virtual void update() {}						// slot 10, 0x000B3FD0 bare return
 
-	void getRayEffectData(const Drawable *drawable, RayEffectData *out);	// 0x002CEDF1
-	void deleteRayEffect(const Drawable *drawable);				// 0x002CEDD7
-	void addRayEffect(const Drawable *drawable, const Coord3D *start, const Coord3D *end);	// 0x002CED84
+	void getRayEffectData(const Drawable *drawable, RayEffectData *out);
+	void deleteRayEffect(const Drawable *drawable);
+	void addRayEffect(const Drawable *drawable, const Coord3D *start, const Coord3D *end);
 
 private:
 	enum { MAX_RAY_EFFECTS = 128 };

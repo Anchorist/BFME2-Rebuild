@@ -141,31 +141,31 @@ public:
 	virtual const DozerAIInterface *getDozerAIInterface() const { return this; }
 	virtual DozerAIInterface *getDozerAIInterface() { return this; }
 
-	virtual NameKeyType getModuleNameKey() const;								// 0x004895E4
-	virtual UpdateSleepTime update();											// 0x00489800
-	virtual void onDelete();													// 0x00489CA1 (shared with DozerAIInterface slot 0)
+	virtual NameKeyType getModuleNameKey() const;
+	virtual UpdateSleepTime update();
+	virtual void onDelete();													// (shared with DozerAIInterface slot 0)
 	virtual Object *construct(const ThingTemplate *what, const Coord3D *pos, Real angle,
 		Player *owningPlayer, Bool isRebuild, Int unknown);						// 0x00488F52 (AIUpdateInterface slot 126 and interface slot 4)
 
 	// DozerAIInterface
-	virtual DozerTask getMostRecentCommand();									// 0x00488BBD
-	virtual Bool isTaskPending(DozerTask task);									// 0x00488B54
-	virtual ObjectID getTaskTarget(DozerTask task);								// 0x00488B83
-	virtual Bool isAnyTaskPending();											// 0x00488B64
-	virtual void newTask(DozerTask task, Object *target);						// 0x00489A07
-	virtual void cancelTask(DozerTask task);									// 0x0048AE8A
-	virtual void internalTaskComplete(DozerTask task);							// 0x00488B8E
-	virtual void internalCancelTask(DozerTask task);							// 0x0048AEC6
-	virtual void internalTaskCompleteOrCancelled(DozerTask task);				// 0x00489647
-	virtual const Coord3D *getDockPoint(DozerTask task, DozerDockPoint point);	// 0x00488BFA
-	virtual Bool canAcceptNewRepair(Object *obj);								// 0x00489895
-	virtual void removeBridgeScaffolding(Object *bridgeTower);					// 0x004897BF
+	virtual DozerTask getMostRecentCommand();
+	virtual Bool isTaskPending(DozerTask task);
+	virtual ObjectID getTaskTarget(DozerTask task);
+	virtual Bool isAnyTaskPending();
+	virtual void newTask(DozerTask task, Object *target);
+	virtual void cancelTask(DozerTask task);
+	virtual void internalTaskComplete(DozerTask task);
+	virtual void internalCancelTask(DozerTask task);
+	virtual void internalTaskCompleteOrCancelled(DozerTask task);
+	virtual const Coord3D *getDockPoint(DozerTask task, DozerDockPoint point);
+	virtual Bool canAcceptNewRepair(Object *obj);
+	virtual void removeBridgeScaffolding(Object *bridgeTower);
 	virtual void createPhantomStructure(const ThingTemplate *what, Player *owningPlayer,
 		const Coord3D *pos, Real angle);										// 0x00489F7D
-	virtual void makePhantomStructureReal();									// 0x0048A15A
+	virtual void makePhantomStructureReal();
 	virtual void vslot147();												// AIUpdateInterface slot 147, 0x00488CF0
-	virtual void destroyPhantomStructure();										// 0x00489D09
-	virtual void notifyConstructionComplete();									// 0x00488CC4
+	virtual void destroyPhantomStructure();
+	virtual void notifyConstructionComplete();
 	virtual Real getRepairHealthPercentPerSecond() const;						// 0x00488C34
 	virtual Real getBoredTime() const;											// 0x00488C3E
 	virtual Real getBoredRange() const;											// 0x00488C48
@@ -174,30 +174,30 @@ public:
 	virtual Bool getUnknownFlag() const;										// 0x003FE57D (shared body)
 	virtual void setBuildSubTask(DozerBuildSubTask subTask);					// 0x0048962F
 	virtual DozerBuildSubTask getBuildSubTask();								// 0x0052AF70 (shared body)
-	virtual void createBridgeScaffolding(Object *bridgeTower);					// 0x004AAB73
+	virtual void createBridgeScaffolding(Object *bridgeTower);
 	virtual void startBuildingSound(const AudioEventRTS *sound, Int constructionSiteID);	// 0x004891DE
 	virtual void finishBuildingSound();											// 0x004550DE (shared body)
 	virtual Object *getPhantomStructure();										// 0x00489DD1
 	virtual Object *getPhantomStructure2();										// 0x00489DD1 (folded with the above)
 	virtual Int vslot30();														// 0x00488C90
 
-	void makePhantomStructureInert();											// 0x00489DE3
-	void makePhantomStructureNotInert();										// 0x00489E2E
+	void makePhantomStructureInert();
+	void makePhantomStructureNotInert();
 
 protected:
 	virtual void privateRepair(Object *obj, CommandSourceType cmdSource);			// 44, 0x00488AC9
 	virtual void privateResumeConstruction(Object *obj, CommandSourceType cmdSource);	// 45, 0x00488B1A (also WorkerAIUpdate's slot 45)
-	virtual ~DozerAIUpdate();													// 0x00489EB7 (deleting 0x0048A39D)
-	virtual void loadPostProcess();												// 0x00489E91
-	virtual const char *GetSnapshotName() const;								// 0x00489629
-	virtual void xfer(Xfer *xfer);												// 0x00489671
+	virtual ~DozerAIUpdate();													// (deleting 0x0048A39D)
+	virtual void loadPostProcess();
+	virtual const char *GetSnapshotName() const;
+	virtual void xfer(Xfer *xfer);
 
 protected:
-	Bool findGoodBuildOrRepairPosition(const Object *me, const Object *target, Coord3D &pos);	// 0x00489039
-	Object *findGoodBuildOrRepairPositionAndTarget(Object *me, Object *target, Coord3D &pos);	// 0x00489913
+	Bool findGoodBuildOrRepairPosition(const Object *me, const Object *target, Coord3D &pos);
+	Object *findGoodBuildOrRepairPositionAndTarget(Object *me, Object *target, Coord3D &pos);
 
 private:
-	void createMachines();														// 0x00488EFC
+	void createMachines();
 
 public:
 

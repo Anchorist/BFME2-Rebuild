@@ -8,6 +8,10 @@
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=proven:name
 // FUNCTION: BFME2 0x00544C03 size=33 name=??0AIHarvestPrepareSiteState@@QAE@PAVStateMachine@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+AIHarvestPrepareSiteState::AIHarvestPrepareSiteState(StateMachine *machine)
+	: State(machine, 0xA2C0BF2B), m_actionFrame(0)
+{
+}
 // FUNCTION: BFME2 0x00544C24 size=6 name=?Rva00544C24Get@@YAHXZ evidence=?:placeholder
 const char *AIHarvestPrepareSiteState::GetSnapshotName() const
 {

@@ -14,7 +14,7 @@
 class GameResultsInterface : public SubsystemInterface
 {
 public:
-	GameResultsInterface();										// 0x00419D18
+	GameResultsInterface();
 	virtual void vslot38() = 0;									// slot 0x38
 	virtual void vslot3C() = 0;									// slot 0x3C
 	virtual void vslot40() = 0;									// slot 0x40

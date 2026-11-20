@@ -46,11 +46,11 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	virtual bool vslot08(int);	// override: vslot08 slot 8 at +0x20 (0x0049C553)
 	virtual void initiateIntentToDoSpecialPower(const SpecialPowerTemplate *, const Object *, const Coord3D *, unsigned int, const Waypoint *);	// 0x0049C51A (SpecialPowerUpdateInterface slot 0 at +0x20)
-	void releaseTarget();	// 0x0049C592
-	void GetDeliveryTarget();	// 0x0049C73A
+	void releaseTarget();
+	void GetDeliveryTarget();
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x0049C93F, map: placeholder ?update@Rva0049C93F@@QAEHXZ)
 	void beginDelivery(Object *target);	// 0x0049C67E (map: placeholder rva0049C67E): releases the old target, plays SpawnOutFX at the new one, flags it (status 3) and starts the fade
-	bool rva0049C6E1(Object *target);	// 0x0049C6E1 (map: placeholder): whether the target can take the upgrade (not written yet)
+	bool rva0049C6E1(Object *target);	// (map: placeholder): whether the target can take the upgrade (not written yet)
 	void cancelDelivery();	// 0x0049C8FC (map: placeholder ?rva0049C8FC@Rva0044E6AE@@QAEXXZ; SpecialPowerModule::initiateIntentToDoSpecialPower calls it on the sibling ability): idles the AI once a delivery target is set, then ends the ability
 	virtual bool rva00450AE9();	// slot 14 override, 0x0049C8E9 (map: placeholder rva0049C8E9): finds the delivery target, runs the base, answers false
 

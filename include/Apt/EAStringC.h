@@ -5,7 +5,6 @@
 // array consumers 0x0070B603/0x0070DB95 advance by four bytes.
 // The representation's four 16-bit words and text at +8 are witnessed by
 // 0x006D2E10, 0x006D3750, 0x006D2DF0, 0x006D3BA0 and 0x00620090.
-// The old shared header and private views agree on this representation.
 class EAStringC
 {
 public:

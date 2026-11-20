@@ -16,8 +16,8 @@
 //  - Members: the ctor's stores and sub-object constructors and the dtor
 //    0x002B11A7's releases (StringBase<unsigned short> at +0x38, StringBase<char>
 //    at +0x4C, +0x58, +0x74C). Names: Zero Hour's member order where the ctor
-//    agrees with it, and Player::init 0x002AF729's stores (old canonical
-//    PlayerBFME2.h): template +0x34, build list +0x278, colours +0x280/+0x284,
+//    agrees with it, and Player::init 0x002AF729's stores:
+//    template +0x34, build list +0x278, colours +0x280/+0x284,
 //    AI +0x2DC, +0x2E4/+0x2E8, default team +0x2EC (setDefaultTeam 0x002ABC7E),
 //    build flags +0x338/+0x339 (allowedToBuild 0x002ABE24), observer +0x33A,
 //    units-should-hunt +0x33D (setUnitsShouldHunt 0x002AE9B8).

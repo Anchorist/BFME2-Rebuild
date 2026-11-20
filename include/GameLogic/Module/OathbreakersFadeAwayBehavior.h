@@ -28,7 +28,7 @@ typedef char OathbreakersFadeAwayBehavior_base_size[(sizeof(UpdateModule) == 0x2
 class OathbreakersFadeAwayBehavior : public UpdateModule
 {
 public:
-	char const * name() const;	// 0x004B8A22
+	char const * name() const;
 	OathbreakersFadeAwayBehavior(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;

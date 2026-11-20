@@ -28,7 +28,7 @@ public:
 	RampageBehavior(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	const char *name() const;						// 0x00458AC7 (non-virtual, the literal)
+	const char *name() const;						// (non-virtual, the literal)
 	virtual ~RampageBehavior();
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x00458CCB)
 

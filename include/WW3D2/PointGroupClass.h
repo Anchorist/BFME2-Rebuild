@@ -33,18 +33,18 @@ public:
 	};
 
 	PointGroupClass();									// 0x00178E50
-	virtual ~PointGroupClass();							// 0x00178ED0
+	virtual ~PointGroupClass();
 
-	void Set_Point_Size(float size);					// 0x00178FA0
-	void Set_Point_Color(Vector3 color);				// 0x00178FC0
-	Vector3 Get_Point_Color();							// 0x00178FF0
-	void Set_Point_Orientation(unsigned char orientation);	// 0x00179020
-	void Set_Point_Frame(unsigned char frame);			// 0x00179040
-	void Set_Flag(FlagsType flag, bool onoff);			// 0x00179060
-	int Get_Flag(FlagsType flag);						// 0x00179090
-	unsigned char Get_Frame_Row_Column_Count_Log2();	// 0x00179130
-	void Set_Frame_Row_Column_Count_Log2(unsigned char frccl2);	// 0x00179140
-	int Get_Polygon_Count();							// 0x00179160
+	void Set_Point_Size(float size);
+	void Set_Point_Color(Vector3 color);
+	Vector3 Get_Point_Color();
+	void Set_Point_Orientation(unsigned char orientation);
+	void Set_Point_Frame(unsigned char frame);
+	void Set_Flag(FlagsType flag, bool onoff);
+	int Get_Flag(FlagsType flag);
+	unsigned char Get_Frame_Row_Column_Count_Log2();
+	void Set_Frame_Row_Column_Count_Log2(unsigned char frccl2);
+	int Get_Polygon_Count();
 
 	void Set_Texture(const TextureAsset &texture);
 	TextureAsset Get_Texture() const;

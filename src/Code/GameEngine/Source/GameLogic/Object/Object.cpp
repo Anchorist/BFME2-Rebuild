@@ -1158,6 +1158,10 @@ Bool Object::isSlaved() const
 // FUNCTION: BFME2 0x0028C8CD size=18 name=?rva0028C8CD@Rva0028A638@@QBEHXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x0028C933 size=6 name=?Rva0028C933Get@@YAHXZ evidence=?:placeholder tier=A
+const char *ObjectHelper::GetSnapshotName() const
+{
+	return "ObjectHelper";
+}
 
 // FUNCTION: BFME2 0x0028C955 size=61 name=??0ObjectDefectionHelper@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 ObjectDefectionHelper::ObjectDefectionHelper(Thing *thing, const ModuleData *moduleData) : ObjectHelper(thing, moduleData)
@@ -2276,6 +2280,28 @@ void Object::fireCurrentWeapon(Object *target, Int victimID)
 }
 
 // FUNCTION: BFME2 0x00291916 size=145 name=?fireCurrentWeapon@Object@@QAEXPBVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
+void Object::fireCurrentWeapon(const Coord3D *pos)
+{
+	if (pos == NULL || testStatus(OBJECT_STATUS_CONTESTING_BUILDING))
+		return;
+
+	Weapon *weapon = m_weaponSet.getCurWeapon();
+	if (weapon == NULL)
+		return;
+
+	if (weapon->getTemplate()->m_lockWhenUsing)
+		setWeaponLock(m_weaponSet.getCurWeaponSlot(), LOCKED_TEMPORARILY);
+
+	if (weapon->getStatus() != READY_TO_FIRE)
+		return;
+
+	Bool fired = weapon->fireWeapon(this, pos, NULL);
+	if (m_firingTracker != NULL)
+		m_firingTracker->shotFired(weapon, INVALID_ID, pos, false);
+	if (fired)
+		releaseWeaponLock(LOCKED_TEMPORARILY);
+	m_privateStatus &= ~UNDETECTED_DEFECTOR;
+}
 
 // FUNCTION: BFME2 0x002919A7 size=229 name=?preFireCurrentWeapon@Object@@QAEXPBV1@PBVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 
@@ -2325,6 +2351,9 @@ Bool Object::hasCommandButton(const CommandButton *button)
 // FUNCTION: BFME2 0x002927CB size=45 name=?Rva002927CBConstruct@@YAXPAUTreeKey00242F5E@@ABU1@@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002927F8 size=81 name=??0ObjectSMCHelper@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
+ObjectSMCHelper::ObjectSMCHelper(Thing *thing, const ModuleData *moduleData) : ObjectHelper(thing, moduleData)
+{
+}
 
 // FUNCTION: BFME2 0x00292849 size=69 name=?getModuleNameKey@ObjectSMCHelper@@UBE?AW4NameKeyType@@XZ evidence=N:ledger tier=A
 NameKeyType ObjectSMCHelper::getModuleNameKey() const
@@ -2334,6 +2363,10 @@ NameKeyType ObjectSMCHelper::getModuleNameKey() const
 }
 
 // FUNCTION: BFME2 0x0029288E size=6 name=?name@ObjectSMCHelper@@QBEPBDXZ evidence=N:ledger tier=A
+const char *ObjectSMCHelper::GetSnapshotName() const
+{
+	return "ObjectSMCHelper";
+}
 
 // FUNCTION: BFME2 0x002928B5 size=180 name=?bfmeTransferReplacementState@Object@@QAEXPAV1@@Z evidence=N:ledger tier=A
 
@@ -2640,7 +2673,7 @@ HordeContainInterface *Object::rva0029439D()
 // FUNCTION: BFME2 0x0029599A size=117 name=?aiAttackPosition@AICommandInterface@@QAEXPBVCoord3D@@HW4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiAttackPosition(Coord3D const *pos, Int maxShotsToFire, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0xE, cmdSource);
+	AICommandParms parms(AICMD_ATTACK_POSITION, cmdSource);
 	parms.m_pos = *pos;
 	parms.m_extraInt = maxShotsToFire;
 	aiDoCommand(&parms);

@@ -25,14 +25,14 @@ public:
 	QueueProductionExitUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	const char *name() const;   // 0x004A0017, non-virtual name getter (QBE)
+	const char *name() const;   // Non-virtual name getter (QBE)
 	// ExitInterface slot 8 (+0x20): retail 0x004A001D tests [this+0x14] and returns this+8, i.e.
 	// m_hasRallyPoint and &m_rallyPoint seen from the interface sub-object.
 	virtual const Coord3D *getRallyPoint() const;
 	virtual void setRallyPoint(const Coord3D *position);
-	virtual ExitDoorType reserveDoorForExit(const ThingTemplate *, Object *);	// 0x004A0268: EXIT_DOOR_FIRST when isFreeToExit, else EXIT_DOOR_NONE	// 0x004A051B: rally override or the given point into m_rallyPoint, then m_hasRallyPoint = true
+	virtual ExitDoorType reserveDoorForExit(const ThingTemplate *, Object *);	// EXIT_DOOR_FIRST when isFreeToExit, else EXIT_DOOR_NONE	// 0x004A051B: rally override or the given point into m_rallyPoint, then m_hasRallyPoint = true
 	virtual Bool getExitPosition(Coord3D &exitPosition, Real &exitAngle) const;	// ExitInterface slot 10: 0x004A0194 (transform of the module's exit point)
-	virtual UpdateSleepTime update();						// 0x004A003C: frees the delay counter once the exit is free, otherwise counts it down
+	virtual UpdateSleepTime update();						// Frees the delay counter once the exit is free, otherwise counts it down
 
 protected:
 	virtual void xfer(Xfer *xfer);
@@ -46,7 +46,7 @@ public:
 	UnsignedInt m_currentBurstCount;               // +0x3C; xfer UnsignedInt; isFreeToExit 0x004A002A reads it
 	ObjectID m_unk0x40;                            // +0x40; xfer ObjectID
 protected:
-	bool isFreeToExit() const; // 0x004A002A (IBE: protected)
+	bool isFreeToExit() const; // (IBE: protected)
 public:
 protected:
 	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes

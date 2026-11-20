@@ -199,9 +199,9 @@ void _AddHeap(unsigned int heapId, unsigned int size);							// 0x000306B0
 void InitFunctionPointers();													// 0x00030730
 // Map placeholder names (O00030000): a heap-report callback summing data sizes,
 // the total-allocated walk that uses it, and the switch _Free checks at exit.
-bool rva00030900(const EA::Allocator::BlockInfo *info, void *context);			// 0x00030900
-unsigned int rva00030910();													// 0x00030910
-void rva00030970();														// 0x00030970
+bool rva00030900(const EA::Allocator::BlockInfo *info, void *context);
+unsigned int rva00030910();
+void rva00030970();
 
 // One registered heap: hashed by id into HeapTable::buckets (101 buckets).
 struct HeapEntry

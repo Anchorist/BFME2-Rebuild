@@ -14,15 +14,15 @@
 class LaserFXNugget : public FXNugget
 {
 public:
-	LaserFXNugget();										// 0x001E04DE
+	LaserFXNugget();
 
 	virtual void doFXPos(const Coord3D *primary, const Matrix3D *primaryMtx, Real primarySpeed,
 		const Coord3D *secondary) const;								// 1, 0x001E04FE
 	virtual void doFXObj(const Object *primary, const Object *secondary) const;	// 2, 0x001E05F9
 	virtual void GetAssetList(AssetList &assets, Int context) const {}		// 3, empty (fold 0x0050B238)
 
-	static void buildFieldParse(MultiIniFieldParse &p);					// 0x001DFB85
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001E1519
+	static void buildFieldParse(MultiIniFieldParse &p);
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	AsciiString m_laserName;							// 0x148 LaserName (parseAsciiString)
 	Bool m_laserBackwards;							// 0x14C LaserBackwards (parseBool)

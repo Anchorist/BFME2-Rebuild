@@ -43,8 +43,10 @@ struct _ListboxData
 	short m_listLength;		// +0x0 (GetListLength and DisableEntry read it)
 	short m_numColumns;		// +0x2 (GetNumColumns reads it)
 	Int *m_columnPercent;	// +0x4: each column's share of the width in percent (SetColumnWidths 0x003252EA)
-	unsigned char m_gap0x8[0x3];
-	Bool m_hasLength;		// +0xB: the multi-select flag (AddMultiSelect 0x00325199 sets it)
+	Bool m_autoScroll;		// +0x8: the script key AUTOSCROLL (parser 0x0031501A)
+	Bool m_autoPurge;		// +0x9: AUTOPURGE
+	Bool m_scrollBarRequested;	// +0xA: SCROLLBAR
+	Bool m_multiSelect;		// +0xB: MULTISELECT (AddMultiSelect 0x00325199 sets it too)
 	Bool m_forceSelect;		// +0xC
 	Bool m_scrollIfAtEnd;	// +0xD (AddEntryText 0x00326BEC)
 	Bool m_audioFeedback;	// +0xE

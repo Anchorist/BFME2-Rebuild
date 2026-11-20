@@ -15,8 +15,8 @@ class GameModePreferences;
 class GameSorter
 {
 public:
-	void rva00580316(GameModePreferences *);	// 0x00580316: stores the sort columns in the preferences
-	bool rva00580172();							// 0x00580172: whether the sort changed since the last list refresh (reads and clears the byte at +0x14)
+	void rva00580316(GameModePreferences *);	// Stores the sort columns in the preferences
+	bool rva00580172();							// Whether the sort changed since the last list refresh (reads and clears the byte at +0x14)
 
 	unsigned char m_x00[0x14];					// +0x00
 	bool m_changed;								// +0x14

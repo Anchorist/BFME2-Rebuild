@@ -156,7 +156,7 @@ public:
 	void rva0023D007(Int value);		// 0x0023D007, +0x184 forwarder
 
 	UnsignedInt getFrame() const { return m_frame; }
-	Bool getCommandButtonOverride(const AsciiString &commandSetName, Int slot, const CommandButton **button);	// 0x00246F8E: looks up (slot, command set name) in the override tree at +0x24 and hands back its CommandButton
+	Bool getCommandButtonOverride(const AsciiString &commandSetName, Int slot, const CommandButton **button);	// looks up (slot, command set name) in the override tree at +0x24 and hands back its CommandButton
 	InvisibilityManager *getManager178() const { return m_manager178; }
 	Bool isScoringEnabled() const { return m_isScoringEnabled; }
 	void enableScoring(Bool score) { m_isScoringEnabled = score; }

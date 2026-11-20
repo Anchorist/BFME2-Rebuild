@@ -27,7 +27,7 @@ public:
 
 	LadderPref() {}
 	LadderPref(const LadderPref &other);	// 0x005BA3F5
-	~LadderPref();	// 0x005BA3C0
+	~LadderPref();
 
 	bool operator==(const LadderPref &other)
 	{
@@ -43,13 +43,13 @@ class LadderPreferences : public UserPreferences
 {
 public:
 	LadderPreferences();														// 0x005DFFD3
-	virtual ~LadderPreferences();												// 0x005DFF7B
+	virtual ~LadderPreferences();
 
-	Bool loadProfile(Int profileID);											// 0x005E0201
-	virtual bool write();														// 0x005E0026
+	Bool loadProfile(Int profileID);
+	virtual bool write();
 
 	const LadderPrefMap &getRecentLadders() { return m_ladders; }
-	void addRecentLadder(LadderPref ladder);									// 0x005E03F6
+	void addRecentLadder(LadderPref ladder);
 
 private:
 	LadderPrefMap m_ladders;													// +0x14

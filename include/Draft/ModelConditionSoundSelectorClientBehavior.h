@@ -6,8 +6,8 @@ enum NameKeyType;
 #pragma pack(push,1) // DRAFT layout policy; all known offsets asserted below
 class ModelConditionSoundSelectorClientBehavior {
 public:
-	char const * name() const;	// 0x00254BF1
-	virtual NameKeyType getModuleNameKey() const;	// 0x00254BAC (primary slot 4; this Draft lists only a secondary table)
+	char const * name() const;
+	virtual NameKeyType getModuleNameKey() const;	// (primary slot 4; this Draft lists only a secondary table)
   virtual void vfunc_0x00(); // slot=0x0 target=0x004CAC2F mangled=?rva004CAC2F@ModelConditionSoundSelectorClientBehavior@@UAE_NHPAURva002C99FB@@@Z
   virtual void vfunc_0x04(); // slot=0x4 target=0x004CAC9C mangled=?rva004CAC9C@ModelConditionSoundSelectorClientBehavior@@UAE_NABVAsciiString@@PAURva002C99FB@@@Z
   virtual void vfunc_0x08(); // slot=0x8 target=0x004CABCD mangled=?rva004CABCD@ModelConditionSoundSelectorClientBehavior@@UAE_NPAH@Z

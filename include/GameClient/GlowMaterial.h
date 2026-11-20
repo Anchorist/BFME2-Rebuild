@@ -17,11 +17,11 @@ class GlowMaterial : public Snapshot
 public:
 	GlowMaterial();					// 0x0036247C
 	virtual ~GlowMaterial();				// 0x00362CF2
-	unsigned char IsActive();				// 0x00362499
+	unsigned char IsActive();
 
 protected:
 	virtual void loadPostProcess();				// 0x003624FE
-	virtual const char *GetSnapshotName() const;		// 0x00362493
+	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);				// 0x003624C4
 
 private:

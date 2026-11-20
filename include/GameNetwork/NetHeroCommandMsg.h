@@ -13,10 +13,10 @@
 class NetHeroCommandMsg : public NetCommandMsg
 {
 public:
-	NetHeroCommandMsg();								// 0x004D58DE
+	NetHeroCommandMsg();
 	virtual ~NetHeroCommandMsg();						// slot 0, 0x004D5902 (deleting 0x004D5B14)
 
-	void setData(UnsignedByte *data, UnsignedInt dataLength);	// 0x004D5925
+	void setData(UnsignedByte *data, UnsignedInt dataLength);
 
 	UnsignedInt m_unk0x1C;								// +0x1C
 	UnsignedShort m_unk0x20;							// +0x20

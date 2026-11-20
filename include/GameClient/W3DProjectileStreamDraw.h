@@ -32,20 +32,20 @@ class W3DProjectileStreamDraw : public DrawModule
 public:
 	W3DProjectileStreamDraw(Thing *thing, const ModuleData *moduleData);		// 0x000D1370
 
-	virtual NameKeyType getModuleNameKey() const;								// 0x000D140A
-	virtual void doDrawModule(const Matrix3D *transformMtx);					// 0x000D14F9
+	virtual NameKeyType getModuleNameKey() const;
+	virtual void doDrawModule(const Matrix3D *transformMtx);
 	virtual void setShadowsEnabled(Bool enable) {}								// slot 12, folded `ret 4`
 	virtual void releaseShadows() {}											// slot 13, folded `ret`
 	virtual void allocateShadows() {}											// slot 14, folded `ret`
-	virtual void setFullyObscuredByShroud(Bool fullyObscured);					// 0x000D1124
+	virtual void setFullyObscuredByShroud(Bool fullyObscured);
 	virtual void reactToTransformChange(const Matrix3D *oldMtx, const Coord3D *oldPos, Real oldAngle) {}	// slot 38, folded `ret 0xC`
 	virtual void reactToGeometryChange() {}										// slot 39, folded `ret`
 
 protected:
-	virtual ~W3DProjectileStreamDraw();										// 0x000D146B
+	virtual ~W3DProjectileStreamDraw();
 	virtual void loadPostProcess() { DrawModule::loadPostProcess(); }	// slot 1: retail table 0x007CE010 holds 0x0058B03E (`jmp 0x000B3FD0`, DrawModule's empty body), ICF-folded with the module bases'
 	virtual const char *GetSnapshotName() const;								// 0x000D1401 (the map names it W3DProjectileStreamDraw::name)
-	virtual void xfer(Xfer *xfer);												// 0x000D11A6
+	virtual void xfer(Xfer *xfer);
 
 public:
 	UnsignedByte m_texture[0x4];												// 0x0C a texture handle (the constructor loads it from the data's Texture)

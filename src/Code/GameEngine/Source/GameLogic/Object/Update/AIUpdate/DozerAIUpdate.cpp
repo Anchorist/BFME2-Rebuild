@@ -42,6 +42,7 @@ static const FieldParse s_dozerAIUpdateModuleDataFieldParse[] =
 #include "GameLogic/AICommandInterface.h"
 #include "GameLogic/GameLogic.h"
 #include "Common/StateMachine.h"
+#include "GameLogic/AIStates.h"
 #include "Common/ActionManager.h"
 #include "Common/Player.h"
 #include "GameLogic/SkirmishAI/SkirmishAIManager.h"
@@ -232,6 +233,10 @@ void DozerActionState::onExit(StateExitType status)
 }
 
 // FUNCTION: BFME2 0x00488988 size=4 name=?update@AIGoingIdleState@@QAEHXZ evidence=N:ledger tier=A
+StateReturnType AIGoingIdleState::update()
+{
+	return STATE_FAILURE;
+}
 // FUNCTION: BFME2 0x0048898C size=11 name=??1DozerPrimaryStateMachine@@UAE@XZ evidence=N:ledger tier=A
 DozerPrimaryStateMachine::~DozerPrimaryStateMachine()
 {

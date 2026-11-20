@@ -24,10 +24,10 @@ public:
 		memset(Get_Raw_Array(), 0, count * sizeof(VertexMaterialClass *));
 	}
 	MatBufferClass(const MatBufferClass &that);			// 0x0015B2C0
-	virtual ~MatBufferClass(void);					// 0x0015B300
+	virtual ~MatBufferClass(void);
 
-	void Set_Element(int index, VertexMaterialClass *vmat);	// 0x0015A060
-	VertexMaterialClass *Peek_Element(int index);			// 0x0015A0E0 (out of line in retail)
+	void Set_Element(int index, VertexMaterialClass *vmat);
+	VertexMaterialClass *Peek_Element(int index);			// (out of line in retail)
 	VertexMaterialClass *Get_Element(int index)
 	{
 		if (Get_Raw_Array()[index] != NULL) {

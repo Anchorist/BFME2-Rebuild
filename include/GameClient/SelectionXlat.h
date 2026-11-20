@@ -26,10 +26,10 @@ class SelectionTranslator : public GameMessageTranslator
 {
 public:
 	SelectionTranslator();																// 0x0042FD9E
-	virtual GameMessageDisposition translateGameMessage(const GameMessage *msg);		// 0x0043003C
+	virtual GameMessageDisposition translateGameMessage(const GameMessage *msg);
 	virtual ~SelectionTranslator();														// 0x0042FE1F (deleting), 0x0042FCE6
 
-	bool selectFriends(Drawable *draw, GameMessage *createTeamMsg, bool dragSelecting);	// 0x0042FE7F
+	bool selectFriends(Drawable *draw, GameMessage *createTeamMsg, bool dragSelecting);
 
 	bool m_leftMouseButtonIsDown;								// +0x04
 	bool m_dragSelecting;										// +0x05

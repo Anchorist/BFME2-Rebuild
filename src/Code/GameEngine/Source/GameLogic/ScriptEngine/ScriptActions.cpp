@@ -17,7 +17,7 @@
 #include "GameLogic/Module/GateOpenAndCloseBehavior.h"
 #include "GameLogic/Module/DualWeaponBehavior.h"
 #include "math.h"
-#include "Draft/SequentialScript.h"
+#include "GameLogic/SequentialScript.h"
 #include "Common/ScoreKeeper.h"
 #include "Common/MessageStream.h"
 #include "GameLogic/Module/HordeContainInterface.h"
@@ -2877,9 +2877,9 @@ void ScriptActions::doUnitStartSequentialScript(Parameter *unitParameter, const 
 		return;
 	SequentialScript *sequential = ::new SequentialScript;
 	sequential->m_objectID = unit->getID();
-	sequential->m_scriptName = scopedName;
-	sequential->m_unk0x10 = scriptName;
-	sequential->m_unk0x14 = script;
+	sequential->m_scriptScope = scopedName;
+	sequential->m_scriptName = scriptName;
+	sequential->m_script = script;
 	sequential->m_timesToLoop = timesToLoop;
 	TheScriptEngine->appendSequentialScript(sequential);
 	::delete sequential;
@@ -2902,9 +2902,9 @@ void ScriptActions::doTeamStartSequentialScript(const AsciiString &teamName, con
 	group->groupIdle(CMD_FROM_SCRIPT);
 	SequentialScript *sequential = ::new SequentialScript;
 	sequential->m_teamToExecOn = team;
-	sequential->m_scriptName = scopedName;
-	sequential->m_unk0x10 = scriptName;
-	sequential->m_unk0x14 = script;
+	sequential->m_scriptScope = scopedName;
+	sequential->m_scriptName = scriptName;
+	sequential->m_script = script;
 	sequential->m_timesToLoop = timesToLoop;
 	TheScriptEngine->appendSequentialScript(sequential);
 	::delete sequential;
@@ -4182,7 +4182,7 @@ void ScriptActions::doTeamGarrisonSpecificBuilding(const AsciiString &teamName, 
 // FUNCTION: BFME2 0x003C75DD size=118 name=?aiAttackMoveToPositionAmphibious@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiAttackMoveToPositionAmphibious(Coord3D const *pos, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x52, cmdSource);
+	AICommandParms parms(AICMD_MOVE_TO_POSITION_AMPHIBIOUS, cmdSource);
 	parms.m_pos = *pos;
 	parms.m_extraInt = 1;
 	aiDoCommand(&parms);
@@ -4207,7 +4207,7 @@ void AICommandInterface::rva003C76B8(int value, CommandSourceType cmdSource)
 // FUNCTION: BFME2 0x003C771D size=101 name=?aiFaceObject@AICommandInterface@@QAEXPAVObject@@W4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiFaceObject(Object *target, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x26, cmdSource);
+	AICommandParms parms(AICMD_FACE_OBJECT, cmdSource);
 	parms.m_object = target;
 	aiDoCommand(&parms);
 }
@@ -4215,7 +4215,7 @@ void AICommandInterface::aiFaceObject(Object *target, CommandSourceType cmdSourc
 // FUNCTION: BFME2 0x003C7782 size=108 name=?aiFacePosition@AICommandInterface@@QAEXPBVCoord3D@@H@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiFacePosition(Coord3D const *pos, int cmdSource)
 {
-	AICommandParms parms((AICommandType)0x27, (CommandSourceType)cmdSource);
+	AICommandParms parms(AICMD_FACE_POSITION, (CommandSourceType)cmdSource);
 	parms.m_pos = *pos;
 	aiDoCommand(&parms);
 }
@@ -4231,7 +4231,7 @@ void AICommandInterface::rva003C77EE(Waypoint const *waypoint, CommandSourceType
 // FUNCTION: BFME2 0x003C7853 size=92 name=?aiWanderInPlace@AICommandInterface@@QAEXW4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiWanderInPlace(CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x2C, cmdSource);
+	AICommandParms parms(AICMD_WANDER_IN_PLACE, cmdSource);
 	aiDoCommand(&parms);
 }
 

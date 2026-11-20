@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "source_paths_by_snapshot_sha256": {
+    "3a961c89bb620f8aa35d246db3d63678884d99ec6b44f1f8a27ad1a3b46b8d37": [
+      "src/Code/GameEngine/Source/GameClient/DisplayString.cpp"
+    ],
+    "c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc": [
+      "src/Code/GameEngine/Source/GameNetwork/FrameData.cpp",
+      "src/Code/GameEngine/Source/GameNetwork/FrameDataManager.cpp"
+    ]
+  }
+}

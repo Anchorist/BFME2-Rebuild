@@ -10,7 +10,39 @@ DrawGroupInfo *TheDrawGroupInfo = 0;
 // Edges: left=unknown-rows right=unknown-rows
 // FUNCTION: BFME2 0x001DCC3F size=6 name=?Rva001DCC3FGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-neighbour-shared-data
 // FUNCTION: BFME2 0x001DCC45 size=46 name=?parseInt@@YAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=B hypothesis:mm1-contiguity-shared-data
+void parseInt(INI *ini, void *instance, void *store, const void *userData)
+{
+	DrawGroupInfo *info = (DrawGroupInfo *)store;
+	if (userData == 0)
+	{
+		store = &info->m_pixelOffsetX;
+		info->m_usingPixelOffsetX = true;
+	}
+	else
+	{
+		store = &info->m_pixelOffsetY;
+		info->m_usingPixelOffsetY = true;
+	}
+
+	INI::parseInt(ini, NULL, store, NULL);
+}
 // FUNCTION: BFME2 0x001DCC73 size=44 name=?parsePercentToReal@@YAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=B hypothesis:mm1-contiguity-shared-data
+void parsePercentToReal(INI *ini, void *instance, void *store, const void *userData)
+{
+	DrawGroupInfo *info = (DrawGroupInfo *)store;
+	if (userData == 0)
+	{
+		store = &info->m_percentOffsetX;
+		info->m_usingPixelOffsetX = false;
+	}
+	else
+	{
+		store = &info->m_percentOffsetY;
+		info->m_usingPixelOffsetY = false;
+	}
+
+	INI::parsePercentToReal(ini, NULL, store, NULL);
+}
 // FUNCTION: BFME2 0x001DCC9F size=63 name=?parseDrawGroupNumberDefinition@INI@@SAXPAV1@@Z evidence=N:ledger
 
 

@@ -29,22 +29,22 @@ public:
 class RawFileFactoryClass
 {
 public:
-	RawFileClass *Get_File(const char *filename);			// 0x00613240
+	RawFileClass *Get_File(const char *filename);
 	void Return_File(FileClass *file);				// 0x006132A0
 };
 
 class SimpleFileFactoryClass : public FileFactoryClass
 {
 public:
-	SimpleFileFactoryClass();					// 0x00613300
+	SimpleFileFactoryClass();
 	virtual ~SimpleFileFactoryClass() {}
-	virtual FileClass *Get_File(const char *filename);		// 0x00613750
+	virtual FileClass *Get_File(const char *filename);
 	virtual void Return_File(FileClass *file) { ::delete file; }	// 0x006132A0
 
-	void Set_Sub_Directory(const char *sub_directory);		// 0x00613370
-	void Get_Sub_Directory(StringClass &new_dir) const;		// 0x006134F0
-	void Prepend_Sub_Directory(const char *sub_directory);		// 0x00613550
-	void Append_Sub_Directory(const char *sub_directory);		// 0x00613650
+	void Set_Sub_Directory(const char *sub_directory);
+	void Get_Sub_Directory(StringClass &new_dir) const;
+	void Prepend_Sub_Directory(const char *sub_directory);
+	void Append_Sub_Directory(const char *sub_directory);
 
 private:
 	StringClass SubDirectory;					// +0x04
@@ -57,7 +57,7 @@ class file_auto_ptr
 {
 public:
 	file_auto_ptr(FileFactoryClass *fac, const char *filename);	// 0x006131C0
-	~file_auto_ptr();						// 0x00613230
+	~file_auto_ptr();
 
 	FileClass *File;						// +0x00
 	FileFactoryClass *Factory;					// +0x04

@@ -23,23 +23,23 @@
 class HordeAIUpdate : public AIUpdateInterface, public DockUpdateInterface
 {
 public:
-	HordeAIUpdate(Thing *thing, const ModuleData *moduleData);	// 0x0049A7F3
+	HordeAIUpdate(Thing *thing, const ModuleData *moduleData);
 
-	virtual NameKeyType getModuleNameKey() const;				// 0x0049A67C
-	virtual void aiDoCommand(const AICommandParms *parms);		// 0x0049A9A9
-	virtual UpdateSleepTime update();							// 0x0049AB10
+	virtual NameKeyType getModuleNameKey() const;
+	virtual void aiDoCommand(const AICommandParms *parms);
+	virtual UpdateSleepTime update();
 	virtual DockUpdateInterface *getDockUpdateInterface() { return this; }	// behavior slot 22, 0x0049A6C7
 
-	Bool commandCancelsPorcupineFormation(const AICommandParms *parms);	// 0x0049A6DC
-	Bool porcupineFormationIgnoresCommand(const AICommandParms *parms);	// 0x0049A76C
+	Bool commandCancelsPorcupineFormation(const AICommandParms *parms);
+	Bool porcupineFormationIgnoresCommand(const AICommandParms *parms);
 
 	// DockUpdateInterface (+0x3E4).
-	virtual Bool isClearToApproach(const Object *docker) const;					// 0x0049A880
-	virtual Bool reserveApproachPosition(Object *docker, Coord3D *position, Int *index);	// 0x0049A8A1
+	virtual Bool isClearToApproach(const Object *docker) const;
+	virtual Bool reserveApproachPosition(Object *docker, Coord3D *position, Int *index);
 	virtual Bool advanceApproachPosition(Object *docker, Coord3D *position, Int *index) { return true; }	// 0x0049A6D7
 	virtual Bool isClearToEnter(const Object *docker) const { return true; }	// Dock slot 3, 0x005CB9FA
 	virtual Bool isClearToAdvance(const Object *docker, Int index) const { return false; }
-	virtual void getEnterPosition(Object *docker, Coord3D *position);			// 0x0049A8FA
+	virtual void getEnterPosition(Object *docker, Coord3D *position);
 	virtual void getDockPosition(Object *docker, Coord3D *position) { getEnterPosition(docker, position); }
 	virtual void getExitPosition(Object *docker, Coord3D *position) { getEnterPosition(docker, position); }
 	virtual void onApproachReached(Object *docker) {}
@@ -56,8 +56,8 @@ public:
 	virtual Bool isRallyPointAfterDockType() { return false; }
 
 protected:
-	virtual void privateMoveToPosition(const Coord3D *, Real, CommandSourceType);	// 0x0049A93B
-	virtual void bfmePrivateCommand42(Object *, CommandSourceType);				// 0x0049AC5F
+	virtual void privateMoveToPosition(const Coord3D *, Real, CommandSourceType);
+	virtual void bfmePrivateCommand42(Object *, CommandSourceType);
 protected:
 	virtual void loadPostProcess() { AIUpdateInterface::loadPostProcess(); }	// retail slot 0x0049A7EE: a jmp to AIUpdateInterface's, ICF-folded across classes
 protected:
@@ -68,14 +68,14 @@ protected:
 class HordeWorkerAIUpdate : public HordeAIUpdate
 {
 public:
-	HordeWorkerAIUpdate(Thing *thing, const ModuleData *moduleData);	// 0x0049AD15
+	HordeWorkerAIUpdate(Thing *thing, const ModuleData *moduleData);
 
-	virtual NameKeyType getModuleNameKey() const;				// 0x0049ACD0
-	virtual void aiDoCommand(const AICommandParms *parms);		// 0x0049B231
-	virtual UpdateSleepTime update();							// 0x0049AEA4
+	virtual NameKeyType getModuleNameKey() const;
+	virtual void aiDoCommand(const AICommandParms *parms);
+	virtual UpdateSleepTime update();
 
 protected:
-	virtual void xfer(Xfer *xfer);								// 0x0049AE07
+	virtual void xfer(Xfer *xfer);
 
 	ObjectID m_unk0x3E8;										// +0x3E8
 	ObjectID m_unk0x3EC;										// +0x3EC

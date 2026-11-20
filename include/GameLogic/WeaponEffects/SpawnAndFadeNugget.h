@@ -19,7 +19,7 @@ class INI;
 class SpawnAndFadeNugget : public WeaponEffectNugget
 {
 public:
-	SpawnAndFadeNugget();										// 0x0050BB0E
+	SpawnAndFadeNugget();
 	virtual ~SpawnAndFadeNugget();								// 0, deleting dtor 0x0050BB66
 	virtual Bool canAffectObject(const ProjectileNuggetFireInfo *info, Object *victim);	// 1, 0x0050B92D
 	virtual Bool slot02(const ProjectileNuggetFireInfo *info, Int arg);	// 2, 0x00507943
@@ -29,7 +29,7 @@ public:
 	virtual void friend_postProcessLoad();	// 8, 0x0050B928
 	virtual void GetAssetList(AssetList &assets, void *context);	// 9, 0x0050B95B
 
-	// 0x0050B8DB: the INI parse callback the parser calls with (ini, nugget, NULL, NULL); it
+	// The INI parse callback the parser calls with (ini, nugget, NULL, NULL); it
 	// reads the base table and this class's table together.
 	static void parseFromINI(INI *ini, void *instance, void *store, const void *userData);
 

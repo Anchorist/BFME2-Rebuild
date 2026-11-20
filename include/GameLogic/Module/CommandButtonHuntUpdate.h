@@ -52,7 +52,7 @@ protected:
 	virtual ~CommandButtonHuntUpdate();
 
 protected:
-	Object *scanClosestTarget();	// 0x00495489
+	Object *scanClosestTarget();
 public:
 	AsciiString m_commandButtonName;               // +0x20; the constructor sets it to the empty string
 	const CommandButton *m_commandButton;          // +0x24; the constructor clears it

@@ -6,6 +6,7 @@
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K
 #include "Common/Xfer.h"
+#include "Common/GameState.h"
 #include "Common/RandomValue.h"
 #include "Common/AsciiString.h"
 #include "Common/XferException.h"
@@ -195,6 +196,20 @@ Xfer *XferMatrix3D(Xfer *xfer, Real *rows)
 
 
 // FUNCTION: BFME2 0x00306327 size=130 name=?xferMapName@@YAXPAVXfer@@PAVAsciiString@@@Z evidence=N:ledger tier=B hypothesis:mm1-contiguity-shared-data
+void xferMapName(Xfer *xfer, AsciiString *mapName)
+{
+	// A saved game keeps the map as a portable path and loads it back as the real one.
+	if (xfer->IsStoring())
+	{
+		AsciiString portable = TheGameState->realMapPathToPortableMapPath(*mapName);
+		xfer->operator==(portable);
+	}
+	else
+	{
+		xfer->operator==(*mapName);
+		*mapName = TheGameState->portableMapPathToRealMapPath(*mapName);
+	}
+}
 
 // FUNCTION: BFME2 0x003063A9 size=112 name=?Rva003063A9XferThingTemplate@@YAXPAVXfer@@PAPBVThingTemplate@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-shared-data
 

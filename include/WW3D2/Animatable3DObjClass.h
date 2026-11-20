@@ -72,15 +72,15 @@ public:
 protected:
 	virtual void Update_Sub_Object_Transforms(void);				// 42: 0x001A5900
 
-	bool Is_Hierarchy_Valid(void) const;					// 0x001A47E0
+	bool Is_Hierarchy_Valid(void) const;
 	void Set_Hierarchy_Valid(bool onoff) const { IsTreeValid = onoff; }
-	void Base_Update(const Matrix3D &root);						// 0x001A47F0
-	void Anim_Update(const Matrix3D &root, HAnimClass *motion, float frame);	// 0x001A4820
-	void Blend_Update(const Matrix3D &root, HAnimClass *first, float first_frame, HAnimClass *second, float second_frame, float blend);	// 0x001A4890
-	void Combo_Update(const Matrix3D &root, HAnimComboClass *anim);			// 0x001A48D0
-	void Release(void);								// 0x001A4AA0
-	float Compute_Current_Frame(float *newDirection) const;				// 0x001A5020
-	void Single_Anim_Progress(void);						// 0x001A5320
+	void Base_Update(const Matrix3D &root);
+	void Anim_Update(const Matrix3D &root, HAnimClass *motion, float frame);
+	void Blend_Update(const Matrix3D &root, HAnimClass *first, float first_frame, HAnimClass *second, float second_frame, float blend);
+	void Combo_Update(const Matrix3D &root, HAnimComboClass *anim);
+	void Release(void);
+	float Compute_Current_Frame(float *newDirection) const;
+	void Single_Anim_Progress(void);
 
 	mutable bool IsTreeValid;			// +0xF4
 	HTreeClass *HTree;				// +0xF8

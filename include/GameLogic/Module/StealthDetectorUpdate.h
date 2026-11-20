@@ -23,15 +23,15 @@ public:
 	StealthDetectorUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual ~StealthDetectorUpdate();
 
-	virtual NameKeyType getModuleNameKey() const;		// 0x004A2C74
-	virtual UpdateSleepTime update();					// 0x004A2D93
+	virtual NameKeyType getModuleNameKey() const;
+	virtual UpdateSleepTime update();
 	virtual DisabledMaskType getDisabledTypesToProcess() const;	// slot 1, the shared body 0x004A2D67: one bit (3) set in an empty mask
 
 protected:
 	// Own override: the table slot is the fold 0x00497805 of the per-module
 	// `{ UpdateModule::loadPostProcess(); }` bodies, not UpdateModule's 0x0058B03E.
 	virtual void loadPostProcess();
-	virtual void xfer(Xfer *xfer);						// 0x004A2C30
+	virtual void xfer(Xfer *xfer);
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x004A2BEA (retail slot 2 of the class table)
 };

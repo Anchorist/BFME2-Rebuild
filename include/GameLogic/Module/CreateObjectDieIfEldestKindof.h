@@ -32,9 +32,9 @@ struct findEldest
 struct StatusBitsEldestFrame
 {
 public:
-	Bool rva00485C19(Object *object, const Rva00485C19Data *filter, const NameKeyType *key);	// 0x00485C19
+	Bool rva00485C19(Object *object, const Rva00485C19Data *filter, const NameKeyType *key);
 	void xfer(Xfer *xfer);	// 0x00485BB8: Version1, then the cached frame
-	StatusBitsEldestFrame *cacheGameLogicFrame();	// 0x00485975: stores the logic frame in m_unk0x0 and returns this
+	StatusBitsEldestFrame *cacheGameLogicFrame();	// Stores the logic frame in m_unk0x0 and returns this
 	UnsignedInt m_unk0x0;	// +0x0 of the frame; 4 bytes (IfEldest SIZE 0x18 less the CreateObjectDie base 0x14)
 };
 

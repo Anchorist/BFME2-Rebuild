@@ -36,11 +36,11 @@ public:
 class ProcessAnimateWindowSlideFromRight : public ProcessAnimateWindow
 {
 public:
-	ProcessAnimateWindowSlideFromRight();								// 0x005C5069
-	virtual void initAnimateWindow(AnimateWindow *animWin);				// 0x005C5112
-	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);	// 0x005C50A8
-	virtual bool updateAnimateWindow(AnimateWindow *animWin);			// 0x005C64BE
-	virtual bool reverseAnimateWindow(AnimateWindow *animWin);			// 0x005C51E5
+	ProcessAnimateWindowSlideFromRight();
+	virtual void initAnimateWindow(AnimateWindow *animWin);
+	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);
+	virtual bool updateAnimateWindow(AnimateWindow *animWin);
+	virtual bool reverseAnimateWindow(AnimateWindow *animWin);
 
 	Coord2D m_maxVel;													// +0x04
 	int m_slowDownThreshold;											// +0x0C
@@ -52,9 +52,9 @@ public:
 class ProcessAnimateWindowSlideFromRightFast : public ProcessAnimateWindow
 {
 public:
-	ProcessAnimateWindowSlideFromRightFast();							// 0x005C62D8
-	virtual void initAnimateWindow(AnimateWindow *animWin);				// 0x005C63CD
-	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);	// 0x005C631E
+	ProcessAnimateWindowSlideFromRightFast();
+	virtual void initAnimateWindow(AnimateWindow *animWin);
+	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);
 	virtual bool updateAnimateWindow(AnimateWindow *animWin);			// 0x005C64BE (shared with the right style)
 	virtual bool reverseAnimateWindow(AnimateWindow *animWin);			// 0x005C51E5 (shared with the right style)
 
@@ -68,11 +68,11 @@ public:
 class ProcessAnimateWindowSlideFromLeft : public ProcessAnimateWindow
 {
 public:
-	ProcessAnimateWindowSlideFromLeft();								// 0x005C52CE
-	virtual void initAnimateWindow(AnimateWindow *animWin);				// 0x005C530D
+	ProcessAnimateWindowSlideFromLeft();
+	virtual void initAnimateWindow(AnimateWindow *animWin);
 	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);	// 0x005C5FC4 (shared with top, bottom and top fast)
-	virtual bool updateAnimateWindow(AnimateWindow *animWin);			// 0x005C53DD
-	virtual bool reverseAnimateWindow(AnimateWindow *animWin);			// 0x005C54BC
+	virtual bool updateAnimateWindow(AnimateWindow *animWin);
+	virtual bool reverseAnimateWindow(AnimateWindow *animWin);
 
 	Coord2D m_maxVel;													// +0x04
 	int m_slowDownThreshold;											// +0x0C
@@ -84,10 +84,10 @@ public:
 class ProcessAnimateWindowSlideFromTop : public ProcessAnimateWindow
 {
 public:
-	ProcessAnimateWindowSlideFromTop();									// 0x005C55A5
-	virtual void initAnimateWindow(AnimateWindow *animWin);				// 0x005C55E4
+	ProcessAnimateWindowSlideFromTop();
+	virtual void initAnimateWindow(AnimateWindow *animWin);
 	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);	// 0x005C5FC4
-	virtual bool updateAnimateWindow(AnimateWindow *animWin);			// 0x005C6106
+	virtual bool updateAnimateWindow(AnimateWindow *animWin);
 	virtual bool reverseAnimateWindow(AnimateWindow *animWin);			// 0x005C61EE
 
 	Coord2D m_maxVel;													// +0x04
@@ -100,11 +100,11 @@ public:
 class ProcessAnimateWindowSlideFromTopFast : public ProcessAnimateWindow
 {
 public:
-	ProcessAnimateWindowSlideFromTopFast();								// 0x005C5F85
-	virtual void initAnimateWindow(AnimateWindow *animWin);				// 0x005C602A
-	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);	// 0x005C5FC4
+	ProcessAnimateWindowSlideFromTopFast();
+	virtual void initAnimateWindow(AnimateWindow *animWin);
+	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);
 	virtual bool updateAnimateWindow(AnimateWindow *animWin);			// 0x005C6106 (shared with the top style)
-	virtual bool reverseAnimateWindow(AnimateWindow *animWin);			// 0x005C61EE (shared with the top style)
+	virtual bool reverseAnimateWindow(AnimateWindow *animWin);			// (shared with the top style)
 
 	Coord2D m_maxVel;													// +0x04
 	int m_slowDownThreshold;											// +0x0C
@@ -116,11 +116,11 @@ public:
 class ProcessAnimateWindowSlideFromBottom : public ProcessAnimateWindow
 {
 public:
-	ProcessAnimateWindowSlideFromBottom();								// 0x005C56B4
-	virtual void initAnimateWindow(AnimateWindow *animWin);				// 0x005C56F3
+	ProcessAnimateWindowSlideFromBottom();
+	virtual void initAnimateWindow(AnimateWindow *animWin);
 	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);	// 0x005C5FC4
-	virtual bool updateAnimateWindow(AnimateWindow *animWin);			// 0x005C57C4
-	virtual bool reverseAnimateWindow(AnimateWindow *animWin);			// 0x005C58A8
+	virtual bool updateAnimateWindow(AnimateWindow *animWin);
+	virtual bool reverseAnimateWindow(AnimateWindow *animWin);
 
 	Coord2D m_maxVel;													// +0x04
 	int m_slowDownThreshold;											// +0x0C
@@ -133,10 +133,10 @@ class ProcessAnimateWindowSpiral : public ProcessAnimateWindow
 {
 public:
 	ProcessAnimateWindowSpiral();										// 0x005C4FFF
-	virtual void initAnimateWindow(AnimateWindow *animWin);				// 0x005C5C31
-	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);	// 0x005C5BE2
-	virtual bool updateAnimateWindow(AnimateWindow *animWin);			// 0x005C5D33
-	virtual bool reverseAnimateWindow(AnimateWindow *animWin);			// 0x005C5E80
+	virtual void initAnimateWindow(AnimateWindow *animWin);
+	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);
+	virtual bool updateAnimateWindow(AnimateWindow *animWin);
+	virtual bool reverseAnimateWindow(AnimateWindow *animWin);
 
 	float m_deltaTheta;													// +0x04
 	int m_maxR;															// +0x08 (half the display width)
@@ -147,9 +147,9 @@ class ProcessAnimateWindowSlideFromBottomTimed : public ProcessAnimateWindow
 {
 public:
 	ProcessAnimateWindowSlideFromBottomTimed();							// 0x005C4FEF
-	virtual void initAnimateWindow(AnimateWindow *animWin);				// 0x005C5A38
-	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);	// 0x005C59AC
-	virtual bool updateAnimateWindow(AnimateWindow *animWin);			// 0x005C5AF7
+	virtual void initAnimateWindow(AnimateWindow *animWin);
+	virtual void initReverseAnimateWindow(AnimateWindow *animWin, unsigned int maxDelay = 0);
+	virtual bool updateAnimateWindow(AnimateWindow *animWin);
 	virtual bool reverseAnimateWindow(AnimateWindow *animWin);			// 0x005CB265 (a folded body shared with other classes)
 	virtual void setMaxDuration(unsigned int maxDuration);				// 0x002B230F
 

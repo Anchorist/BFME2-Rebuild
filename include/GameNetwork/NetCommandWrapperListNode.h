@@ -20,15 +20,15 @@ class NetCommandWrapperListNode
 {
 	friend class NetCommandWrapperList;	// destroys nodes through the protected destructor
 public:
-	NetCommandWrapperListNode(NetWrapperCommandMsg *msg);	// 0x0058BFA8
+	NetCommandWrapperListNode(NetWrapperCommandMsg *msg);
 
 protected:
 	virtual ~NetCommandWrapperListNode();					// slot 0, 0x0058C00C (deleting 0x0058C1F3)
 
 public:
-	Bool isComplete();										// 0x0058C03B
-	void copyChunkData(NetWrapperCommandMsg *msg);			// 0x0058C047
-	Int getPercentComplete();								// 0x0058C20F
+	Bool isComplete();
+	void copyChunkData(NetWrapperCommandMsg *msg);
+	Int getPercentComplete();
 	UnsignedShort getCommandID() const { return m_commandID; }
 	UnsignedInt getRawDataLength() const { return m_dataLength; }
 	UnsignedByte *getRawData() const { return m_data; }

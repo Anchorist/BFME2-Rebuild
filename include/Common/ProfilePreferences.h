@@ -128,7 +128,7 @@ public:
 	Int getTotalLosses();	// 0x005373AF (getLosses summed over the six side names)
 
 protected:
-	void loadStatsFile(const UnicodeString &profilePath, const UnicodeString &leafName);	// 0x00537D33
+	void loadStatsFile(const UnicodeString &profilePath, const UnicodeString &leafName);
 };
 
 #endif

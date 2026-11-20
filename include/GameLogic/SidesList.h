@@ -15,7 +15,7 @@ class SidesList : public SubsystemInterface, public Snapshot
 {
 public:
 	SidesList();								// 0x0032EE24
-	virtual ~SidesList();						// 0x0032EC63
+	virtual ~SidesList();
 	virtual void init() {}						// Slot 1: bare ret at 0x000B3FD0.
 	virtual void reset();						// Slot 9: 0x0032E53D tails to clear().
 	virtual void update() {}					// Slot 10: bare ret at 0x000B3FD0.
@@ -23,16 +23,16 @@ public:
 	virtual const char *GetSnapshotName() const;	// Snapshot slot 2: 0x0032ED53.
 	virtual void xfer(Xfer *xfer);				// Snapshot slot 3: 0x00329AEA.
 
-	SidesInfo *getSideInfo(Int index);			// 0x002035BA, null for an out-of-range index.
+	SidesInfo *getSideInfo(Int index);			// Null for an out-of-range index.
 	Int getNumSides() const { return m_numSides; }
-	void emptySides();							// 0x0032D81B
-	void emptyTeams();							// 0x0032D05C
-	void duplicateScripts(const SidesList &other);	// 0x00329A80
+	void emptySides();
+	void emptyTeams();
+	void duplicateScripts(const SidesList &other);
 	void writeScripts(DataChunkOutput &chunkWriter);	// 0x0032996E
-	SidesInfo *findSideInfo(AsciiString name, Int *index = 0);	// 0x0032B0A9
-	SidesInfo *findSkirmishSideInfo(AsciiString name, Int *index = 0);	// 0x0032B13F
-	Bool validateAllyEnemyList(const AsciiString &teamName, AsciiString &allies);	// 0x0032B2A5
-	void clear();								// 0x0032DDDE
+	SidesInfo *findSideInfo(AsciiString name, Int *index = 0);
+	SidesInfo *findSkirmishSideInfo(AsciiString name, Int *index = 0);
+	Bool validateAllyEnemyList(const AsciiString &teamName, AsciiString &allies);
+	void clear();
 
 private:
 	virtual void loadPostProcess() {}			// Snapshot slot 1: bare ret at 0x000B3FD0.

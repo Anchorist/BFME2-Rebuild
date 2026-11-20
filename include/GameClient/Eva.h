@@ -25,7 +25,7 @@ class AsciiString;
 #include "Common/RTSEqualTo.h"
 // Role-inferred: one delayed report is its due frame followed by the report record.
 struct EvaDelayedReport {
-    EvaDelayedReport(const int &frame, const EvaEventReport &report); // 0x001DD2BF, out of line: copies both in
+    EvaDelayedReport(const int &frame, const EvaEventReport &report); // out of line: copies both in
     unsigned int m_frame; // +0x00 (node+0x10)
     EvaEventReport m_report; // +0x04 (node+0x14)
 };
@@ -62,7 +62,7 @@ protected:
     virtual void xfer(Xfer *);
 public:
 #if defined(_STLPORT_VERSION)
-    _STL::multiset<EvaDelayedReport, EvaDelayedReportLess> m_delayedReports; // +0x10: reportEvaEvent queues with insert_equal (0x001DDA1C), so two reports due on one frame both stay
+    _STL::multiset<EvaDelayedReport, EvaDelayedReportLess> m_delayedReports; // +0x10: reportEvaEvent queues with insert_equal, so two reports due on one frame both stay
     _STL::vector<EvaEvent> m_allEventInfos; // +0x1C
     _STL::vector<EvaEvent> m_iniEventInfos; // +0x28
     EvaNameMap m_eventNameMap; // +0x34

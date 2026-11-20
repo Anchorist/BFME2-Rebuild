@@ -35,20 +35,20 @@ public:
 	Connection();												// 0x0058BDA0
 	~Connection() { ::delete m_netCommandList; }				// 0x004D060B (emitted in ConnectionManager.cpp: frees the command list, then the name)
 
-	void rva0058BAA7(const NetPacketAddress *address, const UnicodeString &name, Transport *transport);	// 0x0058BAA7 (sets up the connection for a peer)
-	void sendNetCommandMsg(NetCommandMsg *msg, UnsignedByte relay);		// 0x0058BDFA
-	void clearCommandsExceptFrom(Int playerID);					// 0x0058B960
-	UnsignedInt doSend(Bool isInGame);							// 0x0058BB5C (builds packets from the pending commands and queues them on the transport)
-	Bool isQueueEmpty();										// 0x0058B9A9
-	void setQuitting(UnsignedInt quitValue);					// 0x0058B9B4
+	void rva0058BAA7(const NetPacketAddress *address, const UnicodeString &name, Transport *transport);	// (sets up the connection for a peer)
+	void sendNetCommandMsg(NetCommandMsg *msg, UnsignedByte relay);
+	void clearCommandsExceptFrom(Int playerID);
+	UnsignedInt doSend(Bool isInGame);							// (builds packets from the pending commands and queues them on the transport)
+	Bool isQueueEmpty();
+	void setQuitting(UnsignedInt quitValue);
 	NetCommandRef *processAck(UnsignedShort commandID, UnsignedByte originalPlayerID, UnsignedInt timestamp, UnsignedInt executionFrame);	// 0x0058B9CA
 	NetCommandRef *processAck(NetCommandMsg *msg);				// 0x0058BD7B
-	NetCommandRef *rva0058BD4F(void *ackMsg);					// 0x0058BD4F (the folded body shared by the per-type overloads below)
+	NetCommandRef *rva0058BD4F(void *ackMsg);					// (the folded body shared by the per-type overloads below)
 	NetCommandRef *processAck(NetAckStage1CommandMsg *msg);		// folded into 0x0058BD4F
 	NetCommandRef *processAck(NetAckBothCommandMsg *msg);		// folded into 0x0058BD4F
 
 protected:
-	void doRetryMetrics();										// 0x0058BA7B
+	void doRetryMetrics();
 
 public:
 	UnsignedInt m_quitValue;									// +0x00 (-1 after the constructor)

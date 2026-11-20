@@ -19,12 +19,12 @@ class VeterancyCrateCollide : public CrateCollide
 {
 public:
 	VeterancyCrateCollide(Thing *thing, const ModuleData *moduleData);	// 0x004BCE32
-	virtual ~VeterancyCrateCollide();									// 0x004BCE62
-	virtual NameKeyType getModuleNameKey() const;						// 0x004BCE7B
+	virtual ~VeterancyCrateCollide();
+	virtual NameKeyType getModuleNameKey() const;
 
 
 private:
-	int getLevelsToGain() const;										// 0x004BCEDC, private (ledger access A)
+	int getLevelsToGain() const;										// Private (ledger access A)
 
 public:
 	const VeterancyCrateCollideModuleData *getVeterancyCrateCollideModuleData() const

@@ -64,8 +64,8 @@ protected:
 
 public:
 	virtual void doSpecialPowerAtLocation(const Coord3D *loc, unsigned int options);	// slot 12, 0x004C4B3C
-	Object *addObject(const Coord3D *pos, const AsciiString &asciiString);	// 0x004C4940: the named template, placed and given the owner's team
-	void rva004C49AE(const Coord3D *loc);					// 0x004C49AE (address-named; owner unresolved)
+	Object *addObject(const Coord3D *pos, const AsciiString &asciiString);	// The named template, placed and given the owner's team
+	void rva004C49AE(const Coord3D *loc);					// (address-named; owner unresolved)
 protected:
 	virtual void loadPostProcess() { SpecialPowerModule::loadPostProcess(); }	// retail slot 0x004C8A2F: a jmp to SpecialPowerModule's, ICF-folded across classes
 };

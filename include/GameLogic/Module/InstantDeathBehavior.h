@@ -22,10 +22,10 @@ typedef char InstantDeathBehavior_base_size[(sizeof(DieModule) == 0x14) ? 1 : -1
 class InstantDeathBehavior : public DieModule
 {
 public:
-	InstantDeathBehavior(Thing *thing, const ModuleData *moduleData);	// 0x0045CF55
+	InstantDeathBehavior(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	virtual void onDie(const DamageInfo *damageInfo);					// 0x0045CF9B
+	virtual void onDie(const DamageInfo *damageInfo);
 
 protected:
 	virtual void xfer(Xfer *xfer);

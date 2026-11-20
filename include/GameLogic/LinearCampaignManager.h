@@ -31,7 +31,7 @@ public:
 	LinearCampaignManager();										// 0x001ED3C0
 	virtual ~LinearCampaignManager();								// 0x001ED41B; deleting 0x001ED52D
 
-	void rva001ECEF6();												// 0x001ECEF6 (AptCampaignMenu::OnBttnLastMission 0x0052119F calls it with the current campaign)
+	void rva001ECEF6();												// (AptCampaignMenu::OnBttnLastMission 0x0052119F calls it with the current campaign)
 
 	virtual void init() {}											// SubsystemInterface slot 1: the shared empty body
 	virtual void reset();											// SubsystemInterface slot 9, 0x001EB722

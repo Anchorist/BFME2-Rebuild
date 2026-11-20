@@ -29,8 +29,8 @@ The ten findings, as the review stated them, and where each stands on
    *Fixed:* the header now uses STLport only.
 2. `AutoPickUpUpdate.cpp` hand-implements a partial vector and casts a
    pointer member to an allocator. *Open.*
-3. `StealthDetectorUpdate.cpp` keeps a dead `if (0) { AsciiString unused; }`
-   only to shape the compiler's exception-handling output. *Open.*
+3. StealthDetectorUpdate::update is unmatched. See [the remaining
+   stack layout difference](hard_rows.md#stealth-detector-update).
 4. `AptScoreScreen::OpenScreen(int, int)` took an object and its input record
    as integers. *Partly fixed:* the record is typed now; the screen is still an
    address-named global.
@@ -38,15 +38,16 @@ The ten findings, as the review stated them, and where each stands on
    the vtable through a cast. *Open.*
 6. `texture.cpp` released a Direct3D texture through a raw COM slot.
    *Fixed:* it calls `Release()` on the interface.
-7. `Transport` and `LANGameInfo` passed `void *` and `Int *` where the module
-   knows the types. *Partly fixed:* `LANGameInfo` is typed; one `Transport`
-   method still takes `void *`.
+7. LANGameInfo::getLANSlot returns a pointer to the declared LANGameSlot
+   type. One Transport method still takes a void pointer.
 8. `SpecialPowerModuleData` declares `BitFlags<11>` for AntiCategory, while the
    project's own enumeration evidence gives 15 entries. *Open.*
 9. `TunnelTracker.h` kept offset names for members whose roles its comments
    state. *Mostly fixed:* one offset-named member remains.
-10. `W3DScene.cpp` holds network, object and subsystem methods with no stated
-    reason for that placement. *Open.*
+10. W3DScene.cpp contains three bodies with scene or network, object, and
+    subsystem uses. The call sites and virtual tables establish those uses.
+    The original compiler contributions selecting these copies remain
+    unconfirmed. See [W3DScene function placement](hard_rows.md#w3dscene-function-placement).
 
 Where to help: retiring the Drafts in use ([worklist/draft_headers_in_use.tsv](../worklist/draft_headers_in_use.tsv)),
 evidence that moves an address-named unit to its real file (see the

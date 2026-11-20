@@ -72,14 +72,14 @@ class DataChunkTableOfContents
 {
 public:
 	DataChunkTableOfContents();					// 0x00306D48
-	~DataChunkTableOfContents();				// 0x00306D5C
+	~DataChunkTableOfContents();
 
-	UnsignedInt getID(const AsciiString &name);				// 0x00307A53
-	AsciiString getName(UnsignedInt id);					// 0x003070F1
-	UnsignedInt allocateID(const AsciiString &name);		// 0x00307A6A
+	UnsignedInt getID(const AsciiString &name);
+	AsciiString getName(UnsignedInt id);
+	UnsignedInt allocateID(const AsciiString &name);
 	Bool isOpenedForRead() const { return m_headerOpened; }
-	void write(OutputStream &stream);						// 0x0030715D
-	void read(ChunkInputStream &stream);					// 0x003071E9
+	void write(OutputStream &stream);
+	void read(ChunkInputStream &stream);
 
 	Mapping *m_list;							// +0x00
 	Int m_listLength;							// +0x04
@@ -87,7 +87,7 @@ public:
 	Bool m_headerOpened;						// +0x0C
 
 private:
-	Mapping *findMapping(const AsciiString &name);			// 0x00307A2C
+	Mapping *findMapping(const AsciiString &name);
 };
 // SIZE 0x10
 
@@ -97,7 +97,7 @@ class UserParser
 {
 public:
 	UserParser();								// 0x00307371
-	virtual ~UserParser();						// 0x0030739E
+	virtual ~UserParser();
 
 	UserParser *m_next;							// +0x04
 	UserParser **m_link;						// +0x08, the pointer field that refers to this entry
@@ -112,32 +112,32 @@ class DataChunkInput
 {
 public:
 	DataChunkInput(ChunkInputStream *stream);	// 0x00307316
-	~DataChunkInput();							// 0x00306F01
+	~DataChunkInput();
 
-	Bool atEndOfFile();							// 0x00306C08
-	Bool atEndOfChunk();						// 0x00306E2E
-	void reset();								// 0x00306DCC
-	void clearChunkStack();						// 0x00306DA4
-	AsciiString getChunkLabel();				// 0x003074D7
-	DataChunkVersionType getChunkVersion();		// 0x00306E06
-	UnsignedInt getChunkDataSize();				// 0x00306E16
-	UnsignedInt getChunkDataSizeLeft();			// 0x00306E22
-	Real readReal();							// 0x00306E56
-	Int readInt();								// 0x00306E78
-	UnsignedByte readByte();					// 0x00306E9A
-	void readArrayOfBytes(char *buffer, Int length);	// 0x00306EBC
-	NameKeyType readNameKey();					// 0x003077E0
-	AsciiString readAsciiString();				// 0x0030750A
-	Bool parse(void *userData);					// 0x00307AC0
-	UnicodeString readUnicodeString();			// 0x003075A3
-	Dict readDict();							// 0x00307833
-	AsciiString openDataChunk(DataChunkVersionType *version);	// 0x0030740F
+	Bool atEndOfFile();
+	Bool atEndOfChunk();
+	void reset();
+	void clearChunkStack();
+	AsciiString getChunkLabel();
+	DataChunkVersionType getChunkVersion();
+	UnsignedInt getChunkDataSize();
+	UnsignedInt getChunkDataSizeLeft();
+	Real readReal();
+	Int readInt();
+	UnsignedByte readByte();
+	void readArrayOfBytes(char *buffer, Int length);
+	NameKeyType readNameKey();
+	AsciiString readAsciiString();
+	Bool parse(void *userData);
+	UnicodeString readUnicodeString();
+	Dict readDict();
+	AsciiString openDataChunk(DataChunkVersionType *version);
 	UserParser *registerParser(const AsciiString &label, const AsciiString &parentLabel,
 		DataChunkParserPtr parser, void *userData);	// 0x00307779
 
 protected:
-	void decrementDataLeft(Int size);			// 0x00306E40
-	void closeDataChunk();						// 0x00306F53
+	void decrementDataLeft(Int size);
+	void closeDataChunk();
 
 	ChunkInputStream *m_file;					// +0x00
 	DataChunkTableOfContents m_contents;		// +0x04
@@ -165,16 +165,16 @@ public:
 	DataChunkOutput(OutputStream *stream);		// 0x00306FA5
 	~DataChunkOutput();							// 0x00307680
 
-	void openDataChunk(char *name, DataChunkVersionType version);	// 0x00307C76
-	void closeDataChunk();						// 0x00306C88
-	void writeByte(UnsignedByte value);			// 0x00306D17
-	void writeArrayOfBytes(char *buffer, Int length);	// 0x00306D2F
-	void writeAsciiString(const AsciiString &text) throw();	// 0x00307033
-	void writeUnicodeString(UnicodeString text);	// 0x0030708E
+	void openDataChunk(char *name, DataChunkVersionType version);
+	void closeDataChunk();
+	void writeByte(UnsignedByte value);
+	void writeArrayOfBytes(char *buffer, Int length);
+	void writeAsciiString(const AsciiString &text) throw();
+	void writeUnicodeString(UnicodeString text);
 	void writeInt(Int value);					// 0x00306CFF (folded with writeReal)
 	void writeReal(Real value);					// 0x00306CFF (folded with writeInt)
-	void writeDict(const Dict &d);				// 0x00307D85
-	void writeNameKey(NameKeyType key);			// 0x00307D29
+	void writeDict(const Dict &d);
+	void writeNameKey(NameKeyType key);
 
 protected:
 	OutputStream *m_pOut;						// +0x00

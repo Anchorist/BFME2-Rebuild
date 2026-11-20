@@ -14,14 +14,14 @@
 class TerrainScorchFXNugget : public FXNugget
 {
 public:
-	TerrainScorchFXNugget();										// 0x001E08D9
+	TerrainScorchFXNugget();
 
 	virtual void doFXPos(const Coord3D *primary, const Matrix3D *primaryMtx, Real primarySpeed,
 		const Coord3D *secondary) const;								// 1, 0x001E0915
 	virtual void GetAssetList(AssetList &assets, Int context) const {}		// 3, empty (fold 0x0050B238)
 
-	static void buildFieldParse(MultiIniFieldParse &p);					// 0x001E0965
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001E171C
+	static void buildFieldParse(MultiIniFieldParse &p);
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	Int m_scorchType;										// 0x148 Type (parseScorchType)
 	Real m_radius;									// 0x14C Radius (parseReal)

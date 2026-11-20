@@ -73,8 +73,9 @@ class CommandIDHistory
 {
 public:
 	CommandIDHistory();										// 0x004D13EA
-	void *rva004D04C9();									// 0x004D04C9 (the map has no better name; disconnectPlayer calls it for the router's history)
-	void rva004D1EB1(UnsignedShort commandID);				// 0x004D1EB1 (clears the twenty bits around the id ahead of a new one; accept calls it; the map has no better name)
+	void *rva004D04C9();									// (the map has no better name; disconnectPlayer calls it for the router's history)
+	void rva004D1EB1(UnsignedShort commandID);				// (clears the twenty bits around the id ahead of a new one; accept calls it; the map has no better name)
+	Int rva000D43D0();										// 0x000D43D0 (folded zero-returning stub called by Network::vslotF4)
 	Bool accept(UnsignedShort commandID, UnsignedInt frame);	// 0x004D2164 (true when the id is new; false for a repeat)
 
 	_STL::bitset<0x10000> m_bits;								// +0x0000
@@ -93,66 +94,68 @@ class ConnectionManager
 {
 public:
 	ConnectionManager();									// 0x004D274B
-	~ConnectionManager();									// 0x004D2344, not virtual
+	~ConnectionManager();									// Not virtual
 
 	virtual void init();									// slot 0, 0x004D24A2
 	virtual void reset();									// slot 1, 0x004D0669
 	virtual void slot2();									// slot 2, 0x004CF032 (name not evidenced)
 	virtual void update(Bool isInGame, Int frame);			// slot 3, 0x004D342A
 
-	UnsignedInt getLocalPlayerID();							// 0x004CF906
-	UnsignedInt getPacketRouterSlot();						// 0x004CF3B2
-	Int getNumPlayers();									// 0x004CF926
+	UnsignedInt getLocalPlayerID();
+	UnsignedInt getPacketRouterSlot();
+	Int getNumPlayers();
 	UnsignedInt getNextPacketRouterSlot(UnsignedInt from);	// 0x004CFAC0 (the map calls it BFMEConnectionManager::getNextPacketRouterSlot)
-	UnsignedInt rva004CFC81() const;						// 0x004CFC81 (frames the slowest slot is behind; the map has no better name)
-	void sendHero(CreateAHeroData *hero, Int slot, UnsignedShort commandID, UnsignedByte playerMask);	// 0x004D01D5
-	void rva004D0E93(Int slot, Int frame, const UnicodeString &text);	// 0x004D0E93 (the map has no better name)
-	UnsignedByte rva004CEF58(Int slot);					// 0x004CEF58 (the map has no better name)
+	UnsignedInt rva004CFC81() const;						// (frames the slowest slot is behind; the map has no better name)
+	void sendHero(CreateAHeroData *hero, Int slot, UnsignedShort commandID, UnsignedByte playerMask);
+	void rva004D0E93(Int slot, Int frame, const UnicodeString &text);	// (the map has no better name)
+	UnsignedByte rva004CEF58(Int slot);					// 0x004CEF58
+	UnsignedByte isSlotWithinTimeout(Int slot, UnsignedInt timeout);	// 0x004CEFC2
+	Int getSlotFrameLimit(Int slot);					// 0x004CF0FB
 	Bool isPlayerConnected(Int slot);						// 0x004CF083 (the map calls it BFMEConnectionManager::isPlayerConnected)
 	Bool isPlayerInGame(Int slot);							// 0x004CF0A6
 	Int isPlayerSlotActive(Int slot);						// 0x004CF0CD
 	void attachTransport(Transport *transport);				// 0x004CF113
-	Bool IsFrameAcked(UnsignedInt frame);					// 0x004CF316
-	Bool areAllQueuesEmpty();								// 0x004CF3B9
-	Bool rva004CF3E1();										// 0x004CF3E1
+	Bool IsFrameAcked(UnsignedInt frame);
+	Bool areAllQueuesEmpty();
+	Bool rva004CF3E1();
 	Bool isPacketRouter();									// 0x004CF9CD
 	Bool areFrameCommandsComplete(UnsignedInt frame, Bool debugSpewage);	// 0x004CF799
-	void setFrameGrouping(UnsignedInt grouping);			// 0x004CF7F5
-	void voteForPlayerDisconnect(Int slot);					// 0x004CF90D
-	void resendPendingCommands();							// 0x004D016E
-	UnicodeString getPlayerName(Int slot);					// 0x004D0198
-	void disconnectLocalPlayer();							// 0x004D15F7
-	PlayerLeaveCode disconnectPlayer(Int slot);				// 0x004D13F8
-	PlayerLeaveCode processPlayerLeave(UnsignedByte playerID);	// 0x004D1D37
-	void doRelay();											// 0x004D3221
+	void setFrameGrouping(UnsignedInt grouping);
+	void voteForPlayerDisconnect(Int slot);
+	void resendPendingCommands();
+	UnicodeString getPlayerName(Int slot);
+	void disconnectLocalPlayer();
+	PlayerLeaveCode disconnectPlayer(Int slot);
+	PlayerLeaveCode processPlayerLeave(UnsignedByte playerID);
+	void doRelay();
 	void relayCommand(void *ref);							// 0x004CF578 (stamps a received command with the next frame and its time, stores it in the sender's frame data and forwards it to the relay targets; takes a NetCommandRef)
-	void rva004D316A(NetCommandList *list, const BfmeNetAddress *from);	// 0x004D316A (the map has no better name: handles every command of a received list)
-	NetCommandList *getFrameCommandList(UnsignedInt frame);	// 0x004D0027
-	void parseUserList(const GameInfo *game);				// 0x004D1616
-	void initTransport();									// 0x004CF664
-	void sendChat(UnicodeString text, Int playerMask);		// 0x004D17C5
-	void sendDisconnectChat(UnicodeString text);			// 0x004D187B
-	void sendFile(AsciiString path, UnsignedByte playerMask, UnsignedShort commandID);	// 0x004D1927
-	UnsignedShort sendFileAnnounce(AsciiString path, UnsignedByte playerMask);	// 0x004D2D6A
-	Int getFileTransferProgress(Int slot, AsciiString path);	// 0x004D28C6
+	void rva004D316A(NetCommandList *list, const BfmeNetAddress *from);	// (the map has no better name: handles every command of a received list)
+	NetCommandList *getFrameCommandList(UnsignedInt frame);
+	void parseUserList(const GameInfo *game);
+	void initTransport();
+	void sendChat(UnicodeString text, Int playerMask);
+	void sendDisconnectChat(UnicodeString text);
+	void sendFile(AsciiString path, UnsignedByte playerMask, UnsignedShort commandID);
+	UnsignedShort sendFileAnnounce(AsciiString path, UnsignedByte playerMask);
+	Int getFileTransferProgress(Int slot, AsciiString path);
 	void resendFrameRangeToPlayer(Int slot, UnsignedInt firstFrame, UnsignedInt lastFrame);	// 0x004D0381 (the map calls it BFMEConnectionManager::resendFrameRangeToPlayer)
-	void sendFrameDataToPlayer(UnsignedInt slot, UnsignedInt frame);	// 0x004D04A4
-	void sendLocalCommand(NetCommandMsg *msg, UnsignedByte relay);		// 0x004CFF21
-	void sendLocalCommandDirect(NetCommandMsg *msg, UnsignedByte relay);	// 0x004CF6E4
-	void loadProgressComplete();							// 0x004D02F6
+	void sendFrameDataToPlayer(UnsignedInt slot, UnsignedInt frame);
+	void sendLocalCommand(NetCommandMsg *msg, UnsignedByte relay);
+	void sendLocalCommandDirect(NetCommandMsg *msg, UnsignedByte relay);
+	void loadProgressComplete();
 	void quitGame();										// 0x004D0E8B (Zero Hour's name: asks to leave with reason 0; the map holds it as rva004D0E8B)
-	void requestLeave(Int reason);							// 0x004D00BB
+	void requestLeave(Int reason);
 	void rva004CF8D5();										// 0x004CF8D5 (the map holds it as BfmeOwnerFY::bfmeShutdownFY)
-	void updateLoadProgress(Int progress);					// 0x004CF940
-	void sendLocalGameMessage(GameMessage *msg);			// 0x004D0E06
+	void updateLoadProgress(Int progress);
+	void sendLocalGameMessage(GameMessage *msg);
 	void processAck(NetCommandMsg *msg);					// 0x004D094C (the map calls it BFMEConnectionManager::processAck)
 	void processAckCommand(void *msg);						// 0x004D0815 (the stage-2 half of an acknowledgement: retires the pending command and relays the final ack)
-	void rva004CF35D(NetWrapperCommandMsg *msg);			// 0x004CF35D (the map has no better name)
+	void rva004CF35D(NetWrapperCommandMsg *msg);			// (the map has no better name)
 	void processInformPlayerLeaveFrameCommand(void *msg);	// 0x004CFD06 (the map calls it BFMEConnectionManager::...)
 	void processGameSpyStatsAuthKeyCommand(void *msg);		// 0x004CFE24
 	void sendGameSpyStatsAuthKey(void *msg);				// 0x004D12B2
 	void processRequestFrameDataCommand(void *msg);			// 0x004D0984
-	void processHero(NetCommandMsg *msg);					// 0x004CF1AD
+	void processHero(NetCommandMsg *msg);
 	void sendKeepAliveCommand();							// 0x004CF828 (the map calls it BFMEConnectionManager::sendKeepAliveCommand)
 	void sendDisconnectFrameCommand();						// 0x004CF9DF
 	Bool hasPacketRouterFrameStall();						// 0x004CFBF9
@@ -166,15 +169,15 @@ protected:
 	void processAckStage1(NetCommandMsg *msg);				// 0x004CFCD1 (detaches and frees the acked command; the frame-latency metric Zero Hour updates here is not in retail)
 
 private:
-	void processProgress(NetProgressCommandMsg *msg);		// 0x004CF2F5
-	void processFileProgress(NetFileProgressCommandMsg *msg);	// 0x004D2852
-	Bool processNetCommand(NetCommandRef *ref);				// 0x004D2F04
-	void ackCommand(NetCommandRef *ref, const BfmeNetAddress *from);	// 0x004CF40E (the acknowledgement for a received command)
-	void processChat(NetChatCommandMsg *msg);				// 0x004D10F1
-	void processDisconnectChat(NetDisconnectChatCommandMsg *msg);	// 0x004D1023
-	void processWrapper(NetCommandRef *ref);				// 0x004D29C7
-	void processFile(NetFileCommandMsg *msg);				// 0x004D2B16
-	void processFileAnnounce(NetFileAnnounceCommandMsg *msg);	// 0x004D2C8E
+	void processProgress(NetProgressCommandMsg *msg);
+	void processFileProgress(NetFileProgressCommandMsg *msg);
+	Bool processNetCommand(NetCommandRef *ref);
+	void ackCommand(NetCommandRef *ref, const BfmeNetAddress *from);	// (the acknowledgement for a received command)
+	void processChat(NetChatCommandMsg *msg);
+	void processDisconnectChat(NetDisconnectChatCommandMsg *msg);
+	void processWrapper(NetCommandRef *ref);
+	void processFile(NetFileCommandMsg *msg);
+	void processFileAnnounce(NetFileAnnounceCommandMsg *msg);
 
 public:
 

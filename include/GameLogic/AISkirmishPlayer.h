@@ -25,7 +25,7 @@ class AISkirmishPlayer : public AIPlayer
 {
 public:
 	AISkirmishPlayer(Player *p);					// 0x004EF3A3
-	virtual ~AISkirmishPlayer();					// 0x004EF41D
+	virtual ~AISkirmishPlayer();
 
 	virtual void computeSuperweaponTarget(const SpecialPowerTemplate *power, Coord3D *pos, Int playerNdx, Real weaponRadius);
 	virtual void update();
@@ -51,9 +51,9 @@ protected:
 	virtual Bool isAGoodIdeaToBuildTeam(TeamPrototype *proto);
 	virtual void processTeamBuilding();
 
-	Int getMyEnemyPlayerIndex();					// 0x004EF464
-	void acquireEnemy();							// 0x004EFB3D
-	void adjustBuildList(BuildListInfo *list);		// 0x004EF87D
+	Int getMyEnemyPlayerIndex();
+	void acquireEnemy();
+	void adjustBuildList(BuildListInfo *list);
 
 	Int m_curFrontBaseDefense;						// +0x78
 	Int m_curFlankBaseDefense;						// +0x7C

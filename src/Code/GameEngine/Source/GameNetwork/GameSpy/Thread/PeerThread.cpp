@@ -12,6 +12,8 @@ extern "C" int (__cdecl *__imp__isdigit)(int);
 #include <windows.h>
 #include "peer.h"
 #include "serverbrowsing/sb_internal.h"
+#include "serverbrowsing/sb_serverbrowsing.h"
+#include "qr2regkeys.h"
 #include "GameNetwork/GameSpy/PeerThread.h"
 #include "GameNetwork/GameSpy/GameSpyInfo.h"
 static void getPlayerInfo(PeerThreadClass *peerThread, PEER peer, const char *nick, Int &id, UnsignedInt &IP,
@@ -27,6 +29,10 @@ static void getPlayerInfo(PeerThreadClass *peerThread, PEER peer, const char *ni
 // Zero Hour defines it in PeerThread.cpp).
 class GameSpyPeerMessageQueueInterface;
 GameSpyPeerMessageQueueInterface *TheGameSpyPeerMessageQueue = 0;
+const char *PeerThreadClass::s_keys[PeerThreadClass::NumKeys] = {
+	"b_locale", "b_wins", "b_losses", "b_points", "b_side", "b_pre", "b_BSide", "b_rank1v1", "b_rank2v2"
+};
+void getRoomKeysCallback(PEER peer, int success, RoomType roomType, const char *nick, int num, char **keys, char **values, void *param);
 // FUNCTION: BFME2 0x003888A8 size=27 name=?getPlayerWins@PeerThreadClass@@QAEHH@Z evidence=N:ledger tier=B hypothesis:Z
 Int PeerThreadClass::getPlayerWins(Int index)
 {
@@ -155,6 +161,44 @@ void createRoomCallback(PEER peer, int success, PEERJoinResult result, RoomType 
 
 
 // FUNCTION: BFME2 0x00388A13 size=249 name=?QRKeyListCallback@@YAXPAXW4qr2_key_type@@00@Z evidence=N:ledger tier=B hypothesis:cohesion
+void QRKeyListCallback(PEER peer, qr2_key_type type, void *keyBuffer, void *param)
+{
+	switch (type)
+	{
+	case key_server:
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, HOSTNAME_KEY);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, GAMEVER_KEY);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, MAPNAME_KEY);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, GAMETYPE_KEY);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, GAMEMODE_KEY);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x33);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x34);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x35);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x36);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x37);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x38);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x39);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x3a);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x3b);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x3c);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x3d);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x44);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x45);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x46);
+		break;
+	case key_player:
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x3e);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x42);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x43);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, PID__KEY);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x3f);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x40);
+		qr2_keybuffer_add((qr2_keybuffer_t)keyBuffer, 0x41);
+		break;
+	case key_team:
+		break;
+	}
+}
 
 // FUNCTION: BFME2 0x00388B0C size=25 name=?AuthenticateCDKeyCallback@@YAXPAXHPBD0@Z evidence=N:ledger tier=B hypothesis:cohesion
 void AuthenticateCDKeyCallback(PEER peer, int result, const char *message, void *param)
@@ -166,6 +210,31 @@ void AuthenticateCDKeyCallback(PEER peer, int result, const char *message, void 
 
 
 // FUNCTION: BFME2 0x00388B25 size=162 name=?checkQR2Queries@@YAXPAXI@Z evidence=N:ledger tier=B hypothesis:cohesion
+void checkQR2Queries(PEER peer, SOCKET sock)
+{
+	static char indata[256];
+	struct sockaddr_in saddr;
+	int saddrlen = sizeof(struct sockaddr_in);
+	fd_set set;
+	struct timeval timeout = {0, 0};
+	int error;
+
+	FD_ZERO(&set);
+	FD_SET(sock, &set);
+
+	while (1)
+	{
+		error = select(FD_SETSIZE, &set, NULL, NULL, &timeout);
+		if (SOCKET_ERROR == error || 0 == error)
+			return;
+		error = recvfrom(sock, indata, 255, 0, (struct sockaddr *)&saddr, &saddrlen);
+		if (error != SOCKET_ERROR)
+		{
+			indata[error] = '\0';
+			peerParseQuery(peer, indata, error, (sockaddr *)&saddr);
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x00388BC7 size=29 name=?qmProfileIDCallback@@YAXPAXHPBDH0@Z evidence=N:ledger tier=B hypothesis:cohesion
 void qmProfileIDCallback(PEER peer, int success, const char *nick, int profileID, void *param)
@@ -333,7 +402,6 @@ void gameStartedCallback(PEER peer, UnsignedInt IP, const char *message, void *p
 
 // FUNCTION: BFME2 0x0038A63C size=131 name=?lookupStatForPlayer@PeerThreadClass@@QAEHW4RoomType@@PBD1@Z evidence=N:ledger tier=A
 
-
 // FUNCTION: BFME2 0x0038A6BF size=32 name=?clearPlayerStats@PeerThreadClass@@QAEXW4RoomType@@@Z evidence=N:ledger tier=A
 void PeerThreadClass::clearPlayerStats(RoomType roomType)
 {
@@ -350,7 +418,6 @@ void PeerThreadClass::clearPlayerStats(RoomType roomType)
 
 
 // FUNCTION: BFME2 0x0038A6DF size=149 name=?removeServerFromMap@PeerThreadClass@@QAEHPAU_SBServer@@@Z evidence=N:ledger tier=A
-
 
 // FUNCTION: BFME2 0x0038A774 size=439 name=?findServer@PeerThreadClass@@QAEHPAU_SBServer@@@Z evidence=N:ledger tier=A
 
@@ -674,8 +741,27 @@ Bool GameSpyPeerMessageQueue::getRequest(PeerRequest &req)
 // FUNCTION: BFME2 0x0038D526 size=53 name=?stopHostingAlready@PeerThreadClass@@QAEXPAX@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x0038D770 size=77 name=?addRequest@GameSpyPeerMessageQueue@@UAEXABVPeerRequest@@@Z evidence=N:ledger tier=A
+void GameSpyPeerMessageQueue::addRequest(const PeerRequest &req)
+{
+	MutexClass::LockClass m(m_requestMutex);
+	if (m.Failed())
+		return;
+
+	m_requests.push(req);
+}
 
 // FUNCTION: BFME2 0x0038D7BD size=100 name=?addResponse@GameSpyPeerMessageQueue@@UAEXABVPeerResponse@@@Z evidence=N:ledger tier=A
+void GameSpyPeerMessageQueue::addResponse(const PeerResponse &resp)
+{
+	if (resp.nick == "(END)")
+		return;
+
+	MutexClass::LockClass m(m_responseMutex);
+	if (m.Failed())
+		return;
+
+	m_responses.push(resp);
+}
 
 // FUNCTION: BFME2 0x0038D821 size=1153 name=?QRServerKeyCallback@@YAXPAXH00@Z evidence=N:ledger tier=A
 
@@ -729,6 +815,18 @@ Bool GameSpyPeerMessageQueue::getResponse(PeerResponse &resp)
 }
 
 // FUNCTION: BFME2 0x0038E0C4 size=173 name=?trackStatsForPlayer@PeerThreadClass@@QAEXW4RoomType@@PBD11@Z evidence=N:ledger tier=A
+void PeerThreadClass::trackStatsForPlayer(RoomType roomType, const char *nick, const char *key, const char *val)
+{
+	switch (roomType)
+	{
+	case GroupRoom:
+		m_groupRoomStats[packStatKey(nick, key)] = __imp__atoi(val);
+		break;
+	case StagingRoom:
+		m_stagingRoomStats[packStatKey(nick, key)] = __imp__atoi(val);
+		break;
+	}
+}
 
 
 // FUNCTION: BFME2 0x0038E202 size=302 name=?roomKeyChangedCallback@@YAXPAXW4RoomType@@PBD220@Z evidence=N:ledger tier=A
@@ -794,6 +892,10 @@ GameSpyPeerMessageQueueInterface *GameSpyPeerMessageQueueInterface::createNewMes
 }
 
 // FUNCTION: BFME2 0x0038E492 size=39 name=?getStatsFromRoom@PeerThreadClass@@QAEXPAXW4RoomType@@@Z evidence=N:ledger tier=A
+void PeerThreadClass::getStatsFromRoom(PEER peer, RoomType roomType)
+{
+	peerGetRoomKeysA(peer, roomType, "*", NumKeys, s_keys, (peerGetRoomKeysCallback)getRoomKeysCallback, this, PEERFalse);
+}
 
 // FUNCTION: BFME2 0x0038E4B9 size=459 name=?joinRoomCallback@@YAXPAXHW4PEERJoinResult@@W4RoomType@@0@Z evidence=N:ledger tier=A
 

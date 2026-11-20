@@ -17,7 +17,7 @@ public:
 	virtual AsciiString getContentsAsAsciiString();				// slot 3, 0x004D634E (this class has its own table 0x00C60274)
 	void setLeaveInfo(Int leavingPlayerID, UnsignedInt leaveFrame);	// 0x004D59EE
 	void setLeaveFrame(UnsignedInt leaveFrame);					// 0x004D59FF
-	void setLeavingPlayerID(Int leavingPlayerID);				// 0x00317B9B
+	void setLeavingPlayerID(Int leavingPlayerID);
 	Int getLeavingPlayerID();									// 0x0030D377 (folded dword getter at +0x20)
 	UnsignedInt getLeaveFrame();								// 0x0030F2C7 (folded dword getter at +0x1C)
 

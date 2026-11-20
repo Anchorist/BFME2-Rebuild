@@ -35,8 +35,8 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	// Slot 12 of the +0x20 dock table per the header comment above. Its bytes are open: the
 	// interface slot is action(Object *, Object *).
-	virtual Bool action(Object *owner, Object *drone);					// 0x004A0EAD
-	virtual UpdateSleepTime update();									// 0x004A1119
+	virtual Bool action(Object *owner, Object *drone);
+	virtual UpdateSleepTime update();
 
 	const SupplyCenterDockUpdateModuleData *getSupplyCenterDockUpdateModuleData() const
 	{

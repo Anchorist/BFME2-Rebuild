@@ -44,42 +44,42 @@ public:
 	virtual int Get_LOD_Level() const { return (int)LineRenderer.Get_Current_Subdivision_Level(); }	// slot 80 (0x0019B6E0)
 	virtual int Get_LOD_Count() const { return (int)MaxSubdivisionLevels; }	// slot 81 (0x0015E600)
 
-	void Set_LocsWidthsColors(unsigned int num_points, Vector3 *locs, float *widths = 0, Vector4 *colors = 0, unsigned int *personalities = 0);	// 0x00742A90
+	void Set_LocsWidthsColors(unsigned int num_points, Vector3 *locs, float *widths = 0, Vector4 *colors = 0, unsigned int *personalities = 0);
 
 	int Get_Num_Points();										// 0x00741C20
-	void Set_Point_Location(unsigned int point_idx, const Vector3 &location);	// 0x00741C30
-	void Get_Point_Location(unsigned int point_idx, Vector3 &loc);				// 0x00741C70
-	void Add_Point(const Vector3 &location);					// 0x00742AE0
-	void Delete_Point(unsigned int point_idx);					// 0x00742B00
+	void Set_Point_Location(unsigned int point_idx, const Vector3 &location);
+	void Get_Point_Location(unsigned int point_idx, Vector3 &loc);
+	void Add_Point(const Vector3 &location);
+	void Delete_Point(unsigned int point_idx);
 
-	Vector2 Get_UV_Offset_Rate();								// 0x00741810
-	int Is_Merge_Intersections();								// 0x00741840
+	Vector2 Get_UV_Offset_Rate();
+	int Is_Merge_Intersections();
 	int Is_Freeze_Random();
-	int Is_Sorting_Disabled();									// 0x00741860
-	int Are_End_Caps_Enabled();									// 0x00741870
+	int Is_Sorting_Disabled();
+	int Are_End_Caps_Enabled();
 
-	void Set_Texture(TextureClass *texture);					// 0x00741880
-	void Set_Shader(ShaderClass shader);						// 0x007418B0
-	void Set_Width(float width);								// 0x007418D0
-	void Set_Color(const Vector3 &color);						// 0x00741910
-	void Set_Opacity(float opacity);							// 0x00741950
-	void Set_Noise_Amplitude(float amplitude);					// 0x00741970
+	void Set_Texture(TextureClass *texture);
+	void Set_Shader(ShaderClass shader);
+	void Set_Width(float width);
+	void Set_Color(const Vector3 &color);
+	void Set_Opacity(float opacity);
+	void Set_Noise_Amplitude(float amplitude);
 	SegLineRendererClass::TextureMapMode Get_Texture_Mapping_Mode();
 	float Get_Texture_Tile_Factor();
-	void Set_Texture_Mapping_Mode(SegLineRendererClass::TextureMapMode mode);	// 0x007419A0
-	void Set_Texture_Tile_Factor(float factor);					// 0x007419D0
-	void Set_UV_Offset_Rate(const Vector2 &rate);				// 0x00741CC0
-	void Set_Merge_Intersections(int onoff);					// 0x00741A00
-	void Set_Freeze_Random(int onoff);							// 0x00741A20
-	void Set_Disable_Sorting(int onoff);						// 0x00741A40
-	void Set_End_Caps(int onoff);								// 0x00741A60
+	void Set_Texture_Mapping_Mode(SegLineRendererClass::TextureMapMode mode);
+	void Set_Texture_Tile_Factor(float factor);
+	void Set_UV_Offset_Rate(const Vector2 &rate);
+	void Set_Merge_Intersections(int onoff);
+	void Set_Freeze_Random(int onoff);
+	void Set_Disable_Sorting(int onoff);
+	void Set_End_Caps(int onoff);
 
 protected:
-	void Set_Locs(unsigned int num_points, Vector3 *locs);		// 0x00742910
-	void Set_Widths(unsigned int num_points, float *widths);	// 0x00742990
-	void Set_Colors(unsigned int num_points, Vector4 *colors);	// 0x00742A30
-	void Render_Seg_Line(RenderInfoClass &rinfo);				// 0x00742390
-	void Render_Streak_Line(RenderInfoClass &rinfo);			// 0x007423E0
+	void Set_Locs(unsigned int num_points, Vector3 *locs);
+	void Set_Widths(unsigned int num_points, float *widths);
+	void Set_Colors(unsigned int num_points, Vector4 *colors);
+	void Render_Seg_Line(RenderInfoClass &rinfo);
+	void Render_Streak_Line(RenderInfoClass &rinfo);
 
 private:
 	unsigned int MaxSubdivisionLevels;							// +0xC4

@@ -15,14 +15,14 @@ class Profile
 	Profile();
 
 public:
-	static void StartRange(const char *range = 0);			// 0x006C5940
-	static void AppendRange(const char *range = 0);			// 0x006C5B50
-	static void StopRange(const char *range = 0);			// 0x006C57B0
-	static bool IsEnabled();								// 0x006C5380
-	static unsigned int GetFrameCount();					// 0x006C53B0
-	static const char *GetFrameName(unsigned int frame);	// 0x006C53C0
-	static void ClearTotals();								// 0x006C5410
-	static __int64 GetClockCyclesPerSecond();				// 0x006C53E0
+	static void StartRange(const char *range = 0);
+	static void AppendRange(const char *range = 0);
+	static void StopRange(const char *range = 0);
+	static bool IsEnabled();
+	static unsigned int GetFrameCount();
+	static const char *GetFrameName(unsigned int frame);
+	static void ClearTotals();
+	static __int64 GetClockCyclesPerSecond();
 
 private:
 	struct FrameName

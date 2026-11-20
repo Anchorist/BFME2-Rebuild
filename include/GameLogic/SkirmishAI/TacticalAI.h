@@ -35,8 +35,8 @@ public:
     virtual void rva002C6779();
     virtual void rva002C61AF();
 
-    void Register(Team *team);   // 0x002C5FAA
-    void UnRegister(Team *team); // 0x002C5FB2
+    void Register(Team *team);
+    void UnRegister(Team *team);
     void DoXfer(Xfer *xfer);
     void updateInterestZones();
     bool checkEnemyForAttackMove(Object *object, Object *enemy);

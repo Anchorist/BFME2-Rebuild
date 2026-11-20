@@ -14,11 +14,11 @@ class Xfer;
 class ShroudCrateCollide : public CrateCollide
 {
 public:
-	ShroudCrateCollide(Thing *thing, const ModuleData *moduleData);	// 0x004BCADD
-	virtual NameKeyType getModuleNameKey() const;					// 0x004BCBB2
+	ShroudCrateCollide(Thing *thing, const ModuleData *moduleData);
+	virtual NameKeyType getModuleNameKey() const;
 
 protected:
-	virtual bool executeCrateBehavior(Object *other);				// 0x004BCB26
+	virtual bool executeCrateBehavior(Object *other);
 protected:
 	virtual void loadPostProcess() { CrateCollide::loadPostProcess(); }	// slot 1: retail 0x00483CEF, `jmp` to CrateCollide's (0x00497805)
 	virtual const char *GetSnapshotName() const;					// slot 2, 0x004BCB07

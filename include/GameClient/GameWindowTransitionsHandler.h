@@ -48,7 +48,7 @@ public:
     void skip();                    // 0x001DBE34
     void draw();                    // 0x001DBE51
     bool isReversed() const;        // 0x001DBB54
-    void addWindow(TransitionWindow *window);   // 0x001DC19F
+    void addWindow(TransitionWindow *window);
     bool isFireOnce() const { return m_fireOnce; }
     const AsciiString &getName() const { return m_name; }
     TransitionWindowList m_transitionWindowList;    // +0
@@ -84,11 +84,11 @@ public:
     void finishTransitions();           // 0x001DC5EC: under the lock, runs waitUntilFinished once (not re-entrant)
     void holdGroups();                  // 0x001DBB82: update() stops promoting and retiring groups until releaseGroups
     void releaseGroups();               // 0x001DBB87
-    int bfmeGetGroupTotalFrames(AsciiString groupName);   // 0x001DC1FD: the named group's length, 0 when there is none
+    int bfmeGetGroupTotalFrames(AsciiString groupName);   // The named group's length, 0 when there is none
     void setCoords(const ICoord2D *,const ICoord2D *);
     friend class TransitionGroup;
 private:
-    TransitionGroup *findGroup(AsciiString groupName);   // 0x001DC01C
+    TransitionGroup *findGroup(AsciiString groupName);
     WindowTransitionMap m_transitionMap; //C,14 bytes
     _STL::list<TransitionGroup *> m_transitionGroupList; //20
     TransitionGroup *m_currentGroup,*m_pendingGroup,*m_drawGroup,*m_secondaryDrawGroup;

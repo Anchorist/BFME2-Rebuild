@@ -18,7 +18,7 @@ class DX8RigidFVFCategoryContainer : public DX8FVFCategoryContainer
 {
 public:
 	DX8RigidFVFCategoryContainer(unsigned int FVF, bool sorting);			// 0x00145420
-	virtual ~DX8RigidFVFCategoryContainer(void);					// 0x00145460
+	virtual ~DX8RigidFVFCategoryContainer(void);
 
 	virtual void Render(void);							// 1: 0x00148100
 	virtual void Add_Mesh(MeshModelClass *mmc);					// 2: 0x00148180

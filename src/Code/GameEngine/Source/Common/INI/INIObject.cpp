@@ -13,3 +13,9 @@ void INI::parseObjectReskinDefinition(INI *ini) { AsciiString name(ini->getNextT
 
 
 // FUNCTION: BFME2 0x001F008C size=118 name=?parseChildObjectDefinition@INI@@SAXPAV1@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+void INI::parseChildObjectDefinition(INI *ini)
+{
+	AsciiString name(ini->getNextToken());
+	AsciiString parent(ini->getNextToken());
+	ThingFactory::parseObjectDefinition(ini, name, AsciiString::TheEmptyString, parent);
+}

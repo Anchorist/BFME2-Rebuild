@@ -19,16 +19,16 @@ public:
 	AptQuitMenu(void *);							// 0x0051BADF
 	virtual ~AptQuitMenu();							// 0x0051B8EF
 
-	void RestartMission(const char *);				// 0x0051AFB9
-	void ExitMission(const char *);					// 0x0051AFC3
-	void ReturnToGame(const char *);				// 0x0051AFEE
-	int rva0051B125(int message, unsigned char key, int state);	// 0x0051B125: the Escape key opens the quit menu when no save or options screen is open
-	void OptionsScreen(const char *);				// 0x0051AFDD: opens the options screen with no flags
-	void SaveMenu(const char *);					// 0x0051AFF9: opens the save screen in the current game kind
-	void Externs(int index, char *buffer, bool query);	// 0x0051AF46: the quit menu's Apt externs (index 1 answers the restart button's label)
-	void HandleOverRestartButton(const char *);	// 0x0051B50E: the tooltip of the restart, forfeit or surrender button
-	void LoadMenu(const char *);					// 0x0051B04A: opens the load screen in the current game kind
-	int rva0051BED7();								// 0x0051BED7 (slot of table 0x00866C6C): the polled restart request: restarts the mission or closes the menu; always answers 1
+	void RestartMission(const char *);
+	void ExitMission(const char *);
+	void ReturnToGame(const char *);
+	int rva0051B125(int message, unsigned char key, int state);	// The Escape key opens the quit menu when no save or options screen is open
+	void OptionsScreen(const char *);				// Opens the options screen with no flags
+	void SaveMenu(const char *);					// Opens the save screen in the current game kind
+	void Externs(int index, char *buffer, bool query);	// The quit menu's Apt externs (index 1 answers the restart button's label)
+	void HandleOverRestartButton(const char *);	// The tooltip of the restart, forfeit or surrender button
+	void LoadMenu(const char *);					// Opens the load screen in the current game kind
+	int rva0051BED7();								// (slot of table 0x00866C6C): the polled restart request: restarts the mission or closes the menu; always answers 1
 	void rva0051B09B();								// 0x0051B09B (the map spells it Rva0051B09BEnable; the caller sets ecx to the menu): closes the menu and resumes the game
 
 	bool m_flag27C;									// +0x27C: set by ExitMission

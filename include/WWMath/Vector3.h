@@ -1,7 +1,6 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 // Vector3.h: WWMath's three-float vector and the fast inverse square root.
-// Target facts (old repo Code/Libraries/Source/WWVegas/WWMath/Vector3.h and
-// computeApproachPosition 0x00589B7D): Vector3 is X +0, Y +4, Z +8;
+// Target facts (computeApproachPosition 0x00589B7D): Vector3 is X +0, Y +4, Z +8;
 // WWMath::Inv_Sqrt is 0x0004233A and takes its float in xmm0 (__fastcall).
 #pragma once
 #ifndef BFME2_VECTOR3_H
@@ -25,7 +24,7 @@ public:
 	static Real Max(Real a, Real b);								// 0x00154A60 (comdat copy in render2dsentence)
 	static Real Min(Real a, Real b);								// 0x00154A80
 	// Zero Hour's text. Plain inline: mapper.cpp's Calculate_Texture_Matrix rows (0x001822E0) expand it, while dxwrapper.cpp's unit
-	// emits the out-of-line copy 0x0011F680 that LightEnvironmentClass::Pre_Render_Update 0x00140A20 calls (p03).
+	// emits the out-of-line copy 0x0011F680 that LightEnvironmentClass::Pre_Render_Update 0x00140A20 calls.
 	static Real Clamp(Real val, Real min, Real max)
 	{
 		if (val < min) return min;

@@ -24,7 +24,7 @@ class StatusBitsUpgradeModuleData : public UpgradeModuleData
 {
 public:
 	StatusBitsUpgradeModuleData();
-	static void buildFieldParse(MultiIniFieldParse &parse);				// 0x004B493E
+	static void buildFieldParse(MultiIniFieldParse &parse);
 
 	ObjectStatusMaskType m_statusToSet;                    // +0x118 StatusToSet; BitFlags<101>
 	ObjectStatusMaskType m_statusToClear;                  // +0x128 StatusToClear; BitFlags<101>

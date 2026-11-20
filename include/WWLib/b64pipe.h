@@ -24,8 +24,8 @@ public:
 
 	Base64Pipe(CodeControl control) : Control(control), Counter(0) {}
 
-	virtual int Flush();					// 0x0061B2F0
-	virtual int Put(const void *source, int slen);	// 0x0061B170
+	virtual int Flush();
+	virtual int Put(const void *source, int slen);
 
 private:
 	CodeControl Control;	// +0x0C

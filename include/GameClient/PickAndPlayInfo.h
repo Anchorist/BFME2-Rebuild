@@ -1,5 +1,5 @@
 // PickAndPlayInfo.h: what a unit voice response is about (Zero Hour CommandXlat).
-// SIZE 0x24. Target facts (old repo BloodthirstyUpdate.cpp): the constructor is
+// SIZE 0x24. Target facts: the constructor is
 // out of line; BloodthirstyUpdate::sacrificeHorde sets the target drawable at +4
 // and the position at +0x14.
 #pragma once

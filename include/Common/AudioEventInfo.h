@@ -47,7 +47,7 @@ public:
     static void parseSubsoundsList(INI *,void *,void *,const void *);
     static void parseVolumeSliderMultiplier(INI *,void *,void *,const void *);
     const _STL::vector<AudioSoundWeight> &getSoundsVector() const;
-    const AsciiString &getFilename() const; // 0x001DBA69: lea eax,[ecx+0xC] (the map still spells it Rva001DBA69LeaField::get)
+    const AsciiString &getFilename() const; // Lea eax,[ecx+0xC] (the map still spells it Rva001DBA69LeaField::get)
     const _STL::vector<AudioSoundWeight> &getAttackSoundsVector() const;
     const _STL::vector<AudioSoundWeight> &getDecaySoundsVector() const;
     const _STL::vector<AudioSubsoundWeight> &getSubsoundVector() const;

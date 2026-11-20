@@ -177,6 +177,7 @@ public:
 	Int getID() const { return m_id; }
 	Bool isCreated() const { return m_created; }
 	void setActive() { if (!m_unk0x5C[1]) { m_unk0x5C[2] = true; m_unk0x5C[1] = true; } }	// Zero Hour's setActive (TeamInQueue::~TeamInQueue 0x004F05F0)
+	Bool isActive() const { return m_unk0x5C[1]; }	// the byte at +0x5D that setActive tests and sets
 
 	TeamPrototype *m_proto;			// +0x30
 	Int m_id;				// +0x34

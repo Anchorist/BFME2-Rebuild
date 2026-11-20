@@ -29,13 +29,13 @@ typedef char AptTimeLinePlayerSizeCheck[sizeof(AptTimeLinePlayer) == 0x50 ? 1 : 
 class AptTimeLine : public _bfme_AptGameWindow
 {
 public:
-	void PlayerColor(int index, char *buffer, bool query);			// 0x0051E8C8: the Apt extern answering a player's colour as "%#x"
-	void PlayerFaction(int index, char *buffer, bool query);		// 0x0051EC4E: the Apt extern answering a player's faction name
-	void GraphFocus(int index, const char *value, bool query);		// 0x0051EA7A: stores a graph focus value (the text as hundredths)
+	void PlayerColor(int index, char *buffer, bool query);			// The Apt extern answering a player's colour as "%#x"
+	void PlayerFaction(int index, char *buffer, bool query);		// The Apt extern answering a player's faction name
+	void GraphFocus(int index, const char *value, bool query);		// Stores a graph focus value (the text as hundredths)
 	void bfmeGo1020M(int);									// 0x0051E3A3: takes the window focus and starts the first step
 	void openSaveScreen(const char *);						// 0x0051E3C3: opens the save screen for the finished game
-	void OnButtonContinue(const char *);							// 0x0051F6D7: the continue button
-	void rva0051ED7E();												// 0x0051ED7E
+	void OnButtonContinue(const char *);							// The continue button
+	void rva0051ED7E();
 
 	int m_state;											// +0x27C (bfmeGo1020M 0x0051E3A3 sets it to 1)
 	unsigned char m_gap280[0x288 - 0x280];						// +0x280 not recovered

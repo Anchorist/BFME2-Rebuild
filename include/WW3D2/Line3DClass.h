@@ -35,8 +35,8 @@ public:
 
 	void Reset(const Vector3 &new_start, const Vector3 &new_end);					// 0x00167B60
 	void Reset(const Vector3 &new_start, const Vector3 &new_end, float new_width);	// 0x00167CA0
-	void Re_Color(float r, float g, float b);					// 0x00167330
-	void Set_Opacity(float opacity);							// 0x00167370
+	void Re_Color(float r, float g, float b);
+	void Set_Opacity(float opacity);
 
 protected:
 	float Length;					// +0xC4

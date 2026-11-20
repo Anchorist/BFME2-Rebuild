@@ -1,77 +1,77 @@
-# BFME II / Boat
+# The checks on a pull request
 
-The project checks pull requests against the retail game on Boat. Look for
-**BFME II / Boat** in the pull request's checks and for the bot's report in the
-conversation. The report identifies the pull request head and the main commit
-used for the check. The repository's **baseline/game.dat** is the reference
-for local byte comparisons. Keep that baseline intact and leave additional
-executables, game assets and raw dumps out of pull requests.
+Source rules run automatically on pull requests to `main`. An admitted comparison also publishes Boat and Inline
+virtual results. You do not need to install anything on your machine.
 
-## Submit a source change
+| Status | What it checks | Where it runs |
+| --- | --- | --- |
+| **BFME II / source rules** | The text rules G1 to G8 in [RULES.md](../RULES.md): paths and sizes, annotations, constructs, stand-in types, comments, scope, definitions and names. | GitHub-hosted runner, within about a minute |
+| **BFME II / Boat** | Compiles the changed files with the original 2003 compiler and compares every function with the original program, byte for byte, with its references. | A Boat compiler job for a narrow change or a matrix of Boat jobs for a wider change. Intake and reporting run on GitHub-hosted runners. |
+| **BFME II / Inline virtual** | How the change affects inline virtual functions. | It reports only for now; it does not hold a landing. |
 
-1. Once the GitHub repository is live, open its **Code** page, fork the
-   project and branch from main.
-2. Change regular **.c** or **.cpp** files under **src/**, or **.h**, **.hh**,
-   **.hpp** or **.inl** headers under **include/**. Keep existing FUNCTION
-   annotations intact. The server uses the compiler, checker and ledger
-   from trusted project inputs.
-3. Open a pull request to main. Describe the change and give the evidence for
-   names, types, layout and code shape. For an intentional removal of a recently
-   added declaration or a rename, put one **Removed-Declaration: Class::member**
-   line per protected declaration in the tip commit message. Use the qualified
-   identifier alone and explain each removal or rename in the PR description.
-   When deleting a Draft header, list the protected declarations you
-   intentionally remove or rename. Declarations carried to a replacement
-   header can keep their existing name. Use the declaration named by the
-   check if it requests an acknowledgment.
-4. Wait for the check. A maintainer must add the **boat-ok** label before your
-   first farm check. After approval, later eligible submissions queue
-   automatically. Push fixes to the same branch to run again.
-5. Request maintainer review when the check passes. The landing service reruns
-   the comparison before updating main. The bot links the landed commit in the PR
-   conversation.
+A fourth status, **BFME II / Landing**, says whether and when the pull request lands
+([ci/landing/README.md](landing/README.md)).
 
-The check accepts up to 60 changed paths, 1 MiB per changed file and 8 MiB of
-changed source in total. Use regular UTF-8 text files. Each account can have
-one farm check in flight and start up to six distinct head checks per hour.
-An edit under **ci/**, **tools/**, **config/** or **expected/** makes the pull
-request ineligible for this check. Ask a maintainer about a checker or ledger
-change. A literal include of a .rc or .res file also requires a maintainer.
-A draft can reserve a worklist item and is eligible for a check, but
-landing waits until you mark it ready for review. The maintainers open
-public checks after verifying the compiler-only Boat pool. Until then,
-the service holds check admissions.
+## How a check runs
+
+1. **Intake (GitHub-hosted).** The change is read from the pull request's exact latest commit with no credential
+   and checked against the source rules. A change that cannot be compiled safely is refused here, before any
+   compiler machine starts:
+   - an edit to a workflow, the checker, the ledger, configuration or the baseline (`.github/`, `ci/`,
+     `tools/`, `config/`, `expected/`, `baseline/`);
+   - a new or deleted source file (recovered functions go into the existing file that owns them);
+   - a file over the size limits (1 MiB per file, 8 MiB of changed source, at most 60 changed paths);
+   - an `#include` that is not a literal path relative to the project, such as an absolute path.
+
+   The refusal names the rule and how to fix it.
+2. **Compile and compare (Boat).** A narrow comparison runs on one machine. A wider comparison uses several
+   machines. The isolated compiler receives source files and headers. The protected check compares the results
+   with the original. The maintainer's account and the repository's workflow bot can start the compiler jobs.
+3. **Report (GitHub-hosted).** The verdict is published as the status on the pull request's exact head, with the
+   readable report in the run's summary (the status's **Details** link).
+
+Timing varies with runner availability and the files affected. A shared header change under `include/` also
+checks the affected source files.
+
+## Pull requests from a fork
+
+- The source rules run at once.
+- The compile check runs after the maintainer has read the change and added the `boat-ok` label. The Landing
+  status shows `Held: awaiting-admission` until then; you do not need to do anything.
+- A new commit pushed afterwards is not compiled by itself: it waits until the maintainer admits that commit
+  (`Held: awaiting-readmission`).
+
+An event started by the maintainer on a pull request from a branch of this repository enters compiler intake
+automatically.
+
+## When it lands
+
+A pull request lands by itself, as one squash commit credited to you, when the source rules and the Boat check
+passed on its latest commit against the current `main`, it is ready for review (not a draft), it merges cleanly
+and it changes nothing under `.github/`. Both checks must be current on `main` before landing. Changes under
+`include/` also wait for the maintainer's review ([CODEOWNERS](../.github/CODEOWNERS)). A draft can receive
+feedback before you choose **Ready for review**.
 
 ## Read the result
 
-- **Pending** means the request is queued, needs first-time approval, or is
-  waiting for Boat or the checker. A service outage leaves the check pending.
-  Shared-header changes are checked in the wide lane and can take up to
-  two hours to return a verdict with the current compiler scheduling.
-- **Pass** means the measured change meets the landing checks on the reported
-  main commit. A maintainer review applies to the current pull request head.
-- **Fail** identifies source intake issues, conflicts, compiler diagnostics,
-  lost credit, lost reference proof, lost Object VERIFIED or another check.
-  Resolve a conflict against current main and push the fix.
+- **Pending:** queued, waiting for admission, or running.
+- **Success:** the change meets the landing checks on the `main` commit named in the report.
+- **Failure:** the report names the cause: a refused path or rule, a merge conflict, a compiler diagnostic, a
+  function that no longer matches, a lost reference proof or a whole object that no longer verifies. Fix it and
+  push to the same branch; the checks run again.
 
-Rows show file, function when available, address, size, and before/after
-verdicts. A partial row can show the match percentage, compiled and retail
-sizes, and first differing offset within the function. For a function edited
-in the pull request, the report can show up to eight instructions from its
-compiled output near the offset. Diagnostics for edited files contain the
-source location, compiler diagnostic code and a brief description. The report
-is capped at 8 KiB. The check report omits retail bytes and retail disassembly.
-The compiler workers receive only source and headers.
+Report rows show the file, the function where known, its address and size, and the verdict before and after. A
+near miss shows the match percentage, both sizes and the first differing offset, and for a function the pull
+request edited, a few compiled instructions near that offset. Compiler diagnostics give the source location and
+the diagnostic code. The report never contains the original program's bytes or disassembly; read those from
+`baseline/game.dat` yourself.
 
-## Claim a worklist item
+If your change intentionally removes or renames a declaration the check protects, put one
+`Removed-Declaration: Class::member` line per declaration in the latest commit message and explain it in the
+description. The check names the declaration when it asks for this.
 
-In an open draft pull request, put one **Claim: 0x00ABCDEF** line in the
-description for each address you are working on. Use up to ten lines. Claims
-are advisory and expire seven days after the claim list changes. Other people
-can still contribute to those functions. Remove a claim line when you give up
-an item. Marking the pull request ready or closing it clears its draft claims.
+## Say what you are working on
 
-For header-only work with no function address, coordinate through a
-repository issue. The bot publishes active RVA claims in **worklist/claims.json**
-on the **claims** branch. The label, claims branch and issue channel
-appear when the GitHub repository goes live.
+Start the pull request description with `Claim:` lines, as the template shows: one file, one Draft header or one
+function address per line. Claims are a courtesy so two people do not write the same function; they reserve
+nothing, and nothing enforces them. Open a draft early to show your claim.

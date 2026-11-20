@@ -20,12 +20,12 @@ public:
 	ArmySummary();	// 0x0040E3EE
 	ArmySummary(const ArmySummary &other);	// 0x0040E96D
 	ArmySummary &operator=(const ArmySummary &other);	// 0x0040EAED
-	virtual ~ArmySummary();	// 0x0040E499
-	virtual const char *GetSnapshotName() const;	// 0x0040E493
+	virtual ~ArmySummary();
+	virtual const char *GetSnapshotName() const;
 
 protected:
 	virtual void loadPostProcess() {}	// slot 1, empty 0x000B3FD0
-	virtual void xfer(Xfer *xfer);	// 0x0040EE89
+	virtual void xfer(Xfer *xfer);
 
 private:
 	struct IndexedEntry

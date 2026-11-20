@@ -52,9 +52,9 @@ public:
 	AITNGuardMachine(Object *owner);			// 0x00546001
 	friend class AITNGuardInnerState;
 	friend class AITNGuardOuterState;
-	virtual ~AITNGuardMachine();				// 0x00545B84
+	virtual ~AITNGuardMachine();
 
-	Bool lookForInnerTarget();					// 0x005461A2
+	Bool lookForInnerTarget();
 	void setNemesisID(ObjectID id) { m_nemesisToAttack = id; }
 	ObjectID getNemesisID() const { return m_nemesisToAttack; }
 	void setTargetPositionToGuard(const Coord3D *pos) { m_positionToGuard = *pos; }	// inline in AITunnelNetworkGuardState::onEnter 0x00342086
@@ -73,7 +73,7 @@ protected:
 class AITNGuardInnerState : public State
 {
 public:
-	AITNGuardInnerState(StateMachine *machine);	// 0x00545D50 (out of line: the machine ctor calls it)
+	AITNGuardInnerState(StateMachine *machine);	// (out of line: the machine ctor calls it)
 	virtual StateReturnType onEnter();			// slot 4, 0x0054632D
 	virtual void onExit(StateExitType status);	// slot 5, 0x00545BB7
 	virtual StateReturnType update();			// slot 6, 0x005463C9
@@ -100,13 +100,13 @@ class AITNGuardReturnState : public AIEnterState
 {
 public:
 	AITNGuardReturnState(StateMachine *machine);	// 0x00545DB0
-	virtual StateReturnType onEnter();				// 0x005465E5
-	virtual StateReturnType update();				// 0x00545C4D
+	virtual StateReturnType onEnter();
+	virtual StateReturnType update();
 
 	AITNGuardMachine *getGuardMachine() { return (AITNGuardMachine *)getMachine(); }
 
 protected:
-	virtual void xfer(Xfer *xfer);					// 0x00545C1D
+	virtual void xfer(Xfer *xfer);
 
 	UnsignedInt m_nextReturnScanTime;				// +0x54
 
@@ -119,8 +119,8 @@ class AITNGuardIdleState : public State
 {
 public:
 	AITNGuardIdleState(StateMachine *machine);	// 0x00545B4F
-	virtual StateReturnType onEnter();			// 0x00545CAF
-	virtual StateReturnType update();			// 0x0054665B
+	virtual StateReturnType onEnter();
+	virtual StateReturnType update();
 
 	AITNGuardMachine *getGuardMachine() { return (AITNGuardMachine *)getMachine(); }
 
@@ -137,9 +137,9 @@ class AITNGuardOuterState : public State
 {
 public:
 	AITNGuardOuterState(StateMachine *machine);	// 0x00545D7E
-	virtual StateReturnType onEnter();			// 0x005464CE
-	virtual void onExit(StateExitType status);	// 0x00545BEA
-	virtual StateReturnType update();			// 0x00546577
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 protected:
 	virtual void loadPostProcess();				// 0x005CB26A (shared)
@@ -155,9 +155,9 @@ class AITNGuardAttackAggressorState : public State
 {
 public:
 	AITNGuardAttackAggressorState(StateMachine *machine);	// 0x00545E80
-	virtual StateReturnType onEnter();			// 0x0054675D
-	virtual void onExit(StateExitType status);	// 0x00545CF7
-	virtual StateReturnType update();			// 0x0054684E
+	virtual StateReturnType onEnter();
+	virtual void onExit(StateExitType status);
+	virtual StateReturnType update();
 
 	AITNGuardMachine *getGuardMachine() { return (AITNGuardMachine *)getMachine(); }
 

@@ -10,6 +10,7 @@
 #include "GameLogic/Module/ObjectGuardingHelper.h"
 #include "GameLogic/GameLogic.h"
 #include "GameLogic/Object.h"
+#include "GameLogic/Module/AIUpdate.h"
 
 // FUNCTION: BFME2 0x004DF2E2 size=13 name=?rva004DF2E2@Rva004DF2E2@@QAEXXZ evidence=?:placeholder tier=B hypothesis:K
 void ObjectGuardingHelper::setGuardStatus()
@@ -88,3 +89,16 @@ void ObjectGuardingHelper::addGuarder(Object *guarder)
 
 
 // FUNCTION: BFME2 0x004DF4D5 size=89 name=?disbandAllGuarders@ObjectGuardingHelper@@QAEXXZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+void ObjectGuardingHelper::disbandAllGuarders()
+{
+	// Each guarder is told to go idle; a dead one is dropped from the list.
+	while (m_guarders.size() > 0)
+	{
+		ObjectID guarderID = m_guarders.front();
+		Object *guarder = TheGameLogic->findObjectByID(guarderID);
+		if (guarder == NULL)
+			m_guarders.remove(guarderID);
+		else
+			guarder->getAI()->aiIdle(CMD_FROM_AI);
+	}
+}

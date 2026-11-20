@@ -47,7 +47,7 @@ typedef char EvaEventSize[(sizeof(EvaEvent)==0x30)?1:-1];
 // Target1DD468 reads id0, presence flags4/5 and positions8/14; size20.
 // EvaEventReport is the named argument type in the retail-row identity.
 struct EvaEventReport {
-    EvaEventReport();	// 0x001DD1D0, out of line: id -1, no positions
+    EvaEventReport();	// out of line: id -1, no positions
     EvaEventID m_eventID;
     bool m_hasPosition;
     bool m_hasSecondPosition;

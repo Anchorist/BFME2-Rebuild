@@ -21,21 +21,21 @@ public:
 	AptOptions(void *);								// 0x0051A78E
 	virtual ~AptOptions();							// 0x00518AE9
 
-	void AdvancedOptionNum(int, char *, bool);		// 0x00518277: formats the enum row's count into the text unless quiet
-	static void OpenScreen(bool, bool, bool, bool);	// 0x005185D8
-	void EnterAdvancedSettings(const char *);		// 0x0051889D: shows the advanced settings with the values of the chosen detail level
+	void AdvancedOptionNum(int, char *, bool);		// Formats the enum row's count into the text unless quiet
+	static void OpenScreen(bool, bool, bool, bool);
+	void EnterAdvancedSettings(const char *);		// Shows the advanced settings with the values of the chosen detail level
 	void updateHealthBarsBox();						// 0x005183FA: the health bars box follows the preferences while the detail level is custom
-	void rva0051890E(int message);					// 0x0051890E: applies the pending detail level, advanced settings text and entry once the message is 1
+	void rva0051890E(int message);					// Applies the pending detail level, advanced settings text and entry once the message is 1
 	void setGraphicsWarning();						// 0x005189CF: shows the "cannot change graphics" text with the name of the master detail level in front
-	void rva00518359();								// 0x00518359: reselects the detail combo box entry of the stored detail level
+	void rva00518359();								// Reselects the detail combo box entry of the stored detail level
 
-	void rva00518FEA(int level, int kind);					// 0x00518FEA: warns when a high graphics level is chosen
-	void rva00518B05(const AsciiString &, int);				// 0x00518B05
-	void Externs(int query, char *result, bool set);		// 0x0051904F: the options Apt queries (0 count, 1 detail level, 2 top level, 3..6 flags)
-	bool rva005183A0();								// 0x005183A0: whether the stored detail level is a usable choice (custom, 5, asks the preferences)
-	void rva0051847B(int);							// 0x0051847B
-	void rva0051A669();								// 0x0051A669: shows the "cannot change resolution" text with the stored resolution in front
-	int rva00518557(int message, unsigned char key, int state);	// 0x00518557: the Escape key closes the advanced settings or the screen
+	void rva00518FEA(int level, int kind);					// Warns when a high graphics level is chosen
+	void rva00518B05(const AsciiString &, int);
+	void Externs(int query, char *result, bool set);		// The options Apt queries (0 count, 1 detail level, 2 top level, 3..6 flags)
+	bool rva005183A0();								// Whether the stored detail level is a usable choice (custom, 5, asks the preferences)
+	void rva0051847B(int);
+	void rva0051A669();								// Shows the "cannot change resolution" text with the stored resolution in front
+	int rva00518557(int message, unsigned char key, int state);	// The Escape key closes the advanced settings or the screen
 
 	int m_x27C;										// +0x27C
 	bool m_flag280;									// +0x280

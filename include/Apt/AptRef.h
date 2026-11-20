@@ -18,7 +18,7 @@
 // Names: the handle is `AptRef<T>` because the map's folded rows for 0x002174A4 and
 // 0x005F8F96 are spelled that way for the Apt classes (AptCommandMap,
 // AptOverButtonHandler, AptTimer, AptExternHandler, AptCustomRender); the base class
-// name is role-inferred (the old repo called the same table Rva0007DF07).
+// name is role-inferred.
 #pragma once
 #ifndef BFME2_APTREF_H
 #define BFME2_APTREF_H

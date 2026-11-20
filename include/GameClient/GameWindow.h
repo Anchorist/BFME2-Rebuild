@@ -25,7 +25,6 @@ typedef void (*GameWindowTooltipFunc)(GameWindow *,WinInstanceData *,unsigned in
 typedef void (*GameWindowCallback)(GameWindow *);
 // SIZE0x218: ctor0x003145F0/dtor0x00314A0C and Apt secondary base at+0x218.
 // Table RVA0x0080BBCC has11 slots. The table is not a SubsystemInterface.
-// Matched window and manager views agree on links+1F8..204 and instData+30.
 // Callback names reflect called fields; slots7/10 roles come from creation consumers.
 // The handler object a window can carry at +0x1DC: winSendInputMsg 0x00314511 calls its slot 3 and winSendSystemMsg 0x0031452F its slot 4
 // when it is set, otherwise the window's own input (slot 1) / system (slot 2) virtual. Slots 0-2 are not exercised by a recovered function.
@@ -151,7 +150,7 @@ public:
     // 0x0031484A: sets the instance data's text (WinInstanceData::setText 0x003223B3), then tells the
     // renderer at +0x4 (its slot 3, passing the string by address) and returns 0. It is NOT in the
     // 11-slot table at 0x0080BBCC, so it is non-virtual; the map spells it `UAEH` (virtual), which
-    // is why the row cannot be credited until the ledger says `QAEH`.
+    // disagrees with the retail table: the right spelling is `QAEH`.
     int winSetText(UnicodeString);
     void winSetTooltip(UnicodeString);
     unsigned char winPointInWindow(int,int);

@@ -20,7 +20,7 @@ public:
 		memset(Get_Raw_Array(), 0, count * sizeof(RefCountClass *));
 	}
 	OpaqueRefBuffer(const OpaqueRefBuffer &that);			// 0x0015B390
-	virtual ~OpaqueRefBuffer(void);					// 0x0015B3D0
+	virtual ~OpaqueRefBuffer(void);
 
 	RefCountClass *Peek_Element(int index) { return Get_Raw_Array()[index]; }
 	RefCountClass *Get_Element(int index)

@@ -1,25 +1,18 @@
-// LocomotorSet.h: the set of locomotors an AI update owns (AIUpdateInterface +0x1CC).
-// Target facts (retail game.dat):
-// - SIZE 0x24: AIUpdateInterface's members continue at +0x1F0.
-// - Ctor 0x001E7087 (map placeholder Rva001E7087): table 0x00BDE950 (Snapshot's
-//   shape; GetSnapshotName 0x001E70BC returns "LocomotorSet", slot 3 0x001E8730
-//   which the map spells DoXfer), an STLport vector<Locomotor *> at +4, then zero at
-//   +0x10, Bools +0x14/+0x15, +0x18, +0x1C and Real +0x20.
-// - addLocomotor 0x001E88CE: TheLocomotorStore->newLocomotor, push_back, ORs the
-//   template's Surfaces (+0x14) into +0x10 and sets +0x14/+0x15 when the template's
-//   DownhillOnly (+0xD3) / ScalesWalls (+0x150) is set; the members are named for those.
-// - clear 0x001E7E25 (map placeholder Rva001E7E25): `::delete`s every Locomotor,
-//   erases the vector, zeroes +0x10 and the two Bools.
-// - xferSelfAndCurLocoPtr 0x001E70C2, setLocomotorAndBaseSpeed 0x001EA2CF.
-// WorldBuilder: "LocomotorSet::addLocomotor", "LocomotorSet::DoXfer",
-// "LocomotorSet::xferSelfAndCurLocoPtr", "LocomotorSet::setLocomotorAndBaseSpeed".
-// "clear" is the donor's name (Zero Hour); no string names it.
+// LocomotorSet.h: the set of locomotors an AI update owns (AIUpdateInterface +0x1CC). SIZE 0x24, Snapshot-derived (its
+// snapshot name is "LocomotorSet"). The members: the vector of Locomotor pointers at +4; the mask of valid locomotor
+// surfaces at +0x10, the OR of every added template's Surfaces; two flags, +0x14 (the template's DownhillOnly) and +0x15
+// (its ScalesWalls), set when an added template has them; two AsciiStrings at +0x18 and +0x1C that the destructor releases
+// (their roles are not recovered); and a Real at +0x20, zero after construction. addLocomotor asks the locomotor store for
+// a new locomotor, appends it and updates the mask and flags; clear deletes every locomotor, empties the vector and zeroes
+// the mask and flags. WorldBuilder strings name addLocomotor, DoXfer, xferSelfAndCurLocoPtr and setLocomotorAndBaseSpeed;
+// "clear" is the predecessor game's name, no string names it.
 #pragma once
 #ifndef BFME2_LOCOMOTORSET_H
 #define BFME2_LOCOMOTORSET_H
 
 #include <stddef.h>
 #include "Common/GameType.h"
+#include "Common/AsciiString.h"
 #include "Common/Snapshot.h"
 #include "Common/Vector.h"
 
@@ -31,28 +24,28 @@ class ThingTemplate;
 class LocomotorSet : public Snapshot
 {
 public:
-	LocomotorSet();												// 0x001E7087
+	LocomotorSet();
 	virtual ~LocomotorSet();
 
-	void clear();												// 0x001E7E25
-	void addLocomotor(const LocomotorTemplate *lt, Bool flag);	// 0x001E88CE
-	void xferSelfAndCurLocoPtr(Xfer *xfer, Locomotor **loco);	// 0x001E70C2
-	void setLocomotorAndBaseSpeed(INI *ini, ThingTemplate *tt);	// 0x001EA2CF
+	void clear();
+	void addLocomotor(const LocomotorTemplate *lt, Bool flag);
+	void xferSelfAndCurLocoPtr(Xfer *xfer, Locomotor **loco);
+	void setLocomotorAndBaseSpeed(INI *ini, ThingTemplate *tt);
 
 protected:
 	virtual void loadPostProcess() {}
-	virtual const char *GetSnapshotName() const;				// 0x001E70BC
-	virtual void xfer(Xfer *xfer);								// 0x001E8730 (the map spells it DoXfer)
+	virtual const char *GetSnapshotName() const;
+	virtual void xfer(Xfer *xfer);		// the map spells it DoXfer
 
 public:
-	// 0x001E48E8 (Zero Hour's findLocomotor; map placeholder ?rva001E48E8@Rva001E48E8@@QAEPAXI@Z, ecx is the set: AIUpdateInterface::chooseGoodLocomotorFromCurrentSet 0x00263FA7 passes &m_locomotorSet): the first locomotor whose template's Surfaces (+0x14) share a bit with t.
+	// The predecessor game's findLocomotor (the map files it under a placeholder class; AIUpdateInterface::chooseGoodLocomotorFromCurrentSet passes &m_locomotorSet as the receiver): the first locomotor whose template's Surfaces (+0x14) share a bit with t.
 	Locomotor *findLocomotor(UnsignedInt t);
 	_STL::vector<Locomotor *> m_locomotors;		// +0x04
 	UnsignedInt m_validLocomotorSurfaces;		// +0x10
 	Bool m_downhillOnly;						// +0x14
 	Bool m_scalesWalls;							// +0x15
-	UnsignedInt m_unk0x18;						// +0x18
-	UnsignedInt m_unk0x1C;						// +0x1C
+	AsciiString m_unk0x18;						// +0x18: released by the destructor
+	AsciiString m_unk0x1C;						// +0x1C: released by the destructor
 	Real m_unk0x20;								// +0x20
 };
 

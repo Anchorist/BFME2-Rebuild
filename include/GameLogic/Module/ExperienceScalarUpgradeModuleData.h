@@ -17,9 +17,9 @@ class MultiIniFieldParse;
 class ExperienceScalarUpgradeModuleData : public UpgradeModuleData
 {
 public:
-	ExperienceScalarUpgradeModuleData();								// 0x004B6187
+	ExperienceScalarUpgradeModuleData();
 	virtual ~ExperienceScalarUpgradeModuleData();
-	static void buildFieldParse(MultiIniFieldParse &parse);				// 0x004B61A4
+	static void buildFieldParse(MultiIniFieldParse &parse);
 
 	Real m_addXPScalar;													// +0x118 AddXPScalar
 };

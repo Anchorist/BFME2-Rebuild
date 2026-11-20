@@ -33,7 +33,7 @@ typedef char DamageFilteredCreateObjectDie_base_size[(sizeof(DieModule) == 0x14)
 class DamageFilteredCreateObjectDie : public DieModule, public DamageModuleInterface
 {
 public:
-	char const * name() const;	// 0x00485EE3
+	char const * name() const;
 	DamageFilteredCreateObjectDie(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;

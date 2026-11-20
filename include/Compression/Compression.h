@@ -31,17 +31,17 @@ enum CompressionType
 class CompressionManager
 {
 public:
-	static Bool isDataCompressed(const void *mem, Int len);							// 0x0068A5D0
-	static CompressionType getCompressionType(const void *mem, Int len);				// 0x0068A1B0
+	static Bool isDataCompressed(const void *mem, Int len);
+	static CompressionType getCompressionType(const void *mem, Int len);
 
-	static Int getMaxCompressedSize(Int uncompressedLen, CompressionType compType);	// 0x0068A2A0
-	static Int getUncompressedSize(const void *mem, Int len);							// 0x0068A320
+	static Int getMaxCompressedSize(Int uncompressedLen, CompressionType compType);
+	static Int getUncompressedSize(const void *mem, Int len);
 
-	static Int compressData(CompressionType compType, void *src, Int srcLen, void *dest, Int destLen);	// 0x0068A360, 0 on error
-	static Int decompressData(const void *src, Int srcLen, void *dest, Int destLen);			// 0x0068A4E0, 0 on error
+	static Int compressData(CompressionType compType, void *src, Int srcLen, void *dest, Int destLen);	// 0 on error
+	static Int decompressData(const void *src, Int srcLen, void *dest, Int destLen);			// 0 on error
 
-	static const char *getCompressionNameByType(CompressionType compType);			// 0x0068A190
-	static const char *getDecompressionNameByType(CompressionType compType);			// 0x0068A1A0
+	static const char *getCompressionNameByType(CompressionType compType);
+	static const char *getDecompressionNameByType(CompressionType compType);
 };
 
 #endif

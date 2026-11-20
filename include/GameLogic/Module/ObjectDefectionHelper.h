@@ -18,15 +18,15 @@ class Xfer;
 class ObjectDefectionHelper : public ObjectHelper
 {
 public:
-	ObjectDefectionHelper(Thing *thing, const ModuleData *moduleData);	// 0x0028C955
+	ObjectDefectionHelper(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;				// slot 4, 0x0028C992
-	virtual UpdateSleepTime update();							// 0x004DF547
-	void startDefectionTimer(UnsignedInt duration, Bool doFX);	// 0x004DF725
+	virtual UpdateSleepTime update();
+	void startDefectionTimer(UnsignedInt duration, Bool doFX);
 
 protected:
 	virtual void loadPostProcess();								// slot 1 (0x00483CEF: tail-jumps to ObjectHelper's)
 	virtual const char *GetSnapshotName() const;				// slot 2, 0x0028C9D7
-	virtual void xfer(Xfer *xfer);								// 0x004DF76E
+	virtual void xfer(Xfer *xfer);
 
 private:
 	UnsignedInt m_windowStartFrame;								// 0x20

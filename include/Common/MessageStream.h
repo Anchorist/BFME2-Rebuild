@@ -20,8 +20,8 @@ public:
 	{
 		// Values and names: retail GameMessage::getCommandTypeAsAsciiString
 		// 0x0030FA44, a switch from each value to its MSG_ name string, read
-		// value by value. All 360 named values agree
-		// with the old repo's enum, built from the same function. Values the
+		// value by value. All 360 named values are
+		// those of that function. Values the
 		// switch does not name keep a numeric spelling, with the code that uses
 		// them. BFME2 renumbered Zero Hour's list, so no entry is placed by its
 		// donor position.

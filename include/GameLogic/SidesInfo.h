@@ -27,15 +27,15 @@ class SidesInfo
 public:
 	SidesInfo();												// 0x0032C667
 	SidesInfo(const SidesInfo &that);							// 0x0032C6AD
-	~SidesInfo();												// 0x0032D4C0
+	~SidesInfo();
 	SidesInfo &operator=(const SidesInfo &that);				// 0x0032D510
 
-	void init(const Dict *dict);								// 0x0032CDAA
-	void clear();												// 0x0032D4AD
-	void swap(SidesInfo *other);								// 0x0032B070
-	void addToBuildList(BuildListInfo *info, Int position);		// 0x003297FB
-	Int removeFromBuildList(BuildListInfo *info);				// 0x0032983F
-	void reorderInBuildList(BuildListInfo *info, Int position);	// 0x00329F3F
+	void init(const Dict *dict);
+	void clear();
+	void swap(SidesInfo *other);
+	void addToBuildList(BuildListInfo *info, Int position);
+	Int removeFromBuildList(BuildListInfo *info);
+	void reorderInBuildList(BuildListInfo *info, Int position);
 
 	BuildListInfo *m_pBuildList;								// +0x00
 	Dict m_dict;												// +0x04
@@ -75,12 +75,12 @@ class TeamsInfoRec
 public:
 	TeamsInfoRec();										// 0x0032CD6D
 	TeamsInfoRec(const TeamsInfoRec &that);				// 0x0032D9A4
-	~TeamsInfoRec();									// 0x0032C632
+	~TeamsInfoRec();
 	TeamsInfoRec &operator=(const TeamsInfoRec &that);	// 0x0032DDB3
-	void clear();										// 0x0032C9C6
-	void swap(TeamsInfoRec *other);						// 0x0032B651
-	void removeFromIndex(Int index);					// 0x0032C1F7: unlinks the slot from its index entry's override chain
-	void removeTeam(Int index);							// 0x0032C26D: removeFromIndex, clear the Dict, move the slot to the free list
+	void clear();
+	void swap(TeamsInfoRec *other);
+	void removeFromIndex(Int index);					// Unlinks the slot from its index entry's override chain
+	void removeTeam(Int index);							// removeFromIndex, clear the Dict, move the slot to the free list
 	void removeOverriddenTeams();						// 0x0032C2C4: removeTeam on every active slot that another overrides
 
 	TeamIndex m_index;					// +0x00

@@ -1,10 +1,10 @@
 // ModuleData.h: SAGE base of every module's INI data. SIZE 0x8.
-// Target facts (old repo Code/GameEngine/Include/Common/ModuleData.h):
+// Target facts:
 // shared tables 0x00C4ED70 / 0x00C549F8 have 31 slots: 0 deleting destructor,
 // 1 loadPostProcess (empty), 2 GetSnapshotName, 3 xfer (empty, ret 4),
 // 4-13 and 15 return false, 14 is getBestModelNameForWB (0x000B69A1: the empty
 // string by value; the five W3D draw module-data tables override it with
-// 0x000B6E28, Zero Hour's WorldBuilder hook, m07 P10), 16-29 return null, 30 returns true. ThingTemplate tests slot 4
+// 0x000B6E28, Zero Hour's WorldBuilder hook), 16-29 return null, 30 returns true. ThingTemplate tests slot 4
 // (isAiModuleData), slot 18/19 the draw-data getters, 21 getHordeModuleData,
 // 22 getMinimumRequiredGameLOD. The module tag key is at +4
 // (ModuleFactory::newModuleDataFromINI 0x00257232). The destructor is inline
@@ -19,7 +19,7 @@
 #include "Common/GameType.h"
 #include "Common/Snapshot.h"
 #include "Common/AsciiString.h"
-#include "Common/ModelConditionFlags.h"	// slot 14's argument (a typedef of BitFlags once k07's u1 lands, so no forward declaration)
+#include "Common/ModelConditionFlags.h"	// slot 14's argument (a typedef of BitFlags, so no forward declaration)
 
 class Xfer;
 class HordeContainModuleData;

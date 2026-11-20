@@ -1,6 +1,7 @@
 // cl: /O1
 // Portions derived from Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 // psdk
+// stlport46
 #include <winsock2.h>
 #include <windows.h>
 #include <stdlib.h>
@@ -13,9 +14,15 @@
 #include "GameNetwork/Transport.h"
 #include "GameNetwork/GameInfo.h"
 #include "GameNetwork/Network.h"
+#include "Common/GameState.h"
+#include "Common/LANPreferences.h"
+#include "GameClient/MapCache.h"
+#include "GameClient/MapUtil.h"
+#include "GameClient/GameText.h"
 #include "WWLib/systimer.h"
 
 extern NetworkInterface *TheNetwork;	// VA 0x00DFEA28
+UnsignedInt ComputeCRC(const UnsignedByte *data, UnsignedInt length, UnsignedInt seed);	// 0x003EC8F7
 
 enum
 {
@@ -443,6 +450,46 @@ void LANAPI::RequestAccept(Bool accept)
 }
 
 // FUNCTION: BFME2 0x0044A3BF size=659 name=?RequestHasMap@LANAPI@@UAEXXZ evidence=N:ledger tier=A
+void LANAPI::RequestHasMap()
+{
+	if (m_inLobby || m_currentGame == 0)
+		return;
+
+	LANMessage msg;
+	fillInLANMessage(&msg);
+	msg.LANMessageType = LANMessage::MSG_MAP_AVAILABILITY;
+	msg.MapStatus.hasMap = m_currentGame->getSlot(m_currentGame->getLocalSlotNum())->hasMap();
+	wcsncpy(msg.MapStatus.gameName, m_currentGame->getName().str(), LAN_GAME_NAME_LENGTH);
+	msg.MapStatus.gameName[LAN_GAME_NAME_LENGTH] = 0;
+	AsciiString portableMapName = TheGameState->realMapPathToPortableMapPath(m_currentGame->getMap());
+	msg.MapStatus.mapCRC = ComputeCRC((const UnsignedByte *)portableMapName.str(), portableMapName.getLength(), 0);
+	sendMessage(&msg, 0);
+	m_transport->update(0);
+
+	if (!msg.MapStatus.hasMap)
+	{
+		UnicodeString text;
+		UnicodeString mapDisplayName;
+		const MapMetaData *mapData = TheMapCache->findMap(m_currentGame->getMap());
+		Bool willTransfer = true;
+		if (mapData != 0)
+		{
+			mapDisplayName.format(L"%ls", mapData->m_displayName.str());
+			if (mapData->m_isOfficial)
+				willTransfer = false;
+		}
+		else
+		{
+			mapDisplayName.format(L"%hs", TheGameState->getMapLeafName(m_currentGame->getMap()).str());
+			willTransfer = Rva00300E42Check(m_currentGame);
+		}
+		if (willTransfer)
+			text.format(TheGameText->fetchPtr("GUI:LocalPlayerNoMapWillTransfer", 0), mapDisplayName.str());
+		else
+			text.format(TheGameText->fetchPtr("GUI:LocalPlayerNoMap", 0), mapDisplayName.str());
+		OnChat(UnicodeString(L"SYSTEM"), GetLocalAddress(), text, LANAPIInterface::LANCHAT_SYSTEM);
+	}
+}
 
 // FUNCTION: BFME2 0x0044A652 size=267 name=?RequestChat@LANAPI@@UAEXVUnicodeString@@W4ChatType@LANAPIInterface@@H@Z evidence=N:ledger tier=A
 
@@ -520,6 +567,35 @@ void LANAPI::SetLocalIP(AsciiString localIP)
 // FUNCTION: BFME2 0x0044AAED size=1858 name=?update@LANAPI@@UAEXXZ evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x0044B2EA size=290 name=?addGame@LANAPI@@IAEXPAVLANGameInfo@@@Z evidence=N:ledger tier=A
+void LANAPI::addGame(LANGameInfo *game)
+{
+	if (!m_games)
+	{
+		m_games = game;
+		game->setNext(NULL);
+		return;
+	}
+	else
+	{
+		if (game->getName().compareNoCase(m_games->getName()) < 0)
+		{
+			game->setNext(m_games);
+			m_games = game;
+			return;
+		}
+		else
+		{
+			LANGameInfo *lANGameInfo = m_games;
+			while (lANGameInfo->getNext() && lANGameInfo->getNext()->getName().compareNoCase(game->getName()) > 0)
+			{
+				lANGameInfo = lANGameInfo->getNext();
+			}
+			game->setNext(lANGameInfo->getNext());
+			lANGameInfo->setNext(game);
+			return;
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x0044B40C size=143 name=?addPlayer@LANAPI@@IAEXPAVLANPlayer@@@Z evidence=N:ledger tier=A
 void LANAPI::addPlayer(LANPlayer *player)
@@ -587,6 +663,61 @@ void LANAPI::reset()
 }
 
 // FUNCTION: BFME2 0x0044B55A size=591 name=?RequestGameCreate@LANAPI@@UAEXVUnicodeString@@_N@Z evidence=N:ledger tier=A
+void LANAPI::RequestGameCreate(UnicodeString gameName, Bool isDirectConnect)
+{
+	if ((!m_inLobby || m_currentGame != 0) && !isDirectConnect)
+	{
+		OnGameCreate(RET_BUSY);
+		return;
+	}
+
+	if (m_pendingAction != ACT_NONE)
+	{
+		OnGameCreate(RET_BUSY);
+		return;
+	}
+
+	m_inLobby = false;
+	LANGameInfo *myGame = new LANGameInfo;
+	myGame->reset();
+	myGame->enterGame();
+
+	UnicodeString name;
+	name.format(L"%8.8X%8.8X", GetLocalAddress()->m_ip, myGame->getSeed());
+	if (gameName.isEmpty())
+		name.concat(m_name);
+	else
+		name.concat(gameName);
+
+	while (name.getLength() > 16)
+		name.removeLastChar();
+
+	myGame->setName(name);
+
+	LANGameSlot newSlot;
+	GameSlotConnectInfo connectInfo;
+	connectInfo.m_ip = 0;
+	connectInfo.m_port = 0;
+	newSlot.setState(SLOT_PLAYER, m_name, &connectInfo);
+	BfmeNetAddress *localAddress = GetLocalAddress();
+	newSlot.m_address = *localAddress;
+	newSlot.m_lastHeard = 0;
+	newSlot.setLogin(m_userName);
+	newSlot.setHost(m_hostName);
+
+	myGame->setSlot(0, newSlot);
+	myGame->setNext(0);
+
+	LANPreferences pref(0);
+	AsciiString mapName = pref.rva0044D986();
+	myGame->setMapForwarder(mapName);
+	myGame->m_isDirectConnect = isDirectConnect;
+	myGame->setLastHeard(timeGetTime());
+	m_currentGame = myGame;
+
+	addGame(myGame);
+	OnGameCreate(RET_OK);
+}
 
 // FUNCTION: BFME2 0x0044B7A9 size=364 name=?RequestSetName@LANAPI@@UAEXVUnicodeString@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 void LANAPI::RequestSetName(UnicodeString newName)

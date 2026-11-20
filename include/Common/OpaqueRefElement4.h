@@ -1,5 +1,5 @@
 // OpaqueRefElement4.h: a four-byte owning handle to an OpaqueRefCounted.
-// Target facts (old repo Code/GameEngine/Include/Common/OpaqueRefElement4.h):
+// Target facts:
 // no virtual functions and no base; sizeof 4 (TerrainRoadType's ctor passes
 // element size 4 to ??_L). The default ctor nulls +0 inline, the destructor
 // releases a non-null pointee through Release_Ref 0x00050ED3 inline, and

@@ -27,7 +27,7 @@ class W3DTreeDrawModuleData : public ModuleData
 {
 public:
 	W3DTreeDrawModuleData();                               // 0x000CEBBF
-	virtual ~W3DTreeDrawModuleData();                      // 0x000CECA6: releases the strings at +0x48, +0x28, +0x0C and +0x08
+	virtual ~W3DTreeDrawModuleData();                      // Releases the strings at +0x48, +0x28, +0x0C and +0x08
 	static void buildFieldParse(MultiIniFieldParse &parse);
 	static ModuleData *friend_newModuleData(INI *ini);
 

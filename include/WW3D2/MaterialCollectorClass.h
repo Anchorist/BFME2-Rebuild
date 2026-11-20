@@ -30,26 +30,26 @@ class MaterialCollectorClass
 {
 public:
 	MaterialCollectorClass(void);							// 0x00170240
-	~MaterialCollectorClass(void);							// 0x001702F0
+	~MaterialCollectorClass(void);
 
-	void Reset(void);								// 0x0016F460
-	void Collect_Materials(MeshModelClass *mesh);					// 0x001703D0
+	void Reset(void);
+	void Collect_Materials(MeshModelClass *mesh);
 
-	void Add_Shader(ShaderClass shader);						// 0x0016FCD0
-	void Add_Vertex_Material(VertexMaterialClass *vmat);				// 0x0016FD30
+	void Add_Shader(ShaderClass shader);
+	void Add_Vertex_Material(VertexMaterialClass *vmat);
 
 	int Get_Shader_Count(void) { return Shaders.Count(); }
 	int Get_Vertex_Material_Count(void) { return VertexMaterials.Count(); }
 	int Get_Texture_Count(void) { return Textures.Count(); }
 
-	ShaderClass Peek_Shader(int i);							// 0x0016F4C0
-	VertexMaterialClass *Peek_Vertex_Material(int i);				// 0x0016F510
+	ShaderClass Peek_Shader(int i);
+	VertexMaterialClass *Peek_Vertex_Material(int i);
 
-	TextureAsset Peek_Texture(int i);						// 0x0016F4E0
-	int Find_Texture(const TextureAsset &tex);					// 0x0016F520
-	void Add_Texture(const TextureAsset &tex);					// 0x0016FC70
+	TextureAsset Peek_Texture(int i);
+	int Find_Texture(const TextureAsset &tex);
+	void Add_Texture(const TextureAsset &tex);
 
-	int Find_Vertex_Material(VertexMaterialClass *vmat);				// 0x0016F550
+	int Find_Vertex_Material(VertexMaterialClass *vmat);
 	int Find_Shader(ShaderClass shader)						// Zero Hour's inline search; Add_Shader 0x0016FCD0 expands it in place
 	{
 		for (int index = 0; index < Shaders.Count(); index++) {

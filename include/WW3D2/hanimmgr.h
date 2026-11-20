@@ -12,10 +12,10 @@
 class HAnimManagerClass
 {
 public:
-	HAnimClass *Peek_Anim(const char *name);	// 0x000F0B81
-	HAnimClass *Get_Anim(const char *name);		// 0x000F0B98
-	bool Add_Anim(HAnimClass *new_anim);		// 0x000F0BAB
-	bool Is_Missing(const char *name);		// 0x000F0BC2
+	HAnimClass *Peek_Anim(const char *name);
+	HAnimClass *Get_Anim(const char *name);
+	bool Add_Anim(HAnimClass *new_anim);
+	bool Is_Missing(const char *name);
 
 private:
 	friend class HAnimManagerIterator;

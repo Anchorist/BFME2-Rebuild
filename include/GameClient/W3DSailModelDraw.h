@@ -13,7 +13,7 @@
 class W3DSailModelDraw : public W3DScriptedModelDraw
 {
 public:
-	W3DSailModelDraw(Thing *thing, const ModuleData *moduleData);			// 0x000D078F
+	W3DSailModelDraw(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;							// 4: 0x000D07CB
 
 protected:

@@ -111,13 +111,13 @@ protected:
 	virtual SleepyUpdatePhase getUpdatePhase() const { return (SleepyUpdatePhase)0; }	// slot 12 is the shared `xor eax,eax; ret` 0x000D43D0, not UpdateModule's 0x0022C4CB
 
 public:
-	virtual void rva004B15E6();							// 0x004B15E6 (the +0x20 interface slot)
-	void rva004B0D4C(Int index, void *p);			// 0x004B0D4C: PulseEmotion without a delay (frame slot cleared)
+	virtual void rva004B15E6();							// (the +0x20 interface slot)
+	void rva004B0D4C(Int index, void *p);			// PulseEmotion without a delay (frame slot cleared)
 	void PulseEmotion(Int index, void *p, Int delay);	// 0x004B0D70
 	void clearFlag(Int index);					// 0x004B0DA0
 	EmotionNugget *selectNugget();			// 0x004B13D8: the nugget to run now, or none (retries once with the forced emotion cleared)
 	void deactivateIfStateSet();			// 0x004B0E9C
-	Bool rva004B0EBC();							// 0x004B0EBC: true when any nugget's entry has the byte at +0x18C set
+	Bool rva004B0EBC();							// True when any nugget's entry has the byte at +0x18C set
 	void ForceEmotion(Int kind, Real seconds, Int source);	// 0x004B0DAC (the ledger spells the third argument int; the body reads an Object* in it)
 	Bool m_flags[12];                              // +0x24; PulseEmotion 0x004B0D70 sets flags[index] (12 slots)
 	UnsignedInt m_expiry[12];                      // +0x30; PulseEmotion stores the frame plus the delay

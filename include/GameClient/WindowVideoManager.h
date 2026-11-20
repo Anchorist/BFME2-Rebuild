@@ -48,11 +48,11 @@ class WindowVideo
 {
 public:
 	WindowVideo();															// 0x0053F0D0
-	~WindowVideo();															// 0x0053F10E
+	~WindowVideo();
 	void init(GameWindow *win, AsciiString movieName, WindowVideoPlayType playType,
 		VideoStreamInterface *videoStream);									// 0x0053F165
-	void setWindowState(WindowVideoStates state);							// 0x0053F06C
-	VideoBuffer *getVideoBuffer();											// 0x0053F0BF
+	void setWindowState(WindowVideoStates state);
+	VideoBuffer *getVideoBuffer();
 
 	int m_playType;															// +0x00 (WindowVideoPlayType)
 	GameWindow *m_win;														// +0x04
@@ -66,21 +66,21 @@ class WindowVideoManager : public SubsystemInterface
 {
 public:
 	WindowVideoManager();													// 0x0053F85C
-	virtual ~WindowVideoManager();											// 0x0053F45C
-	virtual void init();													// 0x0053F2A4
-	virtual void reset();													// 0x0053F4E4
-	virtual void update();													// 0x0053F53C
+	virtual ~WindowVideoManager();
+	virtual void init();
+	virtual void reset();
+	virtual void update();
 
-	void playMovie(GameWindow *win, AsciiString movieName, WindowVideoPlayType playType);	// 0x0053F63D
-	void pauseMovie(GameWindow *win);										// 0x0053F2B9
-	void hideMovie(GameWindow *win);										// 0x0053F2DD
-	void resumeMovie(GameWindow *win);										// 0x0053F301
-	void stopMovie(GameWindow *win);										// 0x0053F331
-	int getWinState(GameWindow *win);										// 0x0053F355
-	void stopAndRemoveMovie(GameWindow *win);								// 0x0053F3FF
-	void stopAllMovies();													// 0x0053F721
-	void pauseAllMovies();													// 0x0053F761
-	void resumeAllMovies();													// 0x0053F7A1
+	void playMovie(GameWindow *win, AsciiString movieName, WindowVideoPlayType playType);
+	void pauseMovie(GameWindow *win);
+	void hideMovie(GameWindow *win);
+	void resumeMovie(GameWindow *win);
+	void stopMovie(GameWindow *win);
+	int getWinState(GameWindow *win);
+	void stopAndRemoveMovie(GameWindow *win);
+	void stopAllMovies();
+	void pauseAllMovies();
+	void resumeAllMovies();
 
 	struct hashConstGameWindowPtr
 	{

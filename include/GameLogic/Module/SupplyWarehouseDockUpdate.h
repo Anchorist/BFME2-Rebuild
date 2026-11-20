@@ -22,18 +22,18 @@ class SupplyWarehouseDockUpdate : public DockUpdate
 public:
 	virtual DockUpdateInterface *getDockUpdateInterface() { return this; }
 	SupplyWarehouseDockUpdate(Thing *thing, const ModuleData *moduleData);	// 0x004A7DEA
-	virtual ~SupplyWarehouseDockUpdate();									// 0x004A7D55
+	virtual ~SupplyWarehouseDockUpdate();
 
-	virtual NameKeyType getModuleNameKey() const;							// 0x004A7DA5
-	virtual void onObjectCreated();											// 0x004A7E43
-	virtual void loadPostProcess();											// 0x004A7FC5
+	virtual NameKeyType getModuleNameKey() const;
+	virtual void onObjectCreated();
+	virtual void loadPostProcess();
 	virtual Bool action(Object *docker, Object *drone);					// 0x004A7E67
-	virtual void setDockCrippled(Bool setting);								// 0x004A800D
+	virtual void setDockCrippled(Bool setting);
 	void setCashValue(Int cashValue);										// 0x004A7F78 (map: rva004A7F78)
 
 protected:
-	virtual const char *GetSnapshotName() const;							// 0x004A7D75
-	virtual void xfer(Xfer *xfer);											// 0x004A7D7B
+	virtual const char *GetSnapshotName() const;
+	virtual void xfer(Xfer *xfer);
 
 public:
 	Int m_boxesStored;						// +0x88, StartingBoxes at construction; xfer'd; action takes one per delivery, setCashValue sets it

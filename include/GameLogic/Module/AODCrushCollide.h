@@ -46,7 +46,7 @@ public:
 	AODCrushCollide(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	const char *name() const;						// 0x004BBEFD (non-virtual, the literal)
+	const char *name() const;						// (non-virtual, the literal)
 	virtual ~AODCrushCollide();
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004BC2E6)
 	virtual void onCollide(Object *other, const Coord3D *loc, const Coord3D *normal);	// override: onCollide slot 0 at +0x20 (0x004BC0B8)

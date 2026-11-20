@@ -20,16 +20,16 @@ class RadarUpgrade : public UpgradeModule
 {
 public:
 	RadarUpgrade(Thing *thing, const ModuleData *moduleData);
-	virtual ~RadarUpgrade();											// 0x004B46F9
+	virtual ~RadarUpgrade();
 
-	virtual NameKeyType getModuleNameKey() const;						// 0x004B4727
-	virtual void onDelete();											// 0x004B47DB
-	virtual void onCapture(Player *oldOwner, Player *newOwner);			// 0x004B4828
+	virtual NameKeyType getModuleNameKey() const;
+	virtual void onDelete();
+	virtual void onCapture(Player *oldOwner, Player *newOwner);
 
 protected:
-	virtual const char *GetSnapshotName() const;						// 0x004B4719
+	virtual const char *GetSnapshotName() const;
 	virtual void upgradeRemovalImplementation();						// 0x004B471F
-	virtual void upgradeImplementation();								// 0x004B488F
+	virtual void upgradeImplementation();
 protected:
 	virtual void xfer(Xfer *xfer);	// primary slot 3: retail's body is folded with ArmorUpgrade::xfer 0x004B8710; retail's table has this class's own
 protected:

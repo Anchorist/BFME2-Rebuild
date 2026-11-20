@@ -41,13 +41,13 @@ public:
 	FireWeaponWhenDamagedBehavior(Thing *thing, const ModuleData *moduleData);	// 0x00482803
 	virtual void upgradeRemovalImplementation();
 	virtual void upgradeImplementation();
-	virtual ~FireWeaponWhenDamagedBehavior();						// 0x00482551
-	virtual NameKeyType getModuleNameKey() const;					// 0x004827AA
+	virtual ~FireWeaponWhenDamagedBehavior();
+	virtual NameKeyType getModuleNameKey() const;
 
-	virtual void onDamage(DamageInfo *damageInfo);					// 0x00482A69
+	virtual void onDamage(DamageInfo *damageInfo);
 	virtual void onHealing(DamageInfo *) {}
 	virtual void onBodyDamageStateChange(const DamageInfo *, BodyDamageType, BodyDamageType) {}
-	virtual UpdateSleepTime update();								// 0x00482B24
+	virtual UpdateSleepTime update();
 
 public:
 	Weapon *m_reactionWeaponPristine;								// +0x2C

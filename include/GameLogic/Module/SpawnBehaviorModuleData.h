@@ -29,7 +29,7 @@ class SpawnBehaviorModuleData : public ModuleData
 public:
 	SpawnBehaviorModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
-	static ModuleData *friend_newModuleData(INI *ini);	// 0x0025769F
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Int m_spawnNumber;                                     // +0x8 SpawnNumber
 	UnsignedInt m_spawnReplaceDelay;                       // +0xC SpawnReplaceDelay; duration, frames

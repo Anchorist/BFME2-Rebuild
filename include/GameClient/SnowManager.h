@@ -12,7 +12,7 @@
 class SnowManager : public SubsystemInterface
 {
 public:
-	SnowManager();															// 0x0020109B
+	SnowManager();
 	virtual ~SnowManager();													// slot 0, 0x002015FC
 	virtual void init();													// slot 1, 0x00201064
 	virtual void reset();													// slot 9, 0x00201134

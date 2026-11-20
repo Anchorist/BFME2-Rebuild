@@ -166,7 +166,7 @@ typedef char CameraSettingsSize[(sizeof(CameraSettings) == 0x2C) ? 1 : -1];
 class W3DView : public View, public SubsystemInterface
 {
 public:
-	W3DView();								// 0x0008B7CF
+	W3DView();
 	virtual ~W3DView();						// slot 0: deleting destructor 0x0008DE5E, destructor 0x0008BD5E
 
 	// ---- View's slots that W3DView overrides, in slot order (names and signatures as View.h declares them) ----
@@ -263,20 +263,20 @@ public:
 	virtual void slot150(Bool flag);	// slot 150, 0x00087A29
 
 	// SubsystemInterface's update and draw (the +0xB4 table entries 0x0008C3AC and 0x00087DA0).
-	virtual void update();					// 0x0008C3AC
-	virtual void draw();					// 0x00087DA0
+	virtual void update();
+	virtual void draw();
 
 	// Non-virtual members; Zero Hour's W3DView keeps them private and the map's names carry that (AAE).
 private:
-	void setCameraTransform();				// 0x0008BE6B
+	void setCameraTransform();
 	void constrainPosition(Coord3D *position);	// 0x000860AF
 	Real *cancelCameraMovements();			// 0x000869CF: stops every running camera record and the scripted lock; returns the angle triple at +0x244C
-	void getPickRay(const ICoord2D *screen, Vector3 *rayStart, Vector3 *rayEnd);	// 0x00089658
-	void moveAlongWaypointPath(Int milliseconds);	// 0x00086F56 (Zero Hour's name)
-	void rotateCameraOneFrame();	// 0x0008AAD4 (Zero Hour's name)
+	void getPickRay(const ICoord2D *screen, Vector3 *rayStart, Vector3 *rayEnd);
+	void moveAlongWaypointPath(Int milliseconds);	// (Zero Hour's name)
+	void rotateCameraOneFrame();	// (Zero Hour's name)
 	void calcDeltaScroll(Coord2D &screenDelta);	// 0x00085FA8: the screen-space movement of the look-at point since the last frame (the view filters read it)
-	void calcCameraConstraints();			// 0x00089A21: recomputes m_cameraConstraint from the map extent and how far the view reaches ahead of the look-at point
-	void getAxisAlignedViewRegion(Region3D &axisAlignedRegion);	// 0x00085B41: the world-space box around the visible corners, widened by the overscan and the guard band
+	void calcCameraConstraints();			// Recomputes m_cameraConstraint from the map extent and how far the view reaches ahead of the look-at point
+	void getAxisAlignedViewRegion(Region3D &axisAlignedRegion);	// The world-space box around the visible corners, widened by the overscan and the guard band
 	void zoomCameraOneFrame();				// 0x00086CDA: advances the record at +0x208 and writes View's zoom (+0x3C); Zero Hour's name
 	void pitchCameraOneFrame();				// 0x00086E24: advances the record at +0x1E0 and writes View's +0x70 (Zero Hour's m_FXPitch); Zero Hour's name
 	void pitchOneFrame();					// 0x00086EBD: advances the record at +0x258 and writes View's +0x30; called by pitchCamera 0x0008907A for a one-millisecond move

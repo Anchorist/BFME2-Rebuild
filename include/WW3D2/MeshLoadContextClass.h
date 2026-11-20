@@ -35,7 +35,7 @@ private:
 	MeshLoadContextClass(void);							// 0x0018B5F0
 	~MeshLoadContextClass(void);
 
-	W3dTexCoordStruct *Get_Texcoord_Array(void);					// 0x00188340
+	W3dTexCoordStruct *Get_Texcoord_Array(void);
 
 	// Zero Hour's counts (public const in the retail mangling; read_per_tri_materials calls them out of line).
 public:
@@ -49,18 +49,18 @@ private:
 	bool Already_Loaded_DIG(void) { return LoadedDIG; }
 	void Notify_Loaded_DIG_Chunk(bool onoff) { LoadedDIG = onoff; }
 
-	int Add_Shader(ShaderClass shader);						// 0x0018A230
-	int Add_Vertex_Material(VertexMaterialClass *vmat);				// 0x0018A290
+	int Add_Shader(ShaderClass shader);
+	int Add_Vertex_Material(VertexMaterialClass *vmat);
 
-	ShaderClass Peek_Shader(int index);						// 0x001886C0
-	VertexMaterialClass *Peek_Vertex_Material(int index);				// 0x001886E0
+	ShaderClass Peek_Shader(int index);
+	VertexMaterialClass *Peek_Vertex_Material(int index);
 	TextureAsset Peek_Texture_Handle(int index);
-	TextureClass *Peek_Texture(int index);						// 0x001886F0
+	TextureClass *Peek_Texture(int index);
 
 	// Legacy material support.
-	ShaderClass Peek_Legacy_Shader(int legacy_material_index);			// 0x00189360
+	ShaderClass Peek_Legacy_Shader(int legacy_material_index);
 	Vector2 *Get_Temporary_UV_Array(int elementcount);				// 0x00189400 (grows TempUVArray and returns its data)
-	VertexMaterialClass *Peek_Legacy_Vertex_Material(int legacy_material_index);	// 0x00189390
+	VertexMaterialClass *Peek_Legacy_Vertex_Material(int legacy_material_index);
 
 	struct LegacyMaterialClass
 	{

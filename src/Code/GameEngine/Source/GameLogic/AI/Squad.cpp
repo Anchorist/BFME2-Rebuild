@@ -54,11 +54,28 @@ const _STL::vector<Object *> &Squad::getAllObjectsKeepingIDs()
 	return m_objectsCached;
 }
 
+const _STL::vector<Object *> &Squad::getAllObjectsAndRemoveDead()
+{
+	m_objectsCached.clear();
+	for (_STL::vector<ObjectID>::iterator it = m_objectIDs.begin(); it != m_objectIDs.end(); )
+	{
+		Object *object = TheGameLogic->findObjectByID(*it);
+		if (object)
+		{
+			m_objectsCached.push_back(object);
+			++it;
+		}
+		else
+			it = m_objectIDs.erase(it);
+	}
+	return m_objectsCached;
+}
+
 // FUNCTION: BFME2 0x004D6D4F size=70 name=?bfmeCompact@Gen_0018BC70@@QAEPAVBfmeVecAK@@_N@Z evidence=N:ledger tier=A
 const _STL::vector<Object *> &Squad::getLiveObjects(Bool pruneDeadIDs)
 {
 	if (pruneDeadIDs)
-		getAllObjects();
+		getAllObjectsAndRemoveDead();
 	else
 		getAllObjectsKeepingIDs();
 	for (_STL::vector<Object *>::iterator it = m_objectsCached.begin(); it != m_objectsCached.end(); )

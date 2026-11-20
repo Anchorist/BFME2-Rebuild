@@ -33,23 +33,23 @@ public:
 	};
 
 	LineGroupClass();								// 0x001B3490
-	virtual ~LineGroupClass();						// 0x001B3510
+	virtual ~LineGroupClass();
 
-	void Set_Line_Size(float size);					// 0x001B35F0
-	float Get_Line_Size();							// 0x001B3600
-	void Set_Line_Color(const Vector3 &color);		// 0x001B3610
-	Vector3 Get_Line_Color();						// 0x001B3630
-	void Set_Tail_Diffuse(const Vector4 &tdiffuse);	// 0x001B3650
-	Vector4 Get_Tail_Diffuse();						// 0x001B3670
-	void Set_Line_Alpha(float alpha);				// 0x001B3690
-	float Get_Line_Alpha();							// 0x001B36A0
-	float Get_Line_UCoord();						// 0x001B36B0
-	void Set_Flag(FlagsType flag, bool on);			// 0x001B36C0
-	int Get_Flag(FlagsType flag);					// 0x001B36F0
-	void Set_Shader(const ShaderClass &shader);		// 0x001B3700
-	void Set_Line_Mode(LineModeType linemode);		// 0x001B3710
-	int Get_Polygon_Count();						// 0x001B3720
-	void Render(RenderInfoClass &rinfo);			// 0x001B38A0
+	void Set_Line_Size(float size);
+	float Get_Line_Size();
+	void Set_Line_Color(const Vector3 &color);
+	Vector3 Get_Line_Color();
+	void Set_Tail_Diffuse(const Vector4 &tdiffuse);
+	Vector4 Get_Tail_Diffuse();
+	void Set_Line_Alpha(float alpha);
+	float Get_Line_Alpha();
+	float Get_Line_UCoord();
+	void Set_Flag(FlagsType flag, bool on);
+	int Get_Flag(FlagsType flag);
+	void Set_Shader(const ShaderClass &shader);
+	void Set_Line_Mode(LineModeType linemode);
+	int Get_Polygon_Count();
+	void Render(RenderInfoClass &rinfo);
 
 	TextureAsset Get_Texture() const;					// shares 0x001790E0 with PointGroupClass
 	ShaderClass Get_Shader();

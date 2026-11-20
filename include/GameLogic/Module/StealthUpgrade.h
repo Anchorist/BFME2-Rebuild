@@ -49,7 +49,7 @@ public:
 	StealthUpgrade(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	const char *name() const;							// 0x004B532D
+	const char *name() const;
 
 protected:
 	virtual void upgradeImplementation();				// slot 10, 0x004B53C5

@@ -29,10 +29,10 @@ public:
 class NarrowStrLenSource : public CharSource<char>
 {
 public:
-	NarrowStrLenSource(const char *text, int length);					// 0x00035CF0
+	NarrowStrLenSource(const char *text, int length);
 	virtual int getLength() const { return m_length; }
-	virtual void getCharRange(char *dest, int start, int count) const;	// 0x00035D10
-	virtual int getChars(char *dest) const;								// 0x00035D40
+	virtual void getCharRange(char *dest, int start, int count) const;
+	virtual int getChars(char *dest) const;
 
 private:
 	const char *m_text;													// +0x04
@@ -43,10 +43,10 @@ private:
 class WideStrLenSource : public CharSource<unsigned short>
 {
 public:
-	WideStrLenSource(const unsigned short *text, int length);			// 0x00035E50
+	WideStrLenSource(const unsigned short *text, int length);
 	virtual int getLength() const { return m_length; }
-	virtual void getCharRange(unsigned short *dest, int start, int count) const;	// 0x00035E70
-	virtual int getChars(unsigned short *dest) const;					// 0x00035EA0
+	virtual void getCharRange(unsigned short *dest, int start, int count) const;
+	virtual int getChars(unsigned short *dest) const;
 
 private:
 	const unsigned short *m_text;										// +0x04

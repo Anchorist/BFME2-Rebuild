@@ -31,7 +31,7 @@ public:
 	DualWeaponBehavior(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	const char *name() const; // 0x0045ADDA
+	const char *name() const;
 
 protected:
 	virtual void xfer(Xfer *xfer);

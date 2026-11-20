@@ -26,7 +26,7 @@ public:
 	void setPortableFilename(AsciiString name);					// 0x00590F13 (folded)
 	void setRealFilename(AsciiString name);						// 0x004D6250
 	AsciiString getRealFilename() const;						// 0x004D632D
-	void setFileData(UnsignedByte *data, UnsignedInt dataLength);	// 0x004D594C
+	void setFileData(UnsignedByte *data, UnsignedInt dataLength);
 	UnsignedByte *getFileData();								// 0x0030D377 (folded dword getter at +0x20)
 	UnsignedInt getFileLength();								// 0x00091A56 (folded dword getter at +0x24)
 

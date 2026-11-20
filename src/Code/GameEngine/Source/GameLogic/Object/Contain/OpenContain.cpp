@@ -16,6 +16,7 @@
 #include "GameLogic/Object.h"
 #include "GameClient/Drawable.h"
 #include "GameLogic/AIStates.h"
+#include "GameLogic/AICommandParms.h"
 #include "GameLogic/Module/AIUpdate.h"
 #include "Common/KindOf.h"
 #include "Common/ThingTemplate.h"
@@ -38,7 +39,7 @@ Bool Rva00045473Equal(const void *a, const void *b);	// 0x00045473: 0x4C-byte co
 
 // ModuleData parse functions the table below names that this file does not define (the map spells them as placeholders).
 void Rva00464574Parse(INI *ini, void *instance, void *store, const void *userData);	// 0x00464574 PassengerBonePrefix
-void rva004649A1(INI *ini, void *instance, void *store, const void *userData);	// 0x004649A1 BoneSpecificConditionState
+void rva004649A1(INI *ini, void *instance, void *store, const void *userData);	// BoneSpecificConditionState
 void parseObjectStatusOfContained(INI *ini, void *instance, void *store, const void *userData);	// 0x00464081
 
 // The table retail passes to MultiIniFieldParse::add (VA 0x00C438B0), read back entry by entry from the image.
@@ -77,7 +78,19 @@ static const FieldParse s_openContainModuleDataFieldParse[] =
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:cohesion, hypothesis:padding
 // FUNCTION: BFME2 0x00462224 size=108 name=?aiMoveToAndDelete@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=B hypothesis:mm1-neighbour-callers
+void AICommandInterface::aiMoveToAndDelete(Coord3D const *pos, CommandSourceType cmdSource)
+{
+	AICommandParms parms(AICMD_MOVE_TO_AND_DELETE, cmdSource);
+	parms.m_pos = *pos;
+	aiDoCommand(&parms);
+}
 // FUNCTION: BFME2 0x00462290 size=108 name=?aiMoveToAndDie@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=B hypothesis:mm1-neighbour-callers
+void AICommandInterface::aiMoveToAndDie(Coord3D const *pos, CommandSourceType cmdSource)
+{
+	AICommandParms parms(AICMD_MOVE_TO_AND_DIE, cmdSource);
+	parms.m_pos = *pos;
+	aiDoCommand(&parms);
+}
 // FUNCTION: BFME2 0x004622FC size=340 name=?triggerFlee@RunOffMapBehavior@@UAEXXZ evidence=N:ledger tier=A
 void RunOffMapBehavior::triggerFlee()
 {
@@ -638,6 +651,22 @@ UpdateSleepTime OpenContain::update()
 }
 
 // FUNCTION: BFME2 0x00464120 size=145 name=?onDelete@OpenContain@@UAEXXZ evidence=N:ledger tier=A
+void OpenContain::onDelete()
+{
+	m_unk0xDF = true;
+	// The container is going away: let every passenger out, heroes die and the rest are removed.
+	ContainedItemsList riders(m_containList);
+	for (ContainedItemsList::const_iterator it = riders.begin(); it != riders.end(); ++it)
+	{
+		Object *rider = *it;
+		removeFromContain(rider, true);
+		rider->m_containedBy = NULL;
+		if (rider->getTemplate()->isKindOf(KINDOF_HERO))
+			rider->kill(DAMAGE_UNRESISTABLE, DEATH_NORMAL);
+		else
+			TheGameLogic->destroyObject(rider);
+	}
+}
 
 // FUNCTION: BFME2 0x004641B1 size=213 name=?onDie@OpenContain@@UAEXPBVDamageInfo@@@Z evidence=N:ledger tier=A
 

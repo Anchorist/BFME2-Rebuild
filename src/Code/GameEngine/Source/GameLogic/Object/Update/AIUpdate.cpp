@@ -79,7 +79,7 @@ enum
 	AISTATE_GUARD_RETALIATE = 62			// privateGuardRetaliate 0x00267DF1
 };
 
-Bool rva00344EB2Gate(Object *obj, Thing *target);	// 0x00344EB2 (AIStates.cpp; the map's name)
+Bool rva00344EB2Gate(Object *obj, Thing *target);	// (AIStates.cpp; the map's name)
 
 
 // Free xfer helpers (map names; Common/System/xferhelp.cpp and O0026249D.cpp define them).
@@ -2952,7 +2952,7 @@ void AIUpdateInterface::privateAttackArea(const PolygonTrigger *area, CommandSou
 // FUNCTION: BFME2 0x0026C26D size=108 name=?aiMoveToPosition@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiMoveToPosition(Coord3D const *pos, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0, cmdSource);
+	AICommandParms parms(AICMD_MOVE_TO_POSITION, cmdSource);
 	parms.m_pos = *pos;
 	aiDoCommand(&parms);
 }
@@ -2977,7 +2977,7 @@ void AICommandInterface::rva0026C347(Object *obj, CommandSourceType cmdSource)
 // FUNCTION: BFME2 0x0026C3AC size=101 name=?aiDock@AICommandInterface@@QAEXPAVObject@@W4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiDock(Object *dockTarget, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x18, cmdSource);
+	AICommandParms parms(AICMD_DOCK, cmdSource);
 	parms.m_object = dockTarget;
 	aiDoCommand(&parms);
 }
@@ -2985,7 +2985,7 @@ void AICommandInterface::aiDock(Object *dockTarget, CommandSourceType cmdSource)
 // FUNCTION: BFME2 0x0026C411 size=117 name=?aiMoveAwayFromUnit@AICommandInterface@@QAEXPAVObject@@PBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiMoveAwayFromUnit(Object *unit, Coord3D const *pos, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x34, cmdSource);
+	AICommandParms parms(AICMD_MOVE_AWAY_FROM_UNIT, cmdSource);
 	parms.m_object = unit;
 	parms.m_pos = *pos;
 	aiDoCommand(&parms);

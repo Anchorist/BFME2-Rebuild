@@ -12,7 +12,7 @@
 class SupplyWarehouseDockUpdateModuleData : public DockUpdateModuleData
 {
 public:
-	static void buildFieldParse(MultiIniFieldParse &parse);	// 0x004A7D3A
+	static void buildFieldParse(MultiIniFieldParse &parse);
 
 	Int StartingBoxes;						// 0x10
 	Bool DeleteWhenEmpty;					// 0x14

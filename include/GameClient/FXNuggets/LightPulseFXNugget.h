@@ -14,15 +14,15 @@
 class LightPulseFXNugget : public FXNugget
 {
 public:
-	LightPulseFXNugget();										// 0x001E0321
+	LightPulseFXNugget();
 
 	virtual void doFXPos(const Coord3D *primary, const Matrix3D *primaryMtx, Real primarySpeed,
 		const Coord3D *secondary) const;								// 1, 0x001E0373
 	virtual void doFXObj(const Object *primary, const Object *secondary) const;	// 2, 0x001E03B4
 	virtual void GetAssetList(AssetList &assets, Int context) const {}		// 3, empty (fold 0x0050B238)
 
-	static void buildFieldParse(MultiIniFieldParse &p);					// 0x001DFB22
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001E1421
+	static void buildFieldParse(MultiIniFieldParse &p);
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	RGBColor m_color;								// 0x148 Color (parseRGBColor)
 	Real m_radius;									// 0x154 Radius (parseReal)

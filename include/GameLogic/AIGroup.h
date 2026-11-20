@@ -138,7 +138,7 @@ protected:
 	Path *m_groundPath;									// +0x14
 	Coord3D m_position;									// +0x18 (WorldBuilder name; the constructor 0x0036E4C7 zeroes it)
 	Coord3D m_spacing;									// +0x24 (WorldBuilder name; the constructor sets (10, 0, 0) from 0x00BC2428)
-	_STL::vector<ObjectID> m_lastRequestedIDs;		// +0x30: getAllIDs (0x0036F710) rebuilds it from the members object IDs and returns it by reference
+	_STL::vector<ObjectID> m_lastRequestedIDs;		// +0x30: getAllIDs rebuilds it from the members object IDs and returns it by reference
 };
 // SIZE 0x3C
 

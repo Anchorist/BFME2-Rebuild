@@ -17,19 +17,19 @@ class AptInGameChat : public _bfme_AptGameWindow
 {
 public:
 	AptInGameChat(void *);							// 0x004E8B38
-	virtual ~AptInGameChat();						// 0x004E83EB
+	virtual ~AptInGameChat();
 
-	void OnInitialized(const char *);				// 0x004E81FF
-	void rva004E8213(const char *);					// 0x004E8213
-	void rva004E8220(int);							// 0x004E8220: moves step 1 on to 2
-	int rva004E846A(int message, unsigned char key, int state);	// 0x004E846A: the Escape and Enter keys close the chat
+	void OnInitialized(const char *);
+	void rva004E8213(const char *);
+	void rva004E8220(int);							// Moves step 1 on to 2
+	int rva004E846A(int message, unsigned char key, int state);	// The Escape and Enter keys close the chat
 
-	void Send(const char *);						// 0x004E8820
-	int rva004E8D3E(int message, int data1, int data2);	// 0x004E8D3E: the screen's window message handler; the text entry's Enter (0x4031) sends the chat
+	void Send(const char *);
+	int rva004E8D3E(int message, int data1, int data2);	// The screen's window message handler; the text entry's Enter (0x4031) sends the chat
 
 	int m_step;										// +0x27C
 	int m_x280;										// +0x280
-	void InitGadgets(const char *, void *, GameWindow *);	// 0x004E84FF: binds the chat entry
+	void InitGadgets(const char *, void *, GameWindow *);	// Binds the chat entry
 	GameWindow *m_entry;							// +0x284
 };
 typedef char AptInGameChatSizeCheck[sizeof(AptInGameChat)==0x288 ? 1 : -1];

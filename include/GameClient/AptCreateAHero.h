@@ -129,7 +129,7 @@ public:
 		void Run();										// 0x005B5787 (slot 3, the page's show; the map spells it Run@Rva005B5787Box)
 		void OnCloseBttn(const char *);					// 0x005B5418: the done button leaves the screen
 		void ExternFunc(int query, char *buffer, bool set);	// 0x005B5485: the movie's count queries: 0 the number of hero classes, 1 the sub-class count of the current hero's class
-		void rva005B54ED(unsigned int, unsigned int, bool);	// 0x005B54ED
+		void rva005B54ED(unsigned int, unsigned int, bool);
 		void Run(char *);						// 0x005B57C6 (the map spells it Run): two numbers (class, sub-class) picked in the movie
 		unsigned char m_pad08[0x24];					// +0x08..+0x2B not recovered here
 	};
@@ -151,13 +151,13 @@ public:
 		void Run();								// 0x005B5C02 (the map spells it Run): the screen's hero replaces the selected list entry's
 		void Run(int refresh);							// 0x005B5C70: gives the selected hero to the screen's hero and tells the movie whether the customize buttons are enabled
 		void setSortColumn(unsigned int column);		// 0x005B5BDC: picking the active column again flips it to the next one
-		void rva005B6A31(void *);						// 0x005B6A31: sort the hero list by column 0
-		void rva005B6A40(void *);						// 0x005B6A40: column 2
-		void rva005B6A4F(void *);						// 0x005B6A4F: column 4
-		void rva005B6182(bool refresh);					// 0x005B6182: rebuilds the awards when the page is shown and the hero is not being swapped
+		void rva005B6A31(void *);						// Sort the hero list by column 0
+		void rva005B6A40(void *);						// Column 2
+		void rva005B6A4F(void *);						// Column 4
+		void rva005B6182(bool refresh);					// Rebuilds the awards when the page is shown and the hero is not being swapped
 		void PopulateAwards();							// 0x005B6052
-		void rva005B5F2E();								// 0x005B5F2E
-		void rva005B6A05();								// 0x005B6A05: gives the pending hero back to the manager's list, then refreshes the hero list
+		void rva005B5F2E();
+		void rva005B6A05();								// Gives the pending hero back to the manager's list, then refreshes the hero list
 		void PopulateHeroList();						// 0x005B6755
 		void InitGadgets(char *name, int, char *window);	// 0x005B6967 (the map types the window as char *): binds the saved hero list and the saved hero stats list
 
@@ -194,7 +194,7 @@ public:
 	void RotateRight(const char *);					// 0x00513ABB
 	void ZoomIn(const char *);						// 0x00513ACE
 	void ZoomOut(const char *);						// 0x00513AE1
-	void rva00513AF4(const char *);					// 0x00513AF4: forwards to the current page's slot 7
+	void rva00513AF4(const char *);					// Forwards to the current page's slot 7
 
 	unsigned char m_myHero[0x190];					// +0x27C: AptMyHero (0x190, include/GameClient/AptMyHero.h; abstract until CreateAHeroData overrides loadPostProcess and xfer, so not embedded by value yet)
 	int m_heroSlot;									// +0x40C

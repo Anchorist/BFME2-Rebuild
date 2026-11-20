@@ -26,7 +26,7 @@ public:
 	virtual Bool slot14(const ProjectileNuggetFireInfo *info, Object *victim, DamageInfo *damageInfo);	// 14, 0x00509F3A
 	virtual void slot15(const ProjectileNuggetFireInfo *info, Object *victim);				// 15, 0x0050A1E9
 
-	// 0x00509DAB: the INI parse callback parseMetaImpactNugget calls with (ini, nugget, NULL,
+	// The INI parse callback parseMetaImpactNugget calls with (ini, nugget, NULL,
 	// NULL); it adds WeaponEffectNugget's table and VA 0x00C64810, then initFromINIMulti.
 	static void parseFromINI(INI *ini, void *instance, void *store, const void *userData);
 

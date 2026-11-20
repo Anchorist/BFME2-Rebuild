@@ -25,14 +25,14 @@ class OrCondition
 {
 public:
 	OrCondition() : m_nextOrCondition(0), m_firstAnd(0) {}	// the constructor is inline (Script::duplicate and the parser build it in place)
-	OrCondition *duplicate() const;						// 0x003B6D06
-	static Bool ParseOrConditionDataChunk(DataChunkInput &file, DataChunkInfo *info, void *userData);	// 0x003B7587
+	OrCondition *duplicate() const;
+	static Bool ParseOrConditionDataChunk(DataChunkInput &file, DataChunkInfo *info, void *userData);
 
-	static void WriteOrConditionDataChunk(DataChunkOutput &chunkWriter, OrCondition *pCondition);	// 0x003B4A3C
+	static void WriteOrConditionDataChunk(DataChunkOutput &chunkWriter, OrCondition *pCondition);
 
-	Condition *removeCondition(Condition *cond);		// 0x003B2672
-	void deleteCondition(Condition *cond);				// 0x003B26A1
-	Condition *findPreviousCondition(Condition *cur);	// 0x003B26C0
+	Condition *removeCondition(Condition *cond);
+	void deleteCondition(Condition *cond);
+	Condition *findPreviousCondition(Condition *cur);
 	Condition *getFirstAndCondition() const { return m_firstAnd; }
 	void setFirstAndCondition(Condition *first) { m_firstAnd = first; }
 	OrCondition *getNextOrCondition() const { return m_nextOrCondition; }

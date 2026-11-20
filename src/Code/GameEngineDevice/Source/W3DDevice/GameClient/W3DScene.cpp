@@ -11,6 +11,10 @@
 #include "GameLogic/Object.h"
 #include "WW3D2/RenderObjClass.h"
 #include "GameClient/W3DScene.h"
+
+// Three reference bodies in this address range also serve network, object
+// and subsystem calls. They remain here pending evidence of the compiler
+// contributions that supplied the exact copies.
 // FUNCTION: BFME2 0x0006E5A0 size=40 name=?rva0006E5A0@RTS3DScene@@QAEXPAVVector3@@@Z evidence=?:placeholder tier=B hypothesis:Z
 
 // FUNCTION: BFME2 0x0006E5C8 size=61 name=?rva0006E5C8@RTS3DScene@@QAEXPAVVector3@@@Z evidence=?:placeholder tier=B hypothesis:Z

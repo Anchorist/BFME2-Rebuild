@@ -26,7 +26,7 @@ public:
 	virtual Bool slot07() const;	// 7, 0x0047A699
 	virtual void friend_postProcessLoad();	// 8, 0x0050B928
 
-	// 0x0050B6F8: the INI parse callback the parser calls with (ini, nugget, NULL, NULL); it
+	// The INI parse callback the parser calls with (ini, nugget, NULL, NULL); it
 	// reads the base table and this class's table together.
 	static void parseFromINI(INI *ini, void *instance, void *store, const void *userData);
 

@@ -2,11 +2,25 @@
 // stlport46
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 extern "C" unsigned int __cdecl strlen(const char *);
+extern "C" void *__cdecl memset(void *,int,unsigned int);
 extern "C" int __cdecl strcmp(const char *,const char *);
+extern "C" __declspec(dllimport) int __cdecl _strcmpi(const char *,const char *);
+
 extern "C" __declspec(dllimport) char *__cdecl strtok(char *,const char *);
+extern "C" __declspec(dllimport) int __cdecl strncmp(const char *,const char *,unsigned int);
+extern "C" char *__cdecl strcpy(char *,const char *);
+extern "C" __declspec(dllimport) int __cdecl atoi(const char *);
 extern "C" __declspec(dllimport) int __cdecl isspace(int);
 extern "C" char *__cdecl _mbscpy(char *,const char *);
 #include "GameClient/WinInstanceData.h"
+#include "GameClient/Display.h"
+#include "GameClient/GadgetListBox.h"
+#include "GameClient/GadgetComboBox.h"
+#include "GameClient/GadgetTabControl.h"
+#include "GameClient/GadgetTextEntry.h"
+#include "GameClient/GadgetStaticText.h"
+#include "GameClient/GadgetRadioButton.h"
+#include "GameClient/GadgetSlider.h"
 #include "GameClient/GameText.h"
 #include "Common/NameKeyGenerator.h"
 #include "Common/UnicodeString.h"
@@ -18,7 +32,10 @@ extern "C" char *__cdecl _mbscpy(char *,const char *);
 #include "GameClient/FontLibrary.h"
 #include "GameClient/Image.h"
 #include "Common/Color.h"
+extern "C" __declspec(dllimport) int __cdecl sscanf(const char *,const char *,...);
 int scanInt(const char *,int &);
+int scanBool(const char *,bool &);
+int scanShort(const char *,short &);
 extern GameWindowCreationData g_windowScriptCreateRecord;
 
 // The draw-data scratch arrays the script parser fills, in retail address order (.bss VA 0x00E00960..0x00E01260, hilite, disabled, enabled for each widget).
@@ -43,6 +60,18 @@ WinDrawData enabledEditBoxDrawData[ 9 ] = { 0 };
 WinDrawData hiliteDropDownButtonDrawData[ 9 ] = { 0 };
 WinDrawData disabledDropDownButtonDrawData[ 9 ] = { 0 };
 WinDrawData enabledDropDownButtonDrawData[ 9 ] = { 0 };
+
+// The stack of windows being built while a layout script is parsed, and the defaults a window block starts from.
+#define WIN_STACK_DEPTH 10
+static GameWindow **stackPtr;
+static GameWindow *windowStack[WIN_STACK_DEPTH];
+static Int defEnabledColor;
+static Int defDisabledColor;
+static Int defBackgroundColor;
+static Int defHiliteColor;
+static Int defSelectedColor;
+static Int defTextColor;
+static GameFont *defFont;
 
 // The callback names read from a window block (retail VA 0x00E01308..0x00E01314).
 AsciiString g_systemCallbackName, g_inputCallbackName;
@@ -90,32 +119,446 @@ static void readUntilSemicolon(File *fp, char *buffer, int maxBufLen)
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
 // FUNCTION: BFME2 0x00314D4D size=155 name=?parseBitString@@YAXPBDPAIPAPBD@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
+static inline Bool parseBitFlag(const char *flagName, UnsignedInt *bits, const char **flagList)
+{
+	Int i = 0;
+	const char **flag = flagList;
+
+	while (*flag)
+	{
+		if (_strcmpi(*flag, flagName) == 0)
+		{
+			*bits |= (1 << i);
+			return TRUE;
+		}
+		i++;
+		flag++;
+	}
+
+	return FALSE;
+}
+
+void parseBitString(const char *inBuffer, UnsignedInt *bits, const char **flagList)
+{
+	char buffer[256];
+	char *tok;
+
+	// The incoming buffer is not modified.
+	strcpy(buffer, inBuffer);
+
+	if (strncmp(buffer, "NULL", 4))
+	{
+		for (tok = strtok(buffer, "+"); tok; tok = strtok(NULL, "+"))
+		{
+			parseBitFlag(tok, bits, flagList);
+		}
+	}
+}
 // FUNCTION: BFME2 0x00314DE8 size=90 name=?readUntilSemicolon@@YAXPAVFile@@PADH@Z evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x00314E42 size=43 name=?scanBool@@YAHPBDAA_N@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
+int scanBool(const char *source, bool &value)
+{
+	int temp = 0;
+	int ret = sscanf(source, "%d", &temp);
+	value = (bool)temp;
+
+	return ret;
+}
 // FUNCTION: BFME2 0x00314E6D size=41 name=?scanShort@@YAHPBDAAF@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x00314E96 size=23 name=?scanInt@@YAHPBDAAH@Z evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
+int scanInt(const char *source, int &value)
+{
+	int ret = sscanf(source, "%d", &value);
+
+	return ret;
+}
 // FUNCTION: BFME2 0x00314EAD size=27 name=?resetWindowStack@@YAXXZ evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
+void resetWindowStack()
+{
+	memset(windowStack, 0, sizeof(windowStack));
+	stackPtr = windowStack;
+}
 // FUNCTION: BFME2 0x00314EC8 size=38 name=?resetWindowDefaults@@YAXXZ evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
+void resetWindowDefaults()
+{
+	defEnabledColor = 0;
+	defDisabledColor = 0;
+	defBackgroundColor = 0;
+	defHiliteColor = 0;
+	defSelectedColor = 0;
+	defTextColor = 0;
+	defFont = 0;
+}
 // FUNCTION: BFME2 0x00314EEE size=19 name=?peekWindow@@YAPAVGameWindow@@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+GameWindow *peekWindow()
+{
+	if (stackPtr == windowStack)
+		return NULL;
+
+	return *(stackPtr - 1);
+}
 // FUNCTION: BFME2 0x00314F01 size=26 name=?popWindow@@YAPAVGameWindow@@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+GameWindow *popWindow()
+{
+	if (stackPtr == windowStack)
+		return NULL;
+
+	stackPtr--;
+	return *stackPtr;
+}
 // FUNCTION: BFME2 0x00314F1B size=23 name=?pushWindow@@YAXPAVGameWindow@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x00314F32 size=103 name=?parseColor@@YA_NPAHPAD@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool parseColor(Int *color, char *buffer)
+{
+	char *c;
+	UnsignedByte red, green, blue;
+
+	c = strtok(buffer, " \t\n\r");
+	red = atoi(c);
+
+	c = strtok(NULL, " \t\n\r");
+	green = atoi(c);
+
+	c = strtok(NULL, " \t\n\r");
+	blue = atoi(c);
+
+	*color = TheWindowManager->winMakeColor(red, green, blue, 255);
+
+	return TRUE;
+}
 // FUNCTION: BFME2 0x00314F99 size=67 name=?parseImageOffset@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool parseImageOffset(char *token, WinInstanceData *instData, char *buffer, void *data)
+{
+	char *c;
+
+	c = strtok(buffer, " \t\n\r");
+	instData->m_imageOffset.x = atoi(c);
+
+	c = strtok(NULL, " \t\n\r");
+	instData->m_imageOffset.y = atoi(c);
+
+	return TRUE;
+}
 // FUNCTION: BFME2 0x00314FDC size=31 name=?parseStatus@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x00314FFB size=31 name=?parseStyle@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0031501A size=300 name=?parseListboxData@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool parseListboxData(char *token, WinInstanceData *instData, char *buffer, void *data)
+{
+	GadgetListBoxData *listData = (GadgetListBoxData *)data;
+	char *c;
+	char *seps = " :,\n\r\t";
+
+	// "LENGTH"
+	c = strtok(buffer, seps);
+	c = strtok(NULL, seps);
+	scanShort(c, listData->m_listLength);
+
+	// "AUTOSCROLL"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanBool(c, listData->m_autoScroll);
+
+	// "SCROLLIFATEND" (optional)
+	c = strtok(NULL, seps);
+	if (!_strcmpi(c, "ScrollIfAtEnd"))
+	{
+		c = strtok(NULL, seps);
+		scanBool(c, listData->m_scrollIfAtEnd);
+		c = strtok(NULL, seps);
+	}
+	else
+	{
+		listData->m_scrollIfAtEnd = FALSE;
+	}
+
+	// "AUTOPURGE"
+	c = strtok(NULL, seps);
+	scanBool(c, listData->m_autoPurge);
+
+	// "SCROLLBAR"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanBool(c, listData->m_scrollBarRequested);
+
+	// "MULTISELECT"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanBool(c, listData->m_multiSelect);
+
+	// "COLUMNS"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanShort(c, listData->m_numColumns);
+	if (listData->m_numColumns > 1)
+	{
+		listData->m_columnPercent = new Int[listData->m_numColumns];
+		for (Int i = 0; i < listData->m_numColumns; i++)
+		{
+			c = strtok(NULL, seps);
+			c = strtok(NULL, seps);
+			scanInt(c, listData->m_columnPercent[i]);
+		}
+	}
+	else
+		listData->m_columnPercent = NULL;
+	listData->m_columnWidths = NULL;
+
+	// "FORCESELECT"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanBool(c, listData->m_forceSelect);
+
+	return TRUE;
+}
 // FUNCTION: BFME2 0x00315146 size=166 name=?parseComboBoxData@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool parseComboBoxData(char *token, WinInstanceData *instData, char *buffer, void *data)
+{
+	GadgetComboBoxData *comboData = (GadgetComboBoxData *)data;
+	char *c;
+	char *seps = " :,\n\r\t";
+	Bool value = FALSE;
+
+	// "ISEDITABLE"
+	c = strtok(buffer, seps);
+	c = strtok(NULL, seps);
+	scanBool(c, comboData->m_isEditable);
+
+	// "MAXCHARS"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, comboData->m_maxChars);
+
+	// "MAXDISPLAY"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, comboData->m_maxDisplay);
+
+	comboData->m_validationFlags = 0;
+
+	// "ASCIIONLY"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanBool(c, value);
+	if (value)
+		comboData->m_validationFlags |= GADGET_ENTRY_ASCII_ONLY;
+
+	// "LETTERSANDNUMBERS"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanBool(c, value);
+	if (value)
+		comboData->m_validationFlags |= GADGET_ENTRY_ALPHANUMERICAL_ONLY;
+
+	return TRUE;
+}
 // FUNCTION: BFME2 0x003151EC size=66 name=?parseSliderData@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool parseSliderData(char *token, WinInstanceData *instData, char *buffer, void *data)
+{
+	SliderData *sliderData = (SliderData *)data;
+	char *c;
+	char *seps = " :,\n\r\t";
+
+	// "MINVALUE"
+	c = strtok(buffer, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, sliderData->m_minVal);
+
+	// "MAXVALUE"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, sliderData->m_maxVal);
+
+	return TRUE;
+}
 // FUNCTION: BFME2 0x0031522E size=47 name=?parseRadioButtonData@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool parseRadioButtonData(char *token, WinInstanceData *instData, char *buffer, void *data)
+{
+	RadioButtonData *radioData = (RadioButtonData *)data;
+	char *c;
+	char *seps = " :,\n\r\t";
+
+	// "GROUP"
+	c = strtok(buffer, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, radioData->m_group);
+
+	return TRUE;
+}
 // FUNCTION: BFME2 0x0031525D size=38 name=?parseTooltipDelay@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool parseTooltipDelay(char *token, WinInstanceData *instData, char *buffer, void *data)
+{
+	char *c;
+	char *seps = " :,\n\r\t";
+
+	c = strtok(buffer, seps);
+	scanInt(c, instData->m_tooltipDelay);
+
+	return TRUE;
+}
 // FUNCTION: BFME2 0x00315283 size=47 name=?parseStaticTextData@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool parseStaticTextData(char *token, WinInstanceData *instData, char *buffer, void *data)
+{
+	TextData *textData = (TextData *)data;
+	char *c;
+	char *seps = " :,\n\r\t";
+
+	// "CENTERED"
+	c = strtok(buffer, seps);
+	c = strtok(NULL, seps);
+	scanBool(c, textData->m_centered);
+
+	return TRUE;
+}
 // FUNCTION: BFME2 0x003152B2 size=181 name=?parseTextEntryData@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool parseTextEntryData(char *token, WinInstanceData *instData, char *buffer, void *data)
+{
+	GadgetTextEntryData *entryData = (GadgetTextEntryData *)data;
+	char *c;
+	char *seps = " :,\n\r\t";
+	Bool value = FALSE;
+
+	// "MAXLEN"
+	c = strtok(buffer, seps);
+	c = strtok(NULL, seps);
+	scanShort(c, entryData->m_maxTextLen);
+
+	// "SECRETTEXT"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanBool(c, entryData->m_secretText);
+
+	entryData->m_validationFlags = 0;
+
+	// "NUMERICALONLY"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanBool(c, value);
+	if (value)
+		entryData->m_validationFlags |= GADGET_ENTRY_NUMERICAL_ONLY;
+
+	// "ALPHANUMERICALONLY"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanBool(c, value);
+	if (value)
+		entryData->m_validationFlags |= GADGET_ENTRY_ALPHANUMERICAL_ONLY;
+
+	// "ASCIIONLY"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanBool(c, value);
+	if (value)
+		entryData->m_validationFlags |= GADGET_ENTRY_ASCII_ONLY;
+
+	return TRUE;
+}
 // FUNCTION: BFME2 0x00315367 size=222 name=?parseTabControlData@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool parseTabControlData(char *token, WinInstanceData *instData, char *buffer, void *data)
+{
+	TabControlData *tabControlData = (TabControlData *)data;
+	char *c;
+	char *seps = " :,\n\r\t";
+
+	// "TABORIENTATION"
+	c = strtok(buffer, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, tabControlData->m_tabOrientation);
+
+	// "TABEDGE"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, tabControlData->m_tabEdge);
+
+	// "TABWIDTH"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, tabControlData->m_tabWidth);
+
+	// "TABHEIGHT"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, tabControlData->m_tabHeight);
+
+	// "TABCOUNT"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, tabControlData->m_tabCount);
+
+	// "PANEBORDER"
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, tabControlData->m_paneBorder);
+
+	// "PANEDISABLED"
+	Int entryCount = 0;
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, entryCount);
+	for (Int paneIndex = 0; paneIndex < entryCount; paneIndex++)
+	{
+		c = strtok(NULL, seps);
+		scanBool(c, tabControlData->m_subPaneDisabled[paneIndex]);
+	}
+
+	return TRUE;
+}
 // FUNCTION: BFME2 0x00315445 size=245 name=?getDataTemplate@@YAPAXPADPAH@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0031553A size=644 name=?parseData@@YA_NPAPAXPAD1@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003157BE size=128 name=?copyGadgetDrawData_Rva003157BE@@YAXPAVGameWindow@@0PAX11@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0031583E size=342 name=?parseScreenRect@@YA_NPAD0PAH111@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x00315994 size=312 name=?parseTextColor@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool parseTextColor(char *token, WinInstanceData *instData, char *buffer, void *data)
+{
+	char *c;
+	char *seps = " :,\n\r\t";
+	Int r, g, b, a;
+	Int i, states = 3;
+	// Each state's text colour is followed by its border colour.
+	Int *textColors;
+	Bool first = TRUE;
+
+	for (i = 0; i < states; i++)
+	{
+		if (i == 0)
+			textColors = &instData->m_enabledColor;
+		else if (i == 1)
+			textColors = &instData->m_disabledColor;
+		else if (i == 2)
+			textColors = &instData->m_hiliteColor;
+		else
+			return FALSE;
+
+		// color
+		if (first == TRUE)
+			c = strtok(buffer, seps);
+		else
+			c = strtok(NULL, seps);
+		first = FALSE;
+		c = strtok(NULL, seps);
+		scanInt(c, r);
+		c = strtok(NULL, seps);
+		scanInt(c, g);
+		c = strtok(NULL, seps);
+		scanInt(c, b);
+		c = strtok(NULL, seps);
+		scanInt(c, a);
+		textColors[0] = GameMakeColor(r, g, b, a);
+
+		// border color
+		c = strtok(NULL, seps);
+		c = strtok(NULL, seps);
+		scanInt(c, r);
+		c = strtok(NULL, seps);
+		scanInt(c, g);
+		c = strtok(NULL, seps);
+		scanInt(c, b);
+		c = strtok(NULL, seps);
+		scanInt(c, a);
+		textColors[1] = GameMakeColor(r, g, b, a);
+	}
+
+	return TRUE;
+}
 // FUNCTION: BFME2 0x00315ACC size=40 name=?freeStaticStrings@GameWindowManager@@UAEXXZ evidence=N:ledger
 void GameWindowManager::freeStaticStrings()
 {

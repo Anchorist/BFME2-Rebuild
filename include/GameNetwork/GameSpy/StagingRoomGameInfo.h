@@ -21,6 +21,7 @@
 #include "GameNetwork/GameSlot.h"
 
 class Transport;
+struct statsgame_s;
 
 // A GameSlot with the GameSpy identity appended (0x1AC + 0x34 bytes; Zero Hour's profile id, login, locale, ping string and
 // ping value, wins, losses, rank points and favourite side are nine of the thirteen dwords; the layout of the bytes is not
@@ -91,7 +92,7 @@ public:
 	AsciiString m_localName;								// +0xFE8 (set to the empty string by the constructor)
 	Bool m_requiresPassword;								// +0xFEC (rva00401015 0x004FDC78 tests it)
 	unsigned char m_unk0xFED[7];							// +0xFED
-	Bool m_unk0xFF4;										// +0xFF4
+	Bool m_hasStatsGame;									// +0xFF4
 	unsigned char m_pad0xFF5[3];							// +0xFF5
 	Int m_unk0xFF8;											// +0xFF8
 	AsciiString m_unk0xFFC;									// +0xFFC (cleared by the constructor)
@@ -103,7 +104,7 @@ public:
 	Int m_reportedMaxPlayers;								// +0x1010 (slot 9 0x0038375A)
 	Int m_reportedNumObservers;								// +0x1014 (Zero Hour's third counter; not read here)
 	Int m_unk0x1018;										// +0x1018
-	Int m_unk0x101C;										// +0x101C
+	statsgame_s *m_statsGame;								// +0x101C
 };
 typedef char GameSpyStagingRoomSize[(sizeof(GameSpyStagingRoom) == 0x1020) ? 1 : -1];
 typedef char GameSpyStagingRoomSlotOffset[(offsetof(GameSpyStagingRoom, m_gameSpySlot) == 0xDC) ? 1 : -1];

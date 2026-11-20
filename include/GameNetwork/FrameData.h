@@ -32,18 +32,18 @@ class FrameData
 {
 public:
 	FrameData();											// 0x005DA4C8
-	~FrameData();											// 0x005DA4DC
+	~FrameData();
 
-	void init();											// 0x005DA4F9
+	void init();
 	void reset();											// 0x005DA55E: a five-byte `jmp` to init
-	FrameDataReturnType allCommandsReady(Bool debugSpewage);	// 0x005DA563
-	NetCommandRef *addCommand(NetCommandMsg *msg);			// 0x005DA5AE
-	void zeroFrame();										// 0x005DA5E3
-	void destroyGameMessages();								// 0x005DA5EB
-	Int countCommandsOfType(Int type) const;				// 0x005DA600 (walks the list at +8 counting messages whose command type equals the argument; the map holds it as BfmeThingYN::bfmeCountYN)
-	UnsignedInt getAckCommandCount();						// 0x005DA621
+	FrameDataReturnType allCommandsReady(Bool debugSpewage);
+	NetCommandRef *addCommand(NetCommandMsg *msg);
+	void zeroFrame();
+	void destroyGameMessages();
+	Int countCommandsOfType(Int type) const;				// (walks the list at +8 counting messages whose command type equals the argument)
+	UnsignedInt getAckCommandCount();
 	UnsignedInt getCommandCount();							// folded getter of +4
-	void setFrameCommandCount(UnsignedInt count);			// 0x0009070B
+	void setFrameCommandCount(UnsignedInt count);
 	UnsignedInt getFrameCommandCount();						// 0x00421795 (folded getter of +0)
 	NetCommandList *getCommandList();						// folded getter of +8
 

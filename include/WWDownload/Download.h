@@ -49,7 +49,7 @@ public:
 			m_predictionTimes[i] = 0;
 		}
 	}
-	~CDownload();		// 0x006C9730
+	~CDownload();
 
 public:
 	virtual HRESULT PumpMessages();

@@ -46,7 +46,7 @@ public:
 		m_failedAttempts = 0;
 		m_task = task;
 	}
-	virtual StateReturnType update();										// 0x0048A4DD
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;							// 0x00488515
@@ -65,7 +65,7 @@ public:
 	{
 		m_task = task;
 	}
-	virtual StateReturnType update();										// 0x004892E1
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;							// 0x0048853F
@@ -86,7 +86,7 @@ public:
 	}
 	virtual StateReturnType onEnter();										// 0x00488573
 	virtual void onExit(StateExitType status);								// 0x004885B8
-	virtual StateReturnType update();										// 0x0048A69E
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;							// 0x0048856D
@@ -145,12 +145,12 @@ public:
 	DozerActionState(StateMachine *machine, Int task);						// 0x00488883
 	virtual ~DozerActionState();											// 0x00488D40 (deleting), body 0x00488D5C
 	virtual StateReturnType onEnter();										// 0x00488906
-	virtual void onExit(StateExitType status);								// 0x0048893C
+	virtual void onExit(StateExitType status);
 	virtual StateReturnType update();										// 0x004888F8
-	virtual const char *GetSnapshotName() const;							// 0x00488900 (public: the map spells it UBE)
+	virtual const char *GetSnapshotName() const;							// (public: the map spells it UBE)
 
 protected:
-	virtual void xfer(Xfer *xfer);											// 0x004894CA
+	virtual void xfer(Xfer *xfer);
 
 public:
 	Int m_task;																// +0x20
@@ -178,14 +178,14 @@ class DozerPrimaryStateMachine : public StateMachine
 {
 public:
 	DozerPrimaryStateMachine(Object *owner);								// 0x00488DAB (CRC-32 0x3EA7DE5F)
-	virtual ~DozerPrimaryStateMachine();									// 0x0048898C
+	virtual ~DozerPrimaryStateMachine();
 
-	static bool isBuildMostImportant(State *state, void *userData);			// 0x0048899D
-	static bool isRepairMostImportant(State *state, void *userData);		// 0x004889E8
-	static bool isFortifyMostImportant(State *state, void *userData);		// 0x00488A34
+	static bool isBuildMostImportant(State *state, void *userData);
+	static bool isRepairMostImportant(State *state, void *userData);
+	static bool isFortifyMostImportant(State *state, void *userData);
 
 protected:
-	virtual const char *GetSnapshotName() const;							// 0x00488997
+	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer) { StateMachine::xfer(xfer); xfer->Version1(); }	// slot 3: the shared version-only override 0x0033FB0B
 };
 // SIZE 0x3C

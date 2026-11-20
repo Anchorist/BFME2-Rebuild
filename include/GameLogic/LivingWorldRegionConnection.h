@@ -14,7 +14,7 @@ class LivingWorldRegionConnection : public Snapshot
 public:
 	LivingWorldRegionConnection();	// 0x003F24F3
 	LivingWorldRegionConnection(const LivingWorldRegionConnection &other);	// 0x003F247D
-	virtual ~LivingWorldRegionConnection();	// 0x003F2517, deleting 0x003F2A70
+	virtual ~LivingWorldRegionConnection();	// Deleting 0x003F2A70
 
 protected:
 	virtual void loadPostProcess() {}	// slot 1, 0x000B3FD0

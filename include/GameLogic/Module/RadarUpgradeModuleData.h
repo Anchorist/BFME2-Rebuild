@@ -13,7 +13,7 @@ class MultiIniFieldParse;
 class RadarUpgradeModuleData : public UpgradeModuleData
 {
 public:
-	static void buildFieldParse(MultiIniFieldParse &parse);				// 0x004B476C
+	static void buildFieldParse(MultiIniFieldParse &parse);
 
 	Bool m_disableProof;												// 0x118 DisableProof
 };

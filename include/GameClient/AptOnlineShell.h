@@ -12,13 +12,13 @@
 class AptOnlineShell : public AptOnline
 {
 public:
-	void rva00517048(const UnicodeString &text);	// 0x00517048 (the map spells it rva00517048): puts the text in the log-in message label and opens the chat message
+	void rva00517048(const UnicodeString &text);	// (the map spells it rva00517048): puts the text in the log-in message label and opens the chat message
 	void joinPreferredRoom();						// 0x00516F08 (the map holds it on the class AptOnline): joins the preferred group room again
-	void LoadChildScreen(const char *name);			// 0x00517027: remembers the sub-screen to load when none is pending
+	void LoadChildScreen(const char *name);			// Remembers the sub-screen to load when none is pending
 
-	void rva00516EA7();								// 0x00516EA7: marks the shell active and shows the Apt background
+	void rva00516EA7();								// Marks the shell active and shows the Apt background
 	void closeChatMessage();						// 0x00516EE9 (the map holds it on the class Rva00517048): tells the movie to close the chat message
-	int rva00516FE5(int message, unsigned int data1, unsigned int data2);	// 0x00516FE5: the base's window message handler, then every child's
+	int rva00516FE5(int message, unsigned int data1, unsigned int data2);	// The base's window message handler, then every child's
 };
 
 #endif

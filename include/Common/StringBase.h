@@ -124,6 +124,7 @@ private:
 	StringBase() : m_data(0) {}
 	StringBase(const CharT *s);							// char 0x00037BA0, wide 0x00037E30
 	StringBase(const StringBase<CharT> &src);			// char 0x000365F0, wide 0x00037050
+	StringBase(const StringBase<CharT> &src, int first, int count);	// wide 0x00038120: empty, then set(src, first, count); the char twin (0x00037CA0) is not established
 	~StringBase() { releaseBuffer(); }					// out-of-line copy: wide 0x005B804E
 
 	CharT *peek() const { return (CharT *)(m_data + 1); }

@@ -19,7 +19,7 @@ class AISpecialPowerUpdate : public UpdateModule
 public:
 	AISpecialPowerUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
-	const char *name() const;   // 0x004B2ECE (non-virtual literal name getter, QBE)
+	const char *name() const;   // (non-virtual literal name getter, QBE)
 	virtual const char *GetSnapshotName() const;
 	virtual ~AISpecialPowerUpdate();
 	virtual void mapLoadPostProcess(const Dict *properties);

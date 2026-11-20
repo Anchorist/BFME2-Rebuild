@@ -18,7 +18,7 @@ class INI;
 class LuaEventNugget : public WeaponEffectNugget
 {
 public:
-	LuaEventNugget();										// 0x0050BD45
+	LuaEventNugget();
 	virtual ~LuaEventNugget();								// 0, deleting dtor 0x0050BD81
 	virtual Bool canAffectObject(const ProjectileNuggetFireInfo *info, Object *victim);	// 1, 0x0050BD7C
 	virtual Bool slot02(const ProjectileNuggetFireInfo *info, Int arg);	// 2, 0x0050BD7C

@@ -64,7 +64,7 @@ typedef char SiegeEngineContain_base_size[(sizeof(TransportContain) == 0x11C) ? 
 class SiegeEngineContain : public TransportContain
 {
 public:
-	char const * name() const;	// 0x0047C012
+	char const * name() const;
 	SiegeEngineContain(Thing *thing, const ModuleData *moduleData);
 	virtual Bool containSlot46()
 	{

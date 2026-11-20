@@ -1,5 +1,7 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 #include "Common/INI.h"
+#include "Common/AsciiString.h"
+#include "Common/UnicodeString.h"
 #include <string.h>
 #include "Common/MultiPlayMults.h"
 #include "Common/GlobalData.h"
@@ -8,6 +10,23 @@
 #include "GameLogic/BfmeTaintManager.h"
 
 class CollisionManager;
+
+// The registry calls the lookups below make (advapi32); the key handle type is the Platform SDK's.
+struct HKEY__;
+typedef HKEY__ *HKEY;
+extern "C" __declspec(dllimport) long __stdcall RegOpenKeyExW(HKEY key, const unsigned short *subKey, unsigned long options, unsigned long access, HKEY *result);
+extern "C" __declspec(dllimport) long __stdcall RegQueryValueExW(HKEY key, const unsigned short *valueName, unsigned long *reserved, unsigned long *type, unsigned char *data, unsigned long *size);
+extern "C" __declspec(dllimport) long __stdcall RegOpenKeyExA(HKEY key, const char *subKey, unsigned long options, unsigned long access, HKEY *result);
+extern "C" __declspec(dllimport) long __stdcall RegQueryValueExA(HKEY key, const char *valueName, unsigned long *reserved, unsigned long *type, unsigned char *data, unsigned long *size);
+extern "C" __declspec(dllimport) long __stdcall RegCreateKeyExA(HKEY key, const char *subKey, unsigned long reserved, char *keyClass, unsigned long options, unsigned long access, void *security, HKEY *result, unsigned long *disposition);
+extern "C" __declspec(dllimport) long __stdcall RegSetValueExA(HKEY key, const char *valueName, unsigned long reserved, unsigned long type, const unsigned char *data, unsigned long size);
+extern "C" __declspec(dllimport) long __stdcall RegCloseKey(HKEY key);
+enum { ERROR_SUCCESS = 0, KEY_READ = 0x20019, KEY_WRITE = 0x20006, REG_SZ = 1, REG_DWORD = 4 };
+
+// Defined further down in this file.
+AsciiString buildGameRegistryPath(const char *path);
+Bool GetStringFromRegistry(AsciiString path, AsciiString key, AsciiString &value);
+const char *GetRegistryUserDataLeafName();
 
 // The world-state singletons this object defines (retail VA 0x00DFE748..0x00DFE75C, address order).
 PartitionManager *ThePartitionManager = NULL;
@@ -34,10 +53,100 @@ GlobalData *GlobalData::s_theOriginal = NULL;
 // FUNCTION: BFME2 0x002343DF size=24 name=?makeAsciiString@@YA?AVAsciiString@@PBD@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x002343F7 size=32 name=?makeStringRef@@YA?AVRva000B3F84Pair@@PBD@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x00234417 size=190 name=?getStringFromRegistry@@YA_NPAUHKEY__@@VUnicodeString@@1AAV2@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool getStringFromRegistry(HKEY root, UnicodeString path, UnicodeString key, UnicodeString &value)
+{
+	HKEY handle;
+	WideChar buffer[128];
+	unsigned long size = sizeof(buffer);
+	unsigned long type;
+	long result;
+
+	result = RegOpenKeyExW(root, path.str(), 0, KEY_READ, &handle);
+	if (result == ERROR_SUCCESS)
+	{
+		result = RegQueryValueExW(handle, key.str(), NULL, &type, (unsigned char *)buffer, &size);
+		RegCloseKey(handle);
+	}
+
+	if (result == ERROR_SUCCESS)
+	{
+		value.set(buffer);
+		return TRUE;
+	}
+
+	return FALSE;
+}
 // FUNCTION: BFME2 0x002344D5 size=155 name=?getStringFromRegistry@@YA_NPAUHKEY__@@VAsciiString@@1AAV2@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool getStringFromRegistry(HKEY root, AsciiString path, AsciiString key, AsciiString &value)
+{
+	UnicodeString wideValue;
+	Bool found;
+
+	if (getStringFromRegistry(root, UnicodeString(path), UnicodeString(key), wideValue))
+	{
+		value.translate(wideValue);
+		found = true;
+	}
+	else
+		found = false;
+
+	return found;
+}
 // FUNCTION: BFME2 0x00234570 size=177 name=?getUnsignedIntFromRegistry@@YA_NPAUHKEY__@@VAsciiString@@1AAI@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool getUnsignedIntFromRegistry(HKEY root, AsciiString path, AsciiString key, unsigned int &value)
+{
+	HKEY handle;
+	unsigned long type;
+	unsigned long size = 4;
+	long result;
+	unsigned int buffer;
+
+	result = RegOpenKeyExA(root, path.str(), 0, KEY_READ, &handle);
+	if (result == ERROR_SUCCESS)
+	{
+		result = RegQueryValueExA(handle, key.str(), NULL, &type, (unsigned char *)&buffer, &size);
+		RegCloseKey(handle);
+	}
+
+	if (result == ERROR_SUCCESS)
+	{
+		value = buffer;
+		return TRUE;
+	}
+
+	return FALSE;
+}
 // FUNCTION: BFME2 0x00234621 size=201 name=?setStringInRegistry@@YA_NPAXVAsciiString@@11@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool setStringInRegistry(void *root, AsciiString path, AsciiString key, AsciiString value)
+{
+	HKEY handle;
+	long result;
+
+	result = RegCreateKeyExA((HKEY)root, path.str(), 0, "REG_NONE", 0, KEY_WRITE, NULL, &handle, NULL);
+	if (result == ERROR_SUCCESS)
+	{
+		unsigned long size = value.getLength() + 1;
+		result = RegSetValueExA(handle, key.str(), 0, REG_SZ, (const unsigned char *)value.str(), size);
+		RegCloseKey(handle);
+	}
+
+	return result == ERROR_SUCCESS;
+}
 // FUNCTION: BFME2 0x002346EA size=158 name=?setUnsignedIntInRegistry@@YA_NPAXVAsciiString@@1I@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool setUnsignedIntInRegistry(void *root, AsciiString path, AsciiString key, unsigned int value)
+{
+	HKEY handle;
+	long result;
+
+	result = RegCreateKeyExA((HKEY)root, path.str(), 0, "REG_NONE", 0, KEY_WRITE, NULL, &handle, NULL);
+	if (result == ERROR_SUCCESS)
+	{
+		result = RegSetValueExA(handle, key.str(), 0, REG_DWORD, (const unsigned char *)&value, 4);
+		RegCloseKey(handle);
+	}
+
+	return result == ERROR_SUCCESS;
+}
 // FUNCTION: BFME2 0x00234788 size=99 name=??BRva000B3F84Pair@@QAE?AVUnicodeString@@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x002347EB size=24 name=?length@AsciiStringCharPlusText@@QBEHXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x00234803 size=37 name=?convertTitleSegments@Rva002343C3TitleSegment@@QAEHPAG@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
@@ -53,13 +162,76 @@ GlobalData *GlobalData::s_theOriginal = NULL;
 // FUNCTION: BFME2 0x00234D08 size=259 name=?buildGameRegistryPath@@YA?AVAsciiString@@PBD@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x00234E0B size=271 name=?GetStringFromRegistry@@YA_NVAsciiString@@0AAV1@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x00234F1A size=271 name=?GetUnsignedIntFromRegistry@@YA_NVAsciiString@@0AAI@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool GetUnsignedIntFromRegistry(AsciiString path, AsciiString key, unsigned int &value)
+{
+	AsciiString fullPath = buildGameRegistryPath(path.str());
+
+	if (getUnsignedIntFromRegistry((HKEY)0x80000002, fullPath.str(), key.str(), value))
+		return TRUE;
+
+	return getUnsignedIntFromRegistry((HKEY)0x80000001, fullPath.str(), key.str(), value);
+}
 // FUNCTION: BFME2 0x00235029 size=162 name=?GetRegistryLanguage@@YA?AVAsciiString@@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+AsciiString GetRegistryLanguage()
+{
+	static Bool cached = FALSE;
+	static AsciiString language = "english";
+
+	if (cached)
+		return language;
+
+	cached = TRUE;
+	GetStringFromRegistry("", "Language", language);
+	return language;
+}
 // FUNCTION: BFME2 0x002350CB size=142 name=?getUserDataLeafNameAscii@@YA?AVAsciiString@@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+AsciiString getUserDataLeafNameAscii()
+{
+	AsciiString leafName;
+
+	if (GetStringFromRegistry("", "UserDataLeafName", leafName))
+		return leafName;
+
+	return GetRegistryUserDataLeafName();
+}
 // FUNCTION: BFME2 0x00235159 size=120 name=?GetRegistryUseLocalUserMaps@@YA_NXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool GetRegistryUseLocalUserMaps()
+{
+	static Int useLocalUserMaps = -1;
+
+	if (useLocalUserMaps < 0)
+	{
+		unsigned int value;
+		if (GetUnsignedIntFromRegistry("", "UseLocalUserMaps", value))
+			useLocalUserMaps = value;
+		else
+			useLocalUserMaps = 1;
+	}
+
+	return useLocalUserMaps != 0;
+}
 // FUNCTION: BFME2 0x002351D1 size=87 name=?GetRegistryVersion@@YAIXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+unsigned int GetRegistryVersion()
+{
+	unsigned int version = 0x10000;
+	GetUnsignedIntFromRegistry("", "Version", version);
+	return version;
+}
 // FUNCTION: BFME2 0x00235228 size=87 name=?GetRegistryMapPackVersion@@YAIXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+unsigned int GetRegistryMapPackVersion()
+{
+	unsigned int version = 0x10000;
+	GetUnsignedIntFromRegistry("", "MapPackVersion", version);
+	return version;
+}
 // FUNCTION: BFME2 0x0023527F size=15 name=?resetScales@Rva0023527FScales@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0023528E size=46 name=?parseCommandPoints@@YAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+void parseCommandPoints(INI *ini, void *instance, void *store, const void *userData)
+{
+	// The two values of a command point pair are stored one after the other.
+	INI::parseInt(ini, instance, store, userData);
+	INI::parseInt(ini, instance, (Int *)store + 1, userData);
+}
 // FUNCTION: BFME2 0x002352BC size=86 name=?setTimeOfDay@GlobalData@@QAE_NW4TimeOfDay@@@Z evidence=N:ledger
 Bool GlobalData::setTimeOfDay(TimeOfDay tod)
 {

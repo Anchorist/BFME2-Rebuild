@@ -15,11 +15,11 @@ class MoneyCrateCollide : public CrateCollide
 {
 public:
 	MoneyCrateCollide(Thing *thing, const ModuleData *moduleData);	// 0x004BC93F
-	virtual ~MoneyCrateCollide();									// 0x004BC96F
-	virtual NameKeyType getModuleNameKey() const;					// 0x004BC988
+	virtual ~MoneyCrateCollide();
+	virtual NameKeyType getModuleNameKey() const;
 
 protected:
-	virtual bool executeCrateBehavior(Object *other);				// 0x004BC9E9
+	virtual bool executeCrateBehavior(Object *other);
 protected:
 	virtual void loadPostProcess() { CrateCollide::loadPostProcess(); }	// slot 1: retail 0x00483CEF, `jmp` to CrateCollide's (0x00497805)
 	virtual const char *GetSnapshotName() const;					// slot 2, 0x004BC969

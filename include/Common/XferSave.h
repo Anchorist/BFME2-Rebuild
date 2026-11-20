@@ -28,9 +28,9 @@ class XferSave : public Xfer
 {
 public:
 	XferSave();																	// 0x0060D1F7
-	virtual ~XferSave();														// 0x0060D0B3
+	virtual ~XferSave();
 
-	UnsignedByte Open(File *file, Int version, Bool stringTable);				// 0x0060D10A
+	UnsignedByte Open(File *file, Int version, Bool stringTable);
 
 	virtual Bool IsStoring() const { return true; }								// slot 2 (retail folds the body into 0x0050B5C6)
 	virtual Int BeginBlock(const char *name);									// slot 5, 0x0060D435 (map: rva0060D435@XferSave)
@@ -43,7 +43,7 @@ protected:
 	virtual void XferData(UnsignedInt type, void *data, UnsignedInt size);		// slot 38, 0x0060C935
 
 private:
-	void rva0060D2E9(const char *name);											// 0x0060D2E9: writes a block name through the string table
+	void rva0060D2E9(const char *name);											// Writes a block name through the string table
 
 	File *m_file;																// +0x04
 	Bool m_stringTableMode;														// +0x08

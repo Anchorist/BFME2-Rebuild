@@ -1,11 +1,7 @@
-// PickupStuffUpdate.h: the PickupStuffUpdate module. SIZE 0x28 (ModuleFactory operator new).
-// Target facts: the constructor 0x00491E98 calls UpdateModule first; it stores the
-// tables 0x00C4DDA8 at +0x0, 0x00BEFF90 at +0xC, 0x00C4DD9C at +0x10. Members are what xfer (0x00491F18) transfers after UpdateModule::xfer,
-// typed by the Xfer slot each goes through, in that order; m_unk names are offsets
-// (no map or donor name established). Bytes xfer does not touch are gaps.
-// Overrides of the base tables besides the trio (slot -> target, map name):
-//   +0x0 slot 1 -> 0x00497805 ?loadPostProcess@BoneFXDamage@@MAEXXZ
-//   +0x10 slot 0 -> 0x0049212B ?update@PickupStuffUpdate@@UAE?AW4UpdateSleepTime@@XZ
+// PickupStuffUpdate.h: the PickupStuffUpdate module, SIZE 0x28 (the module factory allocates that many bytes). It derives from
+// UpdateModule, which ends at 0x20; xfer transfers a Bool at +0x20 and an UnsignedInt at +0x24 after the base's data (their
+// roles are not recovered). update is the first slot of the table at +0x10, and loadPostProcess is retail's jump to
+// UpdateModule's, folded across classes. moveToStuff sends the module's object to another object through its AI.
 #pragma once
 #ifndef BFME2_PICKUP_STUFF_UPDATE_H
 #define BFME2_PICKUP_STUFF_UPDATE_H
@@ -26,7 +22,10 @@ class PickupStuffUpdate : public UpdateModule
 public:
 	PickupStuffUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
-	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x0049212B)
+	virtual UpdateSleepTime update();
+	// The ledger spells the parameter void *; the body casts it to Object * and starts a temporary state machine that
+	// walks the module's own object to it.
+	void moveToStuff(void *target);
 
 protected:
 	virtual const char *GetSnapshotName() const;

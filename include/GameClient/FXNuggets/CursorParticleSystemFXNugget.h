@@ -14,15 +14,15 @@
 class CursorParticleSystemFXNugget : public FXNugget
 {
 public:
-	CursorParticleSystemFXNugget();										// 0x001E0C90
+	CursorParticleSystemFXNugget();
 
 	virtual void doFXPos(const Coord3D *primary, const Matrix3D *primaryMtx, Real primarySpeed,
 		const Coord3D *secondary) const;								// 1, 0x001E0D2D
 	virtual void doFXObj(const Object *primary, const Object *secondary) const;	// 2, 0x001E0D73
 	virtual void GetAssetList(AssetList &assets, Int context) const {}		// 3, empty (fold 0x0050B238)
 
-	static void buildFieldParse(MultiIniFieldParse &p);					// 0x001DFD36
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001E26CB
+	static void buildFieldParse(MultiIniFieldParse &p);
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	AsciiString m_anim2DTemplateName;				// 0x148 Anim2DTemplateName (parseAsciiString)
 	UnsignedInt m_burstCount;						// 0x14C BurstCount (parseUnsignedInt)

@@ -39,10 +39,10 @@ class W3DRopeDraw : public DrawModule, public RopeDrawInterface
 {
 public:
 	W3DRopeDraw(Thing *thing, const ModuleData *moduleData);				// 0x000CA752
-	virtual ~W3DRopeDraw();													// 0x000CA8BC
+	virtual ~W3DRopeDraw();
 
 	virtual NameKeyType getModuleNameKey() const;							// 0x000CA7F6
-	virtual void doDrawModule(const Matrix3D *transformMtx);				// 0x000CACA8
+	virtual void doDrawModule(const Matrix3D *transformMtx);
 	virtual void setShadowsEnabled(Bool enable) {}							// slot 12, folded `ret 4`
 	virtual void releaseShadows() {}										// slot 13, folded `ret`
 	virtual void allocateShadows() {}										// slot 14, folded `ret`
@@ -50,17 +50,17 @@ public:
 	virtual void reactToTransformChange(const Matrix3D *oldMtx, const Coord3D *oldPos, Real oldAngle) {}	// slot 38, folded `ret 0Ch`
 	virtual void reactToGeometryChange() {}									// slot 39, folded `ret`
 
-	virtual void initRopeParms(Real length, Real width, const RGBColor &color, Real wobbleLen, Real wobbleAmp, Real wobbleRate);	// 0x000CAC25
+	virtual void initRopeParms(Real length, Real width, const RGBColor &color, Real wobbleLen, Real wobbleAmp, Real wobbleRate);
 	virtual void setRopeCurLen(Real length) { m_curLen = length; }			// the fold 0x00101CDA
-	virtual void setRopeSpeed(Real curSpeed, Real maxSpeed, Real accel);	// 0x000CA72E
+	virtual void setRopeSpeed(Real curSpeed, Real maxSpeed, Real accel);
 
 	virtual RopeDrawInterface *getRopeDrawInterface() { return this; }				// slot 46, the fold 0x000CA841
 	virtual const RopeDrawInterface *getRopeDrawInterface() const { return this; }	// slot 45, the fold 0x000CA841
 
 protected:
 	virtual void loadPostProcess() { DrawModule::loadPostProcess(); }	// slot 1: retail table 0x007CBD60 holds 0x0058B03E (`jmp 0x000B3FD0`, DrawModule's empty body), ICF-folded with the module bases'
-	virtual const char *GetSnapshotName() const;							// 0x000CA83B
-	virtual void xfer(Xfer *xfer);											// 0x000CA916
+	virtual const char *GetSnapshotName() const;
+	virtual void xfer(Xfer *xfer);
 
 public:
 	struct SegInfo

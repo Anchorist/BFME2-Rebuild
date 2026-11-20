@@ -27,9 +27,9 @@ class LivingWorldRegionManager : public Snapshot, public LivingWorldTurnObserver
 public:
 	LivingWorldRegionManager(LivingWorldLogic *logic); // 0x0021042D
 	virtual ~LivingWorldRegionManager(); // 0x00210B38
-	virtual void loadPostProcess(); // 0x002102CA
-	virtual const char *GetSnapshotName() const; // 0x002104B0
-	virtual void xfer(Xfer *xfer); // 0x00210202
+	virtual void loadPostProcess();
+	virtual const char *GetSnapshotName() const;
+	virtual void xfer(Xfer *xfer);
 	virtual void BeginTurn(Int, Int); // Observer slot 0, 0x0020EB07.
 	virtual void OnTurnEnding(Int, Int); // Observer slot 1, 0x0020FB41.
 
@@ -45,12 +45,12 @@ public:
 	LivingWorldBattle *findPendingBattleByKey(int key); // 0x0020E5BB: battle +0x34, 0 for key 0
 	LivingWorldBattle *findCompletedBattleByKey(int key); // 0x0020E5FD: the same over +0x20
 	LivingWorldBattle *getSelectedBattle(); // 0x0020E6C0: the +0x10 key, pending first
-	LivingWorldBattle *SelectPendingBattle(); // 0x0020E794: the first pending battle whose rva003F4831 is positive
-	LivingWorldRegion *rva0020EAF6(int index); // 0x0020EAF6 (LivingWorldLogic::getBattleRegion 0x002B2B2D passes the battle region index)
-	void UpdateBattleMarkers(); // 0x0020EBA0
-	LivingWorldRegion *rva0020FAEA(float *pos, LivingWorldRegion *hint); // 0x0020FAEA (LivingWorldArmy::getRegion 0x00318C32: the region at a position, given the last one)
-	LivingWorldRegion *rva0020EEF4(int id); // 0x0020EEF4 (LivingWorldLogic::getRegionByID 0x002B2579 forwards a non-zero id)
-	void EnumeratePendingBattles(PendingBattleVisitor &visitor) const; // 0x0020E7BD
+	LivingWorldBattle *SelectPendingBattle(); // The first pending battle whose rva003F4831 is positive
+	LivingWorldRegion *rva0020EAF6(int index); // (LivingWorldLogic::getBattleRegion 0x002B2B2D passes the battle region index)
+	void UpdateBattleMarkers();
+	LivingWorldRegion *rva0020FAEA(float *pos, LivingWorldRegion *hint); // (LivingWorldArmy::getRegion 0x00318C32: the region at a position, given the last one)
+	LivingWorldRegion *rva0020EEF4(int id); // (LivingWorldLogic::getRegionByID 0x002B2579 forwards a non-zero id)
+	void EnumeratePendingBattles(PendingBattleVisitor &visitor) const;
 
 private:
 	Int m_unk0x2C;

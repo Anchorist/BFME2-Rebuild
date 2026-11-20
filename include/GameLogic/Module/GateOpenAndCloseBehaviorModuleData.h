@@ -17,7 +17,7 @@ class GateOpenAndCloseBehaviorModuleData : public ModuleData
 {
 public:
 	GateOpenAndCloseBehaviorModuleData();										// 0x00498E2E
-	virtual ~GateOpenAndCloseBehaviorModuleData();							// 0x00498D46
+	virtual ~GateOpenAndCloseBehaviorModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
 	Int getTimeBeforePlayingOpenSound() const;			// 0x00498707: +0x44, or +0xC when it holds the default sentinel
 	Int getTimeBeforePlayingClosedSound() const;		// 0x00498716: +0x48, or +0xC when it holds the default sentinel

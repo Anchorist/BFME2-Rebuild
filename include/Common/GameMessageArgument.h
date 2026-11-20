@@ -6,7 +6,7 @@
 // type at +0x18 and the tags below. allocArg proves total size 0x1C.
 // location is Coord3D's three-float base: Coord3D has user-declared constructors,
 // which a union member may not have. Readers build a Coord3D from it through the inline
-// ??0Coord3D@@QAE@ABUCoord3DBase@@@Z (the old decomp's GameLogicDispatch and CommandXlat
+// ??0Coord3D@@QAE@ABUCoord3DBase@@@Z (the GameLogicDispatch and CommandXlat
 // bodies copy it member by member from &arg->location).
 union GameMessageArgumentType {
  int integer; float real; bool boolean; ObjectID objectID; DrawableID drawableID;

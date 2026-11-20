@@ -43,8 +43,8 @@ class StructureToppleUpdateModuleData : public ModuleData
 public:
 	StructureToppleUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
-	static void rva004A646B(INI *ini, void *instance, void *store, const void *userData);	// 0x004A646B: the "OCL" line (a phase name, then OCL names)
-	static ModuleData *friend_newModuleData(INI *ini);	// 0x00257BE7
+	static void rva004A646B(INI *ini, void *instance, void *store, const void *userData);	// The "OCL" line (a phase name, then OCL names)
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	DieMuxData m_dieMuxData;                               // +0x8; added by buildFieldParse at +0x8
 	UnsignedInt m_minToppleDelay;                          // +0x38 MinToppleDelay; duration, frames

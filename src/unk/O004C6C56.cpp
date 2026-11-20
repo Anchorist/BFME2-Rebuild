@@ -54,7 +54,7 @@ void AICommandInterface::rva004C6D35(Object *target, CommandSourceType cmdSource
 // FUNCTION: BFME2 0x004C6D9A size=108 name=?aiAttackLevelPosition@AICommandInterface@@QAEXPBUCoord3D@@W4CommandSourceType@@@Z evidence=N:ledger
 void AICommandInterface::aiAttackLevelPosition(Coord3D const *pos, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x40, cmdSource);
+	AICommandParms parms(AICMD_ATTACK_LEVEL_POSITION, cmdSource);
 	parms.m_pos = *pos;
 	aiDoCommand(&parms);
 }

@@ -20,9 +20,9 @@ class Coord3D;
 class W3DDefaultDraw : public DrawModule
 {
 public:
-	W3DDefaultDraw(Thing *thing, const ModuleData *moduleData);				// 0x000B21B3
+	W3DDefaultDraw(Thing *thing, const ModuleData *moduleData);
 
-	virtual NameKeyType getModuleNameKey() const;							// 0x000B21CF
+	virtual NameKeyType getModuleNameKey() const;
 	virtual void doDrawModule(const Matrix3D *transformMtx) {}				// slot 11, folded `ret 4`
 	virtual void setShadowsEnabled(Bool enable) {}							// slot 12, folded `ret 4`
 	virtual void releaseShadows() {}										// slot 13, folded `ret`
@@ -35,7 +35,7 @@ protected:
 	virtual void loadPostProcess() { DrawModule::loadPostProcess(); }	// slot 1: retail table 0x007C98B0 holds 0x0058B03E (`jmp 0x000B3FD0`, DrawModule's empty body), ICF-folded with the module bases'
 	virtual const char *GetSnapshotName() const;							// 0x000B2214
 public:
-	const char *name() const;						// 0x000B2214 (non-virtual, the literal)
+	const char *name() const;						// (non-virtual, the literal)
 protected:
 	virtual void xfer(Xfer *xfer);											// 0x000B221A
 };

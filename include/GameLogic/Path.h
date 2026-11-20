@@ -29,16 +29,16 @@ class Path
 {
 public:
 	Path();																	// 0x00363DC8
-	~Path();																	// 0x00364A89: frees every node through FreePooledNode
-	void prependNode(const Coord3D *pos, PathfindLayerEnum layer, Int id);	// 0x00265596
-	void appendNode(const Coord3D *pos, PathfindLayerEnum layer, Int id);	// 0x002655E3
-	Bool DoAdvanceAlongPath(const Coord3D *pos, Bool flag);					// 0x00363930
+	~Path();																	// Frees every node through FreePooledNode
+	void prependNode(const Coord3D *pos, PathfindLayerEnum layer, Int id);
+	void appendNode(const Coord3D *pos, PathfindLayerEnum layer, Int id);
+	Bool DoAdvanceAlongPath(const Coord3D *pos, Bool flag);
 	void skipNonPortalNodes();												// 0x00363A78 (provisional name): +0x10 moves along +8 links until the next node has a portal id
-	Int GetNextPortalID();													// 0x00363AA8
-	void SetLastNodePortal(Int id);											// 0x00363B24
-	Real computeFlightDistToGoal(const Coord3D *pos, Coord3D &goal);		// 0x00363EC0
-	void optimizeGroundPath(Int flag);										// 0x00363FA4
-	void DoXfer(Xfer *xfer);												// 0x003661FC
+	Int GetNextPortalID();
+	void SetLastNodePortal(Int id);
+	Real computeFlightDistToGoal(const Coord3D *pos, Coord3D &goal);
+	void optimizeGroundPath(Int flag);
+	void DoXfer(Xfer *xfer);
 	PathNode *getLastNode() const { return m_pathTail; }					// inline (Zero Hour's): AIMoveAwayPanicState::update 0x00347B3D reads +0x08
 
 	UnsignedInt m_unk0x00;						// +0x00

@@ -22,7 +22,7 @@ class StreamingArchiveFile : public RAMFile
 {
 public:
 	StreamingArchiveFile();												// 0x00605A28
-	virtual ~StreamingArchiveFile();									// 0x00605A45
+	virtual ~StreamingArchiveFile();
 
 	virtual bool open(const char *filename, int access);				// slot 1, 0x00605B36
 	virtual void close();												// slot 2, 0x00605A7D

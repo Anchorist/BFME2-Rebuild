@@ -30,6 +30,17 @@ public:
 	static void buildFieldParse(MultiIniFieldParse &parse);
 	static ModuleData *friend_newModuleData(INI *ini);
 	static void parseEmbedPortal(INI *ini, void *instance, void *store, const void *userData);
+	// The AttachModel field's callback: reads one AttachModel block into an AttachModelStruct and appends it to the
+	// list at +0x08. The weights of the block's Model lines may not total more than 100.
+	static void parseAttachModel(INI *ini, void *instance, void *store, const void *userData);
+	// The nested type the AttachModel block fills; its field table has Bone, Offset and Model. Only the callbacks are
+	// declared here, its data members are not recovered.
+	struct AttachModelStruct
+	{
+		// The Model line: a model name and a weight from 1 to 100 (-1 when the weight is missing or out of range),
+		// appended to the struct's model list at +0x10.
+		static void parseModel(INI *ini, void *instance, void *store, const void *userData);
+	};
 	// slot 14 override: the W3DModelDraw, W3DQuadrupedDraw, W3DSupplyDraw, W3DTankDraw and
 	// W3DTruckDraw module-data tables hold 0x000B6E28 here (findBestInfo 0x000B4B23, then the
 	// entry's model name), not ModuleData's 0x000B69A1

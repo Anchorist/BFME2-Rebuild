@@ -39,7 +39,7 @@ public:
 	virtual void onObjectCreated();	// override: onObjectCreated slot 5 at +0x0 (0x004959FF)
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x00495ABA)
 
-	void rva00495A2B();	// 0x00495A2B (ledger: Rva00495A2B::rva00495A2B; fires the detonation weapon, kills the trap with damage type 8 and sets the +0x24 flag)
+	void rva00495A2B();	// (ledger: Rva00495A2B::rva00495A2B; fires the detonation weapon, kills the trap with damage type 8 and sets the +0x24 flag)
 
 protected:
 	virtual void xfer(Xfer *xfer);

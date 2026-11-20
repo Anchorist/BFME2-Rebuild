@@ -29,7 +29,7 @@ public:
 	void removeGuarder(Object *guarder);								// 0x004DF3F8 (Object::rva0028BC17 forwards here)
 	Bool hasGuarders() const;											// 0x004DF49C
 	void addGuarder(Object *guarder);									// 0x004DF4B5 (Object::rva0028BC05 forwards here)
-	void disbandAllGuarders();											// 0x004DF4D5
+	void disbandAllGuarders();
 
 protected:
 	virtual const char *GetSnapshotName() const;						// slot 2, 0x004DF34B

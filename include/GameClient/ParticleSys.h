@@ -1,6 +1,5 @@
 // ParticleSys.h: SAGE particle system manager and its intrusive handle.
-// Target facts (old repo Code/GameEngine/Include/GameClient/ParticleSys.h and
-// Include/Common/RvaSmartPtr12.h): destroyParticleSystemByID 0x001F5B79,
+// Target facts: destroyParticleSystemByID 0x001F5B79,
 // findTemplate 0x001F90DA, createParticleSystem 0x001F5A6A and
 // findParticleSystemByID 0x001F5B0A. Creation and lookup return a twelve-byte
 // handle by value (hidden return pointer first), not ParticleSystem*. The

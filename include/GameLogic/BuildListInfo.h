@@ -28,15 +28,16 @@ public:
 	BuildListInfo();									// 0x0032A0CE
 	// The copy constructor (0x00329DE6) and assignment (0x003299AD) are the implicit
 	// memberwise ones: the ten dwords at +0x50 are copied in member order (rep movs).
-	BuildListInfo *duplicate();							// 0x0032A1FE
-	AsciiString getScript() const;						// 0x0032A4A0
+	BuildListInfo *duplicate();
+	AsciiString getScript() const;
 	void setBuildingName(AsciiString name);				// 0x0032A438 (m_buildingName = name; the map spells it ?rva0032A438@Rva0032A438@@QAEXVAsciiString@@@Z; callers 0x0032CF16, 0x0032F22D, 0x0032F6BC are the build list parsers)
 	void setScript(AsciiString script);					// 0x0032A46C (m_script = script; the map spells it ?rva0032A46C@Rva0032A46C@@QAEXVAsciiString@@@Z; callers 0x0032CFAA, 0x0032F2B9)
+	void setSupplyBuilding(Bool isSupplyBuilding);
 
 	virtual const char *GetSnapshotName() const;		// slot 2, 0x00329EE3
 
 protected:
-	virtual ~BuildListInfo();							// 0x0032A186
+	virtual ~BuildListInfo();
 	virtual void loadPostProcess() {}					// slot 1, the shared empty body 0x000B3FD0
 	virtual void xfer(Xfer *xfer);						// slot 3, 0x00329BBF
 
@@ -59,7 +60,7 @@ public:
 	UnsignedInt m_objectTimestamp;						// +0x40
 	Bool m_underConstruction;							// +0x44
 	Bool m_unk0x45;										// +0x45
-	Bool m_unk0x46;										// +0x46
+	Bool m_isSupplyBuilding;									// +0x46: set by setSupplyBuilding
 	Bool m_unk0x47;										// +0x47
 	ObjectID m_unk0x48;									// +0x48 (xfer: XferObjectID)
 	UnsignedInt m_unk0x4C;								// +0x4C (xfer: unsigned int)

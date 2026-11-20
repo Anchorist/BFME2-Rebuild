@@ -37,11 +37,11 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual void onDie(const DamageInfo *);	// override: onDie slot 0 at +0x10 (0x00486B38)
-	void setCreator(ObjectID creator);		// 0x00486A1B: records the first creator only (m_creatorSet is the set flag)
-	void notifyScriptEngine();			// 0x00486B01
+	void setCreator(ObjectID creator);		// Records the first creator only (m_creatorSet is the set flag)
+	void notifyScriptEngine();
 
 protected:
-	virtual ~SpecialPowerCompletionDie() {}		// 0x004869FC; the map spells it MAE (protected)
+	virtual ~SpecialPowerCompletionDie() {}		// The map spells it MAE (protected)
 	virtual void xfer(Xfer *xfer);
 
 public:

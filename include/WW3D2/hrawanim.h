@@ -17,7 +17,7 @@ struct NodeMotionStruct
 {
 	NodeMotionStruct();
 	~NodeMotionStruct();
-	int Get_Memory_Usage();		// 0x0018D220
+	int Get_Memory_Usage();
 
 	MotionChannelClass *X;		// +0x00
 	MotionChannelClass *Y;		// +0x04
@@ -35,11 +35,11 @@ class HRawAnimClass : public HAnimClass
 {
 public:
 	HRawAnimClass();						// 0x0018D2A0
-	virtual ~HRawAnimClass();					// 0x0018EBC0 (slot 1)
-	virtual float Get_VisibilityF(int pivot, float frame);		// 0x0018D540 (slot 12)
-	virtual void Get_Translation(Vector3 &translation, int pivot, float frame) const;	// 0x0018D730 (slot 8)
-	virtual bool Get_Orientation(Quaternion &orientation, int pivot, float frame) const;	// 0x0018DD60 (slot 9)
-	virtual void Get_Transform(Matrix3D &transform, int pivot, float frame) const;	// 0x0018DF20 (slot 10)
+	virtual ~HRawAnimClass();					// (slot 1)
+	virtual float Get_VisibilityF(int pivot, float frame);		// (slot 12)
+	virtual void Get_Translation(Vector3 &translation, int pivot, float frame) const;	// (slot 8)
+	virtual bool Get_Orientation(Quaternion &orientation, int pivot, float frame) const;	// (slot 9)
+	virtual void Get_Transform(Matrix3D &transform, int pivot, float frame) const;	// (slot 10)
 	virtual int Get_Name_Key() const { return NameKey; }		// 0x00661FD0 (slot 3)
 	virtual const char *Get_HName() const { return HTreeName; }	// 0x0066D7D0 (slot 4)
 	virtual int Get_Num_Frames() { return NumFrames; }		// 0x0066D730 (slot 5)
@@ -48,22 +48,22 @@ public:
 	virtual int Get_Class_ID() const { return 0; }			// 0x0065CE90 (slot 21)
 	virtual int Get_Memory_Usage();					// 0x0018E6F0 (slot 22)
 	virtual float Get_Frame_Rate() const;				// 0x0018D340 (slot 6)
-	virtual float Get_Total_Time();					// 0x0018D350 (slot 7)
-	virtual bool Get_Visibility(int pivot, float frame);		// 0x0018E570 (slot 11)
-	virtual bool Is_Node_Motion_Present(int pivot);			// 0x0018E5E0 (slot 14)
-	virtual bool Has_X_Translation(int pivot);			// 0x0018E630
-	virtual bool Has_Y_Translation(int pivot);			// 0x0018E650
-	virtual bool Has_Z_Translation(int pivot);			// 0x0018E670
-	virtual bool Has_Rotation(int pivot);				// 0x0018E690
-	virtual bool Has_Visibility(int pivot);				// 0x0018E6D0
-	virtual bool Has_VisibilityF(int pivot);				// 0x0018E6B0
+	virtual float Get_Total_Time();					// (slot 7)
+	virtual bool Get_Visibility(int pivot, float frame);		// (slot 11)
+	virtual bool Is_Node_Motion_Present(int pivot);			// (slot 14)
+	virtual bool Has_X_Translation(int pivot);
+	virtual bool Has_Y_Translation(int pivot);
+	virtual bool Has_Z_Translation(int pivot);
+	virtual bool Has_Rotation(int pivot);
+	virtual bool Has_Visibility(int pivot);
+	virtual bool Has_VisibilityF(int pivot);
 
 private:
-	bool read_channel(ChunkLoadClass &cload, MotionChannelClass **newchan, bool pre30);	// 0x0018D360
-	void add_channel(MotionChannelClass *newchan);			// 0x0018D3E0
-	bool read_bit_channel(ChunkLoadClass &cload, BitChannelClass **newchan, bool pre30);	// 0x0018D4A0
-	void add_bit_channel(BitChannelClass *newchan);			// 0x0018D520
-	void Free(void);						// 0x0018E890
+	bool read_channel(ChunkLoadClass &cload, MotionChannelClass **newchan, bool pre30);
+	void add_channel(MotionChannelClass *newchan);
+	bool read_bit_channel(ChunkLoadClass &cload, BitChannelClass **newchan, bool pre30);
+	void add_bit_channel(BitChannelClass *newchan);
+	void Free(void);
 
 	char Name[16];				// +0x10 (the constructor clears it and takes the name key of it)
 	unsigned char Unrecovered20[0x10];	// +0x20

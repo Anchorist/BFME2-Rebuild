@@ -27,7 +27,7 @@ public:
 
 	void OnActivation(Object *target, int duration);
 	void OnDeactivation();
-	void xfer(Xfer *xfer);					// 0x004DD489 (EmotionTrackerUpdate::xfer 0x004B1ECB calls it for every nugget)
+	void xfer(Xfer *xfer);					// (EmotionTrackerUpdate::xfer 0x004B1ECB calls it for every nugget)
 	// The third argument is the candidate object: 0x004DD018 reads +0x74 as its
 	// id and +0x04 -> +0x5D8 as its template id, and every caller
 	// (EmotionTrackerUpdate 0x004B10E3 and friends) passes findObjectByID's result.

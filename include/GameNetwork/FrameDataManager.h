@@ -16,23 +16,24 @@
 class FrameDataManager
 {
 public:
-	FrameDataManager(Bool isLocal);							// 0x0058B567
+	FrameDataManager(Bool isLocal);
 	virtual ~FrameDataManager();							// slot 0, 0x0058B623 (deleting 0x0058B86E)
 
-	void reset();											// 0x0058B666
-	NetCommandRef *addNetCommandMsg(NetCommandMsg *msg);	// 0x0058B6AB
-	FrameDataReturnType allCommandsReady(UnsignedInt frame, Bool debugSpewage);	// 0x0058B6D1
-	NetCommandList *getFrameCommandList(UnsignedInt frame);	// 0x0058B6F5
-	void resetFrame(UnsignedInt frame, Bool isAdvancing);	// 0x0058B715
-	UnsignedInt getCommandCount(UnsignedInt frame);			// 0x0058B74B
-	void setFrameCommandCount(UnsignedInt frame, UnsignedInt count);	// 0x0058B76B
-	UnsignedInt getFrameCommandCount(UnsignedInt frame);	// 0x0058B78F
-	void zeroFrames(UnsignedInt startingFrame, UnsignedInt numFrames);	// 0x0058B7AF
-	void destroyGameMessages();								// 0x0058B7ED
-	void setQuitFrame(UnsignedInt frame);					// 0x0058B818
-	Bool getIsQuitting();									// 0x0058B826
-	Int countCommandsOfType(UnsignedInt frame, Int type);	// 0x0058B82A (the frame's ring entry counts the messages of that command type; the map holds it as rva00670890 on this class)
-	UnsignedInt getAckCommandCount(UnsignedInt frame);		// 0x0058B84E
+	void reset();
+	NetCommandRef *addNetCommandMsg(NetCommandMsg *msg);
+	FrameDataReturnType allCommandsReady(UnsignedInt frame, Bool debugSpewage);
+	NetCommandList *getFrameCommandList(UnsignedInt frame);
+	void resetFrame(UnsignedInt frame, Bool isAdvancing);
+	UnsignedInt getCommandCount(UnsignedInt frame);
+	void setFrameCommandCount(UnsignedInt frame, UnsignedInt count);
+	UnsignedInt getFrameCommandCount(UnsignedInt frame);
+	void zeroFrames(UnsignedInt startingFrame, UnsignedInt numFrames);
+	void destroyGameMessages();
+	void setQuitFrame(UnsignedInt frame);
+	Bool getIsQuitting();
+	UnsignedInt getQuitFrame() const;
+	Int countCommandsOfType(UnsignedInt frame, Int type);	// (the frame's ring entry counts the messages of that command type)
+	UnsignedInt getAckCommandCount(UnsignedInt frame);
 
 	FrameData *m_frameData;									// +0x04
 	Bool m_isLocal;											// +0x08

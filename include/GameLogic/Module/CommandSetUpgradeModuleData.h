@@ -24,7 +24,7 @@ class CommandSetUpgradeModuleData : public UpgradeModuleData
 {
 public:
 	CommandSetUpgradeModuleData();
-	static void buildFieldParse(MultiIniFieldParse &parse);				// 0x004B3A90
+	static void buildFieldParse(MultiIniFieldParse &parse);
 
 	AsciiString m_commandSet;                              // +0x118 CommandSet
 };

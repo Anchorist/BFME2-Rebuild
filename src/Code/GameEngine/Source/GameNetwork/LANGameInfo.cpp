@@ -211,10 +211,24 @@ const Image *LANGameInfo::rva00401015(Int column)
 }
 
 // FUNCTION: BFME2 0x00447C46 size=99 name=?GenerateGameOptionsString@@YA?AVAsciiString@@XZ evidence=N:ledger tier=B hypothesis:cohesion
+AsciiString GenerateGameOptionsString()
+{
+	if (TheLAN->GetMyGame() == 0 || !TheLAN->GetMyGame()->LANGameInfo::amIHost())
+		return AsciiString::TheEmptyString;
+
+	return GameInfoToAsciiString(TheLAN->GetMyGame(), true);
+}
 
 // FUNCTION: BFME2 0x00447CA9 size=812 name=?GameInfoToByteBuffer@@YAXPAVLANGameInfo@@PADH@Z evidence=N:ledger tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x0044802D size=92 name=?Rva0044802D@@YAXPADH@Z evidence=?:placeholder tier=A
+void Rva0044802D(char *buffer, Int size)
+{
+	if (TheLAN->GetMyGame() != 0 && TheLAN->GetMyGame()->LANGameInfo::amIHost())
+		GameInfoToByteBuffer(TheLAN->GetMyGame(), buffer, size);
+	else
+		memset(buffer, 0, size);
+}
 
 LANGameSlot::LANGameSlot()
 {

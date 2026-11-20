@@ -37,8 +37,8 @@ protected:
 	virtual void loadPostProcess();	// override: loadPostProcess slot 1 at +0x0 (0x004ACBE8)
 
 private:
-	void rva004AC9FA(Int elapsed);	// 0x004AC9FA (update: frames since +0x20)
-	void rva004ACADA();	// 0x004ACADA (update on the first frame, loadPostProcess)
+	void rva004AC9FA(Int elapsed);	// (update: frames since +0x20)
+	void rva004ACADA();	// (update on the first frame, loadPostProcess)
 
 public:
 	UnsignedInt m_unk0x20;                         // +0x20; xfer UnsignedInt

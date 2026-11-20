@@ -32,7 +32,7 @@ public:
 	virtual ~InheritUpgradeCreate();
 	virtual void onBuildComplete();	// override: onBuildComplete slot 1 at +0x10 (0x004B96A9)
 	virtual void vslot02() { rva004B959C(); }	// CreateModuleInterface slot 2: 0x004B96C4 (`add ecx,-0x10; jmp 0x004B959C`; the map spells it ?slot02@InheritUpgradeCreate@@UAEXXZ)
-	void rva004B959C();	// 0x004B959C: the inheriting work onBuildComplete 0x004B96A9 also calls
+	void rva004B959C();	// The inheriting work onBuildComplete 0x004B96A9 also calls
 
 protected:
 	virtual const char *GetSnapshotName() const;

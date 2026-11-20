@@ -9,9 +9,41 @@
 #include "GameLogic/Module/DynamicPortalBehaviour.h"
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/UpgradeModule.h"
+#include "Common/Xfer.h"
+#include "GameLogic/TerrainLogic.h"
+#include "GameLogic/Waypoint.h"
+void XferWaypointID(Xfer *xfer, Int *id);
 // FUNCTION: BFME2 0x004608E0 size=108 name=?rva004608E0@DynamicPortalBehaviour@@SAPAVModule@@PAVObject@@@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-class
 // FUNCTION: BFME2 0x0046094C size=112 name=?rva0046094C@DynamicPortalBehaviour@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-neighbour-class
 // FUNCTION: BFME2 0x004609BC size=201 name=?xfer@DynamicPortalBehaviour@@MAEXPAVXfer@@@Z evidence=N:ledger tier=B hypothesis:cohesion
+void DynamicPortalBehaviour::xfer(Xfer *xfer)
+{
+	UpgradeModule::xfer(xfer);
+	if (xfer->IsLightCRC())
+		return;
+
+	Xfer::Version version(1, 2);
+	*xfer == version;
+
+	for (Int i = 0; i < 6; ++i)
+	{
+		if (xfer->IsLoading())
+		{
+			Int id;
+			XferWaypointID(xfer, &id);
+			m_waypoints[i] = (id == 0x7FFFFFFF) ? NULL : TheTerrainLogic->getWaypointByID(id);
+		}
+		else
+		{
+			Int id = (m_waypoints[i] != NULL) ? m_waypoints[i]->getID() : 0x7FFFFFFF;
+			XferWaypointID(xfer, &id);
+		}
+	}
+
+	*xfer == m_unk0x3C;
+	if (version.m_minimum >= 2)
+		*xfer == m_wasDestroyed;
+}
 
 // FUNCTION: BFME2 0x00460A85 size=19 name=?bfmeGoEBC@BfmeThingEBC@@QAEXPAX@Z evidence=N:ledger tier=A
 
@@ -47,6 +79,14 @@ const char *UpgradeModule::GetSnapshotName() const
 }
 
 // FUNCTION: BFME2 0x00460B6C size=97 name=??0DynamicPortalBehaviour@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
+DynamicPortalBehaviour::DynamicPortalBehaviour(Thing *thing, const ModuleData *moduleData)
+	: UpgradeModule(thing, moduleData),
+	m_unk0x3C(false),
+	m_wasDestroyed(false)
+{
+	for (Int i = 0; i < 6; ++i)
+		m_waypoints[i] = NULL;
+}
 
 // FUNCTION: BFME2 0x00460BCD size=6 name=?Rva00460BCDGet@@YAHXZ evidence=?:placeholder tier=A
 const char *DynamicPortalBehaviour::GetSnapshotName() const
@@ -62,6 +102,10 @@ NameKeyType DynamicPortalBehaviour::getModuleNameKey() const
 }
 
 // FUNCTION: BFME2 0x00460C18 size=91 name=??1DynamicPortalBehaviour@@MAE@XZ evidence=N:ledger tier=A
+DynamicPortalBehaviour::~DynamicPortalBehaviour()
+{
+	rva0046094C();
+}
 
 // FUNCTION: BFME2 0x00460C73 size=10 name=?get@Rva00460C73FloatChase32Field@@QBEMXZ evidence=?:placeholder tier=A
 

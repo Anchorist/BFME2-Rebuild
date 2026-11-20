@@ -1,7 +1,7 @@
 // Snapshot.h: SAGE save/load base. SIZE 0x4.
 // Target facts: retail vtable 0x00BBB554 is the deleting destructor and three
-// __purecall slots, in retail order loadPostProcess, GetSnapshotName, xfer
-// (old repo reference/shims/moduledata/Common/Snapshot.h). Retail has no crc slot.
+// __purecall slots, in retail order loadPostProcess, GetSnapshotName, xfer.
+// Retail has no crc slot.
 // Constructor 0x000053A6, destructor 0x0049B47C (7 bytes: restore 0x00BBB554).
 // The destructor is inline and empty. A module-data chain collapses it into a
 // bare vptr store (??1StrafeAreaUpdateModuleData 0x003A4ECF ends in

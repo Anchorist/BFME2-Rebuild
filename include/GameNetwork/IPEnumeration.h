@@ -35,10 +35,10 @@ public:
 class IPEnumeration
 {
 public:
-	~IPEnumeration();											// 0x0050C283
+	~IPEnumeration();
 
-	EnumeratedIP *getAddresses();								// 0x0050C02E
-	AsciiString getMachineName();								// 0x0050C1FD
+	EnumeratedIP *getAddresses();
+	AsciiString getMachineName();
 
 	EnumeratedIP *m_IPlist;										// +0x00
 	Bool m_isWinsockInitialized;								// +0x04

@@ -52,8 +52,8 @@ class Bridge
 {
 public:
 	virtual ~Bridge();							// slot 0, 0x00280C05 (deleting)
-	Bool isPointOnBridge(const Coord3D *pos);	// 0x0027EEAD
-	void updateDamageState();					// 0x00281C13
+	Bool isPointOnBridge(const Coord3D *pos);
+	void updateDamageState();
 
 	Bridge *getNext() const { return m_next; }
 	void setNext(Bridge *next) { m_next = next; }

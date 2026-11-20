@@ -14,7 +14,7 @@ class BuildListInfo;
 class AISideBuildList
 {
 public:
-	void addInfo(BuildListInfo *info);				// 0x002FD766
+	void addInfo(BuildListInfo *info);
 
 protected:
 	UnsignedByte m_unk0x00[0x8];					// +0x00, not touched by addInfo

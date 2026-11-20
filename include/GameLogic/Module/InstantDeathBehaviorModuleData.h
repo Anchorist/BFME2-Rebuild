@@ -25,7 +25,7 @@ typedef char InstantDeathBehaviorModuleData_base_size[(sizeof(DestroyDieModuleDa
 class InstantDeathBehaviorModuleData : public DestroyDieModuleData
 {
 public:
-	InstantDeathBehaviorModuleData();									// 0x0045D176
+	InstantDeathBehaviorModuleData();
 	virtual ~InstantDeathBehaviorModuleData();
 
 	_STL::vector<const FXList *> m_fx;									// +0x38 FX

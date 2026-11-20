@@ -9,6 +9,7 @@
 #include "GameNetwork/GameSpy/GameSpyConfig.h"
 #include "Common/UnicodeString.h"
 #include "Common/LadderPreferences.h"
+#include <algorithm>
 extern int GameSpyColor[29];
 // This unit's .bss run (retail 0x00E0654C, 0x00E06550), zero-initialised in address order. The second cell is read by
 // 0x005BA33E and by OnlineQuickMatch's constructor and destructor; its role is not recovered (placeholder name).
@@ -98,10 +99,8 @@ bool AptOnline::OnlineQuickMatch::rva005BA626()
 		text.format(TheGameText->fetchPtr("GUI:PlayersVersusPlayers", 0), i, i);
 		GadgetComboBoxAddEntry(m_playersCombo, text, color);
 	}
-	int numPlayers = m_prefs.getNumPlayers();
-	int zero = 0;
-	int *selected = numPlayers < 0 ? &zero : &numPlayers;
-	GadgetComboBoxSetSelectedPos(m_playersCombo, *selected, false);
+	const int numPlayers = m_prefs.getNumPlayers();
+	GadgetComboBoxSetSelectedPos(m_playersCombo, std::max(numPlayers, 0), false);
 	return true;
 }
 

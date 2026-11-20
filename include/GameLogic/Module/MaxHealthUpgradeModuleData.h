@@ -16,8 +16,8 @@ class MultiIniFieldParse;
 class MaxHealthUpgradeModuleData : public UpgradeModuleData
 {
 public:
-	MaxHealthUpgradeModuleData();										// 0x004B62C4
-	static void buildFieldParse(MultiIniFieldParse &parse);				// 0x004B62E8
+	MaxHealthUpgradeModuleData();
+	static void buildFieldParse(MultiIniFieldParse &parse);
 
 	Real m_addMaxHealth;												// +0x118 AddMaxHealth
 	Int m_changeType;													// +0x11C ChangeType (MaxHealthChangeType)

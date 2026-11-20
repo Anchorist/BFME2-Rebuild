@@ -41,8 +41,8 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x00490225)
-	void notify(Int notice);					// 0x0049015C (the body needs the unnamed ICF fold at 0x005508E2; not written)
-	void rva004901B5();							// 0x004901B5: notify(0)
+	void notify(Int notice);					// (the body needs the unnamed ICF fold at 0x005508E2; not written)
+	void rva004901B5();							// notify(0)
 
 protected:
 	virtual void xfer(Xfer *xfer);

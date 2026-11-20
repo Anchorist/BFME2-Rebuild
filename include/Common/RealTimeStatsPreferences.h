@@ -13,8 +13,8 @@ class RealTimeStatsPreferences : public ProfilePreferences
 {
 public:
 	RealTimeStatsPreferences(const UnicodeString &profilePath);	// 0x00537DF9
-	virtual void loadProfileStats(const UnicodeString &profilePath);	// 0x00537DAB
-	static bool deleteStatsFile(const UnicodeString &profilePath);	// 0x00537A4C
+	virtual void loadProfileStats(const UnicodeString &profilePath);
+	static bool deleteStatsFile(const UnicodeString &profilePath);
 };
 
 #endif

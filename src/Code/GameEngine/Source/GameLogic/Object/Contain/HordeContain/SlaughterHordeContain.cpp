@@ -102,6 +102,9 @@ NameKeyType SlaughterHordeContain::getModuleNameKey() const
 }
 
 // FUNCTION: BFME2 0x004803FB size=118 name=??1SlaughterHordeContain@@UAE@XZ evidence=N:ledger tier=B hypothesis:cohesion
+SlaughterHordeContain::~SlaughterHordeContain()
+{
+}
 
 // FUNCTION: BFME2 0x00480471 size=108 name=?addToContain@SlaughterHordeContain@@UAEXPAVObject@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 

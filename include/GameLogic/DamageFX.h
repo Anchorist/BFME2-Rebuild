@@ -27,18 +27,16 @@ class DamageFX
 public:
 	enum { DAMAGEFX_TYPE_COUNT = 30, DAMAGEFX_LEVEL_COUNT = 4 };
 
-	// 0x003605E3
 	const FXList *rva003605E3(Int damageType, Real damageAmount, const Object *source);
-	// 0x003605D5: the throttle time in frames for the damage FX type (the map files it under a placeholder class)
+	// The throttle time in frames for the damage FX type (the map files it under a placeholder class)
 	Int rva003605D5(Int damageType, Int source);
-	// 0x003608DF
 	Bool rva003608DF(Int damageType, Real damageAmount, const Object *source, const Object *victim);
-	const FieldParse *getFieldParse() const;										// 0x00360911
+	const FieldParse *getFieldParse() const;
 
-	static void parseAmount(INI *ini, void *instance, void *store, const void *userData);		// 0x00360689
-	static void parseMajorFXList(INI *ini, void *instance, void *store, const void *userData);	// 0x00360702
-	static void parseMinorFXList(INI *ini, void *instance, void *store, const void *userData);	// 0x00360774
-	static void parseTime(INI *ini, void *instance, void *store, const void *userData);		// 0x003607E6
+	static void parseAmount(INI *ini, void *instance, void *store, const void *userData);
+	static void parseMajorFXList(INI *ini, void *instance, void *store, const void *userData);
+	static void parseMinorFXList(INI *ini, void *instance, void *store, const void *userData);
+	static void parseTime(INI *ini, void *instance, void *store, const void *userData);
 
 	struct DFX
 	{

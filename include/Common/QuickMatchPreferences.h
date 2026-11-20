@@ -17,33 +17,33 @@ class QuickMatchPreferences : public UserPreferences
 {
 public:
 	QuickMatchPreferences();													// 0x005DF1A3
-	virtual ~QuickMatchPreferences();											// 0x005DF17C
+	virtual ~QuickMatchPreferences();
 
-	void setColor(Int val);														// 0x005DF214
-	Int getColor();																// 0x005DF25C
-	void setSide(Int val);														// 0x005DF2A5
-	Int getSide();																// 0x005DF2ED
-	void setHighest1vs1Rank(Int val);											// 0x005DF336
-	Int getHighest1vs1Rank();													// 0x005DF37E
-	void setHighest2vs2Rank(Int val);											// 0x005DF3C7
-	Int getHighest2vs2Rank();													// 0x005DF40F
-	Bool isMapSelected(const AsciiString &mapName);								// 0x005DF458
-	void setMapSelected(const AsciiString &mapName, Bool selected);	// 0x005DF73F
+	void setColor(Int val);
+	Int getColor();
+	void setSide(Int val);
+	Int getSide();
+	void setHighest1vs1Rank(Int val);
+	Int getHighest1vs1Rank();
+	void setHighest2vs2Rank(Int val);
+	Int getHighest2vs2Rank();
+	Bool isMapSelected(const AsciiString &mapName);
+	void setMapSelected(const AsciiString &mapName, Bool selected);
 	// getLastLadderAddr 0x005DF4B9 and getLastLadderPort 0x005DF50A fold with CustomMatchPreferences' identical bodies: the map names them there (CustomMatchPreferences.h).
 
-	Int getMaxDisconnects();	// 0x005DF55B
-	Int getMaxPoints();	// 0x005DF5AB
-	Int getMinPoints();	// 0x005DF5FE
-	Int getWaitTime();	// 0x005DF64E
-	Int getNumPlayers();	// 0x005DF69E
-	Int getMaxPing();	// 0x005DF6EE
-	void setLastLadder(const AsciiString &addr, UnsignedShort port);	// 0x005DF7A7
-	void setMaxDisconnects(Int val);	// 0x005DF856
-	void setMaxPoints(Int val);	// 0x005DF8CF
-	void setMinPoints(Int val);	// 0x005DF948
-	void setWaitTime(Int val);	// 0x005DF9C1
-	void setNumPlayers(Int val);	// 0x005DFA3A
-	void setMaxPing(Int val);	// 0x005DFAB3
+	Int getMaxDisconnects();
+	Int getMaxPoints();
+	Int getMinPoints();
+	Int getWaitTime();
+	Int getNumPlayers();
+	Int getMaxPing();
+	void setLastLadder(const AsciiString &addr, UnsignedShort port);
+	void setMaxDisconnects(Int val);
+	void setMaxPoints(Int val);
+	void setMinPoints(Int val);
+	void setWaitTime(Int val);
+	void setNumPlayers(Int val);
+	void setMaxPing(Int val);
 };
 // SIZE 0x14
 typedef char QuickMatchPreferencesSize[(sizeof(QuickMatchPreferences) == 0x14) ? 1 : -1];

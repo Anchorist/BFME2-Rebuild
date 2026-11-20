@@ -1,8 +1,7 @@
-// TeleportSpecialAbilityUpdate.h: the TeleportSpecialAbilityUpdate module. SIZE 0x88 (ModuleFactory operator new).
-// Target facts: the constructor 0x00492C59 calls SpecialAbilityUpdate first; it stores the
-// tables 0x00C4E1A8 at +0x0, 0x00C4D640 at +0xC, 0x00C4EB30 at +0x10, 0x00C4E184 at +0x20. Members are what xfer (0x00492E10) transfers after SpecialAbilityUpdate::xfer,
-// typed by the Xfer slot each goes through, in that order; m_unk names are offsets
-// (no map or donor name established). Bytes xfer does not touch are gaps.
+// TeleportSpecialAbilityUpdate: the Teleport special ability. It adds no data to SpecialAbilityUpdate (SIZE 0x88):
+// its constructor (0x00492C59) runs the base constructor and installs this class's tables, and its xfer (0x00492E10)
+// saves only what the base saves. It overrides the module name key, the snapshot name, triggerAbilityEffect and
+// startUnpacking.
 #pragma once
 #ifndef BFME2_TELEPORT_SPECIAL_ABILITY_UPDATE_H
 #define BFME2_TELEPORT_SPECIAL_ABILITY_UPDATE_H

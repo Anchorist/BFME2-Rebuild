@@ -1780,14 +1780,14 @@ Upgrade *Player::addUpgrade(const UpgradeTemplate *upgradeTemplate, UpgradeStatu
 // FUNCTION: BFME2 0x002AE657 size=92 name=?aiHunt@AICommandInterface@@QAEXW4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiHunt(CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x12, cmdSource);
+	AICommandParms parms(AICMD_HUNT, cmdSource);
 	aiDoCommand(&parms);
 }
 
 // FUNCTION: BFME2 0x002AE6B3 size=106 name=?aiEvacuate@AICommandInterface@@QAEX_NW4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiEvacuate(Bool exposeStealthUnits, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x1B, cmdSource);
+	AICommandParms parms(AICMD_EVACUATE, cmdSource);
 	parms.m_extraInt = (exposeStealthUnits ? 1 : 0);
 	aiDoCommand(&parms);
 }

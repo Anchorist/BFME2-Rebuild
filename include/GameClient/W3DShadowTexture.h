@@ -21,13 +21,13 @@
 class W3DShadowTexture : public RefCountClass, public HashableClass
 {
 public:
-	W3DShadowTexture();														// 0x00108BB4
+	W3DShadowTexture();
 	virtual const char *Get_Key() { return m_namebuf; }						// 0x005C4AD5 (folded)
 
-	void setLightPosHistory(Vector3 &pos);									// 0x001085D7
+	void setLightPosHistory(Vector3 &pos);
 	Vector3 &getLightPosHistory() { return m_lastLightPosition; }
-	SphereClass &getBoundingSphere();										// 0x001085EF
-	void setDecalUVAxis(Vector3 &u, Vector3 &vec);							// 0x00108603
+	SphereClass &getBoundingSphere();
+	void setDecalUVAxis(Vector3 &u, Vector3 &vec);
 
 	char m_namebuf[32];														// +0x10 (two W3D_NAME_LEN)
 	TextureAsset m_texture;														// +0x30

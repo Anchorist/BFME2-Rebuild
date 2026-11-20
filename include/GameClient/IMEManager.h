@@ -55,43 +55,43 @@ class IMEManager : public IMEManagerInterface
 {
 public:
 	IMEManager();																			// 0x0023309A
-	virtual ~IMEManager();																	// 0x0023361E
+	virtual ~IMEManager();
 
-	virtual void init();																	// 0x002336CA
+	virtual void init();
 	virtual void reset() {}																// slot 9: retail table 0x007E82B8 holds the folded empty body 0x000B3FD0 here
 	virtual void update() {}																// slot 10: same
-	virtual void attach(GameWindow *window);												// 0x00233138
-	virtual void detatch();																	// 0x00232DB4
-	virtual void enable();																	// 0x00232E01
-	virtual void disable();																	// 0x00232E1E
-	virtual bool isEnabled();																// 0x00232E2F
+	virtual void attach(GameWindow *window);
+	virtual void detatch();
+	virtual void enable();
+	virtual void disable();
+	virtual bool isEnabled();
 	virtual bool isAttachedTo(GameWindow *window) { return m_window == window; }			// folded 0x0056A9CF
 	virtual GameWindow *getWindow() { return m_window; }									// folded 0x001DB09D
 	virtual bool isComposing() { return m_composing; }										// folded 0x00232E8F
-	virtual void getCompositionString(UnicodeString &string);								// 0x00233186
-	virtual int getCompositionCursorPosition();												// 0x00232E93
-	virtual int getIndexBase();																// 0x00232F7D
-	virtual int getCandidateCount();														// 0x0023303C
-	virtual UnicodeString *getCandidate(int index);											// 0x002339AA
-	virtual int getSelectedCandidateIndex();												// 0x00233043
-	virtual int getCandidatePageSize();														// 0x0023304A
-	virtual int getCandidatePageStart();													// 0x00233051
-	virtual bool serviceIMEMessage(void *windowsHandle, unsigned int message, int wParam, int lParam);	// 0x00233C0B
+	virtual void getCompositionString(UnicodeString &string);
+	virtual int getCompositionCursorPosition();
+	virtual int getIndexBase();
+	virtual int getCandidateCount();
+	virtual UnicodeString *getCandidate(int index);
+	virtual int getSelectedCandidateIndex();
+	virtual int getCandidatePageSize();
+	virtual int getCandidatePageStart();
+	virtual bool serviceIMEMessage(void *windowsHandle, unsigned int message, int wParam, int lParam);
 	virtual int result() { return m_result; }												// folded 0x001DB0A8
 
 
 protected:
-	void openStatusWindow();																// 0x00233058
-	void closeStatusWindow();																// 0x0023306A
-	unsigned short convertCharToWide(unsigned int charCode, unsigned int codePage);		// 0x00232E3D
-	void updateCompositionString();															// 0x00232E9A
-	void getResultsString();																// 0x00232F0C
-	void updateProperties();																// 0x00232F4F
-	void resizeCandidateWindow(int pageSize);												// 0x00232F84
-	void convertToUnicode(char *source, UnicodeString &destination);						// 0x0023323B
-	void closeCandidateList(int candidateFlags);											// 0x002332B2
-	void updateCandidateList(int candidateFlags);											// 0x002332FB
-	void openCandidateList(int candidateFlags);												// 0x002338B4
+	void openStatusWindow();
+	void closeStatusWindow();
+	unsigned short convertCharToWide(unsigned int charCode, unsigned int codePage);
+	void updateCompositionString();
+	void getResultsString();
+	void updateProperties();
+	void resizeCandidateWindow(int pageSize);
+	void convertToUnicode(char *source, UnicodeString &destination);
+	void closeCandidateList(int candidateFlags);
+	void updateCandidateList(int candidateFlags);
+	void openCandidateList(int candidateFlags);
 
 	int m_result;																			// +0x0C
 	GameWindow *m_window;																	// +0x10

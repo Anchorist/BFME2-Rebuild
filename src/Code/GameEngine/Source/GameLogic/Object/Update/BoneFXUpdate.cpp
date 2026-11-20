@@ -25,9 +25,6 @@
 // FUNCTION: BFME2 0x00487C75 size=349 name=?xfer@BoneFXUpdate@@MAEXPAVXfer@@@Z evidence=N:ledger
 // FUNCTION: BFME2 0x00487DEE size=332 name=?update@BoneFXUpdate@@UAE?AW4UpdateSleepTime@@XZ evidence=N:ledger
 // GameLogic/Object/Update/BoneFXUpdate.cpp: retail translation unit (skeleton).
-// Write each function below its FUNCTION annotation, in this (retail) order.
-// Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
-// Shared types belong in include/; no class or struct with a body in this file.
 // cl: /EHsc- /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_CRTIMP=
 // stlport46
 #include <vector>

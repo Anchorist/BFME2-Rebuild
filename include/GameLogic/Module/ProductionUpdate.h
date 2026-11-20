@@ -76,7 +76,7 @@ typedef Rva0049D0DEMask ProductionIDSet;
 class ProductionEntry
 {
 public:
-	Bool getProductionObject() const;											// 0x00327C1B: true for entry types 1 and 3 (units)
+	Bool getProductionObject() const;											// True for entry types 1 and 3 (units)
 	ProductionEntry();													// 0x0049D162
 	virtual ~ProductionEntry();											// deleting 0x0049D84B
 
@@ -176,25 +176,25 @@ public:
 	virtual ProductionID requestUniqueUnitID();							// 0x0049E142
 	virtual Bool isUpgradeInQueue(const UpgradeTemplate *upgrade) const;	// 0x0049CDF9
 	virtual UnsignedInt countUnitTypeInQueue(const ThingTemplate *unitType) const;	// 0x0049CE28
-	virtual CanMakeType rva0049CFCD() const;							// 0x0049CFCD (slot 0)
+	virtual CanMakeType rva0049CFCD() const;							// (slot 0)
 	virtual CanMakeType canQueueUpgrade(const UpgradeTemplate *upgrade) const;	// 0x0049CFA9 (slot 1)
 	virtual const ProductionEntry *nextProduction(const ProductionEntry *p) const;	// 0x0049E14C
 	virtual const ProductionEntry *firstProduction() const;				// slot 21, folded
-	void rva0049CD24(Object *obj);										// 0x0049CD24: forwards obj to the game logic with the object's +0x45C value when it is set
+	void rva0049CD24(Object *obj);										// Forwards obj to the game logic with the object's +0x45C value when it is set
 	virtual void cancelAndRefundAllProduction();						// 0x0049CE6E
 	virtual void cancelUpgrade(const UpgradeTemplate *upgrade);			// 0x0049D9A2
-	virtual void rva0049CC9D(const ThingTemplate *unitType, Bool allowMany);			// 0x0049CC9D (slot 5)
-	virtual Bool rva0049CC36(ProductionID id) const;					// 0x0049CC36 (slot 9)
-	virtual void rva0049CC61(const ThingTemplate *unitType);			// 0x0049CC61 (slot 11)
-	virtual void rva0049CC15(ProductionID id, Int value);				// 0x0049CC15 (slot 14)
-	virtual UnsignedInt rva0049CEAE(const ThingTemplate *unitType) const;	// 0x0049CEAE (slot 18)
-	virtual UnsignedInt rva0049CEE1(Int id) const;					// 0x0049CEE1 (slot 19)
+	virtual void rva0049CC9D(const ThingTemplate *unitType, Bool allowMany);			// (slot 5)
+	virtual Bool rva0049CC36(ProductionID id) const;					// (slot 9)
+	virtual void rva0049CC61(const ThingTemplate *unitType);			// (slot 11)
+	virtual void rva0049CC15(ProductionID id, Int value);				// (slot 14)
+	virtual UnsignedInt rva0049CEAE(const ThingTemplate *unitType) const;	// (slot 18)
+	virtual UnsignedInt rva0049CEE1(Int id) const;					// (slot 19)
 	virtual void pslot10(Int);											// 0x0049DC50
 	virtual void setHoldDoorOpen(ExitDoorType exitDoor, Bool holdIt);	// 0x0049D617 (slot 23)
-	virtual UnsignedInt rva0049D0DE(const ProductionIDSet *mask) const;	// 0x0049D0DE (slot 20)
-	virtual void rva0049F8A9(const ThingTemplate *typeName, Bool cancelNow);	// 0x0049F8A9 (slot 13): records a type name for later, or cancels the type's unfinished units
-	virtual void rva0049DEC8();											// 0x0049DEC8 (slot 16)
-	void rva0049D57F(ProductionEntry *entry);							// 0x0049D57F (map: placeholder): unlinks the entry from the queue (cancelUpgrade 0x0049D9A2 calls it before deleting the entry)
+	virtual UnsignedInt rva0049D0DE(const ProductionIDSet *mask) const;	// (slot 20)
+	virtual void rva0049F8A9(const ThingTemplate *typeName, Bool cancelNow);	// (slot 13): records a type name for later, or cancels the type's unfinished units
+	virtual void rva0049DEC8();											// (slot 16)
+	void rva0049D57F(ProductionEntry *entry);							// (map: placeholder): unlinks the entry from the queue (cancelUpgrade 0x0049D9A2 calls it before deleting the entry)
 
 protected:
 	virtual const char *GetSnapshotName() const;						// 0x0049E13C

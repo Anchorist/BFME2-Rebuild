@@ -30,7 +30,7 @@ public:
 
 protected:
 	virtual void xfer(Xfer *xfer);								// slot 3, retail 0x004DF81B
-	virtual const char *GetSnapshotName() const;				// slot 2, 0x0028C933: returns "ObjectHelper"
+	virtual const char *GetSnapshotName() const;				// slot 2: returns "ObjectHelper"
 	// Slot 1: out of line; every helper's own loadPostProcess tail-jumps to it
 	// (ObjectDefectionHelper's slot 1 is 0x00483CEF, `jmp 0x00497805`).
 	virtual void loadPostProcess();

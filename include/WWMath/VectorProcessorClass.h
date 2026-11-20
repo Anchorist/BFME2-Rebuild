@@ -29,11 +29,11 @@ public:
 	static void CopyIndexed(Vector4 *dst, const Vector4 *src, const unsigned int *index, const int count);		// 0x0071D7F0
 	static void CopyIndexed(unsigned char *dst, const unsigned char *src, const unsigned int *index, const int count);	// 0x0071D910
 	static void CopyIndexed(float *dst, float *src, const unsigned int *index, const int count);				// 0x0071D950
-	static void Clamp(Vector4 *dst, const Vector4 *src, const float min, const float max, const int count);	// 0x0071D9F0
-	static void Clear(Vector3 *dst, const int count);															// 0x0071DAE0
-	static void MinMax(Vector3 *src, Vector3 &min, Vector3 &max, const int count);								// 0x0071DB10
-	static void MulAdd(float *dest, float multiplier, float add, const int count);								// 0x0071DC00
-	static void DotProduct(float *dst, const Vector3 &a, const Vector3 *b, const int count);					// 0x0071DCA0
+	static void Clamp(Vector4 *dst, const Vector4 *src, const float min, const float max, const int count);
+	static void Clear(Vector3 *dst, const int count);
+	static void MinMax(Vector3 *src, Vector3 &min, Vector3 &max, const int count);
+	static void MulAdd(float *dest, float multiplier, float add, const int count);
+	static void DotProduct(float *dst, const Vector3 &a, const Vector3 *b, const int count);
 	static void CopyIndexed(Vector2 *dst, const Vector2 *src, const unsigned int *index, const int count);
 	static void Normalize(Vector3 *dst, const int count);
 	static void ClampMin(float *dst, float *src, const float min, const int count);

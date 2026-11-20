@@ -15,7 +15,7 @@ enum GameMessageDisposition;
 class GUICommandTranslator
 {
 public:
-	GUICommandTranslator();							// 0x0043132D
+	GUICommandTranslator();
 	virtual GameMessageDisposition translateGameMessage(const GameMessage *message);	// slot 0, 0x004314B1
 	virtual ~GUICommandTranslator();				// slot 4
 

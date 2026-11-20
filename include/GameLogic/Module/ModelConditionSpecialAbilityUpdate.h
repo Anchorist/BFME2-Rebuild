@@ -31,10 +31,10 @@ public:
 	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	ModelConditionSpecialAbilityUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
-	virtual void startUnpacking();	// 0x00490ECF
+	virtual void startUnpacking();
 
 protected:
-	virtual void onExit(bool, bool);	// 0x00490F35
+	virtual void onExit(bool, bool);
 	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);
 

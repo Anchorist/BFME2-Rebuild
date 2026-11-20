@@ -21,7 +21,7 @@ public:
 protected:
 	virtual void loadPostProcess() {}	// slot 1, empty 0x000B3FD0
 	virtual const char *GetSnapshotName() const;	// 0x000D1BA0
-	virtual void xfer(Xfer *xfer);	// 0x000D211D
+	virtual void xfer(Xfer *xfer);
 
 private:
 	// 0x000D1C10 raises intensity in FADING_IN and lowers it in FADING_OUT.

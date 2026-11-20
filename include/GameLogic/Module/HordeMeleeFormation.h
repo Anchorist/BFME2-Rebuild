@@ -14,7 +14,9 @@ struct HordeMeleeFormationUnit
 	Coord3D m_attackPosition;  // +0x04: getUnitAttackPosition (0x00585017) copies it out
 	unsigned char m_unk0x10[0xC];
 	Bool m_needsNewAttackPos;  // +0x1C: set by setUnitNeedsNewAttackPos (0x0058619F), getUnitAttackPosition refuses a unit while it is set
-	unsigned char m_unk0x1D[0x37];
+	unsigned char m_unk0x1D[3];
+	UnsignedInt m_unk0x20;	// compared with the logic frame by canUnitRotate
+	unsigned char m_unk0x24[0x30];
 };
 
 class HordeMeleeFormation : public HordeMeleeBase

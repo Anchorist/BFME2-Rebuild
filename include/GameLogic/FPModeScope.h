@@ -13,7 +13,7 @@
 class FPModeScope
 {
 public:
-	FPModeScope();										// 0x0004224C
+	FPModeScope();
 	~FPModeScope()
 	{
 		if (TheGameLogic)

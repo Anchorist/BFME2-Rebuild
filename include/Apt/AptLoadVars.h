@@ -9,7 +9,7 @@ class EAStringC;
 class AptLoadVars : public AptObject
 {
 public:
-    virtual AptValue *objectMemberLookup(AptValue *const self, const EAStringC *const name) const; // 0x006EA700 (slot 7)
+    virtual AptValue *objectMemberLookup(AptValue *const self, const EAStringC *const name) const; // (slot 7)
     static AptValue *sMethod_load(AptValue *self, int argc);
     static AptValue *sMethod_getBytesTotal(AptValue *self, int argc);
     static AptValue *sMethod_getBytesLoaded(AptValue *self, int argc);

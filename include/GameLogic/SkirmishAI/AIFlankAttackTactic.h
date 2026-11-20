@@ -12,13 +12,13 @@ class AIFlankAttackTactic : public AITacticOffensive
 {
 public:
 	AIFlankAttackTactic();								// 0x005AA23E
-	virtual ~AIFlankAttackTactic();						// 0x005AA55D
-	virtual Bool canRun(void *request);					// 0x005AA0D8
+	virtual ~AIFlankAttackTactic();
+	virtual Bool canRun(void *request);
 	virtual void cleanUp() {} // native 0x000B3FD0
-	virtual void xfer(Xfer *xfer);						// 0x005AA60F
-	virtual void run();									// 0x005AA5AE
-	virtual void update();								// 0x005AA1EA
-	virtual AITactic *create();							// 0x005AA2A7, slot 9
+	virtual void xfer(Xfer *xfer);
+	virtual void run();
+	virtual void update();
+	virtual AITactic *create();							// Slot 9
 
 	AIFlankAttackTacticImp *m_impl;						// +0x58
 };

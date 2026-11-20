@@ -20,7 +20,7 @@ class W3DProjectileStreamDrawModuleData : public ModuleData
 {
 public:
 	W3DProjectileStreamDrawModuleData();                   // 0x000D11D2
-	virtual ~W3DProjectileStreamDrawModuleData();          // 0x000D1226
+	virtual ~W3DProjectileStreamDrawModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
 	static ModuleData *friend_newModuleData(INI *ini);
 

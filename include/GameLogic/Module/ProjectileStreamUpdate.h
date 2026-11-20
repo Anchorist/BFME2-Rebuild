@@ -36,13 +36,13 @@ protected:
 public:
 	enum { MAX_PROJECTILE_STREAM = 20 };		// every index wraps with % 20 (idiv 0x14)
 
-	void addProjectile(ObjectID sourceID, ObjectID newID, ObjectID victimID, const Coord3D *victimPos);	// 0x0033EEE2
-	virtual UpdateSleepTime update();										// 0x0033F11F
-	void getAllPoints(Vector3 *points, Int *count);						// 0x0033F090
+	void addProjectile(ObjectID sourceID, ObjectID newID, ObjectID victimID, const Coord3D *victimPos);
+	virtual UpdateSleepTime update();
+	void getAllPoints(Vector3 *points, Int *count);
 
 protected:
-	void cullFrontOfList();												// 0x0033F033
-	Bool considerDying();												// 0x0033F06B
+	void cullFrontOfList();
+	Bool considerDying();
 
 public:
 	// Zero Hour's ProjectileStreamUpdate fits BFME 2's ctor (0x0033EE25: rep stosd 20 IDs,

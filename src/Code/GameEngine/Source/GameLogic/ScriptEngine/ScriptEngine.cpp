@@ -18,7 +18,7 @@ AsciiString Rva0032B389Join(const AsciiString &scope, const AsciiString &name);
 #include "GameLogic/SidesList.h"
 #include "GameLogic/Script.h"
 // Portions derived from Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-#include "Draft/SequentialScript.h"
+#include "GameLogic/SequentialScript.h"
 #include "GameLogic/LivingWorldLogic.h"
 #include "GameLogic/Object.h"
 #include "Common/ThingFactory.h"
@@ -77,8 +77,8 @@ extern AudioManager *TheAudio;	// VA 0x00DFE6E8
 extern View *TheTacticalView;	// VA 0x00DFEA3C
 extern TerrainLogic *TheTerrainLogic;	// VA 0x00DFEC50
 extern GameClient *TheGameClient;	// VA 0x00DFE77C
-void rva00203C21();	// 0x00203C21 (hands the debug window the subsystems)
-void rva00204094();	// 0x00204094 (tells the debug window the client frame number)
+void rva00203C21();	// (hands the debug window the subsystems)
+void rva00204094();	// (tells the debug window the client frame number)
 void Rva002040E7GetFrameNumber();	// 0x002040E7 (the same for the logic frame)
 void _appendMessage(const AsciiString &str, Bool isTrueMessage, Bool shouldPause);	// 0x002053FA (the debug window's "Run script" line)
 AsciiString Rva0032B389Join(const AsciiString &left, const AsciiString &right);	// 0x0032B389 (the scope and the script name: scope/name)
@@ -322,10 +322,10 @@ void SequentialScript::xfer(Xfer *xfer)
 	XferObjectID(xfer, &m_objectID);
 
 	// the script is saved by its two names and found again by them on load
+	*xfer == m_scriptScope;
 	*xfer == m_scriptName;
-	*xfer == m_unk0x10;
 	if (!xfer->IsStoring())
-		m_unk0x14 = TheScriptEngine->findScriptInScope(m_scriptName, m_unk0x10, 0);
+		m_script = TheScriptEngine->findScriptInScope(m_scriptScope, m_scriptName, 0);
 
 	// current instruction, times to loop, frames to wait, dont advance instruction
 	*xfer == m_currentInstruction;
@@ -671,7 +671,7 @@ SequentialScript **ScriptEngine::cleanupSequentialScript(SequentialScript **it, 
 SequentialScript::SequentialScript() :
 	m_teamToExecOn(0),
 	m_objectID((ObjectID)0),
-	m_unk0x14(0),
+	m_script(0),
 	m_currentInstruction(-1),
 	m_timesToLoop(0),
 	m_framesToWait(-1),
@@ -681,7 +681,7 @@ SequentialScript::SequentialScript() :
 }
 
 // FUNCTION: BFME2 0x002047C9 size=6 name=?GetSnapshotName@SequentialScript@@UAEPBDXZ evidence=N:ledger tier=A
-char const *SequentialScript::GetSnapshotName(void)
+const char *SequentialScript::GetSnapshotName() const
 {
 	return "SequentialScript";
 }
@@ -851,7 +851,7 @@ void ScriptEngine::removeSequentialScriptsOf(Script *script)
 	for (it = m_sequentialScripts.begin(); it != m_sequentialScripts.end(); )
 	{
 		SequentialScript *seqScript = (*it);
-		if (seqScript && seqScript->m_unk0x14 == script)
+		if (seqScript && seqScript->m_script == script)
 			it = cleanupSequentialScript(it, true, true);
 		else
 			++it;
@@ -1331,7 +1331,7 @@ void ScriptEngine::appendSequentialScript(const SequentialScript *scriptToSequen
 	(*newSequentialScript) = (*scriptToSequence);
 
 	// the queued copy's script record is marked as started, and it ends its own chain
-	((Script *)newSequentialScript->m_unk0x14)->m_record.setPrimary(true);
+	newSequentialScript->m_script->m_record.setPrimary(true);
 	newSequentialScript->m_nextScriptInSequence = 0;
 	newSequentialScript->m_currentInstruction = -1;
 
@@ -1815,9 +1815,9 @@ void ScriptEngine::executeSequentialScript(Script *pScript, const AsciiString &s
 				}
 				seqScript->m_objectID = obj->getID();
 			}
-			seqScript->m_unk0x10 = scriptName;
-			seqScript->m_scriptName = resolveName(seqScript->m_unk0x10);
-			seqScript->m_unk0x14 = pScript;
+			seqScript->m_scriptName = scriptName;
+			seqScript->m_scriptScope = resolveName(seqScript->m_scriptName);
+			seqScript->m_script = pScript;
 			seqScript->m_timesToLoop = target.m_value;
 			appendSequentialScript(seqScript);
 			::delete seqScript;

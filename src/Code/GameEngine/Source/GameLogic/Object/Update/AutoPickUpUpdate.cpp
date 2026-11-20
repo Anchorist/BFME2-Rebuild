@@ -59,9 +59,6 @@ inline AutoPickUpEatObjectEntry *AutoPickUpEntryAllocator::allocate(unsigned cou
 
 
 // GameLogic/Object/Update/AutoPickUpUpdate.cpp: retail translation unit (skeleton).
-// Write each function below its FUNCTION annotation, in this (retail) order.
-// Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
-// Shared types belong in include/; no class or struct with a body in this file.
 // cl: 
 #include "GameLogic/Module/AutoPickUpUpdate.h"
 #include "GameLogic/Object.h"
@@ -109,10 +106,9 @@ AutoPickUpUpdate::AutoPickUpUpdate(Thing *thing, const ModuleData *moduleData)
 	: UpdateModule(thing, moduleData)
 {
 	const AutoPickUpUpdateModuleData *data = getAutoPickUpUpdateModuleData();
-	int zero = 0;
-	m_scanCountdown = zero;
-	m_unk0x28 = zero;
-	m_unk0x29 = zero;
+	m_scanCountdown = 0;
+	m_unk0x28 = false;
+	m_unk0x29 = false;
 	m_scanCountdown += GetGameLogicRandomValue(0, data->m_scanDelayTime, "C:\\projects\\bfme2patch103\\bfme2\\Code\\GameEngine\\Source\\GameLogic\\Object\\Update\\AutoPickUpUpdate.cpp", 0x83);
 }
 

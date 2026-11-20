@@ -32,8 +32,8 @@ class WaterTracksObj
 
 public:
 	virtual void Render(void) {}												// slot 0
-	virtual void Get_Obj_Space_Bounding_Sphere(SphereClass &sphere) const;		// 0x000FE359
-	virtual void Get_Obj_Space_Bounding_Box(AABoxClass &aabox) const;			// 0x000FE369
+	virtual void Get_Obj_Space_Bounding_Sphere(SphereClass &sphere) const;
+	virtual void Get_Obj_Space_Bounding_Box(AABoxClass &aabox) const;
 
 protected:
 	TextureAsset m_stageZeroTexture;	// +0x04, 0x000FE8CF assigns through the texture asset operator
@@ -82,9 +82,9 @@ class WaterTracksRenderSystem
 
 public:
 	WaterTracksRenderSystem(void);					// 0x000FE90D
-	~WaterTracksRenderSystem(void);					// 0x000FF4D6
-	WaterTracksObj *bindTrack(waveType type);		// 0x000FDF4C track object to be controlled by owner
-	void shutdown(void);							// 0x000FF448
+	~WaterTracksRenderSystem(void);
+	WaterTracksObj *bindTrack(waveType type);		// Track object to be controlled by owner
+	void shutdown(void);
 
 protected:
 	VertexBufferClass *m_vertexBuffer;				// +0x00 vertex buffer used to draw all tracks

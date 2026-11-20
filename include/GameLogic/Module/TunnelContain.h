@@ -113,33 +113,33 @@ public:
 	virtual TunnelContain *asTunnelContain() { return this; }
 	virtual bool isGarrisonable() const { return false; }
 	virtual Bool isImmuneToClearBuildingAttacks() const { return true; }
-	virtual Int getContainMax() const;			// 0x0047DDFF: forwards to the controlling player's tunnel tracker (Player +0x2E8)
+	virtual Int getContainMax() const;			// Forwards to the controlling player's tunnel tracker (Player +0x2E8)
 	virtual ContainmentListView getList();		// 0x0047DE12: ContainModuleInterface slot 70 (the primary-this twin at 0x0047DD0F is not a table entry we write)
 	virtual UnsignedInt getCount(bool);			// 0x0047DDD9: ContainModuleInterface slot 69; ignores its argument and asks the tracker for the full count
-	virtual Bool isValidContainerFor(Object *obj, Bool checkCapacity, Bool flag);	// 0x0047DDA2
-	virtual void addToContainList(Object *obj);	// 0x0047DC75: ContainModuleInterface slot 40 (this at +0x20); the controlling player's tunnel tracker takes it
-	virtual void iterateContained(ContainIterateFunc func, void *userData, UnsignedInt flags);	// 0x0047DCDF: slot 68 (the map spells the callback (void *, void *))
-	virtual void removeAllContained(Bool exposeStealthUnits);	// 0x0047E0CE: slot 42 (the map spells the argument Int)
-	virtual void onDelete();	// 0x0047DFFF: the base's, then rva0047DF81
+	virtual Bool isValidContainerFor(Object *obj, Bool checkCapacity, Bool flag);
+	virtual void addToContainList(Object *obj);	// ContainModuleInterface slot 40 (this at +0x20); the controlling player's tunnel tracker takes it
+	virtual void iterateContained(ContainIterateFunc func, void *userData, UnsignedInt flags);	// Slot 68 (the map spells the callback (void *, void *))
+	virtual void removeAllContained(Bool exposeStealthUnits);	// Slot 42 (the map spells the argument Int)
+	virtual void onDelete();	// The base's, then rva0047DF81
 	virtual void onContaining(Object *obj, Bool wasSelected);	// 0x0047DB95 (the map names it bfmeGoBPC, a placeholder; this is ContainModuleInterface slot 22)
 	virtual Bool shouldDoOnBuildComplete() const { return m_needToRunOnBuildComplete; }	// 0x0047DB8E: CreateModuleInterface slot 3 of Tunnel's table reads +0x9E4
 	virtual void onBuildComplete();	// 0x0047DE30
-	virtual void onRemoving(Object *obj);	// 0x0047DD2D: ContainModuleInterface slot 23
-	virtual void onDie(const DamageInfo *damageInfo);	// 0x0047DFD9: DieModuleInterface slot 0 (this at +0x28)
-	void rva0047DF81();	// 0x0047DF81 (onDelete's tail call)
-	const char *name() const;						// 0x0047DB88 (non-virtual, the literal)
+	virtual void onRemoving(Object *obj);	// ContainModuleInterface slot 23
+	virtual void onDie(const DamageInfo *damageInfo);	// DieModuleInterface slot 0 (this at +0x28)
+	void rva0047DF81();	// (onDelete's tail call)
+	const char *name() const;						// (non-virtual, the literal)
 	const TunnelContainModuleData *getTunnelContainModuleData() const { return (const TunnelContainModuleData *)getModuleData(); }
 	virtual ~TunnelContain();
 
 protected:
 	virtual void xfer(Xfer *xfer);
-	void scatterToNearbyPosition(Object *obj);	// 0x0047E16B
+	void scatterToNearbyPosition(Object *obj);
 
 public:
 	Bool m_needToRunOnBuildComplete;               // +0x9E4; xfer Bool, true from the constructor; 0x0047DE30 (the onBuildComplete body) clears it
 	Bool m_isCurrentlyRegistered;                  // +0x9E5; xfer Bool; 0x0047DE30 sets it after tunnel->onTunnelCreated, rva0047DF81 clears it after onTunnelDestroyed
 public:
-	virtual UpdateSleepTime update();	// 0x0047E017, UpdateModuleInterface slot 0; retail's table has this class's own
+	virtual UpdateSleepTime update();	// UpdateModuleInterface slot 0; retail's table has this class's own
 protected:
 	virtual void loadPostProcess() { HordeGarrisonContain::loadPostProcess(); }	// slot 1: the forwarder retail folds at 0x004812B4 (Tunnel, ProductionQueueHorde, SlaughterHorde)
 };

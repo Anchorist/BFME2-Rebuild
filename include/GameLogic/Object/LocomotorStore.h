@@ -30,13 +30,13 @@ class LocomotorTemplate;
 class LocomotorStore : public SubsystemInterface
 {
 public:
-	virtual void reset();													// 0x001E681D
+	virtual void reset();
 
 	LocomotorTemplate *findLocomotorTemplate(Int namekey);					// 0x001E6FEA; the map row takes an int
 	LocomotorTemplate *findLocomotorTemplate(const AsciiString &name);		// 0x001E7010
-	Locomotor *newLocomotor(const LocomotorTemplate *tmpl, Bool flag);		// 0x001E4A81
-	LocomotorTemplate *newOverride(LocomotorTemplate *tmpl);				// 0x001E520C
-	static void parseLocomotorTemplateDefinition(INI *ini);					// 0x001E8A94
+	Locomotor *newLocomotor(const LocomotorTemplate *tmpl, Bool flag);
+	LocomotorTemplate *newOverride(LocomotorTemplate *tmpl);
+	static void parseLocomotorTemplateDefinition(INI *ini);
 
 	// Keyed by int: findLocomotorTemplate 0x001E6FEA (map row `H`) hands its own
 	// argument's address to _M_find, so the key type is the parameter type.

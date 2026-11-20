@@ -12,7 +12,7 @@ class Object;
 class PartitionFilterFlammable : public PartitionFilter
 {
 public:
-	virtual bool allow(Object *obj);	// 0x0048B6D5
+	virtual bool allow(Object *obj);
 };
 
 #endif

@@ -5,6 +5,6 @@ struct IntRange
 {
     int lo; // 0x0
     int hi; // 0x4
-    void combine(IntRange &other); // 0x000062D8
+    void combine(IntRange &other);
 };
 typedef char IntRangeSize[(sizeof(IntRange) == 0x8) ? 1 : -1];

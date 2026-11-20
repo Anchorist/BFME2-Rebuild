@@ -78,7 +78,7 @@ class AudioLoopUpgrade : public UpdateModule
 {
 public:
 	AudioLoopUpgrade(Thing *thing, const ModuleData *moduleData);
-const char *name() const;											// 0x004B7B81
+const char *name() const;
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 

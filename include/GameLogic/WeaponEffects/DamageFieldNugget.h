@@ -17,7 +17,7 @@ class INI;
 class DamageFieldNugget : public WeaponEffectNugget
 {
 public:
-	DamageFieldNugget();																	// 0x00509522
+	DamageFieldNugget();
 	virtual ~DamageFieldNugget();															// 0, deleting dtor 0x00509548
 	virtual Bool canAffectObject(const ProjectileNuggetFireInfo *info, Object *victim);	// 1, 0x005092D4
 	virtual Bool slot02(const ProjectileNuggetFireInfo *info, Int arg);					// 2, 0x00507943

@@ -19,7 +19,7 @@
 class AptObjectivesMenu : public _bfme_AptGameWindow
 {
 public:
-	int OnSystemMsg(int message, unsigned int data1, unsigned int data2);	// 0x004E4038: a mute check box (message 0x4008) mutes its row's slot
+	int OnSystemMsg(int message, unsigned int data1, unsigned int data2);	// A mute check box (message 0x4008) mutes its row's slot
 
 	_STL::vector<int> m_playerColors;				// +0x27C
 	int m_mode;										// +0x288
@@ -31,13 +31,13 @@ class AptPlayerStatus : public AptObjectivesMenu
 {
 public:
 	AptPlayerStatus(void *);						// 0x004E4A45
-	virtual ~AptPlayerStatus();						// 0x004E4655
+	virtual ~AptPlayerStatus();
 
 	void Externs(int, char *, bool);			// 0x004E434C: the Apt extern values (0 the player count in the list mode, 1 and 2 the surrender and forfeit flags)
-	void PlayerColor(int, char *, bool);			// 0x004E45FA
-	void InitGadgets(const char *, void *, GameWindow *);	// 0x004E40C7: binds the eight "PlayerStatus::Mute<n>" check boxes
-	void rva004E476C();								// 0x004E476C
-	void rva004E4A34(const char *);					// 0x004E4A34
+	void PlayerColor(int, char *, bool);
+	void InitGadgets(const char *, void *, GameWindow *);	// Binds the eight "PlayerStatus::Mute<n>" check boxes
+	void rva004E476C();
+	void rva004E4A34(const char *);
 };
 typedef char AptPlayerStatusSizeCheck[sizeof(AptPlayerStatus)==0x2B4 ? 1 : -1];
 

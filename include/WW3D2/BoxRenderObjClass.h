@@ -26,14 +26,14 @@ public:
 	virtual int Get_Num_Polys() const { return 12; }				// slot 10 (shared stub 0x00182D20)
 	virtual const char *Get_Name() const { return Name; }			// slot 6: 0x00174DC0
 	virtual void Set_Name(const char *name);						// slot 7: 0x00174DD0
-	void Set_Color(const Vector3 &color);							// 0x00174DF0
+	void Set_Color(const Vector3 &color);
 	void Set_Opacity(float opacity) { Opacity = opacity; }
 
-	static void Init();												// 0x00174E20
-	static void Shutdown();											// 0x00174EF0
+	static void Init();
+	static void Shutdown();
 
-	static void Set_Box_Display_Mask(int mask);						// 0x00174F20
-	static int Get_Box_Display_Mask();								// 0x00174F30
+	static void Set_Box_Display_Mask(int mask);
+	static int Get_Box_Display_Mask();
 
 	void Set_Local_Center_Extent(const Vector3 &center, const Vector3 &extent)
 	{
@@ -48,7 +48,7 @@ public:
 
 protected:
 	virtual void update_cached_box() = 0;							// slot 130
-	void render_box(RenderInfoClass &rinfo, const Vector3 &center, const Vector3 &extent);	// 0x00174F40
+	void render_box(RenderInfoClass &rinfo, const Vector3 &center, const Vector3 &extent);
 
 	static bool IsInitted;											// 0x009F6FCC (Init/Shutdown)
 	static int DisplayMask;											// 0x009F6FD0

@@ -11,7 +11,7 @@
 class W3DSnowManager : public SnowManager
 {
 public:
-	W3DSnowManager();														// 0x00093162
+	W3DSnowManager();
 	virtual ~W3DSnowManager();												// slot 0, 0x00094626
 	virtual void init();													// slot 1, 0x00094642
 	virtual void reset();													// slot 9, 0x00093B3F

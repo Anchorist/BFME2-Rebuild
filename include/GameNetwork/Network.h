@@ -28,6 +28,7 @@
 
 class ConnectionManager;
 class CreateAHeroData;
+class NetDestroyPlayerCommandMsg;
 struct NetLocalAddress
 {
 	UnsignedInt m_ip;											// +0
@@ -154,6 +155,10 @@ public:
 	virtual Bool isPlayerSlotActive(Int slot);                                           // slot 0x100, 0x0025DEBB: forwards to ConnectionManager::isPlayerSlotActive 0x004CF0CD
 	virtual UnsignedByte vslot104(Int slot);                                   // slot 0x104, 0x0025DECC: forwards to ConnectionManager 0x004CEF58
 	virtual void vslot108(Int slot, Int frame, const UnicodeString &text);     // slot 0x108, 0x0025DEDD: forwards to ConnectionManager 0x004D0E93
+
+	void ProcessDestroyPlayerCommand(NetDestroyPlayerCommandMsg *msg);		// 0x0025E539
+	void rva0025E5F4();													// 0x0025E5F4 (relays frame commands to TheCommandList)
+	void rva0025E75F();													// 0x0025E75F (reads local messages from TheCommandList)
 
 	ConnectionManager *m_conMgr;								// +0x0C
 	Int m_state;												// +0x10 (0 idle, 1 running, 2 and 3 set by the quit path)

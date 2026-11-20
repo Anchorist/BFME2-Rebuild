@@ -15,15 +15,15 @@
 class BuffNuggetFXNugget : public FXNugget
 {
 public:
-	BuffNuggetFXNugget();										// 0x001E2FCE
+	BuffNuggetFXNugget();
 
 	virtual void doFXPos(const Coord3D *primary, const Matrix3D *primaryMtx, Real primarySpeed,
 		const Coord3D *secondary) const {}								// 1, empty (fold 0x001F01E8)
 	virtual void doFXObj(const Object *primary, const Object *secondary) const;	// 2, 0x001E311E
 	virtual void GetAssetList(AssetList &assets, Int context) const;		// 3, 0x001E30F5
 
-	static void buildFieldParse(MultiIniFieldParse &p);					// 0x001DFB64
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001E323B
+	static void buildFieldParse(MultiIniFieldParse &p);
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	Int m_buffType;									// 0x148 BuffType (parseIndexList)
 	Bool m_isComplexBuff;							// 0x14C IsComplexBuff (parseBool)

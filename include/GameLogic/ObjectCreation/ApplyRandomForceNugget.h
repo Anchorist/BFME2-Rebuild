@@ -30,7 +30,7 @@ public:
 		UnsignedInt lifetimeFrames) const;										// 2, 0x001F01F1
 	virtual void GetAssetList(AssetList &assets, void *context) const {}		// 4, empty (fold 0x0050B238; the base's slot is pure)
 
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001F0DE7
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	Real m_minForceMagnitude;													// 0x04
 	Real m_maxForceMagnitude;													// 0x08

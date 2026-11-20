@@ -12,9 +12,6 @@
 // FUNCTION: BFME2 0x0048B505 size=165 name=?xfer@DynamicShroudClearingRangeUpdate@@UAEXPAVXfer@@@Z evidence=N:ledger
 // FUNCTION: BFME2 0x0048B5C6 size=82 name=??0DynamicShroudClearingRangeUpdateModuleData@@QAE@XZ evidence=N:ledger
 // GameLogic/Object/Update/DynamicShroudClearingRangeUpdate.cpp: retail translation unit (skeleton).
-// Write each function below its FUNCTION annotation, in this (retail) order.
-// Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
-// Shared types belong in include/; no class or struct with a body in this file.
 // cl: 
 
 #include "Common/Coord3D.h"

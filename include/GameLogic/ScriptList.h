@@ -40,11 +40,11 @@ public:
 	ScriptList(const ScriptList &that);			// 0x003B88DA
 	virtual ~ScriptList();						// slot 0, deleting 0x003B7D90, non-deleting 0x003B774B
 
-	ScriptList *duplicate() const;				// 0x003B8945
-	void clear();								// 0x003B7812
-	void swap(ScriptList *other);			// 0x003B58DF
-	void WriteScriptListDataChunk(DataChunkOutput &chunkWriter);		// 0x003B73C5
-	static void WriteScriptsDataChunk(DataChunkOutput &chunkWriter, ScriptList *scriptLists[], Int numLists);	// 0x003B73F6
+	ScriptList *duplicate() const;
+	void clear();
+	void swap(ScriptList *other);
+	void WriteScriptListDataChunk(DataChunkOutput &chunkWriter);
+	static void WriteScriptsDataChunk(DataChunkOutput &chunkWriter, ScriptList *scriptLists[], Int numLists);
 
 	void flagAll();								// 0x003B40CB: flags every live entry of both tables
 	void commit();								// 0x003B693A: prunes stale links, then flattens and unflags both tables
@@ -53,13 +53,13 @@ public:
 	void addScriptRef(ScriptListBase *head, ScriptLink *node, ScriptLink *after);
 	void pruneStaleLinks(ScriptListBase *links);				// 0x003B48E4: drops the links whose entry has moved on (the others restart at depth 1), groups recursively
 	void pruneSkippedLinks(ScriptListBase *links);				// 0x003B4982: drops the links skipGroup / skipScript reject (stale or flagged), groups recursively
-	void deleteScriptRef(void *head, ScriptLink *link);		// 0x003B7389: unlinks the link from the head's script chain, pops its version and frees it
-	void deleteGroupRef(void *head, ScriptGroupLink *link);	// 0x003B779C: the same for a group link, after deleting everything the group holds
+	void deleteScriptRef(void *head, ScriptLink *link);		// Unlinks the link from the head's script chain, pops its version and frees it
+	void deleteGroupRef(void *head, ScriptGroupLink *link);	// The same for a group link, after deleting everything the group holds
 	// 0x003B7DAC / 0x003B84C9: move a chain of links from `source` into this list (not written yet; takeGroups walks a deque)
 	void takeGroups(ScriptList *source, ScriptGroupLink **sourceHead, ScriptGroupLink **destHead);
 	void takeScripts(ScriptList *source, ScriptLink **sourceHead, ScriptLink **destHead);
-	void doTakeGroup(ScriptList *source, ScriptGroupLink **link, ScriptGroupLink **dest);	// 0x003B89C9 (pending register allocation match).
-	void takeGroup(ScriptList *source, ScriptGroupLink **head, ScriptGroupLink *wanted, ScriptGroupLink **first, ScriptGroupLink **after);	// 0x003B8A9B
+	void doTakeGroup(ScriptList *source, ScriptGroupLink **link, ScriptGroupLink **dest);	// (pending register allocation match).
+	void takeGroup(ScriptList *source, ScriptGroupLink **head, ScriptGroupLink *wanted, ScriptGroupLink **first, ScriptGroupLink **after);
 	void cleanup();							// 0x003B7362: prunes the skipped links, then settles both tables
 
 	friend class ScriptEngine;		// walkNamed 0x0020A775 reads the script table's entry names

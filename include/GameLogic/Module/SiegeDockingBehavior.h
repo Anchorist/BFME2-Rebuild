@@ -54,10 +54,10 @@ public:
 protected:
 	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);
-	virtual void loadPostProcess();	// 0x0045A16D: rva00459E05, then the base's
+	virtual void loadPostProcess();	// rva00459E05, then the base's
 
 private:
-	void rva00459E05();	// 0x00459E05 (loadPostProcess calls it first)
+	void rva00459E05();	// (loadPostProcess calls it first)
 
 public:
 	UnsignedByte m_gap0x20[0x10];

@@ -38,6 +38,7 @@ private:
 	friend class LivingWorldLogic;
 	friend class LivingWorldArmy;
 	friend class LivingWorldBattle;
+	friend class LivingWorldRegion;
 	unsigned char m_unk0x18[0x20 - 0x18];		// +0x18 not yet recovered
 	AsciiString m_name;					// +0x20: LivingWorldLogic::findPlayer(const AsciiString &) 0x002B6AEC compares it
 	unsigned char m_unk0x24[0x34 - 0x24];		// +0x24 not yet recovered

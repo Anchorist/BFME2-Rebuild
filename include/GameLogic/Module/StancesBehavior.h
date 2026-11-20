@@ -34,9 +34,9 @@ protected:
 	virtual void xfer(Xfer *xfer);
 
 public:
-	void rva0045F235();	// 0x0045F235: AIGoingIdleState::onEnter 0x00341E48 calls it on the owner's module
-	Bool changeStance(Int stance);	// 0x0045F084 (the map's ?changeStance@StancesBehavior@@QAE_NH@Z; AIGroup::groupChangeStance 0x0036E269 calls it)
-	Int rva0045ED4B() const;	// 0x0045ED4B: the stance (the member at +0x30); ScriptConditions 0x003E5267 calls it out of line
+	void rva0045F235();	// AIGoingIdleState::onEnter 0x00341E48 calls it on the owner's module
+	Bool changeStance(Int stance);	// (the map's ?changeStance@StancesBehavior@@QAE_NH@Z; AIGroup::groupChangeStance 0x0036E269 calls it)
+	Int rva0045ED4B() const;	// The stance (the member at +0x30); ScriptConditions 0x003E5267 calls it out of line
 	UnsignedByte m_gap0x20[0x10];
 	Int m_unk0x30;                                 // +0x30; constructor store
 };

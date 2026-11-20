@@ -24,7 +24,7 @@ class WeaponSetUpgradeModuleData : public UpgradeModuleData
 {
 public:
 	WeaponSetUpgradeModuleData();
-	static void buildFieldParse(MultiIniFieldParse &parse);				// 0x004B56F6
+	static void buildFieldParse(MultiIniFieldParse &parse);
 
 	WeaponSetFlags m_weaponCondition;                      // +0x118 WeaponCondition; BitFlags<104>
 };

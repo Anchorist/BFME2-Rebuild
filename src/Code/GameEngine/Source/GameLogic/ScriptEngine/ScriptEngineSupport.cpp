@@ -540,6 +540,16 @@ void ScriptEngine::rva00357DD2(const AsciiString &name)
 // FUNCTION: BFME2 0x00357E14 size=28 name=?rva00357E14@Rva00357E14@@QAEXABUBfmeFloat4Record00469C61@@@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x00357E4C size=47 name=?resetOwnedObject@BfmeOwnedStringState@@QAEXXZ evidence=N:ledger tier=A
+void AttackPriorityInfo::reset()
+{
+	m_name.clear();
+	m_defaultPriority = 1;
+	if (m_priorityMap)
+	{
+		delete m_priorityMap;
+		m_priorityMap = NULL;
+	}
+}
 
 // FUNCTION: BFME2 0x00357E7B size=50 name=?rva00357E7B@ScriptEngine@@QAEXHABVAsciiString@@H@Z evidence=?:placeholder tier=A
 void ScriptEngine::rva00357E7B(Int playerIndex, const AsciiString &name, Int value)
@@ -666,7 +676,73 @@ void AttackPriorityInfo::xfer(Xfer *xfer)
 	}
 }
 
+AsciiString Rva0032B389Join(const AsciiString &scope, const AsciiString &name);	// 0x0032B389 (scope/name)
+
 // FUNCTION: BFME2 0x003584E9 size=617 name=?getTeamNamed@ScriptEngine@@QAEPAVTeam@@VAsciiString@@_N@Z evidence=N:ledger tier=A
+Team *ScriptEngine::getTeamNamed(AsciiString name, Bool create)
+{
+	if (name.compare("<This Team>") == 0)
+	{
+		if (m_callingTeam != NULL)
+			return m_callingTeam;
+		return m_conditionTeam;
+	}
+
+	AsciiString scoped = resolveName(name);
+	Team *team;
+
+	if (m_callingTeam != NULL)
+	{
+		if ((m_callingTeam->getPrototype() == NULL ? AsciiString::TheEmptyString : m_callingTeam->getPrototype()->m_ownerName).compare(scoped) == 0
+			&& (m_callingTeam->getPrototype() == NULL ? AsciiString::TheEmptyString : m_callingTeam->getPrototype()->m_name).compare(name) == 0)
+			return m_callingTeam;
+	}
+	if (m_conditionTeam != NULL)
+	{
+		if ((m_conditionTeam->getPrototype() == NULL ? AsciiString::TheEmptyString : m_conditionTeam->getPrototype()->m_ownerName).compare(scoped) == 0
+			&& (m_conditionTeam->getPrototype() == NULL ? AsciiString::TheEmptyString : m_conditionTeam->getPrototype()->m_name).compare(name) == 0)
+			return m_conditionTeam;
+	}
+
+	{
+		_STL::pair<AsciiString, AsciiString> key(scoped, name);
+		TeamIdMap::iterator found = m_namedTeamIds.find(key);
+		if (found != m_namedTeamIds.end())
+			return TheTeamFactory->findTeamByID(found->second);
+	}
+
+	TeamPrototype *proto = TheTeamFactory->findTeamPrototype(scoped, name);
+	if (proto != NULL)
+	{
+		if (proto->getIsSingleton())
+		{
+			team = proto->getFirstItemIn_TeamInstanceList();
+			if (team == NULL)
+				return NULL;
+			if (team->isActive())
+				return team;
+			if (!create)
+				return NULL;
+			team->setActive();
+			return team;
+		}
+
+		static Int warnCount = 0;
+		if (proto->countTeamInstances() > 1 && warnCount < 10)
+		{
+			++warnCount;
+			AppendDebugMessage(AsciiString("***Referencing multiple team by unspecific instance:***"), false);
+			AppendDebugMessage(Rva0032B389Join(scoped, name), false);
+		}
+
+		team = proto->getFirstItemIn_TeamInstanceList();
+		if (team != NULL)
+			return team;
+		if (create)
+			return TheTeamFactory->createTeam(scoped, name);
+	}
+	return NULL;
+}
 
 // FUNCTION: BFME2 0x00358752 size=257 name=?lookupUnitByValue@Rva00358752Opaque@@QAEPAVObject@@VAsciiString@@@Z evidence=?:placeholder tier=A
 Object *ScriptEngine::getUnitNamed(AsciiString unitName)

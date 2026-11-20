@@ -24,7 +24,7 @@ public:
 	virtual Bool slot07() const;															// 7, 0x0050B5C6
 	virtual void GetAssetList(AssetList &assets, void *context);													// 9, 0x00508F0C
 
-	// 0x00508EBF: the INI parse callback parseParalyzeNugget calls with (ini, nugget, NULL, NULL).
+	// The INI parse callback parseParalyzeNugget calls with (ini, nugget, NULL, NULL).
 	static void parseFromINI(INI *ini, void *instance, void *store, const void *userData);
 
 	Real m_radius;							// 0x128 Radius

@@ -70,8 +70,7 @@ static const char *TheGuiCommandNames[] =
 #endif
 // Target allocation29E5B9 and ctor31E94C: size2B4, SubsystemInterface base0..B.
 // Primary table80CC88 has14 slots. Scheme consumer1DB68C proves+44.
-// Twenty-five synthesized views and old canonical header establish fields;
-// callers9DE6C/35D87A establish border+22C and arrow+26C.
+// Callers9DE6C/35D87A establish border+22C and arrow+26C.
 // Neutral storage retains unresolved record/container identities.
 class AnimateWindowManager;
 class CommandButton;
@@ -217,11 +216,9 @@ public:
 
     // Member evidence, in order of strength: the constructor 0x0031E94C (stores, the
     // rep stosd counts 9 at +0x48 and 0x20 at +0xDC, the five-entry loop at +0xA8/+0xBC,
-    // 0x64000000 at +0x208/+0x22C); the allocation (0x2B4); then 25 old private views
-    // (from the header layout analysis), where a name below is the
-    // one two or more views gave an offset with the same type. Names are Zero Hour's
-    // ControlBar.h spellings where the views carry them (donor facts); members the views
-    // only number stay neutral. Offsets are checked at the end of this file.
+    // 0x64000000 at +0x208/+0x22C); the allocation (0x2B4). Names are Zero Hour's
+    // ControlBar.h spellings where it has the member (donor facts); the other members
+    // stay neutral. Offsets are checked at the end of this file.
     WindowVideoManager *m_videoManager;                 // +0x0C
     AnimateWindowManager *m_animateWindowManager;       // +0x10
     AnimateWindowManager *m_animateWindowManagerForGenShortcuts; // +0x14
@@ -267,7 +264,7 @@ public:
     int m_commandButtonBorderActionColor;               // +0x21C
     int m_commandButtonBorderUpgradeColor;              // +0x220
     int m_commandButtonBorderSystemColor;               // +0x224
-    int m_commandButtonBorderAlteredColor;              // +0x228 (a fifth colour; the views call it by number)
+    int m_commandButtonBorderAlteredColor;              // +0x228 (a fifth colour)
     int field22C;                                       // +0x22C command bar border colour (getBorderColor; 0x64000000 after construction)
     unsigned char m_unk0x230[0xC];                      // +0x230 vector (allocator-tagged constructor 0x00211E58); element type unresolved
     unsigned char m_retiredCommandButtons[0xC];         // +0x23C vector of CommandButton * (removeCommandButton pushes with 0x004DFCB0)

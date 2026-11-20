@@ -115,8 +115,8 @@ public:
 	virtual Object *containSlot10();
 	virtual const char *GetSnapshotName() const;
 	virtual const Object *friend_getRider() const;
-	const char *name() const;						// 0x0047E325 (non-virtual, the literal)
-	virtual Int getContainMax() const;				// 0x0047E4EE: the module data's Slots, 0 without module data
+	const char *name() const;						// (non-virtual, the literal)
+	virtual Int getContainMax() const;				// The module data's Slots, 0 without module data
 	// Retail slot 32 (+0x0) -> 0x0047E344: clears both out-parameters and returns false.
 	virtual Bool getContainerPipsToShow(Int &numPips, Int &numMax);
 

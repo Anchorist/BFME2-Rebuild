@@ -35,13 +35,13 @@ public:
 
 	const char *Get_Name() const { return m_pName; }
 	int Compute_Save_Size() const;													// 0x001A3930 (header, name and subobject records)
-	void Set_Name(const char *pname);								// 0x001A3110
-	RenderObjClass *Create();										// 0x001A3140
+	void Set_Name(const char *pname);
+	RenderObjClass *Create();
 	AggregateDefClass *Clone() const { return new AggregateDefClass(*this); }
 
 	unsigned long Class_ID() const { return m_MiscInfo.OriginalClassID; }
 
-	void Initialize(RenderObjClass &base_model);					// 0x001A32A0
+	void Initialize(RenderObjClass &base_model);
 
 protected:
 	virtual bool Read_Header(ChunkLoadClass &chunk_load);			// slot 3: 0x001A3400

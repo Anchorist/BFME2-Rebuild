@@ -15,14 +15,14 @@ class GeometryUpgrade : public UpgradeModule
 {
 public:
 	GeometryUpgrade(Thing *thing, const ModuleData *moduleData);
-	virtual ~GeometryUpgrade();											// 0x004B6C55
+	virtual ~GeometryUpgrade();
 
-	virtual NameKeyType getModuleNameKey() const;						// 0x004B6ABF
-	virtual void upgradeRemovalImplementation();						// 0x004B6B29
-	virtual void upgradeImplementation();								// 0x004B6C8A
+	virtual NameKeyType getModuleNameKey() const;
+	virtual void upgradeRemovalImplementation();
+	virtual void upgradeImplementation();
 
 protected:
-	virtual void xfer(Xfer *xfer);										// 0x004B6C02
+	virtual void xfer(Xfer *xfer);
 
 	AsciiString m_unk0x1C;												// 0x1C
 protected:

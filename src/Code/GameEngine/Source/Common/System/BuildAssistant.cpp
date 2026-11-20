@@ -1,6 +1,8 @@
+// Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 // cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /EHs /EHc- /D_CRTIMP=
 // stlport46
 #include "Common/ObjectSellInfo.h"
+#include "Common/Xfer.h"
 #include "GameLogic/AICommandInterface.h"
 #include "GameLogic/AICommandParms.h"
 #include "Common/BuildAssistant.h"
@@ -116,6 +118,38 @@ void BuildAssistant::reset()
 // FUNCTION: BFME2 0x003922BF size=575 name=?update@BuildAssistant@@UAEXXZ evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x003924FE size=204 name=?xferTheSellList@BuildAssistant@@QAEXPAVXfer@@@Z evidence=N:ledger tier=A
+void BuildAssistant::xferTheSellList(Xfer *xfer)
+{
+	ObjectSellInfo *sellInfo;
+
+	Int count = 0;
+	_STL::list<ObjectSellInfo *>::iterator it;
+	for (it = m_sellList.begin(); it != m_sellList.end(); ++it)
+		count++;
+	xfer->operator==(count);
+
+	if (xfer->IsLoading())
+	{
+		m_sellList.clear();
+		for (Int i = 0; i < count; i++)
+		{
+			sellInfo = new ObjectSellInfo;
+			XferObjectID(xfer, &sellInfo->m_id);
+			xfer->operator==(sellInfo->m_sellFrame);
+			m_sellList.push_back(sellInfo);
+		}
+	}
+	else
+	{
+		for (it = m_sellList.begin(); it != m_sellList.end(); ++it)
+		{
+			sellInfo = *it;
+			XferObjectID(xfer, &sellInfo->m_id);
+			xfer->operator==(sellInfo->m_sellFrame);
+			count--;
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x003925CA size=568 name=?checkSampleBuildLocation@@YAXPBVCoord3D@@PAX@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 
@@ -152,7 +186,7 @@ void BuildAssistant::reset()
 // FUNCTION: BFME2 0x00394191 size=108 name=?aiMoveToPositionEvenIfSleeping@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=B hypothesis:cohesion
 void AICommandInterface::aiMoveToPositionEvenIfSleeping(Coord3D const *pos, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x36, cmdSource);
+	AICommandParms parms(AICMD_MOVE_TO_POSITION_EVEN_IF_SLEEPING, cmdSource);
 	parms.m_pos = *pos;
 	aiDoCommand(&parms);
 }

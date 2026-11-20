@@ -25,9 +25,9 @@ public:
 	FiringTracker(Thing *thing, const ModuleData *moduleData);
 	virtual ~FiringTracker();											// out of line: slot 0 0x004DEA0C
 	virtual NameKeyType getModuleNameKey() const;
-	virtual UpdateSleepTime update();									// 0x004DED3B
+	virtual UpdateSleepTime update();
 
-	void shotFired(const Weapon *weaponFired, ObjectID victimID, const Coord3D *victimPos, Bool flag);	// 0x004DEECB
+	void shotFired(const Weapon *weaponFired, ObjectID victimID, const Coord3D *victimPos, Bool flag);
 	Int takeUnk0x38();					// 0x004DEA68: returns +0x38 and clears it
 
 protected:
@@ -39,9 +39,9 @@ protected:
 
 private:
 	friend class WeaponFireSpecialAbilityUpdate;	// WeaponFireSpecialAbilityUpdate::triggerAbilityEffect 0x00492A72 calls coolDown 0x004DEC88
-	void coolDown(Bool force);											// 0x004DEC88
-	void speedUp();														// 0x004DEDD2
-	UpdateSleepTime calcTimeToSleep();									// 0x004DEAB0: forever when none of the three timers is set
+	void coolDown(Bool force);
+	void speedUp();
+	UpdateSleepTime calcTimeToSleep();									// Forever when none of the three timers is set
 
 public:
 	ObjectID getLastShotVictim() const { return m_victimID; }	// Zero Hour's (Object::getLastVictimID 0x0028AF86 reads +0x24 in place)

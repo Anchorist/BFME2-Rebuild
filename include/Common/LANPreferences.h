@@ -17,9 +17,9 @@ class LANPreferences : public GameModePreferences
 {
 public:
 	LANPreferences(int mode);													// 0x0044D2F5
-	virtual ~LANPreferences();													// 0x0044D285
+	virtual ~LANPreferences();
 
-	bool loadFromIniFile();														// 0x0044D2AC
+	bool loadFromIniFile();
 	void rva0044D47F(UnicodeString);											// 0x0044D47F (no map name): AptLanLobby stores the entered player name through it
 };
 // SIZE 0x1C

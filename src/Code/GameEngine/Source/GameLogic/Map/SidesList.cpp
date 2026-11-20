@@ -120,7 +120,7 @@ void BuildListInfo::xfer(Xfer *xfer)
 	*xfer == m_unk0x45;
 	for (Int i = 0; i < 10; ++i)
 		XferObjectID(xfer, &m_unk0x50[i]);
-	*xfer == m_unk0x46;
+	*xfer == m_isSupplyBuilding;
 	*xfer == m_unk0x78;
 	*xfer == m_unk0x47;
 	*xfer == m_unk0x7C;
@@ -169,7 +169,7 @@ BuildListInfo::BuildListInfo() :
 	m_objectID(INVALID_ID),
 	m_objectTimestamp(0),
 	m_unk0x45(false),
-	m_unk0x46(false),
+	m_isSupplyBuilding(false),
 	m_unk0x47(false),
 	m_unk0x48(INVALID_ID),
 	m_unk0x4C(0),

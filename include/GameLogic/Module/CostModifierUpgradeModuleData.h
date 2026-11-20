@@ -27,7 +27,7 @@ class MultiIniFieldParse;
 class CostModifierUpgradeModuleData : public UpgradeModuleData
 {
 public:
-	CostModifierUpgradeModuleData();										// 0x004B5BAC
+	CostModifierUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
 
 	ObjectFilter m_objectFilter;                           // +0x118 ObjectFilter

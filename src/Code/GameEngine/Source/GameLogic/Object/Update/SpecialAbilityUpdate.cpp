@@ -825,7 +825,7 @@ bool SpecialAbilityUpdate::continuePreparation()
 // FUNCTION: BFME2 0x0044FF6D size=108 name=?aiMoveToPositionSA@AICommandInterface@@QAEXPBUCoord3D@@H@Z evidence=N:ledger
 void AICommandInterface::aiMoveToPositionSA(Coord3D const *pos, int cmdSource)
 {
-	AICommandParms parms((AICommandType)0x47, (CommandSourceType)cmdSource);
+	AICommandParms parms(AICMD_MOVE_TO_POSITION_SA, (CommandSourceType)cmdSource);
 	parms.m_pos = *pos;
 	aiDoCommand(&parms);
 }

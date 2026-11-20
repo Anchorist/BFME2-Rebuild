@@ -25,24 +25,24 @@ class SiegeDeploySpecialPower : public SpecialPowerUpdateModule
 {
 public:
 	SiegeDeploySpecialPower(Thing *thing, const ModuleData *moduleData);	// 0x004C56BA
-	virtual ~SiegeDeploySpecialPower();										// 0x004C57C1
+	virtual ~SiegeDeploySpecialPower();
 
-	virtual NameKeyType getModuleNameKey() const;							// 0x004C577C
-	virtual UpdateSleepTime update();										// 0x004C5E80 (UpdateModuleInterface slot 0, table 0x0085DCF0)
-	virtual bool isActive() const;											// 0x004C575F (SpecialPowerUpdateInterface slot 2)
+	virtual NameKeyType getModuleNameKey() const;
+	virtual UpdateSleepTime update();										// (UpdateModuleInterface slot 0, table 0x0085DCF0)
+	virtual bool isActive() const;											// (SpecialPowerUpdateInterface slot 2)
 	virtual bool isReady() const;											// 0x004C5751 (SpecialPowerModuleInterface slot 1, this = the +0x24 subobject): !isActive()
 	virtual void specialPowerSlot19() {}										// SpecialPowerModuleInterface slot 19 (table 0x0085DC68): the shared `ret` 0x000B3FD0
 	virtual unsigned int specialPowerSlot20() const { return m_unk0x40; }			// slot 20: the shared getter 0x0030F2C7 (`mov eax,[ecx+0x1C]` on the +0x24 interface = +0x40)
-	virtual void stopSpecialPower();										// 0x004C5E41 (SpecialPowerModuleInterface slot 17)
-	void rva004C573C();														// 0x004C573C: tells the object's DynamicPortalBehaviour (the destructor and setPhase call it)
-	void rva004C5E62();														// 0x004C5E62: clears status 0x40, returns to phase 0 and forgets the dock
+	virtual void stopSpecialPower();										// (SpecialPowerModuleInterface slot 17)
+	void rva004C573C();														// Tells the object's DynamicPortalBehaviour (the destructor and setPhase call it)
+	void rva004C5E62();														// Clears status 0x40, returns to phase 0 and forgets the dock
 
 protected:
 	virtual const char *GetSnapshotName() const;							// 0x004C5736 (table 0x0085DCFC slot 2)
-	virtual void xfer(Xfer *xfer);											// 0x004C5B39
+	virtual void xfer(Xfer *xfer);
 
 private:
-	void setPhase(Int phase);												// 0x004C5BE3
+	void setPhase(Int phase);
 
 	Int m_phase;				// +0x38 xfer raw int; isActive and stopSpecialPower read it
 	UnsignedInt m_unk0x3C;		// +0x3C xfer uint

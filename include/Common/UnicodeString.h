@@ -24,6 +24,7 @@ public:
 	UnicodeString() {}
 	UnicodeString(const unsigned short *s) : StringBase<unsigned short>(s) {}
 	UnicodeString(const UnicodeString &that) : StringBase<unsigned short>(that) {}
+	UnicodeString(const UnicodeString &that, int first, int count) : StringBase<unsigned short>(that, first, count) {}
 	UnicodeString(const AsciiString &that);					// 0x006CB6D0
 	~UnicodeString() {}
 

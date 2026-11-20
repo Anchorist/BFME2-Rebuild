@@ -30,7 +30,7 @@ class W3DShadowManager
 {
 public:
 	void removeShadow(Shadow *shadow);	// 0x000518E0 (map: the stdcall placeholder Rva000518E0Thunk; ecx is the manager)
-	Vector3 &getLightPosWorld(int lightIndex);	// 0x0009A497: &m_lightPosWorld[lightIndex]
+	Vector3 &getLightPosWorld(int lightIndex);	// &m_lightPosWorld[lightIndex]
 
 protected:
 	unsigned char m_unk00[0x0C];		// +0x00 (a flag byte at +0 is tested by 0x0009A348 / 0x0009A361)

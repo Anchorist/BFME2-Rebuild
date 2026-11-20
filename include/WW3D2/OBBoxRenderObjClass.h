@@ -29,7 +29,7 @@ public:
 	virtual void Get_Obj_Space_Bounding_Sphere(SphereClass &sphere) const;	// slot 67
 	virtual void Get_Obj_Space_Bounding_Box(AABoxClass &box) const;			// slot 68
 
-	OBBoxClass &Get_Box();											// 0x00175A20
+	OBBoxClass &Get_Box();
 
 protected:
 	virtual void update_cached_box();								// slot 0x82: 0x001758C0

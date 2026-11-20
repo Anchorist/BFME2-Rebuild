@@ -47,9 +47,6 @@ float Cos(float);
 float Sin(float);
 #define PI 3.14159265359f
 // GameLogic/Object/Update/OneRingPenaltyUpdate.cpp: retail translation unit (skeleton).
-// Write each function below its FUNCTION annotation, in this (retail) order.
-// Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
-// Shared types belong in include/; no class or struct with a body in this file.
 // cl: 
 
 
@@ -98,13 +95,14 @@ OneRingPenaltyUpdateModuleData::~OneRingPenaltyUpdateModuleData()
 void OneRingPenaltyUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse) { parse.add(OneRingPenaltyFields,0); }
 
 
-OneRingPenaltyUpdate::OneRingPenaltyUpdate(Thing *thing,const ModuleData *moduleData)
- : UpdateModule(thing,moduleData)
+OneRingPenaltyUpdate::OneRingPenaltyUpdate(Thing *thing, const ModuleData *moduleData)
+	: UpdateModule(thing, moduleData)
 {
- float fzero=0.0f;
- int zero=0;
- m_pursuerID=(ObjectID)zero; m_ringWearStartFrame=zero; m_pursuitAngle=fzero; m_suppressionStartFrame=zero;
- setWakeFrame(m_object,UPDATE_SLEEP_NONE);
+	m_pursuerID = INVALID_ID;
+	m_ringWearStartFrame = 0;
+	m_pursuitAngle = 0.0f;
+	m_suppressionStartFrame = 0;
+	setWakeFrame(m_object, UPDATE_SLEEP_NONE);
 }
 
 

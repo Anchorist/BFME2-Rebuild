@@ -8,7 +8,7 @@
 class AIRingHeroTactic : public Rva005DCC24
 {
 public:
-	AIRingHeroTactic();									// 0x005AC7EC
+	AIRingHeroTactic();
 	virtual Bool canRun(void *request);					// the base pure slots the class overrides (rows not written)
 	virtual void cleanUp();
 	virtual Bool initializeTeamTemplate(void *team, Int count);
@@ -16,7 +16,9 @@ public:
 	virtual void run();
 	virtual void update();
 	virtual ~AIRingHeroTactic();
-	virtual AITactic *create();							// 0x005AC8F2, slot 9
+	virtual AITactic *create();							// Slot 9
+	Bool weHaveGollum();
+	Bool enemyHasRingHeroUpgrade();
 
 	ObjectID m_unk0x58; // resolved through GameLogic::findObjectByID in 0x005ACBFF
 	UnsignedInt m_unk0x5C;

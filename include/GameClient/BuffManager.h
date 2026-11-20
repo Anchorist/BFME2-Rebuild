@@ -32,7 +32,7 @@ extern Drawable *TheBuffXferDrawable;
 class Rva0036276F
 {
 public:
-	void rva0036276F();										// 0x0036276F
+	void rva0036276F();
 };
 
 // 0x00239FE4 is the call that ends the constructor: it registers the new manager with TheGameClient (the
@@ -41,20 +41,20 @@ public:
 class Rva00239FE4
 {
 public:
-	void rva00239FE4(const ModuleData *buffManager);		// 0x00239FE4
+	void rva00239FE4(const ModuleData *buffManager);
 };
 
 class BuffManager : public Snapshot
 {
 public:
 	BuffManager(Drawable *drawable);								// 0x00362DBD
-	virtual ~BuffManager();									// 0x00362E1C, slot 0 (restores Snapshot's table)
-	void TurnOffBuff(int type, bool immediate);				// 0x003626AD
-	void TurnOnBuff(int type, const ThingTemplate *thingTemplate, int duration, int color, float intensity);	// 0x003627F9
+	virtual ~BuffManager();									// Slot 0 (restores Snapshot's table)
+	void TurnOffBuff(int type, bool immediate);
+	void TurnOnBuff(int type, const ThingTemplate *thingTemplate, int duration, int color, float intensity);
 
 protected:
 	virtual void loadPostProcess() {}						// slot 1; the shared empty body 0x000B3FD0 (retail table 0x00C17088 has 4 slots)
-	virtual const char *GetSnapshotName() const;			// 0x00362E16 (slot 2)
+	virtual const char *GetSnapshotName() const;			// (slot 2)
 	virtual void xfer(Xfer *xfer);						// 0x00362702 (slot 3)
 
 public:

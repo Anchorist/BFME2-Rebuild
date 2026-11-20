@@ -11,11 +11,11 @@ typedef std::vector<const ObjectCreationList *> OCLVec;
 class RubbleRiseUpdateModuleData : public ModuleData
 {
 public:
- RubbleRiseUpdateModuleData(); // 0x00256653
+ RubbleRiseUpdateModuleData();
  static void parseFXList(INI *,void *,void *,const void *);
  static void parseOCL(INI *,void *,void *,const void *);
  static void buildFieldParse(MultiIniFieldParse &);
- static ModuleData *friend_newModuleData(INI *ini); // 0x002566F6
+ static ModuleData *friend_newModuleData(INI *ini);
  DieMuxData m_dieMuxData; // 0x08
  int m_minRubbleRiseDelay; // 0x38 MinRubbleRiseDelay
  int m_maxRubbleRiseDelay; // 0x3C MaxRubbleRiseDelay

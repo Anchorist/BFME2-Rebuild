@@ -74,21 +74,21 @@ public:
 	virtual void Recolor_Prototype(const RecolorColor &color);			// 125: 0x0014B8C0
 	virtual void RecolorHouseColor(const RecolorColor &color, const char *name);	// 126: 0x0014C470
 
-	const char *Get_User_Text(void) const;						// 0x00149970
+	const char *Get_User_Text(void) const;
 	int Is_Skin(void) const;							// 0x0014A0B0 (role name: the model carries the skin flag)
 	int Get_W3D_Flags(void);							// 0x00149960 (the model's attribute word)
 	void Replace_VertexMaterial(VertexMaterialClass *vmat, VertexMaterialClass *new_vmat);	// 0x00149C00
-	MeshModelClass *Get_Model(void);						// 0x001499B0
+	MeshModelClass *Get_Model(void);
 	MeshModelClass *Peek_Model(void) { return Model; }
-	void Make_Unique(bool force = false);						// 0x00149C10
+	void Make_Unique(bool force = false);
 	void Get_Deformed_Vertices(Vector3 *dst_vert, Vector3 *dst_norm);		// 0x001499D0
 	void Get_Deformed_Vertices(Vector3 *dst_vert);					// 0x00149A10
-	bool Load_W3D(ChunkLoadClass &cload);						// 0x00149CC0
-	void Generate_Culling_Tree(void);						// 0x00149FC0
-	void Set_Lighting_Environment(LightEnvironmentClass *light_env);		// 0x0014BB20
+	bool Load_W3D(ChunkLoadClass &cload);
+	void Generate_Culling_Tree(void);
+	void Set_Lighting_Environment(LightEnvironmentClass *light_env);
 	LightEnvironmentClass *Get_Lighting_Environment(void) { return LightEnvironment; }
-	int Get_Draw_Call_Count(void) const;						// 0x0014B7C0
-	void Render_Material_Pass(MaterialPassClass *pass, IndexBufferClass *index_buffer);	// 0x0014C000
+	int Get_Draw_Call_Count(void) const;
+	void Render_Material_Pass(MaterialPassClass *pass, IndexBufferClass *index_buffer);
 	int Get_Base_Vertex_Offset(void) const { return BaseVertexOffset; }
 	void Set_Next_Visible_Skin(MeshClass *next_visible) { NextVisibleSkin = next_visible; }
 	MeshClass *Peek_Next_Visible_Skin(void) { return NextVisibleSkin; }

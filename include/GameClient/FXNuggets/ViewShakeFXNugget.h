@@ -14,14 +14,14 @@
 class ViewShakeFXNugget : public FXNugget
 {
 public:
-	ViewShakeFXNugget();										// 0x001E07DF
+	ViewShakeFXNugget();
 
 	virtual void doFXPos(const Coord3D *primary, const Matrix3D *primaryMtx, Real primarySpeed,
 		const Coord3D *secondary) const;								// 1, 0x001E0802
 	virtual void GetAssetList(AssetList &assets, Int context) const {}		// 3, empty (fold 0x0050B238)
 
-	static void buildFieldParse(MultiIniFieldParse &p);					// 0x001E0829
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001E1611
+	static void buildFieldParse(MultiIniFieldParse &p);
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	Int m_shakeType;										// 0x148 Type (parseShakeType)
 };

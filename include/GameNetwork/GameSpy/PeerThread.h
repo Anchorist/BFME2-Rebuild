@@ -345,6 +345,7 @@ public:
 	_SBServer *findServerByID(Int id);									// 0x003896BD
 	Int addServerToMap(_SBServer *server);								// 0x00389F4A
 	Int removeServerFromMap(_SBServer *server);							// 0x0038A6DF
+	void getStatsFromRoom(void *peer, RoomType roomType);				// 0x0038E492
 	Int lookupStatForPlayer(RoomType roomType, const char *nick, const char *key);	// 0x0038A63C
 	void clearPlayerStats(RoomType roomType);							// 0x0038A6BF
 	void trackStatsForPlayer(RoomType roomType, const char *nick, const char *key, const char *value);	// 0x0038E0C4
@@ -354,7 +355,7 @@ public:
 	void setQMGroupRoom(Int groupID);									// 0x0038895E (+0x488)
 	void sawEndOfEnumPlayers();											// 0x0038896B (sets the byte at +0x48C)
 	QMStatus getQMStatus();												// 0x00388973 (+0x294)
-	_STL::string getQMBotName();										// inline in retail (returns the matchbot name at +0x490)
+	_STL::string getQMBotName() { return m_matchbotName; }
 	void markAsDisconnected() { m_isConnecting = m_isConnected = false; }
 	Int getQMGroupRoom();												// 0x0038897A (+0x488)
 
@@ -415,6 +416,10 @@ public:
 	Bool m_unk0x4A8;													// +0x4A8
 	unsigned char m_pad0x4A9[3];										// +0x4A9
 	MutexClass *m_queueMutex;											// +0x4AC
+
+private:
+	enum { NumKeys = 9 };
+	static const char *s_keys[NumKeys];
 };
 typedef char PeerThreadClassSize[(sizeof(PeerThreadClass) == 0x4B0) ? 1 : -1];
 typedef char PeerThreadClassQmOffset[(offsetof(PeerThreadClass, m_qmStatus) == 0x294) ? 1 : -1];

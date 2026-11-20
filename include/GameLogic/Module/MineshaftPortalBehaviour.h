@@ -1,10 +1,8 @@
-// MineshaftPortalBehaviour.h: the MineshaftPortalBehaviour module. SIZE 0x3C (ModuleFactory operator new).
-// Target facts: the constructor 0x00373096 calls UpdateModule first; it stores the
-// tables 0x00C1C780 at +0x20, 0x00C4EF80 at +0x24, 0x00C17DD0 at +0x0, 0x00C42B60 at +0xC, 0x00C17DC4 at +0x10, 0x00C17DC0 at +0x20, 0x00C17DB0 at +0x24. Members are what xfer (0x00373A0F) transfers after UpdateModule::xfer,
-// typed by the Xfer slot each goes through, in that order; m_unk names are offsets
-// (no map or donor name established). Bytes xfer does not touch are gaps.
-// Not established: interface tables at +0x20, +0x24 (their vptrs sit in the gaps there).
-// Not established: transfers xfer makes that this view cannot place: slot10 ?, slot4 ?, Char ?, UnsignedInt at misaligned +0x39, slot8 +0x39, slot4 ?.
+// MineshaftPortalBehaviour: the MineshaftPortalBehaviour update module. SIZE 0x3C: UpdateModule (0x20), a byte gap at
+// +0x20 (interface table pointers and bytes xfer does not touch), then the two Bools that xfer (0x00373A0F) saves at
+// +0x38 and +0x39. The constructor (0x00373096) runs UpdateModule's constructor and installs the tables. xfer also
+// makes transfers this view cannot place: reads through slots 10, 4 and 8, a Char and an UnsignedInt at the
+// misaligned +0x39.
 #pragma once
 #ifndef BFME2_MINESHAFT_PORTAL_BEHAVIOUR_H
 #define BFME2_MINESHAFT_PORTAL_BEHAVIOUR_H

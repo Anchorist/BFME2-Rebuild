@@ -17,21 +17,21 @@ class NetCommandWrapperListNode;
 class NetCommandWrapperList
 {
 public:
-	NetCommandWrapperList();								// 0x0058C0AE
+	NetCommandWrapperList();
 
 	friend class ConnectionManager;						// ~ConnectionManager 0x004D2344 deletes the list through the virtual destructor
 protected:
 	virtual ~NetCommandWrapperList();						// slot 0, 0x0058C0BB (deleting 0x0058C268)
 
 public:
-	void init();											// 0x0055059A (folded dword clearer: m_list = 0)
-	void reset();											// 0x0058C0F0
-	void processWrapper(NetCommandRef *ref);				// 0x0058C11F
-	NetCommandList *getReadyCommands();						// 0x0058C2AD
-	Int getPercentComplete(UnsignedShort wrappedCommandID);	// 0x0058C284
+	void init();											// (folded dword clearer: m_list = 0)
+	void reset();
+	void processWrapper(NetCommandRef *ref);
+	NetCommandList *getReadyCommands();
+	Int getPercentComplete(UnsignedShort wrappedCommandID);
 
 protected:
-	void removeFromList(NetCommandWrapperListNode *node);	// 0x0058C1A5
+	void removeFromList(NetCommandWrapperListNode *node);
 
 	NetCommandWrapperListNode *m_list;						// +0x04
 };

@@ -12,10 +12,10 @@
 class W3DFontLibrary : public FontLibrary
 {
 public:
-	virtual ~W3DFontLibrary();								// 0x0009023C
+	virtual ~W3DFontLibrary();
 protected:
-	virtual bool loadFontData(GameFont *font);				// 0x000902A6
-	virtual void releaseFontData(GameFont *font);			// 0x00090000
+	virtual bool loadFontData(GameFont *font);
+	virtual void releaseFontData(GameFont *font);
 };
 
 typedef char W3DFontLibrarySize[(sizeof(W3DFontLibrary) == 0x2C) ? 1 : -1];

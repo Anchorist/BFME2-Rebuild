@@ -26,7 +26,7 @@ class CaveContainModuleData : public OpenContainModuleData
 public:
 	CaveContainModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
-	static ModuleData *friend_newModuleData(INI *ini);	// 0x00257714
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Int m_caveIndex;                                       // +0x98 CaveIndex
 };

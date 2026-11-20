@@ -27,7 +27,7 @@ public:
 	virtual int Mapper_ID(void) const { return MAPPER_ID_SCALE; }
 	virtual TextureMapperClass *Clone(void) const;
 	virtual void Apply(int uv_array_index);
-	virtual bool Convert_To_FXShader(FXShaderParameterList *parameters);	// 0x00187690
+	virtual bool Convert_To_FXShader(FXShaderParameterList *parameters);
 	virtual void Calculate_Texture_Matrix(Matrix4 &tex_matrix);
 
 protected:
@@ -45,7 +45,7 @@ public:
 	virtual TextureMapperClass *Clone(void) const;
 	virtual bool Is_Time_Variant(void) { return true; }
 	virtual void Reset(void);
-	virtual bool Convert_To_FXShader(FXShaderParameterList *parameters);	// 0x00187850
+	virtual bool Convert_To_FXShader(FXShaderParameterList *parameters);
 	virtual void Calculate_Texture_Matrix(Matrix4 &tex_matrix);
 
 	void Set_Current_UV_Offset(const Vector2 &cur) { CurrentUVOffset = cur; }
@@ -74,7 +74,7 @@ public:
 	virtual bool Is_Time_Variant(void) { return true; }
 	virtual void Apply(int uv_array_index);
 	virtual void Reset(void);
-	virtual bool Convert_To_FXShader(FXShaderParameterList *parameters);	// 0x00187AD0
+	virtual bool Convert_To_FXShader(FXShaderParameterList *parameters);
 	virtual void Calculate_Texture_Matrix(Matrix4 &tex_matrix);
 
 	void Set_Frame(unsigned int frame) { CurrentFrame = frame; }
@@ -259,7 +259,7 @@ public:
 	WSEnvMapperClass(const INIClass &ini, const char *section, unsigned int stage);	// 0x00183620
 
 	virtual bool Needs_Normals(void) { return true; }
-	virtual void Calculate_Texture_Matrix(Matrix4 &tex_matrix);	// 0x001854E0
+	virtual void Calculate_Texture_Matrix(Matrix4 &tex_matrix);
 
 protected:
 	AxisType Axis;	// +0x0C
@@ -272,7 +272,7 @@ public:
 	WSClassicEnvironmentMapperClass(const INIClass &ini, const char *section, unsigned int stage);
 
 	virtual int Mapper_ID(void) const { return MAPPER_ID_WS_CLASSIC_ENVIRONMENT; }
-	virtual TextureMapperClass *Clone(void) const;	// 0x0013C6D0
+	virtual TextureMapperClass *Clone(void) const;
 	virtual void Apply(int uv_array_index);			// slot 5: 0x00184AD0
 };
 
@@ -284,7 +284,7 @@ public:
 		WSEnvMapperClass(ini, section, stage) {}
 
 	virtual int Mapper_ID(void) const { return MAPPER_ID_WS_ENVIRONMENT; }
-	virtual TextureMapperClass *Clone(void) const;	// 0x0013D2B0
+	virtual TextureMapperClass *Clone(void) const;
 	virtual void Apply(int uv_array_index);			// slot 5: 0x00185980
 };
 
@@ -301,7 +301,7 @@ public:
 	GridWSEnvMapperClass(float fps, unsigned int gridwidth_log2, unsigned int last_frame, unsigned int offset, AxisType axis, unsigned int stage);	// 0x00186DA0
 	GridWSEnvMapperClass(const GridWSEnvMapperClass &src);											// 0x00186E00
 	GridWSEnvMapperClass(const INIClass &ini, const char *section, unsigned int stage);				// 0x00186E30
-	virtual void Calculate_Texture_Matrix(Matrix4 &tex_matrix);										// 0x00186F10
+	virtual void Calculate_Texture_Matrix(Matrix4 &tex_matrix);
 	virtual bool Needs_Normals(void) { return true; }
 
 protected:
@@ -317,7 +317,7 @@ public:
 
 	virtual int Mapper_ID(void) const { return MAPPER_ID_GRID_WS_CLASSIC_ENVIRONMENT; }
 	virtual TextureMapperClass *Clone(void) const;
-	virtual void Apply(int uv_array_index);																// 0x00184AD0
+	virtual void Apply(int uv_array_index);
 };
 
 class GridWSEnvironmentMapperClass : public GridWSEnvMapperClass
@@ -329,7 +329,7 @@ public:
 
 	virtual int Mapper_ID(void) const { return MAPPER_ID_GRID_WS_ENVIRONMENT; }
 	virtual TextureMapperClass *Clone(void) const;
-	virtual void Apply(int uv_array_index);																// 0x00185980
+	virtual void Apply(int uv_array_index);
 };
 
 // The screen-space mapper (constructors 0x0013DA40 family, Calculate_Texture_Matrix 0x00186380, Apply 0x00185E80).
@@ -342,8 +342,8 @@ public:
 
 	virtual int Mapper_ID(void) const { return MAPPER_ID_SCREEN; }
 	virtual TextureMapperClass *Clone(void) const;
-	virtual void Apply(int uv_array_index);															// 0x00185E80
-	virtual void Calculate_Texture_Matrix(Matrix4 &tex_matrix);										// 0x00186380
+	virtual void Apply(int uv_array_index);
+	virtual void Calculate_Texture_Matrix(Matrix4 &tex_matrix);
 };
 
 // BumpEnv: Apply 0x00186A90 reads LastUsedSyncTime, CurrentAngle, RadiansPerSecond and ScaleFactor at +0x34..+0x40.
@@ -355,8 +355,8 @@ public:
 	BumpEnvTextureMapperClass(const BumpEnvTextureMapperClass &src);								// 0x00186A50
 
 	virtual int Mapper_ID(void) const { return MAPPER_ID_BUMPENV; }
-	virtual TextureMapperClass *Clone(void) const;													// 0x001875E0
-	virtual void Apply(int uv_array_index);															// 0x00186A90
+	virtual TextureMapperClass *Clone(void) const;
+	virtual void Apply(int uv_array_index);
 
 protected:
 	unsigned int LastUsedSyncTime;		// +0x34

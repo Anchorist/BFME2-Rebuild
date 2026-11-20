@@ -41,14 +41,14 @@ class HeaderTemplateManager
 {
 public:
 	HeaderTemplateManager();											// 0x00201B51
-	~HeaderTemplateManager();											// 0x00201B64
-	void init();														// 0x00201BD0
-	HeaderTemplate *findHeaderTemplate(AsciiString name);				// 0x00201A33
-	HeaderTemplate *newHeaderTemplate(AsciiString name);				// 0x00201C39
-	GameFont *getFontFromTemplate(AsciiString name);					// 0x00201A84
-	HeaderTemplate *getFirstHeader();									// 0x00201AD3
-	HeaderTemplate *getNextHeader(HeaderTemplate *header);				// 0x00201AE2
-	void populateGameFonts();											// 0x00201B05
+	~HeaderTemplateManager();
+	void init();
+	HeaderTemplate *findHeaderTemplate(AsciiString name);
+	HeaderTemplate *newHeaderTemplate(AsciiString name);
+	GameFont *getFontFromTemplate(AsciiString name);
+	HeaderTemplate *getFirstHeader();
+	HeaderTemplate *getNextHeader(HeaderTemplate *header);
+	void populateGameFonts();
 	void headerNotifyResolutionChange();								// 0x00201C34: a five-byte `jmp` to populateGameFonts
 
 	typedef _STL::list<HeaderTemplate *> HeaderTemplateList;

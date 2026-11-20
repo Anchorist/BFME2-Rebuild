@@ -1,5 +1,5 @@
 // Dict.h: SAGE's property dictionary, the map/INI bag mapLoadPostProcess reads.
-// Target facts (old repo Code/GameEngine/Include/Common/Dict.h): the payload is
+// Target facts: the payload is
 // a reference count at data+0, an allocated count at data+2, a used count at +4
 // and eight-byte key/value pairs from +6; getReal (0x003131FC) looks a pair up by
 // key, reads its value at +4 and tests tag 2, reporting presence through the

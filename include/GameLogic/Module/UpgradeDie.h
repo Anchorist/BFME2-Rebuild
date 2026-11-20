@@ -12,12 +12,12 @@ class Xfer;
 class UpgradeDie : public DieModule
 {
 public:
-	UpgradeDie(Thing *thing, const ModuleData *moduleData);				// 0x00486BBA
+	UpgradeDie(Thing *thing, const ModuleData *moduleData);
 	virtual ~UpgradeDie();
 
-	virtual NameKeyType getModuleNameKey() const;						// 0x00486B75
+	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	virtual void onDie(const DamageInfo *damageInfo);					// 0x00486C00
+	virtual void onDie(const DamageInfo *damageInfo);
 protected:
 	virtual void xfer(Xfer *xfer);	// primary slot 3: retail's body is folded at 0x0045CE8C; retail's table has this class's own
 protected:

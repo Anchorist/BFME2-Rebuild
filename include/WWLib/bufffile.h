@@ -19,15 +19,15 @@ class BufferedFileClass : public RawFileClass
 public:
 	BufferedFileClass();							// 0x0061ADE0
 	BufferedFileClass(const char *filename);				// 0x0061AE00
-	virtual ~BufferedFileClass();						// 0x0061AF60
+	virtual ~BufferedFileClass();
 
-	virtual int Read(void *buffer, int size);				// 0x0061AE30
+	virtual int Read(void *buffer, int size);
 	virtual int Write(const void *buffer, int size);			// 0x0061AF20
-	virtual int Seek(int pos, int dir = SEEK_CUR);				// 0x0061B000
-	virtual void Close();							// 0x0061AFD0
+	virtual int Seek(int pos, int dir = SEEK_CUR);
+	virtual void Close();
 
 protected:
-	void Reset_Buffer();							// 0x0061AF30
+	void Reset_Buffer();
 
 public:
 	unsigned char *Buffer;			// +0x1C

@@ -32,7 +32,7 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x0049A3AE)
 	const AutoDepositUpdateModuleData *getAutoDepositUpdateModuleData() const { return (const AutoDepositUpdateModuleData *)m_moduleData; }
-	void awardInitialCaptureBonus(Player *player);	// 0x0049A26F (Player::becomingTeamMember 0x002AD4EC calls it on capture)
+	void awardInitialCaptureBonus(Player *player);	// (Player::becomingTeamMember 0x002AD4EC calls it on capture)
 
 protected:
 	virtual const char *GetSnapshotName() const;

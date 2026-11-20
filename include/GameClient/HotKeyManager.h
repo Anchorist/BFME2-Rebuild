@@ -59,14 +59,14 @@ public:
 	virtual void reset();														// slot 9: 0x003592FA
 	virtual void update() {}													// slot 10: folded empty body
 
-	bool executeHotKey(const AsciiString &key, bool shift);						// 0x003593E8
+	bool executeHotKey(const AsciiString &key, bool shift);
 	AsciiString searchHotKey(const AsciiString &name);							// 0x00358CCD
 	AsciiString searchHotKey(const UnicodeString &name);						// 0x00358B9E
-	GameMessageDisposition translate(const GameMessage *message);				// 0x00359556
-	void rva00358A53();															// 0x00358A53: feedback when a key took effect and afterExecute asked for it (role-inferred; map name rva00358A53@HotKeyManager)
-	void rva00358ACB();															// 0x00358ACB: feedback when a key failed (role-inferred)
-	unsigned int removeMessageAction(int messageType);							// 0x003593D8
-	void addMessageAction(const AptRef<HotKeyAction> &action, int messageType);	// 0x003597A8
+	GameMessageDisposition translate(const GameMessage *message);
+	void rva00358A53();															// Feedback when a key took effect and afterExecute asked for it (role-inferred; map name rva00358A53@HotKeyManager)
+	void rva00358ACB();															// Feedback when a key failed (role-inferred)
+	unsigned int removeMessageAction(int messageType);
+	void addMessageAction(const AptRef<HotKeyAction> &action, int messageType);
 
 protected:
 	HotKeyMap m_hotKeys;														// +0x0C
@@ -80,7 +80,7 @@ extern HotKeyManager *TheHotKeyManager;											// VA 0x00E01E28
 class HotKeyTranslator : public GameMessageTranslator
 {
 public:
-	virtual GameMessageDisposition translateGameMessage(const GameMessage *message);	// 0x00359729
+	virtual GameMessageDisposition translateGameMessage(const GameMessage *message);
 };
 
 #endif

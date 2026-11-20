@@ -39,44 +39,44 @@ public:
 		return (const CaveContainModuleData *)getModuleData();
 	}
 
-	virtual NameKeyType getModuleNameKey() const;						// 0x004663FF
-	const char *name() const;									// 0x00466444
+	virtual NameKeyType getModuleNameKey() const;
+	const char *name() const;
 
 	virtual CaveInterface *getCaveInterface();
 
 	// ContainModuleInterface
-	virtual void addToContainList(Object *obj);							// 0x0046646E
-	virtual void iterateContained(ContainIterateFunc func, void *userData, UnsignedInt flags);	// 0x00466486
-	virtual void onContaining(Object *obj, Bool wasSelected);			// 0x004664BB
-	virtual Bool isValidContainerFor(Object *obj, Bool checkCapacity, Bool flag);	// 0x004664E1
+	virtual void addToContainList(Object *obj);
+	virtual void iterateContained(ContainIterateFunc func, void *userData, UnsignedInt flags);
+	virtual void onContaining(Object *obj, Bool wasSelected);
+	virtual Bool isValidContainerFor(Object *obj, Bool checkCapacity, Bool flag);
 	virtual Bool containSlot52() { return false; }
-	virtual Int getContainMax() const;									// 0x0046651C
+	virtual Int getContainMax() const;
 	virtual ContainmentListView getList();								// 0x00466534 (ContainModuleInterface slot 70)
-	virtual void removeFromContain(Object *obj, Bool exposeStealthUnits);	// 0x004666C9
-	virtual void onRemoving(Object *obj);								// 0x004668DC
-	virtual void recalcApparentControllingPlayer();						// 0x00466977
-	virtual void removeAllContained(Bool exposeStealthUnits);			// 0x00466A50
+	virtual void removeFromContain(Object *obj, Bool exposeStealthUnits);
+	virtual void onRemoving(Object *obj);
+	virtual void recalcApparentControllingPlayer();
+	virtual void removeAllContained(Bool exposeStealthUnits);
 
 	// DieModuleInterface
-	virtual void onDie(const DamageInfo *damageInfo);					// 0x00466724
+	virtual void onDie(const DamageInfo *damageInfo);
 
 	// CreateModuleInterface
-	virtual void onCreate();											// 0x00466780
-	virtual void onBuildComplete();										// 0x00466790
+	virtual void onCreate();
+	virtual void onBuildComplete();
 	virtual Bool shouldDoOnBuildComplete() const { return m_needToRunOnBuildComplete; }	// 0x00466467
 
 	// CaveInterface
-	virtual void tryToSetCaveIndex(Int newIndex);						// 0x004667D1
+	virtual void tryToSetCaveIndex(Int newIndex);
 	virtual void setOriginalTeam(Team *oldTeam) { m_originalTeam = oldTeam; }	// slot 1 of the CaveInterface table: the shared setter 0x005F69C4
 
-	// 0x00466848 (map placeholder name): onRemoving calls it with m_originalTeam
+	// (map placeholder name): onRemoving calls it with m_originalTeam
 	// and false when the last object leaves a cave whose occupant had a team.
 	void rva00466848(Team *team, Bool flag);
 
 protected:
-	virtual ~CaveContain();												// 0x004663B2
+	virtual ~CaveContain();
 	virtual const char *GetSnapshotName() const;						// 0x00466444
-	virtual void xfer(Xfer *xfer);										// 0x00466577
+	virtual void xfer(Xfer *xfer);
 
 public:
 	Bool m_needToRunOnBuildComplete;									// 0x100

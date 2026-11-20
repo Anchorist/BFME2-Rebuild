@@ -15,7 +15,7 @@ void DebugFreeMemory(void *ptr);
 class DebugIOOds : public DebugIOInterface
 {
 public:
-	DebugIOOds();																// 0x0003F380
+	DebugIOOds();
 	virtual ~DebugIOOds();														// slot 0: 0x0003F430 (deleting), body 0x0003F460
 
 	virtual int Read(char *buf, int maxchar);									// slot 1: 0x0003FD80 (defined in debug_io_flat.cpp, the unit that holds the shared stub)
@@ -28,7 +28,7 @@ public:
 		DebugFreeMemory(this);
 	}
 
-	static DebugIOInterface *Create();											// 0x0003F3D0
+	static DebugIOInterface *Create();
 };
 
 #endif

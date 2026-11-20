@@ -49,15 +49,15 @@ public:
 
 	Condition() throw();			// 0x003B26DF
 	Condition(ConditionType type);		// 0x003B5AC7
-	Condition *duplicate() const;		// 0x003B5B07
-	void setConditionType(ConditionType type);	// 0x003B4A94
-	int rva003B275A();			// 0x003B275A
-	int getUiStrings(AsciiString *const strings);	// 0x003B39B2
-	AsciiString getUiText();		// 0x003B5BA4
+	Condition *duplicate() const;
+	void setConditionType(ConditionType type);
+	int rva003B275A();
+	int getUiStrings(AsciiString *const strings);
+	AsciiString getUiText();
 	AsciiString getTemplateName() const;	// 0x003B3989 (the UI name of the condition's template; the map's placeholder text@...ConditionPrefix)
 
-	static void WriteConditionDataChunk(DataChunkOutput &writer, Condition *condition);	// 0x003B428C
-	static Bool ParseConditionDataChunk(DataChunkInput &file, DataChunkInfo *info, void *userData);	// 0x003B6D92
+	static void WriteConditionDataChunk(DataChunkOutput &writer, Condition *condition);
+	static Bool ParseConditionDataChunk(DataChunkInput &file, DataChunkInfo *info, void *userData);
 
 	ConditionType getConditionType() const { return (ConditionType)m_conditionType; }
 	int getType() const { return m_conditionType; }

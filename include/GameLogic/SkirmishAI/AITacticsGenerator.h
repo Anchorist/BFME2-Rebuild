@@ -17,8 +17,8 @@ public:
     explicit AITacticsGenerator(Player *player);
     ~AITacticsGenerator();
 
-    void Register(Team *team);   // 0x005059A1
-    void UnRegister(Team *team); // 0x00505A56
+    void Register(Team *team);
+    void UnRegister(Team *team);
     void DoXfer(Xfer *xfer);
     bool activateTactic(AITarget *target, Player *player);
 

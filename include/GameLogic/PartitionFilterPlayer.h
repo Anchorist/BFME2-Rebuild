@@ -10,7 +10,7 @@ public:
  PartitionFilterPlayer(const Player *player, bool match) : m_player(player), m_match(match) {}
  virtual int getPlayerMask();	// 0x00261368
 protected:
- virtual bool allow(Object *);	// 0x0026137E
+ virtual bool allow(Object *);
 public:
  const Player *m_player;	// 0x08
  bool m_match;	// 0x0C

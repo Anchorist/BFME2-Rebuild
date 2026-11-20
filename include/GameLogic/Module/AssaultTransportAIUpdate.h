@@ -41,23 +41,23 @@ class AssaultTransportAIUpdate : public AIUpdateInterface, public AssaultTranspo
 public:
 	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	AssaultTransportAIUpdate(Thing *thing, const ModuleData *moduleData);	// 0x0048F5A3
-	virtual ~AssaultTransportAIUpdate();						// 0x0048F3E0
+	virtual ~AssaultTransportAIUpdate();
 
-	virtual NameKeyType getModuleNameKey() const;				// 0x0048F411
-	virtual void beginAssault(const Object *designatedTarget) const;	// 0x0048F45C
+	virtual NameKeyType getModuleNameKey() const;
+	virtual void beginAssault(const Object *designatedTarget) const;
 	virtual Bool isIdle() const;	// AIUpdateInterface slot 110: 0x0048F46D, a `jmp` to the base 0x002645FF (table 0x0084CCA0)
 	virtual AssaultTransportAIInterface *getAssaultTransportAIInterface() { return this; }	// slot 102, 0x004A9B51 (shared)
 	virtual const AssaultTransportAIInterface *getAssaultTransportAIInterface() const { return this; }	// slot 101
-	virtual void aiDoCommand(const AICommandParms *parms);		// 0x0048F7A7
-	virtual UpdateSleepTime update();							// 0x0048F828
+	virtual void aiDoCommand(const AICommandParms *parms);
+	virtual UpdateSleepTime update();
 
-	Bool isAttackPointless() const;								// 0x0048F61A
+	Bool isAttackPointless() const;
 	Bool isMemberWounded(const Object *member) const;			// 0x0048F64E: health ratio below MembersGetHealedAtLifeRatio (Zero Hour's name)
 	void retrieveMembers();										// 0x0048F690: orders every member outside back in (aiEnter) (Zero Hour's name)
 	void reset();												// 0x0048F365, the constructor calls it after setting 10 members
 
 protected:
-	virtual void xfer(Xfer *xfer);								// 0x0048F4AC
+	virtual void xfer(Xfer *xfer);
 
 	ObjectID m_memberIDs[MAX_TRANSPORT_SLOTS];			// +0x3E8
 	Bool m_memberHealing[MAX_TRANSPORT_SLOTS];			// +0x410

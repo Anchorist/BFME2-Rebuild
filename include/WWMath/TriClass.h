@@ -22,8 +22,8 @@ public:
 		((Vector3 *)N)->Normalize();
 	}
 
-	bool Contains_Point(const Vector3 &ipoint) const;			// 0x00724360
-	void Find_Dominant_Plane(int *axis1, int *axis2) const;			// 0x00724290
+	bool Contains_Point(const Vector3 &ipoint) const;
+	void Find_Dominant_Plane(int *axis1, int *axis2) const;
 };
 typedef char TriClassSize[(sizeof(TriClass) == 0x10) ? 1 : -1];
 

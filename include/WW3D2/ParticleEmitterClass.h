@@ -29,14 +29,14 @@ struct NewParticleStruct;
 class ParticleEmitterClass : public RenderObjClass
 {
 public:
-	ParticleEmitterClass(const ParticleEmitterClass &src);				// 0x001A1530
+	ParticleEmitterClass(const ParticleEmitterClass &src);
 	ParticleEmitterClass &operator=(const ParticleEmitterClass &that);
 	virtual ~ParticleEmitterClass();									// slot 1: 0x001A1720
 
 	virtual RenderObjClass *Clone() const;								// slot 2: 0x001A1800
-	static ParticleEmitterClass *Create_From_Definition(const ParticleEmitterDefClass &definition);	// 0x001A22F0
-	ParticleEmitterDefClass *Build_Definition() const;					// 0x001A2B00
-	bool Save(ChunkSaveClass &chunk_save) const;						// 0x001A30D0
+	static ParticleEmitterClass *Create_From_Definition(const ParticleEmitterDefClass &definition);
+	ParticleEmitterDefClass *Build_Definition() const;
+	bool Save(ChunkSaveClass &chunk_save) const;
 
 	virtual int Class_ID() const { return CLASSID_PARTICLEEMITTER; }	// slot 3: 0x001A13F0
 	virtual const char *Get_Name() const { return NameString; }		// slot 6: 0x0019B6E0
@@ -54,44 +54,44 @@ public:
 	virtual void Set_Force_Visible(int onoff);							// slot 105: 0x001A14E0
 	virtual bool Is_Complete() { return IsComplete; }					// slot 122: 0x001A1520
 
-	void Reset();														// 0x001A1A80
-	void Start();														// 0x001A1B20
-	void Stop();														// 0x001A1BD0
-	bool Is_Stopped();													// 0x001A1BE0
+	void Reset();
+	void Start();
+	void Stop();
+	bool Is_Stopped();
 	// Accessors that forward to the buffer or read the emitter's own members (out of line in retail: O001A0C30).
-	int Get_Render_Mode() const;										// 0x001A0C40
-	int Get_Frame_Mode() const;											// 0x001A0C50
-	Vector3 Get_Acceleration() const;									// 0x001A0C60
-	float Get_Lifetime() const;											// 0x001A0CB0
-	float Get_Future_Start_Time() const;								// 0x001A0CE0
-	float Get_Fade_Time() const;										// 0x001A0D40
-	float Get_Emission_Rate() const;									// 0x001A0D80
-	int Get_Max_Particles() const;										// 0x001A0DA0
-	Vector3 Get_Start_Velocity() const;									// 0x001A0DB0
-	float Get_Outwards_Vel() const;										// 0x001A0E00
-	float Get_Velocity_Inherit() const;									// 0x001A0E10
-	ShaderClass Get_Shader() const;										// 0x001A0E20
-	float Get_Initial_Orientation_Random() const;						// 0x001A0EA0
-	int Get_Line_Texture_Mapping_Mode() const;							// 0x001A0EB0
-	int Is_Merge_Intersections() const;									// 0x001A0EC0
-	int Is_Freeze_Random() const;										// 0x001A0ED0
-	int Is_Sorting_Disabled() const;									// 0x001A0EE0
-	int Are_End_Caps_Enabled() const;									// 0x001A0EF0
-	int Get_Subdivision_Level() const;									// 0x001A0F00
-	float Get_Noise_Amplitude() const;									// 0x001A0F10
-	float Get_Merge_Abort_Factor() const;								// 0x001A0F20
-	float Get_Texture_Tile_Factor() const;								// 0x001A0F30
-	Vector2 Get_UV_Offset_Rate() const;									// 0x001A0F40
+	int Get_Render_Mode() const;
+	int Get_Frame_Mode() const;
+	Vector3 Get_Acceleration() const;
+	float Get_Lifetime() const;
+	float Get_Future_Start_Time() const;
+	float Get_Fade_Time() const;
+	float Get_Emission_Rate() const;
+	int Get_Max_Particles() const;
+	Vector3 Get_Start_Velocity() const;
+	float Get_Outwards_Vel() const;
+	float Get_Velocity_Inherit() const;
+	ShaderClass Get_Shader() const;
+	float Get_Initial_Orientation_Random() const;
+	int Get_Line_Texture_Mapping_Mode() const;
+	int Is_Merge_Intersections() const;
+	int Is_Freeze_Random() const;
+	int Is_Sorting_Disabled() const;
+	int Are_End_Caps_Enabled() const;
+	int Get_Subdivision_Level() const;
+	float Get_Noise_Amplitude() const;
+	float Get_Merge_Abort_Factor() const;
+	float Get_Texture_Tile_Factor() const;
+	Vector2 Get_UV_Offset_Rate() const;
 	bool Is_Remove_On_Complete_Enabled() { return RemoveOnComplete; }
 	void Enable_Remove_On_Complete(bool onoff) { RemoveOnComplete = onoff; }
 
 	void Set_Position_Randomizer(Vector3Randomizer *rand);				// 0x001A1BF0
 	void Set_Velocity_Randomizer(Vector3Randomizer *rand);				// 0x001A1C40
-	Vector3Randomizer *Get_Creation_Volume() const;						// 0x001A1C90
-	Vector3Randomizer *Get_Velocity_Random() const;						// 0x001A1CB0
-	void Set_Base_Velocity(const Vector3 &base_vel);					// 0x001A1CE0
-	void Set_Outwards_Velocity(float out_vel);							// 0x001A1D30
-	void Set_Velocity_Inheritance_Factor(float inh_factor);				// 0x001A1D50
+	Vector3Randomizer *Get_Creation_Volume() const;
+	Vector3Randomizer *Get_Velocity_Random() const;
+	void Set_Base_Velocity(const Vector3 &base_vel);
+	void Set_Outwards_Velocity(float out_vel);
+	void Set_Velocity_Inheritance_Factor(float inh_factor);
 
 	virtual void Emit();												// slot 129: 0x001A2970
 	virtual int Get_User_Type() const { return EMITTER_TYPEID_DEFAULT; }	// slot 130 (shared stub 0x0065CE90)
@@ -102,8 +102,8 @@ protected:
 
 private:
 	virtual void Update_Cached_Bounding_Volumes() const;				// slot 127: 0x001A1D70
-	void Create_New_Particles(const Quaternion &curr_quat, const Vector3 &curr_orig);	// 0x001A2670
-	void Initialize_Particle(NewParticleStruct *newpart, unsigned int age, const Quaternion &quat, const Vector3 &orig);	// 0x001A1DE0
+	void Create_New_Particles(const Quaternion &curr_quat, const Vector3 &curr_orig);
+	void Initialize_Particle(NewParticleStruct *newpart, unsigned int age, const Quaternion &quat, const Vector3 &orig);
 
 	unsigned int EmitRate;												// +0xC4
 	unsigned int BurstSize;												// +0xC8

@@ -52,9 +52,9 @@ public:
 class AIGuardRetaliateMachine : public StateMachine
 {
 public:
-	const char *name() const;				// 0x0054521C
+	const char *name() const;
 	AIGuardRetaliateMachine(Object *owner);		// 0x0054551F
-	virtual ~AIGuardRetaliateMachine();			// 0x00545211
+	virtual ~AIGuardRetaliateMachine();
 	// Slot 16 (table 0x00C69E78), the one virtual this machine adds: true when the
 	// current state's ID is 0 (0x00545222). Provisional name; no string names it.
 	virtual Bool isCurrentStateZero() const;	// 0x00545222
@@ -62,7 +62,7 @@ public:
 	// The return state's condition: retail's test is a folded `return false` body (0x0047A699).
 	static Bool shouldAttackAggressor(State *thisState, void *userData);	// provisional name
 
-	Bool lookForInnerTarget();					// 0x005455E3
+	Bool lookForInnerTarget();
 	static Real getStdGuardRange(const Object *obj);	// 0x00545239 (the map files it as a free function): the AI data's retaliate distance, 1.15 times it for a melee weapon
 	void setNemesisID(ObjectID id) { m_nemesisToAttack = id; }
 	ObjectID getNemesisID() const { return m_nemesisToAttack; }
@@ -88,13 +88,13 @@ class AIGuardReturnState : public AIInternalMoveToState
 {
 public:
 	AIGuardReturnState(StateMachine *machine, UnsignedInt name) : AIInternalMoveToState(machine, name) {}
-	virtual StateReturnType onEnter();					// 0x00543CC4
+	virtual StateReturnType onEnter();
 	virtual void onExit(StateExitType status);			// slot 5, 0x0034BA5F (folded forwarder)
-	virtual StateReturnType update();					// 0x00543DF1
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;		// 0x00542ED2
-	virtual void xfer(Xfer *xfer);						// 0x00542D06
+	virtual void xfer(Xfer *xfer);
 
 	UnsignedInt m_nextReturnScanTime;					// +0x4C (Zero Hour's name): xfer 0x00542D06 transfers it, update 0x00543DF1 reschedules it
 };
@@ -103,9 +103,9 @@ protected:
 class AIGuardRetaliateReturnState : public AIGuardReturnState
 {
 public:
-	AIGuardRetaliateReturnState(StateMachine *machine);	// 0x005453BB
-	virtual StateReturnType onEnter();					// 0x005452CB
-	virtual StateReturnType update();					// 0x0054574D
+	AIGuardRetaliateReturnState(StateMachine *machine);
+	virtual StateReturnType onEnter();
+	virtual StateReturnType update();
 
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x005453DC
@@ -120,9 +120,9 @@ class AIGuardRetaliateAttackAggressorState : public State
 {
 public:
 	AIGuardRetaliateAttackAggressorState(StateMachine *machine);	// 0x005454D0
-	virtual StateReturnType onEnter();			// 0x0054587A
+	virtual StateReturnType onEnter();
 	virtual void onExit(StateExitType status);	// 0x00542C87 (shared)
-	virtual StateReturnType update();			// 0x00545A46
+	virtual StateReturnType update();
 
 	Object *findHordeTarget();					// 0x0054582A (the map files it as rva0054582A): the horde interface of the guard-kind nemesis chooses a unit near the owner
 

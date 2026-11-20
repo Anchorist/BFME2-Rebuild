@@ -15,7 +15,7 @@ void Rva006CC110Log(int level, const char *format, ...); // 0x006CC110 (the map 
 int rva006d3e40(const char *text); // 0x006D3E40 (EAString.cpp): decodes the UTF-8 character at the pointer
 #include "Apt/AptNativeFunction.h"
 #include "Apt/AptArray.h"
-const char *rva006d4280(const char *text, int *more); // 0x006D4280 (EAString.cpp): steps over one UTF-8 character; *more is 0 at the terminator
+const char *rva006d4280(const char *text, int *more); // (EAString.cpp): steps over one UTF-8 character; *more is 0 at the terminator
 // The cached native method objects of the String prototype (objectMemberLookup 0x006D7D80 builds them on first use; the
 // callbacks are 0x006D7350, charCodeAt 0x006D7410, 0x006D74E0, 0x006D75A0, 0x006D6EF0, 0x006D7670 (slice), ... in table order).
 // Their method names are not evidenced, so the pointers are numbered.

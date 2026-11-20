@@ -56,19 +56,19 @@ public:
 	SpawnPointProductionExitUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	const char *name() const; // 0x004A3B8F
+	const char *name() const;
 
 	// ExitInterface
-	virtual ExitDoorType reserveDoorForExit(const ThingTemplate *objType, Object *specificObject); // 0x004A3F3B
-	virtual void exitObjectViaDoor(Object *newObj, ExitDoorType exitDoor);	// 0x004A3E3E
+	virtual ExitDoorType reserveDoorForExit(const ThingTemplate *objType, Object *specificObject);
+	virtual void exitObjectViaDoor(Object *newObj, ExitDoorType exitDoor);
 
 protected:
 	virtual void xfer(Xfer *xfer);
 	virtual ~SpawnPointProductionExitUpdate();
 
 private:
-	void initializeBonePositions();	// 0x004A3CEA
-	void revalidateOccupiers();		// 0x004A3F04
+	void initializeBonePositions();
+	void revalidateOccupiers();
 
 public:
 	Bool m_bonePositionsReady;							// +0x24; reserveDoorForExit tests it (0x004A3F3B)

@@ -24,6 +24,7 @@ public:
 	virtual int hasActiveNotification();
 
 	void OnInitialized(unsigned int);
+	void ExternMessageWidth(int, const char *width, bool);	// 0x004E6801: the Apt extern call that sets the message width
 
 private:
 	Int m_movieLevel;                        // +0x04, AptPlayer::RemoveLevel at 0x4E6AC6

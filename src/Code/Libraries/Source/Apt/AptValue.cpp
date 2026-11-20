@@ -858,7 +858,7 @@ bool AptValue::toBool() const
 }
 
 // FUNCTION: BFME2 0x006DD6C0 size=1432 name=?toString@AptValue@@QBEXAAVEAStringC@@@Z evidence=N:ledger tier=A
-void rva006ffce0(AptValue *value, EAStringC &path); // 0x006FFCE0 (AptActionInterpreter.cpp): the dotted target path of a clip
+void rva006ffce0(AptValue *value, EAStringC &path); // (AptActionInterpreter.cpp): the dotted target path of a clip
 void AptValue::toString(EAStringC &sBuf) const
 {
     if (isUndefined()) {

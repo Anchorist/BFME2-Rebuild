@@ -17,7 +17,7 @@
 //   copies +8. SIZE 0xC.
 // Slot names follow the class family's design (mapper id, clone, time variance,
 // apply to a UV array, reset, normals, texture matrix); slot 8 is a BFME
-// addition whose role is not recovered and keeps the old views' name.
+// addition whose role is not recovered and keeps a placeholder name.
 #pragma once
 #ifndef BFME2_TEXTUREMAPPERCLASS_H
 #define BFME2_TEXTUREMAPPERCLASS_H

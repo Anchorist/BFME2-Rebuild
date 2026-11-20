@@ -15,8 +15,8 @@ class SpecialPowerTemplate;
 class UnpauseSpecialPowerUpgradeModuleData : public UpgradeModuleData
 {
 public:
-	UnpauseSpecialPowerUpgradeModuleData();							// 0x004B544A
-	static void buildFieldParse(MultiIniFieldParse &parse);			// 0x004B546A
+	UnpauseSpecialPowerUpgradeModuleData();
+	static void buildFieldParse(MultiIniFieldParse &parse);
 
 	const SpecialPowerTemplate *m_specialPowerTemplate;				// +0x118 SpecialPowerTemplate
 	Bool m_obeyRechargeOnTrigger;									// +0x11C ObeyRechageOnTrigger (INI token spelling)

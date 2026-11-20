@@ -28,7 +28,7 @@ public:
 class ClearanceTestingSlowDeathBehavior : public SlowDeathBehavior, public ClearanceTestGeometryInterface
 {
 public:
-	char const * name() const;	// 0x00483C63
+	char const * name() const;
 	ClearanceTestingSlowDeathBehavior(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;

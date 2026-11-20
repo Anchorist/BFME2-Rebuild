@@ -21,9 +21,9 @@ class Xfer;
 class ObjectRecoveryHelper : public ObjectHelper
 {
 public:
-	ObjectRecoveryHelper(Thing *thing, const ModuleData *moduleData);	// 0x0028C9F9
+	ObjectRecoveryHelper(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;				// slot 4, 0x0028CA4D
-	virtual UpdateSleepTime update();							// 0x004DF84F
+	virtual UpdateSleepTime update();
 
 protected:
 	virtual void loadPostProcess();								// slot 1 (0x00483CEF: tail-jumps to ObjectHelper's)

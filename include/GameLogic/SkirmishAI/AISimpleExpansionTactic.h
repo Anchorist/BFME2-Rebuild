@@ -13,14 +13,14 @@ class AISimpleExpansionTactic : public Rva005DCBE3
 {
 public:
 	AISimpleExpansionTactic();							// 0x005AA9DB
-	virtual ~AISimpleExpansionTactic();					// 0x005AA860 (row 11B)
+	virtual ~AISimpleExpansionTactic();					// (row 11B)
 	virtual Bool canRun(void *request);					// not written yet
-	virtual void cleanUp();								// 0x005AA88D
-	virtual void xfer(Xfer *xfer);						// 0x005AA90D
+	virtual void cleanUp();
+	virtual void xfer(Xfer *xfer);
 	virtual Bool initializeTeamTemplate(void *team, Int count);
 	virtual void run() {} // native 0x000B3FD0
-	virtual void update();								// 0x005AAB08
-	virtual AITactic *create();							// 0x005AAAD6, slot 9
+	virtual void update();
+	virtual AITactic *create();							// Slot 9
 
 	Rva00573B23 *m_buildRequest; // xfer load constructs this request via 0x00573A9B
 	UnsignedInt m_constructionState; // 0x005AAB08 advances this state through construction

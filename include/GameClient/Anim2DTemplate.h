@@ -11,6 +11,7 @@
 
 class Image;
 class INI;
+struct FieldParse;
 
 class Anim2DTemplate
 {
@@ -22,14 +23,17 @@ public:
 
 	void allocateImages(UnsignedShort count);
 	const Image *getFrame(UnsignedShort index) const;
-	void storeImage(const Image *image);				// 0x002D7355
+	void storeImage(const Image *image);
 	UnsignedShort getNumFrames() const { return m_numFrames; }
 
 protected:
 	// INI field parsers (protected static: the map's KAXPAVINI@@PAX1PBX@Z).
-	static void parseNumImages(INI *ini, void *instance, void *store, const void *userData);		// 0x002D72F1
-	static void parseImage(INI *ini, void *instance, void *store, const void *userData);			// 0x002D73EC
-	static void parseImageSequence(INI *ini, void *instance, void *store, const void *userData);	// 0x002D7412
+	static void parseNumImages(INI *ini, void *instance, void *store, const void *userData);
+	static void parseImage(INI *ini, void *instance, void *store, const void *userData);
+	static void parseImageSequence(INI *ini, void *instance, void *store, const void *userData);
+	// The INI field table of an animation definition: NumberImages, Image, ImageSequence, AnimationMode, AnimationDelay,
+	// RandomizeStartFrame; the three parsers above are its callbacks.
+	static const FieldParse s_anim2DFieldParseTable[];
 
 public:
 

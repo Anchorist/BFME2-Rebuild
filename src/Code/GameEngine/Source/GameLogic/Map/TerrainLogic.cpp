@@ -16,6 +16,7 @@
 #include "GameLogic/AIPathfind.h"
 #include "GameLogic/GameLogic.h"
 #include "GameLogic/Object.h"
+#include "GameClient/TerrainRoadType.h"
 
 // The singleton (retail VA 0x00DFEC50).
 TerrainLogic *TheTerrainLogic = NULL;
@@ -379,6 +380,10 @@ Bool TerrainLogic::parseWaypointData(DataChunkInput &file, DataChunkInfo *info, 
 // FUNCTION: BFME2 0x00280B1A size=109 name=?apply@Rva00281A15List@@QAEXABURva00280B1ACall@@@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x00280BE6 size=31 name=?getTowerObjectName@TerrainRoadType@@QAE?AVAsciiString@@W4BridgeTowerType@@@Z evidence=N:ledger tier=A
+AsciiString TerrainRoadType::getTowerObjectName(BridgeTowerType type)
+{
+	return m_towerObjectName[type];
+}
 
 // FUNCTION: BFME2 0x002811CA size=19 name=?parseWaypointDataChunk@TerrainLogic@@KA_NAAVDataChunkInput@@PAUDataChunkInfo@@PAX@Z evidence=N:ledger tier=A
 Bool TerrainLogic::parseWaypointDataChunk(DataChunkInput &file, DataChunkInfo *info, void *userData)

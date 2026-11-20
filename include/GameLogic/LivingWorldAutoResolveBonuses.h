@@ -12,7 +12,7 @@ public:
 	LivingWorldAutoResolveResourceBonus()
 		: m_minimumResources(-1), m_weaponMultiplier(1.0f), m_armorMultiplier(1.0f) {}
 
-	void parseBonusIniSubBlock(INI *ini);	// 0x00413DCC
+	void parseBonusIniSubBlock(INI *ini);
 
 	Int m_minimumResources;
 	Real m_weaponMultiplier;
@@ -27,7 +27,7 @@ public:
 	LivingWorldAutoResolveSciencePurchasePointBonus()
 		: m_minimumSciencePurchasePoints(-1), m_weaponMultiplier(1.0f), m_armorMultiplier(1.0f) {}
 
-	void parseBonusIniSubBlock(INI *ini);	// 0x004135CD
+	void parseBonusIniSubBlock(INI *ini);
 
 	Int m_minimumSciencePurchasePoints;
 	Real m_weaponMultiplier;

@@ -36,86 +36,86 @@ public:
 	NetPacket(TransportMessage *message);						// 0x0058E5EC
 	virtual ~NetPacket();										// slot 0, 0x0058D0E2
 
-	NetCommandList *getCommandList();							// 0x00593F15
-	Bool addCommand(NetCommandRef *msg);						// 0x005944D8
+	NetCommandList *getCommandList();
+	Bool addCommand(NetCommandRef *msg);
 	static _STL::list<NetPacket *, _STL::allocator<NetPacket *> > ConstructBigCommandPacketList(NetCommandRef *msg);	// 0x005946E1 (splits a command that does not fit one packet into wrapper packets)
 	const NetPacketAddress &getAddress() const { return m_addr; }	// inline: ConnectionManager::doRelay 0x004D3221 copies the two fields
-	void init();												// 0x0058D10A
-	Int rva0058E57B();											// 0x0058E57B (a count of eight-byte groups in the packet: len / 8 rounded up; the map has no better name)
-	void reset();												// 0x0058D160
+	void init();
+	Int rva0058E57B();											// (a count of eight-byte groups in the packet: len / 8 rounded up; the map has no better name)
+	void reset();
 
-	Bool rva0058D18C(NetCommandRef *msg);						// 0x0058D18C
-	Bool rva0058D296(NetCommandRef *msg);						// 0x0058D296 (the hero message: adds its data length)
-	Bool rva0058D211(NetCommandRef *msg);						// 0x0058D211
-	Bool rva0058D310(NetCommandRef *msg);						// 0x0058D310
-	Bool rva0058D58A(NetCommandRef *msg);						// 0x0058D58A
-	Bool rva0058D601(NetCommandRef *msg);						// 0x0058D601
+	Bool rva0058D18C(NetCommandRef *msg);
+	Bool rva0058D296(NetCommandRef *msg);						// (the hero message: adds its data length)
+	Bool rva0058D211(NetCommandRef *msg);
+	Bool rva0058D310(NetCommandRef *msg);
+	Bool rva0058D58A(NetCommandRef *msg);
+	Bool rva0058D601(NetCommandRef *msg);
 
-	static NetCommandMsg *readAckBothMessage(UnsignedByte *data, Int &offset);	// 0x0058DA7E
-	static NetCommandMsg *readAckStage1Message(UnsignedByte *data, Int &offset);	// 0x0058DB4D
-	static NetCommandMsg *readAckStage2Message(UnsignedByte *data, Int &offset);	// 0x0058DC1C
-	static NetCommandMsg *readFrameMessage(UnsignedByte *data, Int &offset);	// 0x0058DCEB
-	static NetCommandMsg *readKeepAliveMessage(UnsignedByte *data, Int &offset);	// 0x0058DEC5
-	static NetCommandMsg *readDisconnectKeepAliveMessage(UnsignedByte *data, Int &offset);	// 0x0058DEF7
-	static NetCommandMsg *readDisconnectPlayerMessage(UnsignedByte *data, Int &offset);	// 0x0058DF29
+	static NetCommandMsg *readAckBothMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readAckStage1Message(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readAckStage2Message(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readFrameMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readKeepAliveMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readDisconnectKeepAliveMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readDisconnectPlayerMessage(UnsignedByte *data, Int &offset);
 
-	static NetCommandMsg *readRouterFallbackMessage(UnsignedByte *data, Int &offset);	// 0x0058DD89
-	static NetCommandMsg *readPlayerLeaveMessage(UnsignedByte *data, Int &offset);	// 0x0058DDF2
-	static NetCommandMsg *readDestroyPlayerMessage(UnsignedByte *data, Int &offset);	// 0x0058DE5B
-	static NetCommandMsg *readDisconnectVoteMessage(UnsignedByte *data, Int &offset);	// 0x0058DFB8
-	static NetCommandMsg *readProgressMessage(UnsignedByte *data, Int &offset);	// 0x0058E047
-	static NetCommandMsg *rva0058E20D(UnsignedByte *data, Int &offset);	// 0x0058E20D (the hero message reader)
-	static NetCommandMsg *rva0058E2D7(UnsignedByte *data, Int &offset);	// 0x0058E2D7 (the file progress reader)
-	static NetCommandMsg *readInformPlayerLeaveFrameMessage(UnsignedByte *data, Int &offset);	// 0x0058E367
-	static NetCommandMsg *readGameMessage(UnsignedByte *data, Int &offset);	// 0x00591EA6
+	static NetCommandMsg *readRouterFallbackMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readPlayerLeaveMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readDestroyPlayerMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readDisconnectVoteMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readProgressMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *rva0058E20D(UnsignedByte *data, Int &offset);	// (the hero message reader)
+	static NetCommandMsg *rva0058E2D7(UnsignedByte *data, Int &offset);	// (the file progress reader)
+	static NetCommandMsg *readInformPlayerLeaveFrameMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readGameMessage(UnsignedByte *data, Int &offset);
 	static NetCommandMsg *readLoadCompleteMessage(UnsignedByte *data, Int &offset);	// 0x0058E0B0 (type 16; folded with the type 17 reader below: one body, no row of its own)
 	static NetCommandMsg *readCommandType17Message(UnsignedByte *data, Int &offset);	// 0x0058E0B0 (type 17)
 	static NetCommandMsg *readGameSpyStatsAuthKeyMessage(UnsignedByte *data, Int &offset);	// 0x00592520 (type 6; the map holds it as the free function Rva00592520Read)
-	static NetCommandMsg *rva00592208(UnsignedByte *data, Int &offset);	// 0x00592208 (type 30, the wide-string message; the map has no better name)
+	static NetCommandMsg *rva00592208(UnsignedByte *data, Int &offset);	// (type 30, the wide-string message; the map has no better name)
 	static NetCommandMsg *readFileMessage(UnsignedByte *data, Int &offset);	// 0x005922FB (type 19: the map holds it as the free function Rva005922FBRead; getCommandList case 19)
 	static NetCommandMsg *readFileAnnounceMessage(UnsignedByte *data, Int &offset);	// 0x005923C5 (type 21: the map holds it as Rva005923C5Read)
 	static NetCommandMsg *readRequestGameSpyStatsAuthKeyMessage(UnsignedByte *data, Int &offset);	// 0x00592496 (type 5: the map holds it as Rva00592496Read)
-	static NetCommandMsg *readRequestPlayerLeaveMessage(UnsignedByte *data, Int &offset);	// 0x0058E3F4
-	static NetCommandMsg *readRequestFrameDataMessage(UnsignedByte *data, Int &offset);	// 0x0058E481
-	static NetCommandMsg *readDisconnectFrameMessage(UnsignedByte *data, Int &offset);	// 0x0058E511
-	static NetCommandMsg *readChatMessage(UnsignedByte *data, Int &offset);	// 0x00592123
-	static NetCommandMsg *readDisconnectChatMessage(UnsignedByte *data, Int &offset);	// 0x0059205C
-	UnsignedByte rva0059192A(NetCommandRef *msg);				// 0x0059192A (room for a disconnect chat line)
-	UnsignedByte rva005919AF(NetCommandRef *msg);				// 0x005919AF (room for a chat line)
-	UnsignedByte rva0059188C(NetCommandRef *msg);				// 0x0059188C (room for a file announcement)
-	UnsignedByte rva00591D0D(NetCommandRef *msg);				// 0x00591D0D (room for a stats key request)
+	static NetCommandMsg *readRequestPlayerLeaveMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readRequestFrameDataMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readDisconnectFrameMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readChatMessage(UnsignedByte *data, Int &offset);
+	static NetCommandMsg *readDisconnectChatMessage(UnsignedByte *data, Int &offset);
+	UnsignedByte rva0059192A(NetCommandRef *msg);				// (room for a disconnect chat line)
+	UnsignedByte rva005919AF(NetCommandRef *msg);				// (room for a chat line)
+	UnsignedByte rva0059188C(NetCommandRef *msg);				// (room for a file announcement)
+	UnsignedByte rva00591D0D(NetCommandRef *msg);				// (room for a stats key request)
 
-	static NetCommandRef *ConstructNetCommandMsgFromRawData(UnsignedByte *data, UnsignedShort dataLength);	// 0x00592607
+	static NetCommandRef *ConstructNetCommandMsgFromRawData(UnsignedByte *data, UnsignedShort dataLength);
 
 protected:
-	static UnsignedInt GetBufferSizeNeededForCommand(NetCommandMsg *msg);	// 0x0059299C
-	static UnsignedInt GetGameCommandSize(NetCommandMsg *msg);	// 0x0058C356
-	static void FillBufferWithGameCommand(UnsignedByte *buffer, NetCommandRef *ref);	// 0x0058C488
-	static void FillBufferWithProgressMessage(UnsignedByte *buffer, NetCommandRef *ref);	// 0x0058CC8B
-	static void FillBufferWithAckCommand(UnsignedByte *buffer, NetCommandRef *ref);	// 0x0058C740
-	static void FillBufferWithRouterFallbackCommand(UnsignedByte *buffer, NetCommandRef *ref);	// 0x0058C8E4
+	static UnsignedInt GetBufferSizeNeededForCommand(NetCommandMsg *msg);
+	static UnsignedInt GetGameCommandSize(NetCommandMsg *msg);
+	static void FillBufferWithGameCommand(UnsignedByte *buffer, NetCommandRef *ref);
+	static void FillBufferWithProgressMessage(UnsignedByte *buffer, NetCommandRef *ref);
+	static void FillBufferWithAckCommand(UnsignedByte *buffer, NetCommandRef *ref);
+	static void FillBufferWithRouterFallbackCommand(UnsignedByte *buffer, NetCommandRef *ref);
 	static void FillBufferWithKeepAliveCommand(UnsignedByte *buffer, NetCommandRef *ref);	// 0x0058CACA (type 12)
 	static void rva0058CACAType25(UnsignedByte *buffer, NetCommandRef *ref);	// folded into 0x0058CACA (type 25, the disconnect keep-alive)
 	static void rva0058CCF2Type17(UnsignedByte *buffer, NetCommandRef *ref);	// folded into 0x0058CCF2 (type 17)
 	static void rva0058CF83Type9(UnsignedByte *buffer, NetCommandRef *ref);	// folded into 0x0058CF83 (type 9, the frame-data request)
-	static void FillBufferWithCommand(UnsignedByte *buffer, NetCommandRef *ref);	// 0x00592AAB
-	static void rva0059129F(UnsignedByte *buffer, NetCommandRef *ref);	// 0x0059129F (type 30, the wide-string message; the map has no better name)
-	static void FillBufferWithChatCommand(UnsignedByte *buffer, NetCommandRef *ref);	// 0x00591170
-	static void FillBufferWithFileCommand(UnsignedByte *buffer, NetCommandRef *ref);	// 0x005913CB
-	static void FillBufferWithFileAnnounceCommand(UnsignedByte *buffer, NetCommandRef *ref);	// 0x005914D4
-	static void FillBufferWithRequestGameSpyStatsAuthKeyCommand(UnsignedByte *buffer, NetCommandRef *ref);	// 0x005915D6
-	static void FillBufferWithGameSpyStatsAuthKeyCommand(UnsignedByte *buffer, NetCommandRef *ref);	// 0x00591691
-	static NetCommandMsg *readWrapperMessage(UnsignedByte *data, Int &offset);	// 0x0058E0E2
-	Bool addDisconnectFrameCommand(NetCommandRef *msg);			// 0x0058EB82
-	Bool addWrapperCommand(NetCommandRef *msg);					// 0x0058F2CA
-	Bool addFileCommand(NetCommandRef *msg);					// 0x00592C8C
-	Bool addFileAnnounceCommand(NetCommandRef *msg);			// 0x00592F2B
-	Bool addRequestGameSpyStatsAuthKeyCommand(NetCommandRef *msg);	// 0x00593A1F
-	Bool addGameSpyStatsAuthKeyCommand(NetCommandRef *msg);		// 0x00593C6D
-	Bool isRoomForFileMessage(NetCommandRef *msg);				// 0x005917DB
-	Bool isRoomForGameSpyStatsAuthKeyMessage(NetCommandRef *msg);	// 0x00591DAB
-	Bool addChatCommand(NetCommandRef *msg);					// 0x005933EB
-	Bool addDisconnectChatCommand(NetCommandRef *msg);			// 0x005931D1
+	static void FillBufferWithCommand(UnsignedByte *buffer, NetCommandRef *ref);
+	static void rva0059129F(UnsignedByte *buffer, NetCommandRef *ref);	// (type 30, the wide-string message; the map has no better name)
+	static void FillBufferWithChatCommand(UnsignedByte *buffer, NetCommandRef *ref);
+	static void FillBufferWithFileCommand(UnsignedByte *buffer, NetCommandRef *ref);
+	static void FillBufferWithFileAnnounceCommand(UnsignedByte *buffer, NetCommandRef *ref);
+	static void FillBufferWithRequestGameSpyStatsAuthKeyCommand(UnsignedByte *buffer, NetCommandRef *ref);
+	static void FillBufferWithGameSpyStatsAuthKeyCommand(UnsignedByte *buffer, NetCommandRef *ref);
+	static NetCommandMsg *readWrapperMessage(UnsignedByte *data, Int &offset);
+	Bool addDisconnectFrameCommand(NetCommandRef *msg);
+	Bool addWrapperCommand(NetCommandRef *msg);
+	Bool addFileCommand(NetCommandRef *msg);
+	Bool addFileAnnounceCommand(NetCommandRef *msg);
+	Bool addRequestGameSpyStatsAuthKeyCommand(NetCommandRef *msg);
+	Bool addGameSpyStatsAuthKeyCommand(NetCommandRef *msg);
+	Bool isRoomForFileMessage(NetCommandRef *msg);
+	Bool isRoomForGameSpyStatsAuthKeyMessage(NetCommandRef *msg);
+	Bool addChatCommand(NetCommandRef *msg);
+	Bool addDisconnectChatCommand(NetCommandRef *msg);
 	Bool addInformPlayerLeaveFrameCommand(NetCommandRef *msg);
 	Bool addDestroyPlayerCommand(NetCommandRef *msg);
 	Bool addDisconnectPlayerCommand(NetCommandRef *msg);
@@ -125,7 +125,7 @@ protected:
 	Bool addProgressMessage(NetCommandRef *msg);
 	Bool addFrameCommand(NetCommandRef *msg);
 	Bool addRouterFallbackCommand(NetCommandRef *msg);
-	Bool addGameCommand(NetCommandRef *msg);					// 0x0059096F
+	Bool addGameCommand(NetCommandRef *msg);
 	// Adders the linker folded into one body each (addCommand calls them from separate case blocks, so they are separate
 	// functions in the source): the three ack types 0x005939EE, the two keep-alive types 0x0058FE15, the load-complete and
 	// type 17 messages 0x0058F5E3, and the player-leave and frame-data requests 0x0058E8EA.
@@ -138,22 +138,22 @@ protected:
 	Bool addCommandType17(NetCommandRef *msg);					// 0x0058F5E3
 	Bool addRequestPlayerLeaveCommand(NetCommandRef *msg);		// 0x0058E8EA
 	Bool addRequestFrameDataCommand(NetCommandRef *msg);		// 0x0058E8EA
-	Bool rva0058EDEF(NetCommandRef *msg);						// 0x0058EDEF
-	Bool rva005936DB(NetCommandRef *msg);						// 0x005936DB
-	Bool isRoomForFrameMessage(NetCommandRef *msg);				// 0x0058D686
-	Bool isAckBothRepeat(NetCommandRef *msg);					// 0x0058D747
-	Bool isAckStage1Repeat(NetCommandRef *msg);					// 0x0058D7B6
+	Bool rva0058EDEF(NetCommandRef *msg);
+	Bool rva005936DB(NetCommandRef *msg);
+	Bool isRoomForFrameMessage(NetCommandRef *msg);
+	Bool isAckBothRepeat(NetCommandRef *msg);
+	Bool isAckStage1Repeat(NetCommandRef *msg);
 	Bool isAckStage2Repeat(NetCommandRef *msg);					// folded into 0x0058D7B6
-	Bool isAckRepeat(NetCommandRef *msg);						// 0x00590924
-	Bool addAckCommand(NetCommandRef *msg, UnsignedShort commandID, UnsignedByte originalPlayerID, UnsignedInt originalTimestamp, UnsignedInt originalFrame);	// 0x00591B1B (the shared writer behind the three ack arms)
-	void writeGameMessageArgumentToPacket(GameMessageArgumentDataType type, GameMessageArgumentType arg);	// 0x0058D826
-	Bool isRoomForWrapperMessage(NetCommandRef *msg);			// 0x0058D387
-	Bool isRoomForGameMessage(NetCommandRef *msg, GameMessage *gameMessage);	// 0x0058D92F
-	UnsignedByte rva0058D70B(NetCommandRef *msg);				// 0x0058D70B
-	Bool rva0058D408(NetCommandRef *msg);						// 0x0058D408
-	Bool rva0058D461(NetCommandRef *msg);						// 0x0058D461
-	Bool rva0058D4BA(NetCommandRef *msg);						// 0x0058D4BA
-	UnsignedByte rva0058D513(NetCommandRef *msg);				// 0x0058D513
+	Bool isAckRepeat(NetCommandRef *msg);
+	Bool addAckCommand(NetCommandRef *msg, UnsignedShort commandID, UnsignedByte originalPlayerID, UnsignedInt originalTimestamp, UnsignedInt originalFrame);	// (the shared writer behind the three ack arms)
+	void writeGameMessageArgumentToPacket(GameMessageArgumentDataType type, GameMessageArgumentType arg);
+	Bool isRoomForWrapperMessage(NetCommandRef *msg);
+	Bool isRoomForGameMessage(NetCommandRef *msg, GameMessage *gameMessage);
+	UnsignedByte rva0058D70B(NetCommandRef *msg);
+	Bool rva0058D408(NetCommandRef *msg);
+	Bool rva0058D461(NetCommandRef *msg);
+	Bool rva0058D4BA(NetCommandRef *msg);
+	UnsignedByte rva0058D513(NetCommandRef *msg);
 
 
 	UnsignedByte m_packet[0x1DC];								// +0x004

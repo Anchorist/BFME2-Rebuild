@@ -25,9 +25,9 @@ public:
 
 	void Build_AABTree(int polycount, TriIndex *polys, int vertcount, Vector3 *verts);		// 0x00199CD0
 	void Build_AABTree(int polycount, Vector3i *polys, int vertcount, Vector3 *verts);		// 0x00199E30
-	void Export(ChunkSaveClass &csave);														// 0x00199680
+	void Export(ChunkSaveClass &csave);
 
-	int Node_Count(void);																	// 0x00199640
+	int Node_Count(void);
 	int Poly_Count(void);																	// 0x00144010 (out of line; the identical getter bodies are one folded copy)
 
 	enum

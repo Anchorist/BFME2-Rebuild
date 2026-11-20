@@ -22,8 +22,8 @@ class W3DLaserDrawModuleData : public ModuleData
 {
 public:
 	W3DLaserDrawModuleData();													// 0x000C9A6F
-	virtual ~W3DLaserDrawModuleData();											// 0x000C9AE7
-	static void buildFieldParse(MultiIniFieldParse &parse);					// 0x000C928F
+	virtual ~W3DLaserDrawModuleData();
+	static void buildFieldParse(MultiIniFieldParse &parse);
 
 	Int InnerColor;																// 0x08 InnerColor (parseColorInt)
 	Int OuterColor;																// 0x0C OuterColor

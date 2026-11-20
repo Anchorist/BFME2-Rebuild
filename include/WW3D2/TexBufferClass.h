@@ -23,7 +23,7 @@ class TexBufferClass : public ShareBufferClass<TextureAsset>
 public:
 	TexBufferClass(int count, const char *msg);		// 0x0015D080
 	TexBufferClass(const TexBufferClass &that);		// 0x0015D0C0
-	virtual ~TexBufferClass(void);				// 0x0015D0E0
+	virtual ~TexBufferClass(void);
 };
 
 #endif

@@ -9,6 +9,9 @@
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
 // FUNCTION: BFME2 0x0047EB78 size=49 name=??1AnimalAIUpdate@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
+AnimalAIUpdate::~AnimalAIUpdate()
+{
+}
 // FUNCTION: BFME2 0x0047EBA9 size=6 name=?name@Rva0047EBA9Named@@QBEPBDXZ evidence=?:placeholder
 const char *AnimalAIUpdate::GetSnapshotName() const
 {
@@ -48,6 +51,16 @@ AIStateMachine *AnimalAIUpdate::makeStateMachine()
 
 
 // FUNCTION: BFME2 0x0047ECA8 size=121 name=??0AnimalAIUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
+AnimalAIUpdate::AnimalAIUpdate(Thing *thing, const ModuleData *moduleData)
+	: AIUpdateInterface(thing, moduleData),
+	m_unk0x3E8(INVALID_ID),
+	m_unk0x3F8(false),
+	m_unk0x3F9(false)
+{
+	m_unk0x3EC.z = 0.0f;
+	m_unk0x3EC.y = 0.0f;
+	m_unk0x3EC.x = 0.0f;
+}
 
 // FUNCTION: BFME2 0x0047ED3D size=39 name=?isReachableLayer@AnimalAIUpdateDestinationLayer@@QBEEPBVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=B hypothesis:mm1-held-object-encloses-unk-file
 

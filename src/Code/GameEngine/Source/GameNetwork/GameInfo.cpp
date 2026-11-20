@@ -3,6 +3,8 @@
 
 // stlport46
 #include <map>
+#include "Common/GameState.h"
+#include "GameClient/Image.h"
 #include <stdlib.h>
 #include "Common/Xfer.h"
 #include "GameNetwork/GameSlot.h"
@@ -13,6 +15,7 @@
 #include "Common/FileSystem.h"
 #include "Common/MultiplayerSettings.h"
 #include "Common/PlayerTemplate.h"
+#include "Common/GlobalData.h"
 #include "GameClient/GameText.h"
 extern MultiplayerSettings *TheMultiplayerSettings;
 AsciiString GetStrFileFromMap(AsciiString path);		// 0x0044CDF1
@@ -21,6 +24,7 @@ AsciiString GetAssetUsageFromMap(AsciiString path);	// 0x0044CF2F
 AsciiString GetReadmeFromMap(AsciiString path);		// 0x0044CFCE
 AsciiString GetArtPreviewFromMap(AsciiString path);	// 0x0044CB8A
 AsciiString GetPicPreviewFromMap(AsciiString path);	// 0x0044CC6E
+Int Rva00559EDCCompare(Int *defaults, Int *rules);
 UnsignedByte Rva0056BD91Pack(UnsignedByte kind, UnsignedByte first, char second, char third);	// 0x0056BD91 (packs a hero choice into the byte the lobby sends)
 Int NET_CRC_INTERVAL = 100;		// VA 0x00DBC800: frames between the network CRC checks
 extern "C" __declspec(dllimport) unsigned long __stdcall GetTickCount(void);	// IAT 0x00BBA294
@@ -123,6 +127,15 @@ void GameInfo::setGameRulesPreset(Int preset)
 }
 
 // FUNCTION: BFME2 0x003FF1C2 size=24 name=?rva003FF1C2@Rva003FF1C2@@QBE_NXZ evidence=?:placeholder tier=B hypothesis:K
+Bool GameInfo::hasSavedGameId() const
+{
+	for (Int i = 0; i < 0x10; ++i)
+	{
+		if (m_unk0xCC[i] != 0)
+			return true;
+	}
+	return false;
+}
 
 // FUNCTION: BFME2 0x003FF1DA size=36 name=?isPlayerPreorder@GameInfo@@QAE_NH@Z evidence=N:ledger tier=B hypothesis:K
 Bool GameInfo::isPlayerPreorder(Int slotId)
@@ -894,8 +907,53 @@ void GameInfo::adjustSlotsForMap()
 
 
 // FUNCTION: BFME2 0x00400783 size=277 name=?Rva00400783Get@@YA?AVAsciiString@@ABV1@_N@Z evidence=?:placeholder tier=A
+AsciiString EncodeGameInfoMapPath(const AsciiString &mapPath, Bool pack)
+{
+	AsciiString portable = TheGameState->realMapPathToPortableMapPath(mapPath);
+	if (pack)
+		portable = TheGameState->packPortableMapPath(portable);
+	AsciiString result;
+	if (portable.getLength() > 0)
+	{
+		AsciiString token;
+		while (true)
+		{
+			portable.nextToken(&token, "\\/");
+			if (portable.find('\\') == NULL)
+				break;
+			if (result.getLength() > 0)
+				result.concat('/');
+			result.concat(token);
+		}
+	}
+	return result;
+}
 
 // FUNCTION: BFME2 0x00400898 size=367 name=?_Rva00621350GameInfoMapPath@@YA?AVAsciiString@@ABV1@_N@Z evidence=?:placeholder tier=A
+AsciiString DecodeGameInfoMapPath(const AsciiString &input, Bool unpack)
+{
+	AsciiString path = input;
+	if (unpack)
+		path = TheGameState->unpackPortableMapPath(path);
+
+	AsciiString actualPath;
+	AsciiString token;
+	path.nextToken(&token, "\\/");
+	while (path.getLength() > 0)
+	{
+		actualPath.concat(token);
+		actualPath.concat('\\');
+		path.nextToken(&token, "\\/");
+	}
+
+	actualPath.concat(token);
+	actualPath.concat('\\');
+	actualPath.concat(token);
+	actualPath.concat('.');
+	actualPath.concat(TheMapCache->getMapExtension());
+	actualPath = TheGameState->portableMapPathToRealMapPath(actualPath);
+	return actualPath;
+}
 
 // FUNCTION: BFME2 0x00400A07 size=120 name=??0GameInfo@@QAE@XZ evidence=N:ledger tier=A
 GameInfo::GameInfo()
@@ -921,6 +979,26 @@ GameInfo::~GameInfo()
 // FUNCTION: BFME2 0x00400AF8 size=827 name=?GameInfoToAsciiString@@YA?AVAsciiString@@PBVGameInfo@@_N@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x00400E33 size=108 name=?setPlayerTemplate@GameSlot@@QAEXH@Z evidence=N:ledger tier=A
+void GameSlot::setPlayerTemplate(Int playerTemplate)
+{
+	const _STL::set<Int> &playable = ThePlayerTemplateStore->getPlayableIndices();
+	if (!playable.empty())
+	{
+		if (playerTemplate >= 0)
+		{
+			if (playable.find(playerTemplate) == playable.end())
+				playerTemplate = *playable.begin();
+		}
+		if ((TheWritableGlobalData->m_unk0x9D4 & 3) != 0 && playerTemplate == -1)
+			playerTemplate = *playable.begin();
+		m_playerTemplate = playerTemplate;
+		if (playerTemplate <= -2)
+		{
+			m_startPos = -1;
+			m_unk0x14 = -1;
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x00400E9F size=187 name=?setMapCRC@GameInfo@@QAEXI@Z evidence=N:ledger tier=A
 void GameInfo::setMapCRC(UnsignedInt crc)
@@ -983,6 +1061,44 @@ void GameInfo::setMapSize(UnsignedInt size)
 }
 
 // FUNCTION: BFME2 0x00401015 size=342 name=?rva00401015@GameInfo@@UAEPBVImage@@H@Z evidence=?:placeholder tier=A
+const Image *GameInfo::rva00401015(Int kind)
+{
+	const Image *image = NULL;
+	switch (kind)
+	{
+	case 1:
+	{
+		Int defaults[10];
+		MpGameRules::GetDefaults(m_unk0x5C, defaults);
+		Int numDiffs = Rva00559EDCCompare(defaults, m_gameRules);
+		if (numDiffs != 0)
+			image = TheMappedImageCollection->findImageByName(AsciiString("AptLobbyNonDefaultSettings"));
+		break;
+	}
+	case 0:
+	{
+		UnicodeString tooltip;
+		switch (m_unk0x5C)
+		{
+		case 0:
+		{
+			AsciiString map = getMap();
+			map.toLower();
+			MapCache::iterator it = TheMapCache->find(map);
+			if (it == TheMapCache->end() || !(*it).second.m_isOfficial)
+				image = TheMappedImageCollection->findImageByName(AsciiString("AptUserMapNotConquered"));
+			break;
+		}
+		case 1:
+			if (hasSavedGameId())
+				image = TheMappedImageCollection->findImageByName(AsciiString("AptLobbyResumeSavedGame"));
+			break;
+		}
+		break;
+	}
+	}
+	return image;
+}
 
 // FUNCTION: BFME2 0x0040116B size=3595 name=?ParseAsciiStringToGameInfo@@YA_NPAVGameInfo@@VAsciiString@@_N@Z evidence=N:ledger tier=A
 

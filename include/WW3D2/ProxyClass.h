@@ -22,7 +22,7 @@ class ProxyClass
 {
 public:
 	void Set_Name(const char *name) { Name = name; }
-	void Set_Transform(const BfmeProxyTransform &transform);	// 0x0019BFF0
+	void Set_Transform(const BfmeProxyTransform &transform);
 
 private:
 	StringClass Name;			// +0x00

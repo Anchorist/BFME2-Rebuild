@@ -5,7 +5,7 @@
 #pragma pack(push,1) // DRAFT layout policy; all known offsets asserted below
 class Watchdog {
 public:
-  Watchdog(int, int, int); // 0x00225616, called by createWatchdog 0x0022572C with three int arguments
+  Watchdog(int, int, int); // Called by createWatchdog 0x0022572C with three int arguments
   unsigned char m_unk0x4[0x90]; // +0x4..+0x93: the rest of the 0x94-byte object (createWatchdog 0x0022572C allocates 0x94)
   virtual ~Watchdog(); // slot=0x0 target=0x002257CD mangled=??_GWatchdog@@UAEPAXI@Z
   virtual void start(void); // slot=0x4 target=0x002256C0 mangled=?start@Watchdog@@UAEXXZ

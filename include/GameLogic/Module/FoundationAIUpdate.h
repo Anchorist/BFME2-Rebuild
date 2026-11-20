@@ -50,7 +50,7 @@ public:
 	// Behavior slot 38 returns the foundation interface at +0x20 for Foundation and Castle.
 	virtual FoundationAIUpdateInterface *slot38() { return this; }
 
-	virtual NameKeyType getModuleNameKey() const;				// 0x00455167
+	virtual NameKeyType getModuleNameKey() const;
 	virtual void onCapture(Player *oldOwner, Player *newOwner);	// override: primary slot 9, 0x00455B67 (the ledger calls it rva00455B67)
 	virtual void startBuildingSound(const OpaqueRefElement4 &sound, Int objectID);	// primary slot 13, 0x00455076 (the map files it as CastleBehavior::rva00455076) (starts the sound: m_24 = TheAudio->addAudioEvent)
 	virtual void finishBuildingSound();							// primary slot 14, 0x004550DE (ends it: TheAudio slot 27 on m_24, then m_24 = 1)
@@ -62,30 +62,30 @@ public:
 	virtual FoundationAIUpdateInterface *vslot01();
 	virtual void vslot02(ObjectID objectID);
 	virtual Bool hasBuilder() const { return m_28 != 0; }	// slot 3: the shared `[this+8] != 0` getter 0x00354EB0 (the interface this at +0x20, so +0x28)
-	virtual Object *rva00456134(void *context, const ThingTemplate *tmpl, const Coord3D *pos, Real angle, Player *owner, Bool flag);	// 0x00456134
-	virtual void rva00455374();									// 0x00455374
-	virtual Object *rva00455B33();								// 0x00455B33
-	virtual Object *construct(const ThingTemplate *tmpl, const Coord3D *pos, Real angle, Player *owner, Int flags, Bool flag);	// 0x0045569D
+	virtual Object *rva00456134(void *context, const ThingTemplate *tmpl, const Coord3D *pos, Real angle, Player *owner, Bool flag);
+	virtual void rva00455374();
+	virtual Object *rva00455B33();
+	virtual Object *construct(const ThingTemplate *tmpl, const Coord3D *pos, Real angle, Player *owner, Int flags, Bool flag);
 
 	virtual void slot46(Int);									// override: BehaviorModuleInterface slot 46, 0x00455B42 (the ledger calls it rva00455B42)
 
-	Bool isRemovableForConstruction(Object *obj);				// 0x00455241
+	Bool isRemovableForConstruction(Object *obj);
 
 protected:
 	virtual const char *GetSnapshotName() const;				// 0x00455070
-	virtual void xfer(Xfer *xfer);								// 0x004550F8
+	virtual void xfer(Xfer *xfer);
 
 public:
 	Int m_24;									// 0x24
 	ObjectID m_28;								// 0x28 (XferObjectID takes an ObjectID *)
 	Bool m_2C;									// 0x2C
 public:
-	virtual UpdateSleepTime update();	// 0x00455477, UpdateModuleInterface slot 0; retail's table has this class's own
+	virtual UpdateSleepTime update();	// UpdateModuleInterface slot 0; retail's table has this class's own
 
 private:
-	void rva00455BDD(const ThingTemplate *tmpl, const Coord3D *position, Real angle);	// 0x00455BDD: clears the objects in the way
-	Bool rva00455C98(const ThingTemplate *tmpl, const Coord3D *position, Real angle, Player *owner);	// 0x00455C98
-	void rva0045527A(ObjectID id);								// 0x0045527A: sets m_28 and shows or hides the owner object
+	void rva00455BDD(const ThingTemplate *tmpl, const Coord3D *position, Real angle);	// Clears the objects in the way
+	Bool rva00455C98(const ThingTemplate *tmpl, const Coord3D *position, Real angle, Player *owner);
+	void rva0045527A(ObjectID id);								// Sets m_28 and shows or hides the owner object
 protected:
 	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 };

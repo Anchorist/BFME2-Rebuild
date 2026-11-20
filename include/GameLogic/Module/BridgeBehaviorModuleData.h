@@ -56,7 +56,7 @@ public:
 	static ModuleData *friend_newModuleData(INI *ini);
 	static void parseFX(INI *ini, void *instance, void *store, const void *userData);
 	static void parseOCL(INI *ini, void *instance, void *store, const void *userData);
-	virtual ~BridgeBehaviorModuleData();					// 0x0045804A
+	virtual ~BridgeBehaviorModuleData();
 
 	Real m_lateralScaffoldSpeed;                           // +0x8 LateralScaffoldSpeed; velocity
 	Real m_verticalScaffoldSpeed;                          // +0xC VerticalScaffoldSpeed; velocity

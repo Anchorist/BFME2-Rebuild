@@ -1,5 +1,5 @@
 // Thing.h: SAGE common base of Object and Drawable. SIZE 0x60.
-// Target facts (old repo Code/GameEngine/Source/Common/Thing/thing.h):
+// Target facts:
 // ??0Thing 0x0030A188 stores vftable 0x00C086E0 (8 slots), ~Thing 0x0030A120.
 //  0 calculateHeightAboveTerrain 0x0030A4AC; 1-4 return null in Thing, Object's
 //  table returns this in 1-2, Drawable's in 3-4 (MSVC places each overload pair

@@ -15,9 +15,9 @@
 class AiOrdersManager
 {
 public:
-	void clearOrders(Int unk, Int objectID);		// 0x00355183
-	void rva0035519E(Int objectID);					// 0x0035519E
-	void rva003551EA(Int objectID) const;			// 0x003551EA (Player::rva002AABBC 0x002AABBC calls it for every object of the current selection)
+	void clearOrders(Int unk, Int objectID);
+	void rva0035519E(Int objectID);
+	void rva003551EA(Int objectID) const;			// (Player::rva002AABBC 0x002AABBC calls it for every object of the current selection)
 };
 
 extern AiOrdersManager *TheAiOrdersManager;		// VA 0x00E01E18

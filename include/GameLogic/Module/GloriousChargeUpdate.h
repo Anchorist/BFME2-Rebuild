@@ -31,7 +31,7 @@ typedef char GloriousChargeUpdate_base_size[(sizeof(SpecialAbilityUpdate) == 0x8
 class GloriousChargeUpdate : public SpecialAbilityUpdate
 {
 public:
-	char const * name() const;	// 0x004AD5C8
+	char const * name() const;
 	GloriousChargeUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;

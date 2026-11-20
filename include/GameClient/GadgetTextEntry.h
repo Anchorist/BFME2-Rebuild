@@ -15,10 +15,24 @@ class UnicodeString;
 class GameFont;
 class Image;
 
-// The text entry's user data (GameWindow::winGetUserData): only the cursor and the anchor of the selection are established.
+// The validation flags the script parser sets for a text entry (GadgetTextEntrySetValidationFlags 0x0032060D
+// writes the same word): the order of the NUMERICALONLY, ALPHANUMERICALONLY and ASCIIONLY keys in a window block.
+enum
+{
+	GADGET_ENTRY_ASCII_ONLY = 0x10,
+	GADGET_ENTRY_NUMERICAL_ONLY = 0x20,
+	GADGET_ENTRY_ALPHANUMERICAL_ONLY = 0x40
+};
+
+// The text entry's user data (GameWindow::winGetUserData): the validation flags, the maximum length, the secret text
+// flag and the cursor and the anchor of the selection are established; the rest is not recovered.
 struct GadgetTextEntryData
 {
-	unsigned char m_gap0x0[0x1C];
+	unsigned char m_gap0x0[0xC];
+	unsigned int m_validationFlags;		// +0x0C
+	short m_maxTextLen;					// +0x10
+	bool m_secretText;					// +0x12
+	unsigned char m_gap0x13[0x1C - 0x13];
 	short m_charPos;		// +0x1C (HasSelection 0x00444016 compares it with the next word)
 	short m_conCharPos;		// +0x1E
 };

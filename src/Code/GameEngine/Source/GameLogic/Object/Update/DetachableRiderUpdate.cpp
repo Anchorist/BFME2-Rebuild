@@ -28,9 +28,6 @@ int GetGameLogicRandomValue(int,int,char*,int);
 #include "Common/NameKeyGenerator.h"
 #include "Common/Xfer.h"
 // GameLogic/Object/Update/DetachableRiderUpdate.cpp: retail translation unit (skeleton).
-// Write each function below its FUNCTION annotation, in this (retail) order.
-// Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
-// Shared types belong in include/; no class or struct with a body in this file.
 // cl: /Oi- /D_CRTIMP= 
 
 

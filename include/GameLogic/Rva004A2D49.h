@@ -15,7 +15,7 @@ public:
 	Rva004A2D49(Thing *thing, const ModuleData *moduleData);
 	virtual ~Rva004A2D49();
 
-	void rva004A2D49(Bool enabled);						// 0x004A2D49
+	void rva004A2D49(Bool enabled);
 	virtual UpdateSleepTime update() { return UPDATE_SLEEP_FOREVER; }
 };
 // SIZE 0x20

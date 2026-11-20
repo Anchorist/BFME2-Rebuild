@@ -31,9 +31,9 @@ class DefaultStaticSortListClass : public StaticSortListClass
 {
 public:
 	DefaultStaticSortListClass();										// 0x00176A30
-	virtual ~DefaultStaticSortListClass();								// 0x00176AA0 (deleting destructor 0x00176B00)
-	virtual void Add_To_List(RenderObjClass *robj, unsigned int sort_level);	// 0x00176970
-	virtual void Render_And_Clear(RenderInfoClass &rinfo);				// 0x001769B0
+	virtual ~DefaultStaticSortListClass();								// (deleting destructor 0x00176B00)
+	virtual void Add_To_List(RenderObjClass *robj, unsigned int sort_level);
+	virtual void Render_And_Clear(RenderInfoClass &rinfo);
 
 	unsigned int Get_Min_Sort(void) const { return MinSort; }
 	unsigned int Get_Max_Sort(void) const { return MaxSort; }

@@ -10,7 +10,7 @@ class Rva00573B23;
 class AIStructureCreepTactic : public Rva005DCC24
 {
 public:
-	AIStructureCreepTactic();							// 0x005AB91D
+	AIStructureCreepTactic();
 	virtual Bool canRun(void *request);			// the base pure slots the class overrides (rows not written)
 	virtual void cleanUp();
 	virtual void xfer(Xfer *xfer);
@@ -18,7 +18,7 @@ public:
 	virtual void run();
 	virtual void update();
 	virtual ~AIStructureCreepTactic();
-	virtual AITactic *create();							// 0x005AB9AF, slot 9
+	virtual AITactic *create();							// Slot 9
 
 	ObjectID m_unk0x58; // 0x005AB843 transfers it through XferObjectID
 	UnsignedInt m_unk0x5C;

@@ -32,7 +32,7 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual UpdateSleepTime update();
-	void extendRadar();					// 0x004A0D0F
+	void extendRadar();
 
 protected:
 	virtual void xfer(Xfer *xfer);

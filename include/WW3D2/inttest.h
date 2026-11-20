@@ -56,7 +56,7 @@ public:
 	}
 
 protected:
-	void update_bounding_box(void);									// 0x001493F0
+	void update_bounding_box(void);
 
 public:
 	OBBoxClass Box;			// +0x04 world-space oriented box to test with

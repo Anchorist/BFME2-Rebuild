@@ -61,6 +61,7 @@ public:
 	void loadBackground();
 	void unloadAllLevels();
 	bool isActive();
+	int getUnk0x318() const { return m_unk0x318; }	// the strategic panels ignore clicks while it is not zero
 
 private:
 	struct ExternHandlerRegistration

@@ -5,4 +5,4 @@ inline int GameMakeColor(unsigned char r,unsigned char g,unsigned char b,unsigne
     return (a << 24) | (r << 16) | (g << 8) | b;
 }
 void GameGetColorComponents(int color, unsigned char *red, unsigned char *green, unsigned char *blue, unsigned char *alpha);	// 0x002D2A9F
-int GameDarkenColor(int color, int percent);	// 0x002D2B9A: darkens a packed colour by a percentage; the disabled text colour of a text entry uses (color, 25)
+int GameDarkenColor(int color, int percent);	// darkens a packed colour by a percentage; the disabled text colour of a text entry uses (color, 25)

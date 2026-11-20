@@ -21,12 +21,12 @@ public:
 	virtual void doFXObj(const Object *primary, const Object *secondary) const;	// 2, 0x001E24DC
 	virtual void GetAssetList(AssetList &assets, Int context) const;		// 3, 0x001E0C77
 
-	// 0x001E19E8 (2804 bytes): creates the particle system; doFXPos passes no objects.
+	// (2804 bytes): creates the particle system; doFXPos passes no objects.
 	void reallyDoFX(const Coord3D *primary, const Matrix3D *primaryMtx, const Object *primaryObj,
 		const Object *secondaryObj) const;
 
-	static void buildFieldParse(MultiIniFieldParse &p);					// 0x001DFD15
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001E264F
+	static void buildFieldParse(MultiIniFieldParse &p);
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	AsciiString m_name;								// 0x148 Name (parseAsciiString)
 	Int m_count;										// 0x14C Count (parseInt)

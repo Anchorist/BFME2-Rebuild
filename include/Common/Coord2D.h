@@ -1,5 +1,5 @@
-// Class-key class: retail operator==(Coord2D&) 0x0060DB1A uses AAVCoord2D;
-// old canonical Lib/Coord2D.h agrees. The 8-byte layout is unchanged.
+// Class-key class: retail operator==(Coord2D&) 0x0060DB1A uses AAVCoord2D.
+// The 8-byte layout is unchanged.
 // Coord2D.h: SAGE two-float coordinate. SIZE 0x8.
 #pragma once
 #ifndef BFME2_COORD2D_H

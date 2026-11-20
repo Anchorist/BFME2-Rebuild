@@ -34,13 +34,10 @@ void WinInstanceData::init()
 	m_style = 0;
 	m_status = 0;
 	m_owner = 0;
-	AsciiString &labelName = m_textLabelString;
-	AsciiString &tipName = m_tooltipString;
-	AsciiString &decoratedName = m_decoratedNameString;
-	labelName.clear();
-	tipName.clear();
+	m_textLabelString.clear();
+	m_tooltipString.clear();
 	m_tooltipDelay = -1;
-	decoratedName.clear();
+	m_decoratedNameString.clear();
 	m_imageOffset.x = 0;
 	m_imageOffset.y = 0;
 	m_font = 0;

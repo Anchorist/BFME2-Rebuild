@@ -45,38 +45,38 @@ class AptMyHero : public CreateAHeroHero
 {
 public:
 	AptMyHero(AptCreateAHero *);					// 0x005B12C5
-	virtual ~AptMyHero();							// 0x005B190D
+	virtual ~AptMyHero();
 	virtual bool slot4(int);						// 0x004083FF (CreateAHeroHero::Update in the map)
-	virtual void slot14();							// 0x005B023A
+	virtual void slot14();
 
-	void AdjustBling(int kind, int index, int delta);	// 0x005B0EE6 (kind 0: attribute, 1: appearance)
-	void rva005B0FCD(int);							// 0x005B0FCD
-	void rva005B0923(int);							// 0x005B0923
-	void rva005B097F(int);							// 0x005B097F
+	void AdjustBling(int kind, int index, int delta);	// (kind 0: attribute, 1: appearance)
+	void rva005B0FCD(int);
+	void rva005B0923(int);
+	void rva005B097F(int);
 	void RotateLeft();								// 0x005B0249 (the screen's rotate-left key flag; the map spells its owner Rva005B02B5)
 	void RotateRight();								// 0x005B027F
 	void ZoomIn();									// 0x005B02B5
 	void ZoomOut();									// 0x005B02FD
-	void rva005B1019();								// 0x005B1019
-	void FrameUpdate();								// 0x005B1EE2
-	void rva005B0416(int);							// 0x005B0416
-	void rva005B0446();								// 0x005B0446: rva005B0416 for the ten power slots
-	void rva005B1A6C();								// 0x005B1A6C
-	void rva005B1288();								// 0x005B1288
-	void rva005B0487();								// 0x005B0487: resets the view range (+0x168/+0x16C) from the manager's view info
-	void *rva005B045D();							// 0x005B045D: the pending hero while a switch is in progress (+0x14C is 1), else this hero
-	int rva005B0E60(const Object *);				// 0x005B0E60: the location number after the first '_' of the object's name, or -1
-	BfmePod8 *GetObjectInfo(int);					// 0x005B0E9F: the object-info record for a location (an empty record past the end)
-	void rva005B0608(unsigned int index, char *out, int);	// 0x005B0608: Apt query, the attribute range's low bound plus one
-	void rva005B0648(unsigned int index, char *out, int);	// 0x005B0648: Apt query, the bling value for the range's key plus one
-	void rva005B068E(unsigned int index, char *out, int);	// 0x005B068E: Apt query, the attribute range's high bound plus one
-	void rva005B06CE(unsigned int index, char *out, bool skip);	// 0x005B06CE: Apt query, the appearance range's +4 field
-	void rva005B04B6();								// 0x005B04B6
-	void rva00407BC3();								// 0x00407BC3 (the map spells its owner Rva004076EE: a method of the hero's base)
-	void rva00407C17();								// 0x00407C17 (same owner)
-	void rva005B21DA(CreateAHeroData *hero, bool, int);	// 0x005B21DA: takes the given hero as the screen's hero (the third argument is the manager page's refresh flag)
+	void rva005B1019();
+	void FrameUpdate();
+	void rva005B0416(int);
+	void rva005B0446();								// rva005B0416 for the ten power slots
+	void rva005B1A6C();
+	void rva005B1288();
+	void rva005B0487();								// Resets the view range (+0x168/+0x16C) from the manager's view info
+	void *rva005B045D();							// The pending hero while a switch is in progress (+0x14C is 1), else this hero
+	int rva005B0E60(const Object *);				// The location number after the first '_' of the object's name, or -1
+	BfmePod8 *GetObjectInfo(int);					// The object-info record for a location (an empty record past the end)
+	void rva005B0608(unsigned int index, char *out, int);	// Apt query, the attribute range's low bound plus one
+	void rva005B0648(unsigned int index, char *out, int);	// Apt query, the bling value for the range's key plus one
+	void rva005B068E(unsigned int index, char *out, int);	// Apt query, the attribute range's high bound plus one
+	void rva005B06CE(unsigned int index, char *out, bool skip);	// Apt query, the appearance range's +4 field
+	void rva005B04B6();
+	void rva00407BC3();								// (the map spells its owner Rva004076EE: a method of the hero's base)
+	void rva00407C17();								// (same owner)
+	void rva005B21DA(CreateAHeroData *hero, bool, int);	// Takes the given hero as the screen's hero (the third argument is the manager page's refresh flag)
 	void rva005B034A(int);							// 0x005B034A (the map has no row for it)
-	void SetBling(int kind, int index, int value);	// 0x005B07C1
+	void SetBling(int kind, int index, int value);
 
 	AptCreateAHero *m_screen;						// +0x140
 	CreateAHeroData *m_pendingHero;					// +0x144

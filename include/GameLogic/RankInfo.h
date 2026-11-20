@@ -15,7 +15,7 @@
 class RankInfo : public Overridable
 {
 public:
-	RankInfo();													// 0x0020010B
+	RankInfo();
 	// ~RankInfo 0x00200236 is the implicit destructor: retail's body does not reset the vtable pointer.
 
 	UnicodeString m_unk0x10;										// +0x10

@@ -30,22 +30,22 @@ class LivingWorldBattle : public Snapshot, public LivingWorldArmyListener
 {
 public:
 	LivingWorldBattle();	// 0x003F6A3A
-	virtual ~LivingWorldBattle();	// 0x003F6A91
+	virtual ~LivingWorldBattle();
 	virtual void RemoveArmy(LivingWorldArmy *army);	// listener slot 0, -4 thunk at 0x003F59FE
 
-	int GetTeamNumberForSide(int side);	// 0x003F458A
-	int GetRetreatedPlayerCount(int side);	// 0x003F46A8
-	int GetRetreatedPlayerID(int side, int index);	// 0x003F46C1 (-1 when index is out of range)
-	int rva003F4831();	// 0x003F4831 (the map's name; SelectPendingBattle takes a battle whose value is positive)
+	int GetTeamNumberForSide(int side);
+	int GetRetreatedPlayerCount(int side);
+	int GetRetreatedPlayerID(int side, int index);	// (-1 when index is out of range)
+	int rva003F4831();	// (the map's name; SelectPendingBattle takes a battle whose value is positive)
 	int getSideForPlayer(const LivingWorldPlayer *player);	// 0x003F4752: the side whose team number is the player's team, -1 when none
 	int findPlayerOnSide(int side, int playerID);	// 0x003F4798: the index of the side's record for the player id, -1 when none
 	int getNumHumanPlayersOnSide(int side);	// 0x003F47E6: records whose player is of kind 0
 	int findPlayerOnSide(int side, const LivingWorldPlayer *player);	// 0x003F4FAA: by the player's id
-	bool rva003F4538();	// 0x003F4538 (true once two different sides have player records)
-	int rva003F459A();	// 0x003F459A (the total number of player records over all sides)
-	int rva003F45DF();	// 0x003F45DF (the index of the first side with player records, 0 when none)
-	int *rva003F46F2(int side, int player);	// 0x003F46F2 (the player's combat-stat record)
-	int rva003F48FE(int side, int player, int index);	// 0x003F48FE (army pointer from the native indexed list, held by the current int map key)
+	bool rva003F4538();	// (true once two different sides have player records)
+	int rva003F459A();	// (the total number of player records over all sides)
+	int rva003F45DF();	// (the index of the first side with player records, 0 when none)
+	int *rva003F46F2(int side, int player);	// (the player's combat-stat record)
+	int rva003F48FE(int side, int player, int index);	// (army pointer from the native indexed list, held by the current int map key)
 
 	// The serialized type name is at 0x00837040. The constructor clears it.
 	enum ResolutionType { RESOLUTION_NONE = 0 };

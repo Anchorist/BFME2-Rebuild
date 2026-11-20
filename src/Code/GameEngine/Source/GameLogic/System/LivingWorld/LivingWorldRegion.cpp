@@ -10,6 +10,13 @@
 #include "GameLogic/LivingWorldRegion.h"
 #include "GameLogic/LivingWorldRegionConnection.h"
 #include "Common/Xfer.h"
+#include "Common/UnicodeString.h"
+#include "GameClient/GameText.h"
+#include "GameClient/Image.h"
+#include "GameLogic/LivingWorldLogic.h"
+#include "GameLogic/LivingWorldPlayer.h"
+
+extern LivingWorldLogic *TheLivingWorldLogic;
 
 // Helpers owned by their own units (rows at these RVAs elsewhere in the map).
 // Transfers the LivingWorldRegionID enum by its serialized name at 0x003EFE82.
@@ -20,6 +27,13 @@ Xfer *Rva003F2C0CXfer(Xfer *xfer, _STL::vector<Coord2D> *detourPoints);
 // FUNCTION: BFME2 0x003EFCD1 size=102 name=?xfer@RegionBonusInfo@@MAEXPAVXfer@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003EFD37 size=6 name=?GetSnapshotName@RegionBonusInfo@@MBEPBDXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003EFD3D size=50 name=?IsOwnedByTeam@LivingWorldRegion@@QBE_NH@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool LivingWorldRegion::IsOwnedByTeam(Int teamID) const
+{
+	if (m_ownerPlayerID == -1)
+		return false;
+	LivingWorldPlayer *owner = TheLivingWorldLogic->findPlayer(m_ownerPlayerID, 0);
+	return owner ? owner->m_team == teamID : false;
+}
 // FUNCTION: BFME2 0x003EFD6F size=68 name=?rva003EFD6F@LivingWorldRegion@@ABEHPAVRva002E2903Player@@@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003EFDB3 size=36 name=?rva003EFDB3@LivingWorldRegion@@ABEHPAVRva002E2903Player@@@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003EFDD7 size=4 name=?rva003EFDD7@GameSpyInfo@@UBEPAXXZ evidence=S:strong (vtable) tier=B hypothesis:mm1-held-object-same-path
@@ -48,8 +62,22 @@ Xfer *Rva003F2C0CXfer(Xfer *xfer, _STL::vector<Coord2D> *detourPoints);
 // FUNCTION: BFME2 0x003F03C9 size=58 name=?rva003F03C9@Rva003F03C9@@QAE?AVUnicodeString@@XZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003F0403 size=63 name=?getDisplayName@Rva003F0403@@QAE?AVUnicodeString@@XZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003F0442 size=36 name=?GetFortressPortrait@LivingWorldRegion@@QAEPBVImage@@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+const Image *LivingWorldRegion::GetFortressPortrait()
+{
+	if (!m_fortressPortrait.isEmpty())
+		return TheMappedImageCollection->findImageByName(m_fortressPortrait);
+	return NULL;
+}
 // FUNCTION: BFME2 0x003F0466 size=122 name=?GetFortressDisplayName@LivingWorldRegion@@QAE?AVUnicodeString@@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+UnicodeString LivingWorldRegion::GetFortressDisplayName()
+{
+	return !m_fortressDisplayName.isEmpty() ? TheGameText->fetch(m_fortressDisplayName) : UnicodeString::TheEmptyString;
+}
 // FUNCTION: BFME2 0x003F04E0 size=122 name=?GetFortressDisplayDescription@LivingWorldRegion@@QAE?AVUnicodeString@@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+UnicodeString LivingWorldRegion::GetFortressDisplayDescription()
+{
+	return !m_fortressDisplayDescription.isEmpty() ? TheGameText->fetch(m_fortressDisplayDescription) : UnicodeString::TheEmptyString;
+}
 // FUNCTION: BFME2 0x003F055A size=46 name=?rva003F055A@Rva003F055A@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003F0588 size=70 name=?rva003F0588@LivingWorldRegion@@QAEPAXXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003F05CE size=70 name=?rva003F05CE@LivingWorldRegion@@QAEHXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path

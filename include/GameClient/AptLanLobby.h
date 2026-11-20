@@ -49,7 +49,7 @@ class AptLanLobby : public _bfme_AptGameWindow, public MpGameSetupOwner
 {
 public:
 	AptLanLobby(void *);							// 0x00445EE3
-	virtual ~AptLanLobby();							// 0x0044455C
+	virtual ~AptLanLobby();
 
 	virtual int rva0044522D(int, unsigned char, int);		// primary slot 1 (GameWindow::input), 0x0044522D
 	virtual int rva00444826(int, unsigned int, unsigned int);	// primary slot 2 (GameWindow::system), 0x00444826
@@ -71,28 +71,29 @@ public:
 	virtual bool MpOwnerSelectTeam(GameSlot *, int);	// slot 12, 0x004449FD
 	virtual void MpOwnerGetLocalPlayerName(UnicodeString &);	// slot 14, 0x00444D7B
 
-	void OnStartGameBttn(const char *);				// 0x0044434A
-	void OnJoinGameBttn(const char *);				// 0x00444362
-	void OnLoadGameBttn(const char *);				// 0x00444376
-	void OnExitBttn(const char *);					// 0x00444342
-	void OnOptionsBttn(const char *);				// 0x0044432B
-	void OnCreateGameBttn(const char *);			// 0x00444F5D
-	void OnLoadScreen(const char *);				// 0x0044438A
-	void Cancel(int);								// 0x00444E69
-	void CancelMenu(void);							// 0x00444E8A
-	int GetValidSelectedGameInfo();					// 0x00444165: the selected game when TheLAN accepts it, else 0
-	void rva004443E7(void);							// 0x004443E7
-	void OnGameCreate();								// 0x004469D1 (LANAPI::OnGameCreate calls it on the open lobby screen when the game was created; the map holds the row on the placeholder class Rva004469D1Receiver; Open-BFME-1's AptLanLobby has the same name)
+	void OnStartGameBttn(const char *);
+	void OnJoinGameBttn(const char *);
+	void OnLoadGameBttn(const char *);
+	void OnExitBttn(const char *);
+	void OnOptionsBttn(const char *);
+	void OnCreateGameBttn(const char *);
+	void OnLoadScreen(const char *);
+	void Cancel(int);
+	void CancelMenu(void);
+	int GetValidSelectedGameInfo();					// The selected game when TheLAN accepts it, else 0
+	void rva004443E7(void);
+	void OnGameCreate();								// (LANAPI::OnGameCreate calls it on the open lobby screen when the game was created; the map holds the row on the placeholder class Rva004469D1Receiver; Open-BFME-1's AptLanLobby has the same name)
 	void refreshSetupBusy(bool enable);				// 0x0044446D (the map spells it rva0044446D@Rva004469D1Receiver): enable asks the setup panel to start for a guest, else marks it busy
-	void InitGadgets(const char *, void *, GameWindow *);	// 0x00445DA5: binds the custom games list and the player name entry
+	void InitGadgets(const char *, void *, GameWindow *);	// Binds the custom games list and the player name entry
 	void enterState1();								// 0x00444357: back to the first state (the lobby's idle step)
-	void rva00444083(int flags);					// 0x00444083: tells the movie to enable the create (1) and join (2) buttons, once each
-	void rva004440F4(int flags);					// 0x004440F4: the matching disables
-	void submitNameRva00444760();					// 0x00444760
-	void rva00446386(bool enable);					// 0x00446386: puts the name entry on or takes it off the tab list
-	void rva004442FD();								// 0x004442FD: forgets the game list and unlinks the name entry
-	void rva00444EC8();								// 0x00444EC8: LANAPI::OnHostLeave calls it on the open lobby
-	void rva00445E3E(LANGameInfo *games);			// 0x00445E3E: LANAPI::OnGameList hands the lobby the game list
+	void rva00444083(int flags);					// Tells the movie to enable the create (1) and join (2) buttons, once each
+	void rva004440F4(int flags);					// The matching disables
+	void submitNameRva00444760();
+	void rva00446386(bool enable);					// Puts the name entry on or takes it off the tab list
+	void rva004442FD();								// Forgets the game list and unlinks the name entry
+	void rva00444EC8();								// LANAPI::OnHostLeave calls it on the open lobby
+	void rva00445E3E(LANGameInfo *games);			// LANAPI::OnGameList hands the lobby the game list
+	void rva00444462();								// 0x00444462 (LANAPI::OnGameOptionsPacked calls it on the open lobby)
 
 	AptMpGameSetup m_setup;							// +0x288
 	GameSorter m_sorter;							// +0x668

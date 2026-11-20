@@ -17,7 +17,7 @@ class INI;
 class DamageNugget : public WeaponEffectNugget
 {
 public:
-	DamageNugget();										// 0x00507C2D
+	DamageNugget();
 	virtual ~DamageNugget();								// 0, deleting dtor 0x00508668
 	virtual Bool canAffectObject(const ProjectileNuggetFireInfo *info, Object *victim);	// 1, 0x005086CE
 	virtual Bool slot02(const ProjectileNuggetFireInfo *info, Int arg);	// 2, 0x00507943
@@ -29,7 +29,7 @@ public:
 	virtual Int slot10() const;	// 10, 0x0047A6A9
 	virtual Bool slot14(const ProjectileNuggetFireInfo *info, Object *victim, const Coord3D *pos);	// 14, 0x005084FC
 
-	// 0x005088F0: the INI parse callback the parser calls with (ini, nugget, NULL, NULL); it
+	// The INI parse callback the parser calls with (ini, nugget, NULL, NULL); it
 	// reads the base table and this class's table together.
 	static void parseFromINI(INI *ini, void *instance, void *store, const void *userData);
 

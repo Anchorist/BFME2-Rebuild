@@ -18,7 +18,7 @@ struct RGBColor;
 enum StaticGameLODLevel;
 // SIZE0x144: ctor25D489/dtor25D686, W3D ctor49DEA starts own fields144.
 // Native table7F5DA0 has100 slots; SubsystemInterface occupies0..13.
-// This declaration merges old canonical/private-view evidence, preserving
+// This declaration preserves
 // field offsets. Known names derive from ZH and independent native callers.
 // Getters16/17 read widthC/height10 (1DB0A8/1DB09D); ControlBarResizer1DB82D
 // divides these by800/600. Setter map names14/15 are reversed relative to

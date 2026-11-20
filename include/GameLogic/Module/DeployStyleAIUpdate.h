@@ -136,7 +136,7 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual ~DeployStyleAIUpdate();
-	void reset() throw();								// 0x0048E65B
+	void reset() throw();
 	// Module data getters (0x0048E828..0x0048E84B: this+4 is the module data, offsets from its parse table).
 	UnsignedInt getUnpackTime() const;					// 0x0048E828: +0x64
 	UnsignedInt getPackTime() const;					// 0x0048E82F: +0x68
@@ -144,15 +144,15 @@ public:
 	Bool getTurretsMustCenterBeforePacking() const;		// 0x0048E83D: +0x6E
 	Bool getMustDeployToAttack() const;					// 0x0048E844: +0x6F
 	const AsciiString &getDeployedAttributeModifier() const;	// 0x0048E84B: +0x70
-	void rva0048E6AB();								// 0x0048E6AB: no-trailing-flag mirror of the 0x4D5 flag
-	void rva0048E6D2();								// 0x0048E6D2: the 0x4D6 mirror
-	void doLastOutsideCommand();						// 0x0048E90B: replays the stored command through doCommand
-	void rva0048EB53(DeployStateTypes state);			// 0x0048EB53: enters a deploy state (the map's name; ZH's setMyState)
-	Bool rva0048E61F() const;									// 0x0048E61F: whether the stored command may be replayed (the map keeps it under an address-named class)
+	void rva0048E6AB();								// No-trailing-flag mirror of the 0x4D5 flag
+	void rva0048E6D2();								// The 0x4D6 mirror
+	void doLastOutsideCommand();						// Replays the stored command through doCommand
+	void rva0048EB53(DeployStateTypes state);			// Enters a deploy state (the map's name; ZH's setMyState)
+	Bool rva0048E61F() const;									// Whether the stored command may be replayed (the map keeps it under an address-named class)
 	void clearLastOutsideCommand();						// 0x0048E634
 	virtual Bool isIdle() const;						// slot 110, 0x0048E643
 	virtual void aiDoCommand(const AICommandParms *parms);	// 0x0048E8F7 (AICommandInterface slot 0): doCommand(parms, false)
-	virtual void doCommand(const AICommandParms *parms, Bool fromOutside);	// 0x0048EA0F: this class's own slot 154 (offset 0x268)
+	virtual void doCommand(const AICommandParms *parms, Bool fromOutside);	// This class's own slot 154 (offset 0x268)
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x0048EE8C)
 
 protected:

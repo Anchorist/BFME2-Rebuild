@@ -11,6 +11,7 @@ struct NetPacketAddress
 {
 	NetPacketAddress() : m_ip(0), m_port(0) {}
 	NetPacketAddress(UnsignedInt ip, UnsignedShort port) : m_ip(ip), m_port(port) {}
+	Bool isEmpty() const { return m_ip == 0 && m_port == 0; }
 	UnsignedInt m_ip;			// +0
 	UnsignedShort m_port;		// +4
 };

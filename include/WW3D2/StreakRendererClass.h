@@ -48,22 +48,22 @@ public:
 
 	StreakRendererClass();									// 0x00742F90
 	StreakRendererClass(const StreakRendererClass &src);	// 0x00746DE0
-	~StreakRendererClass();									// 0x00743010
+	~StreakRendererClass();
 	StreakRendererClass &operator=(const StreakRendererClass &that);	// 0x00743100
-	void Init(const W3dEmitterLinePropertiesStruct &props);	// 0x00743190
+	void Init(const W3dEmitterLinePropertiesStruct &props);
 	void Reset_Line();										// 0x00743060
-	void RenderStreak(RenderInfoClass &rinfo, const Matrix3D &transform, unsigned int point_count, Vector3 *points, Vector4 *rgbas, float *widths, const SphereClass &obj_sphere, unsigned int *personalities);	// 0x00743700
+	void RenderStreak(RenderInfoClass &rinfo, const Matrix3D &transform, unsigned int point_count, Vector3 *points, Vector4 *rgbas, float *widths, const SphereClass &obj_sphere, unsigned int *personalities);
 
-	int Is_Merge_Intersections() const;						// 0x00742EB0
-	int Is_Sorting_Disabled() const;						// 0x00742ED0
-	void Set_Noise_Amplitude(float amplitude);				// 0x00742EE0
-	void Set_Current_Subdivision_Level(unsigned int level);	// 0x00742EF0 (the level is not stored: retail writes 0)
-	void Set_Merge_Intersections(int onoff);				// 0x00742F00
-	void Set_Freeze_Random(int onoff);						// 0x00742F20
-	void Set_Disable_Sorting(int onoff);					// 0x00742F40
-	void Set_End_Caps(int onoff);							// 0x00742F60
-	TextureMapMode Get_Texture_Mapping_Mode() const;		// 0x00742F80
-	void Set_UV_Offset_Rate(const Vector2 &rate);			// 0x007430D0
+	int Is_Merge_Intersections() const;
+	int Is_Sorting_Disabled() const;
+	void Set_Noise_Amplitude(float amplitude);
+	void Set_Current_Subdivision_Level(unsigned int level);	// (the level is not stored: retail writes 0)
+	void Set_Merge_Intersections(int onoff);
+	void Set_Freeze_Random(int onoff);
+	void Set_Disable_Sorting(int onoff);
+	void Set_End_Caps(int onoff);
+	TextureMapMode Get_Texture_Mapping_Mode() const;
+	void Set_UV_Offset_Rate(const Vector2 &rate);
 	void Set_Texture(TextureClass *texture);				// 0x001911E0 (retail's body is shared with SegLineRendererClass::Set_Texture)
 	void Set_Shader(ShaderClass shader) { Shader = shader; }
 	void Set_Width(float width) { Width = width; }
@@ -78,7 +78,7 @@ public:
 	friend class StreakLineClass;
 
 private:
-	VertexFormatXYZUV1 *getVertexBuffer(unsigned int number);	// 0x00743090
+	VertexFormatXYZUV1 *getVertexBuffer(unsigned int number);
 
 	TextureClass Texture;				// +0x00 the handle (one factory pointer)
 	ShaderClass Shader;					// +0x04

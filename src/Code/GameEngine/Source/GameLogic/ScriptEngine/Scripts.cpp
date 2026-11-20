@@ -2168,6 +2168,11 @@ void ScriptList::deleteGroupRef(void *head, ScriptGroupLink *link)
 }
 
 // FUNCTION: BFME2 0x003B7812 size=36 name=?clear@ScriptList@@QAEXXZ evidence=N:ledger tier=A
+void ScriptList::clear()
+{
+	// Swap with a fresh empty list; the temporary's destructor frees what this list held.
+	ScriptList().swap(this);
+}
 
 // FUNCTION: BFME2 0x003B7836 size=260 name=?Rva003B7836@@YA_NAAVDataChunkInput@@PAUDataChunkInfo@@PAX@Z evidence=?:placeholder tier=A
 

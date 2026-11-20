@@ -19,13 +19,13 @@ class SiegeDeployHordeSpecialPower : public SpecialPowerUpdateModule
 {
 public:
 	SiegeDeployHordeSpecialPower(Thing *thing, const ModuleData *moduleData);	// 0x004C6386
-	virtual ~SiegeDeployHordeSpecialPower();									// 0x004C63EF
-	virtual NameKeyType getModuleNameKey() const;								// 0x004C6472
+	virtual ~SiegeDeployHordeSpecialPower();
+	virtual NameKeyType getModuleNameKey() const;
 	virtual void setTargetID(ObjectID id);										// slot 13, 0x003B23AF (shared with AIUpdateInterface::setLastCommandSource): stores +0x38
 	virtual void setTargetPosition(const Coord3D &position);					// slot 14, 0x004C63DE: stores +0x3C
 
 protected:
-	virtual void xfer(Xfer *xfer);												// 0x004C6416
+	virtual void xfer(Xfer *xfer);
 
 	ObjectID m_unk0x38;		// +0x38 xfer ObjectID
 	Coord3D m_unk0x3C;		// +0x3C xfer Coord3D

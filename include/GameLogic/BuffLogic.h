@@ -20,7 +20,7 @@ public:
 	virtual void reset() {}	// subsystem slot 9, 0x000B3FD0
 	virtual void update() {}	// subsystem slot 10, 0x000B3FD0
 
-	TBuff *addBuff(const ThingTemplate *buffTemplate, Drawable *drawable);	// 0x0030682A
+	TBuff *addBuff(const ThingTemplate *buffTemplate, Drawable *drawable);
 
 protected:
 	virtual void loadPostProcess() {}	// Snapshot slot 1, 0x000B3FD0

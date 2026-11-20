@@ -37,7 +37,7 @@ class ScriptConditions : public ScriptConditionsInterface
 {
 public:
 	ScriptConditions();			// 0x003E5513
-	virtual ~ScriptConditions();		// 0x003E5525
+	virtual ~ScriptConditions();
 
 	virtual void init() { reset(); }	// slot 1, 0x000D20D6: `mov eax,[ecx]; jmp [eax+0x24]`, a virtual tail call to reset (slot 9)
 	virtual void reset();			// slot 9, 0x003E3C66
@@ -50,141 +50,141 @@ protected:	// the map spells slots 15 and 16 protected (MAE)
 	virtual Bool evaluateSkirmishCommandButtonIsReady(Parameter *pSkirmishPlayerParm, Parameter *pTeamParm, Parameter *pCommandButtonParm, Bool allReady);	// slot 15, 0x003E73E7
 	virtual Bool evaluateTeamIsContained(Parameter *pTeamParm, Bool allContained);	// slot 16, 0x003E70AC
 
-	Bool evaluatePlayerHasNOrFewerBuildings(Parameter *pBuildingCountParm, Parameter *pSideParm);	// 0x003E4132
-	Bool evaluatePlayerIsInPlanningMode(Parameter *pSideParm);	// 0x003E54B4
-	Bool evaluateIsDestroyed(Parameter *pTeamParm);	// 0x003E5DE9
+	Bool evaluatePlayerHasNOrFewerBuildings(Parameter *pBuildingCountParm, Parameter *pSideParm);
+	Bool evaluatePlayerIsInPlanningMode(Parameter *pSideParm);
+	Bool evaluateIsDestroyed(Parameter *pTeamParm);
 
-	Bool evaluateNamedUnitDestroyed(Parameter *pUnitParm);	// 0x003E3DF7
-	Bool evaluateNamedUnitExists(Parameter *pUnitParm);	// 0x003E3E2F
-	Bool evaluateNamedUnitDying(Parameter *pUnitParm);	// 0x003E3E54
-	Bool evaluateNamedUnitTotallyDead(Parameter *pUnitParm);	// 0x003E3E89
-	Int rva003E40AF(Int v);	// 0x003E40AF
-	Bool evaluateNamedOwnedByPlayer(Parameter *pUnitParm, Parameter *pPlayerParm);	// 0x003E40D2
-	Bool evaluateVideoHasCompleted(Parameter *pVideoParm);	// 0x003E41E3
-	Bool evaluateSpeechHasCompleted(Parameter *pSpeechParm);	// 0x003E41FB
-	Bool evaluateAudioHasCompleted(Parameter *pAudioParm);	// 0x003E4213
-	Bool evaluateNamedCreated(Parameter *pUnitParm);	// 0x003E3F41
-	unsigned char evaluateTeamCreated(Parameter *pTeamParm);	// 0x003E6803
-	Bool evaluateTeamHasObjectStatus(Parameter *pTeamParm, Parameter *pObjectStatus, Bool entireTeam);	// 0x003E712A
-	Bool evaluateTeamOwnedByPlayer(Parameter *pTeamParm, Parameter *pPlayerParm);	// 0x003E6B57
-	Bool evaluateSkirmishSupplySourceAttacked(Parameter *pPlayerParm);	// 0x003E4AE4
-	Bool evaluateUnitHasObjectStatus(Parameter *unitParm, Parameter *statusParm);	// 0x003E5AE9
-	Bool evaluateNamedExitedArea(Parameter *pUnitParm, Parameter *pTriggerParm);	// 0x003E6D60
-	Bool evaluateMusicHasCompleted(Parameter *musicParm, Parameter *intParm);	// 0x003E7AFC
-	Bool evaluateTeamCachedFloatCompare(Parameter *teamParm, Parameter *comparison, Parameter *threshold, Parameter *input);	// 0x003E7E54
-	Bool rva003E859E(Parameter *teamParm, Parameter *stateParm);	// 0x003E859E
-	Bool evaluateTeamStateIs(Parameter *pTeamParm, Parameter *pStateParm);	// 0x003E9471
-	Bool evaluateTeamStateIsNot(Parameter *pTeamParm, Parameter *pStateParm);	// 0x003E94E5
-	Bool evaluateSkirmishPlayerIsFaction(Parameter *pSkirmishPlayerParm, Parameter *pFactionParm);	// 0x003E9E62
-	Bool evaluatePlayerSpecialPowerFromUnitTriggered(Parameter *pPlayerParm, Parameter *pSpecialPowerParm, Parameter *pUnitParm);	// 0x003E422B
-	Bool evaluatePlayerSpecialPowerFromUnitMidway(Parameter *pPlayerParm, Parameter *pSpecialPowerParm, Parameter *pUnitParm);	// 0x003E42A1
-	Bool evaluatePlayerSpecialPowerFromUnitComplete(Parameter *pPlayerParm, Parameter *pSpecialPowerParm, Parameter *pUnitParm);	// 0x003E4317
-	Bool evaluateUpgradeFromUnitComplete(Parameter *pPlayerParm, Parameter *pUpgradeParm, Parameter *pUnitParm);	// 0x003E438D
-	Bool evaluatePlayerDestroyedNOrMoreBuildings(Parameter *playerParm, Parameter *countParm, Parameter *opponentParm);	// 0x003E4810
-	Bool evaluateSkirmishStartPosition(Parameter *pSkirmishPlayerParm, Parameter *pStartNdx);	// 0x003E4B2A
-	Bool evaluateNamedAttackedByPlayer(Parameter *pUnitParm, Parameter *pPlayerParm);	// 0x003E96F5
-	Bool evaluateNamedAttackedByType(Parameter *pUnitParm, Parameter *pTypeParm);	// 0x003E9556
-	Bool evaluateTeamAttackedByType(Parameter *pTeamParm, Parameter *pTypeParm);	// 0x003E95FF
-	Bool evaluateTeamAttackedByPlayer(Parameter *pTeamParm, Parameter *pPlayerParm);	// 0x003E6784
-	Bool evaluateTeamDiscovered(Parameter *pTeamParm, Parameter *pPlayerParm);	// 0x003E6AA9
-	Bool evaluateTeamCanPathToNamed(Parameter *pTeamParm, Parameter *pUnitParm);	// 0x003E8535
-	Bool rva003E5105(Parameter *parameter, Parameter *b);	// 0x003E5105
-	Bool evaluateSkirmishPlayerHasPrereqsToBuild(Parameter *pSkirmishPlayerParm, Parameter *pObjectTypeParm);	// 0x003E49B8
-	Bool evaluateNamedDestroyedByType(Parameter *pUnitParm, Parameter *pTypeParm);	// 0x003EA076
-	Bool evaluatePlayerLostObjectType(Parameter *pPlayerParm, Parameter *pTypeParm);	// 0x003E9EB0
-	Bool evaluateHasCommandPointsToBuildUnit(Parameter *pPlayerParm, Parameter *pTypeParm);	// 0x003E81E8
-	Bool evaluateTeamInsideAreaPartially(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);	// 0x003E5E7D
-	Bool evaluateTeamInsideAreaEntirely(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);	// 0x003E66EA
-	Bool evaluateNamedInsideArea(Parameter *pUnitParm, Parameter *pTriggerParm);	// 0x003E5EFF
-	Bool evaluateNamedOutsideArea(Parameter *pUnitParm, Parameter *pTriggerParm);	// 0x003E66D5
-	Bool evaluateTeamOutsideAreaEntirely(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);	// 0x003E674C
-	Bool evaluateTeamEnteredAreaEntirely(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);	// 0x003E6DAA
-	Bool evaluateTeamEnteredAreaPartially(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);	// 0x003E6E0C
-	Bool evaluateTeamExitedAreaEntirely(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);	// 0x003E6E6E
-	Bool evaluateTeamExitedAreaPartially(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);	// 0x003E704A
-	Bool evaluateSkirmishNamedAreaExists(Parameter *pPlayerParm, Parameter *pTriggerParm);	// 0x003E77FF
-	Bool rva003E4D93(Parameter *pUnitParm, Parameter *pComparisonParm, Parameter *pValueParm, Parameter *pRangeParm);	// 0x003E4D93
+	Bool evaluateNamedUnitDestroyed(Parameter *pUnitParm);
+	Bool evaluateNamedUnitExists(Parameter *pUnitParm);
+	Bool evaluateNamedUnitDying(Parameter *pUnitParm);
+	Bool evaluateNamedUnitTotallyDead(Parameter *pUnitParm);
+	Int rva003E40AF(Int v);
+	Bool evaluateNamedOwnedByPlayer(Parameter *pUnitParm, Parameter *pPlayerParm);
+	Bool evaluateVideoHasCompleted(Parameter *pVideoParm);
+	Bool evaluateSpeechHasCompleted(Parameter *pSpeechParm);
+	Bool evaluateAudioHasCompleted(Parameter *pAudioParm);
+	Bool evaluateNamedCreated(Parameter *pUnitParm);
+	unsigned char evaluateTeamCreated(Parameter *pTeamParm);
+	Bool evaluateTeamHasObjectStatus(Parameter *pTeamParm, Parameter *pObjectStatus, Bool entireTeam);
+	Bool evaluateTeamOwnedByPlayer(Parameter *pTeamParm, Parameter *pPlayerParm);
+	Bool evaluateSkirmishSupplySourceAttacked(Parameter *pPlayerParm);
+	Bool evaluateUnitHasObjectStatus(Parameter *unitParm, Parameter *statusParm);
+	Bool evaluateNamedExitedArea(Parameter *pUnitParm, Parameter *pTriggerParm);
+	Bool evaluateMusicHasCompleted(Parameter *musicParm, Parameter *intParm);
+	Bool evaluateTeamCachedFloatCompare(Parameter *teamParm, Parameter *comparison, Parameter *threshold, Parameter *input);
+	Bool rva003E859E(Parameter *teamParm, Parameter *stateParm);
+	Bool evaluateTeamStateIs(Parameter *pTeamParm, Parameter *pStateParm);
+	Bool evaluateTeamStateIsNot(Parameter *pTeamParm, Parameter *pStateParm);
+	Bool evaluateSkirmishPlayerIsFaction(Parameter *pSkirmishPlayerParm, Parameter *pFactionParm);
+	Bool evaluatePlayerSpecialPowerFromUnitTriggered(Parameter *pPlayerParm, Parameter *pSpecialPowerParm, Parameter *pUnitParm);
+	Bool evaluatePlayerSpecialPowerFromUnitMidway(Parameter *pPlayerParm, Parameter *pSpecialPowerParm, Parameter *pUnitParm);
+	Bool evaluatePlayerSpecialPowerFromUnitComplete(Parameter *pPlayerParm, Parameter *pSpecialPowerParm, Parameter *pUnitParm);
+	Bool evaluateUpgradeFromUnitComplete(Parameter *pPlayerParm, Parameter *pUpgradeParm, Parameter *pUnitParm);
+	Bool evaluatePlayerDestroyedNOrMoreBuildings(Parameter *playerParm, Parameter *countParm, Parameter *opponentParm);
+	Bool evaluateSkirmishStartPosition(Parameter *pSkirmishPlayerParm, Parameter *pStartNdx);
+	Bool evaluateNamedAttackedByPlayer(Parameter *pUnitParm, Parameter *pPlayerParm);
+	Bool evaluateNamedAttackedByType(Parameter *pUnitParm, Parameter *pTypeParm);
+	Bool evaluateTeamAttackedByType(Parameter *pTeamParm, Parameter *pTypeParm);
+	Bool evaluateTeamAttackedByPlayer(Parameter *pTeamParm, Parameter *pPlayerParm);
+	Bool evaluateTeamDiscovered(Parameter *pTeamParm, Parameter *pPlayerParm);
+	Bool evaluateTeamCanPathToNamed(Parameter *pTeamParm, Parameter *pUnitParm);
+	Bool rva003E5105(Parameter *parameter, Parameter *b);
+	Bool evaluateSkirmishPlayerHasPrereqsToBuild(Parameter *pSkirmishPlayerParm, Parameter *pObjectTypeParm);
+	Bool evaluateNamedDestroyedByType(Parameter *pUnitParm, Parameter *pTypeParm);
+	Bool evaluatePlayerLostObjectType(Parameter *pPlayerParm, Parameter *pTypeParm);
+	Bool evaluateHasCommandPointsToBuildUnit(Parameter *pPlayerParm, Parameter *pTypeParm);
+	Bool evaluateTeamInsideAreaPartially(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);
+	Bool evaluateTeamInsideAreaEntirely(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);
+	Bool evaluateNamedInsideArea(Parameter *pUnitParm, Parameter *pTriggerParm);
+	Bool evaluateNamedOutsideArea(Parameter *pUnitParm, Parameter *pTriggerParm);
+	Bool evaluateTeamOutsideAreaEntirely(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);
+	Bool evaluateTeamEnteredAreaEntirely(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);
+	Bool evaluateTeamEnteredAreaPartially(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);
+	Bool evaluateTeamExitedAreaEntirely(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);
+	Bool evaluateTeamExitedAreaPartially(Parameter *pTeamParm, Parameter *pTriggerParm, Parameter *pTypeParm);
+	Bool evaluateSkirmishNamedAreaExists(Parameter *pPlayerParm, Parameter *pTriggerParm);
+	Bool rva003E4D93(Parameter *pUnitParm, Parameter *pComparisonParm, Parameter *pValueParm, Parameter *pRangeParm);
 	Bool evaluatePlayerHasHeroesAtRankLevel(Parameter *pPlayerParm, Parameter *pCountParm, Parameter *pRankParm);	// 0x003E85E0 (role name: counts the player's hero units, KINDOF_HERO, whose veterancy level is at least the rank; map placeholder rva003E85E0)
-	Bool evaluateAllDestroyed(Parameter *pPlayerParm);	// 0x003E3C89
-	Bool evaluateAllBuildFacilitiesDestroyed(Parameter *pPlayerParm);	// 0x003E3D10
-	Bool evaluateConditionHelper(Condition *pCondition);	// 0x003EA9AF
-	Bool evaluateDistanceBetweenObjects(Condition *pCondition);	// 0x003E4C8D
-	Bool evaluateSkirmishSupplySourceSafe(Condition *pCondition, Parameter *pPlayerParm, Parameter *pValueParm);	// 0x003E4A63
-	Bool evaluateCounterCounter(Condition *pCondition);	// 0x003E7CBA
-	Bool evaluateSkirmishPlayerHasUnitsInArea(Condition *pCondition, Parameter *pSkirmishPlayerParm, Parameter *pTriggerParm);	// 0x003E782D
-	Bool evaluateSkirmishPlayerIsOutsideArea(Condition *pCondition, Parameter *pSkirmishPlayerParm, Parameter *pTriggerParm);	// 0x003E79AF
-	Bool evaluateTeamCountCompare(Parameter *pTeamParm, Parameter *pCountParm, Parameter *pKindParm);	// 0x003E5E2F
-	Bool evaluatePlayerHasCredits(Parameter *pValueParm, Parameter *pOpParm, Parameter *pPlayerParm);	// 0x003E3F59
-	Bool evaluateBuildingEntered(Parameter *pPlayerParm, Parameter *pUnitParm);	// 0x003E3FFE
+	Bool evaluateAllDestroyed(Parameter *pPlayerParm);
+	Bool evaluateAllBuildFacilitiesDestroyed(Parameter *pPlayerParm);
+	Bool evaluateConditionHelper(Condition *pCondition);
+	Bool evaluateDistanceBetweenObjects(Condition *pCondition);
+	Bool evaluateSkirmishSupplySourceSafe(Condition *pCondition, Parameter *pPlayerParm, Parameter *pValueParm);
+	Bool evaluateCounterCounter(Condition *pCondition);
+	Bool evaluateSkirmishPlayerHasUnitsInArea(Condition *pCondition, Parameter *pSkirmishPlayerParm, Parameter *pTriggerParm);
+	Bool evaluateSkirmishPlayerIsOutsideArea(Condition *pCondition, Parameter *pSkirmishPlayerParm, Parameter *pTriggerParm);
+	Bool evaluateTeamCountCompare(Parameter *pTeamParm, Parameter *pCountParm, Parameter *pKindParm);
+	Bool evaluatePlayerHasCredits(Parameter *pValueParm, Parameter *pOpParm, Parameter *pPlayerParm);
+	Bool evaluateBuildingEntered(Parameter *pPlayerParm, Parameter *pUnitParm);
 
 	// The other named condition rows of ScriptConditions.cpp, with the signature
 	// and access their decorated map names state (IAE protected, QAE public).
 	// Rows under placeholder names or placeholder parameter types are not declared.
 	Bool evaluateNamedUnitStance(Parameter *parm1, Parameter *parm2);	// 0x003E5267 (map placeholder rva003E5267: StancesBehavior current stance against the parameter)
 	Bool evaluateNamedGateIsOpen(Parameter *parm1);	// 0x003E3EC3 (map placeholder rva003E3EC3: GateOpenAndCloseBehavior primary slot 6)
-	Bool evaluateBridgeBroken(Parameter *parm1);	// 0x003E3D95
-	Bool evaluateBridgeRepaired(Parameter *parm1);	// 0x003E3DC6
-	Bool evaluateIsBuildingEmpty(Parameter *parm1);	// 0x003E4079
-	Bool evaluatePlayerHasPower(Parameter *parm1);	// 0x003E417D
-	Bool evaluateScienceAcquired(Parameter *parm1, Parameter *parm2);	// 0x003E4403
-	Bool evaluateCanPurchaseScience(Parameter *parm1, Parameter *parm2);	// 0x003E446F
-	Bool evaluateSciencePurchasePoints(Parameter *parm1, Parameter *parm2);	// 0x003E44D1
-	Bool evaluateNamedBaseUnpackableForPlayer(Parameter *parm1, Parameter *parm2);	// 0x003E4565
-	Bool evaluatePlayerHasComparisonPercentPower(Parameter *parm1, Parameter *parm2, Parameter *parm3);	// 0x003E46B4
-	Bool evaluatePlayerHasComparisonValueExcessPower(Parameter *parm1, Parameter *parm2, Parameter *parm3);	// 0x003E477F
-	Bool evaluateUnitHasEmptied(Parameter *parm1);	// 0x003E4860
-	Bool evaluateSkirmishPlayerHasBeenAttackedByPlayer(Parameter *parm1, Parameter *parm2);	// 0x003E4BFA
-	Bool evaluatePlayerCompareLightPoints(Parameter *parm1, Parameter *parm2, Parameter *parm3);	// 0x003E4F79
-	Bool evaluateCanBuildObjectTypeAtBase(Parameter *parm1, Parameter *parm2, Parameter *parm3);	// 0x003E5017
-	Bool evaluateNamedCanPathToWaypoint(Parameter *parm1, Parameter *parm2);	// 0x003E50B4
-	Bool evaluateHasEvaEventPlayedInLastNSeconds(const AsciiString &name, Real value);	// 0x003E543A
-	Bool evaluateUnitHealth(Parameter *parm1, Parameter *parm2, Parameter *parm3);	// 0x003E5587
-	Bool evaluatePlayerHasNOrFewerFactionBuildings(Parameter *parm1, Parameter *parm2);	// 0x003E586B
-	Bool evaluatePlayerHasNOrFewerBases(Parameter *parm1, Parameter *parm2);	// 0x003E58F0
-	Bool evaluateCanBuildAtBase(Parameter *parm1, Parameter *parm2);	// 0x003E5B11
-	Bool evaluatePlayerHasKilledKindOfUnits(Parameter *parm1, Parameter *parm2, Parameter *parm3);	// 0x003E5C04
-	Bool evaluatePlayerHasNumberUnitsDistanceFromObject(Parameter *parm1, Parameter *parm2, Parameter *parm3, Parameter *parm4, Parameter *parm5);	// 0x003E609F
-	Bool evaluatePlayerHasUnitTypeInArea(Condition *pCondition, Parameter *parm1, Parameter *parm2, Parameter *parm3, Parameter *parm4, Parameter *parm5, Parameter *parm6, Bool flag);	// 0x003E61A4
-	Bool evaluatePlayerHasUnitKindInArea(Condition *pCondition, Parameter *parm1, Parameter *parm2, Parameter *parm3, Parameter *parm4, Parameter *parm5);	// 0x003E64A6
-	Bool evaluateNamedDiscovered(Parameter *parm1, Parameter *parm2);	// 0x003E6A2B
-	Bool evaluateNamedEnteredArea(Parameter *parm1, Parameter *parm2);	// 0x003E6D0A
-	Bool evaluateSkirmishValueInArea(Condition *pCondition, Parameter *parm1, Parameter *parm2, Parameter *parm3, Parameter *parm4);	// 0x003E719C
-	Bool evaluateSkirmishUnownedFactionUnitComparison(Parameter *parm1, Parameter *parm2, Parameter *parm3);	// 0x003E749E
-	Bool evaluateSkirmishPlayerHasComparisonGarrisoned(Parameter *parm1, Parameter *parm2, Parameter *parm3);	// 0x003E7597
-	Bool evaluateSkirmishPlayerHasComparisonCapturedUnits(Parameter *parm1, Parameter *parm2, Parameter *parm3);	// 0x003E76E4
-	Bool evaluateSkirmishPlayerHasDiscoveredPlayer(Parameter *parm1, Parameter *parm2);	// 0x003E79F5
-	Bool evaluateDistanceBetweenTeams(Condition *pCondition);	// 0x003E7B56
-	Bool evaluateCounterSeconds(Condition *pCondition);	// 0x003E7D83
-	Bool evaluateTeamIsLedByUnit(Parameter *parm1, Parameter *parm2);	// 0x003E803D
-	Bool evaluateHasCommandPointsToBuildTeam(Parameter *parm1, Parameter *parm2);	// 0x003E80DA
-	Bool evaluatePlayerHasKilledTypeUnits(Parameter *parm1, Parameter *parm2, Parameter *parm3);	// 0x003E82E2
-	Bool evaluateTeamCanPathToWaypoint(Parameter *parm1, Parameter *parm2);	// 0x003E84C5
-	Bool evaluateUnitHasToggledWeapon(Parameter *parm1, Parameter *parm2);	// 0x003E89A9
-	Bool evaluateAnyUnitsUsingBloodthirsty(Parameter *parm1);	// 0x003E8AA9
-	Bool evaluateSkirmishSpecialPowerIsReady(Parameter *parm1, Parameter *parm2);	// 0x003E9062
-	Bool evaluateSkirmishCanFireSpecialPowerOnTeam(Parameter *parm1, Parameter *parm2, Parameter *parm3);	// 0x003E91F6
-	Bool evaluateGameModeActive(Parameter *parm1);	// 0x003E92B2
-	Bool evaluateNamedUnitRankLevel(Parameter *parm1, Parameter *parm2);	// 0x003E92DF
-	Bool evaluateHasUnits(Parameter *parm1);	// 0x003E9373
-	Bool evaluateBuiltByPlayer(Condition *pCondition, Parameter *parm1, Parameter *parm2);	// 0x003E977E
-	Bool evaluateNamedReachedWaypointsEnd(Parameter *parm1, Parameter *parm2);	// 0x003E992C
-	Bool evaluateTeamReachedWaypointsEnd(Parameter *parm1, Parameter *parm2);	// 0x003E9A1F
-	Bool evaluateNamedSelected(Condition *pCondition, Parameter *parm1);	// 0x003E9B6A
-	Bool evaluatePlayerUnitCondition(Condition *pCondition, Parameter *parm1, Parameter *parm2, Parameter *parm3, Parameter *parm4);	// 0x003E9C3B
-	Bool evaluateHasDelayedCarryoverUnitOfType(const AsciiString &name, Parameter *parm1);	// 0x003EA87C
+	Bool evaluateBridgeBroken(Parameter *parm1);
+	Bool evaluateBridgeRepaired(Parameter *parm1);
+	Bool evaluateIsBuildingEmpty(Parameter *parm1);
+	Bool evaluatePlayerHasPower(Parameter *parm1);
+	Bool evaluateScienceAcquired(Parameter *parm1, Parameter *parm2);
+	Bool evaluateCanPurchaseScience(Parameter *parm1, Parameter *parm2);
+	Bool evaluateSciencePurchasePoints(Parameter *parm1, Parameter *parm2);
+	Bool evaluateNamedBaseUnpackableForPlayer(Parameter *parm1, Parameter *parm2);
+	Bool evaluatePlayerHasComparisonPercentPower(Parameter *parm1, Parameter *parm2, Parameter *parm3);
+	Bool evaluatePlayerHasComparisonValueExcessPower(Parameter *parm1, Parameter *parm2, Parameter *parm3);
+	Bool evaluateUnitHasEmptied(Parameter *parm1);
+	Bool evaluateSkirmishPlayerHasBeenAttackedByPlayer(Parameter *parm1, Parameter *parm2);
+	Bool evaluatePlayerCompareLightPoints(Parameter *parm1, Parameter *parm2, Parameter *parm3);
+	Bool evaluateCanBuildObjectTypeAtBase(Parameter *parm1, Parameter *parm2, Parameter *parm3);
+	Bool evaluateNamedCanPathToWaypoint(Parameter *parm1, Parameter *parm2);
+	Bool evaluateHasEvaEventPlayedInLastNSeconds(const AsciiString &name, Real value);
+	Bool evaluateUnitHealth(Parameter *parm1, Parameter *parm2, Parameter *parm3);
+	Bool evaluatePlayerHasNOrFewerFactionBuildings(Parameter *parm1, Parameter *parm2);
+	Bool evaluatePlayerHasNOrFewerBases(Parameter *parm1, Parameter *parm2);
+	Bool evaluateCanBuildAtBase(Parameter *parm1, Parameter *parm2);
+	Bool evaluatePlayerHasKilledKindOfUnits(Parameter *parm1, Parameter *parm2, Parameter *parm3);
+	Bool evaluatePlayerHasNumberUnitsDistanceFromObject(Parameter *parm1, Parameter *parm2, Parameter *parm3, Parameter *parm4, Parameter *parm5);
+	Bool evaluatePlayerHasUnitTypeInArea(Condition *pCondition, Parameter *parm1, Parameter *parm2, Parameter *parm3, Parameter *parm4, Parameter *parm5, Parameter *parm6, Bool flag);
+	Bool evaluatePlayerHasUnitKindInArea(Condition *pCondition, Parameter *parm1, Parameter *parm2, Parameter *parm3, Parameter *parm4, Parameter *parm5);
+	Bool evaluateNamedDiscovered(Parameter *parm1, Parameter *parm2);
+	Bool evaluateNamedEnteredArea(Parameter *parm1, Parameter *parm2);
+	Bool evaluateSkirmishValueInArea(Condition *pCondition, Parameter *parm1, Parameter *parm2, Parameter *parm3, Parameter *parm4);
+	Bool evaluateSkirmishUnownedFactionUnitComparison(Parameter *parm1, Parameter *parm2, Parameter *parm3);
+	Bool evaluateSkirmishPlayerHasComparisonGarrisoned(Parameter *parm1, Parameter *parm2, Parameter *parm3);
+	Bool evaluateSkirmishPlayerHasComparisonCapturedUnits(Parameter *parm1, Parameter *parm2, Parameter *parm3);
+	Bool evaluateSkirmishPlayerHasDiscoveredPlayer(Parameter *parm1, Parameter *parm2);
+	Bool evaluateDistanceBetweenTeams(Condition *pCondition);
+	Bool evaluateCounterSeconds(Condition *pCondition);
+	Bool evaluateTeamIsLedByUnit(Parameter *parm1, Parameter *parm2);
+	Bool evaluateHasCommandPointsToBuildTeam(Parameter *parm1, Parameter *parm2);
+	Bool evaluatePlayerHasKilledTypeUnits(Parameter *parm1, Parameter *parm2, Parameter *parm3);
+	Bool evaluateTeamCanPathToWaypoint(Parameter *parm1, Parameter *parm2);
+	Bool evaluateUnitHasToggledWeapon(Parameter *parm1, Parameter *parm2);
+	Bool evaluateAnyUnitsUsingBloodthirsty(Parameter *parm1);
+	Bool evaluateSkirmishSpecialPowerIsReady(Parameter *parm1, Parameter *parm2);
+	Bool evaluateSkirmishCanFireSpecialPowerOnTeam(Parameter *parm1, Parameter *parm2, Parameter *parm3);
+	Bool evaluateGameModeActive(Parameter *parm1);
+	Bool evaluateNamedUnitRankLevel(Parameter *parm1, Parameter *parm2);
+	Bool evaluateHasUnits(Parameter *parm1);
+	Bool evaluateBuiltByPlayer(Condition *pCondition, Parameter *parm1, Parameter *parm2);
+	Bool evaluateNamedReachedWaypointsEnd(Parameter *parm1, Parameter *parm2);
+	Bool evaluateTeamReachedWaypointsEnd(Parameter *parm1, Parameter *parm2);
+	Bool evaluateNamedSelected(Condition *pCondition, Parameter *parm1);
+	Bool evaluatePlayerUnitCondition(Condition *pCondition, Parameter *parm1, Parameter *parm2, Parameter *parm3, Parameter *parm4);
+	Bool evaluateHasDelayedCarryoverUnitOfType(const AsciiString &name, Parameter *parm1);
 
 public:
-	Bool evaluateEnemySighted(const AsciiString &name, Parameter *parm1, Parameter *parm2);	// 0x003E56C5
-	Bool evaluateTypeSighted(const AsciiString &name, Parameter *parm1, Parameter *parm2);	// 0x003EA3AB
-	Bool evaluateSkirmishSuppliesWithinDistancePerimeter(Parameter *parm1, Parameter *parm2, Parameter *parm3, Parameter *parm4);	// 0x003EA566
-	Bool evaluateIsNumOfUnitsBelongingToPlayerNearEvaEventLastPlayedLocationComparisonInt(Parameter *parm1, Real value, const AsciiString *name, Int value3, Int value4);	// 0x003EA764
+	Bool evaluateEnemySighted(const AsciiString &name, Parameter *parm1, Parameter *parm2);
+	Bool evaluateTypeSighted(const AsciiString &name, Parameter *parm1, Parameter *parm2);
+	Bool evaluateSkirmishSuppliesWithinDistancePerimeter(Parameter *parm1, Parameter *parm2, Parameter *parm3, Parameter *parm4);
+	Bool evaluateIsNumOfUnitsBelongingToPlayerNearEvaEventLastPlayedLocationComparisonInt(Parameter *parm1, Real value, const AsciiString *name, Int value3, Int value4);
 protected:
 	Bool evaluateNamedUnitExperienceLevelCompare(Parameter *pUnitParm, Parameter *pComparisonParm, Parameter *pLevelParm);	// 0x003E514F
 protected:
   Bool evaluatePlayerIsAtRankLevelLimit(Parameter *pPlayerParm);	// 0x003E4519
   Bool evaluatePlayerRankLevelComparison(Parameter *pPlayerParm, Parameter *pComparisonParm, Parameter *pValueParm);	// 0x003E52EB
 protected:
-  Bool evaluateNumPlayersInGame(Parameter *pComparisonParm, Parameter *pValueParm);	// 0x003E53C8
+  Bool evaluateNumPlayersInGame(Parameter *pComparisonParm, Parameter *pValueParm);
 };
 // SIZE 0xC
 typedef char ScriptConditionsSize[(sizeof(ScriptConditions) == 0xC) ? 1 : -1];

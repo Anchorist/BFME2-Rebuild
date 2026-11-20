@@ -1,5 +1,5 @@
 // DockUpdate.h: SAGE docking behaviour and its module data.
-// Target facts (old repo SupplyWarehouseDockUpdateNative.h and DockUpdateCtor.cpp):
+// Target facts:
 // ??0DockUpdate 0x0058A290 installs four tables (+0 primary, +0x0C behaviour,
 // +0x10 update, +0x20 dock interface) and the factory allocates 0x8C bytes for
 // SupplyWarehouseDockUpdate (0x88 for DockUpdate). Layout after UpdateModule

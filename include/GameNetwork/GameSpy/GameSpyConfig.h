@@ -4,12 +4,8 @@
 // Target facts (code RVAs, global VA 0x00E05FB4 = RVA 0x00A05FB4):
 //  - SetUpGameSpy 0x00386F7F stores the object GameSpyConfigInterface::create 0x0054F4AF builds in the global and TearDownGameSpy
 //    0x00385956 clears it.
-//  - The slots callers use: 3 (+0x0C) is getPingTimeoutInMs (GameSpyInfo::getPingValue 0x0038277F: `mov ecx,[0xE05FB4]; mov eax,[ecx];
-//    call [eax+0xC]`), 8 (+0x20) is getQMChannel (joinBestGroupRoom 0x00385678). The concrete table (GameSpyConfig, GSConfig.cpp
-//    rows) holds getPingServers 0x0054F3E2 at slot 1, getQMMaps 0x0054F3FD at slot 6, isPlayerVIP 0x0054E86D at slot 10,
-//    getManglerLocation 0x0054E7EA at slot 11 and getLeftoverConfig 0x0054F3C7 at slot 12, with the one-line getters retail folds
-//    (slots 2, 4, 5, 7, 9 and 13..19) in between; Zero Hour's interface has the same order up to slot 12 except that BFME 2 has no
-//    getPointsForRank. The BFME 2 slots past 12 are not named here.
+//  - The base interface vtable (0x0086A894) has 14 slots (0..13, ending at restrictGamesToLobby); GameSpyConfig adds the 6 NAT
+//    timeout getters at slots 14..19.
 #pragma once
 #ifndef BFME2_GAMESPYCONFIG_H
 #define BFME2_GAMESPYCONFIG_H
@@ -22,20 +18,23 @@ class GameSpyConfigInterface
 {
 public:
 	virtual ~GameSpyConfigInterface() {}											// slot 0x00
-	virtual _STL::list<AsciiString> getPingServers() = 0;							// slot 0x04, 0x0054F3E2
+	virtual _STL::list<AsciiString> getPingServers() = 0;							// slot 0x04
 	virtual Int getNumPingRepetitions() = 0;										// slot 0x08
 	virtual Int getPingTimeoutInMs() = 0;											// slot 0x0C
 	virtual Int getPingCutoffGood() = 0;											// slot 0x10
 	virtual Int getPingCutoffBad() = 0;												// slot 0x14
-	virtual _STL::list<AsciiString> getQMMaps() = 0;								// slot 0x18, 0x0054F3FD
+	virtual _STL::list<AsciiString> getQMMaps() = 0;								// slot 0x18
 	virtual Int getQMBotID() = 0;													// slot 0x1C
 	virtual Int getQMChannel() = 0;													// slot 0x20
-	virtual void setQMChannel(Int channel) = 0;										// slot 0x24 (retail's target 0x003FF328 is the shared one-store body)
-	virtual Bool isPlayerVIP(Int id) = 0;											// slot 0x28, 0x0054E86D
-	virtual Bool getManglerLocation(Int index, AsciiString &host, UnsignedShort &port) = 0;	// slot 0x2C, 0x0054E7EA
-	virtual AsciiString getLeftoverConfig() = 0;									// slot 0x30, 0x0054F3C7
+	virtual void setQMChannel(Int channel) = 0;										// slot 0x24
+	virtual Bool isPlayerVIP(Int id) = 0;											// slot 0x28
+	virtual Bool getManglerLocation(Int index, AsciiString &host, UnsignedShort &port) = 0;	// slot 0x2C
+	virtual AsciiString getLeftoverConfig() = 0;									// slot 0x30
+	virtual Bool restrictGamesToLobby() = 0;										// slot 0x34
+
+	static GameSpyConfigInterface *create(AsciiString config);
 };
 
-extern GameSpyConfigInterface *TheGameSpyConfig;		// VA 0x00E05FB4 (the map's name ?TheGameSpyConfig@@3PAVGameSpyConfigInterface@@A)
+extern GameSpyConfigInterface *TheGameSpyConfig;
 
 #endif

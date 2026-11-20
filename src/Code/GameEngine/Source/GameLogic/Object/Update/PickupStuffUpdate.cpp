@@ -9,6 +9,8 @@
 #include "GameLogic/Module/PickupStuffUpdate.h"
 #include "Common/NameKeyGenerator.h"
 #include "Common/Xfer.h"
+#include "GameLogic/Object.h"
+#include "GameLogic/Module/AIUpdate.h"
 void iniParseObjectFilter(INI *ini, void *instance, void *store, const void *userData);
 
 // The table retail passes to MultiIniFieldParse::add (VA 0x00C4DE90), read back
@@ -78,6 +80,11 @@ void PickupStuffUpdate::xfer(Xfer *xfer)
 // FUNCTION: BFME2 0x00491FA6 size=227 name=?rva00491FA6@PickupStuffUpdate@@QAEPAVObject@@XZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-encloses-unk-file
 
 // FUNCTION: BFME2 0x00492089 size=44 name=?moveToStuff@PickupStuffUpdate@@QAEXPAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
+void PickupStuffUpdate::moveToStuff(void *target)
+{
+	getObject()->getAI()->BeginTemporaryStateMachine();
+	getObject()->getAI()->aiMoveToObject((Object *)target, CMD_FROM_AI);
+}
 
 // FUNCTION: BFME2 0x004920B5 size=118 name=?updateInactive@PickupStuffUpdate@@QAEXXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
 

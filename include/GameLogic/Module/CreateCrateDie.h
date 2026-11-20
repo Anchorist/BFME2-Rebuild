@@ -43,10 +43,10 @@ protected:
 public:
 private:
 	const CreateCrateDieModuleData *getCreateCrateDieModuleData() const { return (const CreateCrateDieModuleData *)getModuleData(); }
-	Bool testCreationChance(const CrateTemplate *currentCrateData);	// 0x00485444
-	Bool testKillerScience(const CrateTemplate *currentCrateData, Object *killer);	// 0x00485480
-	Bool testKillerType(const CrateTemplate *currentCrateData, Object *killer);	// 0x00485536
-	Object *createCrate(const CrateTemplate *currentCrateData);	// 0x00485565
+	Bool testCreationChance(const CrateTemplate *currentCrateData);
+	Bool testKillerScience(const CrateTemplate *currentCrateData, Object *killer);
+	Bool testKillerType(const CrateTemplate *currentCrateData, Object *killer);
+	Object *createCrate(const CrateTemplate *currentCrateData);
 public:
 protected:
 	virtual void loadPostProcess() { DieModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to DieModule's, ICF-folded across classes

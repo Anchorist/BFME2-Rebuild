@@ -9,6 +9,17 @@
 #include "GameLogic/Object.h"
 #include "GameLogic/Module/FireWeaponWhenDeadBehaviorModuleData.h"
 // FUNCTION: BFME2 0x00482BB9 size=34 name=?update@FireWeaponWhenDeadBehavior@@UAE?AW4UpdateSleepTime@@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+UpdateSleepTime FireWeaponWhenDeadBehavior::update()
+{
+	// The death weapon fires once the countdown reaches zero.
+	if (m_delayFrames > 0)
+	{
+		--m_delayFrames;
+		if (m_delayFrames == 0)
+			onDie(&m_deathDamage);
+	}
+	return UPDATE_SLEEP_NONE;
+}
 // FUNCTION: BFME2 0x00482BDB size=94 name=?xfer@FireWeaponWhenDeadBehavior@@MAEXPAVXfer@@@Z evidence=N:ledger
 void FireWeaponWhenDeadBehavior::xfer(Xfer *xfer)
 {

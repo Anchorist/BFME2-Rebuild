@@ -26,26 +26,26 @@ typedef char AptQueuedActionSize[(sizeof(AptQueuedAction) == 0x18) ? 1 : -1];
 class AptActionQueueC
 {
 public:
-    // 0x006E38D0 (the map names it rva006E38D0): the number of queued actions, wrapped by the capacity when the tail is behind
+    // (the map names it rva006E38D0): the number of queued actions, wrapped by the capacity when the tail is behind
     // the head; asserts the delta is positive (AptAnimation.cpp line 0x75f, `iDelta > 0`).
     int rva006E38D0();
-    // 0x006E3230 (the map files it under the placeholder class Rva006E3230Action): makes room at the given slot when the buffer is full.
+    // (the map files it under the placeholder class Rva006E3230Action): makes room at the given slot when the buffer is full.
     void rva006E3230(AptQueuedAction *slot);
     // 0x006E4B80 appends at the tail, 0x006E4C70 puts in front of the head; both log "Dequeue is full" when the slot is taken.
     void enqueueAction(void *pAction, AptCIH *pCIH, int nArgument0, int nArgument1);
     void enqueueFront(AptValue *pContext, AptValue *pValue1, AptValue *pValue2, int nArgument0, int nArgument1);
     // 0x006E3740 (map name rva006E3740): the same type-2 action appended at the tail instead of put in front of the head.
-    // 0x006E4A90: releases every queued action (type 1 releases the context, type 2 the first two values) and empties the buffer. Its inline
+    // Releases every queued action (type 1 releases the context, type 2 the first two values) and empties the buffer. Its inline
     // iterator asserts (_Apt.h lines 0x4e0/0x4e1) call the buffer `m_aActionPool` and its capacity `m_iActionPoolSize`.
     void ClearActions();
-    // 0x006E4D50: removes one queued type-1 action whose context (+0x14) is the given value, releasing the value (the retail name is its __FUNCTION__).
+    // Removes one queued type-1 action whose context (+0x14) is the given value, releasing the value (the retail name is its __FUNCTION__).
     void RemoveActionFor(AptValue *pValue);
     // 0x006E3920 (the map files it as rva006E3920 on a placeholder return type): the action at an index counted from the head, wrapping at the capacity.
     AptQueuedAction *actionAt(int index);
     // 0x006E3DB0 / 0x006E3DD0: the head action (validated through 0x006E3230) and the action after a given one (wrapping at the end of the buffer).
     AptQueuedAction *getCurrent();
     AptQueuedAction *next(AptQueuedAction *pAction);
-    // 0x006E39A0: marks the values the queued actions hold for the collector (type 1: the context; type 2: the first two values).
+    // Marks the values the queued actions hold for the collector (type 1: the context; type 2: the first two values).
     void rva006E39A0();
     void rva006E3740(AptValue *pContext, AptValue *pValue1, AptValue *pValue2, int nArgument0, int nArgument1);
     void prependAction(void *pAction, AptCIH *pCIH, int nArgument0, int nArgument1);

@@ -53,7 +53,7 @@ class DefectorSpecialPower : public SpecialPowerModule
 public:
 	DefectorSpecialPower(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
-	virtual void doSpecialPowerAtObject(Object *object, unsigned int commandOptions);	// 0x004C2A35 (SpecialPowerModuleInterface slot 11)
+	virtual void doSpecialPowerAtObject(Object *object, unsigned int commandOptions);	// (SpecialPowerModuleInterface slot 11)
 	virtual void doSpecialPowerAtLocation(const Coord3D *location, unsigned int commandOptions) {}	// slot 12: the shared `ret 8` 0x0050B238
 
 protected:

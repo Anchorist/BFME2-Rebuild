@@ -12,8 +12,8 @@
 class GateOpenBehaviorList
 {
 public:
-	void rva004E908C(void *item);	// 0x004E908C: erases the entry equal to item, if any
-	void appendOnce(void *item);	// 0x004E9353: pushes item back unless it is already listed
+	void rva004E908C(void *item);	// Erases the entry equal to item, if any
+	void appendOnce(void *item);	// Pushes item back unless it is already listed
 private:
 	void **m_begin;					// +0x00
 	void **m_end;					// +0x04

@@ -26,11 +26,8 @@
 // FUNCTION: BFME2 0x0058A1A1 size=239 name=?reserveApproachPosition@DockUpdate@@UAE_NPAVObject@@PAUCoord3D@@PAH@Z evidence=N:ledger
 // FUNCTION: BFME2 0x0058A290 size=384 name=??0DockUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger
 // FUNCTION: BFME2 0x0058A410 size=439 name=?xfer@DockUpdate@@MAEXPAVXfer@@@Z evidence=N:ledger
-// GameLogic/Object/Update/DockUpdate/DockUpdate.cpp: retail translation unit (skeleton).
-// Write each function below its FUNCTION annotation, in this (retail) order.
-// Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
-// Shared types belong in include/; no class or struct with a body in this file.
-// cl: /Ob2 /EHsc /D_STLP_USE_STATIC_LIB
+
+// cl: /Ob2 /EHsc /D_STLP_USE_STATIC_LIB -Ireference/shims/bfmealloc_alloconly /D_CRTIMP=
 
 // stlport46
 

@@ -14,14 +14,14 @@
 class RayEffectFXNugget : public FXNugget
 {
 public:
-	RayEffectFXNugget();										// 0x001E01B2
+	RayEffectFXNugget();
 
 	virtual void doFXPos(const Coord3D *primary, const Matrix3D *primaryMtx, Real primarySpeed,
 		const Coord3D *secondary) const;								// 1, 0x001E022D
 	virtual void GetAssetList(AssetList &assets, Int context) const;		// 3, 0x001E0301
 
-	static void buildFieldParse(MultiIniFieldParse &p);					// 0x001DFB01
-	static void parse(INI *ini, void *instance, void *store, const void *userData);	// 0x001E13A5
+	static void buildFieldParse(MultiIniFieldParse &p);
+	static void parse(INI *ini, void *instance, void *store, const void *userData);
 
 	AsciiString m_name;								// 0x148 Name (parseAsciiString)
 	Coord3D m_primaryOffset;							// 0x14C PrimaryOffset (parseCoord3D)

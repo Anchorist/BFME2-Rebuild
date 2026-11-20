@@ -35,45 +35,46 @@ class DisconnectManager
 public:
 	DisconnectManager();									// 0x004D376A (the map holds it under the placeholder Rva004D376A)
 	virtual ~DisconnectManager();							// slot 0, 0x004D381B
-	Int rva0028A65E() const;								// 0x0028A65E (returns +0x260; shared dword getter, the map holds it on a placeholder class)
-	Int rva004E05E9() const;								// 0x004E05E9 (returns +0x264)
+	Int rva0028A65E() const;								// (returns +0x260; shared dword getter, the map holds it on a placeholder class)
+	Int rva004E05E9() const;								// (returns +0x264)
 	Int rva0057429A() const;								// 0x0057429A (returns +0x26C)
 
-	void init();											// 0x004D3822
-	void playerHasAdvancedAFrame(Int slot, UnsignedInt frame);	// 0x004D3BB5
-	void voteForPlayerDisconnect(Int slot, ConnectionManager *connections);		// 0x004D3DF4
-	void processDisconnectKeepAlive(void *msg, ConnectionManager *connections);	// 0x004D3CA8
-	void processDisconnectPlayer(NetCommandMsg *msg, ConnectionManager *connections);	// 0x004D4637
-	void processDisconnectCommand(void *ref, ConnectionManager *connections);	// 0x004D46AF
+	void init();
+	void update(ConnectionManager *connections);
+	void playerHasAdvancedAFrame(Int slot, UnsignedInt frame);
+	void voteForPlayerDisconnect(Int slot, ConnectionManager *connections);
+	void processDisconnectKeepAlive(void *msg, ConnectionManager *connections);
+	void processDisconnectPlayer(NetCommandMsg *msg, ConnectionManager *connections);
+	void processDisconnectCommand(void *ref, ConnectionManager *connections);
 	Bool hasPlayerConnectionTimedOut(Int slot, void *connections);	// 0x004D3B7E (true unless the slot is a live connection; takes the ConnectionManager as a void pointer, as the map's name does)
-	Int rva004D3E5D(ConnectionManager *connections);		// 0x004D3E5D (counts the slots that are connected, not timed out and not in the game; the map has no better name)
-	Int rva004D3E93(Int excludedSlot, ConnectionManager *connections);	// 0x004D3E93 (the same count without one slot)
+	Int rva004D3E5D(ConnectionManager *connections);		// (counts the slots that are connected, not timed out and not in the game; the map has no better name)
+	Int rva004D3E93(Int excludedSlot, ConnectionManager *connections);	// (the same count without one slot)
 
 protected:
-	void resetPlayerTimeout(Int slot);						// 0x004D3A06
-	void resetPlayerTimeouts(ConnectionManager *connections);	// 0x004D3D2B
-	void resetPlayersVotes(Int slot, UnsignedInt frame, ConnectionManager *connections);	// 0x004D3C32
-	void applyDisconnectVote(Int slot, UnsignedInt frame, Int voterSlot, ConnectionManager *connections);	// 0x004D3CD8
-	Int countVotesForPlayer(Int slot, ConnectionManager *connections);	// 0x004D3BD7
-	Bool isPlayerInGame(Int slot, ConnectionManager *connections);	// 0x004D3F1B
+	void resetPlayerTimeout(Int slot);
+	void resetPlayerTimeouts(ConnectionManager *connections);
+	void resetPlayersVotes(Int slot, UnsignedInt frame, ConnectionManager *connections);
+	void applyDisconnectVote(Int slot, UnsignedInt frame, Int voterSlot, ConnectionManager *connections);
+	Int countVotesForPlayer(Int slot, ConnectionManager *connections);
+	Bool isPlayerInGame(Int slot, ConnectionManager *connections);
 	void sendKeepAlive(ConnectionManager *connections);		// 0x004D3942 (at most every 500 ms; Zero Hour's name, the map holds it on a placeholder class)
-	void sendVoteCommand(Int slot, ConnectionManager *connections);	// 0x004D3A1B
-	void sendPlayerDestruct(Int slot, ConnectionManager *connections);	// 0x004D3AE2
-	void processDisconnectVote(NetCommandMsg *msg, ConnectionManager *connections);	// 0x004D3F74
-	void processDisconnectFrame(NetCommandMsg *msg, ConnectionManager *connections);	// 0x004D3FCB
-	void sendDisconnectCommand(Int slot, ConnectionManager *connections);	// 0x004D3D5C
-	void populateDisconnectScreen(ConnectionManager *connections);	// 0x004D40DB
-	void turnOnScreen(ConnectionManager *connections);		// 0x004D4176
-	void disconnectPlayer(Int slot, ConnectionManager *connections);	// 0x004D41B3
+	void sendVoteCommand(Int slot, ConnectionManager *connections);
+	void sendPlayerDestruct(Int slot, ConnectionManager *connections);
+	void processDisconnectVote(NetCommandMsg *msg, ConnectionManager *connections);
+	void processDisconnectFrame(NetCommandMsg *msg, ConnectionManager *connections);
+	void sendDisconnectCommand(Int slot, ConnectionManager *connections);
+	void populateDisconnectScreen(ConnectionManager *connections);
+	void turnOnScreen(ConnectionManager *connections);
+	void disconnectPlayer(Int slot, ConnectionManager *connections);
 	Bool rva004D38C5(Int slot) const;						// 0x004D38C5 (true when the slot's word at +0x272 has reached 5; the map holds it under the placeholder class Rva0066B100)
 	void clearVotesAgainst(Int slot);						// 0x004D3906 (once: shuts the disconnect screen down, switches the manager off (+0x0C = 1) and clears every vote cast against the slot; the map holds it under the placeholder class Rva004D3906)
 	Bool rva004D393A() const;								// 0x004D393A (+0x0C == 1; the map holds it under the placeholder class Rva004D393ACmpBoolField)
-	Bool rva004D38D8(Real threshold);						// 0x004D38D8 (the map holds it under the placeholder class Rva004D38D8: true unless the progress ratio +0x264 / +0x260 is below the threshold)
-	Bool hasPlayerTimedOut(Int slot);						// 0x004D3AB2
-	Bool allOnSameFrame(ConnectionManager *connections);	// 0x004D427A
-	Bool isLocalPlayerNextPacketRouter(ConnectionManager *connections);	// 0x004D4330
-	Bool isPlayerVotedOut(Int slot, ConnectionManager *connections);	// 0x004D3ECF
-	UnsignedInt getMaxDisconnectFrame();					// 0x004D3B63
+	Bool rva004D38D8(Real threshold);						// (the map holds it under the placeholder class Rva004D38D8: true unless the progress ratio +0x264 / +0x260 is below the threshold)
+	Bool hasPlayerTimedOut(Int slot);
+	Bool allOnSameFrame(ConnectionManager *connections);
+	Bool isLocalPlayerNextPacketRouter(ConnectionManager *connections);
+	Bool isPlayerVotedOut(Int slot, ConnectionManager *connections);
+	UnsignedInt getMaxDisconnectFrame();
 
 public:
 	Int m_unk0x04;											// +0x04

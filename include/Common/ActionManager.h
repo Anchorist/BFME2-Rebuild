@@ -40,9 +40,9 @@ public:
 	bool canEnterObject(const Object *obj, const Object *target, CommandSourceType commandSource, CanEnterType modifier, bool flag, bool *outFlag); // 0x0041C2D0 (the map files it under class BFMEActionManager; every other ActionManager row and the function-local statics of canDoSpecialPowerAtObject/canTransferSuppliesAt say ActionManager)
 	bool Rva0041B94AGet(Object *obj, Object *target, int commandSource); // 0x0041B94A (AIUpdateInterface::privateMoveToObject 0x0026472F)
 	bool canTransferSuppliesAt(const Object *obj, const Object *dest);
-	bool canConvertObjectToCarBomb(const Object *obj, const Object *objectToConvert, CommandSourceType commandSource);	// 0x0041B9B0
-	bool canHijackVehicle(const Object *obj, const Object *objectToHijack, CommandSourceType commandSource);	// 0x0041C001
-	bool canDockAt(const Object *obj, const Object *dockDest, CommandSourceType commandSource, bool checkClearToUse);	// 0x0041BE3A
+	bool canConvertObjectToCarBomb(const Object *obj, const Object *objectToConvert, CommandSourceType commandSource);
+	bool canHijackVehicle(const Object *obj, const Object *objectToHijack, CommandSourceType commandSource);
+	bool canDockAt(const Object *obj, const Object *dockDest, CommandSourceType commandSource, bool checkClearToUse);
 	bool canRepairObject(const Object *repairer, const Object *target, CommandSourceType commandSource); // 0x0041CE99 (DozerAIUpdate::update 0x00489800 and privateRepair 0x00488AC9 call it)
 };
 

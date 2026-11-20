@@ -6,6 +6,9 @@
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:Z, hypothesis:cohesion, hypothesis:name:Z
 #include "Common/Xfer.h"
+#include "Common/XferException.h"
+#include "GameLogic/GameLogic.h"
+#include "GameLogic/Object.h"
 #include "GameLogic/GhostObject.h"
 #include "GameLogic/GhostObjectManager.h"
 // FUNCTION: BFME2 0x00305927 size=4 name=?vslot00@GhostObject@@UBEPBXXZ evidence=N:ledger tier=B hypothesis:name:Z
@@ -41,6 +44,28 @@ void GhostObjectManager::xfer(Xfer *xfer)
 // FUNCTION: BFME2 0x0030596C size=137 name=?Rva0030596CIntersects@@YA_NPAXUPlaceCoord@@M@Z evidence=?:placeholder tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x003059F5 size=154 name=?xfer@GhostObject@@MAEXPAVXfer@@@Z evidence=N:ledger tier=B hypothesis:K
+void GhostObject::xfer(Xfer *xfer)
+{
+	if (xfer->IsLightCRC())
+		return;
+
+	xfer->Version1();
+
+	ObjectID parentID = INVALID_ID;
+	if (m_parentObject != NULL)
+		parentID = m_parentObject->getID();
+	XferObjectID(xfer, &parentID);
+
+	if (xfer->IsLoading())
+	{
+		m_parentObject = TheGameLogic->findObjectByID(parentID);
+		if (parentID != INVALID_ID && m_parentObject == NULL)
+			throw XferException(5, 0);
+	}
+
+	*xfer == m_parentAngle;
+	*xfer == m_parentPosition;
+}
 
 // FUNCTION: BFME2 0x00305A8F size=161 name=??0GhostObject@@QAE@XZ evidence=N:ledger tier=B hypothesis:K
 

@@ -242,7 +242,7 @@ public:
  DrawModule **getDrawModules() const;							// 0x002B224B, +0x14C
  DrawableID getID() const;										// 0x0055A88B, +0x100
  Object *getObject() const { return m_object; }					// +0xFC
-	void onSelected();	// 0x002754E3: records the object id in the game client, then runs the contain and horde-contain selection reactions
+	void onSelected();	// records the object id in the game client, then runs the contain and horde-contain selection reactions
 	// 0x00270FEE: the bound object's current geometry (Object +0x104), else the template's (+0xA0).
 	const GeometryInfo *getGeometryInfo() const;
 	// 0x0027103F: the bound object's index-th additional geometry, else getGeometryInfo().

@@ -13,7 +13,7 @@ class AptPlayerTribute : public _bfme_AptGameWindow
 {
 public:
 	void TributeEnabled(int index, char *buffer, bool query);	// 0x0050E98A: the Apt extern answering whether the local player can still send tribute
-	static void CloseScreen();					// 0x0050E9D3: marks the open screen as closing, clears the shell background and enables the window manager
+	static void CloseScreen();					// Marks the open screen as closing, clears the shell background and enables the window manager
 };
 
 #endif

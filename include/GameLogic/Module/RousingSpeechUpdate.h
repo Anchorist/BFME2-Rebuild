@@ -31,7 +31,7 @@ typedef char RousingSpeechUpdate_base_size[(sizeof(SpecialAbilityUpdate) == 0x88
 class RousingSpeechUpdate : public SpecialAbilityUpdate
 {
 public:
-	char const * name() const;	// 0x004ACED2
+	char const * name() const;
 	RousingSpeechUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;

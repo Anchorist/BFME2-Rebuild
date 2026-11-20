@@ -20,7 +20,7 @@ public:
 
 	Base64Straw(CodeControl control) : Control(control), Counter(0) {}
 
-	virtual int Get(void *source, int slen);		// 0x0061B350
+	virtual int Get(void *source, int slen);
 
 private:
 	CodeControl Control;	// +0x0C

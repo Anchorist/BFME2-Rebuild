@@ -40,13 +40,10 @@ float GetGameLogicRandomValueReal(float,float,char*,int);
 #include "Common/Xfer.h"
 Xfer *xferSTLObjectIDList(Xfer *, ObjectIDList *);
 // GameLogic/Object/Update/ArrowStormUpdate.cpp: retail translation unit (skeleton).
-// Write each function below its FUNCTION annotation, in this (retail) order.
-// Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
-// Shared types belong in include/; no class or struct with a body in this file.
 
 
 ArrowStormUpdateModuleData::ArrowStormUpdateModuleData()
- : m_targetRadius(0.0f), m_shotsPerTarget(1), m_shotsPerBurst(1), m_maxShots(1), m_canShootEmptyGround(false) {}
+	: m_targetRadius(0.0f), m_shotsPerTarget(1), m_shotsPerBurst(1), m_maxShots(1), m_canShootEmptyGround(false) {}
 
 
 
@@ -54,22 +51,22 @@ ArrowStormUpdateModuleData::ArrowStormUpdateModuleData()
 
 bool ArrowStormUpdate::vslot08(int value)
 {
- const Coord3D *pos = (const Coord3D *)value;
- const ArrowStormUpdateModuleData *mod = (const ArrowStormUpdateModuleData *)m_moduleData;
- if (!mod) return false;
- if (!pos) return SpecialAbilityUpdate::vslot08(0);
- Object *obj = m_object;
- if (!obj) return false;
- const WeaponTemplate *wt = TheWeaponStore->findWeaponTemplate(mod->m_weaponTemplate);
- if (!wt) return false;
- float minR = wt->getMinimumAttackRange();
- if (obj->rva002C97E8(&obj->m_cachedPos,pos) < minR * minR) return false;
- if (obj->m_template->isKindOf(KINDOF_IMMOBILE)) {
-  WeaponBonus bonus;
-  float range = wt->getAttackRange(obj,bonus,&obj->m_cachedPos);
-  if (obj->rva002C97E8(&obj->m_cachedPos,pos) > range * range) return false;
- }
- return SpecialAbilityUpdate::vslot08((int)pos);
+	const Coord3D *pos = (const Coord3D *)value;
+	const ArrowStormUpdateModuleData *mod = (const ArrowStormUpdateModuleData *)m_moduleData;
+	if (!mod) return false;
+	if (!pos) return SpecialAbilityUpdate::vslot08(0);
+	Object *obj = m_object;
+	if (!obj) return false;
+	const WeaponTemplate *wt = TheWeaponStore->findWeaponTemplate(mod->m_weaponTemplate);
+	if (!wt) return false;
+	float minR = wt->getMinimumAttackRange();
+	if (obj->rva002C97E8(&obj->m_cachedPos,pos) < minR * minR) return false;
+	if (obj->m_template->isKindOf(KINDOF_IMMOBILE)) {
+		WeaponBonus bonus;
+		float range = wt->getAttackRange(obj,bonus,&obj->m_cachedPos);
+		if (obj->rva002C97E8(&obj->m_cachedPos,pos) > range * range) return false;
+	}
+	return SpecialAbilityUpdate::vslot08((int)pos);
 }
 
 
@@ -80,71 +77,71 @@ ArrowStormUpdate::~ArrowStormUpdate() {}
 
 const char *ArrowStormUpdate::GetSnapshotName() const
 {
-    return "ArrowStormUpdate";
+	return "ArrowStormUpdate";
 }
 
 
 NameKeyType ArrowStormUpdate::getModuleNameKey() const
 {
-    static NameKeyType TheArrowStormUpdatePoolKey = TheNameKeyGenerator->nameToKey("ArrowStormUpdate");
-    return TheArrowStormUpdatePoolKey;
+	static NameKeyType TheArrowStormUpdatePoolKey = TheNameKeyGenerator->nameToKey("ArrowStormUpdate");
+	return TheArrowStormUpdatePoolKey;
 }
 
 
 bool ArrowStormUpdate::rva0049083C()
 {
- Object *owner=m_object;
- const ArrowStormUpdateModuleData *arrowStormUpdateModuleData=(const ArrowStormUpdateModuleData *)m_moduleData;
- if(m_shotsAtCurrent>=arrowStormUpdateModuleData->m_shotsPerTarget){m_currentTarget=INVALID_ID;m_shotsAtCurrent=0;}
- Object *victim=0;
- if(m_currentTarget)victim=TheGameLogic->findObjectByID(m_currentTarget);
- while(!victim && !m_targets.empty()){
-  m_currentTarget=(ObjectID)m_targets.front();
-  m_shotsAtCurrent=0;
-  m_targets.pop_front();
-  victim=TheGameLogic->findObjectByID(m_currentTarget);
-  if(victim && (victim->m_privateStatus&1))victim=0;
- }
- const WeaponTemplate *weapon=TheWeaponStore->findWeaponTemplate(arrowStormUpdateModuleData->m_weaponTemplate);
- if(!victim){
-  if(arrowStormUpdateModuleData->m_canShootEmptyGround){
-  Coord3D position;
-  position.x=GetGameLogicRandomValueReal(m_targetPos.x-arrowStormUpdateModuleData->m_targetRadius,m_targetPos.x+arrowStormUpdateModuleData->m_targetRadius,"C:\\projects\\bfme2patch103\\bfme2\\Code\\GameEngine\\Source\\GameLogic\\Object\\Update\\ArrowStormUpdate.cpp",217);
-  position.y=GetGameLogicRandomValueReal(m_targetPos.y-arrowStormUpdateModuleData->m_targetRadius,m_targetPos.y+arrowStormUpdateModuleData->m_targetRadius,"C:\\projects\\bfme2patch103\\bfme2\\Code\\GameEngine\\Source\\GameLogic\\Object\\Update\\ArrowStormUpdate.cpp",218);
-  position.z=TheTerrainLogic->getGroundHeight(position.x,position.y);
-  TheWeaponStore->createAndFireTempWeapon(weapon,owner,&position);
- }else return true;
- }else{
-  TheWeaponStore->rva002CE964(weapon,owner,victim);
-  ++m_shotsAtCurrent;
- }
- ++m_shotsTotal; if(m_shotsTotal>=arrowStormUpdateModuleData->m_maxShots)return true;return false;
+	Object *owner=m_object;
+	const ArrowStormUpdateModuleData *arrowStormUpdateModuleData=(const ArrowStormUpdateModuleData *)m_moduleData;
+	if(m_shotsAtCurrent>=arrowStormUpdateModuleData->m_shotsPerTarget){m_currentTarget=INVALID_ID;m_shotsAtCurrent=0;}
+	Object *victim=0;
+	if(m_currentTarget)victim=TheGameLogic->findObjectByID(m_currentTarget);
+	while(!victim && !m_targets.empty()){
+		m_currentTarget=(ObjectID)m_targets.front();
+		m_shotsAtCurrent=0;
+		m_targets.pop_front();
+		victim=TheGameLogic->findObjectByID(m_currentTarget);
+		if(victim && (victim->m_privateStatus&1))victim=0;
+	}
+	const WeaponTemplate *weapon=TheWeaponStore->findWeaponTemplate(arrowStormUpdateModuleData->m_weaponTemplate);
+	if(!victim){
+		if(arrowStormUpdateModuleData->m_canShootEmptyGround){
+			Coord3D position;
+			position.x=GetGameLogicRandomValueReal(m_targetPos.x-arrowStormUpdateModuleData->m_targetRadius,m_targetPos.x+arrowStormUpdateModuleData->m_targetRadius,"C:\\projects\\bfme2patch103\\bfme2\\Code\\GameEngine\\Source\\GameLogic\\Object\\Update\\ArrowStormUpdate.cpp",217);
+			position.y=GetGameLogicRandomValueReal(m_targetPos.y-arrowStormUpdateModuleData->m_targetRadius,m_targetPos.y+arrowStormUpdateModuleData->m_targetRadius,"C:\\projects\\bfme2patch103\\bfme2\\Code\\GameEngine\\Source\\GameLogic\\Object\\Update\\ArrowStormUpdate.cpp",218);
+			position.z=TheTerrainLogic->getGroundHeight(position.x,position.y);
+			TheWeaponStore->createAndFireTempWeapon(weapon,owner,&position);
+		}else return true;
+	}else{
+		TheWeaponStore->rva002CE964(weapon,owner,victim);
+		++m_shotsAtCurrent;
+	}
+	++m_shotsTotal; if(m_shotsTotal>=arrowStormUpdateModuleData->m_maxShots)return true;return false;
 }
 
 
 ArrowStormUpdate::ArrowStormUpdate(Thing *thing, const ModuleData *moduleData)
- : SpecialAbilityUpdate(thing, moduleData)
+	: SpecialAbilityUpdate(thing, moduleData)
 {
-    m_targets.clear();
-    m_currentTarget = INVALID_ID;
-    m_shotsAtCurrent = 0;
-    m_shotsTotal = 0;
-    m_finished = false;
+	m_targets.clear();
+	m_currentTarget = INVALID_ID;
+	m_shotsAtCurrent = 0;
+	m_shotsTotal = 0;
+	m_finished = false;
 }
 
 
 
 void ArrowStormUpdate::triggerAbilityEffect()
 {
-    SpecialAbilityUpdate::triggerAbilityEffect();
-    const ArrowStormUpdateModuleData *data = (const ArrowStormUpdateModuleData *)m_moduleData;
-    if (!data->m_canShootEmptyGround && m_targets.empty()) { m_finished = true; return; }
-    for (int i = 0; i < data->m_shotsPerBurst; ) {
-        bool done = rva0049083C();
-        ++i;
-        m_finished = done;
-        if (done) break;
-    }
+	SpecialAbilityUpdate::triggerAbilityEffect();
+	const ArrowStormUpdateModuleData *data = (const ArrowStormUpdateModuleData *)m_moduleData;
+	if (!data->m_canShootEmptyGround && m_targets.empty()) { m_finished = true; return; }
+	for (int i = 0; i < data->m_shotsPerBurst; ) {
+		bool done = rva0049083C();
+		++i;
+		m_finished = done;
+		if (done) break;
+	}
 }
 
 
@@ -185,26 +182,26 @@ void ArrowStormUpdate::rva00490AC5()
 
 void ArrowStormUpdate::xfer(Xfer *xfer)
 {
-    SpecialAbilityUpdate::xfer(xfer);
-    if (xfer->IsLightCRC()) return;
-    xfer->Version1();
-    xferSTLObjectIDList(xfer, &m_targets);
-    XferObjectID(xfer, &m_currentTarget);
-    *xfer == m_shotsAtCurrent;
-    *xfer == m_finished;
-    *xfer == m_shotsTotal;
+	SpecialAbilityUpdate::xfer(xfer);
+	if (xfer->IsLightCRC()) return;
+	xfer->Version1();
+	xferSTLObjectIDList(xfer, &m_targets);
+	XferObjectID(xfer, &m_currentTarget);
+	*xfer == m_shotsAtCurrent;
+	*xfer == m_finished;
+	*xfer == m_shotsTotal;
 }
 
 
 void ArrowStormUpdate::startPreparation()
 {
-    SpecialAbilityUpdate::startPreparation();
-    m_targets.clear();
-    m_currentTarget = INVALID_ID;
-    m_shotsAtCurrent = 0;
-    m_shotsTotal = 0;
-    m_finished = false;
-    rva00490AC5();
+	SpecialAbilityUpdate::startPreparation();
+	m_targets.clear();
+	m_currentTarget = INVALID_ID;
+	m_shotsAtCurrent = 0;
+	m_shotsTotal = 0;
+	m_finished = false;
+	rva00490AC5();
 }
 
 void ArrowStormUpdate::loadPostProcess()

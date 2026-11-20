@@ -22,9 +22,9 @@ class LocomotorTemplate : public Overridable
 public:
 	LocomotorTemplate();									// 0x001E4ABE
 	LocomotorTemplate &operator=(const LocomotorTemplate &that);	// 0x001E3955
-	virtual ~LocomotorTemplate();							// 0x001E4DB0 (deleting dtor 0x001E67A3)
+	virtual ~LocomotorTemplate();							// (deleting dtor 0x001E67A3)
 
-	void validate();										// 0x001E38B9
+	void validate();
 
 	const AsciiString &getName() const { return m_name; }
 

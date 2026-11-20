@@ -10,7 +10,7 @@ class PartitionFilterIrregularArea : public PartitionFilter
 public:
  PartitionFilterIrregularArea(Coord3D *area, Int numPointsInArea) : m_area(area), m_numPointsInArea(numPointsInArea) {}
 protected:
- virtual bool allow(Object *);	// 0x0026170A
+ virtual bool allow(Object *);
 public:
  Coord3D *m_area;	// 0x08
  Int m_numPointsInArea;	// 0x0C

@@ -22,10 +22,10 @@ class TransitionDamageFX : public DamageModule
 public:
 	TransitionDamageFX(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
-	virtual void onBodyDamageStateChange(const DamageInfo *damageInfo, BodyDamageType oldState, BodyDamageType newState);	// 0x004B9F18
-	void bfmeUseFDE(void *damageState);									// 0x004B9B99 (the ledger's name and signature): hide and show the module data's sub-objects for the BodyDamageType passed
+	virtual void onBodyDamageStateChange(const DamageInfo *damageInfo, BodyDamageType oldState, BodyDamageType newState);
+	void bfmeUseFDE(void *damageState);									// (the ledger's name and signature): hide and show the module data's sub-objects for the BodyDamageType passed
 	virtual void onDrawableBoundToObject();									// slot 6, 0x004B9D86 (the ledger's name bfmeGoFDE): the same hide and show for the object's current damage state
-	void rva004B9DA9(Bool recurse);										// 0x004B9DA9: the neighbours' share of a state change
+	void rva004B9DA9(Bool recurse);										// The neighbours' share of a state change
 
 protected:
 	virtual const char *GetSnapshotName() const;

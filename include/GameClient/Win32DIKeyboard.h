@@ -21,15 +21,15 @@ class DirectInputKeyboard : public Keyboard
 {
 public:
 	DirectInputKeyboard();							// 0x00098B55
-	virtual ~DirectInputKeyboard();					// 0x00098B8B
-	virtual void init();							// 0x00098CAC
+	virtual ~DirectInputKeyboard();
+	virtual void init();
 	virtual void update();							// 0x00098BC3
-	virtual bool getCapsState();					// 0x00098BC8
+	virtual bool getCapsState();
 
 protected:
-	virtual void getKey(KeyboardIO *key);			// 0x00098AAC
-	void openKeyboard();							// 0x00098BD4
-	void closeKeyboard();							// 0x00098A6F
+	virtual void getKey(KeyboardIO *key);
+	void openKeyboard();
+	void closeKeyboard();
 
 	LPDIRECTINPUT8 m_pDirectInput;					// +0xE20
 	LPDIRECTINPUTDEVICE8 m_pKeyboardDevice;			// +0xE24

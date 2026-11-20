@@ -66,8 +66,8 @@ typedef char SlavedUpdate_base_size[(sizeof(UpdateModule) == 0x20) ? 1 : -1];
 class SlavedUpdate : public UpdateModule, public SlavedUpdateInterface
 {
 public:
-	SlavedUpdate(Thing *thing, const ModuleData *moduleData);	// 0x004A18C5
-	virtual NameKeyType getModuleNameKey() const;	// 0x004A1875
+	SlavedUpdate(Thing *thing, const ModuleData *moduleData);
+	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004A265E)
 	virtual void onObjectCreated();	// Module slot 5, 0x004A1950 (the map names it Rva004A1950::rva004A1950)
 	virtual SlavedUpdateInterface *getSlavedUpdateInterface() { return this; }	// BehaviorModule slot 26 (folded 0x004543A9)
@@ -83,11 +83,11 @@ public:
 	virtual Bool vslot07() const { return m_unk0x44; }	// slot 7, folded into 0x0009D6ED
 	virtual Bool vslot08() const { return static_cast<const SlavedUpdateModuleData *>(getModuleData())->m_dieOnMastersDeath; }	// slot 8, 0x004A1949
 
-	void startSlavedEffects(const Object *slaver);	// 0x004A1A69
-	void stopSlavedEffects();	// 0x004A1B17
-	void endRepair();	// 0x004A1C10
-	void setRepairModelConditionStates(ModelConditionFlagType flag);	// 0x004A197D
-	void moveToNewRepairSpot();							// 0x004A2144 (Zero Hour's name): a new spot within the repair range of the master
+	void startSlavedEffects(const Object *slaver);
+	void stopSlavedEffects();
+	void endRepair();
+	void setRepairModelConditionStates(ModelConditionFlagType flag);
+	void moveToNewRepairSpot();							// (Zero Hour's name): a new spot within the repair range of the master
 
 protected:
 	virtual const char *GetSnapshotName() const;

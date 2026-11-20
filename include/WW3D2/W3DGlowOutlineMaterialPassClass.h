@@ -11,11 +11,11 @@ class W3DGlowOutlineMaterialPassClass : public MaterialPassClass
 {
 public:
 	W3DGlowOutlineMaterialPassClass(int color, float intensity);	// 0x0073F85D
-	virtual ~W3DGlowOutlineMaterialPassClass();			// 0x0073F96A
-	virtual void Install_Materials(void) const;			// 0x0073FA10
-	virtual void UnInstall_Materials(void) const;			// 0x0073F9D1
+	virtual ~W3DGlowOutlineMaterialPassClass();
+	virtual void Install_Materials(void) const;
+	virtual void UnInstall_Materials(void) const;
 
-	int UpdateFadeState();						// 0x0073F895
+	int UpdateFadeState();
 	void SetFadeState(int state) { m_fadeState = state; }
 
 private:

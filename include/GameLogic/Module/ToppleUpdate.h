@@ -48,8 +48,8 @@ class ToppleUpdate : public UpdateModule, public CollideModuleInterface
 public:
 	ToppleUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
-	bool isAbleToBeToppled() const; // 0x004A8125
-	void applyTopplingForce(const Coord3D *toppleDirection, Real toppleSpeed, UnsignedInt options); // 0x004A83D7 (Object::topple 0x0028CF37)
+	bool isAbleToBeToppled() const;
+	void applyTopplingForce(const Coord3D *toppleDirection, Real toppleSpeed, UnsignedInt options); // (Object::topple 0x0028CF37)
 	virtual UpdateSleepTime update();	// UpdateModuleInterface slot 0, 0x004A878F
 	virtual const char *GetSnapshotName() const;
 

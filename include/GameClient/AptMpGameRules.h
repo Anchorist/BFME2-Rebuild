@@ -27,22 +27,22 @@ public:
 	virtual ~AptMpGameRules();										// slot 0
 	virtual void OnRuleChanged(int, bool);							// slot 1 (0x0043FE01: the stub of the embedded class hands the change to the panel instance's rva0043FC1F)
 
-	bool rva0057E707(int, GameWindow *, int);						// 0x0057E707: the rules panel's window message handler
+	bool rva0057E707(int, GameWindow *, int);						// The rules panel's window message handler
 	void EnableRuleGadget(int, bool);							// 0x0057E59B: enables or disables one rule gadget (the map spells its owner Rva0057E97A)
-	void ExternFunc(int, char *, bool);							// 0x0057E55A
-	void UpdateRuleGadget(int);									// 0x0057E5B5
-	void rva0057E6C1();											// 0x0057E6C1: UpdateRuleGadget for every rule
-	int GetGadgetValue(int);									// 0x0057E66A
-	bool rva0057ED2B();											// 0x0057ED2B
-	void rva0057E97A();											// 0x0057E97A: enables each gadget whose state is 1 when the local player hosts
-	void rva0057E9ED(unsigned int index, int state);			// 0x0057E9ED: stores one gadget state
-	void PopulateComboBoxes();									// 0x0057EAAD
-	void PopulateCheckBoxes();									// 0x0057E7A1
-	void InitGadgets(const char *, void *, GameWindow *);		// 0x0057F036
-	void rva0057EF18();											// 0x0057EF18
-	void rva0057EF46(AptMpGameRulesWidgets *, const char *, GameWindow *);	// 0x0057EF46
-	void Reset(const char *);									// 0x0057E6DD
-	void rva0057E779(int, int);									// 0x0057E779: stores a rule value and refreshes its gadget
+	void ExternFunc(int, char *, bool);
+	void UpdateRuleGadget(int);
+	void rva0057E6C1();											// UpdateRuleGadget for every rule
+	int GetGadgetValue(int);
+	bool rva0057ED2B();
+	void rva0057E97A();											// Enables each gadget whose state is 1 when the local player hosts
+	void rva0057E9ED(unsigned int index, int state);			// Stores one gadget state
+	void PopulateComboBoxes();
+	void PopulateCheckBoxes();
+	void InitGadgets(const char *, void *, GameWindow *);
+	void rva0057EF18();
+	void rva0057EF46(AptMpGameRulesWidgets *, const char *, GameWindow *);
+	void Reset(const char *);
+	void rva0057E779(int, int);									// Stores a rule value and refreshes its gadget
 
 	GameInfoTarget *m_target;										// +0x58
 	int m_x5C;														// +0x5C

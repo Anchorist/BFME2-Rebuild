@@ -16,6 +16,52 @@
 #include "GameLogic/Object.h"
 #include "Common/RandomValue.h"
 #include "Common/Coord3D.h"
+
+// Tier B; object=O004C8D3B evidence=invented flags=align=U;ehform=EH_prolog
+// Extent is a hypothesis; only Object VERIFIED establishes recovery.
+// Edges: left=unknown-rows right=unproven
+#include "GameLogic/Module/CritterEmitterUpdate.h"
+#include "Common/NameKeyGenerator.h"
+#include "Common/Xfer.h"
+// FUNCTION: BFME2 0x004C8D1B size=32 name=??1CritterEmitterUpdate@@MAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
+CritterEmitterUpdate::~CritterEmitterUpdate()
+{
+}
+// FUNCTION: BFME2 0x004C8D3B size=6 name=?GetSnapshotName@CritterEmitterUpdate@@MBEPBDXZ evidence=N:ledger
+const char *CritterEmitterUpdate::GetSnapshotName() const
+{
+	return "CritterEmitterUpdate";
+}
+
+// FUNCTION: BFME2 0x004C8D41 size=69 name=?getModuleNameKey@CritterEmitterUpdate@@UBE?AW4NameKeyType@@XZ evidence=N:ledger
+NameKeyType CritterEmitterUpdate::getModuleNameKey() const
+{
+	static NameKeyType TheCritterEmitterUpdateNameKey = TheNameKeyGenerator->nameToKey("CritterEmitterUpdate");
+	return TheCritterEmitterUpdateNameKey;
+}
+
+// FUNCTION: BFME2 0x004C8D86 size=64 name=??0CritterEmitterUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger
+CritterEmitterUpdate::CritterEmitterUpdate(Thing *thing, const ModuleData *moduleData) :
+	UpdateModule(thing, moduleData),
+	m_unk0x24(false),
+	m_unk0x25(true)
+{
+}
+
+// FUNCTION: BFME2 0x004C8DE2 size=96 name=?update@CritterEmitterUpdate@@UAE?AW4UpdateSleepTime@@XZ evidence=N:ledger
+
+// FUNCTION: BFME2 0x004C8E42 size=65 name=?xfer@CritterEmitterUpdate@@MAEXPAVXfer@@@Z evidence=N:ledger
+void CritterEmitterUpdate::xfer(Xfer *xfer)
+{
+	UpdateModule::xfer(xfer);
+	if (!xfer->IsLightCRC())
+	{
+		xfer->Version1();
+		*xfer == m_unk0x24;
+		*xfer == m_unk0x25;
+	}
+}
+
 // FUNCTION: BFME2 0x004C8E83 size=124 name=?onCollide@CritterEmitterUpdate@@UAEXPAVObject@@PBVCoord3D@@1@Z evidence=N:ledger tier=A
 void CritterEmitterUpdate::onCollide(Object *other, const Coord3D *loc, const Coord3D *normal)
 {

@@ -1,4 +1,4 @@
-NOTE (f09, 2026-11-18): carried over from the earlier BFME 2 decomp. Differences in this tree: ~HuffStat is defined
+NOTE: ~HuffStat is defined
 inline in CompLibHeader/_huff.h (retail expands its body inside the derived destructors and holds no copy attributable
 to Huff.cpp), so no `present-unmatched` marker is used; the address-named helper rows (clearStats 0x006918B0 and the
 two resetTables 0x00692260 / 0x00692360) are left to the map; the headers sit beside the sources.

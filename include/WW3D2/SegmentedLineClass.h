@@ -26,7 +26,7 @@ public:
 	SegmentedLineClass();										// 0x0015EF20
 	SegmentedLineClass(const SegmentedLineClass &src);			// 0x0015EFD0
 	SegmentedLineClass &operator=(const SegmentedLineClass &that);	// 0x0015F090
-	virtual ~SegmentedLineClass();								// 0x0015E690
+	virtual ~SegmentedLineClass();
 
 	virtual RenderObjClass *Clone() const;						// slot 2: 0x0015F200
 	virtual int Class_ID() const;								// slot 3
@@ -45,48 +45,48 @@ public:
 	virtual int Get_LOD_Level() const;							// slot 80: 0x0015E5F0
 	virtual int Get_LOD_Count() const;							// slot 81
 
-	void Set_Points(unsigned int num_points, Vector3 *locs);	// 0x0015F100
+	void Set_Points(unsigned int num_points, Vector3 *locs);
 	int Get_Num_Points();										// 0x0015E760
-	void Set_Point_Location(unsigned int point_idx, const Vector3 &location);	// 0x0015E770
-	void Get_Point_Location(unsigned int point_idx, Vector3 &loc);				// 0x0015E7B0
-	void Add_Point(const Vector3 &location);					// 0x0015F170
-	void Delete_Point(unsigned int point_idx);					// 0x0015F190
+	void Set_Point_Location(unsigned int point_idx, const Vector3 &location);
+	void Get_Point_Location(unsigned int point_idx, Vector3 &loc);
+	void Add_Point(const Vector3 &location);
+	void Delete_Point(unsigned int point_idx);
 
 	TextureClass *Get_Texture();
-	ShaderClass Get_Shader();									// 0x0015E150
-	float Get_Width();											// 0x0015E270
-	void Get_Color(Vector3 &color);								// 0x0015E160
-	float Get_Opacity();										// 0x0015E190
+	ShaderClass Get_Shader();
+	float Get_Width();
+	void Get_Color(Vector3 &color);
+	float Get_Opacity();
 	float Get_Noise_Amplitude();
 	float Get_Merge_Abort_Factor();
 	unsigned int Get_Subdivision_Levels();
-	SegLineRendererClass::TextureMapMode Get_Texture_Mapping_Mode();	// 0x0015E1C0
-	float Get_Texture_Tile_Factor();							// 0x0015E1D0
-	Vector2 Get_UV_Offset_Rate();								// 0x0015E1E0
-	int Is_Merge_Intersections();								// 0x0015E210
-	int Is_Freeze_Random();										// 0x0015E220
-	int Is_Sorting_Disabled();									// 0x0015E230
-	int Are_End_Caps_Enabled();									// 0x0015E240
+	SegLineRendererClass::TextureMapMode Get_Texture_Mapping_Mode();
+	float Get_Texture_Tile_Factor();
+	Vector2 Get_UV_Offset_Rate();
+	int Is_Merge_Intersections();
+	int Is_Freeze_Random();
+	int Is_Sorting_Disabled();
+	int Are_End_Caps_Enabled();
 
 	void Set_Texture(TextureClass *texture);					// 0x0015E250
-	void Set_Shader(ShaderClass shader);						// 0x0015E260
+	void Set_Shader(ShaderClass shader);
 	void Set_Width(float width);								// 0x0015E290
 	void Set_Width(float width, float end_width);				// 0x0015E2B0 (BFME 2 adds the end width the renderer keeps at +0x1C; both clamp at 0)
-	void Set_Color(const Vector3 &color);						// 0x0015E2F0
-	void Set_Opacity(float opacity);							// 0x0015E320
-	void Set_Noise_Amplitude(float amplitude);					// 0x0015E340
-	void Set_Merge_Abort_Factor(float factor);					// 0x0015E370
-	void Set_Subdivision_Levels(unsigned int levels);			// 0x0015E390
-	void Set_Texture_Mapping_Mode(SegLineRendererClass::TextureMapMode mode);	// 0x0015E3B0
+	void Set_Color(const Vector3 &color);
+	void Set_Opacity(float opacity);
+	void Set_Noise_Amplitude(float amplitude);
+	void Set_Merge_Abort_Factor(float factor);
+	void Set_Subdivision_Levels(unsigned int levels);
+	void Set_Texture_Mapping_Mode(SegLineRendererClass::TextureMapMode mode);
 	void Set_Texture_Tile_Factor(float factor);					// 0x0015E3D0
-	void Set_UV_Offset_Rate(const Vector2 &rate);				// 0x0015E800
-	void Set_Merge_Intersections(int onoff);					// 0x0015E3F0
-	void Set_Freeze_Random(int onoff);							// 0x0015E410
-	void Set_Disable_Sorting(int onoff);						// 0x0015E430
-	void Set_End_Caps(int onoff);								// 0x0015E450
+	void Set_UV_Offset_Rate(const Vector2 &rate);
+	void Set_Merge_Intersections(int onoff);
+	void Set_Freeze_Random(int onoff);
+	void Set_Disable_Sorting(int onoff);
+	void Set_End_Caps(int onoff);
 
 protected:
-	void Render_Seg_Line(RenderInfoClass &rinfo);				// 0x0015EED0
+	void Render_Seg_Line(RenderInfoClass &rinfo);
 
 	unsigned int MaxSubdivisionLevels;							// +0xC4
 	float NormalizedScreenArea;									// +0xC8

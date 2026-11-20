@@ -26,6 +26,8 @@ static const FieldParse s_oclUpdateModuleDataFieldParse[] =
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/GameLogic.h"
 #include "GameLogic/Object.h"
+#include "GameLogic/TerrainLogic.h"
+#include "GameLogic/ObjectCreationList.h"
 #include "Common/RandomValue.h"
 #include "Common/Xfer.h"
 #include "GameLogic/Module/OCLUpdate.h"
@@ -105,4 +107,31 @@ void OCLUpdate::xfer(Xfer *xfer)
 }
 
 // FUNCTION: BFME2 0x0049B483 size=148 name=?update@Rva0049B2A2@@UAE?AW4UpdateSleepTime@@XZ evidence=?:placeholder tier=B hypothesis:K
+UpdateSleepTime OCLUpdate::update()
+{
+	if (shouldCreate())
+	{
+		if (m_nextCreationFrame == 0)
+		{
+			setNextCreationFrame();
+			return UPDATE_SLEEP_NONE;
+		}
+		setNextCreationFrame();
+		Coord3D spawnPos;
+		if (((const OCLUpdateModuleData *)getModuleData())->m_createAtEdge)
+			spawnPos = TheTerrainLogic->findClosestEdgePoint(getObject()->getPosition());
+		else
+			spawnPos = *getObject()->getPosition();
+		const OCLUpdateModuleData *data = (const OCLUpdateModuleData *)getModuleData();
+		if (data->m_ocl)
+			const_cast<ObjectCreationList *>(data->m_ocl)->create(getObject(), &spawnPos, getObject()->getPosition(), 0);
+		if (data->m_amount > 0)
+		{
+			++m_currentCount;
+			if (m_currentCount >= data->m_amount)
+				return UPDATE_SLEEP_FOREVER;
+		}
+	}
+	return UPDATE_SLEEP_NONE;
+}
 

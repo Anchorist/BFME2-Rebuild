@@ -1,10 +1,7 @@
-// LargeGroupAudioUpdate.h: the LargeGroupAudioUpdate module. SIZE 0x94 (ModuleFactory operator new).
-// Target facts: the constructor 0x004AB811 calls UpdateModule first; it stores the
-// tables 0x00C6FFFC at +0x20, 0x00BFB698 at +0x24, 0x00C549BC at +0x0, 0x00C54900 at +0xC, 0x00C548F0 at +0x10, 0x00C548E8 at +0x20, 0x00C548B8 at +0x24. Members are what xfer (0x004AB9EA) transfers after UpdateModule::xfer,
-// typed by the Xfer slot each goes through, in that order; m_unk names are offsets
-// (no map or donor name established). Bytes xfer does not touch are gaps.
-// Not established: interface tables at +0x20, +0x24 (their vptrs sit in the gaps there).
-// Not established: transfers xfer makes that this view cannot place: slot10 ?, ?xfer@?$BitFlags@$0CEP@@@QAEXPAVXfer@@@Z +0x30, ?xfer@?$BitFlags@$0GF@@@QAEXPAVXfer@@@Z +0x7C.
+// LargeGroupAudioUpdate: the LargeGroupAudioUpdate update module. SIZE 0x94: UpdateModule (0x20), a byte
+// gap holding interface table pointers, the Coord2D at +0x28, two BitFlags that xfer (0x004AB9EA) saves at +0x30 and
+// +0x7C (the 0x5C bytes between stay a gap because the flag types are not placed), the Bools at +0x8C and +0x8D and the
+// Int at +0x90. The constructor (0x004AB811) runs UpdateModule's constructor and installs the tables.
 #pragma once
 #ifndef BFME2_LARGE_GROUP_AUDIO_UPDATE_H
 #define BFME2_LARGE_GROUP_AUDIO_UPDATE_H
@@ -28,7 +25,7 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~LargeGroupAudioUpdate();
 	virtual void onObjectCreated();	// override: onObjectCreated slot 5 at +0x0 (0x004ABB37)
-	void rva004AB90A();	// 0x004AB90A (onObjectCreated calls it unless +0x8D is set)
+	void rva004AB90A();	// (onObjectCreated calls it unless +0x8D is set)
 	virtual void onDelete();	// override: onDelete slot 8 at +0x0 (0x004ABB46)
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004ABB4B)
 	virtual DisabledMaskType getDisabledTypesToProcess() const;	// override: getDisabledTypesToProcess slot 1 at +0x10 (0x004AB9D5)

@@ -29,12 +29,12 @@ public:
 	AABTreeClass(const AABTreeClass &that);								// 0x00198190
 	~AABTreeClass(void);												// 0x00197F30 (the deleting destructor is 0x00198170)
 
-	void Load_W3D(ChunkLoadClass &cload);								// 0x00198090
-	void Scale(float scale);											// 0x00197BB0
+	void Load_W3D(ChunkLoadClass &cload);
+	void Scale(float scale);
 
 	int Get_Node_Count(void) { return NodeCount; }
 	int Get_Poly_Count(void) { return PolyCount; }
-	int Compute_Ram_Size(void);											// 0x00197CE0: inline in Zero Hour; retail's copy is this row
+	int Compute_Ram_Size(void);											// Inline in Zero Hour; retail's copy is this row
 
 	// Inline in Zero Hour and in retail: MeshGeometryClass::Cast_Ray 0x0016D7B0 and Intersect_OBBox 0x0016D7E0 pass Nodes[0] to the
 	// recursive tests themselves (0x00198630, 0x00198730); 0x00168C20 is Intersect_OBBox's out-of-line copy.
@@ -44,13 +44,13 @@ public:
 
 private:
 	AABTreeClass &operator=(const AABTreeClass &that);					// 0x00197F80
-	void Read_Poly_Indices(ChunkLoadClass &cload);						// 0x00197D00
-	void Read_Nodes(ChunkLoadClass &cload);								// 0x00197D20
+	void Read_Poly_Indices(ChunkLoadClass &cload);
+	void Read_Nodes(ChunkLoadClass &cload);
 
-	void Build_Tree_Recursive(AABTreeBuilderClass::CullNodeStruct *node, int &curpolyindex);	// 0x00197C30
-	void Reset(void);													// 0x00197B70
+	void Build_Tree_Recursive(AABTreeBuilderClass::CullNodeStruct *node, int &curpolyindex);
+	void Reset(void);
 	void Update_Bounding_Boxes(void);
-	void Update_Min_Max(int index, Vector3 &min, Vector3 &max);			// 0x00198580
+	void Update_Min_Max(int index, Vector3 &min, Vector3 &max);
 
 	// The culling tree is built from an array of these (Zero Hour's remark): the extents of an axis-aligned box, and either
 	// two child indices or a polygon range, told apart by the MSB of FrontOrPoly0.

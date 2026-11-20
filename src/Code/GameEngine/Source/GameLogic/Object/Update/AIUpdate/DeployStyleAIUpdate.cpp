@@ -174,7 +174,7 @@ void DeployStyleAIUpdate::aiDoCommand(const AICommandParms *parms)
 // FUNCTION: BFME2 0x0048E90B size=120 name=?doLastOutsideCommand@DeployStyleAIUpdate@@QAEXXZ evidence=N:ledger tier=A
 void DeployStyleAIUpdate::doLastOutsideCommand()
 {
-	AICommandParms parms((AICommandType)-1, (CommandSourceType)2);
+	AICommandParms parms(AICMD_NO_COMMAND, (CommandSourceType)2);
 	m_lastCommand.reconstitute(parms);
 	m_unk0x4A9 = false;
 	doCommand(&parms, true);

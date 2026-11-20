@@ -20,9 +20,9 @@ class Coord3D;
 class W3DTreeDraw : public DrawModule
 {
 public:
-	W3DTreeDraw(Thing *thing, const ModuleData *moduleData);				// 0x000CEB4D
+	W3DTreeDraw(Thing *thing, const ModuleData *moduleData);
 
-	virtual NameKeyType getModuleNameKey() const;							// 0x000CEB7A
+	virtual NameKeyType getModuleNameKey() const;
 	virtual void doDrawModule(const Matrix3D *transformMtx) {}				// slot 11, folded `ret 4`
 	virtual void setShadowsEnabled(Bool enable) {}							// slot 12, folded `ret 4`
 	virtual void releaseShadows() {}										// slot 13, folded `ret`

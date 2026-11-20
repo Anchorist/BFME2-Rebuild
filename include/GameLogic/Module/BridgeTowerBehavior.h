@@ -36,31 +36,31 @@ class BridgeTowerBehavior : public BehaviorModule, public BridgeTowerBehaviorInt
 {
 public:
 	BridgeTowerBehavior(Thing *thing, const ModuleData *moduleData);					// 0x00458704
-	virtual NameKeyType getModuleNameKey() const;										// 0x0045876C
+	virtual NameKeyType getModuleNameKey() const;
 
 	virtual BridgeTowerBehaviorInterface *getBridgeTowerBehaviorInterface() { return this; }	// slot 13
 	virtual DamageModuleInterface *getDamage() { return this; }						// slot 4
 	virtual DieModuleInterface *getDie() { return this; }								// slot 7
 
 	// BridgeTowerBehaviorInterface
-	virtual void setBridge(Object *bridge);											// 0x004586EE
+	virtual void setBridge(Object *bridge);
 	virtual ObjectID getBridgeID() { return m_bridgeID; }								// slot 1, folded into 0x001DB0A8
 	virtual void setTowerType(BridgeTowerType type) { m_towerType = type; }			// slot 2, folded into 0x005F69CE
 
-	static BridgeTowerBehaviorInterface *getBridgeTowerBehaviorInterfaceFromObject(Object *obj);	// 0x0045880B
+	static BridgeTowerBehaviorInterface *getBridgeTowerBehaviorInterfaceFromObject(Object *obj);
 
 	// DamageModuleInterface
-	virtual void onDamage(DamageInfo *damageInfo);										// 0x00458841
-	virtual void onHealing(DamageInfo *damageInfo);									// 0x00458997
+	virtual void onDamage(DamageInfo *damageInfo);
+	virtual void onHealing(DamageInfo *damageInfo);
 	virtual void onBodyDamageStateChange(const DamageInfo *damageInfo, BodyDamageType oldState, BodyDamageType newState) {}	// slot 2, folded into 0x000D1407
 
 	// DieModuleInterface
-	virtual void onDie(const DamageInfo *damageInfo);									// 0x00458A88
+	virtual void onDie(const DamageInfo *damageInfo);
 
 protected:
 	virtual const char *GetSnapshotName() const;										// 0x00458759
-	virtual void xfer(Xfer *xfer);														// 0x004587CD
-	virtual ~BridgeTowerBehavior();													// 0x004586C7
+	virtual void xfer(Xfer *xfer);
+	virtual ~BridgeTowerBehavior();
 
 public:
 	ObjectID m_bridgeID;																// +0x1C; xfer ObjectID

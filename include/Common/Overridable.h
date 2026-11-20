@@ -47,6 +47,7 @@ public:
 	// retired entry and 0 into its replacement, so it is a reload state; the
 	// store is a bare inline `mov dword [reg+0xC], imm`. Role-inferred name.
 	void setReloadState(Int state) { m_reloadState = state; }
+	Int getReloadState() const { return m_reloadState; }				// CommandSet::refreshIfStale re-looks a button up once this is at least 1
 	Bool isOverride() const { return m_isOverride; }
 	Overridable *deleteOverrides();									// 0x001E35ED
 

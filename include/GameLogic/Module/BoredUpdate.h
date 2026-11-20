@@ -35,7 +35,7 @@ public:
 protected:
 	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 public:
-	virtual UpdateSleepTime update();	// 0x0049680F (UpdateModuleInterface slot 0)
+	virtual UpdateSleepTime update();	// (UpdateModuleInterface slot 0)
 };
 // SIZE 0x24
 typedef char BoredUpdate_size[(sizeof(BoredUpdate) == 0x24) ? 1 : -1];

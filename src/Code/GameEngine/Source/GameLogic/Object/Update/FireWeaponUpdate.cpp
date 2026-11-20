@@ -22,9 +22,6 @@
 #include "GameLogic/Weapon.h"
 #include "GameLogic/WeaponStore.h"
 // GameLogic/Object/Update/FireWeaponUpdate.cpp: retail translation unit (skeleton).
-// Write each function below its FUNCTION annotation, in this (retail) order.
-// Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
-// Shared types belong in include/; no class or struct with a body in this file.
 // cl: /EHsc- /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_CRTIMP=
 #include "Common/Xfer.h"
 #include "WWMath/Vector3.h"

@@ -1,6 +1,6 @@
 // Rva002390CB.h: an eight-byte sound/voice record held by module data
 // (InitiateVoice, InitiateSound). SIZE 0x8. Original name not recovered.
-// Target facts (old repo Code/GameEngine/Include/Common/Rva002390CB.h): the
+// Target facts: the
 // default constructor 0x004CEE6E writes -1 at +0 and zero at +4; the copy
 // constructor is 0x002390CB; the reference at +4 is released through
 // Release_Ref (0x00050ED3). BloodthirstyUpdateModuleData's destructor

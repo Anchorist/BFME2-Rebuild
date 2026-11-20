@@ -13,9 +13,18 @@
 #include "Common/INI.h"
 #include <stddef.h>
 
-// The ChangeType name list, retail data at VA 0x009CCD14. The map has no name for it, so it is a
-// role-named extern; its one definition is retail's, linked from wherever it is named later.
-extern const char *const MaxHealthChangeTypeNames[];
+// ChangeType scans these names through the terminating null.
+static const char *MaxHealthChangeTypeNames[] =
+{
+	"SAME_CURRENTHEALTH",
+	"PRESERVE_RATIO",
+	"ADD_CURRENT_HEALTH_TOO",
+	"NONE",
+	"HOLD",
+	"KILL",
+	"SPAWN",
+	0
+};
 
 // The table retail passes to MultiIniFieldParse::add (VA 0x008585DC), read back entry by entry.
 static const FieldParse s_maxHealthUpgradeModuleDataFieldParse[] =

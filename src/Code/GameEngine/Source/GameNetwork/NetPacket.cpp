@@ -3310,8 +3310,8 @@ UnsignedInt NetPacket::GetBufferSizeNeededForCommand(NetCommandMsg *msg)
 }
 
 // FUNCTION: BFME2 0x00592AAB size=357 name=?FillBufferWithCommand@NetPacket@@KAXPAEPAVNetCommandRef@@@Z evidence=N:ledger tier=B hypothesis:K
-void Rva0058CCF2Write(char *buffer, NetCommandRef *ref);	// 0x0058CCF2 (not in this unit's skeleton; the load-complete writer)
-void Rva0058CF83Write(char *buffer, NetCommandRef *ref);	// 0x0058CF83 (not in this unit's skeleton; the request-player-leave writer)
+void Rva0058CCF2Write(char *buffer, NetCommandRef *ref);	// 0x0058CCF2 (the load-complete writer)
+void Rva0058CF83Write(char *buffer, NetCommandRef *ref);	// 0x0058CF83 (the request-player-leave writer)
 void NetPacket::FillBufferWithCommand(UnsignedByte *buffer, NetCommandRef *ref)
 {
 	NetCommandMsg *cmd = ref->getCommand();

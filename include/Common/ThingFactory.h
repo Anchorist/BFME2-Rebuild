@@ -46,7 +46,7 @@ public:
 	virtual void update() {}													// slot 10 (0x000B3FD0, empty)
 	virtual Bool dumpToCSV(const char *fileName);								// slot 11, 0x002CEF6C
 
-	// Target 0x002D1C01, old shared ThingFactory.h and parser call sites.
+	// Target 0x002D1C01 and the parser call sites.
 	static void parseObjectDefinition(INI *, const AsciiString &, const AsciiString &, const AsciiString &);
 	ThingTemplate *newOverride(ThingTemplate *thingTemplate);					// 0x002D1AB4
 	const ThingTemplate *findTemplate(const AsciiString &name);					// 0x002D06CA

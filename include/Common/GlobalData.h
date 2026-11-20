@@ -164,7 +164,7 @@ public:
 	TerrainLighting m_terrainLighting[TIME_OF_DAY_COUNT][MAX_GLOBAL_LIGHTS];		// +0x140
 	TerrainLighting m_terrainObjectsLighting[TIME_OF_DAY_COUNT][MAX_GLOBAL_LIGHTS];	// +0x3C8
 	// +0x650: 0x288 bytes the parse table never writes (the size of a third
-	// lighting table: the old decomp's blend 0x00235312, which matches retail,
+	// lighting table: the blend 0x00235312
 	// interpolates it row by row with the same 0x6C/0x24 strides; its name is unknown).
 	unsigned char m_unk0x650[0x288];
 	// The lighting in use: setTimeOfDay 0x002352BC copies the chosen row of
@@ -219,7 +219,9 @@ public:
 	unsigned char m_unk0x9C7[0x9];
 	Bool m_unk0x9D0;						// +0x9D0 set by a command-line option handler 0x003B986A
 	Bool m_unk0x9D1;						// +0x9D1 ctor 0x002367C9 clears it; option handler 0x003B9875 sets it; AptCreateAHero::CreateAHeroDemo 0x00513A6D tests it
-	unsigned char m_unk0x9D2[0xA];
+	unsigned char m_unk0x9D2[2];
+	Int m_unk0x9D4;		// +0x9D4: signed; the constructor zeroes it, the player template parser compares it and GameSlot::setPlayerTemplate reads its low two bits
+	unsigned char m_unk0x9D8[4];
 	AsciiString m_defaultUnitHealingBuffFxList;            // +0x9DC DefaultUnitHealingBuffFxList
 	AsciiString m_defaultStructureRepairBuffFxList;        // +0x9E0 DefaultStructureRepairBuffFxList
 	unsigned char m_unk0x9E4[0x4];
@@ -559,7 +561,7 @@ typedef char GlobalDataNext[(offsetof(GlobalData, m_next) == 0x1250) ? 1 : -1];
 
 extern GlobalData *TheWritableGlobalData;
 
-// The registry switch that makes the user map directory the local UserData\Maps (0x00235159).
+// The registry switch that makes the user map directory the local UserData\Maps.
 Bool GetRegistryUseLocalUserMaps();
 
 #endif

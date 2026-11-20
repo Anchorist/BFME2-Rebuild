@@ -45,17 +45,17 @@ class PKey
 {
 public:
 	PKey() : BitPrecision(0) {}						// inline: both integers cleared through XMP_Init
-	PKey(const void *exponent, const void *modulus);			// 0x0061DF40
+	PKey(const void *exponent, const void *modulus);
 
-	int Plain_Block_Size() const;						// 0x0061DC80
-	int Crypt_Block_Size() const;						// 0x0061DCA0
-	int Encode_Modulus(void *buffer) const;					// 0x0061DFA0
-	int Encode_Exponent(void *buffer) const;				// 0x0061DFC0
-	void Decode_Modulus(void *buffer);					// 0x0061DFE0
-	void Decode_Exponent(void *buffer);					// 0x0061E010
-	int Encrypt(const void *source, int slen, void *dest) const;		// 0x0061E210
-	int Decrypt(const void *source, int slen, void *dest) const;		// 0x0061E340
-	static void Generate(Straw &random, int bits, PKey &fastkey, PKey &slowkey);	// 0x0061E7C0
+	int Plain_Block_Size() const;
+	int Crypt_Block_Size() const;
+	int Encode_Modulus(void *buffer) const;
+	int Encode_Exponent(void *buffer) const;
+	void Decode_Modulus(void *buffer);
+	void Decode_Exponent(void *buffer);
+	int Encrypt(const void *source, int slen, void *dest) const;
+	int Decrypt(const void *source, int slen, void *dest) const;
+	static void Generate(Straw &random, int bits, PKey &fastkey, PKey &slowkey);
 
 	enum { MAX_UNIT_PRECISION = 64 };
 

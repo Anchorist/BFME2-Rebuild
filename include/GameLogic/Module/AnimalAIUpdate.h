@@ -1,16 +1,8 @@
-// AnimalAIUpdate.h: the animal AI update module.
-// Target facts:
-// - Constructor 0x0047ECA8 calls AIUpdateInterface's, stores the class tables
-//   0x00C47B98 (+0), 0x00C47B8C (+0x10), 0x00C47B88 (+0x20), keeps
-//   AIUpdateInterface's 0x00BFA3C0 (+0xC) and 0x00C52F88 (+0x24), and stores
-//   0x00C47B84 at +0x3E4: a one-slot interface right after AIUpdateInterface.
-//   Its slot 0x0047EC5F takes the interface as this and returns the module
-//   data's AfraidOfCastles byte (+0x7C, AnimalAIUpdateModuleData).
-//   The interface's retail name is not recovered; AnimalAIInterface is a role name.
-// - xfer 0x0047EBAF: version 1, XferObjectID +0x3E8, Bool +0x3F8, Coord3D +0x3EC,
-//   Bool +0x3F9, then AIUpdateInterface::xfer.
-// - makeStateMachine 0x0047EC69 returns a new 0x68-byte AIStateMachine
-//   (owner, 0xD7F450E0).
+// AnimalAIUpdate.h: the animal AI update module. SIZE 0x3FC: AIUpdateInterface and, after it, the one-slot AnimalAIInterface
+// (a role name; the interface's retail name is not recovered) whose slot returns the module data's AfraidOfCastles byte.
+// The constructor runs AIUpdateInterface's and installs the class tables. xfer saves a version, an ObjectID at +0x3E8, a Bool
+// at +0x3F8, a Coord3D at +0x3EC and a Bool at +0x3F9, then AIUpdateInterface's data. makeStateMachine returns a new
+// AIStateMachine.
 #pragma once
 #ifndef BFME2_ANIMALAIUPDATE_H
 #define BFME2_ANIMALAIUPDATE_H
@@ -27,22 +19,25 @@ public:
 class AnimalAIUpdate : public AIUpdateInterface, public AnimalAIInterface
 {
 public:
-	AnimalAIUpdate(Thing *thing, const ModuleData *moduleData);	// 0x0047ECA8
+	AnimalAIUpdate(Thing *thing, const ModuleData *moduleData);
+	virtual ~AnimalAIUpdate();
 
-	virtual NameKeyType getModuleNameKey() const;			// 0x0047EC1A
-	virtual Bool isAfraidOfCastles() const;					// 0x0047EC5F
-	virtual AnimalAIInterface *getAnimalAIInterface() { return this; }	// slot 96, 0x004A9B51 (shared)
+	virtual NameKeyType getModuleNameKey() const;
+	virtual Bool isAfraidOfCastles() const;
+	virtual UpdateSleepTime update();
+	virtual AnimalAIInterface *getAnimalAIInterface() { return this; }	// slot 96, a getter shared with other classes
 
 protected:
-	virtual void xfer(Xfer *xfer);							// 0x0047EBAF
-	virtual AIStateMachine *makeStateMachine();				// 0x0047EC69
+	virtual void xfer(Xfer *xfer);
+	virtual AIStateMachine *makeStateMachine();
+	virtual void loadPostProcess() { AIUpdateInterface::loadPostProcess(); }	// slot 1: a forwarder to AIUpdateInterface's
 
 	ObjectID m_unk0x3E8;									// +0x3E8
 	Coord3D m_unk0x3EC;										// +0x3EC
 	Bool m_unk0x3F8;										// +0x3F8
 	Bool m_unk0x3F9;										// +0x3F9
 protected:
-	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x0047EBA9
+	virtual const char *GetSnapshotName() const;	// slot 2 of the class table
 };
 // SIZE 0x3FC
 

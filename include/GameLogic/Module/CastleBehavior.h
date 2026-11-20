@@ -43,10 +43,13 @@ public:
 	virtual Bool shouldDoOnBuildComplete() const { return true; }
 
 	virtual void onCapture(Player *oldPlayer, Player *newPlayer);
-	virtual NameKeyType getModuleNameKey() const;		// 0x00398538
+	virtual NameKeyType getModuleNameKey() const;
 	const char *name() const;
 
 	Real getCampDiameter(const Player *player);
+	// The ledger spells the result void *: the army key of the owner's nearest object that has a living world army ID,
+	// or NULL.
+	void *GetArmyIDFromClosestObject();
 	// Behavior slot 45 resolves the loaded side at the owner position.
 	virtual void mapLoadPostProcess(const Dict *properties);
 	// Snapshot slot 1 at 0x003956E8 also removes the owner from the pathfinder when the castle state at +0x34 is nonzero.
@@ -63,8 +66,8 @@ public:
 	// unlink-then-delete per entry. Its row belongs to a placeholder class.
 	void clearPackedList();
 
-	Bool rva003977F6(ObjectTypes *types);		// 0x003977F6: does any owned or packed object's template belong to the list
-	void rva0039792B();						// 0x0039792B: adds the owned and packed objects to the pathfinder map
+	Bool rva003977F6(ObjectTypes *types);		// Does any owned or packed object's template belong to the list
+	void rva0039792B();						// Adds the owned and packed objects to the pathfinder map
 
 	Int m_castleState;									// Castle registration assigns this state and post-load pathfinding tests it.
 	Int m_38;									// 0x38

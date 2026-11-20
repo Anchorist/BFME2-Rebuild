@@ -10,11 +10,11 @@
 
 extern EAStringC::StringDataC g_eaEmptyStringData; // 0x00DDC020
 unsigned short hashLower(const char *text); // 0x006D3800
-int rva006d4d80(const char *text);            // 0x006D4D80: the UTF-8 character count of a NUL-terminated string
-void *rva006d4d40(void *text, int count);     // 0x006D4D40: the address `count` UTF-8 characters in, or null past the end
-int rva006d3e40(const char *text);              // 0x006D3E40: decodes the UTF-8 character at the pointer
-const char *rva006d4280(const char *text, int *more); // 0x006D4280: steps over one UTF-8 character; *more is 0 at the terminator
-void rva006d4dc0(char *destination, int codePoint); // 0x006D4DC0: writes one code point as UTF-8
+int rva006d4d80(const char *text);            // The UTF-8 character count of a NUL-terminated string
+void *rva006d4d40(void *text, int count);     // The address `count` UTF-8 characters in, or null past the end
+int rva006d3e40(const char *text);              // Decodes the UTF-8 character at the pointer
+const char *rva006d4280(const char *text, int *more); // Steps over one UTF-8 character; *more is 0 at the terminator
+void rva006d4dc0(char *destination, int codePoint); // Writes one code point as UTF-8
 
 // The lifetime members are defined (inline) only in this unit: the units that use EAStringC call
 // the emitted copies (0x006D2F90, 0x006D3010) out of line.
@@ -1474,7 +1474,7 @@ void EAStringC::rva006D62C0(const char *pStrFormat, ...)
 }
 
 // Content equality with another string (retail 0x006D3090: sizes, then the same representation, then the bytes) and its case-insensitive
-// sibling (0x006D3560, through the C runtime's _strcmpi). The rows are not in the skeleton yet; the call sites in retail tell the two apart.
+// sibling (0x006D3560, through the C runtime's _strcmpi). The rows are not in this file yet; the call sites in retail tell the two apart.
 bool EAStringC::IsEqualTo(const EAStringC *other) const
 {
     StringDataC *mine = data;

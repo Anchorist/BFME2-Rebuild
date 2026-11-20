@@ -10,8 +10,8 @@ class GameWindow;
 class RadarWindowOverrideSource
 {
 public:
-	bool hasOverrideWindow() const;			// 0x002D35D6
-	GameWindow *getOverrideWindow() const;	// 0x002D35CF
+	bool hasOverrideWindow() const;
+	GameWindow *getOverrideWindow() const;
 	// The script actions' forwarders (ScriptActions 0x003BD270..0x003BD459: each calls one of these through TheRadarWindowOverrideSource;
 	// the map spells them on one placeholder class each). Names are roles from the callers (the control-bar buttons they flash).
 	void setPlanningModeEnabled(unsigned char enable);	// 0x002D37BD (map: ?SetPlanningModeEnabled@Palantir@@QAEXE@Z)

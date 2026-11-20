@@ -23,8 +23,8 @@ public:
     void friend_addTrackedKill(const Coord3D *position);
     void friend_update();
     void rva0055A91A(); // unhooks from the score keeper and clears the frame list
-    void hookToKeeper(ScoreKeeper *scoreKeeper); // 0x0055A93C
-    virtual const char *GetSnapshotName() const; // 0x0055A914
+    void hookToKeeper(ScoreKeeper *scoreKeeper);
+    virtual const char *GetSnapshotName() const;
 
 protected:
     virtual void loadPostProcess(); // 0x0055A962

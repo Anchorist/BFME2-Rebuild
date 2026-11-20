@@ -81,12 +81,12 @@ extern void (__cdecl *g_pfnSetExtern)(const char *name, const char *value); // V
 extern AptValue *(__cdecl *g_pfnGetExtern)(const char *name); // VA 0x00E17768: GetMember on an extern value
 extern void (__cdecl *g_pfnUndefinedVariable)(const char *name); // VA 0x00E177C4: the host hook getVariable calls when a name resolves to nothing
 unsigned char Rva006FD5B0(char a, char b); // 0x006FD5B0: one hex pair of a URL escape
-unsigned char rva006FEC00(int context, int with, EAStringC *path, int *resolved, EAStringC *rest); // 0x006FEC00 (the map files it as rva006FEC00): resolves a path string against a context and a with value, to the value and the unresolved rest
-void rva006ffce0(AptValue *value, EAStringC &path); // 0x006FFCE0: the dotted target path of a clip
-EAStringC rva006D5160(const char *prefix, const EAStringC &text); // 0x006D5160 (the map name): the C string followed by the string
-void rva006ffc30(AptValue *value, EAStringC &path); // 0x006FFC30: the slash form of the same path
-void rva006ff980(AptValue *value, EAStringC &path, int dotted); // 0x006FF980: appends a clip's ancestors and name to the path
-bool rva006fc370(AptValue *value); // 0x006FC370 (placeholder in the map): a predicate on the value taken before the numeric conversions
+unsigned char rva006FEC00(int context, int with, EAStringC *path, int *resolved, EAStringC *rest); // (the map files it as rva006FEC00): resolves a path string against a context and a with value, to the value and the unresolved rest
+void rva006ffce0(AptValue *value, EAStringC &path); // The dotted target path of a clip
+EAStringC rva006D5160(const char *prefix, const EAStringC &text); // (the map name): the C string followed by the string
+void rva006ffc30(AptValue *value, EAStringC &path); // The slash form of the same path
+void rva006ff980(AptValue *value, EAStringC &path, int dotted); // Appends a clip's ancestors and name to the path
+bool rva006fc370(AptValue *value); // (placeholder in the map): a predicate on the value taken before the numeric conversions
 extern EAStringC g_aptScratchString; // VA 0x00E177D4: the name the PushString* opcodes build before the lookup
 int gaPropertyStringIndices[22] = { 23, 26, 25, 28, 2, 17, 1, 21, 22, 8, 14, 16, 6, 11, 4, 20, 9, 5, 15, 12, 24, 27 }; // VA 0x00DDC928: the StringPool index of each numbered MovieClip property name
 int Rva006CD220Get(); // 0x006CD220: the Flash version the interpreter emulates (7)
@@ -1122,7 +1122,7 @@ AptValue *rva006ff5d0(AptActionInterpreter *pInterpreter, int nParams)
 }
 
 // FUNCTION: BFME2 0x006FF660 size=231 name=?callback006FF660@@YAPAVAptValue@@PAV1@H@Z evidence=N:ledger
-void rva006FD630(EAStringC *text); // 0x006FD630
+void rva006FD630(EAStringC *text);
 AptValue *callback006FF660(AptValue *, int nParams)
 {
     if (!(nParams <= 1)) {
@@ -1140,7 +1140,7 @@ AptValue *callback006FF660(AptValue *, int nParams)
 }
 
 // FUNCTION: BFME2 0x006FF750 size=241 name=?callback006FF750@@YAPAVAptValue@@PAV1@H@Z evidence=N:ledger
-void rva006FD4C0(EAStringC *text); // 0x006FD4C0
+void rva006FD4C0(EAStringC *text);
 AptValue *callback006FF750(AptValue *, int nParams)
 {
     if (!(nParams <= 1)) {

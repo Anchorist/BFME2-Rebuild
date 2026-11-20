@@ -15,7 +15,7 @@ class MatPassTaskClass : public AutoPoolClass<MatPassTaskClass, 256>
 {
 public:
 	MatPassTaskClass(MaterialPassClass *pass, MeshClass *mesh);		// 0x001438C0
-	~MatPassTaskClass(void);						// 0x001438F0
+	~MatPassTaskClass(void);
 
 	MaterialPassClass *Peek_Material_Pass(void) { return Pass; }
 	MeshClass *Peek_Mesh(void) { return Mesh; }

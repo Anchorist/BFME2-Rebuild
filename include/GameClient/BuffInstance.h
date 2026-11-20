@@ -16,15 +16,15 @@ class BuffInstance : public Snapshot
 	friend class BuffManager;
 public:
 	BuffInstance();											// 0x00362D25
-	virtual ~BuffInstance();								// 0x00362D6C
-	void TurnOff(bool immediate);							// 0x00362609
-	void Update(unsigned int frame);						// 0x003627B8
-	bool MakeNormalBuff(int type, int subType, const ThingTemplate *thingTemplate, Drawable *drawable, int duration);	// 0x00362518
-	bool MakeGlowOutlineBuff(int type, int subType, Drawable *drawable, int duration, int color, float intensity);	// 0x003625C3 (unsupported: asserts)
+	virtual ~BuffInstance();
+	void TurnOff(bool immediate);
+	void Update(unsigned int frame);
+	bool MakeNormalBuff(int type, int subType, const ThingTemplate *thingTemplate, Drawable *drawable, int duration);
+	bool MakeGlowOutlineBuff(int type, int subType, Drawable *drawable, int duration, int color, float intensity);	// (unsupported: asserts)
 
 protected:
 	virtual void loadPostProcess() {}						// slot 1; the shared empty body 0x000B3FD0
-	virtual const char *GetSnapshotName() const;			// 0x00362D66 (slot 2)
+	virtual const char *GetSnapshotName() const;			// (slot 2)
 	virtual void xfer(Xfer *xfer);						// 0x003628D3 (slot 3)
 
 public:

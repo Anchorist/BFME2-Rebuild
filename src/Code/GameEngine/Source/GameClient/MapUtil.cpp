@@ -100,6 +100,18 @@ AsciiString MapCache::getUserMapDir()
 // FUNCTION: BFME2 0x003014D6 size=94 name=??RRva003014D6Cmp@@QBE_NPAVMapMetaData@@0@Z evidence=N:ledger
 
 // FUNCTION: BFME2 0x00301534 size=155 name=?bfme_getDescriptionFirstLine@MapMetaData@@QAE?AVUnicodeString@@XZ evidence=N:ledger
+UnicodeString MapMetaData::bfme_getDescriptionFirstLine()
+{
+	UnicodeString description = getDescription();
+	const WideChar *newline = description.find(10);
+	if (newline)
+	{
+		// Keep only the text before the first line break.
+		UnicodeString firstLine(description, 0, newline - description.str());
+		description.set(firstLine);
+	}
+	return description;
+}
 
 // FUNCTION: BFME2 0x003015CF size=24 name=?Rva003015CFPartition@@YAPAPAURva00450B90Item@@VRva00450B90Predicate@@ABURva003015CFRange@@@Z evidence=?:placeholder
 

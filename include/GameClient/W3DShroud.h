@@ -15,8 +15,8 @@ class W3DShroudMaterialPassClass : public MaterialPassClass
 {
 public:
 	W3DShroudMaterialPassClass(void) : m_isTransparentObjectPass(false) {}
-	virtual void Install_Materials(void) const;			// 0x00072EEB
-	virtual void UnInstall_Materials(void) const;			// 0x000729EB
+	virtual void Install_Materials(void) const;
+	virtual void UnInstall_Materials(void) const;
 	void enableTransparentObjectPass(bool enable) { m_isTransparentObjectPass = enable; }
 
 protected:
@@ -26,7 +26,7 @@ protected:
 class W3DShroud
 {
 public:
-	UnsignedByte getShroudLevel(Int x, Int y);		// 0x00072988
+	UnsignedByte getShroudLevel(Int x, Int y);
 
 protected:
 	Int m_numCellsX;							// +0x00

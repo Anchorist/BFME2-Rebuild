@@ -26,7 +26,7 @@ struct CDAuthInfo
 class PSThreadClass : public ThreadClass
 {
 public:
-	PSThreadClass(MutexClass *queueMutex);		// 0x0055436A
+	PSThreadClass(MutexClass *queueMutex);
 	virtual ~PSThreadClass();					// slot 0, body 0x0055405A
 	virtual void Thread_Function();				// slot 2, 0x005580FB
 
@@ -34,7 +34,7 @@ public:
 	void decrOpCount() { --m_opCount; }
 
 private:
-	Bool tryConnect();							// 0x00552C5F (true when the stats connection is open or InitStatsConnection(0) succeeds; the map spells it private)
+	Bool tryConnect();							// (true when the stats connection is open or InitStatsConnection(0) succeeds; the map spells it private)
 public:
 	Bool m_loginOK;								// +0x50
 	Bool m_doneTryingToLogin;					// +0x51

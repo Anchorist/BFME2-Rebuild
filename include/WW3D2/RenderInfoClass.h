@@ -25,7 +25,7 @@ class RenderInfoClass
 {
 public:
 	RenderInfoClass(CameraClass &cam);							// 0x00142EE0
-	~RenderInfoClass(void);										// 0x00142FE0
+	~RenderInfoClass(void);
 
 	enum RINFO_OVERRIDE_FLAGS {
 		RINFO_OVERRIDE_DEFAULT = 0x0000,
@@ -37,14 +37,14 @@ public:
 
 	enum { MAX_ADDITIONAL_MATERIAL_PASSES = 32, MAX_OVERRIDE_FLAG_LEVEL = 32 };
 
-	void Push_Material_Pass(MaterialPassClass *matpass);		// 0x00142BA0
-	void Pop_Material_Pass(void);								// 0x00142BE0
-	int Additional_Pass_Count(void);							// 0x00142C20
-	MaterialPassClass *Peek_Additional_Pass(int i);				// 0x00142C30
-	void Push_Override_Flags(RINFO_OVERRIDE_FLAGS flg);			// 0x00142C50
-	void Pop_Override_Flags(void);								// 0x00142C70
-	RINFO_OVERRIDE_FLAGS &Current_Override_Flags(void);			// 0x00142C80
-	void Pop_Rendering_Method(void);							// 0x00142DF0
+	void Push_Material_Pass(MaterialPassClass *matpass);
+	void Pop_Material_Pass(void);
+	int Additional_Pass_Count(void);
+	MaterialPassClass *Peek_Additional_Pass(int i);
+	void Push_Override_Flags(RINFO_OVERRIDE_FLAGS flg);
+	void Pop_Override_Flags(void);
+	RINFO_OVERRIDE_FLAGS &Current_Override_Flags(void);
+	void Pop_Rendering_Method(void);
 
 	CameraClass &Camera;										// +0x00
 	float fog_scale;											// +0x04

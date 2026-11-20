@@ -15,8 +15,8 @@
 class PlaceEventTranslator : public GameMessageTranslator
 {
 public:
-	PlaceEventTranslator();																// 0x0043216D
-	virtual GameMessageDisposition translateGameMessage(const GameMessage *msg);			// 0x0043218A
+	PlaceEventTranslator();
+	virtual GameMessageDisposition translateGameMessage(const GameMessage *msg);
 
 	ICoord2D m_downPos;		// +0x04, x and y
 	int m_downFrame;		// +0x0C

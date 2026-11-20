@@ -189,7 +189,7 @@ AptCIH::AptCIH(int type, void *instance, AptValue *parent)
 }
 
 // The three XML-family type predicates of AptValue.inl (retail 0x006DBDE0, 0x006DBE50, 0x006DBEC0: the id in the flags word against 32, 33 and 34).
-// The accessor unit they sit in has no skeleton file yet; they are defined here, where nothing calls them, so the callers stay out of line.
+// The accessor unit they sit in has no file of its own yet; they are defined here, where nothing calls them, so the callers stay out of line.
 #define APT_VALUE_INL_ASSERT(text, line) \
     g_bfmeAptAssertAtE17734(text, "c:\\projects\\bfme2patch103\\bfme2\\code\\libraries\\source\\apt\\AptValue/AptValue.inl", line); \
     if (g_bfmeAptBreakOnAssertAtDDC01C) APT_ASSERT_BREAK()
@@ -1231,7 +1231,7 @@ void AptEntryVector::append(AptEntry *pEntry)
 
 // Link-only definitions: the units that call these bodies expand them in place when they define them (retail's callers call the out-of-line copies, which sit in
 // other units), so they live here, in a unit with no callers.
-// 0x006D8AD0: store an element at an index (AddRef the new value, Release the old one); the retail asserts name pNewValue and mnCapacity (_Apt.h lines 0x117 and 0x118).
+// Store an element at an index (AddRef the new value, Release the old one); the retail asserts name pNewValue and mnCapacity (_Apt.h lines 0x117 and 0x118).
 void AptArray::SetAt(int nIndex, AptValue *pNewValue)
 {
     if (!pNewValue) {

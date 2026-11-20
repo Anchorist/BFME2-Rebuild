@@ -1,4 +1,5 @@
 // stlport46
+#include "GameNetwork/NetWrapperCommandMsg.h"
 #include "Common/StateMachine.h"
 #include "GameLogic/AIStates.h"
 #include "GameLogic/Object/Locomotor.h"
@@ -64,6 +65,10 @@ const char *AIInternalMoveToState::GetSnapshotName() const
 
 // FUNCTION: BFME2 0x0033F31A size=6 name=?name@Rva0033F31ANamed@@QBEPBDXZ evidence=?:placeholder tier=B hypothesis:mm1-neighbour-pointers-mixed
 // FUNCTION: BFME2 0x0033F33D size=33 name=??0AIBackAwayAndCowerState@@QAE@PAVStateMachine@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers+class+shared-data
+AIBackAwayAndCowerState::AIBackAwayAndCowerState(StateMachine *machine)
+	: State(machine, 0x6D9C1CB9), m_cowerMachine(NULL)
+{
+}
 // FUNCTION: BFME2 0x0033F35E size=6 name=?GetSnapshotName@AIBackAwayAndCowerState@@MBEPBDXZ evidence=N:ledger tier=B hypothesis:cohesion
 const char *AIBackAwayAndCowerState::GetSnapshotName() const
 {
@@ -321,6 +326,10 @@ void AIGuardMachine::setBfmeAreaCenter(const Coord3D *pos)
 // FUNCTION: BFME2 0x0033F8C0 size=10 name=?get@Rva0033F8C0ByteChase32Field@@QBEEXZ evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x0033F8CA size=10 name=?setTotalDataLength@NetWrapperCommandMsg@@QAEXI@Z evidence=N:ledger tier=B hypothesis:cohesion
+void NetWrapperCommandMsg::setTotalDataLength(UnsignedInt length)
+{
+	m_totalDataLength = length;
+}
 
 // FUNCTION: BFME2 0x0033F8D4 size=28 name=?rva0033F8D4@AIUpdateInterface@@QBE_NXZ evidence=?:placeholder tier=B hypothesis:cohesion
 Bool AIUpdateInterface::hasDesiredAngle() const

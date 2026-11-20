@@ -3,8 +3,8 @@
 // table 0x007C5138 at +0xC. Miles ctor 0x0005CF5F proves first own field +0x10.
 // Primary slots 0..13 belong to SubsystemInterface; 14..104 are pure.
 // Secondary table is Snapshot's destructor/loadPostProcess/name/xfer order.
-// Sources: old canonical GameAudio.h, MilesAudioManager.cpp and its small-slot
-// units; synthesis of all 59 AudioManager views. Slot names below are
+// Sources: MilesAudioManager.cpp and its small-slot
+// units. Slot names below are
 // separated from target layout facts. Unknown slots have no recovered ABI;
 // do not call them until their declaration is reconciled with target evidence.
 // 89 of91 own slots named;2 remain unresolved. Role-inferred spellings are

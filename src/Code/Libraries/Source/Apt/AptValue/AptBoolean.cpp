@@ -63,8 +63,8 @@ void AptBoolean::DeleteThis()
 }
 
 // Slots 12 and 13 of the table are the shared `xor al,al; ret` (0x0073B660) and `ret` (0x0069E440) stubs. Slot 2 (ForceDelete) and slot 9
-// (DeleteThis) are one retail body, 0x006D8A20; ForceDelete waits for the map to carry its name as an alias of that row (a body of its own
-// makes the vtable slot read ForceDelete where the ledger names DeleteThis, and Create goes WRONG_REFERENCE).
+// (DeleteThis) are one retail body, 0x006D8A20; a body of its own for ForceDelete would make the vtable slot read ForceDelete
+// where the ledger names DeleteThis.
 bool AptBoolean::IsGarbageCollected() const
 {
     return false;

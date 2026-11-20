@@ -34,7 +34,7 @@ enum SpecialPowerType; enum WorldAnimationOptions;
 // Target ctor2A61A9/dtor2A5B30: SubsystemInterface+0, Snapshot+C,
 // InGameNotificationBox+10. Primary table7FD410 has120 slots; secondary
 // tables7FD400 (4) and7C7A64 (5). Derived ctor8EF3F starts members at9F0.
-// Sixty synthesized old views; fields below also audited against native ctor
+// Fields below audited against native ctor
 // and INI table7FC338. Names: donor (ZH) where target accesses agree.
 // Unknown spans and slot names remain explicit; no include-dependent layout.
 class GameClientRandomVariable;
@@ -47,7 +47,7 @@ public:
     enum ActionType { ACTIONTYPE_ATTACK_OBJECT = 1, ACTIONTYPE_SET_RALLY_POINT = 14 };
     class FormationPreviewPoolObject;
     // The subtitle shown by militarySubtitle (0x0029F530) and typed out by updateMilitarySubtitle (0x0029C404); size 0x48.
-    // Names are Zero Hour's where it has the member; layout from the three functions and the old private view.
+    // Names are Zero Hour's where it has the member; layout from the three functions.
     enum { MAX_SUBTITLE_LINES = 4 };
     struct MilitarySubtitleData {
         UnicodeString subtitle;                                 // +0x00

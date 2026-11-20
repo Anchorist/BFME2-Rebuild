@@ -11,7 +11,7 @@
 class RepairDockUpdateModuleData : public DockUpdateModuleData
 {
 public:
-	static void buildFieldParse(MultiIniFieldParse &parse);	// 0x004A1170
+	static void buildFieldParse(MultiIniFieldParse &parse);
 
 	Real m_timeForFullHeal;						// 0x10
 };

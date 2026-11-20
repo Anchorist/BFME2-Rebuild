@@ -2,9 +2,9 @@
 #include "WWMath/CullableClass.h"
 #include "WWMath/CullSystemClass.h"
 #include "WWMath/CullLinkClass.h"
-// Tier A; object=O007244C0 evidence=W flags=align=A
-// Extent is a hypothesis; only Object VERIFIED establishes recovery.
-// Edges: left=unknown-rows right=unknown-rows
+
+
+
 // WWMath's cullable base: every object carries a box (+0xC), a link into its
 // culling system (+8) and the collection chain (+0x24); the system keeps only
 // the head of that chain (+4).
@@ -71,8 +71,8 @@ void CullableClass::Set_Cull_Box(const AABoxClass &box, bool just_loaded)
 	CullBox = box;
 	if (!just_loaded)
 	{
-		CullSystemClass *sys = Get_Culling_System();
-		if (sys != 0)
-			sys->Update_Culling(this);
+		CullSystemClass *system = Get_Culling_System();
+		if (system != 0)
+			system->Update_Culling(this);
 	}
 }

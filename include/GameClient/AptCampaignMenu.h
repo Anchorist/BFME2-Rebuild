@@ -16,15 +16,15 @@ class AptCampaignMenu : public _bfme_AptGameWindow
 {
 public:
 	AptCampaignMenu(void *);						// 0x005212FC
-	virtual ~AptCampaignMenu();						// 0x00521206
+	virtual ~AptCampaignMenu();
 
-	void Victorious(int, char *, bool);				// 0x0052112F
-	void rva0052115F(const char *);					// 0x0052115F (focuses the menu window; no map name)
-	void OnBttnMainMenu(const char *);				// 0x00521172: closes the menu and keeps the shell background
-	void OnBttnLastMission(const char *);			// 0x0052119F: restarts the current linear campaign mission
-	void OnBttnNextMission(const char *);			// 0x005211B9: reports the current mission complete
-	void OnBttnSaveGame(const char *);				// 0x0052117D
-	void OnBttnLoadGame(const char *);				// 0x0052118E
+	void Victorious(int, char *, bool);
+	void rva0052115F(const char *);					// (focuses the menu window; no map name)
+	void OnBttnMainMenu(const char *);				// Closes the menu and keeps the shell background
+	void OnBttnLastMission(const char *);			// Restarts the current linear campaign mission
+	void OnBttnNextMission(const char *);			// Reports the current mission complete
+	void OnBttnSaveGame(const char *);
+	void OnBttnLoadGame(const char *);
 
 	int m_x27C;										// +0x27C
 	int m_x280;										// +0x280

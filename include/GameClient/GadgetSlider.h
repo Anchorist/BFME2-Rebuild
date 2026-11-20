@@ -10,6 +10,16 @@
 
 #include "GameClient/GameWindow.h"
 
+// The slider's user data (GameWindow::winGetUserData): the minimum, the maximum and the current position are
+// established by GadgetSliderGetMinMax 0x0051822B and GadgetSliderGetPosition 0x00518246; the rest is not recovered.
+struct SliderData
+{
+	int m_minVal;		// +0x00
+	int m_maxVal;		// +0x04
+	int m_unk0x08;		// +0x08
+	int m_position;		// +0x0C
+};
+
 class AsciiString;
 class UnicodeString;
 class GameFont;

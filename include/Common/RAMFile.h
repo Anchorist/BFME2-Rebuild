@@ -30,7 +30,7 @@ class RAMFile : public File
 {
 public:
 	RAMFile();															// 0x006054E7
-	virtual ~RAMFile();													// 0x00605504
+	virtual ~RAMFile();
 
 	virtual bool open(const char *filename, int access = 0);			// slot 1, 0x006056BD
 	virtual void close();												// slot 2, 0x00605547

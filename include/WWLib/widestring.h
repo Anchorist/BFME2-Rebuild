@@ -39,13 +39,13 @@ public:
 
 	operator const unsigned short *() const { return m_Buffer; }
 
-	int Get_Length() const;								// 0x00615EF0
+	int Get_Length() const;
 	bool Is_Empty() const { return m_Buffer[0] == m_NullChar; }
-	bool Is_ANSI();									// 0x00619C00
-	bool Convert_From(const char *text);						// 0x00619EB0
-	int __cdecl Format(const unsigned short *format, ...);				// 0x00619F70
-	int __cdecl Format_Args(const unsigned short *format, const va_list &arg_list);	// 0x00619F10
-	unsigned short *Get_Buffer(int new_length) { Uninitialised_Grow(new_length); return m_Buffer; }	// 0x0060F100
+	bool Is_ANSI();
+	bool Convert_From(const char *text);
+	int __cdecl Format(const unsigned short *format, ...);
+	int __cdecl Format_Args(const unsigned short *format, const va_list &arg_list);
+	unsigned short *Get_Buffer(int new_length) { Uninitialised_Grow(new_length); return m_Buffer; }
 
 private:
 	struct HEADER

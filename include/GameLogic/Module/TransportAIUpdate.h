@@ -34,7 +34,7 @@ public:
 protected:
 	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);
-	virtual AIStateMachine *makeStateMachine();		// 0x004A90EC
+	virtual AIStateMachine *makeStateMachine();
 	virtual void privateAttackObject(Object *, Int, CommandSourceType);	// override: privateAttackObject slot 34 at +0x0 (0x004A9147)
 	virtual void privateForceAttackObject(Object *, Int, CommandSourceType);	// override: privateForceAttackObject slot 38 at +0x0 (0x004A91E0)
 	virtual void privateAttackPosition(const Coord3D *, Int, CommandSourceType);	// override: privateAttackPosition slot 40 at +0x0 (0x004A9279)

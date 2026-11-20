@@ -7,7 +7,7 @@
 | Tarball SHA-256 | `df746e149cf6939e90009d2e540eee918d585b4d1bc6d68b19316a050d484d2a` |
 | Tarball MD5 | `a31d963dbdf727f9b34eee1e0d29132c` |
 | Tarball size | 158426 bytes |
-| Downloaded | 2026-11-17 (agent v01); hashes computed on the downloaded file and equal to the checker's `libraries/releases.json` |
+| Downloaded | 2026-11-17; hashes computed on the downloaded file and equal to the checker's `libraries/releases.json` |
 | Licence | the permissive grant at the end of `include/lua.h` and in `COPYRIGHT`, reproduced by the files here unchanged |
 
 ## What is here

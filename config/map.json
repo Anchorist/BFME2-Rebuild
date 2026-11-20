@@ -477071,7 +477071,8 @@
       "parent": null,
       "object": "O002034C4",
       "accepted_names": [
-        "?GetSnapshotName@SequentialScript@@UAEPBDXZ"
+        "?GetSnapshotName@SequentialScript@@UAEPBDXZ",
+        "?GetSnapshotName@SequentialScript@@UBEPBDXZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1121161,7 +1121162,7 @@
       "depends_on": "L3:+K-callers",
       "weakest_link": "K",
       "parent": null,
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "??1DetachableRiderBody@@UAE@XZ",
         "??1Rva004C1BAB@@UAE@XZ"
@@ -1121187,7 +1121188,7 @@
       "depends_on": "L2:+cohesion/literals",
       "weakest_link": "C/lit",
       "parent": null,
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "?GetSnapshotName@DetachableRiderBody@@UBEPBDXZ",
         "?name@Rva004C1BCENamed@@QBEPBDXZ"
@@ -1121213,7 +1121214,7 @@
       "depends_on": "L2:+cohesion/literals",
       "weakest_link": "C/lit",
       "parent": null,
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "?getUpgrade@DetachableRiderBody@@UAEPAVUpgradeMux@@XZ",
         "?rva004C1BD4@DetachableRiderBody@@UAEPAVUpgradeMux@@XZ"
@@ -1121239,7 +1121240,7 @@
       "depends_on": "L1:structure+F/W/L",
       "weakest_link": "X/F/W/L",
       "parent": null,
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "?getModuleNameKey@DetachableRiderBody@@UBE?AW4NameKeyType@@XZ"
       ],
@@ -1121264,7 +1121265,7 @@
       "depends_on": "L2:+cohesion/literals",
       "weakest_link": "C/lit",
       "parent": null,
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "?getUpgradeActivationMasks@DetachableRiderBody@@MBEXAAV?$BitFlags@$0EAA@W4UpgradeID@@@@0@Z",
         "?getUpgradeActivationMasks@DetachableRiderBody@@MBEXAAUUpgradeMaskType@@0@Z"
@@ -1121290,7 +1121291,7 @@
       "depends_on": "L2:+cohesion/literals",
       "weakest_link": "C/lit",
       "parent": null,
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "?performUpgradeFX@DetachableRiderBody@@MAEXXZ",
         "?processUpgradeRemoval@DetachableRiderBody@@MAEXXZ"
@@ -1121316,7 +1121317,7 @@
       "depends_on": "L2:+cohesion/literals",
       "weakest_link": "C/lit",
       "parent": null,
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "?requiresAllActivationUpgrades@DetachableRiderBody@@MBE_NXZ"
       ],
@@ -1121341,7 +1121342,7 @@
       "depends_on": "L2:+cohesion/literals",
       "weakest_link": "C/lit",
       "parent": null,
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "?requiresAllConflictingUpgrades@DetachableRiderBody@@MBE_NXZ"
       ],
@@ -1121366,7 +1121367,7 @@
       "depends_on": "L2:+cohesion/literals",
       "weakest_link": "C/lit",
       "parent": null,
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "??0DetachableRiderBody@@QAE@PAVThing@@PBVModuleData@@@Z"
       ],
@@ -1121391,7 +1121392,7 @@
       "depends_on": "L2:+cohesion/literals",
       "weakest_link": "C/lit",
       "parent": null,
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "??_GDetachableRiderBody@@UAEPAXI@Z",
         "??_GRva004C1BAB@@UAEPAXI@Z"
@@ -1121417,7 +1121418,7 @@
       "depends_on": "L2:+cohesion/literals",
       "weakest_link": "C/lit",
       "parent": null,
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "?xfer@DetachableRiderBody@@MAEXPAVXfer@@@Z"
       ],
@@ -1131705,7 +1131706,7 @@
       "depends_on": "L3:+K-callers",
       "weakest_link": "K",
       "parent": null,
-      "object": "retained:O004C8D3B",
+      "object": "O004C8E83",
       "accepted_names": [
         "??1CritterEmitterUpdate@@MAE@XZ"
       ],
@@ -1131730,7 +1131731,7 @@
         "?GetSnapshotName@CritterEmitterUpdate@@MBEPBDXZ"
       ],
       "parent": null,
-      "object": "retained:O004C8D3B",
+      "object": "O004C8E83",
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-preserved"
     },
@@ -1131751,7 +1131752,7 @@
         "?getModuleNameKey@CritterEmitterUpdate@@UBE?AW4NameKeyType@@XZ"
       ],
       "parent": null,
-      "object": "retained:O004C8D3B",
+      "object": "O004C8E83",
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-preserved"
     },
@@ -1131772,7 +1131773,7 @@
         "??0CritterEmitterUpdate@@QAE@PAVThing@@PBVModuleData@@@Z"
       ],
       "parent": null,
-      "object": "retained:O004C8D3B",
+      "object": "O004C8E83",
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-preserved"
     },
@@ -1131793,7 +1131794,7 @@
         "??_GCritterEmitterUpdate@@MAEPAXI@Z"
       ],
       "parent": null,
-      "object": "retained:O004C8D3B",
+      "object": "O004C8E83",
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-preserved"
     },
@@ -1131814,7 +1131815,7 @@
         "?update@CritterEmitterUpdate@@UAE?AW4UpdateSleepTime@@XZ"
       ],
       "parent": null,
-      "object": "retained:O004C8D3B",
+      "object": "O004C8E83",
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-preserved"
     },
@@ -1131835,7 +1131836,7 @@
         "?xfer@CritterEmitterUpdate@@MAEXPAVXfer@@@Z"
       ],
       "parent": null,
-      "object": "retained:O004C8D3B",
+      "object": "O004C8E83",
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-preserved"
     },
@@ -1347228,7 +1347229,7 @@
       "depends_on": "L3:+K-callers",
       "weakest_link": "K",
       "parent": null,
-      "object": "O005AC7E1",
+      "object": "O005AC866",
       "accepted_names": [
         "??1AIRingHeroTactic@@UAE@XZ"
       ],
@@ -1347253,7 +1347254,7 @@
       "depends_on": "L1:structure+F/W/L",
       "weakest_link": "X/F/W/L",
       "parent": null,
-      "object": "O005AC7E1",
+      "object": "O005AC866",
       "accepted_names": [
         "??0AIRingHeroTactic@@QAE@XZ"
       ],
@@ -1347278,7 +1347279,7 @@
       "depends_on": "L3:+K-callers",
       "weakest_link": "K",
       "parent": null,
-      "object": "O005AC7E1",
+      "object": "O005AC866",
       "accepted_names": [
         "??_GAIRingHeroTactic@@UAEPAXI@Z"
       ],
@@ -2325437,7 +2325438,7 @@
       "depends_on": "L1:structure+F/W/L",
       "weakest_link": "X/F/W/L",
       "parent": "0x004C1BE4",
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "$L2687"
       ],
@@ -2325462,7 +2325463,7 @@
       "depends_on": "L1:structure+F/W/L",
       "weakest_link": "X/F/W/L",
       "parent": "0x004C1BE4",
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "__ehhandler$?getModuleNameKey@DetachableRiderBody@@UBE?AW4NameKeyType@@XZ"
       ],
@@ -2325487,7 +2325488,7 @@
       "depends_on": "L2:+cohesion/literals",
       "weakest_link": "C/lit",
       "parent": "0x004C1C82",
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "Unwind@00b8fc87"
       ],
@@ -2325512,7 +2325513,7 @@
       "depends_on": "L2:+cohesion/literals",
       "weakest_link": "C/lit",
       "parent": "0x004C1C82",
-      "object": "O004C1BAB",
+      "object": "O004C1D49",
       "accepted_names": [
         "__ehhandler$??0DetachableRiderBody@@QAE@PAVThing@@PBVModuleData@@@Z"
       ],
@@ -2330545,7 +2330546,7 @@
         "$L310"
       ],
       "parent": "0x004C8D41",
-      "object": "retained:O004C8D3B",
+      "object": "O004C8E83",
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-preserved"
     },
@@ -2330566,7 +2330567,7 @@
         "__ehhandler$?getModuleNameKey@CritterEmitterUpdate@@UBE?AW4NameKeyType@@XZ"
       ],
       "parent": "0x004C8D41",
-      "object": "retained:O004C8D3B",
+      "object": "O004C8E83",
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-preserved"
     },
@@ -2478436,7 +2478437,7 @@
       "depends_on": "L1:structure+F/W/L",
       "weakest_link": "X/F/W/L",
       "parent": "0x005AC7EC",
-      "object": "O005AC7E1",
+      "object": "O005AC866",
       "accepted_names": [
         "$L1764"
       ],
@@ -2478461,7 +2478462,7 @@
       "depends_on": "L1:structure+F/W/L",
       "weakest_link": "X/F/W/L",
       "parent": "0x005AC7EC",
-      "object": "O005AC7E1",
+      "object": "O005AC866",
       "accepted_names": [
         "$L1765"
       ],
@@ -2478486,7 +2478487,7 @@
       "depends_on": "L1:structure+F/W/L",
       "weakest_link": "X/F/W/L",
       "parent": "0x005AC7EC",
-      "object": "O005AC7E1",
+      "object": "O005AC866",
       "accepted_names": [
         "__ehhandler$??0AIRingHeroTactic@@QAE@XZ"
       ],
@@ -2714453,8 +2714454,8 @@
     {
       "object_id": "O00327C39",
       "link_index": "765",
-      "path": "invented/O00327C39",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameClient/Gui/Gadget/GadgetPushButton.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x00327C39-0x0032884A",
@@ -2714475,7 +2714476,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:K",
       "hard_text_share": "0.402",
-      "tu": "src/unk/O00327C39.cpp",
+      "tu": "src/Code/GameEngine/Source/GameClient/Gui/Gadget/GadgetPushButton.cpp",
       "tier": "B",
       "name_tier": "invented",
       "seedable": true,
@@ -2715818,8 +2715819,8 @@
     {
       "object_id": "O00372CEC",
       "link_index": "813",
-      "path": "invented/O00372CEC",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameLogic/Object/Behavior/MineshaftPortalBehaviour.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x00372CEC-0x00373C81",
@@ -2715840,7 +2715841,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:K",
       "hard_text_share": "0.054",
-      "tu": "src/unk/O00372CEC.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/Object/Behavior/MineshaftPortalBehaviour.cpp",
       "tier": "B",
       "name_tier": "invented",
       "seedable": true,
@@ -2715848,7 +2715849,12 @@
       "extent_is_hypothesis": true,
       "refusals": [],
       "owned_functions": 34,
-      "owned_bytes": 3472
+      "owned_bytes": 3472,
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-exclusive-original-file-string"
+      ]
     },
     {
       "object_id": "O00373CB1",
@@ -2721383,8 +2721389,8 @@
     {
       "object_id": "O00420B2F",
       "link_index": "1009",
-      "path": "invented/O00420B2F",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameLogic/System/DelayedExperienceLevelGrantSystem.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x00420B2F-0x004210A0",
@@ -2721405,7 +2721411,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:K",
       "hard_text_share": "0.059",
-      "tu": "src/unk/O00420B2F.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/System/DelayedExperienceLevelGrantSystem.cpp",
       "tier": "B",
       "name_tier": "invented",
       "seedable": true,
@@ -2721413,7 +2721419,12 @@
       "extent_is_hypothesis": true,
       "refusals": [],
       "owned_functions": 10,
-      "owned_bytes": 1304
+      "owned_bytes": 1304,
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-exclusive-original-file-string"
+      ]
     },
     {
       "object_id": "O004210B0",
@@ -2722433,8 +2722444,8 @@
     {
       "object_id": "O0043B0B1",
       "link_index": "1044",
-      "path": "invented/O0043B0B1",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameLogic/System/DOTManager.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x0043B0B1-0x0043B9E8",
@@ -2722455,7 +2722466,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:K",
       "hard_text_share": "0.024",
-      "tu": "src/unk/O0043B0B1.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/System/DOTManager.cpp",
       "tier": "B",
       "name_tier": "invented",
       "seedable": true,
@@ -2722463,7 +2722474,12 @@
       "extent_is_hypothesis": true,
       "refusals": [],
       "owned_functions": 19,
-      "owned_bytes": 1383
+      "owned_bytes": 1383,
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-exclusive-original-file-string"
+      ]
     },
     {
       "object_id": "O0043B9E8",
@@ -2723575,7 +2723591,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:C/lit",
       "hard_text_share": "0.966",
-      "tu": "src/unk/O0045B4E2.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/Object/Behavior/BezierProjectileBehavior.cpp",
       "tier": "A",
       "name_tier": "W",
       "seedable": true,
@@ -2723583,7 +2723599,12 @@
       "extent_is_hypothesis": true,
       "refusals": [],
       "owned_functions": 24,
-      "owned_bytes": 6513
+      "owned_bytes": 6513,
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-matched-original-object"
+      ]
     },
     {
       "object_id": "O0045CE86",
@@ -2724078,8 +2724099,8 @@
     {
       "object_id": "O0047664D",
       "link_index": "1106",
-      "path": "invented/O0047664D",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HorseHordeContain.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x0047664D-0x00476FFE",
@@ -2724100,7 +2724121,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:C/lit",
       "hard_text_share": "0.028",
-      "tu": "src/unk/O0047664D.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HorseHordeContain.cpp",
       "tier": "B",
       "name_tier": "invented",
       "seedable": true,
@@ -2726795,7 +2726816,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hard",
       "hard_text_share": "1.0",
-      "tu": "src/unk/O0049C3F6.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/Object/SpecialPower/GiveUpgradeUpdate.cpp",
       "tier": "A",
       "name_tier": "W",
       "seedable": true,
@@ -2726803,7 +2726824,12 @@
       "extent_is_hypothesis": true,
       "refusals": [],
       "owned_functions": 16,
-      "owned_bytes": 1741
+      "owned_bytes": 1741,
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-matched-original-object"
+      ]
     },
     {
       "object_id": "O0049CB57",
@@ -2727950,7 +2727976,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:C/lit",
       "hard_text_share": "0.054",
-      "tu": "src/unk/O004AE1A6.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/Object/SpecialPower/ToggleHiddenSpecialAbilityUpdate.cpp",
       "tier": "A",
       "name_tier": "W",
       "seedable": true,
@@ -2727958,7 +2727984,12 @@
       "extent_is_hypothesis": true,
       "refusals": [],
       "owned_functions": 8,
-      "owned_bytes": 769
+      "owned_bytes": 769,
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-matched-original-object"
+      ]
     },
     {
       "object_id": "O004AEF46",
@@ -2731041,74 +2731072,39 @@
       "owned_bytes": 672
     },
     {
-      "object_id": "O004C1BAB",
-      "link_index": "1364",
-      "path": "invented/O004C1BAB",
-      "path_evidence": "invented",
-      "library": "",
-      "flag_profile": "align=U;ehform=EH_prolog",
-      "text_ranges": "0x004C1BAB-0x004C1D49",
-      "textx_ranges": "x:0x0078FC70-0x0078FC99",
-      "xcu_slots": "",
-      "rdata_ranges": "0x0085BF00-0x0085C114;0x00940FC0-0x00941008",
-      "data_ranges": "",
-      "bss_ranges": "0x00A04168-0x00A04170",
-      "confidence": "low",
-      "contradictions": "",
-      "left_edge": "unknown-rows",
-      "right_edge": "no-edge-evidence",
-      "alt_names": "module:DetachableRiderBody",
-      "text_rows": "11",
-      "vetoes": "",
-      "depends_on": "L1:3;L2:11;L3:1",
-      "weakest_link": "K",
-      "core_level": "X/F/W/L",
-      "seed_tier": "hypothesis:K",
-      "hard_text_share": "0.167",
-      "tu": "src/unk/O004C1BAB.cpp",
-      "tier": "B",
-      "name_tier": "invented",
-      "seedable": true,
-      "proof_first": false,
-      "extent_is_hypothesis": true,
-      "refusals": [],
-      "owned_functions": 9,
-      "owned_bytes": 351
-    },
-    {
-      "object_id": "O004C1D49",
-      "link_index": "1365",
-      "path": "Code/GameEngine/Source/GameLogic/Object/Body/DetachableRiderBody.cpp",
-      "path_evidence": "F",
-      "library": "",
-      "flag_profile": "align=U;ehform=EH_prolog",
-      "text_ranges": "0x004C1D49-0x004C1E8B",
-      "textx_ranges": "x:0x0078FC99-0x0078FCB0",
-      "xcu_slots": "",
-      "rdata_ranges": "0x0085C118-0x0085C17D;0x00941008-0x0094102C",
-      "data_ranges": "",
-      "bss_ranges": "0x00A04170-0x00A04178",
+      "alt_names": "",
+      "bss_ranges": "0x00A04168-0x00A04170;0x00A04170-0x00A04178",
       "confidence": "high",
       "contradictions": "",
-      "left_edge": "no-edge-evidence",
-      "right_edge": "unknown-rows",
-      "alt_names": "",
-      "text_rows": "1",
-      "vetoes": "",
-      "depends_on": "L1:3",
-      "weakest_link": "X/F/W/L",
       "core_level": "X/F/W/L",
-      "seed_tier": "hard",
-      "hard_text_share": "1.0",
-      "tu": "src/Code/GameEngine/Source/GameLogic/Object/Body/DetachableRiderBody.cpp",
-      "tier": "A",
-      "name_tier": "F",
-      "seedable": true,
-      "proof_first": false,
+      "data_ranges": "",
+      "depends_on": "L1:3",
       "extent_is_hypothesis": true,
+      "flag_profile": "align=U;ehform=EH_prolog",
+      "hard_text_share": "1.0",
+      "left_edge": "no-edge-evidence",
+      "library": "",
+      "link_index": "1364",
+      "name_tier": "F",
+      "object_id": "O004C1D49",
+      "owned_bytes": 673,
+      "owned_functions": 10,
+      "path": "Code/GameEngine/Source/GameLogic/Object/Body/DetachableRiderBody.cpp",
+      "path_evidence": "F",
+      "proof_first": false,
+      "rdata_ranges": "0x0085BF00-0x0085C114;0x00940FC0-0x00941008;0x0085C118-0x0085C17D;0x00941008-0x0094102C",
       "refusals": [],
-      "owned_functions": 1,
-      "owned_bytes": 322
+      "right_edge": "unknown-rows",
+      "seed_tier": "hard",
+      "seedable": true,
+      "text_ranges": "0x004C1BAB-0x004C1D49;0x004C1D49-0x004C1E8B",
+      "text_rows": "1",
+      "textx_ranges": "x:0x0078FC70-0x0078FC99;x:0x0078FC99-0x0078FCB0",
+      "tier": "A",
+      "tu": "src/Code/GameEngine/Source/GameLogic/Object/Body/DetachableRiderBody.cpp",
+      "vetoes": "",
+      "weakest_link": "X/F/W/L",
+      "xcu_slots": ""
     },
     {
       "object_id": "O004C1EF1",
@@ -2732616,39 +2732612,39 @@
       "owned_bytes": 614
     },
     {
-      "object_id": "O004C8E83",
-      "link_index": "1414",
-      "path": "Code/GameEngine/Source/GameLogic/Object/Update/CritterEmitter.cpp",
-      "path_evidence": "F",
-      "library": "",
-      "flag_profile": "align=U;ehform=EH_prolog",
-      "text_ranges": "0x004C8E83-0x004C8FD7",
-      "textx_ranges": "x:0x007904A8-0x007904C5",
-      "xcu_slots": "",
-      "rdata_ranges": "0x0085E920-0x0085EA04;0x00941D08-0x00941D34",
-      "data_ranges": "",
-      "bss_ranges": "",
+      "alt_names": "",
+      "bss_ranges": "0x00A04314-0x00A0431C",
       "confidence": "high",
       "contradictions": "",
-      "left_edge": "no-edge-evidence",
-      "right_edge": "unknown-rows",
-      "alt_names": "",
-      "text_rows": "5",
-      "vetoes": "",
-      "depends_on": "L1:1;L4:7",
-      "weakest_link": "Z",
       "core_level": "X/F/W/L",
-      "seed_tier": "hypothesis:Z",
-      "hard_text_share": "0.365",
-      "tu": "src/Code/GameEngine/Source/GameLogic/Object/Update/CritterEmitter.cpp",
-      "tier": "A",
-      "name_tier": "F",
-      "seedable": true,
-      "proof_first": false,
+      "data_ranges": "",
+      "depends_on": "L1:1;L4:7",
       "extent_is_hypothesis": true,
+      "flag_profile": "align=U;ehform=EH_prolog",
+      "hard_text_share": "0.365",
+      "left_edge": "no-edge-evidence",
+      "library": "",
+      "link_index": "1414",
+      "name_tier": "F",
+      "object_id": "O004C8E83",
+      "owned_bytes": 644,
+      "owned_functions": 10,
+      "path": "Code/GameEngine/Source/GameLogic/Object/Update/CritterEmitter.cpp",
+      "path_evidence": "F",
+      "proof_first": false,
+      "rdata_ranges": "0x00941CE4-0x00941D08;0x0085E920-0x0085EA04;0x00941D08-0x00941D34",
       "refusals": [],
-      "owned_functions": 4,
-      "owned_bytes": 312
+      "right_edge": "unknown-rows",
+      "seed_tier": "hypothesis:Z",
+      "seedable": true,
+      "text_ranges": "0x004C8D3B-0x004C8E83;0x004C8E83-0x004C8FD7",
+      "text_rows": "5",
+      "textx_ranges": "x:0x00790491-0x007904A8;x:0x007904A8-0x007904C5",
+      "tier": "A",
+      "tu": "src/Code/GameEngine/Source/GameLogic/Object/Update/CritterEmitter.cpp",
+      "vetoes": "",
+      "weakest_link": "Z",
+      "xcu_slots": ""
     },
     {
       "object_id": "O004C8FE8",
@@ -2733095,7 +2733091,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hard",
       "hard_text_share": "1.0",
-      "tu": "src/unk/O004CC9B9.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/Object/SpecialPower/DominateEnemySpecialPower.cpp",
       "tier": "A",
       "name_tier": "W",
       "seedable": true,
@@ -2733103,7 +2733099,12 @@
       "extent_is_hypothesis": true,
       "refusals": [],
       "owned_functions": 7,
-      "owned_bytes": 852
+      "owned_bytes": 852,
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-matched-original-object"
+      ]
     },
     {
       "object_id": "O004CCDB0",
@@ -2735173,8 +2735174,8 @@
     {
       "object_id": "O004FA5B8",
       "link_index": "1492",
-      "path": "invented/O004FA5B8",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameLogic/System/LivingWorld/BuildingNuggets/LivingWorldBuildingNuggetSpawnArmy.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x004FA5B8-0x004FB219",
@@ -2735195,7 +2735196,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:K",
       "hard_text_share": "0.065",
-      "tu": "src/unk/O004FA5B8.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/System/LivingWorld/BuildingNuggets/LivingWorldBuildingNuggetSpawnArmy.cpp",
       "tier": "B",
       "name_tier": "invented",
       "seedable": true,
@@ -2735203,7 +2735204,12 @@
       "extent_is_hypothesis": true,
       "refusals": [],
       "owned_functions": 25,
-      "owned_bytes": 2141
+      "owned_bytes": 2141,
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-exclusive-original-file-string"
+      ]
     },
     {
       "object_id": "O004FB27E",
@@ -2741508,8 +2741514,8 @@
     {
       "object_id": "O00578526",
       "link_index": "1690",
-      "path": "invented/O00578526",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicHUDPalantir.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x00578526-0x00579435",
@@ -2741530,7 +2741536,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:K",
       "hard_text_share": "0.47",
-      "tu": "src/unk/O00578526.cpp",
+      "tu": "src/Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicHUDPalantir.cpp",
       "tier": "B",
       "name_tier": "invented",
       "seedable": true,
@@ -2741538,13 +2741544,18 @@
       "extent_is_hypothesis": true,
       "refusals": [],
       "owned_functions": 43,
-      "owned_bytes": 3572
+      "owned_bytes": 3572,
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-exclusive-original-file-string"
+      ]
     },
     {
       "object_id": "O00579435",
       "link_index": "1691",
-      "path": "invented/O00579435",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicHUDEndTurnButtonImpl.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x00579435-0x00579656",
@@ -2741565,7 +2741576,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:K",
       "hard_text_share": "0.413",
-      "tu": "src/unk/O00579435.cpp",
+      "tu": "src/Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicHUDEndTurnButtonImpl.cpp",
       "tier": "B",
       "name_tier": "invented",
       "seedable": true,
@@ -2741573,7 +2741584,12 @@
       "extent_is_hypothesis": true,
       "refusals": [],
       "owned_functions": 7,
-      "owned_bytes": 537
+      "owned_bytes": 537,
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-exclusive-original-file-string"
+      ]
     },
     {
       "object_id": "O0057965D",
@@ -2741648,8 +2741664,8 @@
     {
       "object_id": "O0057B93E",
       "link_index": "1694",
-      "path": "invented/O0057B93E",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicHUDSelectionDetailsUIImpl.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x0057B93E-0x0057C03B",
@@ -2741670,7 +2741686,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:K",
       "hard_text_share": "0.395",
-      "tu": "src/unk/O0057B93E.cpp",
+      "tu": "src/Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicHUDSelectionDetailsUIImpl.cpp",
       "tier": "B",
       "name_tier": "invented",
       "seedable": true,
@@ -2743991,74 +2744007,39 @@
       "owned_bytes": 4097
     },
     {
-      "object_id": "O005AC7E1",
-      "link_index": "1766",
-      "path": "invented/O005AC7E1",
-      "path_evidence": "invented",
-      "library": "",
-      "flag_profile": "align=U;ehform=EH_prolog",
-      "text_ranges": "0x005AC7E1-0x005AC866",
-      "textx_ranges": "x:0x0079E9EA-0x0079EA04",
-      "xcu_slots": "",
-      "rdata_ranges": "0x008723E8-0x00872425;0x00955164-0x00955198",
-      "data_ranges": "",
-      "bss_ranges": "",
-      "confidence": "low",
-      "contradictions": "",
-      "left_edge": "no-edge-evidence",
-      "right_edge": "no-edge-evidence",
       "alt_names": "",
-      "text_rows": "3",
-      "vetoes": "",
-      "depends_on": "L1:4;L3:2",
-      "weakest_link": "K",
-      "core_level": "X/F/W/L",
-      "seed_tier": "hypothesis:K",
-      "hard_text_share": "0.707",
-      "tu": "src/unk/O005AC7E1.cpp",
-      "tier": "B",
-      "name_tier": "invented",
-      "seedable": true,
-      "proof_first": false,
-      "extent_is_hypothesis": true,
-      "refusals": [],
-      "owned_functions": 2,
-      "owned_bytes": 105
-    },
-    {
-      "object_id": "O005AC866",
-      "link_index": "1767",
-      "path": "Code/GameEngine/Source/GameLogic/SkirmishAI/AITacticalAI/AITacticsGenerator/TargetlessTactics/AIRingHeroTactic.cpp",
-      "path_evidence": "W",
-      "library": "",
-      "flag_profile": "align=U;ehform=EH_prolog",
-      "text_ranges": "0x005AC866-0x005ACCE4",
-      "textx_ranges": "x:0x0079EA04-0x0079EA76",
-      "xcu_slots": "",
-      "rdata_ranges": "0x00872428-0x00872467;0x00955198-0x00955250",
-      "data_ranges": "",
       "bss_ranges": "",
       "confidence": "medium",
       "contradictions": "",
-      "left_edge": "no-edge-evidence",
-      "right_edge": "rests-on:name",
-      "alt_names": "",
-      "text_rows": "10",
-      "vetoes": "",
-      "depends_on": "L1:22;L2:1",
-      "weakest_link": "C/lit",
       "core_level": "X/F/W/L",
-      "seed_tier": "hypothesis:C/lit",
-      "hard_text_share": "0.801",
-      "tu": "src/Code/GameEngine/Source/GameLogic/SkirmishAI/AITacticalAI/AITacticsGenerator/TargetlessTactics/AIRingHeroTactic.cpp",
-      "tier": "A",
-      "name_tier": "W",
-      "seedable": true,
-      "proof_first": false,
+      "data_ranges": "",
+      "depends_on": "L1:22;L2:1",
       "extent_is_hypothesis": true,
+      "flag_profile": "align=U;ehform=EH_prolog",
+      "hard_text_share": "0.801",
+      "left_edge": "no-edge-evidence",
+      "library": "",
+      "link_index": "1766",
+      "name_tier": "W",
+      "object_id": "O005AC866",
+      "owned_bytes": 1245,
+      "owned_functions": 10,
+      "path": "Code/GameEngine/Source/GameLogic/SkirmishAI/AITacticalAI/AITacticsGenerator/TargetlessTactics/AIRingHeroTactic.cpp",
+      "path_evidence": "W",
+      "proof_first": false,
+      "rdata_ranges": "0x008723E8-0x00872425;0x00955164-0x00955198;0x00872428-0x00872467;0x00955198-0x00955250",
       "refusals": [],
-      "owned_functions": 8,
-      "owned_bytes": 1140
+      "right_edge": "rests-on:name",
+      "seed_tier": "hypothesis:C/lit",
+      "seedable": true,
+      "text_ranges": "0x005AC7E1-0x005AC866;0x005AC866-0x005ACCE4",
+      "text_rows": "10",
+      "textx_ranges": "x:0x0079E9EA-0x0079EA04;x:0x0079EA04-0x0079EA76",
+      "tier": "A",
+      "tu": "src/Code/GameEngine/Source/GameLogic/SkirmishAI/AITacticalAI/AITacticsGenerator/TargetlessTactics/AIRingHeroTactic.cpp",
+      "vetoes": "",
+      "weakest_link": "C/lit",
+      "xcu_slots": ""
     },
     {
       "object_id": "O005ACCE4",
@@ -2747563,8 +2747544,8 @@
     {
       "object_id": "O005DAFFE",
       "link_index": "1908",
-      "path": "invented/O005DAFFE",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameLogic/System/LivingWorld/AutoResolve/ExperienceTrackerAutoResolve.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x005DAFFE-0x005DB204",
@@ -2747585,7 +2747566,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:K",
       "hard_text_share": "0.218",
-      "tu": "src/unk/O005DAFFE.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/System/LivingWorld/AutoResolve/ExperienceTrackerAutoResolve.cpp",
       "tier": "B",
       "name_tier": "invented",
       "seedable": true,
@@ -2747593,7 +2747574,12 @@
       "extent_is_hypothesis": true,
       "refusals": [],
       "owned_functions": 8,
-      "owned_bytes": 421
+      "owned_bytes": 421,
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-exclusive-original-file-string"
+      ]
     },
     {
       "object_id": "O005DB36A",
@@ -2747633,8 +2747619,8 @@
     {
       "object_id": "O005DB84F",
       "link_index": "1911",
-      "path": "invented/O005DB84F",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameNetwork/PortNegotiationSchema.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x005DB84F-0x005DC722",
@@ -2747655,7 +2747641,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:K",
       "hard_text_share": "0.03",
-      "tu": "src/unk/O005DB84F.cpp",
+      "tu": "src/Code/GameEngine/Source/GameNetwork/PortNegotiationSchema.cpp",
       "tier": "B",
       "name_tier": "invented",
       "seedable": true,
@@ -2747878,8 +2747864,8 @@
     {
       "object_id": "O005E0CC7",
       "link_index": "1919",
-      "path": "invented/O005E0CC7",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicHUDCommandButtonMovieClip.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x005E0CC7-0x005E16A7",
@@ -2747900,7 +2747886,7 @@
       "core_level": "X/F/W/L",
       "seed_tier": "hypothesis:K",
       "hard_text_share": "0.277",
-      "tu": "src/unk/O005E0CC7.cpp",
+      "tu": "src/Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicHUDCommandButtonMovieClip.cpp",
       "tier": "B",
       "name_tier": "invented",
       "seedable": true,
@@ -2747908,7 +2747894,12 @@
       "extent_is_hypothesis": true,
       "refusals": [],
       "owned_functions": 30,
-      "owned_bytes": 1341
+      "owned_bytes": 1341,
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-exclusive-original-file-string"
+      ]
     },
     {
       "object_id": "O005E16A7",
@@ -2761636,8 +2761627,8 @@
     {
       "object_id": "retained:O000A9D36",
       "link_index": "186",
-      "path": "invented/O000A9D36",
-      "path_evidence": "invented",
+      "path": "Code/GameEngineDevice/Source/W3DDevice/GameClient/GUI/W3DAptAux.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x000A9D36-0x000AA83B",
@@ -2761652,7 +2761643,7 @@
       "right_edge": "unknown-rows",
       "alt_names": "",
       "text_rows": "24",
-      "tu": "src/unk/O000A9D36.cpp",
+      "tu": "src/Code/GameEngineDevice/Source/W3DDevice/GameClient/GUI/W3DAptAux.cpp",
       "tier": "B",
       "seedable": true,
       "proof_first": false,
@@ -2763372,8 +2763363,8 @@
     {
       "object_id": "retained:O0045314E",
       "link_index": "800",
-      "path": "invented/O0045314E",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameLogic/Object/Behavior/GettingBuiltBehavior.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x0045314E-0x00454B5C",
@@ -2763388,7 +2763379,7 @@
       "right_edge": "unknown-rows",
       "alt_names": "module:GettingBuiltBehavior",
       "text_rows": "57",
-      "tu": "src/unk/O0045314E.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/Object/Behavior/GettingBuiltBehavior.cpp",
       "tier": "B",
       "seedable": true,
       "proof_first": false,
@@ -2763398,7 +2763389,12 @@
       "owned_bytes": 7801,
       "retained_from": "4134e626c3d29afdc0102e0a5bea98556d059402",
       "name_tier": "invented",
-      "preservation_reason": "populated or leased file; new map changes complete owned/emitted membership or extent"
+      "preservation_reason": "populated or leased file; new map changes complete owned/emitted membership or extent",
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-matched-original-object"
+      ]
     },
     {
       "object_id": "retained:O004561BB",
@@ -2763713,8 +2763709,8 @@
     {
       "object_id": "retained:O00477098",
       "link_index": "839",
-      "path": "invented/O00477098",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HordeTransportContain.cpp",
+      "path_evidence": "F",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x00477098-0x004775FD",
@@ -2763729,7 +2763725,7 @@
       "right_edge": "unknown-rows",
       "alt_names": "",
       "text_rows": "20",
-      "tu": "src/unk/O00477098.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HordeTransportContain.cpp",
       "tier": "B",
       "seedable": true,
       "proof_first": false,
@@ -2763775,8 +2763771,8 @@
     {
       "object_id": "retained:O0047EBA9",
       "link_index": "849",
-      "path": "invented/O0047EBA9",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameLogic/Object/Update/AIUpdate/AnimalAIUpdate.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x0047EBA9-0x0047ECA8",
@@ -2763791,7 +2763787,7 @@
       "right_edge": "unknown-rows",
       "alt_names": "",
       "text_rows": "5",
-      "tu": "src/unk/O0047EBA9.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/Object/Update/AIUpdate/AnimalAIUpdate.cpp",
       "tier": "B",
       "seedable": true,
       "proof_first": false,
@@ -2763801,7 +2763797,12 @@
       "owned_bytes": 3481,
       "retained_from": "4134e626c3d29afdc0102e0a5bea98556d059402",
       "name_tier": "invented",
-      "preservation_reason": "populated or leased file; new map changes complete owned/emitted membership or extent"
+      "preservation_reason": "populated or leased file; new map changes complete owned/emitted membership or extent",
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-matched-original-object"
+      ]
     },
     {
       "object_id": "retained:O0048182C",
@@ -2764333,8 +2764334,8 @@
     {
       "object_id": "retained:O00491DEC",
       "link_index": "905",
-      "path": "invented/O00491DEC",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameLogic/Object/Update/PickupStuffUpdate.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x00491DEC-0x00491F5A",
@@ -2764349,7 +2764350,7 @@
       "right_edge": "unknown-rows",
       "alt_names": "module:PickupStuffUpdate",
       "text_rows": "8",
-      "tu": "src/unk/O00491DEC.cpp",
+      "tu": "src/Code/GameEngine/Source/GameLogic/Object/Update/PickupStuffUpdate.cpp",
       "tier": "B",
       "seedable": true,
       "proof_first": false,
@@ -2764359,7 +2764360,12 @@
       "owned_bytes": 830,
       "retained_from": "4134e626c3d29afdc0102e0a5bea98556d059402",
       "name_tier": "invented",
-      "preservation_reason": "populated or leased file; new map changes complete owned/emitted membership or extent"
+      "preservation_reason": "populated or leased file; new map changes complete owned/emitted membership or extent",
+      "path_grade": "strong",
+      "path_evidence_kinds": [
+        "native-own-table",
+        "worldbuilder-matched-original-object"
+      ]
     },
     {
       "object_id": "retained:O00495087",
@@ -2765292,37 +2765298,6 @@
       "preservation_reason": "populated or leased file; new map changes complete owned/emitted membership or extent"
     },
     {
-      "object_id": "retained:O004C8D3B",
-      "link_index": "1080",
-      "path": "invented/O004C8D3B",
-      "path_evidence": "invented",
-      "library": "",
-      "flag_profile": "align=U;ehform=EH_prolog",
-      "text_ranges": "0x004C8D3B-0x004C8E83",
-      "textx_ranges": "x:0x00790491-0x007904A8",
-      "xcu_slots": "",
-      "rdata_ranges": "0x00941CE4-0x00941D08",
-      "data_ranges": "",
-      "bss_ranges": "0x00A04314-0x00A0431C",
-      "confidence": "low",
-      "contradictions": "",
-      "left_edge": "unknown-rows",
-      "right_edge": "unproven",
-      "alt_names": "module:CritterEmitterUpdate",
-      "text_rows": "6",
-      "tu": "src/unk/O004C8D3B.cpp",
-      "tier": "B",
-      "seedable": true,
-      "proof_first": false,
-      "extent_is_hypothesis": true,
-      "refusals": [],
-      "owned_functions": 6,
-      "owned_bytes": 332,
-      "retained_from": "4134e626c3d29afdc0102e0a5bea98556d059402",
-      "name_tier": "invented",
-      "preservation_reason": "populated or leased file; new map changes complete owned/emitted membership or extent"
-    },
-    {
       "object_id": "retained:O004CC653",
       "link_index": "1094",
       "path": "invented/O004CC653",
@@ -2765697,8 +2765672,8 @@
     {
       "object_id": "retained:O005CF9B2",
       "link_index": "1365",
-      "path": "invented/O005CF9B2",
-      "path_evidence": "invented",
+      "path": "Code/GameEngine/Source/GameClient/LivingWorld/InGameUI/StrategicInGameUIBattleResolver.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x005CF9B2-0x005D0EB8",
@@ -2765713,7 +2765688,7 @@
       "right_edge": "unknown-rows",
       "alt_names": "",
       "text_rows": "74",
-      "tu": "src/unk/O005CF9B2.cpp",
+      "tu": "src/Code/GameEngine/Source/GameClient/LivingWorld/InGameUI/StrategicInGameUIBattleResolver.cpp",
       "tier": "B",
       "seedable": true,
       "proof_first": false,
@@ -2765790,8 +2765765,8 @@
     {
       "object_id": "retained:O0060D565",
       "link_index": "1457",
-      "path": "invented/O0060D565",
-      "path_evidence": "invented",
+      "path": "Code/Libraries/Source/xfer/xfer_debug.cpp",
+      "path_evidence": "W",
       "library": "",
       "flag_profile": "align=U;ehform=EH_prolog",
       "text_ranges": "0x0060D565-0x0060DFB5",
@@ -2765806,7 +2765781,7 @@
       "right_edge": "unknown-rows",
       "alt_names": "",
       "text_rows": "38",
-      "tu": "src/unk/O0060D565.cpp",
+      "tu": "src/Code/Libraries/Source/xfer/xfer_debug.cpp",
       "tier": "B",
       "seedable": true,
       "proof_first": false,

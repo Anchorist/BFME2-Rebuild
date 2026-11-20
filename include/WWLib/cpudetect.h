@@ -103,43 +103,43 @@ public:
 		RISE_PROCESSOR_DRAGON2_018
 	} RiseProcessorType;
 
-	static bool Has_CPUID_Instruction();			// 0x00610EA0
-	static bool Has_RDTSC_Instruction();			// 0x00610EB0
-	static bool Has_MMX_Instruction_Set();			// 0x00610EC0
-	static bool Has_SSE_Instruction_Set();			// 0x00610ED0
-	static bool Has_SSE2_Instruction_Set();			// 0x00610EE0
-	static bool Has_3DNow_Instruction_Set();		// 0x00610EF0
-	static bool Has_Extended_3DNow_Instruction_Set();	// 0x00610F00
+	static bool Has_CPUID_Instruction();
+	static bool Has_RDTSC_Instruction();
+	static bool Has_MMX_Instruction_Set();
+	static bool Has_SSE_Instruction_Set();
+	static bool Has_SSE2_Instruction_Set();
+	static bool Has_3DNow_Instruction_Set();
+	static bool Has_Extended_3DNow_Instruction_Set();
 
-	static const char *Get_Processor_Manufacturer_Name();		// 0x00611040
+	static const char *Get_Processor_Manufacturer_Name();
 	static const char *Get_Processor_String();			// 0x00611030 (the map has a placeholder row: returns &ProcessorString)
-	static bool CPUID(unsigned &u_eax_, unsigned &u_ebx_, unsigned &u_ecx_, unsigned &u_edx_, unsigned cpuid_type);	// 0x006118C0
+	static bool CPUID(unsigned &u_eax_, unsigned &u_ebx_, unsigned &u_ecx_, unsigned &u_edx_, unsigned cpuid_type);
 
-	static unsigned __int64 Get_Available_Physical_Memory();	// 0x00610FD0
-	static unsigned __int64 Get_Total_Page_File_Size();		// 0x00610FE0
-	static unsigned __int64 Get_Available_Page_File_Size();	// 0x00610FF0
-	static unsigned __int64 Get_Total_Virtual_Memory();		// 0x00611000
-	static unsigned __int64 Get_Available_Virtual_Memory();	// 0x00611010
+	static unsigned __int64 Get_Available_Physical_Memory();
+	static unsigned __int64 Get_Total_Page_File_Size();
+	static unsigned __int64 Get_Available_Page_File_Size();
+	static unsigned __int64 Get_Total_Virtual_Memory();
+	static unsigned __int64 Get_Available_Virtual_Memory();
 
 private:
 	// Zero Hour's private initialisers (retail's names carry the private-static access letter).
-	static void Init_CPUID_Instruction();			// 0x006117D0
-	static void Init_Processor_Speed();			// 0x00611180
-	static void Init_Processor_String();			// 0x00612490
-	static void Init_Processor_Manufacturer();		// 0x00611B00
-	static void Init_Processor_Family();			// 0x00612230
-	static void Init_Processor_Features();			// 0x00612300
-	static void Init_Memory();				// 0x00611810
-	static void Init_OS();					// 0x006123F0
-	static void Init_Intel_Processor_Type();		// 0x00611F50
-	static void Init_AMD_Processor_Type();			// 0x00611620
-	static void Init_VIA_Processor_Type();			// 0x00611700
-	static void Init_Rise_Processor_Type();			// 0x00611760
-	static void Init_Cache();				// 0x00611E20
-	static void Init_Processor_Log();			// 0x00612770
-	static void Init_Compact_Log();				// 0x00612ED0
-	static void Process_Cache_Info(unsigned value);		// 0x00611250
-	static void Process_Extended_Cache_Info();		// 0x00611C50
+	static void Init_CPUID_Instruction();
+	static void Init_Processor_Speed();
+	static void Init_Processor_String();
+	static void Init_Processor_Manufacturer();
+	static void Init_Processor_Family();
+	static void Init_Processor_Features();
+	static void Init_Memory();
+	static void Init_OS();
+	static void Init_Intel_Processor_Type();
+	static void Init_AMD_Processor_Type();
+	static void Init_VIA_Processor_Type();
+	static void Init_Rise_Processor_Type();
+	static void Init_Cache();
+	static void Init_Processor_Log();
+	static void Init_Compact_Log();
+	static void Process_Cache_Info(unsigned value);
+	static void Process_Extended_Cache_Info();
 
 public:
 

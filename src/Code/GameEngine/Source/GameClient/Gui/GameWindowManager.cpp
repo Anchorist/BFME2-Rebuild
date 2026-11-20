@@ -21,6 +21,12 @@ extern GameWindowTransitionsHandler *TheTransitionHandler;
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
 // FUNCTION: BFME2 0x002C045D size=42 name=?GadgetButtonSetEnabledImage123_Rva002C045D@@YAXPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
+void GadgetButtonSetEnabledImage123_Rva002C045D(GameWindow *g, const Image *image)
+{
+	g->winSetEnabledImage(1, image);
+	g->winSetEnabledImage(2, NULL);
+	g->winSetEnabledImage(3, NULL);
+}
 // FUNCTION: BFME2 0x002C0487 size=42 name=?GadgetButtonSetDisabledImage_Rva002C0487@@YAXPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
 void GadgetButtonSetDisabledImage_Rva002C0487(GameWindow *g, const Image *image)
 {
@@ -30,6 +36,12 @@ void GadgetButtonSetDisabledImage_Rva002C0487(GameWindow *g, const Image *image)
 }
 
 // FUNCTION: BFME2 0x002C04B1 size=42 name=?GadgetButtonSetDisabledImage123_Rva002C04B1@@YAXPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
+void GadgetButtonSetDisabledImage123_Rva002C04B1(GameWindow *g, const Image *image)
+{
+	g->winSetDisabledImage(1, image);
+	g->winSetEnabledImage(2, NULL);
+	g->winSetEnabledImage(3, NULL);
+}
 // FUNCTION: BFME2 0x002C04DB size=42 name=?GadgetButtonSetHiliteImage_Rva002C04DB@@YAXPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
 void GadgetButtonSetHiliteImage_Rva002C04DB(GameWindow *g, const Image *image)
 {
@@ -47,8 +59,20 @@ void GadgetButtonSetHiliteImage123_Rva002C0505(GameWindow *g, const Image *image
 }
 
 // FUNCTION: BFME2 0x002C052F size=16 name=?Rva002C052F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C052F(GameWindow *window, const Image *image)
+{
+	return window->winSetEnabledImage(3, image);
+}
 // FUNCTION: BFME2 0x002C053F size=16 name=?Rva002C053F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C053F(GameWindow *window, const Image *image)
+{
+	return window->winSetDisabledImage(3, image);
+}
 // FUNCTION: BFME2 0x002C054F size=16 name=?Rva002C054F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C054F(GameWindow *window, const Image *image)
+{
+	return window->winSetHiliteImage(3, image);
+}
 // FUNCTION: BFME2 0x002C055F size=26 name=?Rva002C055FSet@@YAXPAVRva003140C8DwordField@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x002C0579 size=27 name=?Rva002C0579Set@@YAXPAVRva003140C8DwordField@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x002C0594 size=27 name=?Rva002C0594Set@@YAXPAVRva003140C8DwordField@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
@@ -68,6 +92,10 @@ void GadgetButtonSetHiliteImage123_Rva002C0505(GameWindow *g, const Image *image
 // FUNCTION: BFME2 0x002C0709 size=27 name=?Rva002C0709Set@@YAXPAVRva003140C8DwordField@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x002C0724 size=27 name=?Rva002C0724Set@@YAXPAVRva003140C8DwordField@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x002C073F size=16 name=?Rva002C073F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C073F(GameWindow *window, const Image *image)
+{
+	return window->winSetEnabledImage(0, image);
+}
 // FUNCTION: BFME2 0x002C074F size=16 name=?GadgetButtonSetEnabledColor@@YAXPAVGameWindow@@H@Z evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
 void GadgetButtonSetEnabledColor(GameWindow *g, int color)
 {
@@ -75,30 +103,130 @@ void GadgetButtonSetEnabledColor(GameWindow *g, int color)
 }
 
 // FUNCTION: BFME2 0x002C075F size=16 name=?Rva002C075F@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C075F(GameWindow *window, int color)
+{
+	return window->winSetEnabledBorderColor(0, color);
+}
 // FUNCTION: BFME2 0x002C076F size=16 name=?Rva002C076F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C076F(GameWindow *window, const Image *image)
+{
+	return window->winSetEnabledImage(1, image);
+}
 // FUNCTION: BFME2 0x002C077F size=16 name=?Rva002C077F@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C077F(GameWindow *window, int color)
+{
+	return window->winSetEnabledColor(1, color);
+}
 // FUNCTION: BFME2 0x002C078F size=16 name=?Rva002C078F@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C078F(GameWindow *window, int color)
+{
+	return window->winSetEnabledBorderColor(1, color);
+}
 // FUNCTION: BFME2 0x002C079F size=16 name=?Rva002C079F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C079F(GameWindow *window, const Image *image)
+{
+	return window->winSetEnabledImage(2, image);
+}
 // FUNCTION: BFME2 0x002C07AF size=16 name=?Rva002C07AF@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C07AF(GameWindow *window, int color)
+{
+	return window->winSetEnabledColor(2, color);
+}
 // FUNCTION: BFME2 0x002C07BF size=16 name=?Rva002C07BF@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C07BF(GameWindow *window, int color)
+{
+	return window->winSetEnabledBorderColor(2, color);
+}
 // FUNCTION: BFME2 0x002C07CF size=16 name=?Rva002C07CF@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C07CF(GameWindow *window, const Image *image)
+{
+	return window->winSetDisabledImage(0, image);
+}
 // FUNCTION: BFME2 0x002C07DF size=16 name=?Rva002C07DF@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C07DF(GameWindow *window, int color)
+{
+	return window->winSetDisabledColor(0, color);
+}
 // FUNCTION: BFME2 0x002C07EF size=16 name=?Rva002C07EF@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C07EF(GameWindow *window, int color)
+{
+	return window->winSetDisabledBorderColor(0, color);
+}
 // FUNCTION: BFME2 0x002C07FF size=16 name=?Rva002C07FF@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C07FF(GameWindow *window, const Image *image)
+{
+	return window->winSetDisabledImage(1, image);
+}
 // FUNCTION: BFME2 0x002C080F size=16 name=?Rva002C080F@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C080F(GameWindow *window, int color)
+{
+	return window->winSetDisabledColor(1, color);
+}
 // FUNCTION: BFME2 0x002C081F size=16 name=?Rva002C081F@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C081F(GameWindow *window, int color)
+{
+	return window->winSetDisabledBorderColor(1, color);
+}
 // FUNCTION: BFME2 0x002C082F size=16 name=?Rva002C082F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C082F(GameWindow *window, const Image *image)
+{
+	return window->winSetDisabledImage(2, image);
+}
 // FUNCTION: BFME2 0x002C083F size=16 name=?Rva002C083F@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C083F(GameWindow *window, int color)
+{
+	return window->winSetDisabledColor(2, color);
+}
 // FUNCTION: BFME2 0x002C084F size=16 name=?Rva002C084F@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C084F(GameWindow *window, int color)
+{
+	return window->winSetDisabledBorderColor(2, color);
+}
 // FUNCTION: BFME2 0x002C085F size=16 name=?Rva002C085F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C085F(GameWindow *window, const Image *image)
+{
+	return window->winSetHiliteImage(0, image);
+}
 // FUNCTION: BFME2 0x002C086F size=16 name=?Rva002C086F@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C086F(GameWindow *window, int color)
+{
+	return window->winSetHiliteColor(0, color);
+}
 // FUNCTION: BFME2 0x002C087F size=16 name=?Rva002C087F@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C087F(GameWindow *window, int color)
+{
+	return window->winSetHiliteBorderColor(0, color);
+}
 // FUNCTION: BFME2 0x002C088F size=16 name=?Rva002C088F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C088F(GameWindow *window, const Image *image)
+{
+	return window->winSetHiliteImage(1, image);
+}
 // FUNCTION: BFME2 0x002C089F size=16 name=?Rva002C089F@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C089F(GameWindow *window, int color)
+{
+	return window->winSetHiliteColor(1, color);
+}
 // FUNCTION: BFME2 0x002C08AF size=16 name=?Rva002C08AF@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C08AF(GameWindow *window, int color)
+{
+	return window->winSetHiliteBorderColor(1, color);
+}
 // FUNCTION: BFME2 0x002C08BF size=16 name=?Rva002C08BF@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C08BF(GameWindow *window, const Image *image)
+{
+	return window->winSetHiliteImage(2, image);
+}
 // FUNCTION: BFME2 0x002C08CF size=16 name=?Rva002C08CF@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C08CF(GameWindow *window, int color)
+{
+	return window->winSetHiliteColor(2, color);
+}
 // FUNCTION: BFME2 0x002C08DF size=16 name=?Rva002C08DF@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+int Rva002C08DF(GameWindow *window, int color)
+{
+	return window->winSetHiliteBorderColor(2, color);
+}
 // FUNCTION: BFME2 0x002C08EF size=137 name=?processDestroyList@GameWindowManager@@IAEXXZ evidence=N:ledger
 void GameWindowManager::processDestroyList()
 {

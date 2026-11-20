@@ -17,10 +17,10 @@ class WeaponBonusSet
 public:
 	enum { WEAPONBONUSCONDITION_COUNT = 22 };
 
-	void appendBonuses(UnsignedInt flags, WeaponBonus &bonus) const;					// 0x002C9778
+	void appendBonuses(UnsignedInt flags, WeaponBonus &bonus) const;
 	void parseWeaponBonusSet(INI *ini);													// 0x002C971E
 	static void parseWeaponBonusSet(INI *ini, void *instance, void *store, const void *userData);	// 0x002CA80E
-	static void parseWeaponBonusSetPtr(INI *ini, void *instance, void *store, const void *userData);	// 0x002CA81C
+	static void parseWeaponBonusSetPtr(INI *ini, void *instance, void *store, const void *userData);
 
 	WeaponBonus m_bonus[WEAPONBONUSCONDITION_COUNT];	// 0x000
 };

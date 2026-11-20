@@ -17,7 +17,7 @@ class INI;
 class StealMoneyNugget : public WeaponEffectNugget
 {
 public:
-	StealMoneyNugget();										// 0x0050B6B4
+	StealMoneyNugget();
 	virtual ~StealMoneyNugget();								// 0, deleting dtor 0x0050B6D1
 	virtual Bool slot02(const ProjectileNuggetFireInfo *info, Int arg);	// 2, 0x0050B5F1
 	virtual void doEffectObject(const ProjectileNuggetFireInfo *info, Object *victim);	// 5, 0x0050B62B

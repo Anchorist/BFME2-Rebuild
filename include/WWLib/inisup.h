@@ -27,8 +27,8 @@ struct INIEntry : public Node<INIEntry *>
 struct INISection : public Node<INISection *>
 {
 	INISection(char *section);							// 0x006167E0
-	~INISection();									// 0x00616830
-	INIEntry *Find_Entry(const char *entry) const;					// 0x00616C00
+	~INISection();
+	INIEntry *Find_Entry(const char *entry) const;
 	int Index_ID() const { return CRC::String(Section); }
 
 	char *Section;			// +0x0C

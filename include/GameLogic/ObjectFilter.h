@@ -1,8 +1,7 @@
 // ObjectFilter.h: a module data's INI-parsed object filter (iniParseObjectFilter).
 // SIZE 0x4.
 // Target facts: module-data constructors build it through 0x003623E5 and their
-// destructors tear it down through 0x00360D26 (old repo
-// BloodthirstyUpdateModuleDataCtor.cpp / Dtor.cpp, SpecialPowerModuleData.h).
+// destructors tear it down through 0x00360D26.
 // The signed word indexes the interned records used by isValid and INI parsing.
 #pragma once
 #ifndef BFME2_OBJECTFILTER_H

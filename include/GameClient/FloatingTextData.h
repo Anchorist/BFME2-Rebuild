@@ -18,7 +18,7 @@ class FloatingTextData
 {
 public:
 	FloatingTextData();							// 0x0029D352
-	virtual ~FloatingTextData();				// 0x0029D3B0
+	virtual ~FloatingTextData();
 
 	int m_color;								// +0x04
 	UnicodeString m_text;						// +0x08

@@ -1,9 +1,7 @@
-// ClickReactionBehavior.h: the ClickReactionBehavior module. SIZE 0x2C (ModuleFactory operator new).
-// Target facts: the constructor 0x0045961D calls UpdateModule first; it stores the
-// tables 0x00BE2B78 at +0x20, 0x00C4125C at +0x0, 0x00C411A0 at +0xC, 0x00C41194 at +0x10, 0x00C41188 at +0x20. Members are what xfer (0x00459579) transfers after UpdateModule::xfer,
-// typed by the Xfer slot each goes through, in that order; m_unk names are offsets
-// (no map or donor name established). Bytes xfer does not touch are gaps.
-// Not established: interface tables at +0x20 (their vptrs sit in the gaps there).
+// ClickReactionBehavior: the ClickReactionBehavior update module. SIZE 0x2C: UpdateModule (0x20), four
+// bytes at +0x20 that hold an interface table pointer (not recovered), and the two Ints at +0x24 and +0x28 that xfer
+// (0x00459579) saves after the base's data. The constructor (0x0045961D) runs UpdateModule's constructor and installs
+// the tables.
 #pragma once
 #ifndef BFME2_CLICK_REACTION_BEHAVIOR_H
 #define BFME2_CLICK_REACTION_BEHAVIOR_H

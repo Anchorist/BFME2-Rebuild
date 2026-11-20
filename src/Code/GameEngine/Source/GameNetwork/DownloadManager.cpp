@@ -1,4 +1,4 @@
-// cl: /Oy-
+// cl: /O1
 // stlport46
 // psdk
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
@@ -48,8 +48,72 @@ AsciiString DownloadManager::getLastLocalFile(void)
 }
 
 // FUNCTION: BFME2 0x005E0628 size=189 name=?OnError@DownloadManager@@UAEJH@Z evidence=N:ledger
+HRESULT DownloadManager::OnError(int error)
+{
+	m_wasError = true;
+	AsciiString s = "FTP:UnknownError";
+	switch (error)
+	{
+		case DOWNLOADEVENT_NOSUCHSERVER:
+			s.set("FTP:NoSuchServer");
+			break;
+		case DOWNLOADEVENT_COULDNOTCONNECT:
+			s.set("FTP:CouldNotConnect");
+			break;
+		case DOWNLOADEVENT_LOGINFAILED:
+			s.set("FTP:LoginFailed");
+			break;
+		case DOWNLOADEVENT_NOSUCHFILE:
+			s.set("FTP:NoSuchFile");
+			break;
+		case DOWNLOADEVENT_LOCALFILEOPENFAILED:
+			s.set("FTP:LocalFileOpenFailed");
+			break;
+		case DOWNLOADEVENT_TCPERROR:
+			s.set("FTP:TCPError");
+			break;
+		case DOWNLOADEVENT_DISCONNECTERROR:
+			s.set("FTP:DisconnectError");
+			break;
+	}
+	m_errorString = TheGameText->fetch(s);
+	return S_OK;
+}
 
 // FUNCTION: BFME2 0x005E06E5 size=183 name=?OnStatusUpdate@DownloadManager@@UAEJH@Z evidence=N:ledger
+HRESULT DownloadManager::OnStatusUpdate(int status)
+{
+	AsciiString s = "FTP:StatusNone";
+	switch (status)
+	{
+		case DOWNLOADSTATUS_CONNECTING:
+			s.set("FTP:StatusConnecting");
+			break;
+		case DOWNLOADSTATUS_LOGGINGIN:
+			s.set("FTP:StatusLoggingIn");
+			break;
+		case DOWNLOADSTATUS_FINDINGFILE:
+			s.set("FTP:StatusFindingFile");
+			break;
+		case DOWNLOADSTATUS_QUERYINGRESUME:
+			s.set("FTP:StatusQueryingResume");
+			break;
+		case DOWNLOADSTATUS_DOWNLOADING:
+			s.set("FTP:StatusDownloading");
+			break;
+		case DOWNLOADSTATUS_DISCONNECTING:
+			s.set("FTP:StatusDisconnecting");
+			break;
+		case DOWNLOADSTATUS_FINISHING:
+			s.set("FTP:StatusFinishing");
+			break;
+		case DOWNLOADSTATUS_DONE:
+			s.set("FTP:StatusDone");
+			break;
+	}
+	m_statusString = TheGameText->fetch(s);
+	return S_OK;
+}
 
 // FUNCTION: BFME2 0x005E07C0 size=235 name=?downloadNextQueuedFile@DownloadManager@@QAEJXZ evidence=N:ledger
 HRESULT DownloadManager::downloadNextQueuedFile(void)
@@ -98,6 +162,15 @@ DownloadManager::DownloadManager()
 }
 
 // FUNCTION: BFME2 0x005E0994 size=118 name=??1DownloadManager@@UAE@XZ evidence=N:ledger
+DownloadManager::~DownloadManager()
+{
+	delete m_download;
+	if (m_winsockInit)
+	{
+		WSACleanup();
+		m_winsockInit = false;
+	}
+}
 
 // FUNCTION: BFME2 0x005E0A0A size=233 name=?queueFileForDownload@DownloadManager@@QAEXVAsciiString@@00000_N@Z evidence=N:ledger
 

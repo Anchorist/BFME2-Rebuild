@@ -308,7 +308,7 @@ def per_file(args, index, files):
     if args.ranked:
         for row in snapshot(args.ranked, LINK_META)[1]:
             waiting[int(row["rva"], 16)] += int(row["referrers"] or 0)
-    owned, todo, todo_bytes, todo_wait = Counter(), Counter(), Counter(), Counter()
+    owned, todo, todo_bytes, todo_wait, tried = Counter(), Counter(), Counter(), Counter(), Counter()
     for row in ledger["rows"]:
         if row.get("role") != "owned":
             continue
@@ -322,6 +322,8 @@ def per_file(args, index, files):
             todo[tu] += 1
             todo_bytes[tu] += int(row.get("size") or 0)
             todo_wait[tu] += waiting.get(rva, 0)
+            if verdict not in ("MISSING",):
+                tried[tu] += 1  # a body exists (PARTIAL, WRONG_REFERENCE, MISNAMED) and still does not match
     real = defaultdict(bool)
     draft = defaultdict(bool)
     for file in files:
@@ -333,15 +335,24 @@ def per_file(args, index, files):
                 draft[name] = True
             else:
                 real[name] = True
+    own_classes = defaultdict(set)
+    for defs in index.defs.values():
+        for d in defs:
+            if d.cls:
+                own_classes[d.path].add(d.cls.lower())
     rows = []
     for tu, count in todo.items():
         stem = PurePosixPath(tu).stem.lower()
+        names = {stem, *own_classes.get(tu, ())}
         if tu.startswith("src/unk/"):
             header = "address-named"
         else:
-            header = "real" if real[stem] else "draft" if draft[stem] else "none"
-        rows.append((tu, owned[tu], count, todo_bytes[tu], todo_wait[tu], header))
-    rows.sort(key=lambda r: (r[5] == "address-named", r[2], -r[4], r[0]))
+            header = ("real" if any(real[n] for n in names) else "draft" if any(draft[n] for n in names)
+                      else "none")
+        rows.append((tu, owned[tu], count, todo_bytes[tu], todo_wait[tu], header, tried[tu]))
+    # Files whose remaining functions were all written and still do not match are hard, not nearly done:
+    # they follow the files that still have unwritten functions in the same group.
+    rows.sort(key=lambda r: (r[5] == "address-named", r[6] == r[2], r[2], -r[4], r[3], r[0]))
     finished = sum(1 for tu in owned if not todo[tu])
     try:
         date = subprocess.check_output(["git", "-C", str(args.root), "show", "-s", "--format=%cI", revision],
@@ -351,14 +362,18 @@ def per_file(args, index, files):
         date = "unknown"
     write(args.output / "files.tsv", (date, revision[:10]),
           ["file", "owned_functions", "not_yet_matched", "bytes_not_yet_matched", "link_referrers_waiting",
-           "class_header"], rows, f" finished_files={finished}")
+           "class_header", "tried_not_matching"], rows, f" finished_files={finished}")
 
 
 SKIP = re.compile(r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\\n])*"|\'(?:\\.|[^\'\\\n])*\'|^[ \t]*#[^\n]*(?:\\\n[^\n]*)*', re.M)
 DECL = re.compile(r'(?<![\w.])(?P<type>[A-Za-z_~][\w:\s*&<>,]*?)\s*(?<=[\s*&])(?P<name>[A-Za-z_~]\w*)\s*\((?P<params>[^;{}]*?)\)\s*(?:const\s*)?(?:=\s*0\s*)?(?=[;{])')
 VOIDP = re.compile(r'\bvoid\s*(?:(?:const|volatile)\s*)?\*')
 NOT_A_STAND_IN = re.compile(r'alloc|free|copy|mem|buffer|data|raw|lock|operator|new|delete|read|write|callback|user|param|handle|ptr|pointer|address', re.I)
-BLOCKED = {'if', 'else', 'for', 'while', 'return', 'switch', 'case', 'catch', 'sizeof', 'typedef', 'using', 'delete', 'new'}
+BLOCKED = {'if', 'else', 'for', 'while', 'return', 'switch', 'case', 'catch', 'sizeof', 'typedef', 'using', 'delete', 'new',
+           'void', 'int', 'char', 'short', 'long', 'float', 'double', 'bool', 'signed', 'unsigned', 'const',
+           'volatile', 'Bool', 'Int', 'UnsignedInt', 'Real'}
+# A type word as the name is a function-pointer variable such as 'extern void (__cdecl *name)(...)'.
+INI_FIELD_PARSE = re.compile(r'^\s*INI\s*\*\s*\w*\s*,\s*void\s*\*\s*\w*\s*,\s*void\s*\*\s*\w*\s*,\s*const\s+void\s*\*\s*\w*\s*$')
 
 
 def stand_ins(args, files, meta):
@@ -374,6 +389,8 @@ def stand_ins(args, files, meta):
             name = m.group("name")
             if name in BLOCKED or NOT_A_STAND_IN.search(name):
                 continue
+            if INI_FIELD_PARSE.match(m.group("params")):
+                continue  # the engine's fixed INI field-parser signature: instance and store are generic by design
             where = [w for w, part in (("return", m.group("type")), ("parameter", m.group("params"))) if VOIDP.search(part)]
             if not where:
                 continue

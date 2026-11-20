@@ -6,6 +6,7 @@
 #include "Common/Team.h"
 #include "Common/TeamFactory.h"
 #include "GameLogic/AIPlayer.h"
+#include "GameLogic/BuildListInfo.h"
 #include "GameLogic/AI.h"
 #include "Common/GlobalData.h"
 #include <math.h>
@@ -193,6 +194,10 @@ void AIPlayer::flip()
 // FUNCTION: BFME2 0x004F04E3 size=4 name=?get@Rva004F04E3ByteField@@QBEEXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x004F04E7 size=10 name=?setSupplyBuilding@BuildListInfo@@QAEX_N@Z evidence=N:ledger tier=A
+void BuildListInfo::setSupplyBuilding(Bool isSupplyBuilding)
+{
+	m_isSupplyBuilding = isSupplyBuilding;
+}
 
 // FUNCTION: BFME2 0x004F04F5 size=7 name=?get@Rva004F04F5ByteField@@QBEEXZ evidence=?:placeholder tier=A
 

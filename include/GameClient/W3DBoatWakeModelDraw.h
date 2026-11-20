@@ -27,7 +27,7 @@ public:
 	virtual RenderObjClass *getRenderObject();								// 49: 0x0057E556 (fold)
 
 protected:
-	virtual ~W3DBoatWakeModelDraw();										// 0x000D0B69
+	virtual ~W3DBoatWakeModelDraw();
 	virtual void loadPostProcess() { DrawModule::loadPostProcess(); }	// 1: the module bases' fold 0x0058B03E
 	virtual const char *GetSnapshotName() const;							// 2: 0x000D0B63
 	virtual void xfer(Xfer *xfer);											// 3: 0x000D0BC3

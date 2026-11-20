@@ -46,8 +46,8 @@ class SnapPointsClass : public DynamicVectorClass<Vector3>, public RefCountClass
 class ProxyRecordClass
 {
 public:
-	ProxyRecordClass(void);					// 0x0019B0F0
-	void Init(const W3dHLodSubObjectStruct &w3d_data);	// 0x0019B120
+	ProxyRecordClass(void);
+	void Init(const W3dHLodSubObjectStruct &w3d_data);
 
 	// Retail vector equality and ID never consider a stored proxy record equal.
 	bool operator==(const ProxyRecordClass &) const { return false; }
@@ -198,17 +198,17 @@ class HLodDefClass
 public:
 	HLodDefClass(void);						// 0x0019EC00
 	HLodDefClass(HLodClass &src_lod);				// 0x001A0350
-	~HLodDefClass(void);						// 0x001A03C0
+	~HLodDefClass(void);
 
-	bool Load_W3D(ChunkLoadClass &cload);				// 0x0019F800
-	bool Save(ChunkSaveClass &csave);				// 0x0019EC90
+	bool Load_W3D(ChunkLoadClass &cload);
+	bool Save(ChunkSaveClass &csave);
 	const char *Get_Name(void) const { return Name; }
-	void Initialize(HLodClass &src_lod);				// 0x0019F620
+	void Initialize(HLodClass &src_lod);
 
 protected:
-	bool Save_Header(ChunkSaveClass &csave);			// 0x0019B140
-	bool Save_Lod_Array(ChunkSaveClass &csave);			// 0x0019C020
-	bool Save_Aggregate_Array(ChunkSaveClass &csave);		// 0x0019C060
+	bool Save_Header(ChunkSaveClass &csave);
+	bool Save_Lod_Array(ChunkSaveClass &csave);
+	bool Save_Aggregate_Array(ChunkSaveClass &csave);
 
 public:
 	// One level of the description (0x10 bytes).

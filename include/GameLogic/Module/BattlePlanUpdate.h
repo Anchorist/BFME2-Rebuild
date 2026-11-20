@@ -88,7 +88,7 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual ~BattlePlanUpdate();
-	virtual void onObjectCreated();			// 0x0049797F: the primary table slot 5
+	virtual void onObjectCreated();			// The primary table slot 5
 	virtual void onDelete();				// slot 8, 0x004984CC (the map spells the row ?cleanUp@SpectreGunshipUpdate@@QAEXXZ)
 	virtual UpdateSleepTime update();		// UpdateModuleInterface slot 0 (+0x10 table), 0x0049862B
 	// SpecialPowerUpdateInterface slot 0 (+0x20 table), 0x004976DB: records the command option as the desired plan.
@@ -100,13 +100,13 @@ protected:
 	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 is the 13-byte jmp thunk 0x00497805 in this class's own range (as BoredUpdate's 0x00497805-style slot)
 	// Turret helpers act on the object's AI interface (Object +0x258): 0x0049773F, 0x00497769, 0x0049778D.
 	void enableTurret(Bool enable);
-	void setStatus(TransitionStatus newStatus);	// 0x00497FF3
+	void setStatus(TransitionStatus newStatus);
 	void recenterTurret();
 	Bool isTurretInNaturalPosition();
 
 public:
-	void createVisionObject();			// 0x00497A4B (QAE: public): creates the neutral vision object once
-	void rva00497AE8(BattlePlanStatus newPlan);	// 0x00497AE8 (public, placeholder name): removes the active plan's bonuses, then applies the new plan's
+	void createVisionObject();			// (QAE: public): creates the neutral vision object once
+	void rva00497AE8(BattlePlanStatus newPlan);	// (public, placeholder name): removes the active plan's bonuses, then applies the new plan's
 	// SpecialPowerUpdateInterface slot 3 (+0x20 interface), retail 0x0049771E: the plan's command option.
 	// SpecialPowerUpdateInterface slot 2 (+0x20 table), retail 0x00497960: a plan is unpacking, active or packing.
 	virtual bool isSpecialAbility() const { return false; }	// SpecialPowerUpdateInterface slot 1 (+0x20 table 0x0084FB7C): the return-false fold 0x0047A699

@@ -27,7 +27,7 @@ class SymbioticStructuresBodyModuleData : public ActiveBodyModuleData
 public:
 	SymbioticStructuresBodyModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
-	static ModuleData *friend_newModuleData(INI *ini);	// 0x00256D50
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	AsciiString m_symbiote;                                // +0x64 Symbiote
 };

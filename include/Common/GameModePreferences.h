@@ -35,6 +35,7 @@ public:
 	void rva0044DCB9(int);														// 0x0044DCB9
 	void rva0044DD1E(int);														// 0x0044DD1E
 	void rva0044DD83(AsciiString);												// 0x0044DD83
+	AsciiString rva0044D986();													// 0x0044D986 (the saved map path for LAN/custom games)
 	AsciiString rva0044DAA8(const AsciiString &);								// 0x0044DAA8 (the custom-match game name for the given player name)
 	AsciiString rva0044DBA5();													// 0x0044DBA5 (the custom-match password)
 	// Inline: AptLanLobby::OnLoadScreen 0x0044438A stores the mode through the LANPreferences member directly.

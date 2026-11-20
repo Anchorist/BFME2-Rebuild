@@ -9,7 +9,7 @@ class AptValueNameEntry // `class` in retail (resizeArray's mangled name spells 
 {
 public:
     AptValueNameEntry(const EAStringC &name, int index);
-    AptValueNameEntry() { mIndex = 0; } // 0x006CC000 (retail keeps one out-of-line copy; the callers in other units expand it)
+    AptValueNameEntry() { mIndex = 0; } // (retail keeps one out-of-line copy; the callers in other units expand it)
 
     EAStringC mName; // 0x0
     int mIndex;      // 0x4

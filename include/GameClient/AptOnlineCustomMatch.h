@@ -56,37 +56,38 @@ public:
   virtual void MpOwnerPrintMessage(const UnicodeString &, int); // slot 17, 0x0059F043
   virtual void enableSetupUI(); // slot 15, 0x005A1D32 (the map holds it as rva005A1D32)
   virtual void setBusy(bool); // slot 16, 0x005A1C87 (the map holds it as rva005A1C87)
-  void rva0059ECAD(int); // 0x0059ECAD: state 2 moves on to 9
-  unsigned char rva0059EF33() const; // 0x0059EF33: whether the state is 6 or 0xC
-  void rva0059EE87(); // 0x0059EE87
-  void resetState(); // 0x0059EE7F: state back to 0
-  void OpenConnectionScreen(bool); // 0x0059F37C
-  void OnOpenCreateDialog(const char *); // 0x005A0F1F
-  void rva0059EC72(int); // 0x0059EC72
-  void InitGadgets(const char *, int, GameWindow *); // 0x005A0C6E
-  void rva005A083C(); // 0x005A083C
-  static void GamesListTooltipFunc(GameWindow *, class WinInstanceData *, unsigned int); // 0x005A08C8
-  void FillGameNameTextEntry(bool); // 0x005A0DC2
-  void Refresh(const char *); // 0x005A0F15: rva005A0D61(true)
-  void LoadGame(const char *); // 0x0059ECC1: opens the load screen for the multiplayer saves (kind 2, filter 0x10)
-  void OnOpenConnectionsScreen(const char *); // 0x0059ED69
-  void OnClosingConnectionsScreen(const char *); // 0x0059ED7A
-  void CancelPopUpCreate(const char *); // 0x0059ED18
-  void rva0052493F(); // 0x0052493F (the map holds it as a method of a placeholder class)
+  void rva0059ECAD(int); // State 2 moves on to 9
+  unsigned char rva0059EF33() const; // Whether the state is 6 or 0xC
+  void rva0059EE87();
+  void resetState(); // State back to 0
+  void OpenConnectionScreen(bool);
+  void OnOpenCreateDialog(const char *);
+  void rva0059EC72(int);
+  void InitGadgets(const char *, int, GameWindow *);
+  void rva005A083C();
+  static void GamesListTooltipFunc(GameWindow *, class WinInstanceData *, unsigned int);
+  void FillGameNameTextEntry(bool);
+  void Refresh(const char *); // rva005A0D61(true)
+  void PlayGame(const char *); // 0x0059EC65: the Apt callback that moves the lobby to state 7
+  void LoadGame(const char *); // Opens the load screen for the multiplayer saves (kind 2, filter 0x10)
+  void OnOpenConnectionsScreen(const char *);
+  void OnClosingConnectionsScreen(const char *);
+  void CancelPopUpCreate(const char *);
+  void rva0052493F(); // (the map holds it as a method of a placeholder class)
   void CancelPopUpJoin(int); // 0x0059ECD2: closes the password pop-up of the join dialog
-  void CancelPopUpHost(const char *); // 0x0059ED2C: closes the password pop-up of the host dialog
+  void CancelPopUpHost(const char *); // Closes the password pop-up of the host dialog
   void setPlayButtonEnabled(unsigned char enabled, unsigned char force); // 0x0059EE96: tells the movie to enable or disable the play button
-  void OnBttnCancel(int); // 0x0059FC45
+  void OnBttnCancel(int);
   void saveSlotPreferences(); // 0x0059F950: stores the local slot's color, faction and start position and the map in the preferences object
-  void UpdateHostStartGameButton(); // 0x0059EEE2: the host may start once two humans sit in the room
-  GameSpyStagingRoom *GetGameToJoin(); // 0x005A0808
-  void AcceptJoinGame(const char *); // 0x005A5632: the join dialog's accept button
-  bool RequestJoinGame(const char *password); // 0x005A2C77: asks the peer thread to join the selected room
-  void rva005A5BAF(); // 0x005A5BAF
-  void PopulateGamesListBox(); // 0x005A061B
-  void PopulateLobbyComboBox(); // 0x0059FD3A: refills the "Lobbies" combo box with the group rooms of room type 1
-  void rva005A0D61(bool force); // 0x005A0D61: refreshes the games list when it is due (force, the second since the last, a sort or a room list change)
-  bool rva005A57BA(bool); // 0x005A57BA
+  void UpdateHostStartGameButton(); // The host may start once two humans sit in the room
+  GameSpyStagingRoom *GetGameToJoin();
+  void AcceptJoinGame(const char *); // The join dialog's accept button
+  bool RequestJoinGame(const char *password); // Asks the peer thread to join the selected room
+  void rva005A5BAF();
+  void PopulateGamesListBox();
+  void PopulateLobbyComboBox(); // Refills the "Lobbies" combo box with the group rooms of room type 1
+  void rva005A0D61(bool force); // Refreshes the games list when it is due (force, the second since the last, a sort or a room list change)
+  bool rva005A57BA(bool);
   bool rva005A5B38(); // 0x005A5B38
   AptMpGameSetup m_setup; // +0x70 (0x3E0 bytes)
   GameSorter m_sorter; // +0x450 the games list's sort state

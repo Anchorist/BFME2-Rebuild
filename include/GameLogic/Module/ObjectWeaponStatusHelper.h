@@ -24,9 +24,9 @@ class Xfer;
 class ObjectWeaponStatusHelper : public ObjectHelper
 {
 public:
-	ObjectWeaponStatusHelper(Thing *thing, const ModuleData *moduleData);	// 0x0028CB45
+	ObjectWeaponStatusHelper(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;				// slot 4, 0x0028CB96
-	virtual UpdateSleepTime update();							// 0x0028F976
+	virtual UpdateSleepTime update();
 	virtual DisabledMaskType getDisabledTypesToProcess() const { return DisabledMaskType(DisabledMaskType::kInit, 3, 8); }	// +0x10 slot 1, 0x004DF8C2
 	virtual SleepyUpdatePhase getUpdatePhase() const { return PHASE_FINAL; }	// slot 12, the fold 0x0044827C
 

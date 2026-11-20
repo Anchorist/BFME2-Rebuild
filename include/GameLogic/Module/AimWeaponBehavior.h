@@ -28,7 +28,7 @@ typedef char AimWeaponBehavior_base_size[(sizeof(UpdateModule) == 0x20) ? 1 : -1
 class AimWeaponBehavior : public UpdateModule
 {
 public:
-	char const * name() const;	// 0x0045B14D
+	char const * name() const;
 	AimWeaponBehavior(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;

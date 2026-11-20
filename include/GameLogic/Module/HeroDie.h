@@ -36,7 +36,7 @@ public:
 	virtual void onDie(const DamageInfo *);	// override: onDie slot 0 at +0x10 (0x004C236A)
 
 private:
-	static Int rva004C2299(Object *obj, void *userData);	// 0x004C2299: Player::iterateObjects callback (private static in the map)
+	static Int rva004C2299(Object *obj, void *userData);	// Player::iterateObjects callback (private static in the map)
 
 public:
 

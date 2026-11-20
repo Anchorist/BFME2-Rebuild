@@ -88,6 +88,6 @@ ElvenWoodSpecialPowerModuleData::ElvenWoodSpecialPowerModuleData()
 }
 
 // FUNCTION: BFME2 0x004C3EC2 size=71 name=??1ElvenWoodSpecialPowerModuleData@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
-// Not written yet: the empty-body form compiles to 77 bytes against retail's 71 (the +0x7C vector's
-// destructor instance 0x004C3D4C is PARTIAL too). See the team notes for the element-destructor question.
+// Not written yet: an empty body compiles to 77 bytes against retail's 71, and the destructor of the vector at +0x7C
+// (instance 0x004C3D4C) does not match either, so the element destructor is still open.
 

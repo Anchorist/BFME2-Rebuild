@@ -24,14 +24,14 @@ class Xfer;
 class FireWeaponCollide : public CollideModule
 {
 public:
-	FireWeaponCollide(Thing *thing, const ModuleData *moduleData);					// 0x004BB79A
-	virtual NameKeyType getModuleNameKey() const;									// 0x004BB755
-	virtual void onCollide(Object *other, const Coord3D *loc, const Coord3D *normal);	// 0x004BB822
+	FireWeaponCollide(Thing *thing, const ModuleData *moduleData);
+	virtual NameKeyType getModuleNameKey() const;
+	virtual void onCollide(Object *other, const Coord3D *loc, const Coord3D *normal);
 
 protected:
 	virtual const char *GetSnapshotName() const;									// 0x004BB6FC
-	virtual void xfer(Xfer *xfer);													// 0x004BB85C
-	virtual Bool shouldFireWeapon();												// 0x004BB8BA, primary slot 12
+	virtual void xfer(Xfer *xfer);
+	virtual Bool shouldFireWeapon();												// Primary slot 12
 
 	const FireWeaponCollideModuleData *getFireWeaponCollideModuleData() const
 	{

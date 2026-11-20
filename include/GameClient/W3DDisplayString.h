@@ -26,27 +26,27 @@ class W3DDisplayString : public DisplayString
 {
 public:
 	W3DDisplayString();															// 0x00106088
-	virtual ~W3DDisplayString();												// 0x00106162
+	virtual ~W3DDisplayString();
 
-	virtual void notifyTextChanged();											// 0x00106663
-	virtual void reset();														// 0x001061BE
-	virtual void setFont(GameFont *font);										// 0x001066B3
-	virtual void setWordWrap(int wordWrap);										// 0x00105F6E
-	virtual void setWordWrapCentered(bool isCentered);							// 0x00105FC6
-	virtual void setColors(int textColor, int dropColor);						// 0x00105DC0
-	virtual void setTextColor(int *colors);										// 0x00105E05
-	virtual void setDropColor(int *colors);										// 0x00105E35
+	virtual void notifyTextChanged();
+	virtual void reset();
+	virtual void setFont(GameFont *font);
+	virtual void setWordWrap(int wordWrap);
+	virtual void setWordWrapCentered(bool isCentered);
+	virtual void setColors(int textColor, int dropColor);
+	virtual void setTextColor(int *colors);
+	virtual void setDropColor(int *colors);
 	virtual void draw(int x, int y, int textColor, int dropColor);				// 0x00106405
 	virtual void draw(int x, int y);											// 0x00105E65
-	virtual void getSize(int *width, int *height);								// 0x00105E79
-	virtual int getWidth(int charPos = -1);										// 0x0010657E
+	virtual void getSize(int *width, int *height);
+	virtual int getWidth(int charPos = -1);
 	virtual void setScale(float x, float y);									// 0x00105FE4
 	virtual void setTargetSize(float width, float height);						// 0x00106036
-	virtual void setUseHotkey(bool useHotKey, int hotKeyColor);					// 0x00105F94
-	virtual void setClipRegion(IRegion2D *region);								// 0x00105E9C
+	virtual void setUseHotkey(bool useHotKey, int hotKeyColor);
+	virtual void setClipRegion(IRegion2D *region);
 
 protected:
-	void computeExtents();														// 0x001065D9
+	void computeExtents();
 
 public:
 

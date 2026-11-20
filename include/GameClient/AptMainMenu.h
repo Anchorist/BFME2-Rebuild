@@ -22,35 +22,35 @@ class AptMainMenu : public _bfme_AptGameWindow
 {
 public:
 	AptMainMenu(void *);							// 0x00516211
-	virtual ~AptMainMenu();							// 0x00514EAB
+	virtual ~AptMainMenu();
 
-	virtual int rva00514950(int, int, int);			// 0x00514950
+	virtual int rva00514950(int, int, int);
 
-	static int LinearCampaignStart(const AsciiString &campaign, float time, bool restart);	// 0x00514D05
+	static int LinearCampaignStart(const AsciiString &campaign, float time, bool restart);
 
-	void LoadGame(const char *);					// 0x00514A9B
-	void Options(const char *);						// 0x00514AB2
-	void GoodCampaign(const char *);				// 0x00514AE0
-	void EvilCampaign(const char *);				// 0x00514B03
-	void CreateAHero(const char *);					// 0x00514B26
-	void WarOfTheRing(const char *);				// 0x00514B38
-	void LoadCampaign(const char *);				// 0x00514B4F
-	void rva00514B8D();								// 0x00514B8D
-	void rva00514BA1();								// 0x00514BA1
-	void rva00514BB5();								// 0x00514BB5
-	void Skirmish(const char *);					// 0x00514BC9
-	void LoadReplay(const char *);					// 0x00514BE0
-	void StopGameMovie(const char *);				// 0x00514BF7
-	void ContinueCampaign(const char *);			// 0x00515041: stays on the menu when the campaign autosave exists
-	void BattleSchool(const char *);				// 0x00515074
-	void ResetResolution(const char *);				// 0x00514C15
-	void RenderCredits(void *, void *, void *, void *);	// 0x00514CEB
-	void rva00514DC0(int);							// 0x00514DC0
-	void rva00514878();								// 0x00514878: cancels a pending action 2 and turns the shell map back on
-	void rva00514FE9();								// 0x00514FE9: the tutorial prompt's close: restores the shell's music and reverses the MainMenuToSubMenu transition
-	void rva00515633();								// 0x00515633
+	void LoadGame(const char *);
+	void Options(const char *);
+	void GoodCampaign(const char *);
+	void EvilCampaign(const char *);
+	void CreateAHero(const char *);
+	void WarOfTheRing(const char *);
+	void LoadCampaign(const char *);
+	void rva00514B8D();
+	void rva00514BA1();
+	void rva00514BB5();
+	void Skirmish(const char *);
+	void LoadReplay(const char *);
+	void StopGameMovie(const char *);
+	void ContinueCampaign(const char *);			// Stays on the menu when the campaign autosave exists
+	void BattleSchool(const char *);
+	void ResetResolution(const char *);
+	void RenderCredits(void *, void *, void *, void *);
+	void rva00514DC0(int);
+	void rva00514878();								// Cancels a pending action 2 and turns the shell map back on
+	void rva00514FE9();								// The tutorial prompt's close: restores the shell's music and reverses the MainMenuToSubMenu transition
+	void rva00515633();
 	void ShowCreditsMenu();							// 0x005158A7: picks the credits menu and runs rva00515633
-	void OnInitialized(const char *);				// 0x00514E76
+	void OnInitialized(const char *);
 
 	bool m_flag27C;									// +0x27C (OnInitialized sets it)
 	bool m_flag27D;									// +0x27D

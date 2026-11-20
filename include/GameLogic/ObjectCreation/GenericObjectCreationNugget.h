@@ -56,7 +56,7 @@ public:
 	static void parseDebris(INI *ini, void *instance, void *store, const void *userData);	// 0x001F340A
 	static void parseAnimSet(INI *ini, void *instance, void *store, const void *userData);	// 0x001F335D
 
-	// 0x001F1513: the upgrade and player test both creates run first.
+	// The upgrade and player test both creates run first.
 	Bool rva001F1513(const Object *obj) const;
 	// COMDAT 0x001F1634 (2618 bytes): creates the objects or debris and returns them.
 	std::vector<Object *> reallyCreate(const Coord3D *pos, const Matrix3D *mtx, Real orientation,

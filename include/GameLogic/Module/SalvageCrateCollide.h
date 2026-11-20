@@ -17,18 +17,18 @@ class SalvageCrateCollide : public CrateCollide
 {
 public:
 	SalvageCrateCollide(Thing *thing, const ModuleData *moduleData);	// 0x004BD1D7
-	virtual ~SalvageCrateCollide();										// 0x004BD207
-	virtual NameKeyType getModuleNameKey() const;						// 0x004BD220
+	virtual ~SalvageCrateCollide();
+	virtual NameKeyType getModuleNameKey() const;
 	virtual bool isSalvageCrateCollide() const { return true; }			// slot 5: the shared `mov al,1; ret` stub 0x0050B5C6
 
 private:
 	Int rollCrateOutcome();												// 0x004BD281: 2 level, 4 upgrade, else 3
 	void doLevelGainNearby(ObjectIterator *units);						// 0x004BD2D0 (placeholder row): one level for every unit the scan found
-	void doMoney(Object *other);										// 0x004BD342
+	void doMoney(Object *other);
 protected:
 	virtual void xfer(Xfer *xfer);										// slot 3, 0x004BD2F9: Version1, then CrateCollide's
-	virtual bool executeCrateBehavior(Object *other);					// 0x004BD442
-	virtual bool isValidToExecute(const Object *other) const;			// 0x004BD314
+	virtual bool executeCrateBehavior(Object *other);
+	virtual bool isValidToExecute(const Object *other) const;
 protected:
 	virtual const char *GetSnapshotName() const;	// 0x004BD201, primary slot 2; retail's table has this class's own
 protected:

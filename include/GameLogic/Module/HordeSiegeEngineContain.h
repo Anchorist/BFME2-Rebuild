@@ -73,7 +73,7 @@ public:
 	virtual Bool containSlot80() { return m_mineState; }
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	const char *name() const;						// 0x0047D081 (non-virtual, the literal)
+	const char *name() const;						// (non-virtual, the literal)
 	virtual void removeAllContained(Bool exposeStealthUnits);	// 0x0047CD98: ContainModuleInterface slot 42
 	virtual void iterateContained(ContainIterateFunc func, void *userData, UnsignedInt flags);	// 0x0047CEBB: slot 68
 	virtual ~HordeSiegeEngineContain();

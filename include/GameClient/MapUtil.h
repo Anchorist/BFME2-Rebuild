@@ -4,6 +4,7 @@
 #ifndef BFME2_MAPUTIL_H
 #define BFME2_MAPUTIL_H
 
+#include "Common/GameType.h"
 #include "Common/AsciiString.h"
 
 class GameInfo;
@@ -11,5 +12,7 @@ class GameWindow;
 
 void positionStartSpots(AsciiString mapName, GameWindow **buttonMapStartPositions, GameWindow *mapWindow, GameWindow *extra);	// 0x00303ED4
 void positionStartSpots(GameInfo *myGame, GameWindow **buttonMapStartPositions, GameWindow *mapWindow, GameWindow *extra);	// 0x00304259
+
+Bool Rva00300E42Check(GameInfo *game);										// 0x00300E42 (map-transfer eligibility check)
 
 #endif

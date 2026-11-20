@@ -20,9 +20,9 @@ public:
 	virtual void reset();	// slot 9, same clear routine as init
 	virtual void update() {}	// slot 10, empty 0x000B3FD0
 
-	EmotionTrackerUpdateEntry *findNugget(const AsciiString &name);	// 0x004264F4
-	void AddEmotionNuggetTemplate(EmotionTrackerUpdateEntry *entry);	// 0x00426580
-	void RegisterScaryObject(Object *object);	// 0x004265D9
+	EmotionTrackerUpdateEntry *findNugget(const AsciiString &name);
+	void AddEmotionNuggetTemplate(EmotionTrackerUpdateEntry *entry);
+	void RegisterScaryObject(Object *object);
 
 private:
 	_STL::vector<EmotionTrackerUpdateEntry *> m_templates;	// +0x0C, findNugget and AddEmotionNuggetTemplate

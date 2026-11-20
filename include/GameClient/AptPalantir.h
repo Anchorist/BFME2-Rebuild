@@ -21,6 +21,7 @@ public:
 	void OnBttnObserveNextPlayer(const char *name);
 	void OnBttnObservePriorPlayer(const char *name);
 	void OnBttnMessenger(const char *name);
+	void OnClosed(const char *name);	// 0x002D2FE3: hides the sidebar's Apt level and flags it closed
 	void update();
 	void xfer(Xfer *xfer);
 

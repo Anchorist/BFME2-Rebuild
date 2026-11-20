@@ -46,7 +46,7 @@ struct NewParticleStruct
 class ParticleBufferClass : public RenderObjClass
 {
 public:
-	ParticleBufferClass(const ParticleBufferClass &src);			// 0x001AD1B0
+	ParticleBufferClass(const ParticleBufferClass &src);
 	virtual ~ParticleBufferClass();									// slot 1: 0x001AD190 (deleting), body 0x001A80D0
 
 	virtual RenderObjClass *Clone() const;							// slot 2: 0x001AE470
@@ -72,40 +72,40 @@ public:
 	virtual void Scale(float scale);								// slot 92: 0x001A65E0
 	virtual bool Is_Complete();										// slot 122: 0x001A8510
 
-	int Get_Particle_Count() const;									// 0x001A65D0
-	void Emitter_Is_Dead();											// 0x001A6E60
-	void Set_Emitter(ParticleEmitterClass *emitter);				// 0x001A6E80
-	NewParticleStruct *Add_Uninitialized_New_Particle();			// 0x001A6EB0
+	int Get_Particle_Count() const;
+	void Emitter_Is_Dead();
+	void Set_Emitter(ParticleEmitterClass *emitter);
+	NewParticleStruct *Add_Uninitialized_New_Particle();
 
 	// The texture of the renderer in use (retail returns the handle through a hidden pointer: 0x001A7A60).
-	TextureAsset Get_Texture() const;							// 0x001A7A60
-	ShaderClass Get_Shader() const;									// 0x001A7B10
+	TextureAsset Get_Texture() const;
+	ShaderClass Get_Shader() const;
 	int Get_Render_Mode() const { return RenderMode; }
 	int Get_Frame_Mode() const { return FrameMode; }
 	float Get_Initial_Orientation_Random() const { return InitialOrientationRandom; }
-	float Get_Particle_Size() const;								// 0x001A6560
-	Vector3 Get_Acceleration() const;								// 0x001A09F0
-	float Get_Lifetime() const;										// 0x001A0A40
-	float Get_Future_Start_Time() const;							// 0x001A0A60
-	float Get_Fade_Time() const;									// 0x001A0A80
+	float Get_Particle_Size() const;
+	Vector3 Get_Acceleration() const;
+	float Get_Lifetime() const;
+	float Get_Future_Start_Time() const;
+	float Get_Fade_Time() const;
 	void Set_Current_GroupID(unsigned char grp) { CurrentGroupID = grp; }	// emitter's Start 0x001A1B20 inlines it (row 0x001A0AE0 is retail's separate copy)
 	unsigned int Get_Buffer_Size() const { return MaxNum; }
 
 	// Line rendering properties: default values when line rendering is not enabled.
-	int Get_Line_Texture_Mapping_Mode() const;						// 0x001A78F0
-	int Is_Merge_Intersections() const;								// 0x001A7910
-	int Is_Freeze_Random() const;									// 0x001A7930
-	int Is_Sorting_Disabled() const;								// 0x001A7950
-	int Are_End_Caps_Enabled() const;								// 0x001A7970
-	int Get_Subdivision_Level() const;								// 0x001A7990
-	float Get_Noise_Amplitude() const;								// 0x001A79B0
-	float Get_Merge_Abort_Factor() const;							// 0x001A79D0
-	float Get_Texture_Tile_Factor() const;							// 0x001A79F0
-	Vector2 Get_UV_Offset_Rate() const;								// 0x001A7A10
+	int Get_Line_Texture_Mapping_Mode() const;
+	int Is_Merge_Intersections() const;
+	int Is_Freeze_Random() const;
+	int Is_Sorting_Disabled() const;
+	int Are_End_Caps_Enabled() const;
+	int Get_Subdivision_Level() const;
+	float Get_Noise_Amplitude() const;
+	float Get_Merge_Abort_Factor() const;
+	float Get_Texture_Tile_Factor() const;
+	Vector2 Get_UV_Offset_Rate() const;
 
 	// Global control of particle LOD.
-	static void Set_LOD_Max_Screen_Size(int lod_level, float max_screen_size);	// 0x001A78B0
-	static float Get_LOD_Max_Screen_Size(int lod_level);						// 0x001A78D0
+	static void Set_LOD_Max_Screen_Size(int lod_level, float max_screen_size);
+	static float Get_LOD_Max_Screen_Size(int lod_level);
 
 protected:
 	virtual void Update_Cached_Bounding_Volumes() const;			// slot 127: 0x001AF4D0 (protected in retail: ?M mangling)
@@ -117,17 +117,17 @@ protected:
 		SAME_AS_HEAD_ALPHA_ZERO
 	};
 
-	void Render_Particles(RenderInfoClass &rinfo);					// 0x001AEF10
-	void Render_Line(RenderInfoClass &rinfo);						// 0x001AE4D0
-	void Render_Line_Group(RenderInfoClass &rinfo);					// 0x001AF060
-	void Update_Kinematic_Particle_State();							// 0x001AEC30
-	void Update_Visual_Particle_State();							// 0x001AA680
-	void Update_Bounding_Box();										// 0x001AECA0
-	void Combine_Color_And_Alpha();									// 0x001A8630
-	void Get_New_Particles();										// 0x001AB340
-	void Kill_Old_Particles();										// 0x001A6F20
-	void Update_Non_New_Particles(unsigned int elapsed);			// 0x001AB670
-	TailDiffuseTypeEnum Determine_Tail_Diffuse();					// 0x001AC5D0
+	void Render_Particles(RenderInfoClass &rinfo);
+	void Render_Line(RenderInfoClass &rinfo);
+	void Render_Line_Group(RenderInfoClass &rinfo);
+	void Update_Kinematic_Particle_State();
+	void Update_Visual_Particle_State();
+	void Update_Bounding_Box();
+	void Combine_Color_And_Alpha();
+	void Get_New_Particles();
+	void Kill_Old_Particles();
+	void Update_Non_New_Particles(unsigned int elapsed);
+	TailDiffuseTypeEnum Determine_Tail_Diffuse();
 
 	NewParticleStruct *NewParticleQueue;				// +0xC4 the emitter's circular queue
 	unsigned int NewParticleQueueStart;					// +0xC8

@@ -9,6 +9,7 @@ enum LegalBuildCode;
 class Coord3D;
 class Object;
 class ObjectSellInfo;
+class Xfer;
 class Player;
 class Rva0039205C;
 class ThingTemplate;
@@ -46,6 +47,7 @@ public:
 	// Checks whether the factory's command set offers this template.
 	bool offersBuildCommand(const ThingTemplate *builder, const ThingTemplate *whatToBuild);
 	bool isRemovableForConstruction(Object *);
+	void xferTheSellList(Xfer *xfer);	// 0x003924FE: the list of objects being sold
 
 private:
 	// canMakeUnit passes this record through the object visitor.

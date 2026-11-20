@@ -21,23 +21,23 @@ struct LODPresetInfo {
 };
 class GameLODManager {
 public:
-    void rva00202244(int level, OptionPreferences *out);	// 0x00202244: fills the preferences with the settings of a static detail level (AptOptions 0x0051889D)
+    void rva00202244(int level, OptionPreferences *out);	// Fills the preferences with the settings of a static detail level (AptOptions 0x0051889D)
     LODPresetInfo *newLODPreset(StaticGameLODLevel);
     const char *getDynamicGameLODLevelName(DynamicGameLODLevel);
     const char *getAudioLODLevelName(int);
     int findAudioLODLevel() const;
     struct BenchProfile { int m_cpuType; int m_mhz; float m_intBenchIndex; float m_floatBenchIndex; float m_memBenchIndex; };
-    BenchProfile *newBenchProfile();		// 0x0020200D (map class RetailBenchProfileAllocator): the next of sixteen records at +0x1628 (count at +0x17C0), or 0
-    int rva00202613(float fps);			// 0x00202613 the highest dynamic level whose MinimumFPS is below fps, else 0
-    void rva00202633(int level);		// 0x00202633 copies dynamic record `level` into the current settings
+    BenchProfile *newBenchProfile();		// (map class RetailBenchProfileAllocator): the next of sixteen records at +0x1628 (count at +0x17C0), or 0
+    int rva00202613(float fps);			// The highest dynamic level whose MinimumFPS is below fps, else 0
+    void rva00202633(int level);		// Copies dynamic record `level` into the current settings
     unsigned char get() const;			// 0x002026C7 the byte at +0x17AA (the map spells the class Rva002026C7ByteField)
-    bool rva00202739(int level);		// 0x00202739 changes the static level (applies it through rva002022E9)
-    bool rva0020276C(int level);		// 0x0020276C changes the dynamic level
-    void rva00202790(int level);		// 0x00202790 changes the audio level (0 or 1)
-    void rva002022E9(int level);		// 0x002022E9 applies a static level (not written here)
-    int rva00202B6C(AsciiString name);	// 0x00202B6C the index of a static level name in the six-entry table at VA 0x00DB95F4, else -1
-    int getAudioLODIndex(const AsciiString &name); // 0x00202C76; OptionPreferences::getAudioLOD 0x002E4767 passes the AudioLOD value
-    int getStaticGameLODIndex(AsciiString name); // 0x00202C30, by value (the caller's copy is released at its end)
+    bool rva00202739(int level);		// Changes the static level (applies it through rva002022E9)
+    bool rva0020276C(int level);		// Changes the dynamic level
+    void rva00202790(int level);		// Changes the audio level (0 or 1)
+    void rva002022E9(int level);		// Applies a static level (not written here)
+    int rva00202B6C(AsciiString name);	// The index of a static level name in the six-entry table at VA 0x00DB95F4, else -1
+    int getAudioLODIndex(const AsciiString &name); // OptionPreferences::getAudioLOD 0x002E4767 passes the AudioLOD value
+    int getStaticGameLODIndex(AsciiString name); // By value (the caller's copy is released at its end)
     unsigned char m_unk0x0[0x1C8];
     // The five dynamic-level records at +0x1C8, 0x10 bytes each: the table at VA 0x00BE3478 parses MinimumFPS (+0x0),
     // ParticleSkipMask (+0x4), DebrisSkipMask (+0x8) and SlowDeathScale (+0xC) into them.

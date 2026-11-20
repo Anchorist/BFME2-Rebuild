@@ -110,6 +110,20 @@ void ShellMenuScheme::addImage(ShellMenuSchemeImage *schemeImage)
 }
 
 // FUNCTION: BFME2 0x00200842 size=81 name=?parseImagePart@ShellMenuSchemeManager@@SAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=B hypothesis:K
+void ShellMenuSchemeManager::parseImagePart(INI *ini, void *instance, void *store, const void *userData)
+{
+	static const FieldParse imageFieldParse[] =
+	{
+		{ "Position", INI::parseICoord2D, NULL, offsetof(ShellMenuSchemeImage, m_position) },
+		{ "Size", INI::parseICoord2D, NULL, offsetof(ShellMenuSchemeImage, m_size) },
+		{ "ImageName", INI::parseMappedImage, NULL, offsetof(ShellMenuSchemeImage, m_image) },
+		{ NULL, NULL, NULL, 0 }
+	};
+
+	ShellMenuSchemeImage *schemeImage = new ShellMenuSchemeImage;
+	ini->initFromINI(schemeImage, imageFieldParse);
+	((ShellMenuScheme *)instance)->addImage(schemeImage);
+}
 
 // FUNCTION: BFME2 0x00200893 size=53 name=?Rva00200893Parse@@YAXPAVINI@@PAX1PBX@Z evidence=?:placeholder tier=B hypothesis:K
 

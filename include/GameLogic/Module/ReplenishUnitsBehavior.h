@@ -35,11 +35,11 @@ public:
 	virtual void upgradeRemovalImplementation();
 	virtual void upgradeImplementation();
 	virtual NameKeyType getModuleNameKey() const;
-	virtual UpdateSleepTime update();	// 0x0048438A (UpdateModuleInterface slot 0)
+	virtual UpdateSleepTime update();	// (UpdateModuleInterface slot 0)
 	virtual DisabledMaskType getDisabledTypesToProcess() const { return DisabledMaskType(DisabledMaskType::kInit, 3); }	// UpdateModuleInterface slot 1 (table 0x00849F68): the shared DISABLED_HELD body 0x004A2D67
 	virtual const char *GetSnapshotName() const;
 	virtual ~ReplenishUnitsBehavior();
-	void rva004842DD(Object *replenished);	// 0x004842DD: replenish one object (FX, rider reset)
+	void rva004842DD(Object *replenished);	// Replenish one object (FX, rider reset)
 
 protected:
 	virtual void getUpgradeActivationMasks(UpgradeMaskType &activation, UpgradeMaskType &conflicting) const;

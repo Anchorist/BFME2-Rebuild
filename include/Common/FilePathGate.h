@@ -9,7 +9,7 @@
 class FilePathGate
 {
 public:
-	bool allow(const char *filename);	// 0x00600AE5
+	bool allow(const char *filename);
 };
 
 extern FilePathGate *TheFilePathGate;

@@ -661,13 +661,32 @@ AIGroup::~AIGroup()
 }
 
 // FUNCTION: BFME2 0x0036E5F1 size=103 name=?add@AIGroup@@QAEXPAVObject@@@Z evidence=N:ledger tier=A
+void AIGroup::add(Object *obj)
+{
+	if (obj == NULL)
+		return;
+
+	AIUpdateInterface *ai = obj->m_ai;
+
+	// Only objects with an AI, or structures, spell books and always-selectable objects, may join a group.
+	KindOfMaskType groupable;
+	groupable.set(KINDOF_STRUCTURE);
+	groupable.set(KINDOF_SPELL_BOOK);
+	groupable.set(KINDOF_ALWAYS_SELECTABLE);
+	if (ai == NULL && !obj->isAnyKindOf(groupable))
+		return;
+
+	m_memberList.push_back(obj);
+	obj->enterGroup(this);
+	m_dirty = true;
+}
 
 // FUNCTION: BFME2 0x0036E658 size=658 name=?groupDoSpecialPowerAtObject@AIGroup@@QAEXIPAVObject@@IW4CommandSourceType@@@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x0036E906 size=121 name=?aiMoveToPositionAndFaceDirection@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@M@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiMoveToPositionAndFaceDirection(Coord3D const *pos, CommandSourceType cmdSource, Real facing)
 {
-	AICommandParms parms((AICommandType)0x4E, cmdSource);
+	AICommandParms parms(AICMD_MOVE_TO_POSITION_AND_FACE_DIRECTION, cmdSource);
 	parms.m_pos = *pos;
 	parms.m_facing = facing;
 	aiDoCommand(&parms);
@@ -676,7 +695,7 @@ void AICommandInterface::aiMoveToPositionAndFaceDirection(Coord3D const *pos, Co
 // FUNCTION: BFME2 0x0036E97F size=130 name=?aiAttackMoveToPositionAndFaceDirection@AICommandInterface@@QAEXPBVCoord3D@@HW4CommandSourceType@@M@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiAttackMoveToPositionAndFaceDirection(Coord3D const *pos, Int extra, CommandSourceType cmdSource, Real facing)
 {
-	AICommandParms parms((AICommandType)0x51, cmdSource);
+	AICommandParms parms(AICMD_ATTACK_MOVE_TO_POSITION_AND_FACE_DIRECTION, cmdSource);
 	parms.m_pos = *pos;
 	parms.m_extraInt = extra;
 	parms.m_facing = facing;
@@ -686,7 +705,7 @@ void AICommandInterface::aiAttackMoveToPositionAndFaceDirection(Coord3D const *p
 // FUNCTION: BFME2 0x0036EA01 size=115 name=?aiMoveToPositionAmphibious@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiMoveToPositionAmphibious(Coord3D const *pos, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x52, cmdSource);
+	AICommandParms parms(AICMD_MOVE_TO_POSITION_AMPHIBIOUS, cmdSource);
 	parms.m_pos = *pos;
 	parms.m_extraInt = 0;
 	aiDoCommand(&parms);
@@ -695,7 +714,7 @@ void AICommandInterface::aiMoveToPositionAmphibious(Coord3D const *pos, CommandS
 // FUNCTION: BFME2 0x0036EA74 size=108 name=?aiTightenToPosition@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiTightenToPosition(Coord3D const *pos, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)2, cmdSource);
+	AICommandParms parms(AICMD_TIGHTEN_TO_POSITION, cmdSource);
 	parms.m_pos = *pos;
 	aiDoCommand(&parms);
 }
@@ -703,7 +722,7 @@ void AICommandInterface::aiTightenToPosition(Coord3D const *pos, CommandSourceTy
 // FUNCTION: BFME2 0x0036EAE0 size=108 name=?aiMoveToAndEvacuate@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiMoveToAndEvacuate(Coord3D const *pos, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)3, cmdSource);
+	AICommandParms parms(AICMD_MOVE_TO_AND_EVACUATE, cmdSource);
 	parms.m_pos = *pos;
 	aiDoCommand(&parms);
 }
@@ -711,7 +730,7 @@ void AICommandInterface::aiMoveToAndEvacuate(Coord3D const *pos, CommandSourceTy
 // FUNCTION: BFME2 0x0036EB4C size=108 name=?aiMoveToAndEvacuateAndExit@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiMoveToAndEvacuateAndExit(Coord3D const *pos, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)4, cmdSource);
+	AICommandParms parms(AICMD_MOVE_TO_AND_EVACUATE_AND_EXIT, cmdSource);
 	parms.m_pos = *pos;
 	aiDoCommand(&parms);
 }
@@ -735,7 +754,7 @@ void AICommandInterface::rva0036EC1D(Object *target, CommandSourceType cmdSource
 // FUNCTION: BFME2 0x0036EC82 size=101 name=?aiFollowWaypointPath@AICommandInterface@@QAEXPBVWaypoint@@W4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiFollowWaypointPath(Waypoint const *waypoint, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)6, cmdSource);
+	AICommandParms parms(AICMD_FOLLOW_WAYPOINT_PATH, cmdSource);
 	parms.m_waypoint = waypoint;
 	aiDoCommand(&parms);
 }
@@ -743,7 +762,7 @@ void AICommandInterface::aiFollowWaypointPath(Waypoint const *waypoint, CommandS
 // FUNCTION: BFME2 0x0036ECE7 size=101 name=?aiFollowWaypointPathExact@AICommandInterface@@QAEXPBVWaypoint@@W4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiFollowWaypointPathExact(Waypoint const *waypoint, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x32, cmdSource);
+	AICommandParms parms(AICMD_FOLLOW_WAYPOINT_PATH_EXACT, cmdSource);
 	parms.m_waypoint = waypoint;
 	aiDoCommand(&parms);
 }
@@ -751,7 +770,7 @@ void AICommandInterface::aiFollowWaypointPathExact(Waypoint const *waypoint, Com
 // FUNCTION: BFME2 0x0036ED4C size=101 name=?aiFollowWaypointPathAsTeam@AICommandInterface@@QAEXPBVWaypoint@@W4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiFollowWaypointPathAsTeam(Waypoint const *waypoint, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)7, cmdSource);
+	AICommandParms parms(AICMD_FOLLOW_WAYPOINT_PATH_AS_TEAM, cmdSource);
 	parms.m_waypoint = waypoint;
 	aiDoCommand(&parms);
 }
@@ -773,7 +792,7 @@ void AICommandInterface::aiBfmeCommand33(Waypoint const *waypoint, CommandSource
 // FUNCTION: BFME2 0x0036EF89 size=108 name=?aiFollowPathAppend@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiFollowPathAppend(Coord3D const *pos, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x35, cmdSource);
+	AICommandParms parms(AICMD_FOLLOW_PATH_APPEND, cmdSource);
 	parms.m_pos = *pos;
 	aiDoCommand(&parms);
 }
@@ -789,7 +808,7 @@ void AICommandInterface::rva0036EFF5(Object *target, CommandSourceType cmdSource
 // FUNCTION: BFME2 0x0036F05A size=110 name=?aiForceAttackObject@AICommandInterface@@QAEXPAVObject@@HW4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiForceAttackObject(Object *target, int extra, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0xC, cmdSource);
+	AICommandParms parms(AICMD_FORCE_ATTACK_OBJECT, cmdSource);
 	parms.m_object = target;
 	parms.m_extraInt = extra;
 	aiDoCommand(&parms);
@@ -798,7 +817,7 @@ void AICommandInterface::aiForceAttackObject(Object *target, int extra, CommandS
 // FUNCTION: BFME2 0x0036F0C8 size=110 name=?aiAttackTeam@AICommandInterface@@QAEXPBVTeam@@HW4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiAttackTeam(Team const *team, int extra, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0xD, cmdSource);
+	AICommandParms parms(AICMD_ATTACK_TEAM, cmdSource);
 	parms.m_team = team;
 	parms.m_extraInt = extra;
 	aiDoCommand(&parms);
@@ -807,7 +826,7 @@ void AICommandInterface::aiAttackTeam(Team const *team, int extra, CommandSource
 // FUNCTION: BFME2 0x0036F136 size=101 name=?aiAttackArea@AICommandInterface@@QAEXPBVPolygonTrigger@@W4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiAttackArea(PolygonTrigger const *area, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x23, cmdSource);
+	AICommandParms parms(AICMD_ATTACK_AREA, cmdSource);
 	parms.m_area = area;
 	aiDoCommand(&parms);
 }
@@ -823,7 +842,7 @@ void AICommandInterface::rva0036F19B(Object *target, CommandSourceType cmdSource
 // FUNCTION: BFME2 0x0036F200 size=101 name=?aiResumeConstruction@AICommandInterface@@QAEXPAVObject@@W4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiResumeConstruction(Object *target, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x14, cmdSource);
+	AICommandParms parms(AICMD_RESUME_CONSTRUCTION, cmdSource);
 	parms.m_object = target;
 	aiDoCommand(&parms);
 }
@@ -831,7 +850,7 @@ void AICommandInterface::aiResumeConstruction(Object *target, CommandSourceType 
 // FUNCTION: BFME2 0x0036F265 size=101 name=?aiGetHealed@AICommandInterface@@QAEXPAVObject@@W4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiGetHealed(Object *target, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x15, cmdSource);
+	AICommandParms parms(AICMD_GET_HEALED, cmdSource);
 	parms.m_object = target;
 	aiDoCommand(&parms);
 }
@@ -839,7 +858,7 @@ void AICommandInterface::aiGetHealed(Object *target, CommandSourceType cmdSource
 // FUNCTION: BFME2 0x0036F2CA size=101 name=?aiGetRepaired@AICommandInterface@@QAEXPAVObject@@W4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiGetRepaired(Object *target, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x16, cmdSource);
+	AICommandParms parms(AICMD_GET_REPAIRED, cmdSource);
 	parms.m_object = target;
 	aiDoCommand(&parms);
 }
@@ -847,7 +866,7 @@ void AICommandInterface::aiGetRepaired(Object *target, CommandSourceType cmdSour
 // FUNCTION: BFME2 0x0036F32F size=108 name=?aiHarvest@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiHarvest(Coord3D const *pos, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x19, cmdSource);
+	AICommandParms parms(AICMD_HARVEST, cmdSource);
 	parms.m_pos = *pos;
 	aiDoCommand(&parms);
 }
@@ -855,7 +874,7 @@ void AICommandInterface::aiHarvest(Coord3D const *pos, CommandSourceType cmdSour
 // FUNCTION: BFME2 0x0036F39B size=101 name=?aiExit@AICommandInterface@@QAEXPAVObject@@W4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiExit(Object *target, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x1A, cmdSource);
+	AICommandParms parms(AICMD_EXIT, cmdSource);
 	parms.m_object = target;
 	aiDoCommand(&parms);
 }
@@ -865,7 +884,7 @@ void AICommandInterface::aiExit(Object *target, CommandSourceType cmdSource)
 // its copy is DamageInfo's assignment 0x003427DD into the parms' DamageInfo at +0x3C.
 void AICommandInterface::aiGoProne(Rva003427DD const *damage, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x1D, cmdSource);
+	AICommandParms parms(AICMD_GO_PRONE, cmdSource);
 	parms.m_damage = *reinterpret_cast<const DamageInfo *>(damage);
 	aiDoCommand(&parms);
 }
@@ -873,7 +892,7 @@ void AICommandInterface::aiGoProne(Rva003427DD const *damage, CommandSourceType 
 // FUNCTION: BFME2 0x0036F46A size=117 name=?aiGuardPosition@AICommandInterface@@QAEXPBVCoord3D@@W4GuardMode@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiGuardPosition(Coord3D const *pos, GuardMode mode, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x1E, cmdSource);
+	AICommandParms parms(AICMD_GUARD_POSITION, cmdSource);
 	parms.m_pos = *pos;
 	parms.m_extraInt = mode;
 	aiDoCommand(&parms);
@@ -882,7 +901,7 @@ void AICommandInterface::aiGuardPosition(Coord3D const *pos, GuardMode mode, Com
 // FUNCTION: BFME2 0x0036F4DF size=110 name=?aiGuardObject@AICommandInterface@@QAEXPAVObject@@HW4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiGuardObject(Object *target, int mode, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x1F, cmdSource);
+	AICommandParms parms(AICMD_GUARD_OBJECT, cmdSource);
 	parms.m_object = target;
 	parms.m_extraInt = mode;
 	aiDoCommand(&parms);
@@ -900,7 +919,7 @@ void AICommandInterface::rva0036F54D(Team const *team, int extra, CommandSourceT
 // FUNCTION: BFME2 0x0036F5BB size=110 name=?aiGuardArea@AICommandInterface@@QAEXPBVPolygonTrigger@@HW4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AICommandInterface::aiGuardArea(PolygonTrigger const *area, int mode, CommandSourceType cmdSource)
 {
-	AICommandParms parms((AICommandType)0x21, cmdSource);
+	AICommandParms parms(AICMD_GUARD_AREA, cmdSource);
 	parms.m_area = area;
 	parms.m_extraInt = mode;
 	aiDoCommand(&parms);
@@ -909,7 +928,7 @@ void AICommandInterface::aiGuardArea(PolygonTrigger const *area, int mode, Comma
 // FUNCTION: BFME2 0x0036F629 size=126 name=?aiGuardAreaFromPosition@AICommandInterface@@QAEXPBVPolygonTrigger@@HW4CommandSourceType@@PBVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void AICommandInterface::aiGuardAreaFromPosition(PolygonTrigger const *area, int mode, CommandSourceType cmdSource, Coord3D const *pos)
 {
-	AICommandParms parms((AICommandType)0x44, cmdSource);
+	AICommandParms parms(AICMD_GUARD_AREA_FROM_POSITION, cmdSource);
 	parms.m_area = area;
 	parms.m_extraInt = mode;
 	parms.m_pos = *pos;

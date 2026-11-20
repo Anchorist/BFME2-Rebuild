@@ -8,6 +8,10 @@
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
 // FUNCTION: BFME2 0x004CC988 size=49 name=??0DominateEnemySpecialPower@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+DominateEnemySpecialPower::DominateEnemySpecialPower(Thing *thing, const ModuleData *moduleData)
+	: SpecialAbilityUpdate(thing, moduleData)
+{
+}
 // FUNCTION: BFME2 0x004CC9B9 size=6 name=?Rva004CC9B9Get@@YAHXZ evidence=?:placeholder
 const char *DominateEnemySpecialPower::GetSnapshotName() const
 {

@@ -46,7 +46,7 @@ class OCLSpecialPowerModuleData : public SpecialPowerModuleData
 public:
 	OCLSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
-	virtual ~OCLSpecialPowerModuleData();		// 0x004C37C0
+	virtual ~OCLSpecialPowerModuleData();
 	static void parseUpgradeName(INI *ini, void *instance, void *store, const void *userData);	// 0x004C3859 (map: placeholder INI::Rva004C3859_ParseUpgradeName)
 
 	_STL::vector<OCLUpgradeEntry> m_upgradeOCL;            // +0x7C UpgradeOCL (INI::Rva004C381C_ParseUpgradeOCL); findOCL 0x004C31A8 reads begin +0x7C, end +0x80

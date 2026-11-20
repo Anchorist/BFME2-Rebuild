@@ -3,7 +3,7 @@
 class AudioEventInfo;
 class AudioEventRTS;
 class PooledAudioEventRTS;
-// Counted info reference: twenty compiled views agree on one pointer.
+// Counted info reference: one pointer.
 // Constructor51914 retains pointee+4; copyA8C7C and destructor10F149 use
 // the same counter. Original spelling is not independently recovered.
 class AudioEventInfoRef

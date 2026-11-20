@@ -13,7 +13,7 @@
 class W3DSupplyDraw : public W3DScriptedModelDraw
 {
 public:
-	W3DSupplyDraw(Thing *thing, const ModuleData *moduleData);				// 0x000CAE43
+	W3DSupplyDraw(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;							// 4: 0x000CAE7B
 	virtual void updateDrawModuleSupplyStatus(Int maxSupply, Int currentSupply);	// ObjectDrawInterface 8: 0x000CAFA6
 

@@ -436,7 +436,7 @@ AptScriptFunctionBase *AptScriptFunction2::Duplicate(AptCIH *cih)
 }
 
 
-// The constructor the DefineFunction action runs (retail 0x00709B90, 28 bytes + the table store; no skeleton line): the base with type 0x2B and the
+// The constructor the DefineFunction action runs (retail 0x00709B90, 28 bytes + the table store): the base with type 0x2B and the
 // "counted parent" flag, then the table and the record.
 AptScriptFunction1::AptScriptFunction1(AptScriptFunctionBase *parent, const AptAction_DefineFunction *record, AptCIH *cih)
     : AptScriptFunctionBase(AptVFT_ScriptFunction1, parent, cih, true)
@@ -444,7 +444,7 @@ AptScriptFunction1::AptScriptFunction1(AptScriptFunctionBase *parent, const AptA
     mpFunction = record;
 }
 
-// The constructor of the raw byte-code function (retail 0x0070A2C0, 71 bytes; the compiler-generated row of this file, no skeleton line): the base
+// The constructor of the raw byte-code function (retail 0x0070A2C0, 71 bytes; the compiler-generated row of this file): the base
 // constructor with type 0x2D and the flag clear, then the code, size, name and constant pool.
 AptScriptFunctionByteCodeBlock::AptScriptFunctionByteCodeBlock(const unsigned char *code, int size, AptConstantPool constantPool,
     const char *name, AptCIH *cih, AptScriptFunctionBase *parent)
@@ -453,7 +453,7 @@ AptScriptFunctionByteCodeBlock::AptScriptFunctionByteCodeBlock(const unsigned ch
 {
 }
 
-// The body of the row at 0x00709BE0 (size 7; the skeleton line above still carries the superseded ledger name): the code size field of the
+// The body of the row at 0x00709BE0 (size 7; the FUNCTION line above still carries the superseded ledger name): the code size field of the
 // DefineFunction record. It sits here, after the rows it would otherwise precede, because a definition earlier in the file changes the register
 // order of AptScriptFunction2::SetupBeforeExecution (0x0070A040).
 unsigned int AptScriptFunction1::GetByteCodeSize()

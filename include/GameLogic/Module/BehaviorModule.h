@@ -1,6 +1,5 @@
 // BehaviorModule.h: SAGE BehaviorModuleInterface and BehaviorModule. SIZE 0x10.
-// Target facts (old repo Code/GameEngine/Include/GameLogic/Module/BehaviorModule.h,
-// reverse/class_contracts/BehaviorModule.json, re-read from the image):
+// Target facts (re-read from the image):
 // ??0BehaviorModule (0x00253330) calls ??0ObjectModule, stores the interface's
 // own 47-purecall table 0x00BEE900 and its BehaviorModule table 0x00BEE9C0 at
 // +0x0C and the primary 0x00BEEA7C at +0. The interface has exactly 47 slots and

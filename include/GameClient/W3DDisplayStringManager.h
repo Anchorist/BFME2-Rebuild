@@ -20,14 +20,14 @@ public:
 	enum { MAX_GROUPS = 10 };
 
 	W3DDisplayStringManager();														// 0x00090360
-	virtual ~W3DDisplayStringManager();												// 0x0009045E
+	virtual ~W3DDisplayStringManager();
 
-	virtual void postProcessLoad();													// 0x000904CA (slot 3)
-	virtual void reset();															// 0x00090430
-	virtual void update();															// 0x000903B0
-	virtual DisplayString *newDisplayString();										// 0x000905F0
-	virtual void freeDisplayString(DisplayString *string);							// 0x00090381
-	virtual DisplayString *getGroupNumeralString(int numeral);						// 0x00090417
+	virtual void postProcessLoad();													// (slot 3)
+	virtual void reset();
+	virtual void update();
+	virtual DisplayString *newDisplayString();
+	virtual void freeDisplayString(DisplayString *string);
+	virtual DisplayString *getGroupNumeralString(int numeral);
 	virtual DisplayString *getFormationLetterDisplayString() { return m_formationLetterDisplayString; }	// 0x005C4AF1
 
 protected:

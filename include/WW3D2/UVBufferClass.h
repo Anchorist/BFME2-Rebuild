@@ -19,7 +19,7 @@ public:
 	UVBufferClass(const UVBufferClass &that) : ShareBufferClass<Vector2>(that), CRC(that.CRC) {}
 
 	bool operator==(const UVBufferClass &that);				// 0x0015A160 (out of line in retail)
-	void Update_CRC(void);							// 0x0015B460
+	void Update_CRC(void);
 	unsigned int Get_CRC(void) { return CRC; }
 
 private:

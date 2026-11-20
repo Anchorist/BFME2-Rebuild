@@ -19,7 +19,6 @@ class GameFont;
 class ModalWindow;
 // SIZE0x40: allocation0x0004C4C7, base ctor0x002C5334.
 // Primary0..13 from SubsystemInterface, W3D table RVA0x007C7C90 gives0..77.
-// Named calls agree across old canonical header and 32 synthesized views.
 // Slots41/44/50/69 follow ZH names with target traversal/list/store/draw bodies.
 // Slots74..76 are virtual in both retail tables despite old map QAE spellings.
 // W3D targets8FCE3..8FEDE set factories then call the named base gadgets.

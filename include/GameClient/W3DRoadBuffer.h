@@ -91,12 +91,12 @@ protected:
 	SphereClass m_bounds;		// +0xAC
 public:
 	RoadSegment();						// 0x000D6C35
-	~RoadSegment();						// 0x000D44B4
-	void SetVertexBuffer(VertexFormatXYZDUV1 *vb, int numVertex);	// 0x000D6CE2
-	void SetIndexBuffer(unsigned short *ib, int numIndex);	// 0x000D454F
-	int GetIndices(unsigned short *destination_ib, int numToCopy, int offset);	// 0x000D45D6
-	void GetRoadSegInfo(TRoadSegInfo *pInfo);				// 0x000D7D8E
-	void updateSegLighting();									// 0x000D4613
+	~RoadSegment();
+	void SetVertexBuffer(VertexFormatXYZDUV1 *vb, int numVertex);
+	void SetIndexBuffer(unsigned short *ib, int numIndex);
+	int GetIndices(unsigned short *destination_ib, int numToCopy, int offset);
+	void GetRoadSegInfo(TRoadSegInfo *pInfo);
+	void updateSegLighting();
 };
 // SIZE 0xBC
 typedef char RoadSegmentSize[(sizeof(RoadSegment) == 0xBC) ? 1 : -1];
@@ -128,8 +128,8 @@ class W3DRoadBuffer
 	friend class BaseHeightMapRenderObjClass;
 
 public:
-	void loadRoads();										// 0x000DD71C loads the roads from the map objects list.
-	void updateLighting();									// 0x000D4A4B updates the diffuse lighting in the buffers.
+	void loadRoads();										// Loads the roads from the map objects list.
+	void updateLighting();									// Updates the diffuse lighting in the buffers.
 
 protected:
 	RoadType *m_roadTypes;			// +0x00
@@ -149,41 +149,41 @@ protected:
 	bool m_updateBuffers;			// +0x4C if true, update the vertex buffers.
 	bool m_unk0x4D;					// +0x4D set to true by the constructor
 
-	void addMapObjects(void);								// 0x000DD47D
-	void adjustStacking(int topUniqueID, int bottomUniqueID);	// 0x000D4941
-	void insertCrossTypeJoins(void);						// 0x000DB0EE
-	void insertTee(Vector2 loc, int index1, Real scale);	// 0x000DA2B2
-	bool insertY(Vector2 loc, int index1, Real scale);	// 0x000D6E2C
-	int findCrossTypeJoinVector(Vector2 loc, Vector2 *joinVector, int uniqueID);	// 0x000DAE48
-	void miter(int ndx1, int ndx2);	// 0x000DB6A3
-	void insert4Way(Vector2 loc, int index1, Real scale);	// 0x000D60A0
-	void insertCurveSegmentAt(int ndx1, int ndx2);			// 0x000DB8DA
-	void moveRoadSegTo(int fromNdx, int toNdx);				// 0x000D9B48
-	void checkLinkAfter(int ndx);							// 0x000D9DAB
-	void checkLinkBefore(int ndx);							// 0x000D9C22
+	void addMapObjects(void);
+	void adjustStacking(int topUniqueID, int bottomUniqueID);
+	void insertCrossTypeJoins(void);
+	void insertTee(Vector2 loc, int index1, Real scale);
+	bool insertY(Vector2 loc, int index1, Real scale);
+	int findCrossTypeJoinVector(Vector2 loc, Vector2 *joinVector, int uniqueID);
+	void miter(int ndx1, int ndx2);
+	void insert4Way(Vector2 loc, int index1, Real scale);
+	void insertCurveSegmentAt(int ndx1, int ndx2);
+	void moveRoadSegTo(int fromNdx, int toNdx);
+	void checkLinkAfter(int ndx);
+	void checkLinkBefore(int ndx);
 	void flipTheRoad(RoadSegment *pRoad) { TRoadPt tmp = pRoad->m_pt1; pRoad->m_pt1 = pRoad->m_pt2; pRoad->m_pt2 = tmp; }	// flips the loc1 and loc2 info
-	void updateCounts(RoadSegment *pRoad);					// 0x000D5149
-	void offset3Way(TRoadPt *pc1, TRoadPt *pc2, TRoadPt *pc3, Vector2 loc, Vector2 upVector, Vector2 teeVector, Real widthInTexture);	// 0x000D54D1
-	void offsetH(TRoadPt *pc1, TRoadPt *pc2, TRoadPt *pc3, Vector2 loc, Vector2 upVector, Vector2 teeVector, Bool flip, Bool mirror, Real widthInTexture);	// 0x000D5718
-	void offsetY(TRoadPt *pc1, TRoadPt *pc2, TRoadPt *pc3, Vector2 loc, Vector2 upVector, Real widthInTexture);	// 0x000D5A56
-	void offset4Way(TRoadPt *pc1, TRoadPt *pc2, TRoadPt *pc3, TRoadPt *pr3, TRoadPt *pc4, Vector2 loc, Vector2 alignVector, Real widthInTexture);	// 0x000D5D10
-	void rotateAbout(Vector2 *ptP, Vector2 center, Real angle);	// 0x000D6911
-	void updateCountsAndFlags(void);						// 0x000D52EA
-	void insertCurveSegments(void);							// 0x000DCFD4
-	void insertTeeIntersections(void);						// 0x000DAD62
-	void preloadRoadsInVertexAndIndexBuffers(void);			// 0x000DD27B fills the index and vertex buffers for drawing.
-	void preloadRoadSegment(RoadSegment *pRoad);			// 0x000D9905
-	void loadCurve(RoadSegment *pRoad, Vector2 loc1, Vector2 loc2, Real scale);	// 0x000D943F
-	void loadFloatSection(RoadSegment *pRoad, Vector2 loc, Vector2 roadVector, Real halfHeight, Real left, Real right, Real uOffset, Real vOffset, Real scale);	// 0x000DCD61
-	void loadFloat4PtSection(RoadSegment *pRoad, Vector2 loc, Vector2 roadNormal, Vector2 roadVector, Vector2 *cornersP, Real uOffset, Real vOffset, Real uScale, Real vScale);	// 0x000D7DCE
-	void loadTee(RoadSegment *pRoad, Vector2 loc1, Vector2 loc2, bool is4way, Real scale);	// 0x000DD100
-	void loadY(RoadSegment *pRoad, Vector2 loc1, Vector2 loc2, Real scale);	// 0x000DC81C
-	void loadAlphaJoin(RoadSegment *pRoad, Vector2 loc1, Vector2 loc2, Real scale);	// 0x000DC5CB
-	void loadH(RoadSegment *pRoad, Vector2 loc1, Vector2 loc2, bool flip, Real scale);	// 0x000DCA8B
-	bool visibilityChanged(const IRegion2D &bounds);		// 0x000D477C returns true if some roads are now visible that weren't, or vice versa.
+	void updateCounts(RoadSegment *pRoad);
+	void offset3Way(TRoadPt *pc1, TRoadPt *pc2, TRoadPt *pc3, Vector2 loc, Vector2 upVector, Vector2 teeVector, Real widthInTexture);
+	void offsetH(TRoadPt *pc1, TRoadPt *pc2, TRoadPt *pc3, Vector2 loc, Vector2 upVector, Vector2 teeVector, Bool flip, Bool mirror, Real widthInTexture);
+	void offsetY(TRoadPt *pc1, TRoadPt *pc2, TRoadPt *pc3, Vector2 loc, Vector2 upVector, Real widthInTexture);
+	void offset4Way(TRoadPt *pc1, TRoadPt *pc2, TRoadPt *pc3, TRoadPt *pr3, TRoadPt *pc4, Vector2 loc, Vector2 alignVector, Real widthInTexture);
+	void rotateAbout(Vector2 *ptP, Vector2 center, Real angle);
+	void updateCountsAndFlags(void);
+	void insertCurveSegments(void);
+	void insertTeeIntersections(void);
+	void preloadRoadsInVertexAndIndexBuffers(void);			// Fills the index and vertex buffers for drawing.
+	void preloadRoadSegment(RoadSegment *pRoad);
+	void loadCurve(RoadSegment *pRoad, Vector2 loc1, Vector2 loc2, Real scale);
+	void loadFloatSection(RoadSegment *pRoad, Vector2 loc, Vector2 roadVector, Real halfHeight, Real left, Real right, Real uOffset, Real vOffset, Real scale);
+	void loadFloat4PtSection(RoadSegment *pRoad, Vector2 loc, Vector2 roadNormal, Vector2 roadVector, Vector2 *cornersP, Real uOffset, Real vOffset, Real uScale, Real vScale);
+	void loadTee(RoadSegment *pRoad, Vector2 loc1, Vector2 loc2, bool is4way, Real scale);
+	void loadY(RoadSegment *pRoad, Vector2 loc1, Vector2 loc2, Real scale);
+	void loadAlphaJoin(RoadSegment *pRoad, Vector2 loc1, Vector2 loc2, Real scale);
+	void loadH(RoadSegment *pRoad, Vector2 loc1, Vector2 loc2, bool flip, Real scale);
+	bool visibilityChanged(const IRegion2D &bounds);		// Returns true if some roads are now visible that weren't, or vice versa.
 
 public:
-	void clearAllRoads(void);								// 0x000D7942 empties the road buffer.
+	void clearAllRoads(void);								// Empties the road buffer.
 };
 
 #endif

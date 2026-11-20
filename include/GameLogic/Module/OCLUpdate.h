@@ -1,15 +1,8 @@
-// OCLUpdate.h:
-// name, size, bases and virtual order are retail facts given below.
-// OCLUpdate.h: the OCLUpdate module. SIZE 0x2C (ModuleFactory operator new).
-// Target facts: the constructor 0x0049B381 calls UpdateModule first; it stores the
-// tables 0x00C50B40 at +0x0, 0x00BEFF90 at +0xC, 0x00C50B34 at +0x10. Members are what xfer (0x0049B421) transfers after UpdateModule::xfer,
-// typed by the Xfer slot each goes through, in that order; m_unk names are offsets
-// (no map or donor name established). Bytes xfer does not touch are gaps.
-// Overrides of the base tables besides the trio (slot -> target, map name):
-//   +0x0 slot 1 -> 0x00497805 ?loadPostProcess@BoneFXDamage@@MAEXXZ
-//   +0x0 slot 2 -> 0x0049B2BB ?name@Rva0049B2BBNamed@@QBEPBDXZ
-//   +0x10 slot 0 -> 0x0049B483 ?update@Rva0049B2A2@@UAE?AW4UpdateSleepTime@@XZ
-// Not established: transfers xfer makes that this view cannot place: slot10 ?.
+// OCLUpdate: the update module that creates its module data's object creation list at intervals. SIZE 0x2C: UpdateModule
+// (0x20) and three members that xfer saves in this order: the next creation frame, the frame the timer started and the
+// number of creations so far (version 2 and later). update decides whether a creation is due, creates the list at the
+// object's position (or at the closest map edge point when the module data asks for it), and counts the creations against
+// the module data's amount. xfer also makes one transfer through a slot this view cannot place.
 #pragma once
 #ifndef BFME2_O_C_L_UPDATE_H
 #define BFME2_O_C_L_UPDATE_H
@@ -33,8 +26,9 @@ public:
 	float getCountdownPercent() const;
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	UnsignedByte shouldCreate();		// 0x0049B3D2: the creation frame has come and the object is not under construction (class by the update 0x0049B483 calling it on its module)
-	void setNextCreationFrame();	// 0x0049B3F3: restarts the timer with a random delay between MinDelay and MaxDelay
+	virtual UpdateSleepTime update();
+	UnsignedByte shouldCreate();		// the creation frame has come and the object is not under construction
+	void setNextCreationFrame();	// restarts the timer with a random delay between MinDelay and MaxDelay
 
 protected:
 	virtual void xfer(Xfer *xfer);
@@ -44,7 +38,7 @@ public:
 	UnsignedInt m_timerStartedFrame;                    // +0x24; xfer UnsignedInt
 	Int m_currentCount;                            // +0x28; xfer Int (version 2 and later)
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// slot 1: a jump to UpdateModule's
 };
 // SIZE 0x2C
 typedef char OCLUpdate_size[(sizeof(OCLUpdate) == 0x2C) ? 1 : -1];

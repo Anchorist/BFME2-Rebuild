@@ -57,6 +57,7 @@ public:
 	void removeTeamPrototypeFromList(TeamPrototype *team);			// 0x0039FE11
 	void addTeamPrototypeToList(TeamPrototype *team);				// 0x003A2B78
 	Team *createEmptyTeam(Player *owner);	// 0x003A3CD9
+	Team *createTeam(const AsciiString &owner, const AsciiString &name);	// creates the inactive team, then makes it active
 	Team *createInactiveTeam(const AsciiString &owner, const AsciiString &name);	// 0x003A3B7E
 	Team *findTeam(const AsciiString &owner, const AsciiString &name);	// 0x003A3E37
 	void teamAboutToBeDeleted(Team *team);							// 0x003A3048

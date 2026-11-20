@@ -46,22 +46,22 @@ public:
 	};
 
 	UDP();									// 0x005948F5
-	~UDP();									// 0x00594918
+	~UDP();
 
-	Int getLocalAddr(UnsignedInt &ip, UnsignedShort &port);	// 0x0059495D
+	Int getLocalAddr(UnsignedInt &ip, UnsignedShort &port);
 	Int Bind(UnsignedInt ip, UnsignedShort port);			// 0x00594B56
 	Int Bind(const char *ip, UnsignedShort port);			// 0x00594C7F
-	Int Read(UnsignedByte *msg, UnsignedInt len, sockaddr_in *from);	// 0x005949AB
+	Int Read(UnsignedByte *msg, UnsignedInt len, sockaddr_in *from);
 	Int Write(const char *msg, Int len, unsigned long ip, UnsignedShort port);	// 0x00594C12 (the map holds it under the placeholder class Rva00594C12)
-	sockStat GetStatus();									// 0x00594A06
-	Int SetInputBuffer(UnsignedInt bytes);					// 0x00594A7C
-	Int SetOutputBuffer(UnsignedInt bytes);					// 0x00594AA6
-	Int GetInputBuffer();									// 0x00594AD0
-	Int GetOutputBuffer();									// 0x00594AFF
-	Int AllowBroadcasts(Bool allow);						// 0x00594B2E
+	sockStat GetStatus();
+	Int SetInputBuffer(UnsignedInt bytes);
+	Int SetOutputBuffer(UnsignedInt bytes);
+	Int GetInputBuffer();
+	Int GetOutputBuffer();
+	Int AllowBroadcasts(Bool allow);
 
 private:
-	Int SetBlocking(Int block);								// 0x00594976
+	Int SetBlocking(Int block);
 
 	Int m_fd;												// +0x00
 	UnsignedInt m_myIP;										// +0x04

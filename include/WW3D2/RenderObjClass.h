@@ -13,8 +13,7 @@
 // meaning is recovered. MSVC 7.1 lays overloads out in reverse declaration
 // order (Set_Animation, Add_Sub_Object_To_Bone, Remove_Sub_Objects_From_Bone,
 // Get_Sub_Object_Bone_Index, Get_Bone_Transform, Scale). Get_Container is not
-// virtual in BFME 2. The alignment of this list with retail was first worked
-// out in the old repo's rendobj.h; every slot here was re-checked against the
+// virtual in BFME 2. Every slot here was checked against the
 // target's body (arity from its `ret N`, folded empty/zero/false bodies).
 //
 // Inline against out of line: members whose retail body sits in rendobj.cpp's
@@ -98,7 +97,7 @@ public:
 	virtual int Class_ID() const;																// 3: 0x0013B5E0
 	// 4, 5: only MeshClass overrides them (both slots 0x00181450, `return this`);
 	// W3DTreeBuffer and mapper.cpp's callers use slot 5 to reach a MeshClass from
-	// a RenderObjClass. No retail spelling found, so the old views' names stay.
+	// a RenderObjClass. No retail spelling found, so these placeholder names stay.
 	virtual MeshClass *_bfme_ro_v2() const { return 0; }												// 4
 	virtual MeshClass *_bfme_ro_v3() const { return 0; }												// 5
 	virtual const char *Get_Name() const;														// 6: 0x0006CE6B
@@ -268,7 +267,7 @@ protected:
 	void Validate_Cached_Bounding_Volumes() const { Bits |= BOUNDING_VOLUMES_VALID; }
 
 	mutable unsigned long Bits;					// +0x10
-	unsigned long _bfme_unk_14;					// +0x14 collision input mask (old repo note)
+	unsigned long _bfme_unk_14;					// +0x14 collision input mask
 	Matrix3D Transform;							// +0x18
 	float ObjectScale;							// +0x48 1.0f after construction
 	mutable SphereClass CachedBoundingSphere;	// +0x4C

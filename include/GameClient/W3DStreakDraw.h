@@ -26,10 +26,10 @@ public:
 	virtual void reactToTransformChange(const Matrix3D *oldMtx, const Coord3D *oldPos, Real oldAngle);	// 38: 0x000D0459
 	virtual void reactToGeometryChange() {}									// 39: folded `ret`
 
-	void rva000D0091();														// 0x000D0091: the streak update slots 11 and 38 call (map placeholder name)
+	void rva000D0091();														// The streak update slots 11 and 38 call (map placeholder name)
 
 protected:
-	virtual ~W3DStreakDraw();												// 0x000CFFD3
+	virtual ~W3DStreakDraw();
 	virtual void loadPostProcess() { DrawModule::loadPostProcess(); }	// 1: the module bases' fold 0x0058B03E
 	virtual const char *GetSnapshotName() const;							// 2: 0x000D0046
 	virtual void xfer(Xfer *xfer) { xfer->Version1(); DrawModule::xfer(xfer); }	// 3: the empty draw modules' fold 0x000B221A

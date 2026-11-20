@@ -15,11 +15,11 @@ class HealCrateCollide : public CrateCollide
 {
 public:
 	HealCrateCollide(Thing *thing, const ModuleData *moduleData);	// 0x004BC80F
-	virtual ~HealCrateCollide();									// 0x004BC83F
-	virtual NameKeyType getModuleNameKey() const;					// 0x004BC858
+	virtual ~HealCrateCollide();
+	virtual NameKeyType getModuleNameKey() const;
 
 protected:
-	virtual bool executeCrateBehavior(Object *other);				// 0x004BC8B9
+	virtual bool executeCrateBehavior(Object *other);
 protected:
 	virtual void loadPostProcess() { CrateCollide::loadPostProcess(); }	// slot 1: retail 0x00483CEF, `jmp` to CrateCollide's (0x00497805)
 	virtual const char *GetSnapshotName() const;					// slot 2, 0x004BC839

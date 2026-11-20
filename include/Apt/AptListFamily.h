@@ -394,8 +394,8 @@ class PlaybackRange
 {
 public:
     PlaybackRange(AptValueNameEntry *pFirst, AptValueNameEntry *pLast) : mpFirst(pFirst), mpLast(pLast) {}
-    PlaybackIterator begin(); // 0x006D0240
-    PlaybackIterator end();   // 0x006D0260
+    PlaybackIterator begin();
+    PlaybackIterator end();
     AptValueNameEntry *mpFirst;
     AptValueNameEntry *mpLast;
 };

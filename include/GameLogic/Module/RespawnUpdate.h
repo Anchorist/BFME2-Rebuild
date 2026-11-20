@@ -32,24 +32,24 @@ class RespawnUpdate : public UpdateModule
 {
 public:
 	virtual DisabledMaskType getDisabledTypesToProcess() const;	// override: update slot 1 at +0x10 (retail 0x004DF396, DISABLEDMASK_ALL)
-	RespawnUpdate(Thing *thing, const ModuleData *moduleData);	// 0x004AF096
-	virtual NameKeyType getModuleNameKey() const;				// 0x004AF116
-	virtual Real getPercentReady(Int *remaining);				// 0x004AEFAD (primary slot 13)
-	virtual const Image *getDeadImage();						// 0x004AF2DE (primary slot 14)
+	RespawnUpdate(Thing *thing, const ModuleData *moduleData);
+	virtual NameKeyType getModuleNameKey() const;
+	virtual Real getPercentReady(Int *remaining);				// (primary slot 13)
+	virtual const Image *getDeadImage();						// (primary slot 14)
 	virtual Bool slot15() const;								// primary slot 15: 0x005C4FEB returns the +0x41 flag (a 4-byte getter the map files as ?get@RespawnUpdate@@QBEEXZ); out of line until the map accepts this name
-	void rva004AEF46();											// 0x004AEF46 (starts the respawn from idle)
-	void rva004AF182();											// 0x004AF182 (leaves an active respawn)
-	void *rva004AF25D();										// 0x004AF25D (lazy respawn-as template)
-	Object *searchForSuitableSpawnAtObject();					// 0x004AF1CE
-	void triggerDeathBeforeRespawn();							// 0x004AF63E (public in the map: QAE)
-	void triggerRevival(Object *at);							// 0x004AF79C (public in the map: QAE)
+	void rva004AEF46();											// (starts the respawn from idle)
+	void rva004AF182();											// (leaves an active respawn)
+	void *rva004AF25D();										// (lazy respawn-as template)
+	Object *searchForSuitableSpawnAtObject();
+	void triggerDeathBeforeRespawn();							// (public in the map: QAE)
+	void triggerRevival(Object *at);							// (public in the map: QAE)
 	Int getCostToRespawn();										// 0x004AFB01: module data's calcCostToBuild at the object's experience level (+0x264 -> +0x24)
 	Int getTimeToRespawn();										// 0x004AFB16: module data's calcTimeToBuild at the same level
 
 protected:
 	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: the UpdateModule forward, ICF-folded across classes (primary slot 1)
 	virtual const char *GetSnapshotName() const;				// slot 2: 0x004AF15B
-	virtual void xfer(Xfer *xfer);								// 0x004AF00B
+	virtual void xfer(Xfer *xfer);
 
 public:
 	Real m_respawnHealthFraction;												// +0x20
@@ -63,7 +63,7 @@ public:
 	Bool m_waitForManualRespawn;	// Set when the selected rule disables AutoSpawn.
 	Bool m_unk41;												// +0x41
 public:
-	virtual UpdateSleepTime update();	// 0x004AF92F, UpdateModuleInterface slot 0; retail's table has this class's own
+	virtual UpdateSleepTime update();	// UpdateModuleInterface slot 0; retail's table has this class's own
 };
 // SIZE 0x44
 typedef char RespawnUpdate_size[(sizeof(RespawnUpdate) == 0x44) ? 1 : -1];

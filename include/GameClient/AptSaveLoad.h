@@ -36,33 +36,33 @@ class AptSaveLoad : public _bfme_AptGameWindow
 {
 public:
 	AptSaveLoad(void *);				// 0x00436259
-	virtual ~AptSaveLoad();				// 0x00435DE7
+	virtual ~AptSaveLoad();
 
 	static AptSaveLoad *s_instance;					// VA 0x00E032E0: the open screen
-	static void OpenScreen(int, int, bool);	// 0x00434160: pushes SaveLoad.apt (kind 2 Load, 3 Save)
-	void rva00433D71(int);				// 0x00433D71
-	static GameSpyGameSlot *GetOpponentSlotData();	// 0x00433FF3: the first human opponent's slot of the current game
-	static bool PromptAddFriend();		// 0x004354F3
-	int rva00434132(int, unsigned char, unsigned char);	// 0x00434132: the key handler (primary slot 1; the map spells its owner Rva00434132)
-	void Externs(int, char *, bool);		// 0x00433DFE
-	void SetDefaultFileName();			// 0x00434AAE
-	void InitGadgets(const char *, void *, GameWindow *);	// 0x00435172
-	void rva0043684C();					// 0x0043684C
-	void rva00436FF6();					// 0x00436FF6
-	void rva00433D96();					// 0x00433D96: closes the screen after the "1" refresh
-	void OnClosed(const char *);			// 0x00433DB1
-	void Cancel(const char *);			// 0x00433DE0
-	void rva00433DF1(const char *);		// 0x00433DF1
-	int rva00433F7F();					// 0x00433F7F: the selected list item (a pointer)
-	void rva00433FDD();					// 0x00433FDD
-	void rva004340AC();					// 0x004340AC
-	void Delete(const char *);			// 0x00434318
-	void rva00434432();					// 0x00434432: enables the lists, then 0x004340AC
-	void rva0043448C();					// 0x0043448C
-	void Load(const char *);			// 0x004348CA
-	void ConfirmationOk(const char *);	// 0x004357CF
-	void rva00434B8A();					// 0x00434B8A
-	void rva00435224();					// 0x00435224
+	static void OpenScreen(int, int, bool);	// Pushes SaveLoad.apt (kind 2 Load, 3 Save)
+	void rva00433D71(int);
+	static GameSpyGameSlot *GetOpponentSlotData();	// The first human opponent's slot of the current game
+	static bool PromptAddFriend();
+	int rva00434132(int, unsigned char, unsigned char);	// The key handler (primary slot 1; the map spells its owner Rva00434132)
+	void Externs(int, char *, bool);
+	void SetDefaultFileName();
+	void InitGadgets(const char *, void *, GameWindow *);
+	void rva0043684C();
+	void rva00436FF6();
+	void rva00433D96();					// Closes the screen after the "1" refresh
+	void OnClosed(const char *);
+	void Cancel(const char *);
+	void rva00433DF1(const char *);
+	int rva00433F7F();					// The selected list item (a pointer)
+	void rva00433FDD();
+	void rva004340AC();
+	void Delete(const char *);
+	void rva00434432();					// Enables the lists, then 0x004340AC
+	void rva0043448C();
+	void Load(const char *);
+	void ConfirmationOk(const char *);
+	void rva00434B8A();
+	void rva00435224();
 
 	int m_state;						// +0x27C
 	AptSaveLoadPending *m_pending;		// +0x280

@@ -32,8 +32,8 @@ class W3DLaserDraw : public DrawModule, public LaserDrawInterface
 public:
 	W3DLaserDraw(Thing *thing, const ModuleData *moduleData);					// 0x000C9D38
 
-	virtual NameKeyType getModuleNameKey() const;								// 0x000C9BCC
-	virtual void doDrawModule(const Matrix3D *transformMtx);					// 0x000C9360
+	virtual NameKeyType getModuleNameKey() const;
+	virtual void doDrawModule(const Matrix3D *transformMtx);
 	virtual void setShadowsEnabled(Bool enable) {}								// slot 12, folded `ret 4`
 	virtual void releaseShadows() {}											// slot 13, folded `ret`
 	virtual void allocateShadows() {}											// slot 14, folded `ret`
@@ -43,13 +43,13 @@ public:
 	virtual Bool isLaser() const { return true; }								// slot 40, folded `mov al,1`
 	virtual LaserDrawInterface *getLaserDrawInterface() { return this; }		// slot 48 (0x000CA841)
 	virtual const LaserDrawInterface *getLaserDrawInterface() const { return this; }	// slot 47
-	virtual Real getLaserTemplateWidth() const;								// 0x000C9353 (interface slot 0)
+	virtual Real getLaserTemplateWidth() const;								// (interface slot 0)
 
 protected:
-	virtual ~W3DLaserDraw();													// 0x000C9B1D
-	virtual void loadPostProcess();											// 0x000C92E8
+	virtual ~W3DLaserDraw();
+	virtual void loadPostProcess();
 	virtual const char *GetSnapshotName() const;								// 0x000C9C11 (map: the placeholder Rva000C9C11Named::name)
-	virtual void xfer(Xfer *xfer);												// 0x000C92A0
+	virtual void xfer(Xfer *xfer);
 
 public:
 	SegmentedLineClass **m_lines;												// 0x10 NumBeams * Segments pointers (new[] in the constructor)

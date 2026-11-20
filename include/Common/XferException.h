@@ -1,5 +1,5 @@
 // XferException.h: thrown on bad save data. SIZE 0x8.
-// Target facts (old repo Code/GameEngine/Include/Common/XferException.h): the
+// Target facts: the
 // variadic constructor is 0x0060C36E; the copy constructor 0x000588C5; the
 // destructor 0x0002BD30 deletes the message buffer at +0; the code is at +4.
 // INIException shares the copy, assignment and destructor bodies.

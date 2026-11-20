@@ -33,15 +33,15 @@ class LanguageFilter : public SubsystemInterface
 {
 public:
 	LanguageFilter();														// 0x0038860E
-	virtual ~LanguageFilter();												// 0x00388598
+	virtual ~LanguageFilter();
 	virtual void init();													// slot 1: 0x0038873F
 	virtual void reset() { init(); }										// slot 9: 0x005CB260
 	virtual void update() {}												// slot 10: folded empty body
-	void filterLine(UnicodeString &line);									// 0x00388102
+	void filterLine(UnicodeString &line);
 
 protected:
-	bool readWord(File *file, unsigned short *word);						// 0x00387AC3
-	void unHaxor(UnicodeString &word);										// 0x00387B58
+	bool readWord(File *file, unsigned short *word);
+	void unHaxor(UnicodeString &word);
 
 	LanguageFilterWordMap m_wordList;										// +0x0C
 	LanguageFilterWordMap m_subWordList;									// +0x18

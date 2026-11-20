@@ -103,7 +103,8 @@ public:
 	Int getNumNonObserverPlayers() const;		// 0x003FF23D
 	Int getNumOpenOrOccupiedSlots() const;		// 0x003FF987
 	Bool rva003FF457() const;					// 0x003FF457 (true when every occupied slot with a hero kind has its hero data)
-	void setGameRulesPreset(Int preset);						// 0x003FF1A7 (stores the selector at +0x5C and refills the rules block when it changes)
+	void setGameRulesPreset(Int preset);
+	Bool hasSavedGameId() const;					// true when the 16-byte saved-game id at +0xCC is non-zero						// 0x003FF1A7 (stores the selector at +0x5C and refills the rules block when it changes)
 	Bool isHeroDataReadyForSlot(UnsignedShort slotNum) const;	// 0x003FF496
 	Bool isColorTaken(Int colorIndex, Int slotToIgnore) const;	// 0x003FF34A
 	Bool isStartPositionTaken(Int positionIndex, Int slotToIgnore) const;	// 0x003FF374
@@ -119,6 +120,7 @@ public:
 	Int getMaxPlayers();						// 0x0040203C
 	void setMapForwarder(AsciiString mapName);	// 0x00447B9D (LANGameInfo.cpp's copy of the call, named GameInfo's by the map)
 	Bool isGameInProgress() const { return m_inProgress; }	// +0x11
+	Int getSeed() const { return m_seed; }					// +0x50
 
 	UnicodeString m_gameName;					// +0x04 (slot 22 returns it)
 	UnsignedInt m_preorderMask;					// +0x08

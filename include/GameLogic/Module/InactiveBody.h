@@ -45,8 +45,8 @@ public:
 	InactiveBody(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	virtual void attemptDamage(DamageInfo *damageInfo);				// 0x004BD92C
-	virtual void attemptHealing(DamageInfo *damageInfo);				// 0x004BD7D4
+	virtual void attemptDamage(DamageInfo *damageInfo);
+	virtual void attemptHealing(DamageInfo *damageInfo);
 	// The rest of BodyModuleInterface (retail's table 0x00C5ACC8): the slots BodyModule leaves pure are the shared stubs
 	// 0x000B3FD0 (ret), 0x000D43D0 (return 0), 0x002BFBF0 (return 0.0f), 0x0047A69C (ret 4) and 0x0050B238 (ret 8).
 	virtual Real getHealth() const;										// 4: 0.0f

@@ -17,8 +17,8 @@ being reduced; ignore them.)
    stays small.
 3. **Library code in the library's own style:** [`src/Code/Libraries/Source/WWVegas/WWLib/hash.cpp`](../src/Code/Libraries/Source/WWVegas/WWLib/hash.cpp).
    The engine's chained hash table written with WWLib's own names (`HashTableClass`, `Reset`, `Advance_Next`)
-   and its conventions, not modernised. The header comment states the hashing rule and why the table is freed
-   with scalar `operator delete`. Keep a library's spelling and layout when you write its functions.
+   and its conventions. Each bucket holds the head of its collision chain. The bucket array uses typed
+   allocation and release. Keep a library's spelling and layout when you write its functions.
 4. **A layout explained by evidence:** [`src/Code/Libraries/Source/WWVegas/WWMath/cullsys.cpp`](../src/Code/Libraries/Source/WWVegas/WWMath/cullsys.cpp).
    A base class and its system, where one comment gives the evidence for each member's place and role, and the
    code then uses those members by name. Null checks are written the way the original tests them.

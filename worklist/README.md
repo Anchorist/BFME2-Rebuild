@@ -1,7 +1,7 @@
 # Find a contribution
 
 The newest lists are on the repository's `progress` branch, regenerated automatically
-after every change to `main` (with `PROGRESS.md`, the project's progress card). The copies
+after every change to `main`, beside the project's progress card. The copies
 in this directory are from the last snapshot of `main`; prefer the `progress` branch when it exists.
 
 These tables are dated tab-separated files. Their first line gives the
@@ -20,12 +20,17 @@ function name).
 
 The unit of work is a file: finish one source file, or replace one Draft
 header that is in use. [Files to finish](files.tsv) lists every source file
-that still owns functions not yet credited MATCH, closest to finished first:
+that still owns functions not yet credited MATCH, closest to finished first.
+A file whose remaining functions were all written and still do not match
+(`tried_not_matching` equals `not_yet_matched`) is hard rather than nearly done,
+so it comes after the files that still have unwritten functions.
 `owned_functions`, `not_yet_matched` and `bytes_not_yet_matched` say how much
 is left, `link_referrers_waiting` how much of the rebuilt game waits on it,
-and `class_header` whether a header named like the file (or defining a class
-named like it) exists outside Draft (`real`), only in Draft (`draft`), or not
-at all (`none`), a quick name test, not the check's FINISHED rule; or the file is still named by
+`tried_not_matching` how many of the remaining functions already have a body
+that does not match yet, and `class_header` whether a header named like the
+file, or declaring a class whose functions the file defines, exists outside
+Draft (`real`), only in Draft (`draft`), or not at all (`none`), a quick
+name test, not the check's FINISHED rule; or the file is still named by
 address (`address-named`: identifying its real name and place is a
 contribution of its own). The verdicts are the maintainers' dated checker
 state, named in the first line.
@@ -39,7 +44,9 @@ whose return or parameter type is `void *`. Many are a type the code already
 knows, erased at a module boundary, so every caller casts it back. Replace it
 with the real type in the declaration, the definition and every caller in one
 change; the bytes must not change. Some entries are legitimate (buffers,
-allocators, user data) and stay; check the callers first. Integer words used
+allocators, user data) and stay; check the callers first. INI field parsers
+(`INI *`, `void *instance`, `void *store`, `const void *`) are left out: that
+signature is generic by design. Integer words used
 for pointers are the same problem and are not listed yet.
 
 ## Lists for single functions and headers

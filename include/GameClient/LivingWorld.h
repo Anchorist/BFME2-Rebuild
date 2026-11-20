@@ -17,7 +17,7 @@ class LivingWorld : public Snapshot
 {
 public:
 	LivingWorld();	// 0x002C0120
-	virtual ~LivingWorld();	// 0x002BFB2D
+	virtual ~LivingWorld();
 
 	// Pure slot signatures follow the W3D leaf. Ordinals mark methods whose
 	// role is still unknown.
@@ -61,7 +61,7 @@ public:
 	virtual void unknownSlot41(Bool value) = 0;	// leaf 0x0009AD78
 	virtual Int unknownSlot42() const = 0;	// leaf 0x003F3FD2
 
-	void rva002BED10();	// 0x002BED10, LivingWorldLogic::reset calls it
+	void rva002BED10();	// LivingWorldLogic::reset calls it
 
 protected:
 	virtual void loadPostProcess() {}	// Snapshot slot 1, 0x000B3FD0

@@ -1,5 +1,5 @@
 // ObjectModule.h: SAGE base of every object module. SIZE 0xC.
-// Target facts (old repo Code/GameEngine/Include/Common/ObjectModule.h):
+// Target facts:
 // ??0ObjectModule@@QAE@PAVThing@@PBVModuleData@@@Z (0x00306AA7) installs
 // 0x00C07E1C, stores the ModuleData at +4 and the object at +8. The table has
 // Module's 9 slots plus slot 9, an empty virtual with two stack arguments

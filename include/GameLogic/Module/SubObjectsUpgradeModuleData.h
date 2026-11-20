@@ -35,7 +35,7 @@ class SubObjectsUpgradeModuleData : public UpgradeModuleData
 {
 public:
 	SubObjectsUpgradeModuleData();											// 0x00257768
-	virtual ~SubObjectsUpgradeModuleData();									// 0x004B5214
+	virtual ~SubObjectsUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
 	static ModuleData *friend_newModuleData(INI *ini);
 

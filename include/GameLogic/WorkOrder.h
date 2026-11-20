@@ -18,10 +18,10 @@ class Xfer;
 class WorkOrder : public Snapshot
 {
 public:
-	WorkOrder();									// 0x004F10E6 (table 0x00C62E40)
+	WorkOrder();									// (table 0x00C62E40)
 	virtual ~WorkOrder();							// slot 0 (deleting dtor, not yet written)
 
-	void validateFactory(Player *player);			// 0x004F33BD
+	void validateFactory(Player *player);
 
 protected:
 	virtual void loadPostProcess() {}				// slot 1, the shared empty body 0x000B3FD0

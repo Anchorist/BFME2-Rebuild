@@ -7,7 +7,7 @@
 | Tarball SHA-256 | `9e3e973174f9910fd51539ef9ce94c86a3943d4f897fab8e9adf4b19e6a8291e` |
 | Tarball MD5 | `abc405d0bdd3ee22782d7aa20e440f08` |
 | Tarball size | 181144 bytes |
-| Downloaded | 2026-11-17 (agent v01); hashes computed on the downloaded file and equal to the checker's `libraries/releases.json` |
+| Downloaded | 2026-11-17; hashes computed on the downloaded file and equal to the checker's `libraries/releases.json` |
 | Licence | the zlib licence in `zlib.h`'s header comment (also summarised in `README`), unchanged |
 
 ## What is here
