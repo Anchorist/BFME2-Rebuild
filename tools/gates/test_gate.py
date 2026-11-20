@@ -11,7 +11,7 @@ import unittest
 from cpp import Source
 from gate import report, verdict
 from git_objects import Git
-from rules import Index, Policy, forbidden
+from rules import Index, Policy, forbidden, paste_can_form
 import ratchets
 
 
@@ -97,6 +97,70 @@ class Fixture(unittest.TestCase):
                               {SEED: b'int y;\rint z;\n', 'include/A.h': b'\xff'})
         self.assertEqual(2, len(self.assert_gate('G1', 'fail', result)))
         self.assert_gate('G4', 'blocked', result)
+
+    def test_g1_rejects_different_line_separators(self):
+        for character in ("\x85", "\u2028", "\u2029"):
+            with self.subTest(character=character):
+                result = self.compare({SEED: "int value;\n"},
+                                      {SEED: "// ordinary note" + character + "additional text\n"})
+                finding, = self.assert_gate("G1", "fail", result)
+                self.assertEqual((finding["path"], finding["line"]), (SEED, 1))
+                self.assertIn("line separator", finding["message"])
+
+    def test_g2_preserves_every_recognized_compiler_directive(self):
+        controls = ("// cl: /W3", "// cl-arch: x87", "// cl-profile: upstream",
+                    "// stlport", "// stlport46", "// msvcstl", "// dxsdk",
+                    "// psdk", "// platformsdk", "// bfmealloc_alloconly")
+        for marker in controls:
+            with self.subTest(marker=marker):
+                result = self.compare({SEED: "int value;\n"}, {SEED: marker + "\nint value;\n"})
+                finding, = self.assert_gate("G2", "fail", result)
+                self.assertEqual((finding["path"], finding["line"]), (SEED, 1))
+
+    def test_g2_compiler_reads_raw_lines_and_preserves_order(self):
+        old = "// cl: /W3\n// cl: /W4\nint value;\n"
+        changed = old.replace("/W3", "/W2")
+        findings = self.assert_gate("G2", "fail", self.compare({SEED: old}, {SEED: changed}))
+        self.assertEqual(len(findings), 2)
+        reordered = "// cl: /W4\n// cl: /W3\nint value;\n"
+        finding, = self.assert_gate("G2", "fail", self.compare({SEED: old}, {SEED: reordered}))
+        self.assertIn("changed order", finding["message"])
+        raw = "/* note\n// cl: /W3\n*/\nint value;\n"
+        finding, = self.assert_gate("G2", "fail", self.compare({SEED: "int value;\n"}, {SEED: raw}))
+        self.assertEqual(finding["line"], 2)
+        stable = old.replace("int value;", "int value = 1; // initialize")
+        self.assert_gate("G2", "pass", self.compare({SEED: old}, {SEED: stable}))
+
+    def test_g2_stlport_driver_substring_is_checked_on_state_change(self):
+        before = "int value;\n"
+        after = before + 'const char *note = "// stlport settings";\n'
+        line, = self.assert_gate("G2", "fail", self.compare({SEED: before}, {SEED: after}))
+        self.assertEqual(line["line"], 2)
+        baseline = "// stlport46\n" + before
+        self.assert_gate("G2", "pass", self.compare({SEED: baseline}, {SEED: baseline + after}))
+
+    def test_g3_unnamed_macro_paste_requires_a_provably_safe_spelling(self):
+        for paste in ("##", "%:%:", "??=??=", "#" + chr(92) + "\n#"):
+            with self.subTest(paste=paste):
+                macro = "#define JoinParts(first, second) first " + paste + " second\n"
+                result = self.compare({SEED: "int value;\n"}, {SEED: macro + "int value;\n"})
+                finding, = self.assert_gate("G3", "fail", result)
+                self.assertIn("token pasting", finding["message"])
+                self.assertEqual((finding["path"], finding["line"]), (SEED, 1))
+
+    def test_paste_matcher_uses_only_complete_reserved_spellings(self):
+        reserved = ("ControlName", "RestrictedWord")
+        self.assertTrue(paste_can_form(("Control", "Name"), set(), reserved))
+        self.assertTrue(paste_can_form(("argument", "Word"), {"argument"}, reserved))
+        self.assertFalse(paste_can_form(("Prefix_", "argument"), {"argument"}, reserved))
+        self.assertFalse(paste_can_form(("Control", "SystemName"), set(), reserved))
+
+    def test_g3_safe_prefix_fixed_identifier_and_literal_paste(self):
+        original = "#define Member(name) ProjectField_ ## name\n"
+        ordinary = (original + "#define Count Value ## Count\n"
+                    'const char *note = "a ## b";\n'
+                    "// a ## b in the documentation\n")
+        self.assert_gate("G3", "pass", self.compare({SEED: original}, {SEED: ordinary}))
 
     def test_g1_limits(self):
         cfg = deepcopy(CONFIG)

@@ -27,6 +27,7 @@
     "src/zlib-1.1.4/"
   ],
   "annotation_pattern": "^[ \\t]*//[ \\t]*(?:FUNCTION|DATA|GLOBAL|VTABLE|UPSTREAM):",
+  "compiler_directive_pattern": "^// (?:cl(?:-profile|-arch)?:.*|(?:stlport46|stlport|msvcstl|dxsdk|psdk|platformsdk|bfmealloc_alloconly)[ \\t]*)$",
   "approved_forbidden": {
     "include/Apt/Assert.h": {
       "21115e3683f6a0bb903f1dc3d73dd0eaf035f192c73029f2ef5f7dc5928c223f": 1

@@ -224,7 +224,7 @@ class Delivery(unittest.TestCase):
         result, markdown = self.evaluate(env)
         self.assertEqual(result["base"], self.base)
         self.assertEqual(result["head"], self.head)
-        self.assertEqual(result["policy_sha256"], "663777e28a136b0d43ddd1a871ed5346a36ddf92ef94c502171be2146eb2bd7d")
+        self.assertEqual(result["policy_sha256"], "355d73862160ebb71e5e9b703898072e67ba60de44a3ca23d8fa31a3bca188ba")
         self.assertIn("| G1 Paths | Pass |", markdown)
         self.assertEqual(self.publish(env, result), 0)
         self.assert_statuses(self.head)

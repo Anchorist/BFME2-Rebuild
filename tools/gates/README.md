@@ -15,9 +15,9 @@ reports a blocked failure if G1 cannot inspect an eligible source blob.
 
 | Rule | Check and remedy |
 | --- | --- |
-| G1 Paths | Modify existing C/C++ units and eligible headers within the intake limits, add headers only outside Draft and delete headers only under Draft, and restore out-of-scope paths or exact function moves to their original locations. |
-| G2 Generated annotations | Keep generated row and upstream marker lines verbatim and in order, and restore any marker moved away from its existing function body. |
-| G3 Forbidden constructs | Use ordinary C/C++ and the declared symbols, with no inline assembly, naked functions, emitted bytes, symbol aliases, or pragmas outside the approved forms. |
+| G1 Paths | Modify existing C/C++ units and eligible headers within the intake limits, add headers only outside Draft and delete headers only under Draft, and restore out-of-scope paths or exact function moves to their original locations. Use LF or CRLF line endings. |
+| G2 Generated annotations | Keep generated row and upstream marker lines verbatim and in order, restore any marker moved away from its existing function body, and preserve compiler directives. |
+| G3 Forbidden constructs | Use ordinary C/C++ and the declared symbols, with no inline assembly, naked functions, emitted bytes, symbol aliases, or pragmas outside the approved forms, including compiler controls formed by token pasting. |
 | G4 Stand-in types | Keep each count of explicit stand-ins at or below the base total over the changed files, and declare the evidenced types so callers and members can use them directly. |
 | G5 Comments | Keep new comments focused on evidence and intent, and move attribution, dates, private paths, work branches, and attempt measurements to the pull request description. |
 | G6 One item | Keep substantive source edits within the configured file cap apart from narrow Draft promotion include and type-use edits, and split unrelated work or update every literal includer of the removed Draft. |
@@ -42,9 +42,13 @@ including the policy, code and informational baseline, are maintainer changes.
   `VTABLE`, plus `UPSTREAM` provenance. Draft status and snapshot banners
   describe the lifecycle of a Draft, so the generated-row check allows
   their retirement. The sequence preserves spelling, indentation, multiplicity, and order.
+  Compiler option and profile comments, STL and SDK selections, and the allocator marker
+  are read as the compiler drivers read them, including directives on raw physical lines.
   The check measures movement past an existing recognizable function declaration.
 - **G3** lexes complete C/C++ blobs, including block comments, escaped
-  literals, raw strings, and line continuations. A maintainer-approved
+  literals, raw strings, and line continuations. In macro definitions the check examines
+  pastes that could produce reserved compiler controls, including argument-driven pastes.
+  A maintainer-approved
   exception is a token fingerprint and a cap specific to a tracked file.
   The general pragma allow-list permits `once` and `warning` everywhere and
   `pack` in headers.

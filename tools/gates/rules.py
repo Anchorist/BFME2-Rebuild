@@ -20,7 +20,7 @@ REGULAR = 'Keep the change as a regular, non-executable UTF-8 source or header f
 SCOPE = 'Keep this pull request in existing C/C++ source and eligible headers. Ask a maintainer for other changes.'
 FORBIDDEN_FIX = 'Use ordinary C/C++ and the declared symbol. Ask a maintainer about an existing approved exception.'
 PROMOTION_FIX = 'Keep this pull request to one item. Move every Draft includer to the permanent header.'
-BAD_TEXT = re.compile(r'[\x00-\x08\x0b-\x1f\x7f]')
+BAD_TEXT = re.compile(r"[\x00-\x08\x0b-\x1f\x7f\x85\u2028\u2029]")
 FILE_COMPONENT = re.compile(r'[A-Za-z0-9_][A-Za-z0-9_.+-]*')
 WINDOWS_DEVICE = re.compile(r'(?:CON|PRN|AUX|NUL|COM[0-9]|LPT[0-9])(?:\.|$)', re.I)
 DRAFT = 'include/Draft/'
@@ -61,6 +61,7 @@ class Policy:
         self.header = tuple(values['header_extensions'])
         self.vendored = tuple(values['vendored_prefixes'])
         self.annotations = re.compile(values['annotation_pattern'])
+        self.compiler_controls = re.compile(values['compiler_directive_pattern'])
         self.allowed_pragmas = {scope: frozenset(names) for scope, names in values['allowed_pragmas'].items()}
         self.approved = {path: Counter(allowances)
                          for path, allowances in values['approved_forbidden'].items()}
@@ -159,7 +160,7 @@ def g1(ctx):
             invalid = BAD_TEXT.search(content)
             if invalid:
                 out.append(Finding(path, content.count('\n', 0, invalid.start()) + 1, 'G1',
-                                   'The blob contains a non-text control character or bare CR.', REGULAR))
+                                   'The blob contains a control character or unsupported line separator.', REGULAR))
                 break
             sources.append(Source(content))
         if len(sources) == 2:
@@ -212,9 +213,42 @@ def paired_surplus(before, after):
             yield line, value
 
 
+def compiler_controls(source, policy):
+    # Compiler readers use physical lines, even inside a block comment or
+    # a continued C++ comment. Do not filter these through the C++ lexer.
+    return [(line, text) for line, text in enumerate(source.lines, 1)
+            if policy.compiler_controls.fullmatch(text)]
+
+
+def changed_compiler_controls(edit, policy):
+    old, new = (compiler_controls(source, policy) for source in (edit.old, edit.new))
+    before, after = [text for _, text in old], [text for _, text in new]
+    restore = "Restore the original compiler directive. Ask a maintainer for compiler setting changes."
+    if before != after:
+        added = list(paired_surplus(old, new))
+        removed = list(paired_surplus(new, old))
+        if not added and not removed:
+            first = next(i for i, (a, b) in enumerate(zip(before, after)) if a != b)
+            yield Finding(edit.path, new[first][0], "G2", "Compiler directives changed order.", restore)
+        for direction, changes in (("added or changed", added), ("removed (base line)", removed)):
+            for line, _ in changes:
+                yield Finding(edit.path, line, "G2", f"A protected compiler directive was {direction}.", restore)
+        return
+    # The build driver also treats this raw substring anywhere in a file
+    # as enabling STLport. Match its actual boolean without reserving
+    # unrelated prose occurrences when the setting is already enabled.
+    mentions = [[line for line, text in enumerate(source.lines, 1) if "// stlport" in text]
+                for source in (edit.old, edit.new)]
+    if bool(mentions[0]) != bool(mentions[1]):
+        line = (mentions[1] or mentions[0])[0]
+        location = "" if mentions[1] else " (base line)"
+        yield Finding(edit.path, line, "G2", f"The STLport compiler setting changed{location}.", restore)
+
+
 def g2(ctx):
-    """Keep every file's generated annotation sequence and existing anchors."""
+    """Keep compiler controls, generated annotations and existing anchors."""
     for edit in ctx.edits.values():
+        yield from changed_compiler_controls(edit, ctx.policy)
         old, new = (annotations(source, ctx.policy) for source in (edit.old, edit.new))
         old_sequence = [text for _, text in old]
         new_sequence = [text for _, text in new]
@@ -326,6 +360,63 @@ def pragma_kind(values, policy, path):
     return 'compiler pragma' if not directive else f'compiler pragma {directive}'
 
 
+PASTED_CONTROLS = tuple(sorted(ASM | EMIT | DECO | ALIAS | {
+    "naked", "__naked__", "__pragma", "_Pragma", "noinline", "__noinline",
+    "__noinline__", "__assume", "__forceinline", "WWINLINE",
+}))
+
+
+def paste_can_form(parts, parameters, names):
+    """Match literal pieces and possible macro argument spellings in bounded time."""
+    for name in names:
+        offsets = {0}
+        for part in parts:
+            if part in parameters:
+                # A preprocessing argument may also be empty.
+                offsets = set(range(min(offsets), len(name) + 1))
+            else:
+                offsets = {at + len(part) for at in offsets if name.startswith(part, at)}
+            if not offsets:
+                break
+        if len(name) in offsets:
+            return True
+    return False
+
+
+def unsafe_paste(source, start, end):
+    """Decide whether any direct paste or argument can form a protected control."""
+    values = source.ordered
+    if values[start + 1:start + 2] != ("define",) or end < start + 4:
+        return False
+    replacement = start + 3
+    parameters = set()
+    if (values[replacement:replacement + 1] == ("(",)
+            and source.tokens[replacement - 1].stop == source.tokens[replacement].offset):
+        close = matching(values, replacement)
+        if close is None or close >= end:
+            return "##" in values[replacement:end]
+        parameters.update(word for word in values[replacement + 1:close] if word.isidentifier())
+        if "..." in values[replacement + 1:close]:
+            parameters.add("__VA_ARGS__")
+        replacement = close + 1
+    cursor = replacement
+    while cursor < end:
+        if values[cursor] != "##":
+            cursor += 1
+            continue
+        if cursor == replacement:
+            return True
+        parts = [values[cursor - 1]]
+        while cursor < end and values[cursor] == "##":
+            if cursor + 1 == end or values[cursor + 1] == "##":
+                return True
+            parts.append(values[cursor + 1])
+            cursor += 2
+        if paste_can_form(parts, parameters, PASTED_CONTROLS):
+            return True
+    return False
+
+
 def forbidden(source, policy, path):
     """Yield (physical start, end, construct kind, exact lexical fingerprint)."""
     values = source.ordered
@@ -342,7 +433,10 @@ def forbidden(source, policy, path):
         signature = hashlib.sha256(payload).hexdigest()
         return source.tokens[start].line, source.tokens[end-1].end_line, kind, signature
 
+    has_paste = '##' in values
     for start, end in source.directives():
+        if has_paste and unsafe_paste(source, start, end):
+            yield occurrence(start, end, 'token pasting that can form a forbidden compiler control')
         if values[start+1:start+2] == ('pragma',):
             kind = pragma_kind(values[start+2:end], policy, path)
             if kind:
