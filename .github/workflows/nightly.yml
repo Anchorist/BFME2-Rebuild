@@ -8,7 +8,7 @@ name: Nightly build and compare
 
 on:
   schedule:
-    - cron: '17 3 * * *'
+    - cron: '47 16 * * *'
     - cron: '17 7 * * *'
   workflow_dispatch:
     inputs:

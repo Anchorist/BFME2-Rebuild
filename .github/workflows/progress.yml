@@ -8,7 +8,7 @@ name: Progress card and worklists
 on:
   workflow_call:
   schedule:
-    - cron: '41 5 * * *'
+    - cron: '37 17 * * *'
   workflow_dispatch:
     inputs:
       drill:
