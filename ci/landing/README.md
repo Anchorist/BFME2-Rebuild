@@ -11,9 +11,10 @@ time. The rules on `main` (`ruleset-main.json`) refuse every other route.
 - `BFME II / Inline virtual` did not fail. It reports only for now, so pending is fine.
 - It is ready for review (not a draft), merges cleanly, has no `landing-hold` label, and changes nothing under
   `.github/`.
-- Pull requests from forks: the compiler check runs a new contributor's change only after a maintainer has read it
-  and added the `boat-ok` label. Until then the pull request shows `Held: awaiting-admission`, and you do not need
-  to do anything. Your branch name, title and description never decide anything.
+- Pull requests from forks: a commit that changes only files under `src/` is admitted to the compiler check
+  automatically, within a daily limit (`ci/admission/README.md`). Any other change waits until a maintainer has
+  read it and added the `boat-ok` label. Until then the pull request shows `Held: awaiting-admission`, and you do
+  not need to do anything. Your branch name, title and description never decide anything.
 - Changes under `include/` also need an approval from a header approver (below).
 
 It lands as one squash commit, credited to you. The commit message says which `main`, head and tree were
@@ -30,7 +31,8 @@ Each pull request carries a `BFME II / Landing` status:
 
 | Held reason | What to do |
 |---|---|
-| `awaiting-admission` | Nothing; a maintainer will look. |
+| `awaiting-admission` | Nothing. Changes to `src/` only are admitted automatically (see `ci/admission/README.md`); others wait for a maintainer. |
+| `daily-limit` | Nothing; retried automatically when today's limit for automatic admissions frees up. |
 | `awaiting-readmission` | Nothing; a maintainer reads your new commit and starts its compiler check. |
 | `measuring` | Nothing; checks are running. |
 | `check-failure` | Open that check's Details, fix, push. |

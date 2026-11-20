@@ -45,6 +45,7 @@ HOLD_LABEL = "landing-hold"
 REMEASURE_EVENT = "bfme-remeasure"  # both check workflows measure the PR on current main
 LANDED_EVENT = "bfme-landed"        # state and progress workflows run after a landing
 NEXT_EVENT = "bfme-land-next"       # this workflow takes the next pull request
+ADMIT_REQUEST_EVENT = "bfme-admit-request"  # admission.yml reserves and starts a measurement of a fork
 MEASURE_WAIT_SECONDS = 1800         # wide changes measured 744 to 978 s
 POLL_SECONDS = 20
 MAX_OPEN_PULLS = 300
@@ -128,6 +129,28 @@ def classify(status, main):
     return ("fresh-" if bound else "stale-") + kind
 
 
+ADMISSION_CONTEXT = "BFME II / Admission"
+ADMITTED_BY_RULE = "Admitted by rule:"
+HEADER_RULES_CONTEXT = "BFME II / Header rules"   # H1-H8, written by the header route on the exact head
+LEDGER_REQUEST_LABEL = "ledger-request"
+PROTECTED_PATHS = ("ci/", "tools/", "config/", "expected/", "baseline/")
+
+
+def latest_bot_status(api, head, context):
+    entries = api.call(f"commits/{head}/statuses?per_page=100&page=1")
+    found = [item for item in entries if isinstance(item, dict) and item.get("context") == context
+             and (item.get("creator") or {}).get("id") == lr.BOT_ID]
+    return max(found, key=lambda item: item["id"]) if found else None
+
+
+def admission_status(api, head):
+    """The latest BFME II / Admission status on this exact commit written by GitHub Actions, or None."""
+    entries = api.call(f"commits/{head}/statuses?per_page=100&page=1")
+    found = [item for item in entries if isinstance(item, dict) and item.get("context") == ADMISSION_CONTEXT
+             and (item.get("creator") or {}).get("id") == lr.BOT_ID]
+    return max(found, key=lambda item: item["id"]) if found else None
+
+
 def changed_files(api, number):
     names = []
     for page in range(1, 31):
@@ -164,6 +187,8 @@ def evaluate(api, number, main, config):
         return decision
     head_repo = (pr.get("head") or {}).get("repo") or {}
     decision["fork"] = head_repo.get("id") != REPO_ID
+    # Trusted: a branch of this repository, or an author who is an owner, member or collaborator.
+    decision["trusted"] = not decision["fork"] or pr.get("author_association") in {"OWNER", "MEMBER", "COLLABORATOR"}
     head_ref = (pr.get("head") or {}).get("ref", "")
     # Rehearsal and corpus branches are ours. A fork's branch name is chosen by its author and decides nothing.
     if (not decision["fork"] and head_ref.startswith(REFUSED_BRANCH_PREFIXES)
@@ -173,19 +198,52 @@ def evaluate(api, number, main, config):
     if pr.get("draft") is not False:
         hold("draft", "a pull request marked ready for review",
              "a draft; choose Ready for review when you want it to land")
+    decision["has_ledger_label"] = any(label.get("name") == LEDGER_REQUEST_LABEL for label in pr.get("labels") or ())
     if any(label.get("name") == HOLD_LABEL for label in pr.get("labels") or ()):
         hold("hold-label", f"no {HOLD_LABEL} label", f"the {HOLD_LABEL} label, set by a maintainer")
     if not head_repo:
         hold("head-repository-missing", "the pull request's source repository",
              "a deleted repository; open a new pull request from an existing fork", True)
-    elif not admitted(pr):
-        hold("awaiting-admission", "a maintainer to admit this pull request to the compiler check (label boat-ok)",
-             "no admission yet. A maintainer reads changes from new contributors before the compiler runs them; "
-             "you do not need to do anything")
+    elif admitted(pr):
+        decision["rule_admitted"] = False
+    elif ((admission_status(api, head) or {}).get("state") == "success"
+          and ((admission_status(api, head) or {}).get("description") or "").startswith(ADMITTED_BY_RULE)):
+        # Admitted by rule: each compiler measurement of it is reserved by .github/workflows/admission.yml.
+        decision["rule_admitted"] = True
+    elif ((admission_status(api, head) or {}).get("description") or "").startswith("Held: daily limit"):
+        hold("daily-limit", "room in today's limit for automatic admissions",
+             "the limit is reached; retried automatically, you do not need to do anything")
+    else:
+        hold("awaiting-admission", "an admission of this commit to the compiler check",
+             "none yet. Changes to source files only are admitted automatically within a daily limit; other "
+             "changes wait for a maintainer (label boat-ok); you do not need to do anything")
     files = changed_files(api, number)
     if any(name.startswith(".github/") for name in files):
         hold("workflow-change", "no change under .github/", "a workflow change; a maintainer merges those by hand", True)
-    if any(name.startswith("include/") for name in files):
+    protected = sorted({name.split("/", 1)[0] + "/" for name in files if name.startswith(PROTECTED_PATHS)})
+    if protected:
+        # The checks refuse these paths too; the landing workflow never relies on that alone.
+        hold("protected-path", "changes only outside " + ", ".join(PROTECTED_PATHS),
+             f"a change under {', '.join(protected)}; a maintainer merges those by hand", True)
+    header_change = any(name.startswith("include/") for name in files)
+    if header_change and config.get("auto_headers"):
+        rules = latest_bot_status(api, head, HEADER_RULES_CONTEXT) or {}
+        text = rules.get("description") or ""
+        if rules.get("state") == "success" and marker(main) in text:
+            pass                                    # H1-H8 passed on this head and this main
+        elif rules.get("state") == "success":
+            decision["header_stale"] = True         # measured on another main: re-measured like the checks
+        elif rules.get("state") == "pending" and text.startswith("Held: ledger request"):
+            decision["ledger_request"] = True
+            hold("ledger-request", "a decision on the ledger change this pull request asks for",
+                 f"{printable(text, 90)}; it waits and never fails, you do not need to do anything")
+        elif rules.get("state") == "pending" and text.startswith("Held: rule not built"):
+            hold("header-rule-not-built", "every header rule to be in place", printable(text, 90))
+        elif rules.get("state") in ("failure", "error"):
+            hold("header-rules", f"{HEADER_RULES_CONTEXT} success", f"{printable(text, 100)}", True)
+        else:
+            hold("header-rules", f"{HEADER_RULES_CONTEXT} on head {head[:12]}", "no result yet")
+    elif header_change:
         if not config["approvers"]:
             hold("header-approvers-empty", "a listed header approver in ci/landing/landing.json",
                  "an empty list, so no header change can land automatically", True)
@@ -238,7 +296,7 @@ def evaluate(api, number, main, config):
         else:
             hold("no-status", f"{context} from GitHub Actions on head {head[:12]}", kind)
     if not reasons:
-        decision["stage"] = "remeasure" if stale else "land"
+        decision["stage"] = "remeasure" if stale or decision.get("header_stale") else "land"
         decision["inline"] = statuses.get(INLINE, {}).get("state") if decision["checks"][INLINE] == "fresh-success" else "pending"
     return decision
 
@@ -280,6 +338,16 @@ def report_hold(api, decision):
     if prior.get("state") == state and prior.get("description") == text:
         return
     status(api, decision["head"], state, text)
+
+
+def label_ledger_request(api, decision):
+    """H9: a pull request waiting for a ledger decision carries the ledger-request label (live only, once)."""
+    if not api.live or not decision.get("ledger_request") or decision.get("has_ledger_label"):
+        return
+    code, _ = api.write("POST", f"issues/{decision['number']}/labels", {"labels": [LEDGER_REQUEST_LABEL]})
+    if code not in (200, 201):
+        print(f"label: Expected HTTP 200 adding {LEDGER_REQUEST_LABEL} to #{decision['number']}. Found HTTP {code}.",
+              file=sys.stderr)
 
 
 def status(api, sha, state, text):
@@ -521,6 +589,7 @@ def select(api, env, config, directory, clock=time.monotonic, sleep=time.sleep):
     decisions = [evaluate(api, number, main, config) for number in numbers]
     for item in decisions:
         report_hold(api, item)
+        label_ledger_request(api, item)
     lines = table(decisions, main, api.live)
     if merge_queue_active(api):
         return enqueue(api, decisions, main, lines)
@@ -547,7 +616,24 @@ def select(api, env, config, directory, clock=time.monotonic, sleep=time.sleep):
                              f"head {pick['head'][:12]} on main {main[:12]} and wait for fresh results."])
             output("action", "none")
             return 0
-        dispatch(api, REMEASURE_EVENT, binding)
+        if config.get("auto_admission"):
+            # Automatic admission on: every bot-started measurement needs a reservation, so the admission workflow
+            # decides by rule for this exact commit and main (narrow for outsiders, trusted-narrow for members and
+            # this repository's branches), reserves, and then sends bfme-remeasure itself, or holds by name.
+            dispatch(api, ADMIT_REQUEST_EVENT, {"number": binding["number"]})
+        elif not pick.get("trusted"):
+            # Switched off: a pull request from outside the organisation is never re-measured on a label alone,
+            # because the label is not bound to a commit. A maintainer re-admits this commit on the new main.
+            held = Held("awaiting-readmission", f"a maintainer to admit commit {binding['head'][:12]} on main "
+                        f"{main[:12]} (remove and add the boat-ok label)",
+                        "a measurement on an older main only; you do not need to do anything")
+            report_hold(api, {"head": binding["head"], "reasons": [held], "landing_status": None})
+            headline(f"Held #{binding['number']}: awaiting-readmission.")
+            summary(lines + ["", f"#{binding['number']} held. {held.line()}"])
+            output("action", "none")
+            return 0
+        else:
+            dispatch(api, REMEASURE_EVENT, binding)
         status(api, pick["head"], "pending", f"Measuring on main {main[:12]} before landing")
         print(f"Requested a fresh measurement of #{pick['number']} on main {main[:12]}.")
     try:
@@ -755,7 +841,10 @@ def run(argv, env, api=None, config=None, **kwargs):
     if api is None:
         api = Api(REPO, env.pop("BFME_LANDING_TOKEN", None), live)
     api.run_id = env.get("GITHUB_RUN_ID", "")
-    config = config or load_config()
+    api.run_attempt = env.get("GITHUB_RUN_ATTEMPT", "")
+    config = dict(config or load_config())
+    config.setdefault("auto_headers", env.get("BFME_AUTO_HEADERS") == "yes")
+    config.setdefault("auto_admission", env.get("BFME_AUTO_ADMISSION") == "yes")
     if mode == "select":
         return select(api, env, config, directory, **kwargs)
     if mode == "land":

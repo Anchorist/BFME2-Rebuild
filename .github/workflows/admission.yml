@@ -1,0 +1,76 @@
+name: BFME II admission
+
+# Admits pull requests from forks to the compiler check by rule, one exact commit at a time
+# (ci/admission/admit.py). It runs main's code on a GitHub-hosted runner and reads the pull request through
+# the API only: the pull request's files are never checked out here, and nothing from them runs.
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, reopened, synchronize, ready_for_review]
+  # The landing workflow asks for a new admission before re-measuring a fork pull request on a newer main.
+  repository_dispatch:
+    types: [bfme-admit-request]
+  schedule:
+    - cron: '41 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  admit:
+    if: github.repository == 'Open-BFME/BFME2-Rebuild'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: read
+      actions: read
+      statuses: write
+    # Live only with BFME_AUTO_ADMISSION=yes; the daily limits must be set, or every source-only commit is held.
+    env:
+      BFME_AUTO_ADMISSION: ${{ vars.BFME_AUTO_ADMISSION }}
+      BFME_ADMISSION_DAILY_TOTAL: ${{ vars.BFME_ADMISSION_DAILY_TOTAL }}
+      BFME_ADMISSION_DAILY_PER_AUTHOR: ${{ vars.BFME_ADMISSION_DAILY_PER_AUTHOR }}
+      BFME_AUTO_HEADERS: ${{ vars.BFME_AUTO_HEADERS }}
+      BFME_ADMISSION_WIDE_DAILY_TOTAL: ${{ vars.BFME_ADMISSION_WIDE_DAILY_TOTAL }}
+      BFME_ADMISSION_WIDE_DAILY_PER_AUTHOR: ${{ vars.BFME_ADMISSION_WIDE_DAILY_PER_AUTHOR }}
+    steps:
+      - name: Read the admission tools from main, never from the pull request
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: |
+            ci/admission
+            ci/landing
+            ci/managed-check
+            ci/managed-nt2
+            tools/gates
+      - name: Verify the admission tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          for dir in ci/admission ci/landing ci/managed-check; do
+            if ! (cd "$dir" && sha256sum -c --quiet bundle.sha256); then
+              echo "Expected every file listed in $dir/bundle.sha256 to match. Found a difference." >&2
+              exit 1
+            fi
+          done
+      - name: Decide admission for this pull request
+        if: github.event_name == 'pull_request_target'
+        shell: bash
+        env:
+          BFME_ADMISSION_TOKEN: '${{ github.token }}'
+        run: python3 -I -B ci/admission/admit.py event
+      - name: Decide for the pull request the landing workflow named
+        if: github.event_name == 'repository_dispatch'
+        shell: bash
+        env:
+          BFME_ADMISSION_TOKEN: '${{ github.token }}'
+        run: python3 -I -B ci/admission/admit.py request
+      - name: Retry held and undecided fork pull requests, oldest first
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        env:
+          BFME_ADMISSION_TOKEN: '${{ github.token }}'
+        run: python3 -I -B ci/admission/admit.py retry

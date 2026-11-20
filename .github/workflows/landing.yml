@@ -4,8 +4,8 @@ name: BFME II landing
 # thing that moves main: it merges a pull request only when the three checks
 # passed on its exact head and were measured against the main it merges onto.
 #
-# Runner cost: both jobs only call the GitHub API and run standard-library Python, so they use GitHub-hosted
-# runners and start no Boat runner at all. Runs start on a successful check completion (a failed check can make
+# Runner: both jobs only call the GitHub API and run standard-library Python. They run on a fixed GitHub-hosted
+# runner; no runner variable, because outsiders can start this workflow and no such run may carry a Boat label. Runs start on a successful check completion (a failed check can make
 # nothing eligible), after each landing (bfme-land-next), on the merge queue, by hand, and hourly as a backstop.
 on:
   schedule:
@@ -41,7 +41,7 @@ jobs:
     if: >-
       github.repository == 'Open-BFME/BFME2-Rebuild' && github.event_name == 'merge_group' &&
       startsWith(github.ref, 'refs/heads/gh-readonly-queue/main/')
-    runs-on: ${{ vars.BFME_LANDING_RUNNER || 'ubuntu-24.04' }}
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
       group: bfme-landing-group-${{ github.event.merge_group.head_sha }}
@@ -82,7 +82,7 @@ jobs:
       github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
       github.event_name != 'merge_group' &&
       (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
-    runs-on: ${{ vars.BFME_LANDING_RUNNER || 'ubuntu-24.04' }}
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     # One landing job at a time for the whole repository; a newer trigger waits, it never cancels this one.
     concurrency:
@@ -97,6 +97,10 @@ jobs:
       BFME_LANDING_MODE: "${{ github.event_name == 'workflow_dispatch' && inputs.mode || vars.BFME_LANDING_MODE || 'dry-run' }}"
       BFME_LANDING_PR: "${{ github.event_name == 'workflow_dispatch' && inputs.pr_number || '' }}"
       BFME_LANDING_CHAIN: "${{ github.event_name != 'workflow_dispatch' && '1' || '0' }}"
+      # Header changes land on the header rules (H1-H8) instead of a listed approver only when this is "yes".
+      BFME_AUTO_HEADERS: ${{ vars.BFME_AUTO_HEADERS }}
+      # With automatic admission on, every re-measure goes through the admission workflow (it reserves first).
+      BFME_AUTO_ADMISSION: ${{ vars.BFME_AUTO_ADMISSION }}
     steps:
       - name: Read the landing tools from this main commit
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683

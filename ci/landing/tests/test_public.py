@@ -52,7 +52,7 @@ class Forks(unittest.TestCase):
                                        NO_EXCEPTIONS)
             first = decision["reasons"][0]
             self.assertEqual((decision["stage"], first.code), ("hold", "awaiting-admission"))
-            self.assertIn("boat-ok", first.expected)
+            self.assertIn("boat-ok", first.found)
             self.assertIn("you do not need to do anything", first.found)
             self.assertNotIn("refused-branch", [item.code for item in decision["reasons"]])
 
@@ -77,14 +77,18 @@ class Forks(unittest.TestCase):
         decision = lander.evaluate(FakeApi(live=False, main=MEASURED), 2, MEASURED, NO_EXCEPTIONS)
         self.assertEqual(decision["reasons"][0].code, "refused-branch")
 
-    def test_admitted_stale_fork_gets_the_same_remeasure(self):
-        api = FakeApi(live=True, main=LIVE_MAIN, edit=as_fork("CONTRIBUTOR", labels=("boat-ok",)))
-        ticks = iter(range(0, 10**7, 900))
-        with tempfile.TemporaryDirectory() as tmp:
-            quiet(lander.run, ["select", tmp + "/w"], env(main=LIVE_MAIN, mode="live", pr="2"), api=api,
-                  config=NO_EXCEPTIONS, clock=lambda: next(ticks), sleep=lambda s: None)
-        self.assertEqual(api.writes[0], ("POST", "dispatches", {"event_type": "bfme-remeasure", "client_payload": {
-            "number": 2, "base": LIVE_MAIN, "head": PR2}}))
+    def test_admitted_stale_fork_goes_through_admission_not_the_label(self):
+        # Audit 1.6(c): a label is not bound to a commit. Switched off, the outsider waits for a maintainer;
+        # switched on, the admission workflow decides by rule for this exact head and main.
+        for auto, expected in ((False, None), (True, "bfme-admit-request")):
+            api = FakeApi(live=True, main=LIVE_MAIN, edit=as_fork("CONTRIBUTOR", labels=("boat-ok",)))
+            ticks = iter(range(0, 10**7, 900))
+            with tempfile.TemporaryDirectory() as tmp:
+                quiet(lander.run, ["select", tmp + "/w"], env(main=LIVE_MAIN, mode="live", pr="2"), api=api,
+                      config=NO_EXCEPTIONS | {"auto_admission": auto}, clock=lambda: next(ticks),
+                      sleep=lambda s: None)
+            sent = [w[2]["event_type"] for w in api.writes if w[1] == "dispatches"]
+            self.assertEqual(sent[:1], [expected] if expected else [], auto)
 
     def test_new_commit_after_admission_names_readmission(self):
         # boat-ok stays on the pull request, but the compiler check does not run a contributor's new commit by itself.
@@ -112,12 +116,170 @@ class Forks(unittest.TestCase):
         decision = lander.evaluate(FakeApi(live=False, main=MEASURED, edit=member), 2, MEASURED, NO_EXCEPTIONS)
         self.assertEqual(decision["reasons"][0].code, "no-status")
 
+    def test_commit_admitted_by_rule_is_eligible_without_a_label(self):
+        def ruled(fx, creator=lander.lr.BOT_ID, head=PR2):
+            as_fork()(fx)
+            fx[f"commits/{head}/statuses?per_page=100&page=1"].insert(0, {
+                "id": 10**12, "context": "BFME II / Admission", "state": "success",
+                "description": "Admitted by rule: source files only", "creator": {"id": creator}})
+        decision = lander.evaluate(FakeApi(live=False, main=MEASURED, edit=ruled), 2, MEASURED, NO_EXCEPTIONS)
+        self.assertEqual((decision["stage"], decision["reasons"]), ("land", []))
+        forged = lander.evaluate(FakeApi(live=False, main=MEASURED, edit=lambda fx: ruled(fx, creator=1760627)),
+                                 2, MEASURED, NO_EXCEPTIONS)
+        self.assertEqual(forged["reasons"][0].code, "awaiting-admission")
+
+    def test_admission_of_an_older_commit_does_not_carry_over(self):
+        def older(fx):
+            as_fork()(fx)
+            old = "5" * 40
+            fx[f"commits/{old}/statuses?per_page=100&page=1"] = [{
+                "id": 1, "context": "BFME II / Admission", "state": "success",
+                "description": "Admitted by rule: source files only", "creator": {"id": lander.lr.BOT_ID}}]
+        decision = lander.evaluate(FakeApi(live=False, main=MEASURED, edit=older), 2, MEASURED, NO_EXCEPTIONS)
+        self.assertEqual(decision["reasons"][0].code, "awaiting-admission")
+
     def test_deleted_fork_is_held(self):
         def gone(fx):
             as_fork(labels=("boat-ok",))(fx)
             fx["pulls/2"]["head"]["repo"] = None
         decision = lander.evaluate(FakeApi(live=False, main=MEASURED, edit=gone), 2, MEASURED, NO_EXCEPTIONS)
         self.assertEqual(decision["reasons"][0].code, "head-repository-missing")
+
+
+def admission(fx, state="success", description=None, creator=None):
+    fx[f"commits/{PR2}/statuses?per_page=100&page=1"].insert(0, {
+        "id": 10**12, "context": "BFME II / Admission", "state": state,
+        "description": description or f"Admitted by rule: source files only (main {LIVE_MAIN[:12]})",
+        "creator": {"id": creator or lander.lr.BOT_ID}})
+
+
+class RuleAdmittedRemeasure(unittest.TestCase):
+    """Re-measuring a fork admitted by rule goes through the admission workflow, which reserves first."""
+
+    def test_asks_admission_instead_of_dispatching_the_compiler(self):
+        api = FakeApi(live=True, main=LIVE_MAIN, edit=lambda fx: (as_fork()(fx), admission(fx)))
+        ticks = iter(range(0, 10**7, 900))
+        with tempfile.TemporaryDirectory() as tmp:
+            quiet(lander.run, ["select", tmp + "/w"], env(main=LIVE_MAIN, mode="live", pr="2"), api=api,
+                  config=NO_EXCEPTIONS | {"auto_admission": True}, clock=lambda: next(ticks), sleep=lambda s: None)
+        self.assertEqual(api.writes[0], ("POST", "dispatches", {"event_type": "bfme-admit-request",
+                                                                "client_payload": {"number": 2}}))
+        self.assertNotIn("bfme-remeasure", [w[2].get("event_type") for w in api.writes if w[1] == "dispatches"])
+
+    def run_stale(self, edit, auto):
+        api = FakeApi(live=True, main=LIVE_MAIN, edit=edit)
+        ticks = iter(range(0, 10**7, 900))
+        with tempfile.TemporaryDirectory() as tmp:
+            _, out = quiet(lander.run, ["select", tmp + "/w"], env(main=LIVE_MAIN, mode="live", pr="2"), api=api,
+                           config=NO_EXCEPTIONS | {"auto_admission": auto}, clock=lambda: next(ticks),
+                           sleep=lambda s: None)
+        return api, out
+
+    def test_label_admitted_outsider_is_never_re_measured_on_the_label(self):
+        api, out = self.run_stale(as_fork(labels=("boat-ok",)), auto=False)
+        self.assertNotIn("dispatches", [w[1] for w in api.writes])
+        self.assertTrue(landing_statuses(api)[-1]["description"].startswith("Held: awaiting-readmission."))
+        api, _ = self.run_stale(as_fork(labels=("boat-ok",)), auto=True)
+        self.assertEqual(api.writes[0][2], {"event_type": "bfme-admit-request", "client_payload": {"number": 2}})
+
+    def test_with_automatic_admission_members_also_go_through_admission(self):
+        def member(fx):
+            as_fork()(fx)
+            fx["pulls/2"]["author_association"] = "MEMBER"
+        api, _ = self.run_stale(member, auto=True)
+        self.assertEqual(api.writes[0][2], {"event_type": "bfme-admit-request", "client_payload": {"number": 2}})
+
+    def test_member_fork_still_dispatches_directly(self):
+        def member(fx):
+            as_fork(labels=("boat-ok",))(fx)
+            fx["pulls/2"]["author_association"] = "MEMBER"
+        api = FakeApi(live=True, main=LIVE_MAIN, edit=member)
+        ticks = iter(range(0, 10**7, 900))
+        with tempfile.TemporaryDirectory() as tmp:
+            quiet(lander.run, ["select", tmp + "/w"], env(main=LIVE_MAIN, mode="live", pr="2"), api=api,
+                  config=NO_EXCEPTIONS, clock=lambda: next(ticks), sleep=lambda s: None)
+        self.assertEqual(api.writes[0][2]["event_type"], "bfme-remeasure")
+
+    def test_daily_limit_from_admission_is_named(self):
+        api = FakeApi(live=False, main=MEASURED, edit=lambda fx: (as_fork()(fx), admission(
+            fx, "pending", "Held: daily limit, retried automatically")))
+        decision = lander.evaluate(api, 2, MEASURED, NO_EXCEPTIONS)
+        self.assertEqual(decision["reasons"][0].code, "daily-limit")
+        self.assertIn("you do not need to do anything", decision["reasons"][0].found)
+
+
+def header_pr(fx, state=None, description=None):
+    fx["pulls/2/files?per_page=100&page=1"].append({"filename": "include/GameLogic/Object.h", "status": "modified"})
+    if state:
+        fx[f"commits/{PR2}/statuses?per_page=100&page=1"].insert(0, {
+            "id": 10**12, "context": "BFME II / Header rules", "state": state, "description": description,
+            "creator": {"id": lander.lr.BOT_ID}})
+
+
+AUTO = CONFIG | {"auto_headers": True}
+
+
+class HeaderRules(unittest.TestCase):
+    """With BFME_AUTO_HEADERS=yes a header change lands on the header rules (H1-H8), not on a listed approver."""
+
+    def evaluate(self, state=None, description=None, config=AUTO):
+        api = FakeApi(live=False, main=MEASURED, edit=lambda fx: header_pr(fx, state, description))
+        return lander.evaluate(api, 2, MEASURED, config)
+
+    def test_passing_head_lands_with_no_approver(self):
+        decision = self.evaluate("success", f"Header rules passed (main {MEASURED[:12]})")
+        self.assertEqual((decision["stage"], decision["reasons"]), ("land", []))
+
+    def test_switch_off_keeps_the_approver_rule(self):
+        decision = self.evaluate("success", f"Header rules passed (main {MEASURED[:12]})", CONFIG)
+        self.assertEqual(decision["reasons"][0].code, "header-approvers-empty")
+
+    def test_failure_is_named(self):
+        decision = self.evaluate("failure", f"H3: Object defined twice (main {MEASURED[:12]})")
+        first = decision["reasons"][0]
+        self.assertEqual((first.code, first.final), ("header-rules", True))
+        self.assertIn("H3: Object defined twice", first.found)
+
+    def test_ledger_request_waits_and_never_fails(self):
+        decision = self.evaluate("pending", "Held: ledger request R-17 (main 879a5be4f21d)")
+        first = decision["reasons"][0]
+        self.assertEqual((first.code, first.final, decision["ledger_request"]), ("ledger-request", False, True))
+
+    def test_rule_not_built_is_held_by_name(self):
+        decision = self.evaluate("pending", "Held: rule not built: H2")
+        self.assertEqual(decision["reasons"][0].code, "header-rule-not-built")
+
+    def test_missing_result_is_held(self):
+        self.assertEqual(self.evaluate()["reasons"][0].code, "header-rules")
+
+    def test_result_on_an_older_main_is_re_measured(self):
+        decision = self.evaluate("success", "Header rules passed (main 000000000000)")
+        self.assertEqual((decision["stage"], decision["reasons"]), ("remeasure", []))
+
+    def test_ledger_request_label_is_added_once(self):
+        api = FakeApi(live=True, main=MEASURED, edit=lambda fx: header_pr(
+            fx, "pending", "Held: ledger request R-17 (main 879a5be4f21d)"))
+        with tempfile.TemporaryDirectory() as tmp:
+            quiet(lander.run, ["select", tmp + "/w"], env(mode="live", pr="2"), api=api, config=AUTO)
+        labels = [w for w in api.writes if w[1] == "issues/2/labels"]
+        self.assertEqual(labels, [("POST", "issues/2/labels", {"labels": ["ledger-request"]})])
+        api.fx["pulls/2"]["labels"].append({"name": "ledger-request"})
+        api.writes.clear()
+        with tempfile.TemporaryDirectory() as tmp:
+            quiet(lander.run, ["select", tmp + "/w"], env(mode="live", pr="2"), api=api, config=AUTO)
+        self.assertEqual([w for w in api.writes if w[1] == "issues/2/labels"], [])
+
+
+class ProtectedPaths(unittest.TestCase):
+    def test_changes_under_protected_paths_are_held_by_the_lander_itself(self):
+        for path in ("ci/landing/lander.py", "tools/gates/rules.py", "config/map.json", "expected/a.json",
+                     "baseline/game.dat"):
+            def edit(fx, path=path):
+                fx["pulls/2/files?per_page=100&page=1"].append({"filename": path, "status": "modified"})
+            decision = lander.evaluate(FakeApi(live=False, main=MEASURED, edit=edit), 2, MEASURED, CONFIG)
+            codes = [item.code for item in decision["reasons"]]
+            self.assertIn("protected-path", codes, path)
+            self.assertEqual(decision["stage"], "hold")
 
 
 @unittest.skipUnless(receipts_match_checkout(), "the captured receipts were produced by ci/managed-check at 879a5be4")

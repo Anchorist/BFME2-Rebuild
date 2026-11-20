@@ -1,0 +1,117 @@
+"""Require an exact protected source-rules receipt before dispatching a compile."""
+
+import io
+import json
+import re
+import subprocess
+import tempfile
+from pathlib import Path
+import zipfile
+
+from common import REPO, REPO_ID
+
+BOT_ID = 41898282
+CONTEXTS = ("BFME II / source rules", *(f"BFME II / G{i}" for i in range(1, 9)))
+RUN_URL = re.compile(r"https://github\.com/" + re.escape(REPO) + r"/actions/runs/([1-9][0-9]{0,19})")
+RUN_ID = re.compile(r"[1-9][0-9]{0,19}")
+WORKFLOWS = {".github/workflows/rules.yml", ".github/workflows/managed-pr.yml"}
+TOOLS = Path(__file__).resolve().parents[2] / "tools/gates"
+
+
+class Unavailable(ValueError):
+    pass
+
+
+class Refused(Unavailable):
+    pass
+
+
+def statuses(api, head, base):
+    """Use the statuses only to select a protected run to authenticate."""
+    selected = {}
+    for page in range(1, 5):
+        entries = api.call(f"commits/{head}/statuses?per_page=100&page={page}")
+        for item in sorted(entries, key=lambda row: row["id"], reverse=True):
+            if item["context"] in CONTEXTS:
+                selected.setdefault(item["context"], item)
+        if len(selected) == len(CONTEXTS) or len(entries) < 100:
+            break
+    runs, ready = set(), set()
+    for context in CONTEXTS:
+        item = selected.get(context, {})
+        match = RUN_URL.fullmatch(item.get("target_url") or "")
+        if ((item.get("creator") or {}).get("id") != BOT_ID
+                or not (item.get("description") or "").endswith(f"(main {base[:12]})")
+                or match is None):
+            continue
+        if item.get("state") == "failure":
+            raise Refused(f"Current source verdict {context} refused")
+        if item.get("state") == "success":
+            runs.add(match[1])
+        else:
+            continue
+        ready.add(context)
+    if ready != set(CONTEXTS):
+        raise Unavailable("The current protected source rules have not all passed")
+    if len(runs) != 1:
+        raise Unavailable("The source rules do not name one protected run")
+    return runs.pop()
+
+
+def download(artifact, token):
+    """Read a single small JSON artifact from the fixed GitHub repository."""
+    if not RUN_ID.fullmatch(str(artifact)) or not isinstance(token, str):
+        raise Unavailable("The source receipt download is unavailable")
+    limit = 16_384
+    with tempfile.TemporaryFile() as response:
+        done = subprocess.run(
+            ["/usr/bin/prlimit", f"--fsize={limit}:{limit}", "--",
+             "gh", "api", f"repos/{REPO}/actions/artifacts/{artifact}/zip"],
+            stdout=response, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL,
+            env={"PATH": "/usr/bin:/bin", "GH_TOKEN": token, "LANG": "C"}, timeout=25, check=False
+        )
+        if done.returncode:
+            raise Unavailable("GitHub did not return the bounded source receipt")
+        response.seek(0)
+        raw = response.read(limit + 1)
+    if len(raw) > limit:
+        raise Unavailable("The source receipt exceeds its size limit")
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        entries = archive.infolist()
+        if len(entries) != 1 or entries[0].filename != "receipt.json" or entries[0].file_size > 4096:
+            raise Unavailable("The source receipt archive has unexpected contents")
+        with archive.open(entries[0]) as stream:
+            record = stream.read(4097)
+        if len(record) > 4096:
+            raise Unavailable("The source receipt exceeds its JSON size limit")
+    return json.loads(record)
+
+
+def require_source(api, number, head, base, tree, policy_digest, load_receipt):
+    """Bind the all-rule outcome to exact PR, tree, current policy, run and attempt."""
+    run_id = statuses(api, head, base)
+    run = api.call(f"actions/runs/{run_id}")
+    event_head = {"pull_request_target": head, "repository_dispatch": base}.get(run.get("event"))
+    attempt = str(run.get("run_attempt", ""))
+    if (run.get("path") not in WORKFLOWS or event_head is None or run.get("head_sha") != event_head
+            or str(run.get("id")) != run_id or (run.get("repository") or {}).get("id") != REPO_ID
+            or run.get("status") != "completed" or run.get("conclusion") != "success"
+            or not RUN_ID.fullmatch(attempt)):
+        raise Unavailable("The source status does not name a successful protected workflow attempt")
+    listed = api.call(f"actions/runs/{run_id}/artifacts?per_page=100")
+    name = f"bfme-source-receipt-{attempt}"
+    artifacts = [row for row in listed["artifacts"] if row.get("name") == name]
+    if len(artifacts) != 1 or artifacts[0].get("expired") is not False:
+        raise Unavailable("The source attempt's exact receipt is missing or expired")
+    row = artifacts[0]
+    if type(row.get("size_in_bytes")) is not int or not 0 < row["size_in_bytes"] <= 16_384:
+        raise Unavailable("The source receipt exceeds its size limit")
+    if not RUN_ID.fullmatch(str(row.get("id", ""))):
+        raise Unavailable("The source receipt does not have a valid artifact id")
+    value = load_receipt(row["id"])
+    expected = {"repo": REPO_ID, "number": number, "head": head, "base": base, "tree": tree,
+                "tools_commit": base, "policy_sha256": policy_digest,
+                "run": run_id, "attempt": attempt, "state": "pass"}
+    if value != expected:
+        raise Unavailable("The protected source receipt has a different tree, policy or attempt")
+    return value
