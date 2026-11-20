@@ -1,0 +1,106 @@
+name: BFME II landing
+
+# One landing job at a time for the whole repository. This job is the only
+# thing that moves main: it merges a pull request only when the three checks
+# passed on its exact head and were measured against the main it merges onto.
+on:
+  # Backstop only: check completions (workflow_run) and the follow-up after each landing (bfme-land-next)
+  # start most runs. Every 15 minutes keeps idle runner use near 100 short runs a day.
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_run:
+    workflows: [BFME II Boat comparison, BFME II source rules]
+    types: [completed]
+  repository_dispatch:
+    types: [bfme-land-next]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: dry-run reports what it would do and changes nothing; live merges
+        required: true
+        default: dry-run
+        type: choice
+        options: [dry-run, live]
+      pr_number:
+        description: Only consider this pull request (empty means every open pull request)
+        required: false
+        default: ''
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: bfme-landing
+  cancel-in-progress: false
+
+jobs:
+  land:
+    if: github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main'
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+      statuses: write
+      actions: read
+    env:
+      BFME_LANDING_MODE: "${{ github.event_name == 'workflow_dispatch' && inputs.mode || vars.BFME_LANDING_MODE || 'dry-run' }}"
+      BFME_LANDING_PR: "${{ github.event_name == 'workflow_dispatch' && inputs.pr_number || '' }}"
+      BFME_LANDING_CHAIN: "${{ github.event_name != 'workflow_dispatch' && '1' || '0' }}"
+    steps:
+      - name: Read the landing tools from this main commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: |
+            ci/landing
+            ci/managed-check
+            ci/managed-nt2
+            tools/gates
+      - name: Verify the landing and receipt tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          for dir in ci/landing ci/managed-check; do
+            if ! (cd "$dir" && sha256sum -c --quiet bundle.sha256); then
+              echo "Expected every file listed in $dir/bundle.sha256 to match. Found a difference." >&2
+              exit 1
+            fi
+          done
+      - name: Choose a pull request and make sure it was measured on current main
+        id: select
+        shell: bash
+        env:
+          BFME_LANDING_TOKEN: '${{ github.token }}'
+        run: python3 -B ci/landing/lander.py select "$RUNNER_TEMP/bfme-landing"
+      - name: Download the match receipt
+        if: steps.select.outputs.action == 'land'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: '${{ github.token }}'
+          run-id: '${{ steps.select.outputs.match_run }}'
+          name: bfme-report-${{ steps.select.outputs.match_attempt }}
+          path: '${{ runner.temp }}/bfme-landing/match'
+      - name: Download the inline virtual receipt
+        if: steps.select.outputs.action == 'land' && steps.select.outputs.inline == 'success'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: '${{ github.token }}'
+          run-id: '${{ steps.select.outputs.match_run }}'
+          name: bfme-inline-report-${{ steps.select.outputs.match_attempt }}
+          path: '${{ runner.temp }}/bfme-landing/inline'
+      - name: Download the source rules receipt
+        if: steps.select.outputs.action == 'land'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: '${{ github.token }}'
+          run-id: '${{ steps.select.outputs.rules_run }}'
+          name: bfme-source-receipt-${{ steps.select.outputs.rules_attempt }}
+          path: '${{ runner.temp }}/bfme-landing/rules'
+      - name: Verify receipts, re-read main, merge, verify the new main commit
+        if: steps.select.outputs.action == 'land'
+        shell: bash
+        env:
+          BFME_LANDING_TOKEN: '${{ github.token }}'
+        run: python3 -B ci/landing/lander.py land "$RUNNER_TEMP/bfme-landing"

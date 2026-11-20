@@ -1,0 +1,7 @@
+{
+ "header_approvers": [],
+ "rehearsal_exceptions": [
+  {"number": 2, "head": "7eb1cdbb67eb375af71626adfc89f05b72c9b393"}
+ ],
+ "remeasure": "repository_dispatch"
+}
