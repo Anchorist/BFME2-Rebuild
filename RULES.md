@@ -1,0 +1,23 @@
+# Source rules
+
+These checks run on pull requests to main. A refusal gives a rule number,
+a file and line, and a way to fix the change.
+
+| Rule | What to do | Bad example | Fix |
+| --- | --- | --- | --- |
+| **G1 Paths** | Edit existing C/C++ source files and eligible headers, add permanent headers or remove Draft headers, and stay within 60 paths, 1 MiB per file and 8 MiB of changed source. | Add a new source file for a recovered function. | Restore the original source arrangement and edit the existing owning file. |
+| **G2 Annotations** | Preserve the spelling, order, and associated definitions of generated annotations. | Move a `// FUNCTION:` record above another body. | Put the original record back above its own definition. |
+| **G3 Constructs** | Use typed C or C++ and declared symbols within the approved pragma and assembly exceptions. | Introduce `__asm nop`. | Express the operation in ordinary C or C++ and use the declared symbol. |
+| **G4 Types** | Keep each measured stand-in count at or below its previous total across the changed files. | Add a `void *` return for a known `File` pointer. | Declare `File *` and let callers use the typed pointer directly. |
+| **G4b Type swaps - advisory** | Keep the evidenced type when editing a declaration, especially a pointer or class field that could be replaced by an integer of the same size. | Change `File *m_file;` to `unsigned int m_file;`. | Keep `File *m_file;` unless the code and layout evidence establish a different type. |
+| **G5 Comments** | Use new comments to explain evidence or intent and put private work notes in the pull request description. | Leave a local path or an experiment score in a source comment. | Cite the useful evidence in the comment and move the work note to the description. |
+| **G6 Scope** | Keep substantive edits to at most three source files, with a narrow exception for updating includers and type uses during a Draft promotion. | Recover four unrelated units in one pull request. | Split the independent changes into separate pull requests. |
+| **G7 Definitions** | Put new class, struct and union definitions in shared headers and keep one definition per named type or externally linked object. | Add a second `struct FileInfo` to a private header. | Include the existing shared definition. |
+| **G8 Names** | Introduce address-shaped names only when the base ledger accepts that exact spelling. | Add `sub_00401234` with no accepted name. | Use an evidence-backed name or ask a maintainer to record the accepted spelling. |
+
+G4b appears in the summary for review. It has no status and does not
+affect the source rules result.
+
+The source review uses evidence to decide naming, readability, type
+identity, and original module ownership. See
+[Source quality](docs/source-quality.md) for what to cite.

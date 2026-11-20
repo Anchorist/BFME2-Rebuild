@@ -2,6 +2,7 @@
 
 import base64
 from dataclasses import dataclass
+from html import escape
 from http.client import HTTPException
 import json
 import os
@@ -33,18 +34,18 @@ NT2_ROOTS = ARCHIVE_ROOTS | {
     "include": "311c9ff1c77399567880ecba712350ca6761a8fa",
 }
 REASONS = {
-    "unexpected-event": "The event does not identify an open pull request against the approved branch.",
+    "unexpected-event": "Start the check from an open pull request to main.",
     "tools-unavailable": "The protected source check could not be loaded from this main revision.",
     "current-state-unavailable": "GitHub could not verify the current pull request and protected main. Start a new check.",
     "pull-request-moved": "The author head changed, the pull request closed, or its target changed. Use a check for the current pull request.",
-    "main-moved": "Protected main advanced beyond this run's revision. Start a new check on current main.",
+    "main-moved": "Main advanced while this check was running. Start a new check on current main.",
     "archive-moved": "The archived NT2 base moved. Ask a maintainer to verify the archive.",
-    "missing-ref": "The exact pull request head or protected branch ref is missing. Check the pull request and start a new run.",
+    "missing-ref": "GitHub could not find the pull request commit or main branch. Check the branch and start a new run.",
     "fetch-unavailable": "GitHub's Git transfer did not complete. Start a new check.",
-    "merge-history": "There is no unique reachable merge base for the author head and protected main. Rebase on main and push the updated branch.",
+    "merge-history": "This check could not find one shared base commit for your branch and main. Rebase on main and push the updated branch.",
     "merge-conflict": "The author head conflicts with protected main. Resolve the conflict and push the updated branch.",
     "merge-unavailable": "Git could not compose the exact author head with protected main. Start a new check.",
-    "merge-ref-mismatch": "GitHub's exact-parent merge tree differs from the locally composed tree. Ask a maintainer to verify the pair.",
+    "merge-ref-mismatch": "GitHub and this check produced different merges for the same commits. Ask a maintainer to verify the pull request.",
     "archive-projection": "The archived NT2 inputs differ from the pinned archive manifest. Ask a maintainer to verify the archive.",
     "check-unavailable": "The protected source check did not produce a verified result. Start a new check.",
     "status-unavailable": "GitHub did not acknowledge every source status. Start a new check.",
@@ -179,9 +180,11 @@ class GitHub:
         context = f"BFME II / {name}"
         binding = self.binding
         branch = "archive" if binding.archived else "main"
+        label = RULES.get(name, "Source rules")
+        outcome = {"success": "passed", "failure": "needs a fix", "error": "could not finish"}[state]
         result = self.call(
             f"statuses/{binding.head}",
-            {"state": state, "context": context, "description": f"Source rules against {branch} {binding.base[:12]}",
+            {"state": state, "context": context, "description": f"{label} {outcome} ({branch} {binding.base[:12]})",
              "target_url": f"https://github.com/{binding.repo}/actions/runs/{run}"},
         )
         if not isinstance(result, dict) or result.get("state") != state or result.get("context") != context:
@@ -321,6 +324,7 @@ def explanation(reason):
 
 def error_table(reason):
     rows = [f"| {rule} {label} | Error |" for rule, label in RULES.items()]
+    rows.insert(4, "| G4b Type swaps | Unavailable (advisory) |")
     return "| Rule | Result |\n| --- | --- |\n" + "\n".join(rows) + "\n" + explanation(reason)
 
 
@@ -352,6 +356,52 @@ def acquire(env):
         output(env, "reason", "fetch-unavailable")
 
 
+def public_text(text):
+    return escape(json.dumps(text, ensure_ascii=True)[1:-1]).translate(
+        str.maketrans({char: f"&#{ord(char)};" for char in "[]()*_`|\\\\@#"})
+    )
+
+
+def append_advisory(report, repo, base, tree, scratch):
+    """Collect an independent advisory. An unavailable result leaves all statuses intact."""
+    outcome, details = "Unavailable (advisory)", []
+    try:
+        result = subprocess.run(
+            [sys.executable, "-E", "-S", "-B", str(Path(__file__).with_name("shadow_types.py")),
+             str(repo.repo), base, tree],
+            env=isolated_env(scratch), cwd=scratch, timeout=12, capture_output=True, check=True,
+        )
+        findings = json.loads(result.stdout)
+        if not isinstance(findings, list):
+            raise ValueError
+        for finding in findings[:20]:
+            path = public_text(finding["path"][:220])
+            name = public_text(finding["name"][:96])
+            before = public_text(finding["old_type"][:140])
+            after = public_text(finding["new_type"][:140])
+            line = finding["line"]
+            if type(line) is not int or line <= 0:
+                raise ValueError
+            details.append(
+                f"- <code>{path}:{line}</code> **G4b advisory** "
+                f"<code>{name}</code> changed from <code>{before}</code> to <code>{after}</code>. "
+                "Check the declaration against the known type and layout."
+            )
+        if len(findings) > len(details):
+            details.append(f"- **G4b advisory** {len(findings) - len(details)} more type changes need review.")
+        outcome = f"Review {len(findings)} (advisory)" if findings else "No findings (advisory)"
+    except (OSError, KeyError, TypeError, ValueError, subprocess.SubprocessError):
+        details = []
+    lines = report.splitlines()
+    for index, line in enumerate(lines):
+        if line.startswith("| G4 "):
+            lines.insert(index + 1, f"| G4b Type swaps | {outcome} |")
+            break
+    if details:
+        lines.extend(("", *details))
+    return "\n".join(lines) + "\n"
+
+
 def evaluate_bound(binding, scratch):
     repo = Git(scratch / "objects.git")
     verify_received(repo, binding)
@@ -379,15 +429,16 @@ def evaluate_bound(binding, scratch):
     # Keep the measured rule modules unchanged. The public report uses the
     # same findings with the owner's table heading.
     with report_file.open("rb") as stream:
-        raw = stream.read(1_000_001)
+        raw = stream.read(950_001)
     heading = b"| Gate | Result |\n"
     if not raw.startswith(heading):
         raise CheckUnavailable("check-unavailable")
-    if len(raw) > 1_000_000:
-        raw = raw[:raw.rfind(b"\n", 0, 999_500) + 1] + (
+    if len(raw) > 950_000:
+        raw = raw[:raw.rfind(b"\n", 0, 949_500) + 1] + (
             b"\n**Report [size-limit]** Findings exceed the job summary limit. Split the change and run the source checks locally.\n"
         )
     report = "| Rule | Result |\n" + raw[len(heading):].decode("utf-8")
+    report = append_advisory(report, repo, binding.base, tree, scratch)
     if binding.archived:
         report += (f"\nCanary base {binding.base}, author head {binding.head}, "
                    f"and protected main tools {binding.tools_commit}.\n")

@@ -1,16 +1,16 @@
 # Source rules
 
 Use Python 3.10 or newer and Git. Run this command from the trusted base
-checkout or another trusted installation of the gate.
+checkout or another trusted installation of the source checks.
 
     python3 tools/gates/gate.py /path/to/repo BASE HEAD --json rules-result.json
 
 Add `--report rules-report.md` to write the report to a file. The Git input can
 be a bare or working repository. BASE and HEAD can name commits or trees.
-The gate reads tracked Git objects, including the base ledger when needed.
+The check reads tracked Git objects, including the base ledger when needed.
 Working-tree files and Git diff attributes have no effect. It runs without
 a compiler, a network connection, or runtime evidence. Exit 0 means pass,
-1 means fail, and 2 means the check could not complete. A dependent gate
+1 means fail, and 2 means the check could not complete. A dependent rule
 reports a blocked failure if G1 cannot inspect an eligible source blob.
 
 | Rule | Check and remedy |
@@ -42,7 +42,7 @@ including the policy, code and informational baseline, are maintainer changes.
   `VTABLE`, plus `UPSTREAM` provenance. Draft status and snapshot banners
   describe the lifecycle of a Draft, so the generated-row check allows
   their retirement. The sequence preserves spelling, indentation, multiplicity, and order.
-  The gate checks movement past an existing recognizable function declaration.
+  The check measures movement past an existing recognizable function declaration.
 - **G3** lexes complete C/C++ blobs, including block comments, escaped
   literals, raw strings, and line continuations. A maintainer-approved
   exception is a token fingerprint and a cap specific to a tracked file.
@@ -54,8 +54,12 @@ including the policy, code and informational baseline, are maintainer changes.
   `this` or simple byte-pointer aliases, and casts of direct call results.
   The counts are five independent ratchets. A Draft deletion contributes
   its old count and zero new occurrences. Whole-tree totals in
-  `baseline.json` are informational. For a PR verdict the gate measures
+  `baseline.json` are informational. For a PR verdict the check measures
   both trees afresh over the changed paths.
+- **G4b** screens direct, single-line declarations with the same name and
+  lexical scope in a changed region. A pointer or recognized class type
+  becoming a built-in integer can flag for review. G4b appears in the pull
+  request summary as an advisory and leaves all nine statuses unchanged.
 - **G5** reads only added comment text. It permits hexadecimal addresses
   in evidence, and refuses standalone row-address labels that repeat the
   ledger. Vendored paths are listed in the configuration.
@@ -84,16 +88,22 @@ reads as source, and whether a type is the right one stay with a sampled
 audit. The audit also judges evidence for fields and method owners,
 same-layout copies under different names, template and macro reuse,
 undocumented integer stand-ins, and original translation-unit ownership.
-The gate works on explicit syntax. It cannot resolve arbitrary
+The check works on explicit syntax. It cannot resolve arbitrary
 preprocessor expansions, indirect pointer data flow, template
-instantiation, or semantic equivalence of two implementations. The
-build and inline-virtual checks have their own verdicts.
+instantiation, or semantic equivalence of two implementations. For example, in a function returning ObjectID, introducing
+`unsigned int objectID = m_ownerID;` and returning
+`static_cast<ObjectID>(objectID)` can erase a meaningful type or can carry
+a raw value intentionally. In this example the original field declaration
+is already `unsigned int m_ownerID;`. Returning ObjectID still makes the
+correct role of the local an evidence question. Layout and callers
+decide what the local should be. The build and inline-virtual checks have
+their own verdicts.
 
 Run the fixtures from this directory.
 
     python3 -B -m unittest -v test_gate.py
 
-The replay helper runs the same gate on each selected first-parent
+The replay helper runs the same checks on each selected first-parent
 landing and can reproduce the informational baseline from a pinned tip.
 
     python3 -B replay.py replay /path/to/development.git TIP result.json --count 500

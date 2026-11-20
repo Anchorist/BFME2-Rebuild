@@ -93,6 +93,9 @@ jobs:
             for rule in 'G1 Paths' 'G2 Generated annotations' 'G3 Forbidden constructs' \
               'G4 Stand-in types' 'G5 Comments' 'G6 One item' 'G7 One definition' 'G8 Address names'; do
               printf '| %s | Error |\n' "$rule"
+              if [[ "$rule" == 'G4 Stand-in types' ]]; then
+                printf '| G4b Type swaps | Unavailable (advisory) |\n'
+              fi
             done
             printf '\n**Binding [tools-unavailable]** The protected source check could not be loaded from this main revision.\n'
           } >> "$GITHUB_STEP_SUMMARY"
