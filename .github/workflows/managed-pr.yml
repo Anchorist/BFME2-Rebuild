@@ -413,10 +413,14 @@ jobs:
             exit 0
           fi
           left=$((CUTOFF - $(date -u +%s) - 5))
-          if (( left <= 0 )); then exit 0; fi
+          if (( left <= 0 )); then
+            echo "deferred=deadline-before-start" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [[ "$TRUSTED_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e && "$TEST_DELAY" == "$SHARD" && "$PART" != 0 ]]; then
             echo "Protected delayed primary shard $SHARD group $PART waits for reassignment."
             sleep "$left"
+            echo "deferred=forced-reserve-canary" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           test -z "${BFME_RECOVERY_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
@@ -428,11 +432,13 @@ jobs:
             "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
           if (( rc == 124 || rc == 137 )); then
             echo "Primary shard $SHARD group $PART reached its deadline."
+            echo "deferred=compile-deadline" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           (( rc == 0 ))
           echo "complete=true" >> "$GITHUB_OUTPUT"
       - name: Save paired primary checkpoint 0
+        id: checkpoint0
         if: steps.group0.outputs.complete == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -459,10 +465,14 @@ jobs:
             exit 0
           fi
           left=$((CUTOFF - $(date -u +%s) - 5))
-          if (( left <= 0 )); then exit 0; fi
+          if (( left <= 0 )); then
+            echo "deferred=deadline-before-start" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [[ "$TRUSTED_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e && "$TEST_DELAY" == "$SHARD" && "$PART" != 0 ]]; then
             echo "Protected delayed primary shard $SHARD group $PART waits for reassignment."
             sleep "$left"
+            echo "deferred=forced-reserve-canary" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           test -z "${BFME_RECOVERY_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
@@ -474,11 +484,13 @@ jobs:
             "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
           if (( rc == 124 || rc == 137 )); then
             echo "Primary shard $SHARD group $PART reached its deadline."
+            echo "deferred=compile-deadline" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           (( rc == 0 ))
           echo "complete=true" >> "$GITHUB_OUTPUT"
       - name: Save paired primary checkpoint 1
+        id: checkpoint1
         if: steps.group1.outputs.complete == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -505,10 +517,14 @@ jobs:
             exit 0
           fi
           left=$((CUTOFF - $(date -u +%s) - 5))
-          if (( left <= 0 )); then exit 0; fi
+          if (( left <= 0 )); then
+            echo "deferred=deadline-before-start" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [[ "$TRUSTED_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e && "$TEST_DELAY" == "$SHARD" && "$PART" != 0 ]]; then
             echo "Protected delayed primary shard $SHARD group $PART waits for reassignment."
             sleep "$left"
+            echo "deferred=forced-reserve-canary" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           test -z "${BFME_RECOVERY_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
@@ -520,11 +536,13 @@ jobs:
             "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
           if (( rc == 124 || rc == 137 )); then
             echo "Primary shard $SHARD group $PART reached its deadline."
+            echo "deferred=compile-deadline" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           (( rc == 0 ))
           echo "complete=true" >> "$GITHUB_OUTPUT"
       - name: Save paired primary checkpoint 2
+        id: checkpoint2
         if: steps.group2.outputs.complete == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -551,10 +569,14 @@ jobs:
             exit 0
           fi
           left=$((CUTOFF - $(date -u +%s) - 5))
-          if (( left <= 0 )); then exit 0; fi
+          if (( left <= 0 )); then
+            echo "deferred=deadline-before-start" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [[ "$TRUSTED_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e && "$TEST_DELAY" == "$SHARD" && "$PART" != 0 ]]; then
             echo "Protected delayed primary shard $SHARD group $PART waits for reassignment."
             sleep "$left"
+            echo "deferred=forced-reserve-canary" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           test -z "${BFME_RECOVERY_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
@@ -566,11 +588,13 @@ jobs:
             "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
           if (( rc == 124 || rc == 137 )); then
             echo "Primary shard $SHARD group $PART reached its deadline."
+            echo "deferred=compile-deadline" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           (( rc == 0 ))
           echo "complete=true" >> "$GITHUB_OUTPUT"
       - name: Save paired primary checkpoint 3
+        id: checkpoint3
         if: steps.group3.outputs.complete == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -578,6 +602,53 @@ jobs:
           path: '${{ runner.temp }}/bfme-paired-3/group.json'
           if-no-files-found: error
           retention-days: 1
+      - name: Account for every planned primary checkpoint
+        if: always() && !cancelled()
+        shell: bash
+        env:
+          SHARD: '${{ matrix.index }}'
+          GROUPS: '${{ needs.wide-plan.outputs.groups }}'
+          CHECKPOINT_0: '${{ steps.checkpoint0.outputs.artifact-id }}'
+          UPLOAD_0: '${{ steps.checkpoint0.outcome }}'
+          DEFERRED_0: '${{ steps.group0.outputs.deferred }}'
+          CHECKPOINT_1: '${{ steps.checkpoint1.outputs.artifact-id }}'
+          UPLOAD_1: '${{ steps.checkpoint1.outcome }}'
+          DEFERRED_1: '${{ steps.group1.outputs.deferred }}'
+          CHECKPOINT_2: '${{ steps.checkpoint2.outputs.artifact-id }}'
+          UPLOAD_2: '${{ steps.checkpoint2.outcome }}'
+          DEFERRED_2: '${{ steps.group2.outputs.deferred }}'
+          CHECKPOINT_3: '${{ steps.checkpoint3.outputs.artifact-id }}'
+          UPLOAD_3: '${{ steps.checkpoint3.outcome }}'
+          DEFERRED_3: '${{ steps.group3.outputs.deferred }}'
+        run: |
+          set -euo pipefail
+          python3 -B - <<'PY'
+          import json
+          import os
+          import re
+
+          shard = int(os.environ["SHARD"])
+          planned = sorted(row["part"] for row in json.loads(os.environ["GROUPS"]) if row["shard"] == shard)
+          if not planned or len(planned) != len(set(planned)) or any(part not in range(4) for part in planned):
+              raise SystemExit(f"Primary shard {shard}: invalid or missing protected group schedule")
+          missing = []
+          reasons = {"deadline-before-start", "forced-reserve-canary", "compile-deadline"}
+          for part in planned:
+              artifact = os.environ[f"CHECKPOINT_{part}"]
+              if os.environ[f"UPLOAD_{part}"] == "success" and re.fullmatch(r"[1-9][0-9]*", artifact):
+                  continue
+              reason = os.environ[f"DEFERRED_{part}"]
+              missing.append(f"{shard}-{part} ({reason if reason in reasons else 'checkpoint not uploaded'})")
+          line = f"Primary shard {shard}: uploaded {len(planned) - len(missing)}/{len(planned)} planned checkpoints."
+          if missing:
+              line += f" Incomplete primary groups: {', '.join(missing)}."
+          print(line)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              print(line, file=summary)
+          if missing:
+              print(f"::warning::{line}")
+              raise SystemExit(1)
+          PY
 
   wide-reserve:
     needs: wide-plan
