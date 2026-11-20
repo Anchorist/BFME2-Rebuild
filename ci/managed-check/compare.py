@@ -19,6 +19,7 @@ from finished_index import Owners, RealHeaders
 from gateway import projection as public_projection
 from progress_delta import drafts_in_use, progress
 from reporting import GATES, from_landing
+from emitted_data import record_pairs
 
 
 def native_commands(git, judge, revision, paths, tools):
@@ -89,6 +90,8 @@ def reduction(old, new):
             reason = next((phrase for phrase in GATES if phrase in problem), None)
             if "annotations" in problem:
                 rules.add("annotation")
+            elif "banned construct" in problem:
+                rules.add("source-construct")
             elif "assembly" in problem or " asm " in problem:
                 rules.add("assembly")
             else:
@@ -176,6 +179,10 @@ def make_report(git, judge, plan, tip, old, new, find_object, *, lookup_differen
     report["codes"] = sorted(rules)
     clean = public_projection(report, changed)
     clean["messages"] = list(dict.fromkeys(hints))[:8]
+    extra = [(path, item["emitted_data"]) for path, item in sorted(new.items()) if item.get("emitted_data")]
+    if extra:
+        clean["emitted_data"] = {"count": sum(item["count"] for _, item in extra),
+                                 "rows": [{"path": path, **item} for path, item in extra[:8]]}
     functions = [{"path": row["path"], "line": row["line"], "function": row["function"],
                   "rva": row["rva"], "before": row["old"], "after": row["new"]}
                  for row in clean["edited"]]
@@ -214,6 +221,9 @@ def main(admission, out):
                                for side, rev in (("base", plan["base"]), ("head", tip))})
         old = measure(git, judge, "base", native, roots, work / "base")
         new = measure(git, judge, "head", native, roots, work / "head")
+        objects = [(path, *(work / side / "obj" / (path.replace("/", "_") + ".obj")
+                            for side in ("base", "head"))) for path in plan["request_paths"]]
+        record_pairs(judge, work / "base", objects, new)
         report, counts, functions = make_report(git, judge, plan, tip, old, new,
             lambda path: work / "head/obj" / (path.replace("/", "_") + ".obj"))
         if advisory_root := os.environ.get("BFME_INLINE_EXPORT"):

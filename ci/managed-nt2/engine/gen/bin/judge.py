@@ -39,6 +39,7 @@ from identity_index import map_index,symbol_index,function_span
 import compiler_support
 from upstream_proof import pristine_c
 import asm_policy
+from source_constructs import banned, code_only as lexical_code
 from functools import lru_cache
 import build  # noqa: E402  (read-only use: retail bytes, COFF parsing, toolchain paths)
 
@@ -525,10 +526,10 @@ def pilot_judge_tu(job, tu, led):
     # Inline assembly only through a named allowlist entry with its evidence comment (asm_policy.py).
     asm_policy.set_job(job)   # gen5 b10_3: the revision's config/asm_allowlist.json entries apply too
     asm_free, asm_problems = asm_policy.strip_allowed(text, tu)
-    if BANNED.search(asm_free):
+    if banned(asm_free, BANNED):
         gates.append("banned construct (asm/naked/emit/pragma optimize/alternatename)")
     gates.extend("inline assembly allowance: " + p for p in asm_problems)
-    code_only = re.sub(r"//.*", "", text)
+    code_only = lexical_code(text)
     for pattern, why in SHORTCUTS:
         if pattern.search(code_only):
             gates.append("shortcut: " + why)
@@ -765,7 +766,7 @@ def judge_tu(job,tu,led):
             res['gates'].append('external project header is not carried in the revision: '+str(h))
         text=h.read_text(errors='replace')
         asm_free,_asm_problems=asm_policy.strip_allowed(text,header_label(job,h))
-        if BANNED.search(asm_free) or any(p.search(re.sub(r'//.*','',text)) for p,_ in SHORTCUTS):
+        if banned(asm_free, BANNED) or any(p.search(lexical_code(text)) for p,_ in SHORTCUTS):
             res['gates'].append('header shortcut/banned construct: '+header_label(job,h))
     meta={int(r['rva'],16):r for r in rr}
     paired={int(r['rva'],16):r['symbol'] for r in res['rows'] if r.get('symbol') and r['status']=='MATCH'}

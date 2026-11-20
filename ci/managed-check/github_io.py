@@ -91,7 +91,7 @@ def publish(phase, admission=None, result=None):
         if any(decision.get(key) != value for key, value in identity.items()):
             raise ValueError("The admission receipt came from a different pull request.")
         if decision["kind"] == "gate":
-            record = {"kind": "gate", "rules": decision["rules"]}
+            record = {"kind": "gate", "rules": decision["rules"], "location": decision.get("location")}
         elif decision["kind"] == "awaiting-approval":
             record = {"kind": "pending", "messages": ["A maintainer can approve Boat comparison by adding the boat-ok label."]}
         elif decision["kind"] in {"compile", "wide"}:
@@ -104,6 +104,8 @@ def publish(phase, admission=None, result=None):
                 raise ValueError("The compiler receipt did not match the admission.")
             record = verdict["report"]
             metadata = {"counts": verdict["counts"], "functions": verdict["functions"], "kind": record["kind"]}
+            if "emitted_data" in record:
+                metadata["emitted_data"] = record["emitted_data"]
             if decision["kind"] == "wide":
                 matrix = verdict["matrix"]
                 if (set(matrix) != {"runners", "paired_results"} or type(matrix["runners"]) is not int

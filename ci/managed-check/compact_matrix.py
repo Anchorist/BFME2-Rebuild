@@ -3,17 +3,20 @@
 import re
 
 from managed_matrix import check_native
+from emitted_data import valid_witness
 from pool_protocol import diagnostic_message
 from wide_plan import identity, key
 
 SHA = re.compile(r"[a-f0-9]{64}\Z")
 RUN = re.compile(r"[1-9][0-9]{0,19}\Z")
 ROWS = ("rva", "status", "pct", "proof", "credited", "size", "symbol")
-NATIVE = ("object_verified", "error", "gates", "rows", "optimization_hint")
+NATIVE = ("object_verified", "error", "gates", "rows", "optimization_hint", "emitted_data")
 
 
 def compact_native(outcome):
     check_native(outcome)
+    if "emitted_data" in outcome and not valid_witness(outcome["emitted_data"]):
+        raise ValueError("The emitted-data witness is malformed.")
     row_fields = [{name: row[name] for name in ROWS if name in row} for row in outcome["rows"]]
     result = {key: outcome[key] for key in NATIVE if key in outcome}
     result["rows"] = row_fields
@@ -101,6 +104,14 @@ def join_compact(document, receipts, *, expected, run, attempt):
             if set(outcome) - set(NATIVE) or any(set(r) - set(ROWS) for r in outcome["rows"]):
                 raise ValueError("A compact result includes private native fields.")
             native["base" if k[0] == "parent" else "head"][k[1]] = outcome
+        statuses = {key(row): row["status"] for row in receipt["records"]}
+        for row in receipt["records"]:
+            witness = row["native"].get("emitted_data")
+            if "emitted_data" in row["native"]:
+                if (row["side"] != "candidate" or row["status"] != "compiled"
+                        or statuses.get(("parent", row["tu"])) != "compiled"
+                        or not valid_witness(witness)):
+                    raise ValueError("The emitted-data witness lacks an authenticated compiled pair.")
         if remaining:
             raise ValueError("A compact shard omitted its required assignments.")
         if not isinstance(receipt["details"], dict) or details.keys() & receipt["details"].keys():

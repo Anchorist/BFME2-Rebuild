@@ -8,16 +8,17 @@ import sys
 from common import PIN, REPO_ID, digest, policy, read, validate_binding, write
 from gitrepo import Change, Git, Refusal, safe_path
 from pool_compare import projection
-from pool_protocol import contributed_source_problem, decode, encode
+from pool_protocol import compiler_source_problem, decode, encode
 
 INCLUDE = re.compile(rb'^[ \t]*#[ \t]*include[ \t]*[<"]([^>"\r\n]+)[>"]', re.M)
 MAX_AFFECTED = 512
 
 
 class Refused(Exception):
-    def __init__(self, rule):
+    def __init__(self, rule, location=None):
         super().__init__(rule)
         self.rule = rule
+        self.location = location
 
 
 def blob(git, rev, path):
@@ -57,6 +58,19 @@ def refusal_rule(reason):
         return "conflict"
     if "no measurable source changes" in reason or "no remaining source change" in reason:
         return "empty"
+    for fragment, rule in (
+        ("60 changed paths", "source-file-count"),
+        ("1 MiB per file", "source-byte-count"),
+        ("source naming rules", "source-name"),
+        ("regular C/C++", "source-file-type"),
+        ("UTF-8", "source-encoding"),
+        ("collides", "source-case"),
+        ("identity", "source-attribution"),
+        ("one merge base", "conflict"),
+        ("additional paths", "conflict"),
+    ):
+        if fragment in reason:
+            return rule
     return "source-intake"
 
 
@@ -76,8 +90,11 @@ def candidate(git, event):
             if mode == "000000":
                 raise Refused("deletion")
         data = blob(git, prepared.commit, path) if mode != "000000" else None
-        if data is not None and contributed_source_problem(data):
-            raise Refused("source-policy")
+        if data is not None:
+            issue = compiler_source_problem(data)
+            if issue:
+                rule, line = issue
+                raise Refused(rule, f"{path}:{line}")
         changes.append({"path": path, "mode": mode, "oid": oid,
                         "blob": encode(data) if data is not None else None})
     changed = sorted(row["path"] for row in changes)
@@ -114,7 +131,7 @@ def reconstruct(git, plan):
         else:
             data = decode(row["blob"], 1024**2)
             total += len(data)
-            if (len(data) > 1024**2 or total > 8 * 1024**2 or contributed_source_problem(data)
+            if (len(data) > 1024**2 or total > 8 * 1024**2 or compiler_source_problem(data)
                     or git.value("hash-object", "-w", "--stdin", data=data) != oid):
                 raise ValueError("The compiler payload failed its source validation.")
         changes.append(Change(path, mode, oid))
@@ -137,7 +154,8 @@ def main(work, out):
         plan = candidate(Git(work / "source.git"), event)
     except Refused as rejected:
         write(out / "decision.json", {key: event[key] for key in ("number", "head", "base")}
-              | {"version": 1, "repo": REPO_ID, "kind": "gate", "rules": [rejected.rule]})
+              | {"version": 1, "repo": REPO_ID, "kind": "gate", "rules": [rejected.rule]}
+              | ({"location": rejected.location} if rejected.location else {}))
         return
     if not event["approved"]:
         write(out / "decision.json", {key: event[key] for key in ("number", "head", "base")}

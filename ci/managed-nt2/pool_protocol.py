@@ -6,7 +6,11 @@ import json
 import re
 import struct
 import zlib
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
+import sys
+
+sys.path.append(str(Path(__file__).resolve().parent / "engine/gen"))
+from cpp import Source
 
 MAX_OBJECT = 16 * 1024**2
 MAX_DIAGNOSTICS = 2048
@@ -18,7 +22,6 @@ VERSION = 1
 DIGEST = re.compile(r"[0-9a-f]{64}\Z")
 PART = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_+.-]{0,95}\Z")
 DEVICE = re.compile(r"(?:CON|PRN|AUX|NUL|CONIN\$|CONOUT\$|COM\d|LPT\d)(?:\.|$)", re.I)
-TOKEN = re.compile(r'''//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*' ''', re.X)
 DIRECTIVE = re.compile(r"^\s*#\s*(\w+)(.*)$")
 INCLUDE = re.compile(r'''\s*(?:"([^"]+)"|<([^>]+)>)\s*\Z''')
 LOCAL_PRAGMA = re.compile(r"\s*(?:once|pack\s*\([A-Za-z0-9_, \t-]*\)|"
@@ -127,40 +130,70 @@ def safe_diagnostics(tu, output, allowed=()):
     return "\n".join(result)
 
 
-def contributed_source_problem(data):
-    """Admission screen for changed source; the launcher provides the security boundary."""
+def compiler_source_problem(data):
+    """Identify an intake rule and its physical line in the submitted blob."""
     text = data.decode("utf-8-sig")
     if any(ord(c) < 32 and c not in "\n\r\t" for c in text):
-        return 1, "Unsupported source control character."
-    # Normalize source continuation before recognizing preprocessor directives.
+        return "source-control-character", 1
     text = text.replace("\r\n", "\n").replace("\r", "\n")
-    text = re.sub(r"\\[ \t]*\n", "", text)
-    if re.search(r"\?\?[=/'()!<>-]", text) or "%:" in text:
-        return 1, "Alternate preprocessor spellings are unsupported."
-    def remove_comment(match):
-        value = match[0]
-        return re.sub(r"[^\n]", " ", value) if value.startswith(("//", "/*")) else value
-    text = TOKEN.sub(remove_comment, text)
-    for number, line in enumerate(text.splitlines(), 1):
-        match = DIRECTIVE.fullmatch(line)
+    source = Source(text, translate_trigraphs=False, raw_strings=False)
+    alternate = re.compile(r"\?\?[=/'()!<>-]|%:")
+    match = alternate.search(source.code)
+    if match:
+        return "source-alternate-directive", source.line(match.start())
+
+    # Trigraphs ordinarily translate before C++ tokens are recognized. Permit
+    # opaque punctuation only when it leaves token kinds, nonliteral tokens,
+    # directive structure, and physical lines identical. Retain the conservative
+    # refusal for the backslash spelling, which can change quoting or line splices.
+    if re.search(r"\?\?[=/'()!<>-]", text):
+        if "??/" in text:
+            return "source-alternate-directive", 1
+        translated = Source(text, raw_strings=False)
+        def shape(view):
+            return ([(tok.kind, tok.line, tok.end_line, None if tok.kind == "literal" else tok.value)
+                     for tok in view.tokens], tuple(view.directives()))
+        if shape(source) != shape(translated):
+            return "source-alternate-directive", 1
+        for start, end in source.directives():
+            if [t.value for t in source.tokens[start:end]] != [t.value for t in translated.tokens[start:end]]:
+                return "source-alternate-directive", source.tokens[start].line
+
+    # Preserve include and pragma operands for the old literal/path allowlist.
+    # Comment spans come from the same token stream as the alternate check.
+    chunks, previous = [], 0
+    for comment in source.comments:
+        chunks.extend((source.logical[previous:comment.offset], re.sub(r"[^\n]", " ", comment.value)))
+        previous = comment.stop
+    chunks.append(source.logical[previous:])
+    offset = 0
+    for line in "".join(chunks).splitlines(keepends=True):
+        raw = line.removesuffix("\n")
+        match = DIRECTIVE.fullmatch(raw)
         if match:
+            number = source.line(offset + match.start(1))
             name, arguments = match.groups()
             if name == "include":
                 found = INCLUDE.fullmatch(arguments)
                 path = (found[1] or found[2]).replace("\\", "/") if found else ""
                 if not relative(path):
-                    return number, "Use a literal include within the project or installed headers."
+                    return "source-include", number
                 if PurePosixPath(path).suffix.casefold() in {".rc", ".res"}:
-                    return number, "Resource includes are maintainer-only."
+                    return "source-resource", number
             elif name == "pragma":
                 if not LOCAL_PRAGMA.fullmatch(arguments):
-                    return number, "This pragma requires maintainer review."
+                    return "source-pragma", number
             elif name not in {"if", "ifdef", "ifndef", "else", "elif", "endif", "define", "undef", "error"}:
-                return number, "This preprocessor directive requires maintainer review."
-        code = TOKEN.sub(" ", line)
-        if re.search(r"\b(?:__pragma|_Pragma)\b", code):
-            return number, "Inline pragmas require maintainer review."
+                return "source-directive", number
+        offset += len(line)
+    for token in source.tokens:
+        if token.kind == "word" and token.value in {"__pragma", "_Pragma"}:
+            return "source-inline-pragma", token.line
     return None
+
+
+# The canary's second validation only needs a truth value.
+contributed_source_problem = compiler_source_problem
 
 
 def check_object(data):

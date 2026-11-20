@@ -10,6 +10,21 @@ RULES = {
     "wide-cap": ("Comparison size", "Split the header changes into smaller pull requests or ask a maintainer about this dependency scope."),
     "native-source": ("Native source checks", "Review the source check above and restore the expected source or compiler contract."),
     "protected-path": ("Protected path", "Remove workflow, checker, ledger, configuration or baseline edits from this source PR."),
+    "source-file-count": ("Changed file count", "Split the change into pull requests with at most 60 changed files."),
+    "source-byte-count": ("Source size", "Keep each source file under 1 MiB and all changed source under 8 MiB."),
+    "source-name": ("Portable source path", "Use supported project path characters and names."),
+    "source-file-type": ("Regular source files", "Edit only regular C or C++ sources and headers under src/ and include/."),
+    "source-encoding": ("Source encoding", "Save changed source as UTF-8."),
+    "source-case": ("Source path case", "Give each file a unique case-insensitive path."),
+    "source-attribution": ("Source attribution", "Use a valid contributor identity."),
+    "source-control-character": ("Source control characters", "Remove unsupported control characters."),
+    "source-alternate-directive": ("Preprocessor spelling", "Use ordinary C or C++ directive spellings."),
+    "source-include": ("Literal include path", "Use a project-relative literal include."),
+    "source-resource": ("Resource includes", "Ask a maintainer to handle resource includes."),
+    "source-pragma": ("Pragma policy", "Use an approved project pragma or ask a maintainer."),
+    "source-directive": ("Preprocessor directive policy", "Use approved directives or ask a maintainer."),
+    "source-inline-pragma": ("Inline pragma policy", "Remove the inline pragma or ask a maintainer."),
+    "source-construct": ("Source construct policy", "Use source code in place of disallowed compiler-specific constructs."),
     "source-policy": ("Compiler input policy", "Use a project-relative literal include and an approved source directive."),
     "compile": ("Compile success", "Fix the compiler errors at the source locations above and push the corrected patch."),
     "regression": ("Credit and proof retention", "Restore the earlier matched behavior or correct the changed definition."),
@@ -82,6 +97,15 @@ def quality_report(base, head, result):
             append_function(out, item, row.get("name") or row["rva"], row["path"])
         for path in result.get("objects", []):
             out.append("- " + quoted(path) + " · Object VERIFIED was lost.")
+    if data := result.get("emitted_data"):
+        definitions = "definition is" if data["count"] == 1 else "definitions are"
+        out += ["", "**New public data definitions**",
+                f"{data['count']} compiled {definitions} absent from the compiled parent "
+                "and the known reference names. This is an advisory finding."]
+        for item in data["rows"]:
+            names = ", ".join(quoted(name) for name in item["names"])
+            extra = f" ({item['count'] - len(item['names'])} more)" if item["count"] > len(item["names"]) else ""
+            out.append("- " + quoted(item["path"]) + " · " + names + extra)
     errors = result.get("diagnostics", [])
     diagnostic_lines = ["", "**Compiler diagnostics**", *("- " + quoted(line) for line in errors)] if errors else []
     required = []
@@ -89,6 +113,8 @@ def quality_report(base, head, result):
     if notices:
         required += ["", "**Refusing rules**"]
         required += [f"- **{RULES[tag][0]}** · {RULES[tag][1]}" for tag in notices if tag in RULES]
+    if result.get("location"):
+        required.append("- Location " + quoted(result["location"]))
     messages = result.get("messages", [])
     if messages:
         required += ["", *("- " + line for line in messages)]

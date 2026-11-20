@@ -10,6 +10,7 @@ from types import SimpleNamespace
 
 from common import HEX64, PIN, digest, encoded, read, validate_binding, write
 from compare import difference, make_report, native_commands, protected_judge
+from emitted_data import record_pairs
 from compact_matrix import make_compact, join_compact
 from diff_scope import diff_lines
 from edited_functions import edited
@@ -198,6 +199,10 @@ def compile_shard(source, matrix, expected, index, out):
                             record = difference(judge, obj, row, listing)
                             if record:
                                 details[path + "@" + row["rva"]] = clean_difference(record, listing)
+        # Both authenticated objects of a pair stay on one runner.
+        objects = [(path, inline_objects.get((SIDES["base"], path)), inline_objects.get((SIDES["head"], path)))
+                   for path in reports["head"]]
+        record_pairs(judge, job, objects, reports["head"])
         compiler = compiler_receipt(doc, index, records)
         atom_started = monotonic()
         try:

@@ -10,7 +10,7 @@ checker_digest: every byte of every checker file; for logs, receipts and audit.
 """
 import ast,hashlib
 from pathlib import Path
-OWN=['bin/judge.py','binary_model.py','relocation_proof.py','emission_policy.py','identity_index.py','result_cache.py','checker_identity.py','compiler_support.py','host_permits.py','upstream_proof.py','asm_policy.py','asm_allowlist.py','import_aliases.py']
+OWN=['bin/judge.py','binary_model.py','relocation_proof.py','emission_policy.py','identity_index.py','result_cache.py','checker_identity.py','compiler_support.py','host_permits.py','upstream_proof.py','asm_policy.py','asm_allowlist.py','import_aliases.py','cpp.py','source_constructs.py']
 REFERENCE=['build.py','cl_flags.py','stlport_overlay.py']
 OPERATIONAL_FILES=('host_permits.py',)
 OPERATIONAL_FUNCTIONS={'bin/judge.py':('remote_judge','judge_workers','cache_enabled','judge_file','setup_permit','run_stats','log_run','disasm','show_diff')}

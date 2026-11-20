@@ -32,13 +32,15 @@ class Token:
 
 
 class Source:
-    def __init__(self, text):
+    def __init__(self, text, *, translate_trigraphs=True, raw_strings=True):
         self.text = text
         self.lines = text.split('\n')
         # Translation phases 1 and 2. Keep a map to physical Git line numbers.
         # Raw string body contents are opaque; only the closing marker is read.
-        text = re.sub(r'\?\?([=/\'()!<>-])', lambda m: TRIGRAPH[m[1]], text)
+        if translate_trigraphs:
+            text = re.sub(r'\?\?([=/\'()!<>-])', lambda m: TRIGRAPH[m[1]], text)
         text, self.breaks = splice(text)
+        self.logical = text
         self.tokens = []
         self.comments = []
         pieces = []
@@ -46,6 +48,9 @@ class Source:
         while match := TOKEN.search(text, pos):
             kind = match.lastgroup
             start, end = match.span()
+            if kind == 'raw' and not raw_strings:
+                end = text.index('"', start, end)
+                kind = 'word'
             if kind == 'raw':
                 delimiter = ')' + match['delimiter'] + '"'
                 closing = text.find(delimiter, end)
