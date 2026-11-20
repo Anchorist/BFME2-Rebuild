@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include "GameClient/AptMpGameSetup.h"
+#include "GameClient/MapMetaData.h"
 #include "GameClient/GadgetComboBox.h"
 #include "GameNetwork/GameInfo.h"
 #include "GameNetwork/GameSlot.h"
@@ -306,7 +307,7 @@ bool AptMpGameSetup::HandleStartPositionSelection(int index, int startPos)
 	bool result = m_owner->MpOwnerSelectStartPosition(slot, startPos);
 	if (result)
 	{
-		if (m_previewMode == 1)
+		if (m_mapPreview.m_mode == 1)
 		{
 			m_flag2BF = true;
 			m_flag2B9 = true;
@@ -326,7 +327,7 @@ bool AptMpGameSetup::rva0043E1CC(int mode)
 	case 1:
 		{
 			GameInfo *game = m_ownerTarget->get();
-			int scenario = ((AptMapPreview *)m_mapPreviewHead)->GetCurrentStrategicScenario();
+			int scenario = m_mapPreview.GetCurrentStrategicScenario();
 			if (game != 0)
 			{
 				if (game->m_unk0x8C)
@@ -410,7 +411,7 @@ void AptMpGameSetup::rva0043E3E2(int index, int team)
 	GameWindow *combo = m_teamCombo[index];
 	if (combo == 0)
 		return;
-	int previewMode = m_previewMode;
+	int previewMode = m_mapPreview.m_mode;
 	GameSlot *slot = game->getSlot(index);
 	if (previewMode == 1 && team == -1 && slot->m_state != 1)
 	{
@@ -564,14 +565,14 @@ void Rva0043E8F1Tooltip(GameWindow *window, WinInstanceData *instData, unsigned 
 // FUNCTION: BFME2 0x0043F244 size=575 name=?rva0043F244@AptMpGameSetup@@QAEXH_N@Z evidence=?:placeholder tier=A
 void AptMpGameSetup::rva0043F244(int slot, bool reset)
 {
-	int mode = m_previewMode;
+	int mode = m_mapPreview.m_mode;
 	bool mode1 = (mode == 1);
 	int count = 2 + 2 * !mode1;
 	UnicodeString text;
 	int startTeam = -1;
-	void *startInfo = ((AptMapPreview *)m_mapPreviewHead)->GetStartPositionInfoForSlot(slot);
+	const PlayerPosition *startInfo = m_mapPreview.GetStartPositionInfoForSlot(slot);
 	if (startInfo != 0)
-		startTeam = ((int *)startInfo)[1];
+		startTeam = startInfo->m_forceTeam;
 	int selected;
 	int selectedData = -1;
 	GadgetComboBoxGetSelectedPos(m_teamCombo[slot], &selected);
@@ -772,7 +773,7 @@ void AptMpGameSetup::rva0043FFCF()
 void AptMpGameSetup::rva0043FFD7()
 {
 	((AptMpChat *)m_chat)->rva0057FD6E();
-	m_previewFlagC1 = false;
+	m_mapPreview.m_flag61 = false;
 	Rva00446A67Set(0);
 	m_ownerTarget->m_gameInfo = 0;
 	rva0043FA68(0);
@@ -1015,7 +1016,7 @@ void AptMpGameSetup::InitAvailableColors()
 {
 	if (TheMultiplayerSettings == 0)
 		return;
-	bool mode1 = (m_previewMode == 1);
+	bool mode1 = (m_mapPreview.m_mode == 1);
 	m_flag3DC = !mode1;
 	m_numColors = TheMultiplayerSettings->getNumColors();
 	m_colorsAvailable.clear();
@@ -1081,7 +1082,7 @@ GameWindow *AptMpGameSetup::getMapList()
 // FUNCTION: BFME2 0x004422B4 size=41 name=?rva004422B4@AptMpGameSetup@@QAEXH@Z evidence=?:placeholder tier=A
 void AptMpGameSetup::rva004422B4(int mode)
 {
-	((Rva0057E3DB *)m_mapPreviewHead)->rva0057C7BA(mode);
+	m_mapPreview.setMode(mode);
 	((Rva0057EE5C *)m_rulesHead)->rva0057F002(mode);
 	InitAvailableColors();
 }
@@ -1165,7 +1166,7 @@ bool AptMpGameSetup::rva00442A68(int index)
 		PopulatePlayerTemplateCombo(index);
 		result = true;
 		m_flag2B9 = true;
-		bool mode1 = (m_previewMode == 1);
+		bool mode1 = (m_mapPreview.m_mode == 1);
 		if (mode1 && (state == 0 || oldState == 0))
 		{
 			for (int i = 1; i < 8; ++i)
@@ -1186,7 +1187,7 @@ bool AptMpGameSetup::rva00442A68(int index)
 // FUNCTION: BFME2 0x00442C9C size=23 name=?rva00442C9C@AptMpGameSetup@@QAE_NXZ evidence=?:placeholder tier=A
 bool AptMpGameSetup::rva00442C9C()
 {
-	if (m_previewMode == 0 && m_mapList == 0)
+	if (m_mapPreview.m_mode == 0 && m_mapList == 0)
 		return false;
 	return rva00442BCC();
 }
@@ -1201,7 +1202,7 @@ int AptMpGameSetup::rva00442CB3(unsigned int msg, unsigned int data1, unsigned i
 	GameInfo *game = m_ownerTarget->get();
 	if (game == 0)
 		return 0;
-	if (rva0043E1CC(((Rva0057E3DB *)m_mapPreviewHead)->rva0057CDA1(msg, data1, data2)))
+	if (rva0043E1CC(m_mapPreview.rva0057CDA1(msg, data1, data2)))
 		return 1;
 	if (((AptMpGameRules *)m_rulesHead)->rva0057E707(msg, (GameWindow *)data1, data2))
 		return 1;
@@ -1278,7 +1279,7 @@ int AptMpGameSetup::rva00442CB3(unsigned int msg, unsigned int data1, unsigned i
 	case 0x4008:
 	case 0x4009:
 		{
-			int position = ((AptMapPreview *)m_mapPreviewHead)->rva0057C57B((int)data1);
+			int position = m_mapPreview.rva0057C57B((int)data1);
 			if (position < 0)
 				break;
 			int playerIdxInPos = -1;
@@ -1298,7 +1299,7 @@ int AptMpGameSetup::rva00442CB3(unsigned int msg, unsigned int data1, unsigned i
 				{
 					int nextPlayer;
 					if (msg == 0x4008)
-						nextPlayer = ((Rva0057CA78 *)m_mapPreviewHead)->GetNextSelectablePlayer(playerIdxInPos + 1);
+						nextPlayer = m_mapPreview.GetNextSelectablePlayer(playerIdxInPos + 1);
 					else
 						nextPlayer = -1;
 					HandleStartPositionSelection(playerIdxInPos, -1);
@@ -1308,7 +1309,7 @@ int AptMpGameSetup::rva00442CB3(unsigned int msg, unsigned int data1, unsigned i
 			}
 			else
 			{
-				int localSlot = ((Rva0057CA78 *)m_mapPreviewHead)->GetNextSelectablePlayer(0);
+				int localSlot = m_mapPreview.GetNextSelectablePlayer(0);
 				HandleStartPositionSelection(localSlot, position);
 			}
 		}
@@ -1376,7 +1377,7 @@ bool AptMpGameSetup::Init(GameInfo *game, int mode)
 	rva0043FA68(game);
 	m_x2D0 = mode;
 	bool isHost = m_owner->isHost();
-	bool hide = (m_previewMode == 1);
+	bool hide = (m_mapPreview.m_mode == 1);
 	for (int slot = 7; slot >= 0; --slot)
 	{
 		PopulatePlayerCombo(slot);
@@ -1413,7 +1414,7 @@ bool AptMpGameSetup::Init(GameInfo *game, int mode)
 		TheMapCache->updateCache();
 	if (isHost)
 		rva00443BF3();
-	m_previewFlagC1 = true;
+	m_mapPreview.m_flag61 = true;
 	rva00440017(game->getMap());
 	Rva00446A67Set(1);
 	m_x3A8 = 0;
@@ -1481,13 +1482,13 @@ bool AptMpGameSetup::OnUpdate()
 		if (m_flag2BD)
 		{
 			m_flag2BD = false;
-			((AptMapPreview *)m_mapPreviewHead)->rva0057E058();
+			m_mapPreview.rva0057E058();
 			changed = true;
 		}
 		if (m_flag2BE && localSlot)
 		{
 			m_flag2BE = false;
-			((Rva0057DFFB *)m_mapPreviewHead)->rva0057DFFB(false);
+			m_mapPreview.UpdateStartSpots(false);
 			changed = true;
 		}
 		((AptMpChat *)m_chat)->rva0057FDB0(changed);
@@ -1497,7 +1498,7 @@ bool AptMpGameSetup::OnUpdate()
 	{
 		m_flag2B8 = false;
 		((Rva0057EE5C *)m_rulesHead)->rva0057EA0F();
-		((AptMapPreview *)m_mapPreviewHead)->rva0057E058();
+		m_mapPreview.rva0057E058();
 	}
 	((AptMpChat *)m_chat)->rva0057FDB0(false);
 	return false;

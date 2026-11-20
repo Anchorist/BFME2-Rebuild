@@ -69,7 +69,7 @@ public:
 	virtual void getExtentIncludingBorder(Region3D *extent) const = 0;	// slot 10
 	virtual Real rva00062E4F() = 0;								// slot 11 (W3D 0x00062E4F)
 	virtual void getMaximumPathfindExtent(Region3D *extent) const = 0;	// slot 12
-	virtual Coord3D findClosestEdgePoint(const Coord3D *closestTo) const;	// slot 13, 0x0027D5E0 (Zero Hour name; OCLUpdate::update 0x0049B483 passes a result pointer and copies the Coord3D it returns, f09)
+	virtual Coord3D findClosestEdgePoint(const Coord3D *closestTo) const;	// slot 13, 0x0027D5E0 (Zero Hour name; OCLUpdate::update 0x0049B483 passes a result pointer and copies the Coord3D it returns)
 	virtual Coord3D findFarthestEdgePoint(const Coord3D *farthestFrom) const;	// slot 14, 0x0027D6DF (Zero Hour name; same shape)
 	virtual Bool isClearLineOfSight(const Coord3D &pos, const Coord3D &posOther) const = 0;	// slot 15
 	virtual Real getHighestHeight(const Coord3D *start, const Coord3D *end) const = 0;	// slot 16, flight-path control points

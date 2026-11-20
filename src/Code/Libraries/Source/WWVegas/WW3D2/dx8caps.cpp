@@ -11,7 +11,7 @@ extern StringClass CapsWorkString;
 // object=O0012A640 name-evidence=L name-tier=library
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: duplicate path; held alternatives O00137510
+// Duplicate path; alternative object O00137510
 // Hypothesis rules: hypothesis:K, hypothesis:Z, hypothesis:name:L, hypothesis:padding
 // FUNCTION: BFME2 0x0012A640 size=136 name=?Define_Vendor@DX8Caps@@CA?AW4VendorIdType@1@I@Z evidence=N:ledger tier=L hypothesis:name:L
 DX8Caps::VendorIdType DX8Caps::Define_Vendor(unsigned vendor_id)

@@ -4,7 +4,7 @@
 //   installs VA 0x00BE81F0 at 0x00232932, and constructs the vector at +0x10.
 //   The base constructor writes its vptr at +0, a byte at +4 and a dword at +8;
 //   its destructor 0x001B4E74 restores VA 0x00BD77A0 and destroys +8.
-//   Thus the base occupies 12 bytes, not the 8 of some private views.
+//   Thus the base occupies 12 bytes.
 // - Destructor 0x00232976 restores VA 0x00BE81F0 at 0x00232987, frees +0x10,
 //   then calls the base destructor. The base table belongs to the base's
 //   lifetime; VA 0x00BC8688, installed by 0x00098B55/0x00098B8B, belongs to

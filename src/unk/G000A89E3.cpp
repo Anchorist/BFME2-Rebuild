@@ -20,7 +20,7 @@
 // FUNCTION: BFME2 0x000A8B79 size=178 name=?rva000A8B79@Rva000A8B6D@@QAEXPAVRva000A8C2BObj@@@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x000A8C2B size=67 name=?rva000A8C2B@Rva000A8C2B@@QAEXPAVRva000A8C2BObj@@PAH@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x000A8C6E size=14 name=?rva000A8C6E@Rva000A8C6E@@QAEXPBURva0010FFA2Packet@@@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
-// FUNCTION: BFME2 0x000A8C9B size=19 name=?clear@OpaqueRefElement4@@QAEXXZ evidence=X:map request (standalone ca6e45a3dd (a-both-real, by hand)) tier=B hypothesis:mm1-gap-unit
+// FUNCTION: BFME2 0x000A8C9B size=19 name=?clear@OpaqueRefElement4@@QAEXXZ evidence=X:map request (standalone ca6e45a3dd) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x000A8CC9 size=28 name=?rva000A8CC9@Rva000A8CC9@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x000A8CE5 size=38 name=?rva000A8CE5@Rva000A8C9B@@QAEXPAVAtomicRefCounted@@@Z evidence=X:placeholder class OpaqueRefCounted is AtomicRefCounted: ctor 0x00050F19 stores vtable 0x007C5128 and count +4=0; Release_Ref 0x00050ED3 decrements +4 and calls slot 0 (include/Common/AtomicRefCounted.h) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x000A8D0B size=84 name=?rva000A8D0B@Rva000A8C9B@@QAEXHHH@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

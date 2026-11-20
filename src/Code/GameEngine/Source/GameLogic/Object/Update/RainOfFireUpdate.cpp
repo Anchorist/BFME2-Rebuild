@@ -1,7 +1,7 @@
-// Diagnostic pilot import; object boundaries may be unproven.
+// Object boundaries may be unproven.
 // FUNCTION: BFME2 0x004AC24D size=91 name=??1RainOfFireUpdate@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x004AC2A8 size=817 name=?update@RainOfFireUpdate@@UAE?AW4UpdateSleepTime@@XZ evidence=N:ledger
-// GameLogic/Object/Update/RainOfFireUpdate.cpp: retail translation unit (pilot skeleton).
+// GameLogic/Object/Update/RainOfFireUpdate.cpp: retail translation unit (skeleton).
 // Write each function below its FUNCTION annotation, in this (retail) order.
 // Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
 // Shared types belong in include/; no class or struct with a body in this file.

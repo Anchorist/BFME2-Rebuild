@@ -8,6 +8,9 @@
 // Edges: left=rests-on:name right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:init-votes
 // FUNCTION: BFME2 0x005ACCE4 size=11 name=??1AIFarmKillSquad@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
+AIFarmKillSquad::~AIFarmKillSquad()
+{
+}
 
 // FUNCTION: BFME2 0x005ACCEF size=98 name=?canRun@AIFarmKillSquad@@UAE_NPAX@Z evidence=N:ledger tier=A
 

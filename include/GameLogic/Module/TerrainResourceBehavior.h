@@ -1,4 +1,4 @@
-// TerrainResourceBehavior.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x00481FBD);
+// TerrainResourceBehavior.h:
 // name, size, bases and virtual order are retail facts given below.
 // TerrainResourceBehavior.h: the TerrainResourceBehavior module. SIZE 0x30 (ModuleFactory operator new).
 // Target facts: the constructor 0x0048209B calls UpdateModule first; it stores the

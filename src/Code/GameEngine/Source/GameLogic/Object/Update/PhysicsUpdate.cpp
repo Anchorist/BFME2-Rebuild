@@ -1,5 +1,5 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-// Diagnostic pilot import; object boundaries may be unproven.
+// Object boundaries may be unproven.
 // FUNCTION: BFME2 0x00390119 size=176 name=??0PhysicsBehaviorModuleData@@QAE@XZ evidence=N:ledger
 // FUNCTION: BFME2 0x003901C9 size=17 name=?buildFieldParse@PhysicsBehaviorModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger
 // FUNCTION: BFME2 0x003901DA size=836 name=?calcFlightPath@PhysicsBehavior@@QAE_N_NM@Z evidence=N:ledger
@@ -26,7 +26,7 @@
 #include <vector>
 class Coord3D;
 namespace _STL { template<> Coord3D *allocator<Coord3D>::allocate(size_type,const void *); }
-// GameLogic/Object/Update/PhysicsUpdate.cpp: retail translation unit (pilot skeleton).
+// GameLogic/Object/Update/PhysicsUpdate.cpp: retail translation unit (skeleton).
 // Write each function below its FUNCTION annotation, in this (retail) order.
 // Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
 // Shared types belong in include/; no class or struct with a body in this file.
@@ -330,7 +330,7 @@ Xfer *Rva00390911XferCoordVector(Xfer *xfer, _STL::vector<Coord3D> *vec)
 		Coord3D *cur = vec->begin();
 		while (cur != end)
 		{
-			*xfer == reinterpret_cast<Coord3DBase &>(*cur);
+			*xfer == *cur;
 			++cur;
 		}
 	}
@@ -344,7 +344,7 @@ Xfer *Rva00390911XferCoordVector(Xfer *xfer, _STL::vector<Coord3D> *vec)
 			--count;
 			Coord3D value;
 			vec->push_back(value);
-			*xfer == reinterpret_cast<Coord3DBase &>(vec->back());
+			*xfer == vec->back();
 		}
 	}
 	return xfer;

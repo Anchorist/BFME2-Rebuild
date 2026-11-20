@@ -3,4 +3,4 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x006E6C00 size=137 name=?PushValue@AptValueVector@@QAEXPAVAptValue@@@Z evidence=X:map request (link (from standalone link 0cf3e833)) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x006E6C90 size=56 name=?PopValue@AptValueVector@@QAEPAVAptValue@@XZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
-// FUNCTION: BFME2 0x006E6CD0 size=17 name=?IsFull@AptValueVector@@QBEHXZ evidence=X:map request (standalone ca6e45a3dd (a-both-real, by hand)) tier=B hypothesis:mm1-gap-unit
+// FUNCTION: BFME2 0x006E6CD0 size=17 name=?IsFull@AptValueVector@@QBEHXZ evidence=X:map request (standalone ca6e45a3dd) tier=B hypothesis:mm1-gap-unit

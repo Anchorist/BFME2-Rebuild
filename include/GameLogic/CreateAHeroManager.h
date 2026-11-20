@@ -78,7 +78,7 @@ public:
 	Int GetStatNameKey(UnsignedInt classIndex, UnsignedInt subClass, UnsignedInt stat);	// 0x00219E9F
 	Int GetAwardNameKey(UnsignedInt classIndex, UnsignedInt subClass, UnsignedInt award);	// 0x00219F00
 	Int GetPreferedFaction(UnsignedInt classIndex, UnsignedInt index);	// 0x00219FE3
-	const class CreateAHeroCamera *GetViewInfo(UnsignedInt heroClass, UnsignedInt subClass);	// 0x00219F36 (ledger name; the map spells the return PBVRva002195E6, respell asked of m08; decl_queue k02 17:51, ACCEPTED k11)
+	const class CreateAHeroCamera *GetViewInfo(UnsignedInt heroClass, UnsignedInt subClass);	// 0x00219F36 (ledger name; the map spells the return PBVRva002195E6)
 	CreateAHeroClass *rva0021B31C(const AsciiString &upgradeName);	// 0x0021B31C: the class with this upgrade name, or null
 	Int GetRequiredButtonCount();	// 0x00219309: the buttons the command set holds (at most 32)
 	const class CommandButton *GetRequiredButton(UnsignedInt index);	// 0x0021933E

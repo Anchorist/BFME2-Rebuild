@@ -209,4 +209,4 @@ Object *CommandButtonHuntUpdate::scanClosestTarget()
 
 // FUNCTION: BFME2 0x00495840 size=110 name=?rva00495840@Rva00495840@@QAEHPAVArg@@@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 
-// FUNCTION: BFME2 0x004958AE size=104 name=?update@CommandButtonHuntUpdate@@UAE?AW4UpdateSleepTime@@XZ evidence=X:map request (c1 (re-based)) tier=B hypothesis:mm1-held-object-same-path
+// FUNCTION: BFME2 0x004958AE size=104 name=?update@CommandButtonHuntUpdate@@UAE?AW4UpdateSleepTime@@XZ evidence=X:map request tier=B hypothesis:mm1-held-object-same-path

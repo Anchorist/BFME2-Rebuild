@@ -599,6 +599,10 @@ TeamsInfoRec &TeamsInfoRec::operator=(const TeamsInfoRec &that)
 // FUNCTION: BFME2 0x0032EC63 size=240 name=??1SidesList@@UAE@XZ evidence=N:ledger tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x0032ED53 size=6 name=?GetSnapshotName@SidesList@@UBEPBDXZ evidence=N:ledger tier=B hypothesis:cohesion
+const char *SidesList::GetSnapshotName() const
+{
+	return "SidesList";
+}
 
 // FUNCTION: BFME2 0x0032ED61 size=20 name=?rva0032ED61@Rva0032ED61@@QAEXXZ evidence=?:placeholder tier=B hypothesis:K
 

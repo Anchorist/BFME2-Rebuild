@@ -1,4 +1,4 @@
-// Promoted from Draft: both flag sets are ModelConditionFlags (the 591-name set, 0x4C bytes, so
+// Both flag sets are ModelConditionFlags (the 591-name set, 0x4C bytes, so
 // +0x164 + 0x4C meets +0x1B0), and the temporary condition is the int iniParseAnim 0x004B6481 stores (-1 for none).
 // ModelConditionUpgradeModuleData.h: the INI data of ModelConditionUpgrade. SIZE 0x1B8.
 // Target facts: ModuleFactory registers the module with operator new 0x1B8 and

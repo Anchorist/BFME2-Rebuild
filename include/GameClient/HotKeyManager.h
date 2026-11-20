@@ -17,8 +17,7 @@
 // (addMessageAction 0x003597A8 assigns through 0x002174A4, removeMessageAction
 // 0x003593D8 erases by key; translate 0x00359556 looks the message type up and calls
 // the same three slots). The handle is AptRef (Apt/AptRef.h): the pair copy
-// 0x00358B43 increments the referent's count at +4 and the old repo's placeholder
-// TreeHintRef00217D4C is this handle.
+// 0x00358B43 increments the referent's count at +4 (this class is that handle).
 //
 // HotKeyTranslator is the message-stream translator that forwards to the manager:
 // translateGameMessage 0x00359729 is `TheHotKeyManager ? translate(msg) : 0` as a

@@ -1,9 +1,7 @@
 // EmotionTrackerUpdateEntry.h: one INI-authored emotion. SIZE 0x190 (IniParseAddEmotion 0x004B2087 allocates 0x190;
 // rva004B0EBC 0x004B0EBC reads +0x18C and the parser stores +0x18D).
 // Target facts: the fields are the offsets OnActivation 0x004DCC84, OnDeactivation
-// 0x004DD2C0, CanBeActivatedFor 0x004DD018 and the per-frame step 0x004DCEC4 read
-// through their own private views in the old repo (Rva004DC902AsciiField,
-// Rva004DC8E7AsciiField, EmotionEntry); those views agree on every offset below.
+// 0x004DD2C0, CanBeActivatedFor 0x004DD018 and the per-frame step 0x004DCEC4 read.
 // The two AsciiString getters are out of line: 0x004DC8E7 hands back the attribute
 // modifier name (+0x3C) and 0x004DC902 the Lua event name (+0x188).
 #pragma once
@@ -25,8 +23,8 @@ public:
 	~EmotionTrackerUpdateEntry();			// 0x004DC9ED (out of line: EmotionTrackerUpdateModuleData's destructor 0x004B1285 calls it before the delete)
 	AsciiString getAttributeModifierName() const;
 	AsciiString getEventName() const;
-	// The per-frame step reads the start delay through an inline getter (old repo
-	// EmotionNugget.cpp, 0x004DCEC4): that spelling gives retail's load order.
+	// The per-frame step reads the start delay through an inline getter (0x004DCEC4):
+	// that spelling gives retail's load order.
 	int getModifierDelay() const { return m_attributeDelay; }
 
 	AsciiString m_name;							// 0x00 the emotion's name (IniParseAddEmotion 0x004B2087 stores the token through StringBase::set)

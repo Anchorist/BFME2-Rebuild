@@ -30,7 +30,7 @@ public:
     // 0x006F7D50 (the map files it as rva006F7D50 on BfmeQuery1279): queries the item at a depth and unlinks it (bfmeUnlinkNestedBE), returning it.
     AptCIH *unlinkAtDepth(int depth);
     // 0x006F8060 (the map files it as rva006F8060 on a placeholder class): the destructor's body (asserts the root is undefined, clears its instance pointer and
-    // force-deletes it) plus the pool free of the 4-byte state when bit 0 of the flag is set; returns this (the old decomp's name for the same shape on the pseudo list is Destroy).
+    // force-deletes it) plus the pool free of the 4-byte state when bit 0 of the flag is set; returns this.
     AptDisplayListState *Destroy(int flags);
     // 0x006F6ED0 (the map files it as rva006F6ED0 on the placeholder class BfmeQuery1279): builds a CIH of the given type for the instance (the pool block is 0x60 bytes, the
     // constructor runs with the instance and no parent), looks up what is at the depth, asserts that is undefined, stamps the 17-bit depth into the new item and

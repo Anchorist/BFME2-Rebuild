@@ -1,4 +1,4 @@
-// Promoted from Draft: generated from retail's field-parse table (VA 0x00C56858); constructor 0x004B115A and
+// Generated from retail's field-parse table (VA 0x00C56858); constructor 0x004B115A and
 // destructor 0x004B1285 are written against it. The 12 bytes at +0x34 are an STLport vector of EmotionTrackerUpdateEntry pointers
 // (IniParseAddEmotion 0x004B2087 pushes through it at +0x34; the destructor deletes each entry, then the buffer).
 // EmotionTrackerUpdateModuleData.h: the INI data of EmotionTrackerUpdate. SIZE 0x40.

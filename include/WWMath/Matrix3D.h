@@ -155,7 +155,7 @@ public:
 
 	// Zero Hour's matrix3d.h axis and translation getters (three columns / the last column; plain inline, not WWINLINE). evidence: retail inlines the
 	// by-value forms with no out-of-line copy (ActiveBody 0x004BFB1C reads column 0 as [m+0x8],[m+0x18],[m+0x28] and column 1 as
-	// [m+0xC],[m+0x1C],[m+0x2C]; f14's request), yet W3DSailModelDraw's unit emits out-of-line copies of Get_X_Vector 0x000D085E and
+	// [m+0xC],[m+0x1C],[m+0x2C]), yet W3DSailModelDraw's unit emits out-of-line copies of Get_X_Vector 0x000D085E and
 	// Get_Y_Vector 0x000D087D (calls it makes without expansion), so they are not forced; the Z and pointer forms are the same family.
 	inline Vector3 Get_X_Vector() const { return Vector3(Row[0][0], Row[1][0], Row[2][0]); }
 	inline Vector3 Get_Y_Vector() const { return Vector3(Row[0][1], Row[1][1], Row[2][1]); }

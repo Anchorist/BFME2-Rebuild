@@ -1,6 +1,6 @@
 // SpawnBehaviorInterface.h: the interface SpawnBehavior exposes at +0x20 (13 slots, all pure in the base table
 // 0x00C42518; SpawnBehavior's own table is 0x00C425AC).
-// Target facts (f10, 2026-11-17): the slot targets in SpawnBehavior's table 0x00C425AC are, in order,
+// Target facts: the slot targets in SpawnBehavior's table 0x00C425AC are, in order,
 //   0 0x0045F2F8 (byte f(float), ledger name Rva0045F2F8)
 //   1 0x0045FCFB onSpawnDeath(ObjectID, DamageInfo *)
 //   2 0x0045F87C getClosestSlave(const Coord3D *)

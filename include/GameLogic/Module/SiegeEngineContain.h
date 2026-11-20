@@ -1,5 +1,5 @@
 // SiegeEngineContain.h: the SiegeEngineContain module. SIZE 0x138 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x0047C21E calls TransportContain first; it stores the
+// Target facts: the constructor 0x0047C21E calls TransportContain first; it stores the
 // tables 0x00C470F8 at +0x0, 0x00C441B8 at +0xC, 0x00C441A8 at +0x10, 0x00C46F80 at +0x20, 0x00C46064 at +0x24, 0x00C46F78 at +0x28, 0x00C58790 at +0x2C, 0x00C46F48 at +0x30, 0x00C472E4 at +0x34, 0x00C47834 at +0xFC. Members are what xfer (0x0047C322) transfers after TransportContain::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

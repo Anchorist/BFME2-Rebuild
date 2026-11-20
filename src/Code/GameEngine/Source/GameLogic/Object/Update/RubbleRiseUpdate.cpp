@@ -38,7 +38,7 @@ float GetGameLogicRandomValueReal(float,float,char*,int);
 #define TheGlobalData ((const GlobalData *)TheWritableGlobalData)
 static const char *TheRubbleRisePhaseNames[]={"INITIAL","DELAY","BURST","FINAL",0};
 bool inList(int,int,const int *);
-// GameLogic/Object/Update/RubbleRiseUpdate.cpp: retail translation unit (pilot skeleton).
+// GameLogic/Object/Update/RubbleRiseUpdate.cpp: retail translation unit (skeleton).
 // Write each function below its FUNCTION annotation, in this (retail) order.
 // Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
 // Shared types belong in include/; no class or struct with a body in this file.
@@ -175,7 +175,7 @@ void RubbleRiseUpdate::xfer(Xfer *xfer)
 	xfer->XferRawBytes(&m_riseState, sizeof(m_riseState));
 	*xfer == m_riseVelocity;
 	*xfer == m_currentHeight;
-	*xfer == reinterpret_cast<Coord3DBase &>(m_risePosition);
+	*xfer == m_risePosition;
 	if (version.m_minimum >= 2)
 		*xfer == m_rubbleHeight;
 }

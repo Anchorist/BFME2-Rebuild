@@ -33,8 +33,9 @@ includer and deletes the Draft in the same change.
 **R4 Real templates and library code.** Containers, strings and algorithms use the real STLport or
 engine templates. FAIL on a hand-written copy of library code or a container's internals.
 
-**R5 Comments say why.** New comments give evidence or intent. FAIL on addresses or byte counts
-repeated from the ledger, dates, author or tool tags, attempt notes, or "matches retail" remarks.
+**R5 Comments say why.** Comments the diff adds give evidence or intent. FAIL if they add addresses or
+byte counts repeated from the ledger, dates, author or tool tags, attempt notes, or "matches retail" remarks.
+Existing comments of that kind elsewhere are being converted and are not this pull request's fault.
 
 **R6 Nothing outside the item.** Every changed line serves the claimed file, Draft or function
 (`Claim:` lines in the description). No unrelated reformatting, renames or moves; no new source files (a new header only

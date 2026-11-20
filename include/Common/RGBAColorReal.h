@@ -1,7 +1,7 @@
 #pragma once
 #include <stddef.h>
 // SIZE 0x10, no base or virtual functions. The four float fields at
-// +0/+4/+8/+C agree across thirteen old views and are read as promoted
+// +0/+4/+8/+C are read as promoted
 // float arguments by retail XferSaveAsText::operator== at 0x0060DC95.
 struct RGBAColorReal
 {

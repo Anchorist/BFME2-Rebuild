@@ -13,8 +13,7 @@
 //
 // Layout (constructor 0x00038440 stores, the REP STOSD that clears 10007
 // frame-hash pointers at +0x18 and seven 16-byte output buffers at +0x9C84,
-// and the accesses listed per member; reconciled in the old repo's
-// Code/GameEngine/Source/Common/debug.h). Allocation 0x9F68.
+// and the accesses listed per member). Allocation 0x9F68.
 #pragma once
 #ifndef BFME2_DEBUG_H
 #define BFME2_DEBUG_H
@@ -296,7 +295,7 @@ extern Debug *theDebug;								// RVA 0x009E0880
 
 // Streams a string's text: retail's out-of-line COMDAT 0x000028E8 (??$?6D@@YAAAVDebug@@AAV0@ABV?$StringBase@D@@@Z)
 // is `mov eax, [s]; ... debug << s.str()` through slot 14 (operator<<(const char *)); KeepObjectDie's
-// constructor 0x00486D73 calls it with the template name. (f10)
+// constructor 0x00486D73 calls it with the template name.
 template <class CharT> class StringBase;
 template <class CharT> Debug &operator<<(Debug &debug, const StringBase<CharT> &text) { return debug << text.str(); }
 

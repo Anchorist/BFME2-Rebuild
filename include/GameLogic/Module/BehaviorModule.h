@@ -52,6 +52,7 @@ class BridgeBehaviorInterface;
 class BridgeTowerBehaviorInterface;
 class BridgeScaffoldBehaviorInterface;
 class CaveInterface;
+class ClearanceTestGeometryInterface;
 class ProjectileUpdateInterface;
 class SlowDeathBehaviorInterface;
 class SpecialPowerUpdateInterface;
@@ -87,7 +88,7 @@ public:
 	virtual void *slot21() = 0;
 	virtual DockUpdateInterface *getDockUpdateInterface() = 0;			// 22: Object::getDockUpdateInterface 0x0028BCB4 asks +0x58 of each behavior
 	virtual SlowDeathBehaviorInterface *getSlowDeathBehaviorInterface() = 0;		// 23: SlowDeathBehavior and its subclasses override it (0x003730FC)
-	virtual void *slot24() = 0;
+	virtual ClearanceTestGeometryInterface *slot24() = 0;
 	virtual SpecialPowerUpdateInterface *getSpecialPowerUpdateInterface() = 0;		// 25: every special-power update (SpecialAbilityUpdate, OCLUpdate, ...) overrides it
 	virtual SlavedUpdateInterface *getSlavedUpdateInterface() = 0;		// 26: SlavedUpdate overrides it
 	virtual void *slot27() = 0;
@@ -151,7 +152,7 @@ public:
 	virtual void *slot21() { return 0; }
 	virtual DockUpdateInterface *getDockUpdateInterface() { return 0; }
 	virtual SlowDeathBehaviorInterface *getSlowDeathBehaviorInterface() { return 0; }
-	virtual void *slot24() { return 0; }
+	virtual ClearanceTestGeometryInterface *slot24() { return 0; }
 	virtual SpecialPowerUpdateInterface *getSpecialPowerUpdateInterface() { return 0; }
 	virtual SlavedUpdateInterface *getSlavedUpdateInterface() { return 0; }
 	virtual void *slot27() { return 0; }

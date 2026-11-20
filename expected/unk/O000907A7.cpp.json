@@ -148,7 +148,8 @@
       "parent": null,
       "object": "O000907A7",
       "accepted_names": [
-        "?Create@GameFileClass@@UAEHXZ"
+        "?Create@GameFileClass@@UAEHXZ",
+        "?Get_LOD_Count@RenderObjClass@@UBEHXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"

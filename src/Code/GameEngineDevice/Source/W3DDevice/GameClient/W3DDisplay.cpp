@@ -380,7 +380,7 @@ Object *ObjectIterator::next() throw()
 // FUNCTION: BFME2 0x00049DC5 size=37 name=?findObjectByID@GameLogic@@QAEPAVObject@@W4ObjectID@@@Z evidence=N:ledger tier=A
 Object *GameLogic::findObjectByID(ObjectID id)
 {
-	// The object table at +0xB4 (the old decomp's "ObjectIdMap").
+	// The object table at +0xB4.
 	if (id == INVALID_ID)
 		return NULL;
 

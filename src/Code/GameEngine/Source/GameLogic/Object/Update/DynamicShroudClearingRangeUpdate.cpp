@@ -1,5 +1,5 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-// Diagnostic pilot import; object boundaries may be unproven.
+// Object boundaries may be unproven.
 // FUNCTION: BFME2 0x0048B03E size=24 name=?killGridDecals@DynamicShroudClearingRangeUpdate@@QAEXXZ evidence=N:ledger
 // FUNCTION: BFME2 0x0048B056 size=17 name=?buildFieldParse@DynamicShroudClearingRangeUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger
 // FUNCTION: BFME2 0x0048B067 size=253 name=??0DynamicShroudClearingRangeUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger
@@ -11,7 +11,7 @@
 // FUNCTION: BFME2 0x0048B33F size=454 name=?update@DynamicShroudClearingRangeUpdate@@UAE?AW4UpdateSleepTime@@XZ evidence=N:ledger
 // FUNCTION: BFME2 0x0048B505 size=165 name=?xfer@DynamicShroudClearingRangeUpdate@@UAEXPAVXfer@@@Z evidence=N:ledger
 // FUNCTION: BFME2 0x0048B5C6 size=82 name=??0DynamicShroudClearingRangeUpdateModuleData@@QAE@XZ evidence=N:ledger
-// GameLogic/Object/Update/DynamicShroudClearingRangeUpdate.cpp: retail translation unit (pilot skeleton).
+// GameLogic/Object/Update/DynamicShroudClearingRangeUpdate.cpp: retail translation unit (skeleton).
 // Write each function below its FUNCTION annotation, in this (retail) order.
 // Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
 // Shared types belong in include/; no class or struct with a body in this file.

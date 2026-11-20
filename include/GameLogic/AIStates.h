@@ -9,7 +9,7 @@
 // are still map placeholders are named by the CRC-32 of the class name each
 // constructor passes.
 // Slot 2 (GetSnapshotName) bodies are map placeholders (Rva...Get) for most
-// states, so it is declared and left to the constructors' landing.
+// states, so it is declared without a body here.
 #pragma once
 #ifndef BFME2_AISTATES_H
 #define BFME2_AISTATES_H
@@ -700,8 +700,7 @@ protected:
 
 // ---------------------------------------------------------------------------
 // The remaining states AIStateMachine's constructor 0x00351C48 builds. Each name
-// is proven by the image: the CRC-32 of the name its constructor passes (h07's
-// h07_state_name_crc.tsv, verified by n01) or, for a class whose constructor
+// is proven by the image: the CRC-32 of the name its constructor passes or, for a class whose constructor
 // passes its base's hash, the string its own slot-2 GetSnapshotName returns.
 // Sizes are the constructor's operator new argument; bases are the constructor
 // it calls first. Members not yet read from an xfer are left as the gap
@@ -1301,16 +1300,16 @@ class AIAttackFireWeaponState : public State
 {
 public:
 	AIAttackFireWeaponState(StateMachine *machine, Int unk);	// 0x0033F483 (CRC-32 0x7252E66D)
-	virtual StateReturnType onEnter();				// slot 4, 0x0034A879 (decl_queue f01 17:58, ACCEPTED k11)
+	virtual StateReturnType onEnter();				// slot 4, 0x0034A879
 	virtual void onExit(StateExitType status);				// 0x0034B08A
-	virtual StateReturnType update();				// slot 6, 0x0034AAC8 (decl_queue f01 17:58, ACCEPTED k11)
+	virtual StateReturnType update();				// slot 6, 0x0034AAC8
 
 protected:
 	virtual const char *GetSnapshotName() const;			// 0x0033F4AB
-	virtual void xfer(Xfer *xfer);				// slot 3 (shared empty 0x0047A69C; decl_queue f01 18:08, ACCEPTED k11)
+	virtual void xfer(Xfer *xfer);				// slot 3 (shared empty 0x0047A69C)
 
 public:
-	Int m_unk0x20;				// +0x20: the constructor 0x0033F483 stores its second argument here (decl_queue f01 18:42, ACCEPTED k11)
+	Int m_unk0x20;				// +0x20: the constructor 0x0033F483 stores its second argument here
 	Bool m_unk0x24;				// +0x24: the constructor 0x0033F483 clears it
 };
 // SIZE 0x28

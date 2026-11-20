@@ -1,0 +1,8 @@
+# A change to these paths waits for a review from the maintainer before it lands.
+# Source files under src/ need no owner review when every check passes.
+/include/   @Ancalgonn
+/.github/   @Ancalgonn
+/ci/        @Ancalgonn
+/tools/     @Ancalgonn
+/config/    @Ancalgonn
+/baseline/  @Ancalgonn

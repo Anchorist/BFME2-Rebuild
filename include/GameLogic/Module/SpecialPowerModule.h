@@ -149,7 +149,7 @@ public:
 	virtual Rva002390CB getInitiateSound() const;						// 0x00493218
 	virtual void stopSpecialPower() { m_unk0x28 = false; }				// 0x00251C2C (`mov byte [ecx+0x18],0` on the +0x10 interface: retail table 0x0085E080 slot 17; slot 19 holds the same fold)
 	virtual bool rva0049466D(const Coord3D *location);					// 0x0049466D
-	virtual void specialPowerSlot19() { m_unk0x28 = false; }			// fold 0x00251C2C (`mov byte [ecx+0x18],0` on the +0x10 interface), the body of slot 17 (stopSpecialPower) too: retail table 0x0085E080 holds it at slots 17 and 19; slot 19's own name is not known, publish 3c lists this one at the fold
+	virtual void specialPowerSlot19() { m_unk0x28 = false; }			// fold 0x00251C2C (`mov byte [ecx+0x18],0` on the +0x10 interface), the body of slot 17 (stopSpecialPower) too: retail table 0x0085E080 holds it at slots 17 and 19; slot 19's own name is not known
 	virtual unsigned int specialPowerSlot20() const { return m_unk0x2C; }	// fold 0x0030F2C7 (`mov eax,[ecx+0x1C]`)
 	virtual bool specialPowerSlot21() const;										// 0x004932D5
 	virtual void specialPowerSlot22();												// 0x0049329E
@@ -169,7 +169,7 @@ public:
 	// trigger 0x004941F3 (926B). The do-special-power entries call both.
 	void initiateIntentToDoSpecialPower(const Object *obj, const Coord3D *loc, UnsignedInt commandOptions, const Waypoint *waypoint);
 	void triggerSpecialPower(const Coord3D *location);
-	void copyReadyStateFrom(SpecialPowerModule *other);	// 0x00493BD4: copies the other module's ready-state words (f11)
+	void copyReadyStateFrom(SpecialPowerModule *other);	// 0x00493BD4: copies the other module's ready-state words
 
 protected:
 	virtual const SpecialPowerTemplate *getSpecialPowerTemplate() const;	// 0x00493236

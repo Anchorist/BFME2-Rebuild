@@ -17,8 +17,18 @@ const char *ClearanceTestingSlowDeathBehavior::name() const
 }
 
 // FUNCTION: BFME2 0x00483C69 size=12 name=?rva00483C69@ClearanceTestingSlowDeathBehavior@@UAEPAVRva00483C69Interface@@XZ evidence=?:placeholder
+ClearanceTestGeometryInterface *ClearanceTestingSlowDeathBehavior::getClearanceTestGeometryInterface()
+{
+	return this;
+}
+
 
 // FUNCTION: BFME2 0x00483C75 size=13 name=?get@Rva00483C75LeaNegSbbField@@QBEHXZ evidence=?:placeholder
+ClearanceTestGeometryInterface *ClearanceTestingSlowDeathBehavior::slot24()
+{
+	return this;
+}
+
 
 // FUNCTION: BFME2 0x00483C9F size=80 name=?allow@Rva00483C9FFilter@@UAE_NPAVObject@@@Z evidence=?:placeholder
 

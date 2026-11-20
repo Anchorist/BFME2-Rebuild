@@ -1,4 +1,4 @@
-// DelayedWeaponSetUpgradeUpdate.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x0048828E);
+// DelayedWeaponSetUpgradeUpdate.h:
 // name, size, bases and virtual order are retail facts given below.
 // DelayedWeaponSetUpgradeUpdate.h: the DelayedWeaponSetUpgradeUpdate module. SIZE 0x24 (ModuleFactory operator new).
 // Target facts: the constructor 0x004882E4 calls UpdateModule first; it stores the

@@ -9,7 +9,7 @@
 // object=O000658BA name-evidence=Z name-tier=Z
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: duplicate path; held alternatives O00711AD0
+// Duplicate path; alternative object O00711AD0
 // Hypothesis rules: hypothesis:K, hypothesis:name:Z
 // FUNCTION: BFME2 0x00065898 size=19 name=?Timestep@CameraShakerClass@CameraShakeSystemClass@@QAEXM@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
 void CameraShakeSystemClass::CameraShakerClass::Timestep(float dt)

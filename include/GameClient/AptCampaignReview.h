@@ -20,6 +20,7 @@ public:
 	void playerSideType(int, char *, bool);			// 0x00512864: extern handler, "evil" or "good"
 	void DisplayVictoryLevel();						// 0x00512948: sets the APT:CmpgnRevResult text
 	virtual WindowMsgHandledType system(unsigned int message, unsigned int data1, unsigned int data2);	// GameWindow slot 2, 0x005127F3
+	virtual GameWindowFactory getWindowFactory();	// GameWindow slot 7, 0x00512C82
 	static bool OpenScreen();						// 0x0051291C
 };
 typedef char AptCampaignReviewSizeCheck[sizeof(AptCampaignReview)==0x27C ? 1 : -1];

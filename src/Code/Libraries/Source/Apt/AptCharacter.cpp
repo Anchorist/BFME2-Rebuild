@@ -57,7 +57,7 @@ void rva006ffce0(AptValue *value, EAStringC &name); // 0x006FFCE0 (AptActionInte
 // object=O006EBD30 name-evidence=F name-tier=F
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: W-in-F contradiction
+// Conflicting placement evidence (W-in-F).
 // Hypothesis rules: hypothesis:contradicted-by-W, hypothesis:padding
 extern void *g_aptDrawRenderingUnitSlot; // VA 0x00E177A8 (gAptFuncs.pfnDrawRenderingUnit)
 // FUNCTION: BFME2 0x006EBD30 size=148 name=?render@Rva006EBD30@@QAEXPAVAptRenderingContext@@PAX1@Z evidence=?:placeholder tier=A

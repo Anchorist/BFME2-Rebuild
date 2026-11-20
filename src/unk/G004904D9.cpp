@@ -1,4 +1,4 @@
-// cl: /O1
+// cl: /O1 -Ireference/shims/bfmealloc_alloconly /D_CRTIMP=
 #include "GameLogic/Module/SiegeAIUpdateModuleData.h"
 #include "Common/INI/FieldParse.h"
 

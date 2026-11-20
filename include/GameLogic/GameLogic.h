@@ -15,7 +15,7 @@
 //  - Primary slots 1 (init 0x00243EE7), 9 (reset 0x002442A4), 10 (update, the
 //    shared empty body 0x000B3FD0) and 13 (updatePhase 0x0024555A; the map spells
 //    it update(int), but the slot is SubsystemInterface::updatePhase) override it.
-// The old decomp's "ObjectIdMap"/"ObjectIdNode" lookup view is the object
+// The object lookup is the object
 // hash at +0xB4: an STLport hash_map<ObjectID, Object *> and its node.
 #pragma once
 #ifndef BFME2_GAMELOGIC_H
@@ -108,7 +108,7 @@ public:
 	UnsignedInt getObjectCount();		// 0x0023CFCE, walks m_objList
 	Object *friend_createObject(const ThingTemplate *thing, const CreateMask *mask, Team *team, ObjectID id); // 0x0023CAE7
 	void destroyObject(Object *obj);	// 0x00242C09
-	void destroyAllObjectsImmediate();	// 0x00243B52 (s05)
+	void destroyAllObjectsImmediate();	// 0x00243B52
 	void rva00240EBC();	// 0x00240EBC (s05: calls Object::rva00295F05(true) on each +0x164 entry, then clears it)
 	Bool rva002034E9() const;	// 0x002034E9 (map: placeholder host): false only when +0x114 == 3 and 0x0023C6A4 says no; Player::usesRankLevelLimitOverride 0x002A9F53 tail-calls it
 	void sendObjectDestroyed(Object *obj);	// 0x0023CD67
@@ -137,8 +137,8 @@ public:
 	ObjectTOCEntry *findTOCEntryByName(AsciiString name);	// 0x00240167
 	void addTOCEntry(AsciiString name, UnsignedShort id);	// 0x00245F14
 	void xferObjectTOC(Xfer *xfer);	// 0x00245F79
-	void QueueForNotifyPathfindCellChanged(Object *obj);	// 0x00241C25 (decl_queue f01 07:21)
-	void SwapObjectIDs(Object *a, Object *b);	// 0x00242BB4 (decl_queue f01 07:21)
+	void QueueForNotifyPathfindCellChanged(Object *obj);	// 0x00241C25
+	void SwapObjectIDs(Object *a, Object *b);	// 0x00242BB4
 	void formatPlayerStartWaypointName(AsciiString *out);	// 0x0024822B
 	void bfmePopulateGameReport(GameInfo *info, Int *slotNum);	// 0x00247378
 	void DoExitMap(Bool selfDestruct);	// 0x0023D0E3
@@ -167,8 +167,8 @@ public:
 	void setControlBarOverride(const AsciiString &templateName, Int slot, const CommandButton *button);	// 0x0024792F (ScriptActions 0x003BCB7A)
 	Int getGameMode() const { return m_gameMode; }
 	Bool isWarOfTheRingGame() const;	// 0x00210C66: +0x114 == 1 || +0x114 == 2 (the two War of the Ring campaign kinds; AptQuitMenu 0x0051AFF9, 0x0051B04A)
-	void enterFPMode();	// 0x000421FD (f04: FPModeScope constructor 0x0004224C)
-	void setPlayerQuitStatus(Int slot, Int status);	// 0x0023D201: records why a player slot left and the frame it happened on (Network::vslot98 0x0025E20F; h11)
+	void enterFPMode();	// 0x000421FD (FPModeScope constructor 0x0004224C)
+	void setPlayerQuitStatus(Int slot, Int status);	// 0x0023D201: records why a player slot left and the frame it happened on (Network::vslot98 0x0025E20F)
 	void updateObjectsChangedTriggerAreas() { m_frameObjectsChangedTriggerAreas = m_frame; }
 
 	BuildableOverrideMap m_thingTemplateBuildableOverrides;	// +0x10 template name -> BuildableStatus (setBuildableStatusOverride 0x00246F71)

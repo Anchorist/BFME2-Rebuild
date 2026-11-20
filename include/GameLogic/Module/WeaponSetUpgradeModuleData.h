@@ -1,4 +1,4 @@
-// WeaponSetUpgradeModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x004B56F6);
+// WeaponSetUpgradeModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // WeaponSetUpgradeModuleData.h: the INI data of WeaponSetUpgrade. SIZE 0x128.
 // Target facts: ModuleFactory registers the module with operator new 0x128 and

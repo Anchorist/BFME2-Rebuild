@@ -51,7 +51,7 @@ public:
 protected:
 	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);
-	virtual void loadPostProcess();	// retail slot 0x00497805: the UpdateModule forward, folded with SlowDeathBehavior's (h05)
+	virtual void loadPostProcess();	// retail slot 0x00497805: the UpdateModule forward, folded with SlowDeathBehavior's
 
 public:
 	ObjectID m_workerID;                           // +0x28; the constructor zeroes it; xfer ObjectID (update looks it up and re-spawns the worker when it is gone)

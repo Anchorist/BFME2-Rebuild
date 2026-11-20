@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x1B4 and
 // constructor RVA 0x0047DA08; buildFieldParse RVA 0x0047CA32 calls HordeTransportContainModuleData::buildFieldParse, then adds VA 0x00C47208 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_HORDE_SIEGE_ENGINE_CONTAIN_MODULE_DATA_H

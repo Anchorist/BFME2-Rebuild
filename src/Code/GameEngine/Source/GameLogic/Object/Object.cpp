@@ -1630,8 +1630,56 @@ Real Object::getShroudClearingRange() const
 }
 
 // FUNCTION: BFME2 0x0028DF48 size=215 name=?doSpecialPower@Object@@QAEXPBVSpecialPowerTemplate@@I_N@Z evidence=N:ledger tier=A
+void Object::doSpecialPower(const SpecialPowerTemplate *spt, UnsignedInt commandOptions, Bool forceUsable)
+{
+	if (commandOptions & 0x20000000)
+	{
+		static NameKeyType key_AutoAbilityBehavior = TheNameKeyGenerator->nameToKey("AutoAbilityBehavior");
+		UpdateModule *autoAbility = findUpdateModule(key_AutoAbilityBehavior);
+		if (isDisabled())
+		{
+			DisabledMaskType processed = autoAbility->getDisabledTypesToProcess();
+			if (!processed.test(&m_disabledMask))
+				return;
+		}
+	}
+	else if (isDisabled())
+		return;
+	if (!forceUsable && !TheSpecialPowerStore->canUseSpecialPower(this, spt))
+		return;
+	SpecialPowerModuleInterface *mod = getSpecialPowerModule(spt);
+	if (mod)
+	{
+		rva0028C4B6();
+		mod->doSpecialPower(commandOptions);
+	}
+}
 
 // FUNCTION: BFME2 0x0028E01F size=218 name=?doSpecialPowerAtObject@Object@@QAEXPBVSpecialPowerTemplate@@PAV1@I_N@Z evidence=N:ledger tier=A
+void Object::doSpecialPowerAtObject(const SpecialPowerTemplate *spt, Object *target, UnsignedInt commandOptions, Bool forceUsable)
+{
+	if (commandOptions & 0x20000000)
+	{
+		static NameKeyType key_AutoAbilityBehavior = TheNameKeyGenerator->nameToKey("AutoAbilityBehavior");
+		UpdateModule *autoAbility = findUpdateModule(key_AutoAbilityBehavior);
+		if (isDisabled())
+		{
+			DisabledMaskType processed = autoAbility->getDisabledTypesToProcess();
+			if (!processed.test(&m_disabledMask))
+				return;
+		}
+	}
+	else if (isDisabled())
+		return;
+	if (!forceUsable && !TheSpecialPowerStore->canUseSpecialPower(this, spt))
+		return;
+	SpecialPowerModuleInterface *mod = getSpecialPowerModule(spt);
+	if (mod)
+	{
+		rva0028C4B6();
+		mod->doSpecialPowerAtObject(target, commandOptions);
+	}
+}
 
 // FUNCTION: BFME2 0x0028E0F9 size=88 name=?doSpecialPowerAtLocation@Object@@QAEXPBVSpecialPowerTemplate@@PBVCoord3D@@I_N@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 void Object::doSpecialPowerAtLocation(const SpecialPowerTemplate *spt, const Coord3D *loc, UnsignedInt commandOptions, Bool forceUsable)
@@ -2412,10 +2460,55 @@ void Object::clearScriptStatus(ObjectScriptStatusBit bit)
 // FUNCTION: BFME2 0x00293926 size=47 name=?rva00293926@Object@@QAE_NW4KindOfType@@@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x00293955 size=176 name=?clearModelConditionStateForHorde@Object@@QAEXW4ModelConditionFlagType@@@Z evidence=N:ledger tier=A
+void Object::clearModelConditionStateForHorde(ModelConditionFlagType flag)
+{
+	Object *leader = rva002931F5(false);
+	if (leader)
+	{
+		HordeContainInterface *horde = leader->rva0028C197();
+		if (horde)
+		{
+			ContainmentListView members = horde->hordeSlot66();
+			for (ContainmentList::const_iterator it = members.objects().begin(); it != members.objects().end(); ++it)
+				(*it)->clearModelConditionState(flag);
+			leader->clearModelConditionState(flag);
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x00293A05 size=166 name=?setModelConditionStateForHorde@Object@@QAEXW4ModelConditionFlagType@@@Z evidence=N:ledger tier=A
+void Object::setModelConditionStateForHorde(ModelConditionFlagType flag)
+{
+	Object *leader = rva002931F5(false);
+	if (leader)
+	{
+		HordeContainInterface *horde = leader->rva0028C197();
+		if (horde)
+		{
+			ContainmentListView members = horde->hordeSlot66();
+			for (ContainmentList::const_iterator it = members.objects().begin(); it != members.objects().end(); ++it)
+				(*it)->setModelConditionState(flag);
+			leader->setModelConditionState(flag);
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x00293AAB size=276 name=?clearAndSetModelConditionStateForHorde@Object@@QAEXW4ModelConditionFlagType@@0@Z evidence=N:ledger tier=A
+void Object::clearAndSetModelConditionStateForHorde(ModelConditionFlagType clearFlag, ModelConditionFlagType setFlag)
+{
+	Object *leader = rva002931F5(false);
+	if (leader)
+	{
+		HordeContainInterface *horde = leader->rva0028C197();
+		if (horde)
+		{
+			ContainmentListView members = horde->hordeSlot66();
+			for (ContainmentList::const_iterator it = members.objects().begin(); it != members.objects().end(); ++it)
+				(*it)->clearAndSetCondition(clearFlag, setFlag);
+			leader->clearAndSetCondition(clearFlag, setFlag);
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x00293BBF size=92 name=?clearModelConditionFlagsForHorde@Object@@QAEXPBH@Z evidence=N:ledger tier=A
 
@@ -2439,10 +2532,40 @@ void Object::clearAndSetModelConditionFlagsForHorde(const int *clear, const int 
 }
 
 // FUNCTION: BFME2 0x00293CD9 size=98 name=?replaceModelConditionFlagsForHorde@Object@@QAEXPBH_N@Z evidence=N:ledger tier=A
+void Object::replaceModelConditionFlagsForHorde(const int *flags, Bool forceDrawableUpdate)
+{
+	Object *leader = rva002931F5(false);
+	if (leader)
+	{
+		HordeContainInterface *horde = leader->rva0028C197();
+		if (horde)
+		{
+			ContainmentListView members = horde->hordeSlot66();
+			for (ContainmentList::const_iterator it = members.objects().begin(); it != members.objects().end(); ++it)
+				(*it)->replaceModelConditionFlags(flags, forceDrawableUpdate);
+			leader->replaceModelConditionFlags(flags, forceDrawableUpdate);
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x00293D3B size=113 name=?setStatusForHorde@Object@@QAEXABVRva00346BC0@@_N@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x00293DAC size=92 name=?setWeaponSetFlagForHorde@Object@@QAEXW4WeaponSetType@@@Z evidence=N:ledger tier=A
+void Object::setWeaponSetFlagForHorde(WeaponSetType flag)
+{
+	Object *leader = rva002931F5(false);
+	if (leader)
+	{
+		HordeContainInterface *horde = leader->rva0028C197();
+		if (horde)
+		{
+			ContainmentListView members = horde->hordeSlot66();
+			for (ContainmentList::const_iterator it = members.objects().begin(); it != members.objects().end(); ++it)
+				(*it)->setWeaponSetFlag(flag);
+			leader->setWeaponSetFlag(flag);
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x00293E08 size=92 name=?clearWeaponSetFlagForHorde@Object@@QAEXW4WeaponSetType@@@Z evidence=N:ledger tier=A
 void Object::clearWeaponSetFlagForHorde(WeaponSetType flag)

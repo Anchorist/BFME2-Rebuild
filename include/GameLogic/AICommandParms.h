@@ -55,7 +55,7 @@ struct AICommandParms
 	const PolygonTrigger *m_area;						// +0x30, the area of the area commands
 	Int m_extraInt;									// +0x34, the Int argument of the attack-move wrapper
 	Real m_facing;									// +0x38, the facing argument of the *AndFaceDirection wrappers
-	DamageInfo m_damage;							// +0x3C, built by DamageInfo's constructor 0x00263895 inside the out-of-line AICommandParms constructor (f03: the 0x7C-byte sub-object is a DamageInfo; AIStoredCommand keeps the same one at +0x40)
+	DamageInfo m_damage;							// +0x3C, built by DamageInfo's constructor 0x00263895 inside the out-of-line AICommandParms constructor (the 0x7C-byte sub-object is a DamageInfo; AIStoredCommand keeps the same one at +0x40)
 	Int m_unk0xB8;									// +0xB8
 	Int m_unk0xBC;									// +0xBC
 };

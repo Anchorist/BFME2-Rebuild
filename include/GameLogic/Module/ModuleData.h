@@ -25,6 +25,9 @@ class Xfer;
 class HordeContainModuleData;
 class HordeGarrisonContainModuleData;
 class MultiIniFieldParse;
+class QueueProductionExitUpdateModuleData;
+class LevelUpUpgradeModuleData;
+class RespawnUpdateModuleData;
 class W3DModelDrawModuleData;
 class W3DPropDrawModuleData;
 
@@ -58,10 +61,10 @@ public:
 	virtual Int getMinimumRequiredGameLOD() const { return 0; }		// slot 22
 	virtual const void *slot23() const { return 0; }
 	virtual const void *slot24() const { return 0; }
-	virtual const void *slot25() const { return 0; }
-	virtual const void *slot26() const { return 0; }
+	virtual const QueueProductionExitUpdateModuleData *slot25() const { return 0; }
+	virtual const LevelUpUpgradeModuleData *slot26() const { return 0; }
 	virtual const void *slot27() const { return 0; }
-	virtual const void *slot28() const { return 0; }
+	virtual const RespawnUpdateModuleData *slot28() const { return 0; }
 	virtual const HordeGarrisonContainModuleData *slot29() const { return 0; }
 	virtual Bool slot30() const { return true; }						// slot 30
 

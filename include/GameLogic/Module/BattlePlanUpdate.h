@@ -1,4 +1,4 @@
-// Promoted from Draft: constructor 0x00497ED0, destructor 0x004978A3 and xfer 0x00498517 are written against it.
+// Constructor 0x00497ED0, destructor 0x004978A3 and xfer 0x00498517 are written against it.
 // +0x40 is a BattlePlanBonuses (allocated in the constructor, never freed by the destructor); +0x44..+0x84 sixteen AsciiStrings
 // (the constructor runs the eh vector constructor over them, the destructor the vector destructor); +0x84 an AudioHandle the
 // destructor removes (TheAudio slot 0x6C) and xfer transfers (slot 0x160); +0x88 the vision object the update creates.

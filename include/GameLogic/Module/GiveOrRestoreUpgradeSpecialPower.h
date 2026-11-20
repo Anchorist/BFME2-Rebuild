@@ -1,5 +1,5 @@
 // GiveOrRestoreUpgradeSpecialPower.h: the GiveOrRestoreUpgradeSpecialPower module. SIZE 0x90 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004CD0DC calls SpecialAbilityUpdate first; it stores the
+// Target facts: the constructor 0x004CD0DC calls SpecialAbilityUpdate first; it stores the
 // tables 0x00C5FA40 at +0x0, 0x00C5F980 at +0xC, 0x00C4DEE8 at +0x10, 0x00C552A4 at +0x20. Members are what xfer (0x004CE0BE) transfers after SpecialAbilityUpdate::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -39,7 +39,7 @@ public:
 	Bool m_unk0x88;                                // +0x88; constructor store
 	Int m_unk0x8C;                                 // +0x8C; constructor store
 protected:
-	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's (h05)
+	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's
 };
 // SIZE 0x90
 typedef char GiveOrRestoreUpgradeSpecialPower_size[(sizeof(GiveOrRestoreUpgradeSpecialPower) == 0x90) ? 1 : -1];

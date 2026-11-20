@@ -17,7 +17,7 @@ void Rva00433D07(GameWindow *, int);
 void Rva0032060D(GameWindow *, int);
 #include "Common/GameEngine.h"
 #include "GameClient/GadgetListBox.h"
-#include "Draft/AptMessenger.h"
+#include "GameClient/AptMessenger.h"
 void Rva003B3371Call(int);
 void Rva00511730(int);
 void Rva00444040Enable(void);
@@ -94,7 +94,7 @@ void AptLanLobby::slot18(bool flag, int)
 		return;
 	m_state = 12;
 	if (flag)
-		TheLAN->RequestGameStart(m_setup.m_previewMode == 1);
+		TheLAN->RequestGameStart(m_setup.m_mapPreview.m_mode == 1);
 	else
 		TheLAN->RequestAccept(true);
 }

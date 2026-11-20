@@ -1,4 +1,4 @@
-// OathbreakersFadeAwayBehavior.h: promoted from include/Draft. Proven by 3 rows that MATCH against it on main (0x004B89DD, 0x004B8A22, 0x004B8A28);
+// OathbreakersFadeAwayBehavior.h:
 // name, size, bases and virtual order are retail facts given below.
 // OathbreakersFadeAwayBehavior.h: the OathbreakersFadeAwayBehavior module. SIZE 0x28 (ModuleFactory operator new).
 // Target facts: the constructor 0x004B8A8A calls UpdateModule first; it stores the

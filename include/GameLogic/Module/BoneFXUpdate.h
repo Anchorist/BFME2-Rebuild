@@ -1,7 +1,5 @@
 // BoneFXUpdate.h: plays FX, OCLs and particle systems at named bones per body damage state.
-// Zero Hour's BoneFXUpdate.h layout, which BFME2 keeps (old repo
-// reference/shims/bfme2_bonefxupdate/GameLogic/Module/BoneFXUpdate.h and the
-// BoneFXUpdate.cpp unit's layout notes):
+// Zero Hour's BoneFXUpdate.h layout, which BFME2 keeps:
 //  - module data: damage-type words at +0x08, +0x48C and +0x910 (the constructor
 //    0x00487797 stores -1 there), each followed by a [4][8] array of 0x24-byte
 //    bone infos at +0x0C, +0x490 and +0x914;

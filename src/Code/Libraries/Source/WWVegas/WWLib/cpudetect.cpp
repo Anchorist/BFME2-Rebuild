@@ -11,7 +11,7 @@ unsigned Calculate_Processor_Speed(__int64 &ticks_per_second);	// 0x00611050
 // object=O00610EA0 name-evidence=L name-tier=library
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: duplicate path; held alternatives O00126071
+// Duplicate path; alternative object O00126071
 // Hypothesis rules: hypothesis:K, hypothesis:Z, hypothesis:init-votes, hypothesis:name:L, hypothesis:padding
 // CPUDetectClass's statics in retail address order (.bss 0x00A08C28..0x00A08D44, one object; the 8-byte members are 8-aligned, so
 // the 4-byte pads at 0x00A08C34, 0x00A08C94, 0x00A08CAC and 0x00A08CDC come from the alignment). 0x00A08D38 (4 bytes between

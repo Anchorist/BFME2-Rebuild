@@ -1,6 +1,5 @@
 // ThreatFinderUpdate.h: SAGE threat-finder update module and its INI data.
-// Target facts (old repo ThreatFinderUpdate.cpp / ThreatFinderUpdateDtor.cpp /
-// ThreatFinderUpdateXfer.cpp): ??0ThreatFinderUpdate 0x003ECCA2 is 46 bytes and
+// Target facts: ??0ThreatFinderUpdate 0x003ECCA2 is 46 bytes and
 // stores a null heap pointer after the UpdateModule base (0x20), so the class is
 // 0x24 with the heap at +0x20. The dtor 0x003ECF64 deletes that heap object and
 // calls ~UpdateModule 0x0024A797. getModuleNameKey 0x003ECCD6 caches the pool key

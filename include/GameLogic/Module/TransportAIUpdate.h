@@ -1,5 +1,5 @@
 // TransportAIUpdate.h: the TransportAIUpdate module. SIZE 0x3E4 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004A9042 calls AIUpdateInterface first; it stores the
+// Target facts: the constructor 0x004A9042 calls AIUpdateInterface first; it stores the
 // tables 0x00C53AA8 at +0x0, 0x00BFA3C0 at +0xC, 0x00C53A98 at +0x10, 0x00C47B88 at +0x20, 0x00C52F88 at +0x24. Members are what xfer (0x0049060D) transfers after AIUpdateInterface::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -41,7 +41,7 @@ protected:
 
 public:
 protected:
-	virtual void loadPostProcess() { AIUpdateInterface::loadPostProcess(); }	// retail slot 0x0049A7EE: a jmp to AIUpdateInterface's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { AIUpdateInterface::loadPostProcess(); }	// retail slot 0x0049A7EE: a jmp to AIUpdateInterface's, ICF-folded across classes
 };
 // SIZE 0x3E4
 typedef char TransportAIUpdate_size[(sizeof(TransportAIUpdate) == 0x3E4) ? 1 : -1];

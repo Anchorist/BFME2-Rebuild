@@ -44,10 +44,10 @@ compiler, to the original machine code.
 - Change only `.c`/`.cpp` under `src/` and headers under `include/`. No new files, no moving functions between files.
 - Leave `FUNCTION` annotation lines exactly as they are.
 - No inline assembly, emitted bytes, pragmas or casts used to force a match.
-- Comments say why. No addresses, dates or author tags.
+- Comments say why. New comments add no addresses (beyond `FUNCTION` lines), dates or author tags; older ones are being converted.
 - Nothing may stop matching that matched before.
 
 ## Done
 
 A function is finished when it matches, its references are proven, its file has a real name and its class has a real
-header. Details: `CONTRIBUTING.md`.
+header. Write it like the files in `docs/reference-files.md`. Details: `CONTRIBUTING.md`.

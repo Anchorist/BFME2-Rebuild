@@ -3,7 +3,7 @@
 // +0x00, +0x04, +0x08, +0x0C, +0x10 and five end values at +0x18, +0x1C, +0x20, +0x24, +0x28; a fraction below zero stands for
 // the default fraction at +0x60 (0x005B01D3 reads it). The five accessors 0x005B0569, 0x005B0588, 0x005B05A8, 0x005B05C8 and
 // 0x005B05E8 interpolate one parameter pair each through 0x005B01D3; AptMyHero::rva005B04B6's camera refresh uses the first two
-// as pitch and zoom (AptMyHeroRefreshCamera in the earlier decomp).
+// as pitch and zoom.
 #pragma once
 #ifndef BFME2_CREATEAHEROCAMERA_H
 #define BFME2_CREATEAHEROCAMERA_H

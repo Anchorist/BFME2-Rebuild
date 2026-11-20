@@ -19,7 +19,7 @@
 // object=O00174C80 name-evidence=Z name-tier=Z
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: duplicate path; held alternatives O0006614F
+// Duplicate path; alternative object O0006614F
 // Hypothesis rules: hypothesis:Z, hypothesis:cohesion, hypothesis:name:Z, hypothesis:padding
 // The box render system's shared material and shader (retail's zero-initialised file statics, 0x009F6FD4 and the shader beside it).
 extern VertexMaterialClass *_BoxMaterial;

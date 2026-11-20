@@ -1,0 +1,33 @@
+name: "Path: where a file or header belongs"
+description: Propose the real name and place of an address-named source file (src/unk/...) or of a Draft header.
+title: "Path: "
+body:
+  - type: input
+    id: current
+    attributes:
+      label: Current path
+      placeholder: "src/unk/O0024EEBB.cpp  or  include/Draft/GhostObject.h"
+    validations:
+      required: true
+  - type: input
+    id: proposed
+    attributes:
+      label: Proposed path
+      placeholder: "src/Code/GameEngine/Source/GameLogic/Object/Update/SomeUpdate.cpp"
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: >-
+        Why this name and place: a file name string in baseline/game.dat (an assertion path), the class the
+        functions belong to, their callers, the corresponding Zero Hour file, or the address order of neighbouring
+        files.
+    validations:
+      required: true
+  - type: textarea
+    id: functions
+    attributes:
+      label: Functions that move with it
+      description: Addresses or names, if not all of the file.

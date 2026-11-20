@@ -1,7 +1,7 @@
-// RadarUpdate.h: promoted from include/Draft by h05 (round 10). Proven by 3 rows that MATCH against it on main (0x004A0C2D, 0x004A0D0F, 0x004A0D5F);
+// RadarUpdate.h:
 // name, size, bases and virtual order are retail facts given below.
 // RadarUpdate.h: the RadarUpdate module. SIZE 0x28 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004A0C72 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004A0C72 calls UpdateModule first; it stores the
 // tables 0x00C51A0C at +0x0, 0x00BEFF90 at +0xC, 0x00C51A00 at +0x10. Members are what xfer (0x004A0CC3) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -42,7 +42,7 @@ public:
 	Bool m_unk0x24;                                // +0x24; xfer Bool
 	Bool m_unk0x25;                                // +0x25; xfer Bool
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 };
 // SIZE 0x28
 typedef char RadarUpdate_size[(sizeof(RadarUpdate) == 0x28) ? 1 : -1];

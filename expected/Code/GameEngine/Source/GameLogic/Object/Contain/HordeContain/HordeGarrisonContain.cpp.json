@@ -23,7 +23,8 @@
       "object": "retained:O00479BCA",
       "accepted_names": [
         "?rva00479BC5@CitadelSlaughterHordeContain@@QAEHW4ObjectID@@@Z",
-        "?rva00479BC5@Rva00479BC5@@QAEHW4ObjectID@@@Z"
+        "?rva00479BC5@Rva00479BC5@@QAEHW4ObjectID@@@Z",
+        "?getObjectGarrisonPointIndex@HordeGarrisonContain@@UAEHW4ObjectID@@@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null

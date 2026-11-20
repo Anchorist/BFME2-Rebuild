@@ -1,6 +1,6 @@
 // LazyNameKey.h: the two-word lazy name-key cache SAGE keeps for INI-driven
 // properties.
-// Target facts (old repo ThreatFinderUpdateMapLoadPostProcess.cpp): the object is
+// Target facts: the object is
 // a key at +0 and the name pointer at +4, and get() interns the name once and
 // caches the result. Retail's ThreatFinder radius cache lives at VA 0x00DBDE1C
 // with key zero and the literal "objectThreatFinderRadius".

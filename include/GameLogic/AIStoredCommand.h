@@ -1,5 +1,5 @@
 // AIStoredCommand.h: the 0xC4-byte record an AI update keeps of its most recent command. SIZE 0xC4.
-// Role name (f03): the map spells the class Rva0026AFDAMember (initMember 0x0026AFDA, destructor 0x0026B03D,
+// Role name: the map spells the class Rva0026AFDAMember (initMember 0x0026AFDA, destructor 0x0026B03D,
 // doXfer 0x003533BF) and Rva00351570 (store 0x00351570 from an AICommandParms, reconstitute 0x0035164E back into
 // one). It is a member of AIUpdateInterface (+0x2EC), DeployStyleAIUpdate (+0x3E4) and GiantBirdAIUpdate (+0x3F0).
 // Target facts (retail game.dat):

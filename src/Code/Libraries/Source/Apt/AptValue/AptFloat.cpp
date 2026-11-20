@@ -8,7 +8,7 @@ extern AptValueVector *g_releaseVectorAtE17710; // VA 0x00E17710
 // object=O006D86C0 name-evidence=assert:.\AptValue/AptFloat.inl name-tier=invented
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: unit named by the assert file .\AptValue/AptFloat.inl in Create 0x006D8700; rows moved from unknown: 0x006D86A0, 0x006D8700, 0x006D8810, 0x006D8820
+// Unit named by the assert file .\AptValue/AptFloat.inl in Create 0x006D8700; rows moved from unknown: 0x006D86A0, 0x006D8700, 0x006D8810, 0x006D8820
 // Hypothesis rules: hypothesis:K, hypothesis:assert-inl-unit, hypothesis:name:invented, hypothesis:padding
 // The free list of released float values (.bss 0x00E18024; declared in the class header).
 AptFloat *AptFloat::spFreeList = 0;

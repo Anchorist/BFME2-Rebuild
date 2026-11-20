@@ -99,7 +99,7 @@ public:
 	virtual void removeFromContain(Object *obj, Bool exposeStealthUnits) = 0;	// 41
 	virtual void removeAllContained(Bool exposeStealthUnits) = 0;		// 42
 	virtual void containSlot43(Object *first, Int count, Object *second) = 0;	// 43: OpenContain 0x0046274C records both objects' ids and the count (at least 1)
-	virtual ObjectStatusMaskType getObjectStatusOfContained(const Object *rider) const = 0;	// 44: OpenContain 0x00462CE1 copies its data's +0x58 mask (f06); Object::isAbleToAttack 0x00290B73 passes the asking object, the const Object::isAbleToAttack passes this (k02)
+	virtual ObjectStatusMaskType getObjectStatusOfContained(const Object *rider) const = 0;	// 44: OpenContain 0x00462CE1 copies its data's +0x58 mask; Object::isAbleToAttack 0x00290B73 passes the asking object, the const Object::isAbleToAttack passes this
 	virtual Bool isPassengerAllowedToFire() const = 0;					// 45
 	virtual Bool containSlot46() = 0;					// 46: OpenContain's is the shared `xor al,al; ret` 0x0047A699
 	virtual void containSlot47() = 0;
@@ -114,7 +114,7 @@ public:
 	virtual void *containSlot56() = 0;					// 56: OpenContain's is the shared `xor eax,eax; ret` 0x000D43D0
 	virtual Bool containSlot57(Int) = 0;					// 57: OpenContain's is the shared `xor al,al; ret 4` 0x005CB9FF
 	virtual Bool containSlot58(Int object) = 0;	// 58: 0x004631FA whether the object (as an int) is in the contain list
-	virtual void containSlot59(Object *object) = 0;					// 59: OpenContain's is the shared `ret 4` 0x0047A69C; f11: SpecialAbilityUpdate::startPreparation 0x00450D9A passes its target
+	virtual void containSlot59(Object *object) = 0;					// 59: OpenContain's is the shared `ret 4` 0x0047A69C; SpecialAbilityUpdate::startPreparation 0x00450D9A passes its target
 	virtual void containSlot60() = 0;					// 60: OpenContain's is the shared `ret` 0x000B3FD0
 	virtual Object *getClosestRider(const Coord3D *pos) = 0;			// 61
 	virtual void containSlot62() = 0;					// 62: OpenContain's is the shared `ret` 0x000B3FD0
@@ -129,7 +129,7 @@ public:
 	virtual UnsignedInt getCount(bool) = 0;
 	virtual ContainmentListView getList() = 0;								// 70
 	virtual ContainmentListView containSlot71() = 0;
-	virtual const Object *friend_getRider() const = 0;	// 72: RiderChangeContain 0x0047EA26 (ledger name); Object::clearDisabled / setDisabledUntil use the result as the rider (k02); OpenContain's is the shared `xor eax,eax; ret` 0x000D43D0
+	virtual const Object *friend_getRider() const = 0;	// 72: RiderChangeContain 0x0047EA26 (ledger name); Object::clearDisabled / setDisabledUntil use the result as the rider; OpenContain's is the shared `xor eax,eax; ret` 0x000D43D0
 	virtual int getStealthUnitsContained() = 0;								// 73
 	virtual void *containSlot74() = 0;					// 74: OpenContain's is the shared `xor eax,eax; ret` 0x000D43D0
 	virtual void *containSlot75() = 0;					// 75: OpenContain's is the shared `xor eax,eax; ret` 0x000D43D0

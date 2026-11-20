@@ -5,7 +5,7 @@
 //   stores six interface tables at +0x20..+0x34 twice (the interfaces' own
 //   tables, then OpenContain's): +0x20 ContainModuleInterface (0x00C430E8 ->
 //   0x00C433B0, 94 slots), +0x24 CollideModuleInterface (0x00C40818, 6 slots,
-//   k01's CollideModule table), +0x28 DieModuleInterface (one slot, onDie
+//   the CollideModule table), +0x28 DieModuleInterface (one slot, onDie
 //   0x004641B1), +0x2C DamageModuleInterface (0x00BE2B78 -> the folded
 //   0x00C58790, as in UpgradeModule), +0x30 ExitInterface (0x00C430B4 ->
 //   0x00C43380, 12 slots) and +0x34 CreateModuleInterface (0x00C4EF80, 4
@@ -149,64 +149,64 @@ public:
 	virtual TunnelContain *asTunnelContain() { return 0; }
 	virtual void containReactToTransformChange();						// 0x004624E3
 	virtual bool isGarrisonable() const { return false; }
-	virtual Bool containSlot05() { return false; }			// 5: the shared `xor al,al; ret` 0x0047A699 (h05)
-	virtual Bool containSlot06() { return false; }			// 6: the shared `xor al,al; ret` 0x0047A699 (h05)
+	virtual Bool containSlot05() { return false; }			// 5: the shared `xor al,al; ret` 0x0047A699
+	virtual Bool containSlot06() { return false; }			// 6: the shared `xor al,al; ret` 0x0047A699
 	virtual Bool isImmuneToClearBuildingAttacks() const { return true; }	// 7: the shared `mov al,1` 0x0050B5C6
-	virtual Bool containSlot08() { return false; }			// 8: the shared `xor al,al; ret` 0x0047A699 (h05)
-	virtual Bool containSlot09() { return false; }			// 9: the shared `xor al,al; ret` 0x0047A699 (h05)
-	virtual Object *containSlot10() { return 0; }			// 10: the shared `xor eax,eax; ret` 0x000D43D0 (h05)
-	virtual Bool containSlot11() { return false; }			// 11: the shared `xor al,al; ret` 0x0047A699 (h05)
-	virtual Bool containSlot12() { return false; }			// 12: the shared `xor al,al; ret` 0x0047A699 (h05)
-	virtual Bool containSlot13() { return false; }			// 13: the shared `xor al,al; ret` 0x0047A699 (h05)
+	virtual Bool containSlot08() { return false; }			// 8: the shared `xor al,al; ret` 0x0047A699
+	virtual Bool containSlot09() { return false; }			// 9: the shared `xor al,al; ret` 0x0047A699
+	virtual Object *containSlot10() { return 0; }			// 10: the shared `xor eax,eax; ret` 0x000D43D0
+	virtual Bool containSlot11() { return false; }			// 11: the shared `xor al,al; ret` 0x0047A699
+	virtual Bool containSlot12() { return false; }			// 12: the shared `xor al,al; ret` 0x0047A699
+	virtual Bool containSlot13() { return false; }			// 13: the shared `xor al,al; ret` 0x0047A699
 	virtual Bool containSlot14() const;
-	virtual void containSlot15() {}			// 15: the shared `ret` 0x000B3FD0 (h05)
+	virtual void containSlot15() {}			// 15: the shared `ret` 0x000B3FD0
 	virtual void containSlot16();
 	virtual Bool onObjectWantsToEnterOrExit(Object *obj, ObjectEnterExitType wants);	// 0x00464FC7
 	virtual Bool hasObjectsWantingToEnterOrExit() const;
 	virtual const Player *getApparentControllingPlayer(const Player *observingPlayer) const { return 0; }	// 19: the shared `xor eax,eax; ret 4` 0x005DAA6C
 	virtual void recalcApparentControllingPlayer() {}					// 20: the shared `ret` 0x000B3FD0
-	virtual void containSlot21(Team *team) {}			// 21: the shared `ret 4` 0x0047A69C (h05)
+	virtual void containSlot21(Team *team) {}			// 21: the shared `ret 4` 0x0047A69C
 	virtual void onContaining(Object *obj, Bool wasSelected);			// 0x00463097
 	virtual void onRemoving(Object *obj);								// 0x00464D02
 	virtual void containSlot24();
 	virtual void onSelling();
 	virtual void containSlot26();
-	virtual void containSlot27(Int, Int) {}			// 27: the shared `ret 8` 0x0050B238 (h05)
+	virtual void containSlot27(Int, Int) {}			// 27: the shared `ret 8` 0x0050B238
 	virtual Int getContainMax() const;
 	virtual ExitInterface *getContainExitInterface();
 	virtual HordeContainInterface *getHordeContainInterface() { return 0; }				// 31: the shared `xor eax,eax; ret` 0x000D43D0
 	virtual const HordeContainInterface *getHordeContainInterface() const { return 0; }	// 30: the same body
 	virtual void orderAllPassengersToExit(CommandSourceType cmdSource);	// 32: 0x00465011
 	virtual void containSlot33(CommandSourceType cmdSource);			// 33: 0x00465078
-	virtual void containSlot34(Int) {}			// 34: the shared `ret 4` 0x0047A69C (h05)
+	virtual void containSlot34(Int) {}			// 34: the shared `ret 4` 0x0047A69C
 	virtual void containSlot35(CommandSourceType cmdSource) {}		// 35: the shared `ret 4` 0x0047A69C
 	virtual void containSlot36();
-	virtual void containSlot37() {}			// 37: the shared `ret` 0x000B3FD0 (h05)
+	virtual void containSlot37() {}			// 37: the shared `ret` 0x000B3FD0
 	virtual Bool isValidContainerFor(Object *obj, Bool checkCapacity, Bool flag);	// 0x00462977
 	virtual void addToContain(Object *obj);								// 0x00464830
 	virtual void addToContainList(Object *obj);							// 0x004638F1
 	virtual void removeFromContain(Object *obj, Bool exposeStealthUnits);	// 0x00463509
 	virtual void removeAllContained(Bool exposeStealthUnits);			// 0x004635C0
 	virtual void containSlot43(Object *first, Int count, Object *second);	// 0x0046274C
-	virtual ObjectStatusMaskType getObjectStatusOfContained(const Object *rider) const;		// 44, 0x00462CE1 (f06)
+	virtual ObjectStatusMaskType getObjectStatusOfContained(const Object *rider) const;		// 44, 0x00462CE1
 	virtual Bool isPassengerAllowedToFire() const;						// 0x00462B4A
-	virtual Bool containSlot46() { return false; }			// 46: the shared `xor al,al; ret` 0x0047A699 (h05)
+	virtual Bool containSlot46() { return false; }			// 46: the shared `xor al,al; ret` 0x0047A699
 	virtual void containSlot47();
 	virtual Bool containSlot48(const Object *rider, const Object *victim) const;	// 48, 0x00462BFF
-	virtual void containSlot49(Int) {}			// 49: the shared `ret 4` 0x0047A69C (h05)
-	virtual Bool containSlot50() { return false; }			// 50: the shared `xor al,al; ret` 0x0047A699 (h05)
+	virtual void containSlot49(Int) {}			// 49: the shared `ret 4` 0x0047A69C
+	virtual Bool containSlot50() { return false; }			// 50: the shared `xor al,al; ret` 0x0047A699
 	virtual Int containSlot51() const { return 0; }
-	virtual Bool containSlot52() { return true; }			// 52: the shared `mov al,1; ret` 0x0050B5C6 (h05)
+	virtual Bool containSlot52() { return true; }			// 52: the shared `mov al,1; ret` 0x0050B5C6
 	virtual Real containSlot53();	// 53, 0x004647D1
-	virtual Bool containSlot54() { return false; }			// 54: the shared `xor al,al; ret` 0x0047A699 (h05)
+	virtual Bool containSlot54() { return false; }			// 54: the shared `xor al,al; ret` 0x0047A699
 	virtual Bool containSlot55(Int a, Int b);	// 55, 0x004628AB
-	virtual void *containSlot56() { return 0; }			// 56: the shared `xor eax,eax; ret` 0x000D43D0 (h05)
-	virtual Bool containSlot57(Int) { return false; }			// 57: the shared `xor al,al; ret 4` 0x005CB9FF (h05)
+	virtual void *containSlot56() { return 0; }			// 56: the shared `xor eax,eax; ret` 0x000D43D0
+	virtual Bool containSlot57(Int) { return false; }			// 57: the shared `xor al,al; ret 4` 0x005CB9FF
 	virtual Bool containSlot58(Int object);	// 58, 0x004631FA
-	virtual void containSlot59(Object *object) {}			// 59: the shared `ret 4` 0x0047A69C (h05)
-	virtual void containSlot60() {}			// 60: the shared `ret` 0x000B3FD0 (h05)
+	virtual void containSlot59(Object *object) {}			// 59: the shared `ret 4` 0x0047A69C
+	virtual void containSlot60() {}			// 60: the shared `ret` 0x000B3FD0
 	virtual Object *getClosestRider(const Coord3D *pos);				// 0x004632E0
-	virtual void containSlot62() {}			// 62: the shared `ret` 0x000B3FD0 (h05)
+	virtual void containSlot62() {}			// 62: the shared `ret` 0x000B3FD0
 	virtual void containSlot63(Bool enabled);
 	virtual void containSlot64();
 	virtual Bool containSlot65() const;
@@ -216,16 +216,16 @@ public:
 	virtual UnsignedInt getCount(bool);											// 0x00462DE0
 	virtual ContainmentListView getList();								// 0x004647D8
 	virtual ContainmentListView containSlot71();
-	virtual const Object *friend_getRider() const { return 0; }	// 72: the shared `xor eax,eax; ret` 0x000D43D0 (h05)
+	virtual const Object *friend_getRider() const { return 0; }	// 72: the shared `xor eax,eax; ret` 0x000D43D0
 	virtual int getStealthUnitsContained() { return m_stealthUnitsContained; }	// 73: `mov eax,[ecx+0x48]; ret` 0x005C4AFD, folded with other classes' getters
-	virtual void *containSlot74() { return 0; }			// 74: the shared `xor eax,eax; ret` 0x000D43D0 (h05)
-	virtual void *containSlot75() { return 0; }			// 75: the shared `xor eax,eax; ret` 0x000D43D0 (h05)
+	virtual void *containSlot74() { return 0; }			// 74: the shared `xor eax,eax; ret` 0x000D43D0
+	virtual void *containSlot75() { return 0; }			// 75: the shared `xor eax,eax; ret` 0x000D43D0
 	// Only a garrison implementation can supply a position.
 	virtual Bool calcBestGarrisonPosition(Coord3D *sourcePos, const Coord3D *targetPos) { return false; }
 	virtual Bool attemptBestFirePointPosition(Object *source, Weapon *weapon, Object *victim) { return false; }			// 78: the shared `xor al,al; ret 0xC` 0x0041BA5C
 	virtual Bool attemptBestFirePointPosition(Object *source, Weapon *weapon, const Coord3D *targetPos) { return false; }	// 77: the same body
 	virtual void containSlot79();
-	virtual Bool containSlot80() { return false; }			// 80: the shared `xor al,al; ret` 0x0047A699 (h05)
+	virtual Bool containSlot80() { return false; }			// 80: the shared `xor al,al; ret` 0x0047A699
 	virtual UnsignedInt getPlayerWhoEntered() const;					// 81: `mov eax,[ecx+0x58]; ret` 0x003F3FCE (returns m_playerEnteredMask), folded with Pathfinder's getter; stays out of line until the map accepts this name on the fold
 	virtual void containSlot82();
 	virtual void enableLoadSounds(Bool enable);							// 0x004647FD
@@ -249,22 +249,22 @@ protected:
 public:
 	// OpenContain's own primary slots 13..26 (placeholder names: vslotNN)
 	virtual void removeFromContainList(Object *obj);					// 13, 0x00462F75
-	virtual Bool vslot14(Int) { return true; }							// 14: the shared `mov al,1; ret 4` 0x005CB9FA (h05)
-	virtual void vslot15(void *, Int) {}								// 15: the shared `ret 8` 0x0050B238 (h05)
-	virtual Bool vslot16(Int) { return false; }							// 16: the shared `xor al,al; ret 4` 0x005CB9FF (h05)
+	virtual Bool vslot14(Int) { return true; }							// 14: the shared `mov al,1; ret 4` 0x005CB9FA
+	virtual void vslot15(void *, Int) {}								// 15: the shared `ret 8` 0x0050B238
+	virtual Bool vslot16(Int) { return false; }							// 16: the shared `xor al,al; ret 4` 0x005CB9FF
 protected:
 	virtual void monitorConditionChanges();								// 17, 0x00462C72
 	virtual void redeployOccupants();									// 18, 0x00464286
 public:
 	virtual Bool vslot19(Object *obj);									// 19, 0x00464EE7
-	virtual Bool vslot20(Object *) { return false; }							// 20: the shared `xor al,al; ret 4` 0x005CB9FF (h05)
+	virtual Bool vslot20(Object *) { return false; }							// 20: the shared `xor al,al; ret 4` 0x005CB9FF
 protected:
 	virtual void doLoadSound();											// 21, 0x0046279C
 	virtual void doUnloadSound();										// 22, 0x0046282B
 public:
-	virtual void vslot23() {}											// 23: the shared `ret` 0x000B3FD0 (h05)
+	virtual void vslot23() {}											// 23: the shared `ret` 0x000B3FD0
 	virtual void vslot24(Object *obj, Int, Int);						// 24, 0x00462E3A
-	virtual void vslot25() {}											// 25: the shared `ret` 0x000B3FD0 (h05)
+	virtual void vslot25() {}											// 25: the shared `ret` 0x000B3FD0
 	virtual void vslot26(const ContainedItemsList *list, std::map<Int, Int> *map);	// 26, 0x00465972
 
 public:

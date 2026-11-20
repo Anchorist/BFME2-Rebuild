@@ -94,6 +94,7 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~SlaughterHordeContain();
 	virtual Bool vslot20(Object *unit);
+	virtual void garrisonSlot29(Object *object);
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x00480E72)
 	virtual Bool isValidContainerFor(Object *obj, Bool checkCapacity, Bool flag);	// override: isValidContainerFor slot 38 at +0x20 (0x00480661)
 	virtual void addToContain(Object *obj);	// override: addToContain slot 39 at +0x20 (0x00480471)
@@ -102,6 +103,9 @@ public:
 protected:
 	virtual const char *GetSnapshotName() const;
 	virtual void xfer(Xfer *xfer);
+
+private:
+	void rva004804DD(Object *object);
 
 public:
 	UnsignedInt m_unk0x9E4;                        // +0x9E4; xfer UnsignedInt

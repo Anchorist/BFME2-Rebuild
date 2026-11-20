@@ -7,6 +7,9 @@
 // Edges: left=rests-on:name right=rests-on:name; proof_first=false
 // Hypothesis rules: hypothesis:cohesion, hypothesis:init-votes
 // FUNCTION: BFME2 0x005A990B size=11 name=??1AIBasePenetrationTroopsTactic@@UAE@XZ evidence=N:ledger tier=A
+AIBasePenetrationTroopsTactic::~AIBasePenetrationTroopsTactic()
+{
+}
 
 // FUNCTION: BFME2 0x005A9916 size=13 name=?run@AIBasePenetrationTroopsTactic@@UAEXXZ evidence=N:ledger tier=A
 

@@ -45,7 +45,6 @@ static const FieldParse s_dozerAIUpdateModuleDataFieldParse[] =
 #include "Common/ActionManager.h"
 #include "Common/Player.h"
 #include "GameLogic/SkirmishAI/SkirmishAIManager.h"
-#include "Draft/DozerAIUpdateCallees.h"
 #include "GameLogic/AI.h"
 #include "Common/BuildAssistant.h"
 #include "GameLogic/DockingDesyncLog.h"
@@ -420,7 +419,7 @@ void DozerAIUpdate::notifyConstructionComplete()
 	Player *owner = m_object->getControllingPlayer();
 	Rva002A8AB1Record *record = TheSkirmishAIManager->rva002A8AB1(owner);
 	if (record != 0)
-		reinterpret_cast<AIBuilder *>(record)->rva004EC2D4(m_object->getID());
+		record->rva004EC2D4(m_object->getID());
 }
 
 // FUNCTION: BFME2 0x00488CF0 size=47 name=?rva00488CF0@DozerAIUpdate@@UAEXXZ evidence=?:placeholder tier=A
@@ -669,7 +668,7 @@ void DozerAIUpdate::xfer(Xfer *xfer)
 		XferObjectID(xfer, &m_tasks[task].m_targetObjectID);
 		*xfer == m_tasks[task].m_startFrame;
 	}
-	*xfer == *reinterpret_cast<Snapshot *>(m_dozerMachine);
+	*xfer == *m_dozerMachine;
 	xfer->XferRawBytes(&m_currentTask, 4);
 	Int dockTaskCount = 3;
 	*xfer == dockTaskCount;
@@ -680,7 +679,7 @@ void DozerAIUpdate::xfer(Xfer *xfer)
 		for (Int point = 0; point < 3; ++point)
 		{
 			*xfer == m_dockPoints[task][point].m_valid;
-			*xfer == static_cast<Coord3DBase &>(m_dockPoints[task][point].m_position);
+			*xfer == m_dockPoints[task][point].m_position;
 		}
 	}
 	xfer->XferRawBytes(&m_buildSubTask, 4);
@@ -924,7 +923,7 @@ void DozerAIUpdate::makePhantomStructureNotInert()
 		{
 			Player *owner = m_object->getControllingPlayer();
 			if (owner != 0)
-				reinterpret_cast<Rva002ACECC *>(owner)->rva002ACECC(m_phantomStructureID);
+				owner->removePhantomStructureID(m_phantomStructureID);
 		}
 		Object *phantom = TheGameLogic->findObjectByID(m_phantomStructureID);
 		if (phantom == 0)

@@ -4,8 +4,14 @@
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
 #include "GameLogic/Module/BroadcastStealthUpdate.h"
+#include "GameLogic/Module/AutoHealBehavior.h"
 #include "Common/NameKeyGenerator.h"
 // FUNCTION: BFME2 0x004A33E0 size=14 name=?upgradeImplementation@AutoHealBehavior@@MAEXXZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-pointers-mixed
+void AutoHealBehavior::upgradeImplementation()
+{
+	setWakeFrame(getObject(), UPDATE_SLEEP_NONE);
+}
+
 // FUNCTION: BFME2 0x004A33EE size=64 name=?rva004A33EE@BroadcastStealthUpdate@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers+class
 // FUNCTION: BFME2 0x004A342E size=146 name=??0BroadcastStealthUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
 // FUNCTION: BFME2 0x004A34C0 size=6 name=?GetSnapshotName@BroadcastStealthUpdate@@MBEPBDXZ evidence=N:ledger

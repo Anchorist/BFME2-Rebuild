@@ -1,4 +1,4 @@
-// StructureBodyModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x0025708C);
+// StructureBodyModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // StructureBodyModuleData.h: the INI data of StructureBody. SIZE 0x64.
 // Target facts: ModuleFactory registers the module with operator new 0x64 and

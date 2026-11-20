@@ -9,6 +9,7 @@
 #include "GameLogic/CreateAHeroHero.h"
 #include "GameLogic/CreateAHeroManager.h"
 #include "GameClient/ControlBar.h"
+#include "GameClient/CommandSet.h"
 #include "GameLogic/GameLogic.h"
 #include "GameLogic/Object.h"
 #include "Common/NameKeyGenerator.h"
@@ -470,6 +471,13 @@ File *Rva004098A9(const AsciiString &name, bool systemFile)
 // FUNCTION: BFME2 0x00409EB3 size=53 name=?rva00409EB3@CreateAHeroHero@@QAEPBVCommandButton@@I@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 
 // FUNCTION: BFME2 0x00409EE8 size=51 name=?getCommandButton@CommandSet@@QBEPBVCommandButton@@H@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+const CommandButton *CommandSet::getCommandButton(int index) const
+{
+	const CommandButton *button;
+	if (TheGameLogic && TheGameLogic->getCommandButtonOverride(m_name, index, &button))
+		return button;
+	return m_command[index];
+}
 
 // FUNCTION: BFME2 0x00409F1B size=104 name=?rva00409F1B@CommandSet@@QAEXHH@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 

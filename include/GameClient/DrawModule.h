@@ -106,7 +106,7 @@ public:
 	virtual void vslot30(Int a) {}																		// 30, default `ret 4`
 	virtual void vslot31(Int a, Int b) {}																// 31, default `ret 8` (Drawable 0x0027248A)
 	virtual void drawInterfaceSlot32(Int a) {}															// 32, default `ret 4` (Drawable 0x002724C4); not vslot32, which DrawModule's slot 32 already is (W3DScriptedModelDraw overrides both with different bodies)
-	virtual void vslot33(const void *textures) {}																		// 33, default `ret 4`; takes a pointer to a vector of texture-replacement pairs (the map's rva000C199D(const vector<Rva00B6CF1> &), one pointer wide: SubObjectsUpgrade::swapTextures 0x004B4F91 passes its UpgradeTexture list or an empty vector) (f03)
+	virtual void vslot33(const void *textures) {}																		// 33, default `ret 4`; takes a pointer to a vector of texture-replacement pairs (the map's rva000C199D(const vector<Rva00B6CF1> &), one pointer wide: SubObjectsUpgrade::swapTextures 0x004B4F91 passes its UpgradeTexture list or an empty vector)
 	virtual void vslot34(const AsciiString &a, Bool b, Bool c, Real d, Real e) = 0;					// 34
 	virtual void vslot35(AsciiString a, Bool b, UnsignedInt c) = 0;									// 35
 	virtual Int vslot36(Int a) { return 0; }															// 36, default `xor eax,eax; ret 4`

@@ -1,5 +1,5 @@
 // BloodthirstyUpdate.h: horde sacrifice ("bloodthirsty") update. SIZE 0x30.
-// Target facts (old repo Code/GameEngine/Source/GameLogic/Object/Update/BloodthirstyUpdate.cpp):
+// Target facts:
 // UpdateModule (0x20), the BloodthirstyUpdateInterface vptr at +0x20, then the
 // sacrifice target +0x24, a second object id +0x28 and the kill count +0x2C.
 // The constructor (0x0044E0AA) zeroes the three and wakes the module at once.

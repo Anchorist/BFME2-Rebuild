@@ -20,7 +20,7 @@ protected:
     virtual bool wouldLikeToCollideWith(const Object *other) const { return isValidToExecute(other); }	// CollideModuleInterface slot 1: retail 0x004BC51B, an adjusting tail jump into slot 13
     const CrateCollideModuleData *getCrateCollideModuleData() const
         { return static_cast<const CrateCollideModuleData *>(getModuleData()); }
-    // 0x004BCF92 (f14): floating text over the collecting module's object (+10 up), in the colour of the given object's player
+    // 0x004BCF92: floating text over the collecting module's object (+10 up), in the colour of the given object's player
     // (0xE6 alpha); VeterancyCrateCollide::executeCrateBehavior 0x004BCFF0 calls it for every promoted unit.
     void showFloatingText(const Object *colorSource, const UnicodeString &text);
     bool m_everExecuted;

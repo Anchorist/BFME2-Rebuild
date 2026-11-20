@@ -248,7 +248,7 @@ public:
  void reset(); // 0x002F462C (Zero Hour name; AI::reset calls it first)
  int GetGroundLayer(const Coord3D *);
  bool rva002EDFF9(Object *,Coord3D *);
-	Int moveToFirstGroundCellOffWall(Coord3D *position, const Coord3D *towards);	// 0x002EE96B: walks the ground cells from *position towards *towards (0x002EB675, GroundCellCenterStruct) and on success stores the first cell centre off the wall layers into position x and y; map row ?rva002EE96B@Pathfinder@@QAEHPAVCoord3D@@PBU2@@Z (X:reseed21, an address spelling); decl_queue f11 17:55, ACCEPTED k11
+	Int moveToFirstGroundCellOffWall(Coord3D *position, const Coord3D *towards);	// 0x002EE96B: walks the ground cells from *position towards *towards (0x002EB675, GroundCellCenterStruct) and on success stores the first cell centre off the wall layers into position x and y; map row ?rva002EE96B@Pathfinder@@QAEHPAVCoord3D@@PBU2@@Z (an address spelling)
  bool AdjustDestination(Object *,const LocomotorSet &,Coord3D *,const Coord3D * = 0);
  // Reachability test FlammableUpdate's flee scan asks (0x0023E1D0 family).
  bool QuickDoesPathExist(Object *,const Coord3D *,const Coord3D *,int);

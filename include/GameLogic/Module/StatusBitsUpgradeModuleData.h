@@ -1,4 +1,4 @@
-// StatusBitsUpgradeModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x004B493E);
+// StatusBitsUpgradeModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // StatusBitsUpgradeModuleData.h: the INI data of StatusBitsUpgrade. SIZE 0x138.
 // Target facts: ModuleFactory registers the module with operator new 0x138 and

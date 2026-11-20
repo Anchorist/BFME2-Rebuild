@@ -20,7 +20,7 @@
 // FUNCTION: BFME2 0x0028A8A0 size=7 name=?get@Rva0028A8A0FloatField@@QBEMXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0028A8A7 size=7 name=?get@Rva0028A8A7FloatField@@QBEMXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0028A8AE size=7 name=?get@Rva0028A8AEFloatField@@QBEMXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
-// FUNCTION: BFME2 0x0028A8B5 size=45 name=?clampVisionBonusPercent@ThingTemplate@@QBEXPAM@Z evidence=X:map request (c2, re-based) tier=B hypothesis:mm1-gap-unit
+// FUNCTION: BFME2 0x0028A8B5 size=45 name=?clampVisionBonusPercent@ThingTemplate@@QBEXPAM@Z evidence=X:map request tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0028A8E2 size=7 name=?get@Rva0028A8E2FloatField@@QBEMXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0028A8E9 size=7 name=?get@Rva0028A8E9DwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0028A8F0 size=7 name=?get@Rva0028A8F0DwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

@@ -34,7 +34,7 @@ ProductionQueueHordeContain::~ProductionQueueHordeContain()
 }
 
 // FUNCTION: BFME2 0x00481273 size=6 name=?name@ProductionQueueHordeContain@@QBEPBDXZ evidence=N:ledger tier=A
-const char *ProductionQueueHordeContain::name() const
+const char *ProductionQueueHordeContain::GetSnapshotName() const
 {
 	return "ProductionQueueHordeContain";
 }
@@ -105,4 +105,6 @@ ProductionQueueHordeContainModuleData::ProductionQueueHordeContainModuleData()
 }
 
 // FUNCTION: BFME2 0x004817B6 size=62 name=??1ProductionQueueHordeContainModuleData@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
-
+ProductionQueueHordeContainModuleData::~ProductionQueueHordeContainModuleData()
+{
+}

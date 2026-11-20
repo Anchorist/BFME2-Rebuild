@@ -1,7 +1,7 @@
-// DRAFT (h05 modgen): generated from constructor RVA 0x004B21B9 and xfer RVA 0x004B1ECB; no function
+// DRAFT: generated from constructor RVA 0x004B21B9 and xfer RVA 0x004B1ECB; no function
 // matches against it yet, so it stays in Draft until one does.
 // EmotionTrackerUpdate.h: the EmotionTrackerUpdate module. SIZE 0xC8 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004B21B9 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004B21B9 calls UpdateModule first; it stores the
 // tables 0x00C1C780 at +0x20, 0x00C5667C at +0x0, 0x00C565C0 at +0xC, 0x00C565B0 at +0x10, 0x00C565AC at +0x20. Members are what xfer (0x004B1ECB) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -83,7 +83,7 @@ public:
 	// The partition filter the taunt/point scan builds (vtable: shared PartitionFilter destructor 0x00395A19, allow 0x004B0FEB,
 	// getPlayerMask 0x004B0D28). Members are what those two read: the owning tracker at +0x08, the scanning object at +0x0C,
 	// its player at +0x10, two words handed to EmotionNugget::CanBeActivatedFor at +0x14/+0x18, the last accepted candidate at
-	// +0x1C and a flag at +0x20 (f10, 2026-11-17; the Draft spelled the class as a namespace).
+	// +0x1C and a flag at +0x20 (the Draft spelled the class as a namespace).
 	class TauntPointFilter : public PartitionFilter
 	{
 	public:

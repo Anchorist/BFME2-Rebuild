@@ -158,8 +158,8 @@ protected:
 };
 
 // PROVISIONAL: these state classes are declared here for their name getters only, so
-// that every six-byte getter in this unit is compiled in retail order (the checker pairs
-// identical getters by position). Bases and layouts are not recovered yet.
+// that every six-byte getter in this unit is compiled in retail order (identical getters are paired by
+// position). Bases and layouts are not recovered yet.
 class AIGiantBirdAttackState : public State
 {
 public:

@@ -20,9 +20,8 @@ struct AudioSubsoundWeight
 };
 struct AudioEventChannelVolume { int channel; float volume; };
 // Target table7DA270: deleting dtor1DA757, name getter5C4AD5. Constructor
-// and newOwnedAudioEventInfo5AC80 prove sizeC4. Seventeen synthesized views
-// plus parser table7D9D68 establish the offsets; the table corrects several
-// old views' reversed min/max-range names and mislabelled float priorities.
+// and newOwnedAudioEventInfo5AC80 prove sizeC4. The parser table7D9D68
+// establishes the offsets.
 class AudioEventInfo : public AtomicRefCounted
 {
 public:

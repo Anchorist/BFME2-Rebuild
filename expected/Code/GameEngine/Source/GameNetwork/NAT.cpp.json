@@ -284,8 +284,8 @@
       "role": "ehhandler",
       "parent_rva": "0x005A6DAC",
       "fold_group": "",
-      "name": "__ehhandler$?SetUDPSocketForSlot@NAT@@QAE_NGGPAX@Z",
-      "name_evidence": "X:parent-name",
+      "name": "__ehhandler$?SetUDPSocketForSlot@NAT@@QAE_NGGPBUBfmeNetAddress@@@Z",
+      "name_evidence": "X:m02 request (m02 r6-x12-NATTransport-0x0079E4A7 (x12))",
       "confidence": "high",
       "evidence": "X:eh-stub FuncInfo=0x0095482C;X:parent-by-prologue",
       "object_id": "O005A6732",
@@ -297,6 +297,7 @@
       "parent": "0x005A6DAC",
       "object": "O005A6732",
       "accepted_names": [
+        "__ehhandler$?SetUDPSocketForSlot@NAT@@QAE_NGGPBUBfmeNetAddress@@@Z",
         "__ehhandler$?SetUDPSocketForSlot@NAT@@QAE_NGGPAX@Z"
       ],
       "seed_tier": "B",

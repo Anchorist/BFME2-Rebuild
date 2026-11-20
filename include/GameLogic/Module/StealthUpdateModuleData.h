@@ -1,10 +1,10 @@
-// StealthUpdateModuleData.h: promoted from Draft by f10 (2026-11-17); StealthUpdate rows read it. Generated from retail's
+// StealthUpdateModuleData.h: promoted from Draft; StealthUpdate rows read it. Generated from retail's
 // field-parse table (VA 0x00C18210, 36 entries).
 // StealthUpdateModuleData.h: the INI data of StealthUpdate. SIZE 0xC8.
 // Target facts: ModuleFactory registers the module with operator new 0xC8 and
 // constructor RVA 0x0037588B; buildFieldParse RVA 0x00373F2C adds VA 0x00C18210 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 // Unresolved (byte storage up to the next member, named after the token):
 //   m_voiceMoveToStealthyArea +0x80: Rva003393DFParse 0x003393DF (8 bytes: token -> 0x00339235)

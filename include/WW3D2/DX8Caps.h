@@ -1,6 +1,6 @@
 // DX8Caps.h: the capabilities the renderer probed from the device (Zero Hour's dx8caps.h). Only the members with a verified
 // reader are declared; the rest is opaque storage until a body needs it.
-// Target facts (retail game.dat): SIZE 0x2E4 (old views, StringClass members inside). The D3D caps copy sits at +0x08 (the
+// Target facts (retail game.dat): SIZE 0x2E4 (StringClass members inside). The D3D caps copy sits at +0x08 (the
 // first 0x2C bytes agree with D3DCAPS8: RasterCaps +0x24 inside it, tested by Set_Default_Global_Render_States 0x00122510 at
 // +0x2E for D3DPRASTERCAPS_FOGRANGE; MaxTextureWidth/Height at +0x60/+0x64 per AdjustTextureSize 0x0011E670). Support_Gamma
 // reads the byte at +0x13A (DX8Wrapper::Set_Gamma 0x00120980), Support_TnL the byte at +0x138 (the DX8IndexBufferClass constructor 0x00138980

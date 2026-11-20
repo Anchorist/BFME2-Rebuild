@@ -1,7 +1,7 @@
-// HijackerUpdate.h: promoted from include/Draft by h05 (round 10). Proven by 4 rows that MATCH against it on main (0x004A3F81, 0x004A4010, 0x004A40BB, 0x004A40DB);
+// HijackerUpdate.h:
 // name, size, bases and virtual order are retail facts given below.
 // HijackerUpdate.h: the HijackerUpdate module. SIZE 0x34 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004A4055 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004A4055 calls UpdateModule first; it stores the
 // tables 0x00C525E4 at +0x0, 0x00BEFF90 at +0xC, 0x00C525D8 at +0x10. Members are what xfer (0x004A3FAA) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -49,7 +49,7 @@ public:
 	Bool m_isInVehicle;                                // +0x31; xfer Bool; setIsInVehicle 0x004A3F81 stores its Bool here (bytes equal)
 	Bool m_wasTargetAirborne;                                // +0x32; xfer Bool
 public:
-	virtual UpdateSleepTime update();	// 0x004A40DB, UpdateModuleInterface slot 0; retail's table has this class's own (h05, gen3 vtable-content list)
+	virtual UpdateSleepTime update();	// 0x004A40DB, UpdateModuleInterface slot 0; retail's table has this class's own
 };
 // SIZE 0x34
 typedef char HijackerUpdate_size[(sizeof(HijackerUpdate) == 0x34) ? 1 : -1];

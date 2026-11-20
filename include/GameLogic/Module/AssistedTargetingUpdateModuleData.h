@@ -1,4 +1,4 @@
-// AssistedTargetingUpdateModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x00486E7C);
+// AssistedTargetingUpdateModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // AssistedTargetingUpdateModuleData.h: the INI data of AssistedTargetingUpdate. SIZE 0x18.
 // Target facts: ModuleFactory registers the module with operator new 0x18 and

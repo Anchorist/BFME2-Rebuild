@@ -15,7 +15,7 @@ public:
 	const Vector3 *V[3];		// +0x04
 
 	// Zero Hour's tri.h text (plain inline: retail's unit BaseHeightMap.cpp emits an out-of-line copy, 0x0006A0CA, while the
-	// polygon loops that fill a triangle's normal in place expand it; h03's request, evidence under that request).
+	// polygon loops that fill a triangle's normal in place expand it).
 	void Compute_Normal()
 	{
 		Vector3::Cross_Product(*(V[1]) - *(V[0]), *(V[2]) - *(V[0]), (Vector3 *)N);

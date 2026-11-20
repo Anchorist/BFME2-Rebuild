@@ -8,6 +8,9 @@
 // Edges: left=rests-on:name right=rests-on:name; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:init-votes
 // FUNCTION: BFME2 0x005AB125 size=11 name=??1AIStartWoTRBattleTactic@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
+AIStartWoTRBattleTactic::~AIStartWoTRBattleTactic()
+{
+}
 
 // FUNCTION: BFME2 0x005AB130 size=60 name=?canRun@AIStartWoTRBattleTactic@@UAE_NPAX@Z evidence=N:ledger tier=A
 

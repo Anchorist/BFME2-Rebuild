@@ -1,6 +1,6 @@
 // cl: /O1
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-#include "Draft/W3DGhostObject.h"
+#include "GameLogic/W3DGhostObject.h"
 #include "GameLogic/W3DGhostObjectManager.h"
 #include "GameLogic/W3DRenderObjectSnapshot.h"
 #include "WW3D2/HLodClass.h"

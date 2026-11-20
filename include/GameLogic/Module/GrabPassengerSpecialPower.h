@@ -1,5 +1,5 @@
 // GrabPassengerSpecialPower.h: the GrabPassengerSpecialPower module. SIZE 0x34 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004C4FA4 calls SpecialPowerModule first; it stores the
+// Target facts: the constructor 0x004C4FA4 calls SpecialPowerModule first; it stores the
 // tables 0x00C5D93C at +0x0, 0x00BEFCF8 at +0xC, 0x00C5D8D8 at +0x10. Members are what xfer (0x004C8A95) transfers after SpecialPowerModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -76,7 +76,7 @@ protected:
 
 public:
 protected:
-	virtual void loadPostProcess() { SpecialPowerModule::loadPostProcess(); }	// retail slot 0x004C8A2F: a jmp to SpecialPowerModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { SpecialPowerModule::loadPostProcess(); }	// retail slot 0x004C8A2F: a jmp to SpecialPowerModule's, ICF-folded across classes
 };
 // SIZE 0x34
 typedef char GrabPassengerSpecialPower_size[(sizeof(GrabPassengerSpecialPower) == 0x34) ? 1 : -1];

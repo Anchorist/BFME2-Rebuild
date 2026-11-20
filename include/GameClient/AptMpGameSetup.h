@@ -50,22 +50,11 @@ public:
 
 // The rules sub-panel at +0xD0 is still reached through the placeholder declarations below until its class is recovered; the map
 // preview at +0x60 is the real AptMapPreview.
-// The map preview's player picker (the map spells its owner Rva0057CA78).
-class Rva0057CA78
-{
-public:
-	int GetNextSelectablePlayer(int);									// 0x0057CA78
-};
 // The window manager's image-store entry (the map spells the owner of 0x002239E2 with this placeholder class).
 class Rva002239B2
 {
 public:
 	void rva002239E2(const AsciiString &, const Image *);				// 0x002239E2
-};
-class Rva0057DFFB
-{
-public:
-	bool rva0057DFFB(bool);												// 0x0057DFFB
 };
 // The chat sub-panel at +0x244: 0x0057FDB0 has no map name (a fragment of the chat rows), so it is named for its address here.
 // The clans sub-panel at +0x190 (0xB4 bytes; the map names its methods AptMpClans::).
@@ -87,12 +76,6 @@ public:
 	unsigned char m_x69[3];											// +0x69
 };
 typedef char AptMpChatSizeCheck[sizeof(AptMpChat) == 0x6C ? 1 : -1];
-class Rva0057E3DB
-{
-public:
-	void rva0057C7BA(int);												// 0x0057C7BA
-	int rva0057CDA1(unsigned int, unsigned int, unsigned int);			// 0x0057CDA1: the map preview's window message handler (0x4026 from its combo box: reselects the campaign, 1)
-};
 class Rva0057EE5C
 {
 public:
@@ -212,11 +195,7 @@ public:
 
 	MpGameSetupOwner *m_owner;											// +0x58
 	GameInfoTarget *m_ownerTarget;										// +0x5C
-	unsigned char m_mapPreviewHead[0x1C];								// +0x60: AptMapPreview (0x70 bytes)
-	int m_previewMode;													// +0x7C (inside the preview: 1 is tested by many rows, 0 by 0x00442C9C)
-	unsigned char m_mapPreviewMid[0x41];								// +0x80..+0xC0
-	bool m_previewFlagC1;												// +0xC1 (set by Init, cleared by slot 1)
-	unsigned char m_mapPreviewTail[0xE];								// +0xC2..+0xCF
+	AptMapPreview m_mapPreview;								// +0x60, constructed with the game target
 	unsigned char m_rulesHead[0x8C];									// +0xD0: the rules sub-panel (0xC0 bytes)
 	int m_ruleValues[10];												// +0x15C: the sub-panel's ten rule values (AptMpGameRules::m_values; [1] is the mode, 1 is tested by ExternFunc 0x00442F65; [3] the command point factor, 0x0043FC1F)
 	unsigned char m_rulesTail[0xC];										// +0x184..+0x18F

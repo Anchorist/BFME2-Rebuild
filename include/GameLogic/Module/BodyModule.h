@@ -1,5 +1,5 @@
 // BodyModule.h: SAGE BodyModuleInterface (43 slots) and the concrete BodyModule.
-// Target facts (old repo Code/GameEngine/Include/GameLogic/Module/BodyModule.h):
+// Target facts:
 // Object::getBodyModule returns this from Object+0x254. Slot 15 is
 // getLastDamageInfo (BoneFXUpdate 0x0048740D reads the damage type at +0x10 of
 // the result). Unrecovered slots keep their address names.
@@ -93,7 +93,7 @@ public:
 	virtual ~BodyModule();												// 0x004BD763
 
 	virtual BodyModuleInterface *getBody() { return this; }
-	virtual Bool rva0050B5C6() { return true; }							// primary slot 12 (0x0050B5C6, `mov al,1; ret`); BodyModule's table has 13 slots (f14, provisional role name: the map folds it)
+	virtual Bool rva0050B5C6() { return true; }							// primary slot 12 (0x0050B5C6, `mov al,1; ret`); BodyModule's table has 13 slots (provisional role name: the map folds it)
 
 	virtual Real getMaxHealth() const { return 0.0f; }					// 6
 	virtual Real getInitialHealth() const { return 0.0f; }					// 7
@@ -126,7 +126,7 @@ protected:
 	virtual void xfer(Xfer *xfer);							// Snapshot slot 3, 0x0058B043
 	Real m_damageScalar;												// 0x14
 protected:
-	virtual void loadPostProcess();	// out of line (a jmp to BehaviorModule's), ICF-folded with UpdateModule's at 0x0058B03E; inline, MSVC folds it into each subclass's forwarder and loses retail's second level (0x00497805) (h05)
+	virtual void loadPostProcess();	// out of line (a jmp to BehaviorModule's), ICF-folded with UpdateModule's at 0x0058B03E; inline, MSVC folds it into each subclass's forwarder and loses retail's second level (0x00497805)
 };
 // SIZE 0x18
 

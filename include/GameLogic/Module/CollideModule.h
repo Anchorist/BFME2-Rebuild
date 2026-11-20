@@ -59,7 +59,7 @@ protected:
 	}
 protected:
 	virtual const char *GetSnapshotName() const;	// slot 2 of CollideModule's own table 0x0085A130: 0x004BB733 returns "CollideModule"
-	virtual void loadPostProcess();	// out of line (a jmp to BehaviorModule's), ICF-folded with UpdateModule's at 0x0058B03E; inline, MSVC folds it into each subclass's forwarder and loses retail's second level (0x00497805) (h05)
+	virtual void loadPostProcess();	// out of line (a jmp to BehaviorModule's), ICF-folded with UpdateModule's at 0x0058B03E; inline, MSVC folds it into each subclass's forwarder and loses retail's second level (0x00497805)
 };
 // SIZE 0x14
 

@@ -5,7 +5,7 @@
 // object=O00619B30 name-evidence=L name-tier=library
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: duplicate path; held alternatives O0060F100
+// Duplicate path; alternative object O0060F100
 // Hypothesis rules: hypothesis:Z, hypothesis:name:L, hypothesis:padding
 #include <stdio.h>
 #include <string.h>

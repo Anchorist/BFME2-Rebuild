@@ -34,6 +34,7 @@ class RespawnUpdateModuleData : public ModuleData
 public:
 	RespawnUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	virtual const RespawnUpdateModuleData *slot28() const { return this; }
 	virtual Bool slot13() const { return true; }
 	Int calcCostToBuild(Int level);							// 0x004AF531
 	Int calcTimeToBuild(UnsignedInt level);					// 0x004AF5AC

@@ -284,8 +284,8 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "??4?$vector@UBfmePod8@@V?$allocator@UBfmePod8@@@_STL@@@_STL@@QAEAAV01@ABV01@@Z",
-      "name_evidence": "N:ledger",
+      "name": "??4?$vector@VCoord2D@@V?$allocator@VCoord2D@@@_STL@@@_STL@@QAEAAV01@ABV01@@Z",
+      "name_evidence": "X:map request",
       "confidence": "high",
       "evidence": "N:template-instantiation",
       "object_id": "O001D982B",
@@ -297,6 +297,7 @@
       "parent": null,
       "object": "O001D982B",
       "accepted_names": [
+        "??4?$vector@VCoord2D@@V?$allocator@VCoord2D@@@_STL@@@_STL@@QAEAAV01@ABV01@@Z",
         "??4?$vector@UBfmePod8@@V?$allocator@UBfmePod8@@@_STL@@@_STL@@QAEAAV01@ABV01@@Z"
       ],
       "seed_tier": "B",

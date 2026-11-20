@@ -1,6 +1,5 @@
 #pragma once
-// Target file-system output and the old canonical header: four unsigned words.
-// Synthesis found one compiled layout and one unresolved shim view.
+// Target file-system output: four unsigned words.
 // GameTextManager embeds this record at+C..+1B. No constructor or vptr.
 struct FileInfo {
     unsigned int sizeHigh, sizeLow;

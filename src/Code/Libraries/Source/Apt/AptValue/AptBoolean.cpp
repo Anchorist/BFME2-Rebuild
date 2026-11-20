@@ -7,7 +7,7 @@ extern AptValueVector *g_releaseVectorAtE17710; // VA 0x00E17710
 // object=O006D8880 name-evidence=assert:.\AptValue/AptBoolean.inl name-tier=invented
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: unit named by the assert file .\AptValue/AptBoolean.inl in Create 0x006D88C0; rows moved from unknown: 0x006D8860, 0x006D88C0, 0x006D89D0, 0x006D89E0, 0x006D8A20
+// Unit named by the assert file .\AptValue/AptBoolean.inl in Create 0x006D88C0; rows moved from unknown: 0x006D8860, 0x006D88C0, 0x006D89D0, 0x006D89E0, 0x006D8A20
 // Hypothesis rules: hypothesis:K, hypothesis:assert-inl-unit, hypothesis:name:invented, hypothesis:padding
 // The free list of released boolean values (.bss 0x00E18028; declared in the class header).
 AptBoolean *AptBoolean::spFreeList = 0;

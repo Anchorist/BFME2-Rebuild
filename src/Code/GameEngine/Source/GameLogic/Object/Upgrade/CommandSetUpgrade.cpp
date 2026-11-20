@@ -13,7 +13,7 @@
 #include "GameClient/ControlBar.h"
 #include "GameLogic/Object.h"
 #include <stddef.h>
-// The skirmish AI manager (VA 0x00DFEEF8, the old decomp's role name) and the control bar.
+// The skirmish AI manager (VA 0x00DFEEF8, a role name) and the control bar.
 
 // FUNCTION: BFME2 0x004B39FC size=32 name=??1CommandSetUpgrade@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
 CommandSetUpgrade::~CommandSetUpgrade()

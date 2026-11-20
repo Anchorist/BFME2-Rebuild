@@ -1,7 +1,7 @@
-// InvisibilityUpdate.h: promoted from include/Draft by h05 (round 10). Proven by 2 rows that MATCH against it on main (0x004A38BF, 0x004A3981);
+// InvisibilityUpdate.h:
 // name, size, bases and virtual order are retail facts given below.
 // InvisibilityUpdate.h: the InvisibilityUpdate module. SIZE 0x28 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004A382D calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004A382D calls UpdateModule first; it stores the
 // tables 0x00C4EF80 at +0x20, 0x00C52534 at +0x0, 0x00BEFF90 at +0xC, 0x00C52528 at +0x10, 0x00C52518 at +0x20. Members are what xfer (0x004A3981) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -60,7 +60,7 @@ public:
 	UnsignedByte m_gap0x20[0x4];
 	Bool m_unk0x24;                                // +0x24; xfer Bool
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x28
 typedef char InvisibilityUpdate_size[(sizeof(InvisibilityUpdate) == 0x28) ? 1 : -1];

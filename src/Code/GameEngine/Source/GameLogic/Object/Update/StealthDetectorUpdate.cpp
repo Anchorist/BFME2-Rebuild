@@ -155,7 +155,7 @@ UpdateSleepTime StealthDetectorUpdate::update()
 	if (self->testStatus(OBJECT_STATUS_SOLD))
 		return UPDATE_SLEEP_FOREVER;
 
-	Object *containedBy = self->m_containedBy;
+	Object *containedBy = self->getContainedBy();
 	if (containedBy)
 	{
 		ContainModuleInterface *contain = containedBy->getContain();
@@ -301,7 +301,7 @@ UpdateSleepTime StealthDetectorUpdate::update()
 			}
 		}
 
-		BfmeAudioEventPrefix136 sound(OpaqueRefElement4(), INVALID_ID);
+		AudioEventRTS sound(OpaqueRefElement4(), INVALID_ID);
 		if (foundSomeone)
 			sound.assignSound(data->loudRef());
 		else

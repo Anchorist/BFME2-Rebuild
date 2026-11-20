@@ -11,7 +11,7 @@
 #include "Common/INI.h"
 #include "GameLogic/Module/MineshaftPortalBehaviourModuleData.h"
 #include "GameLogic/Module/UpgradeMuxData.h"
-#include "Draft/MineshaftPortalBehaviour.h"
+#include "GameLogic/Module/MineshaftPortalBehaviour.h"
 #include "Common/NameKeyGenerator.h"
 
 // The table retail passes to MultiIniFieldParse::add (VA 0x00C42B10), read back

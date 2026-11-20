@@ -1,6 +1,6 @@
 // SpecialAbilityUpdateModuleData.h. SIZE 0xC8 (ModuleFactory operator new).
 // Names of the former fieldNN members are the INI tokens of retail's table at
-// VA 0x00C3F7F8 (buildFieldParse RVA 0x0044ED95); offsets unchanged (h05).
+// VA 0x00C3F7F8 (buildFieldParse RVA 0x0044ED95); offsets unchanged.
 // +0x18 and +0x24 are INI::iniParseAnimAndDuration stores (CustomAnimAndDuration).
 #pragma once
 

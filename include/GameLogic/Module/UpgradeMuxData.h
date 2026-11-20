@@ -1,10 +1,10 @@
 // UpgradeMuxData.h: the upgrade trigger data every upgrade-driven module data
-// carries (h05 fpgen). SIZE 0x110. No base, no virtual functions.
+// carries. SIZE 0x110. No base, no virtual functions.
 // Target facts:
 // - RVA 0x004CE29D is `mov eax,0x00C5FEA0; ret`: the getter that 35 module
 //   datas' buildFieldParse add at the member's offset (AutoHeal +0x8,
 //   RadiateFear +0x20, AttributeModifierAura +0x28, SpawnBehavior +0x5C, ...);
-//   UpgradeModuleData is ModuleData + this at +0x8 and ends at 0x118 (k01).
+//   UpgradeModuleData is ModuleData + this at +0x8 and ends at 0x118.
 // - The table at VA 0x00C5FEA0: TriggeredBy +0x0 and ConflictsWith +0x80 (both
 //   RVA 0x0026F28B), CustomAnimAndDuration +0x100 (INI::iniParseAnimAndDuration),
 //   RequiresAllTriggers +0x10C, RequiresAllConflictingTriggers +0x10D and
@@ -34,8 +34,8 @@ public:
 	UpgradeMuxData();								// RVA 0x0025342C
 	static const FieldParse *getFieldParse();		// RVA 0x004CE29D
 	void rva0045F2D5(UpgradeMaskType &activation, UpgradeMaskType &conflicting) const;	// RVA 0x0045F2D5 (35 B, map: ?rva0045F2D5@UpgradeMuxData@@QBEXAAUUpgradeMaskType@@0@Z): copies both masks out
-	void performUpgradeFX(Object *object) const;	// RVA 0x0047A69C, ?performUpgradeFX@UpgradeMuxData@@QBEXPAVObject@@@Z: a `ret 4` body folded with others (f03; ObjectCreationUpgrade 0x004B4075 and RadiateFearUpdate 0x0049C049 call it with ecx = the data's mux and the object pushed)
-	void muxDataProcessUpgradeRemoval(Object *object) const;	// RVA 0x0047A69C as well: the upgrade modules' slot-15 bodies (processUpgradeRemoval) call the same `ret 4` fold (Zero Hour's name; publish 3c lists it there)
+	void performUpgradeFX(Object *object) const;	// RVA 0x0047A69C, ?performUpgradeFX@UpgradeMuxData@@QBEXPAVObject@@@Z: a `ret 4` body folded with others (ObjectCreationUpgrade 0x004B4075 and RadiateFearUpdate 0x0049C049 call it with ecx = the data's mux and the object pushed)
+	void muxDataProcessUpgradeRemoval(Object *object) const;	// RVA 0x0047A69C as well: the upgrade modules' slot-15 bodies (processUpgradeRemoval) call the same `ret 4` fold (Zero Hour's name)
 
 	UpgradeMaskType m_triggeredBy;					// +0x0 TriggeredBy
 	UpgradeMaskType m_conflictsWith;				// +0x80 ConflictsWith

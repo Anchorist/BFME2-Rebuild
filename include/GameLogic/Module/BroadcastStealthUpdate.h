@@ -1,4 +1,4 @@
-// BroadcastStealthUpdate.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x004A34C0, 0x004A34C6);
+// BroadcastStealthUpdate.h:
 // name, size, bases and virtual order are retail facts given below.
 // BroadcastStealthUpdate.h: the BroadcastStealthUpdate module. SIZE 0x2C (ModuleFactory operator new).
 // Target facts: the constructor 0x004A342E calls UpdateModule first; it stores the

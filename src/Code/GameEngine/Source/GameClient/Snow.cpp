@@ -5,8 +5,15 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:Z, hypothesis:cohesion, hypothesis:name:Z
+#include <new>
 #include "GameClient/SnowManager.h"
 // FUNCTION: BFME2 0x00201064 size=33 name=?init@SnowManager@@UAEXXZ evidence=N:ledger tier=B hypothesis:name:Z
+void SnowManager::init()
+{
+	m_startingHeights = new Real[64 * 64];
+	m_time = 0.0f;
+	updateIniSettings();
+}
 
 // FUNCTION: BFME2 0x00201085 size=16 name=?rva00201085@WeatherSetting@@UAEXXZ evidence=?:placeholder tier=B hypothesis:cohesion
 
@@ -15,13 +22,13 @@
 // FUNCTION: BFME2 0x0020109B size=153 name=??0SnowManager@@QAE@XZ evidence=N:ledger tier=B hypothesis:cohesion
 SnowManager::SnowManager()
 {
-	m_unk0x0C = 0;
+	m_startingHeights = 0;
 	m_unk0x41 = 0;
 	m_unk0x44 = 0;
 	m_unk0x50 = 0;
 	m_unk0x54 = 0;
 	m_unk0x58 = 0;
-	m_unk0x10 = 0.0f;
+	m_time = 0.0f;
 	m_unk0x14 = 1.0f;
 	m_unk0x18[0] = 0.0f;
 	m_unk0x18[1] = 0.0f;

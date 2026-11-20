@@ -49,7 +49,7 @@ public:
 	void reloadAllAmmo(const Object *obj, Bool now);					// 0x002C739E
 	// Inline: Object::hasAnyWeapon 0x0028ADE0 tests +0x28 in place.
 	Bool hasAnyWeapon() const { return m_filledWeaponSlotMask != 0; }
-	// Inline: Object::hasAnyDamageWeapon 0x0028ADEC tests +0x35 in place (f08).
+	// Inline: Object::hasAnyDamageWeapon 0x0028ADEC tests +0x35 in place.
 	Bool hasAnyDamageWeapon() const { return m_hasDamageWeapon; }
 	// Zero Hour's inline; Object 0x0028ADF7 tests +0x30 in place.
 	Bool hasWeaponToDealDamageType(Int typeToDeal) const { return (m_totalDamageTypeMask & (1 << typeToDeal)) ? true : false; }

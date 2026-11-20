@@ -1,6 +1,5 @@
 // DamageModule.h: the interface a module exposes when it takes damage.
-// Target facts (old repo reference/shims/bfme2_flammableupdate/GameLogic/Module/
-// DamageModule.h): three slots and no virtual destructor -- onDamage,
+// Target facts: three slots and no virtual destructor -- onDamage,
 // onHealing, onBodyDamageStateChange. BehaviorModuleInterface::getDamage is slot
 // 4 of the behavior interface and returns this base. FlammableUpdate's table
 // sits at +0x20 (the dtor restores it after the UpdateModuleInterface one).
@@ -50,9 +49,9 @@ protected:
 		BehaviorModule::xfer(xfer);
 	}
 protected:
-	virtual void loadPostProcess();	// out of line (a jmp to BehaviorModule's), ICF-folded with UpdateModule's at 0x0058B03E; inline, MSVC folds it into each subclass's forwarder and loses retail's second level (0x00497805) (h05)
+	virtual void loadPostProcess();	// out of line (a jmp to BehaviorModule's), ICF-folded with UpdateModule's at 0x0058B03E; inline, MSVC folds it into each subclass's forwarder and loses retail's second level (0x00497805)
 };
-// SIZE 0x14 (h05): BehaviorModule (0x10) plus the DamageModuleInterface vptr at +0x10 and no
+// SIZE 0x14: BehaviorModule (0x10) plus the DamageModuleInterface vptr at +0x10 and no
 // member, as the target facts above say; BoneFXDamage's constructor stores at +0 and +0x10 only.
 typedef char DamageModule_size[(sizeof(DamageModule) == 0x14) ? 1 : -1];
 

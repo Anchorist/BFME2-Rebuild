@@ -8,7 +8,7 @@
 // FUNCTION: BFME2 0x0006482B size=56 name=?friend_newModuleInstance@W3DDebrisDraw@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x00064863 size=56 name=?friend_newModuleInstance@W3DDefaultDraw@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x0006489B size=59 name=?friend_newModuleInstance@W3DScriptedModelDraw@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
-// FUNCTION: BFME2 0x000648D6 size=84 name=?friend_newModuleData@W3DScriptedModelDraw@@SAPAVModuleData@@PAVINI@@@Z evidence=X:map request (r15b) tier=B hypothesis:mm1-neighbour-callers
+// FUNCTION: BFME2 0x000648D6 size=84 name=?friend_newModuleData@W3DScriptedModelDraw@@SAPAVModuleData@@PAVINI@@@Z evidence=X:map request tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x0006492A size=56 name=?friend_newModuleInstance@W3DLaserDraw@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x00064962 size=81 name=?friend_newModuleData@W3DLaserDraw@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x000649B3 size=59 name=?friend_newModuleInstance@W3DQuadrupedDraw@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers

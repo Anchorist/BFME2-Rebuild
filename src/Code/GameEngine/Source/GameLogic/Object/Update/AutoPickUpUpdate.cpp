@@ -1,5 +1,5 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-// Diagnostic pilot import; object boundaries may be unproven.
+// Object boundaries may be unproven.
 // FUNCTION: BFME2 0x00495C48 size=32 name=??1AutoPickUpUpdate@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x00495C68 size=6 name=?GetSnapshotName@AutoPickUpUpdate@@MBEPBDXZ evidence=N:ledger
 // FUNCTION: BFME2 0x00495C6E size=9 name=?rva00495C6E@AutoPickUpUpdate@@UAEXXZ evidence=?:placeholder
@@ -58,7 +58,7 @@ inline AutoPickUpEatObjectEntry *AutoPickUpEntryAllocator::allocate(unsigned cou
 { return count ? (AutoPickUpEatObjectEntry *)AllocateRawBytes(count*sizeof(AutoPickUpEatObjectEntry),0) : 0; }
 
 
-// GameLogic/Object/Update/AutoPickUpUpdate.cpp: retail translation unit (pilot skeleton).
+// GameLogic/Object/Update/AutoPickUpUpdate.cpp: retail translation unit (skeleton).
 // Write each function below its FUNCTION annotation, in this (retail) order.
 // Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
 // Shared types belong in include/; no class or struct with a body in this file.

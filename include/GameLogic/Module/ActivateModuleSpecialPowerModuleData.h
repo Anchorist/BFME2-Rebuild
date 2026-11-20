@@ -1,4 +1,4 @@
-// ActivateModuleSpecialPowerModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x00256DC5);
+// ActivateModuleSpecialPowerModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // ActivateModuleSpecialPowerModuleData.h: the INI data of ActivateModuleSpecialPower. SIZE 0xD4.
 // Target facts: ModuleFactory registers the module with operator new 0xD4 and

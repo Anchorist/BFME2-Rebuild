@@ -59,9 +59,9 @@ protected:
 	virtual void privateMoveToPosition(const Coord3D *, Real, CommandSourceType);	// 0x0049A93B
 	virtual void bfmePrivateCommand42(Object *, CommandSourceType);				// 0x0049AC5F
 protected:
-	virtual void loadPostProcess() { AIUpdateInterface::loadPostProcess(); }	// retail slot 0x0049A7EE: a jmp to AIUpdateInterface's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { AIUpdateInterface::loadPostProcess(); }	// retail slot 0x0049A7EE: a jmp to AIUpdateInterface's, ICF-folded across classes
 protected:
-	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x0049A6C1 (h05 r9)
+	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x0049A6C1
 };
 // SIZE 0x3E8
 
@@ -82,7 +82,7 @@ protected:
 	ObjectID m_unk0x3F0;										// +0x3F0
 	Bool m_unk0x3F4;											// +0x3F4
 protected:
-	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x0049ACC5 (h05 r9)
+	virtual const char *GetSnapshotName() const;	// slot 2 of the class table, 0x0049ACC5
 };
 // SIZE 0x3F8
 

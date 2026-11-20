@@ -277,7 +277,8 @@
       "accepted_names": [
         "?getDie@DieModule@@UAEPAVDieModuleInterface@@XZ",
         "?getUpdate@UpdateModule@@UAEPAVUpdateModuleInterface@@XZ",
-        "?getDamage@DamageModule@@UAEPAVDamageModuleInterface@@XZ"
+        "?getDamage@DamageModule@@UAEPAVDamageModuleInterface@@XZ",
+        "?getSpecialPower@SpecialPowerModule@@UAEPAVSpecialPowerModuleInterface@@XZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null

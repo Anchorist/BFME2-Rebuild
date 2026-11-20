@@ -1,6 +1,6 @@
 // Rva003ECD60Object.h: the 0x56C-byte threat record ThreatFinderUpdate allocates
 // in xfer and mapLoadPostProcess and registers by name.
-// Target facts (old repo ThreatFinderUpdate.cpp, Rva003ECD60Ctor.cpp): twenty
+// Target facts: twenty
 // 0x44-byte ThreatInfo entries, the AsciiString name at +0x550, four floats
 // +0x554..+0x560, an int +0x564 and a bool +0x568; the constructor 0x003ECD60
 // zeroes the position, the radius float and the int, and stores the flag.
@@ -15,7 +15,7 @@
 class Xfer;
 
 // One 0x44-byte threat record: seventeen floats, transferred by the helper at
-// 0x003ECAE0 (old repo ThreatFinderUpdate.cpp).
+// 0x003ECAE0.
 struct ThreatInfo
 {
 	ThreatInfo();

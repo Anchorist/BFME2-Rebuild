@@ -41,7 +41,7 @@ AptNativeFunction *g_pSliceFunction = 0;   // VA 0x00E1805C (0x006DA3A0)
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:padding
-// FUNCTION: BFME2 0x006D8AD0 size=140 name=?SetAt@AptArray@@QAEXHPAVAptValue@@@Z evidence=X:map request (no_map_row a-both-real/vt-split, 1 refs) tier=B hypothesis:mm1-neighbour-callers
+// FUNCTION: BFME2 0x006D8AD0 size=140 name=?SetAt@AptArray@@QAEXHPAVAptValue@@@Z evidence=X:map request (no_map_row, vtable split, 1 refs) tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x006D8B60 size=1462 name=?bfmeSkipVI@@YAHPBEH@Z evidence=N:ledger tier=B hypothesis:K
 int bfmeSkipVI(const unsigned char *str, int len)
 {

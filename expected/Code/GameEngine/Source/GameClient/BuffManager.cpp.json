@@ -184,8 +184,8 @@
       "role": "ehhandler",
       "parent_rva": "0x003628D3",
       "fold_group": "",
-      "name": "__ehhandler$?DoXfer@BuffInstance@@MAEXPAVXfer@@@Z",
-      "name_evidence": "X:parent-name",
+      "name": "__ehhandler$?xfer@BuffInstance@@MAEXPAVXfer@@@Z",
+      "name_evidence": "X:map request",
       "confidence": "high",
       "evidence": "X:eh-stub FuncInfo=0x00928144;X:parent-by-prologue",
       "object_id": "O0036247C",
@@ -197,6 +197,7 @@
       "parent": "0x003628D3",
       "object": "O0036247C",
       "accepted_names": [
+        "__ehhandler$?xfer@BuffInstance@@MAEXPAVXfer@@@Z",
         "__ehhandler$?DoXfer@BuffInstance@@MAEXPAVXfer@@@Z"
       ],
       "seed_tier": "A",
@@ -509,8 +510,8 @@
       "role": "ehhandler",
       "parent_rva": "",
       "fold_group": "H0077E232",
-      "name": "__ehhandler$??1BuffManager@@UAE@XZ",
-      "name_evidence": "?:placeholder",
+      "name": "__ehhandler$??0BuffManager@@QAE@PAVDrawable@@@Z",
+      "name_evidence": "X:map request",
       "confidence": "high",
       "evidence": "X:eh-stub FuncInfo=0x00928210;X:parent-by-prologue;X:EH stub shared by 2 functions (ICF-folded handler and FuncInfo)",
       "object_id": "unknown",
@@ -522,6 +523,7 @@
       "parent": null,
       "object": "O0036247C",
       "accepted_names": [
+        "__ehhandler$??0BuffManager@@QAE@PAVDrawable@@@Z",
         "__ehhandler$??1BuffManager@@UAE@XZ"
       ],
       "seed_tier": "B",

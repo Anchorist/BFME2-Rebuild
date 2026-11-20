@@ -42,7 +42,7 @@ public:
     // Parse table 0x00815468: 54 entries, every offset below is one of its targets.
     static const FieldParse m_commandButtonFieldParseTable[];
     const FieldParse *getFieldParse() const { return m_commandButtonFieldParseTable; }
-    bool isValidRelationshipTarget(Relationship relationship) const;	// 0x0035AFE4: the target-relationship option bits (Zero Hour's name)
+    bool isValidRelationshipTarget(Relationship relationship) const;	// the target-relationship option bits (Zero Hour's name)
     bool isValidObjectTarget(const Player *sourcePlayer, const Object *targetObj) const;
     int getNextToggleSlot(int weaponSlot) const;	// the weapon slot after weaponSlot in the toggle cycle
     const Image *getButtonImageAt(int index) const;

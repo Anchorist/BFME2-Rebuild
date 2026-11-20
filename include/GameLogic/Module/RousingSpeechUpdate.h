@@ -1,4 +1,4 @@
-// RousingSpeechUpdate.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x004ACED2, 0x004ACED8);
+// RousingSpeechUpdate.h:
 // name, size, bases and virtual order are retail facts given below.
 // RousingSpeechUpdate.h: the RousingSpeechUpdate module. SIZE 0x9C (ModuleFactory operator new).
 // Target facts: the constructor 0x004ACF76 calls SpecialAbilityUpdate first; it stores the

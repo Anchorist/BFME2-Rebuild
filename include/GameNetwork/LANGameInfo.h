@@ -48,7 +48,7 @@ public:
 	LANGameInfo();											// 0x004481D4
 	virtual LANGameInfo *slot4() { return this; }
 	virtual Int slot7() const { return 3; }
-	void *getLANSlot(Int slotNum);							// 0x00447773 (the map types the result void *)
+	const LANGameSlot *getLANSlot(Int slotNum) const;
 	void setSlotLastHeard(Int slotNum, UnsignedInt time);	// 0x00248D35 (stamps a slot's last-heard time; the map has no better name)
 	virtual const char *GetSnapshotName() const;			// slot 2, 0x00448276 (the class name; the map holds it as name@Rva00448276Named)
 	virtual const Image *rva00401015(Int kind);			// slot 6, 0x00447BE0 (the lobby status image of a column: the lock for a game in progress, the base class's otherwise)

@@ -1,5 +1,4 @@
 // SpawnBehavior.h: the module that spawns and tends slaves. SIZE 0x64 (ModuleFactory operator new).
-// Promoted from Draft.
 // Target facts (retail game.dat): the constructor 0x0045F581 runs UpdateModule's constructor, then stores
 // the six interface tables, in this order of subobjects:
 //   +0x00 primary (UpdateModule: 0x00C426AC), +0x0C behavior interface (0x00C425F0), +0x10 update interface (0x00C425E0),

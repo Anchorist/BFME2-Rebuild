@@ -1,10 +1,10 @@
-// SpawnBehaviorModuleData.h: promoted from include/Draft by h05 (round 10). Proven by 1 row that MATCH against it on main (0x0025769F);
+// SpawnBehaviorModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // SpawnBehaviorModuleData.h: the INI data of SpawnBehavior. SIZE 0x174.
 // Target facts: ModuleFactory registers the module with operator new 0x174 and
 // constructor RVA 0x002575C2; buildFieldParse RVA 0x00253542 adds VA 0x00BF0200 at +0x0 and DieMuxData at +0x2C, UpgradeMuxData at +0x5C.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 // m_spawnTemplateName +0x20 is a vector<AsciiString> (s02: the ctor 0x002575C2 builds a _Vector_base
 // and clears it through vector<AsciiString>::erase 0x0002CCFC; the dtor frees it through ~vector 0x0002CC70).

@@ -3,7 +3,7 @@
 #include <stddef.h>
 // SIZE 0x18, no base or virtual functions. Retail XferSaveAsText's
 // transfer 0x0060DADA reads the six signed integer components at 0..0x14;
-// old private views agree on two ICoord3D corners, lo followed by hi.
+// the struct holds two ICoord3D corners, lo followed by hi.
 struct IRegion3D
 {
     ICoord3D lo; // 0x0

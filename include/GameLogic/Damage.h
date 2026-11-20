@@ -198,6 +198,7 @@ typedef UnsignedInt PlayerMaskType;
 class DamageInfoInput
 {
 public:
+	DamageInfoInput();							// 0x00263653: out of line, stores the table and the defaults named in the header comment
 	virtual void xfer(Xfer *xfer);				// slot 0, 0x004D6FC4
 
 	ObjectID m_sourceID;						// 0x04
@@ -223,6 +224,34 @@ public:
 	Real m_unk0x58[3];							// 0x58 not transferred
 	Real m_unk0x64;								// 0x64 xfer v3
 };
+// Retail's copy is the COMDAT 0x00263653 (too large to expand where DamageInfo's constructor calls it).
+inline DamageInfoInput::DamageInfoInput()
+{
+	m_sourceID = INVALID_ID;
+	m_sourcePlayerMask = 0;
+	m_damageType = DAMAGE_UNDEFINED;
+	m_damageFXOverride = DAMAGEFX_UNDEFINED;
+	m_damageSubType = DAMAGESUBTYPE_NORMAL;
+	m_deathType = DEATH_NORMAL;
+	m_amount = 0.0f;
+	m_kill = false;
+	m_unk0x21 = true;
+	m_unk0x24 = 0.0f;
+	m_fxTrigger = 0;
+	m_unk0x2C = INVALID_ID;
+	m_shockWaveVector.zero();
+	m_unk0x48 = 1.0f;
+	m_unk0x50 = 1.0f;
+	m_shockWaveAmount = 0.0f;
+	m_shockWaveRadius = 0.0f;
+	m_shockWaveTaperOff = 0.0f;
+	m_unk0x4C = false;
+	m_unk0x54 = 100.0f;
+	m_unk0x58[0] = 0.0f;
+	m_unk0x58[1] = 0.0f;
+	m_unk0x58[2] = 0.0f;
+	m_unk0x64 = 0.0f;
+}
 // SIZE 0x68
 typedef char DamageInfoInput_size[(sizeof(DamageInfoInput) == 0x68) ? 1 : -1];
 typedef char DamageInfoInput_off_m_sourceID[(offsetof(DamageInfoInput, m_sourceID) == 0x04) ? 1 : -1];

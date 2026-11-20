@@ -1,4 +1,5 @@
-// cl: /O1 /G7 /arch:SSE
+// cl: /O1 /G7 /arch:SSE /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS
+// stlport46
 #define DEFINE_COMMAND_OPTION_NAMES
 #define DEFINE_GUI_COMMMAND_NAMES
 #include "Common/INI.h"
@@ -7,6 +8,7 @@
 #include "debug/Debug.h"
 #include "GameClient/ControlBar.h"
 #include "GameClient/CommandButton.h"
+#include "GameClient/Image.h"
 #include "Common/GameType.h"
 #include "GameLogic/GameLogic.h"
 #include "Common/Player.h"
@@ -233,9 +235,36 @@ int CommandButton::getStance(int index)
 // FUNCTION: BFME2 0x0035B6FA size=86 name=?rva0035B6FA@CommandButton@@QAEXW4ObjectID@@_N@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 
 // FUNCTION: BFME2 0x0035B750 size=45 name=?rva0035B750@CommandButton@@QAEXPBVModuleData@@@Z evidence=S:strong (caller-this+position+layout) tier=B hypothesis:mm1-held-object-same-path
+void CommandButton::setButtonImage(const Image *image)
+{
+	if (m_images.empty())
+	{
+		fieldFC = 0;
+		m_images.push_back(image);
+	}
+	else
+	{
+		m_images[0] = image;
+	}
+}
 
 // FUNCTION: BFME2 0x0035B77D size=92 name=?cacheButtonImage@CommandButton@@QAEXXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+void CommandButton::cacheButtonImage()
+{
+	if (TheMappedImageCollection != NULL)
+	{
+		for (_STL::vector<AsciiString>::iterator it = m_imageNames.begin(); it != m_imageNames.end(); ++it)
+		{
+			if (!it->isEmpty())
+			{
+				const Image *image = TheMappedImageCollection->findImageByName(*it);
+				if (image)
+					m_images.push_back(image);
+				it->clear();
+			}
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x0035B7D9 size=76 name=?rva0035B7D9@CommandButton@@QAEXPAV1@_N@Z evidence=S:strong (caller-this) tier=B hypothesis:mm1-held-object-same-path
-
 // FUNCTION: BFME2 0x0035B864 size=70 name=?parseStances@@YAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path

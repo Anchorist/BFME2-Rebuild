@@ -3,7 +3,7 @@
 // Tier B; object=O004AB897 evidence=invented flags=align=U;ehform=EH_prolog
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
-#include "Draft/LargeGroupAudioUpdate.h"
+#include "GameLogic/Module/LargeGroupAudioUpdate.h"
 #include "Common/NameKeyGenerator.h"
 // FUNCTION: BFME2 0x004AB800 size=17 name=?buildFieldParse@LargeGroupAudioUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x004AB811 size=120 name=??0LargeGroupAudioUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file

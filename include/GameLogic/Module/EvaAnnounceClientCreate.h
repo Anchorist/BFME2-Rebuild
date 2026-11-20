@@ -1,4 +1,4 @@
-// EvaAnnounceClientCreate.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x004C9A0C);
+// EvaAnnounceClientCreate.h:
 // name, size, bases and virtual order are retail facts given below.
 // EvaAnnounceClientCreate.h: the EvaAnnounceClientCreate module. SIZE 0x18 (ModuleFactory operator new).
 // Target facts: the constructor 0x004C99D4 calls Rva00362EC7 first; it stores the

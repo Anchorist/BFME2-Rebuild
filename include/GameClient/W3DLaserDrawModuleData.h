@@ -1,4 +1,4 @@
-// W3DLaserDrawModuleData.h: the INI data of the laser draw module (promoted from the Draft).
+// W3DLaserDrawModuleData.h: the INI data of the laser draw module.
 // Target facts (retail game.dat 1.06):
 // - Derives from ModuleData and only overrides slot 0 (table 0x007CB960). Constructor 0x000C9A6F
 //   sets the two colours to -1, NumBeams and Segments to 1, OuterBeamWidth and TilingScalar to 1

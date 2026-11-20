@@ -72,7 +72,8 @@
       "parent": null,
       "object": "O0016EBA0",
       "accepted_names": [
-        "??0TextureVectorBaseCtorShim@@QAE@HPBV?$RefCountPtr@VTextureClass@@@@@Z"
+        "??0TextureVectorBaseCtorShim@@QAE@HPBV?$RefCountPtr@VTextureClass@@@@@Z",
+        "??0?$VectorClass@VTextureAsset@@@@QAE@HPBVTextureAsset@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:Z"

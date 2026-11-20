@@ -1,4 +1,4 @@
-// LargeGroupBonusUpdate.h: promoted from include/Draft. Proven by 3 rows that MATCH against it on main (0x0048FFD4, 0x00490031, 0x004901B5);
+// LargeGroupBonusUpdate.h:
 // name, size, bases and virtual order are retail facts given below.
 // LargeGroupBonusUpdate.h: the LargeGroupBonusUpdate module. SIZE 0x2C (ModuleFactory operator new).
 // Target facts: the constructor 0x004900B1 calls UpdateModule first; it stores the

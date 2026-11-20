@@ -1,6 +1,6 @@
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0070E5D0 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// FUNCTION: BFME2 0x0070E5D0 size=230 name=?rva0070E5D0@@YAXPBUAptMatrix@@0PAU1@@Z evidence=X:map request (no_map_row a-both-real/vt-split, 2 refs) tier=B hypothesis:mm1-gap-unit
-// FUNCTION: BFME2 0x0070E6C0 size=30 name=?multiplyVertexMatrix@AptRenderingContext@@QAEXPBUAptMatrix@@@Z evidence=X:map request (standalone ca6e45a3dd (a-both-real, by hand)) tier=B hypothesis:mm1-gap-unit
+// FUNCTION: BFME2 0x0070E5D0 size=230 name=?rva0070E5D0@@YAXPBUAptMatrix@@0PAU1@@Z evidence=X:map request (no_map_row, vtable split, 2 refs) tier=B hypothesis:mm1-gap-unit
+// FUNCTION: BFME2 0x0070E6C0 size=30 name=?multiplyVertexMatrix@AptRenderingContext@@QAEXPBUAptMatrix@@@Z evidence=X:map request (standalone ca6e45a3dd) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0070E6E0 size=544 name=?bfmeApplyXS@BfmeThingXS@@QAEXPAX0@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit

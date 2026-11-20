@@ -23,8 +23,8 @@ class PortNegotiationPing
 public:
 	PortNegotiationPing();									// 0x005DB84F
 	virtual ~PortNegotiationPing() {}						// 0x005A66B8
-	Real getFailures() const { return m_unk0x08; }			// +8 (the old views call it the failure count)
-	Real getOutstanding() const { return m_unk0x0C; }		// +0xC (the old views call it the outstanding count)
+	Real getFailures() const { return m_unk0x08; }			// +8 (the failure count)
+	Real getOutstanding() const { return m_unk0x0C; }		// +0xC (the outstanding count)
 	Real hasSamples();										// 0x005A66BF (1.0 when both +4 and +8 are positive: the map holds it on a placeholder class)
 	Real getLatency();										// 0x005DB95B (the ping estimate; +8 and +0xC feed it)
 	void reset();											// 0x005DB86E (zeroes the three floats and the stamp; the map holds it on a placeholder class)

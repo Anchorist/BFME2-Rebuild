@@ -2,8 +2,7 @@
 #include "GameClient/GameWindow.h"
 // Target GameWindow ctor313847 copies this record's bounds and callbacks;
 // winCreate2C2533 and W3D factories8FCE3..8FFFD use allocator+18/instance+30.
-// Synthesized GadgetCreateView and Rva0047EDE0CreateInfo are the same34-byte
-// record. Class/member names describe these roles; original record spelling
+// The record is 34 bytes. Class/member names describe these roles; original record spelling
 // is unknown. Callback ABI is independently used by the GameWindow methods.
 struct GameWindowCreationData
 {

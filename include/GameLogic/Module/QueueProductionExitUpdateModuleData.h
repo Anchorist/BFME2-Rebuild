@@ -16,6 +16,7 @@ class QueueProductionExitUpdateModuleData : public ModuleData
 public:
 	QueueProductionExitUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	virtual const QueueProductionExitUpdateModuleData *slot25() const { return this; }
 
 	Coord3D m_unitCreatePoint;                             // +0x8 UnitCreatePoint
 	Coord3D m_naturalRallyPoint;                           // +0x14 NaturalRallyPoint

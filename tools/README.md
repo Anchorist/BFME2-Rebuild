@@ -1,8 +1,8 @@
 # Checker
 
-The **BFME II / Boat** check runs on eligible pull requests after public
-admissions open. The compiler runs in an isolated pool and the trusted
-service judges the object files it returns. You can inspect the report
+The **BFME II / Boat** check runs by itself on every pull request (a pull
+request from a fork after the maintainer admits it). The compiler runs on
+isolated runners and a separate step judges the object files they return. You can inspect the report
 without installing a compiler, Wine or the game. See the
 [pull-request instructions](../ci/README.md) for eligibility and reporting.
 

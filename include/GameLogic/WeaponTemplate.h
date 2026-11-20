@@ -118,8 +118,8 @@ public:
 
 	Bool isCapableOfFollowingWaypoints() const { return m_capableOfFollowingWaypoints; }
 	Bool isShowsAmmoPips() const { return m_showsAmmoPips; }
-	Real getContinueAttackRange() const { return m_continueAttackRange; }	// +0x148, read inline (decl_queue h07 14:42, ACCEPTED k10)
-	Bool isContactWeapon() const;	// 0x0047A699 (out of line; the fold of the `xor al,al; ret` getters, alias published in m08 P12): AIUpdateInterface::privateAttackPosition 0x0026DB1A calls it on the current weapon's template
+	Real getContinueAttackRange() const { return m_continueAttackRange; }	// +0x148, read inline
+	Bool isContactWeapon() const;	// 0x0047A699 (out of line; the fold of the `xor al,al; ret` getters): AIUpdateInterface::privateAttackPosition 0x0026DB1A calls it on the current weapon's template
 
 	WeaponTemplate *m_nextTemplate;										// 0x004 ctor 0
 	AsciiString m_name;													// 0x008 "NoNameWeapon"

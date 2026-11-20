@@ -12,7 +12,6 @@
 #include "Common/NameKeyGenerator.h"
 #include "Common/Xfer.h"
 #include "Common/Player.h"
-#include "Common/SpecialPowerTimers.h"
 #include "Common/ThingTemplate.h"
 #include "GameLogic/GameLogic.h"
 #include "GameLogic/Object.h"
@@ -253,8 +252,8 @@ void SpecialPowerModule::onSpecialPowerCreation()
 		Player *player = getObject()->getControllingPlayer();
 		if (player)
 		{
-			((Rva002AC6B1PlayerTimers *)player)->rva002AC75C(getSpecialPowerTemplate(), TheGameLogic->getFrame());
-			m_availableOnFrame = ((Rva002AC6B1PlayerTimers *)player)->getOrStart(getSpecialPowerTemplate());
+			player->expressSpecialPowerReadyFrame(getSpecialPowerTemplate(), TheGameLogic->getFrame());
+			m_availableOnFrame = player->getOrStartSpecialPowerReadyFrame(getSpecialPowerTemplate());
 		}
 	}
 
@@ -294,7 +293,7 @@ bool SpecialPowerModule::isReady() const
 		{
 			const SpecialPowerTemplate *power = modData->m_specialPowerTemplate;
 			if (((const SpecialPowerTemplate *)power->friend_getFinalOverride())->m_sharedSyncedTimer)
-				return TheGameLogic->getFrame() >= ((Rva002AC6B1PlayerTimers *)player)->getOrStart(power);
+				return TheGameLogic->getFrame() >= player->getOrStartSpecialPowerReadyFrame(power);
 		}
 	}
 	return m_pausedCount == 0 && TheGameLogic->getFrame() >= m_availableOnFrame;
@@ -320,7 +319,7 @@ float SpecialPowerModule::getPercentReady() const
 		{
 			Player *player = obj->getControllingPlayer();
 			if (player != 0 && data->m_specialPowerTemplate->getFO()->m_sharedSyncedTimer != 0)
-				value = ((Rva002AC6B1PlayerTimers *)player)->getOrStart(getSpecialPowerTemplate());
+				value = player->getOrStartSpecialPowerReadyFrame(getSpecialPowerTemplate());
 			value -= TheGameLogic->getFrame();
 			return 1.0f - (float)value / (float)m_unk0x14;
 		}
@@ -373,7 +372,7 @@ void SpecialPowerModule::startPowerRecharge(float readyFraction)
 	const SpecialPowerTemplate *power = modData->m_specialPowerTemplate;
 	if (((const SpecialPowerTemplate *)power->friend_getFinalOverride())->m_sharedSyncedTimer)
 	{
-		((Rva002AC6B1PlayerTimers *)player)->resetOrStart(power);
+		player->resetOrStartSpecialPowerReadyFrame(power);
 	}
 	else
 	{
@@ -494,7 +493,7 @@ unsigned int SpecialPowerModule::getReadyFrame() const
 		{
 			Player *player = obj->getControllingPlayer();
 			if (player)
-				return ((Rva002AC6B1PlayerTimers *)player)->getOrStart(getSpecialPowerTemplate());
+				return player->getOrStartSpecialPowerReadyFrame(getSpecialPowerTemplate());
 		}
 	}
 

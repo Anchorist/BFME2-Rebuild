@@ -8,6 +8,8 @@
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
 #include "Common/INI.h"
+#include "Common/Dict.h"
+#include "Common/StaticNameKey.h"
 #include "Common/NameKeyGenerator.h"
 #include "Common/GameAudio.h"
 #include "Common/Xfer.h"
@@ -25,6 +27,7 @@
 #include "Common/BitFlags.h"
 
 extern KindOfMaskType KINDOFMASK_NONE;
+extern const StaticNameKey TheKey_objectBaseName;
 
 void Rva001DEE74Parse(INI *ini, void *instance, void *store, const void *userData);
 
@@ -40,6 +43,12 @@ static const FieldParse s_castleMemberBehaviorModuleDataFieldParse[] =
 };
 // FUNCTION: BFME2 0x003955AF size=43 name=?query@Rva003955AFData@@QAEHHHMHH@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003955DA size=69 name=?rva0003955DA@CastleBehavior@@SA?AW4NameKeyType@@XZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
+NameKeyType CastleBehavior::rva0003955DA()
+{
+	static NameKeyType castleKey = TheNameKeyGenerator->nameToKey("CastleBehavior");
+	return castleKey;
+}
+
 // FUNCTION: BFME2 0x0039561F size=93 name=?rva0039561F@CastleSystem@@QAEHPAVThingTemplate@@@Z evidence=P:provisional (wb-file) tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0039567C size=10 name=?get@Rva0039567CCmpBoolField@@QBE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x00395686 size=61 name=?rva00395686@CastleSystem@@QAE_NPAVPlayer@@PAVThingTemplate@@@Z evidence=P:provisional (wb-file) tier=B hypothesis:mm1-held-object-same-path
@@ -316,7 +325,7 @@ void CastleBehavior::rva0039792B()
 // FUNCTION: BFME2 0x003983D4 size=329 name=??0CastleBehavior@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger
 CastleBehavior::CastleBehavior(Thing *thing, const ModuleData *moduleData)
 	: FoundationAIUpdate(thing, moduleData)
-	, m_34(0)
+	, m_castleState(0)
 	, m_38(0)
 	, m_3C(false)
 	, m_3D(true)
@@ -368,6 +377,31 @@ NameKeyType CastleBehavior::getModuleNameKey() const
 // FUNCTION: BFME2 0x00398E9A size=715 name=?rva00398E9A@CastleBehavior@@QAEXXZ evidence=?:placeholder
 
 // FUNCTION: BFME2 0x00399165 size=200 name=?mapLoadPostProcess@CastleMemberBehavior@@UAEXPBVDict@@@Z evidence=N:ledger
+void CastleMemberBehavior::mapLoadPostProcess(const Dict *properties)
+{
+	if (!properties)
+		return;
+
+	Bool hasCastleName = false;
+	const AsciiString castleName = properties->getAsciiString(TheKey_objectBaseName.key(), &hasCastleName);
+	if (!hasCastleName)
+		return;
+
+	Object *castleObject = TheGameLogic->getFirstObject();
+	while (castleObject && castleObject->m_name.compare(castleName) != 0)
+		castleObject = castleObject->getNextObject();
+	if (castleObject)
+	{
+		CastleBehavior *castle = static_cast<CastleBehavior *>(castleObject->findUpdateModule(CastleBehavior::rva0003955DA()));
+		if (castle && getObject())
+		{
+			castle->registerOwnedObject(getObject());
+			const Int mapLoadedState = 4;
+			castle->m_castleState = mapLoadedState;
+		}
+	}
+}
+
 
 // FUNCTION: BFME2 0x0039922D size=70 name=?rva0039922D@CastleBehavior@@QAEXPAURva00398E4AArg@@@Z evidence=?:placeholder
 

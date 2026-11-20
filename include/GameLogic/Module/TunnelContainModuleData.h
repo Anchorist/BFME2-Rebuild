@@ -1,10 +1,10 @@
-// TunnelContainModuleData.h: promoted from include/Draft by h05 (round 10). Proven by 1 row that MATCH against it on main (0x00257A0A);
+// TunnelContainModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // TunnelContainModuleData.h: the INI data of TunnelContain. SIZE 0xD8.
 // Target facts: ModuleFactory registers the module with operator new 0xD8 and
 // constructor RVA 0x0025797E; buildFieldParse RVA 0x0024BCD2 calls HordeGarrisonContainModuleData::buildFieldParse, then adds VA 0x00BEEAF8 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_TUNNEL_CONTAIN_MODULE_DATA_H

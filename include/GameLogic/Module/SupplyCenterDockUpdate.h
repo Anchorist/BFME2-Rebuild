@@ -1,5 +1,5 @@
 // SupplyCenterDockUpdate.h: the SupplyCenterDockUpdate module. SIZE 0x88 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004A0DC7 calls DockUpdate first; it stores the
+// Target facts: the constructor 0x004A0DC7 calls DockUpdate first; it stores the
 // tables 0x00C51BDC at +0x0, 0x00C51B20 at +0xC, 0x00C51B10 at +0x10, 0x00C51AC0 at +0x20. Members are what xfer (0x004A0E2C) transfers after DockUpdate::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.

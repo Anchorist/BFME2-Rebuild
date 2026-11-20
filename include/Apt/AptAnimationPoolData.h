@@ -2,7 +2,7 @@
 // The animation runtime's central state: the interval timers, the action queue, the button
 // interaction list (BIL) and the focus/navigation logic (rows in AptAnimation.cpp and AptInput.cpp).
 // ONLY the members below are recovered, so the class is usable through a pointer and its size is
-// NOT established (the donor's old views put the timers at +0x34 and the action queue at +0xA0).
+// NOT established.
 // BIL: appendButtonToBIL 0x006E35E0 stores the button in the first word of a 0x1C-byte item
 // (AddRef'd), the 6-float matrix at +4 and bumps the count at +0x10; clearBIL 0x006E35A0 releases
 // every button; removeFromBIL 0x006E3640 asserts the removed value is a CIH (type 0xE) and slides

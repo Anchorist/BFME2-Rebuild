@@ -1,6 +1,6 @@
 #include "GameLogic/Module/ArrowStormUpdate.h"
 #include "GameLogic/Module/SpecialAbilityUpdate.h"
-// Diagnostic pilot import; object boundaries may be unproven.
+// Object boundaries may be unproven.
 // FUNCTION: BFME2 0x00490628 size=17 name=?continuePreparation@ArrowStormUpdate@@UAE_NXZ evidence=N:ledger
 bool ArrowStormUpdate::continuePreparation()
 {
@@ -39,7 +39,7 @@ float GetGameLogicRandomValueReal(float,float,char*,int);
 #include "GameLogic/Module/ArrowStormUpdate.h"
 #include "Common/Xfer.h"
 Xfer *xferSTLObjectIDList(Xfer *, ObjectIDList *);
-// GameLogic/Object/Update/ArrowStormUpdate.cpp: retail translation unit (pilot skeleton).
+// GameLogic/Object/Update/ArrowStormUpdate.cpp: retail translation unit (skeleton).
 // Write each function below its FUNCTION annotation, in this (retail) order.
 // Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
 // Shared types belong in include/; no class or struct with a body in this file.

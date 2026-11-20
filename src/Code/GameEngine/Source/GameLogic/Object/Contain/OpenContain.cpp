@@ -25,6 +25,12 @@
 #include <stddef.h>
 #include "GameLogic/AI.h"
 #include "GameLogic/AIPathfind.h"
+#include "GameLogic/Damage.h"
+#include "GameLogic/Module/BodyModule.h"
+#include "GameLogic/TerrainLogic.h"
+#include "GameLogic/Waypoint.h"
+#include "GameLogic/Module/RunOffMapBehavior.h"
+#include "GameLogic/Module/RunOffMapBehaviorModuleData.h"
 extern NameKeyGenerator *TheNameKeyGenerator;
 
 ContainmentList g_emptyContainmentList;
@@ -73,6 +79,54 @@ static const FieldParse s_openContainModuleDataFieldParse[] =
 // FUNCTION: BFME2 0x00462224 size=108 name=?aiMoveToAndDelete@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x00462290 size=108 name=?aiMoveToAndDie@AICommandInterface@@QAEXPBVCoord3D@@W4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x004622FC size=340 name=?triggerFlee@RunOffMapBehavior@@UAEXXZ evidence=N:ledger tier=A
+void RunOffMapBehavior::triggerFlee()
+{
+	Object *object = getObject();
+	if (!object->getAI())
+		return;
+	const RunOffMapBehaviorModuleData *data = static_cast<const RunOffMapBehaviorModuleData *>(getModuleData());
+	if (!data)
+		return;
+	AIUpdateInterface *ai = object->getAI();
+
+	Coord3D destination;
+	const Waypoint *waypoint = TheTerrainLogic->getWaypointByName(data->m_runOffMapWaypointName);
+	if (waypoint)
+	{
+		destination = waypoint->m_location;
+	}
+	else
+	{
+		const Coord3D *direction = object->getUnitDirectionVector2D();
+		Coord3D forward(direction->x, direction->y, 0.0f);
+		forward.scale(500.0f);
+		const Coord3D *origin = object->getPosition();
+		destination.x = origin->x + forward.x;
+		destination.y = origin->y + forward.y;
+		destination.z = TheTerrainLogic->getGroundHeight(destination.x, destination.y);
+	}
+
+	if (!TheAI->pathfinder()->QuickDoesPathExist(object, object->getPosition(), &destination, 0))
+	{
+		const ObjectID attackerID = object->getBodyModule()->getLastDamageInfo()
+			? object->getBodyModule()->getLastDamageInfo()->in.m_sourceID : INVALID_ID;
+		Object *attacker = TheGameLogic->findObjectByID(attackerID);
+		if (attacker)
+			attacker->report(object, 1);
+		object->kill(DAMAGE_UNRESISTABLE, DEATH_NORMAL);
+	}
+	else
+	{
+		if (data->m_dieOnMap == true)
+			ai->aiMoveToAndDie(&destination, CMD_FROM_AI);
+		else
+			ai->aiMoveToAndDelete(&destination, CMD_FROM_AI);
+
+		object->setStatus(OBJECT_STATUS_FLEE_OFF_MAP, true);
+		const ModelConditionFlagType runningOffMap = static_cast<ModelConditionFlagType>(252); // RUNNING_OFF_MAP
+		object->setModelConditionState(runningOffMap);
+	}
+}
 
 // FUNCTION: BFME2 0x00462450 size=7 name=?get@Rva00462450ByteField@@QBEEXZ evidence=?:placeholder tier=A
 

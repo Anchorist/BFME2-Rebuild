@@ -212,7 +212,8 @@
       "parent": "0x00176CB0",
       "object": "O00001705",
       "accepted_names": [
-        "??1RenderSentenceGeometryView@@QAE@XZ"
+        "??1RenderSentenceGeometryView@@QAE@XZ",
+        "??1SentenceDataStruct@Render2DSentenceClass@@QAE@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"
@@ -262,7 +263,8 @@
       "parent": "0x00176CB0",
       "object": "O00001705",
       "accepted_names": [
-        "??1Rva00001E13@@QAE@XZ"
+        "??1Rva00001E13@@QAE@XZ",
+        "??1RendererDataStruct@Render2DSentenceClass@@QAE@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"

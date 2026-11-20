@@ -5,7 +5,7 @@
 // object=O0061B4C0 name-evidence=L name-tier=library
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: duplicate path; held alternatives O00615A50
+// Duplicate path; alternative object O00615A50
 // Hypothesis rules: hypothesis:Z, hypothesis:cohesion, hypothesis:name:L, hypothesis:padding
 #include <string.h>
 #include "WWLib/pipe.h"

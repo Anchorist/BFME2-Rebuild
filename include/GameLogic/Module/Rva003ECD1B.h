@@ -1,6 +1,6 @@
 // Rva003ECD1B.h: the small update body at 0x003ECD1B that copies a three-float
 // position from an owner record into a child record when the child exists.
-// Target facts (old repo ThreatFinderUpdate.cpp): the receiver is an interior
+// Target facts: the receiver is an interior
 // view at root+8, the owner record holds its position at +0x38, the child at
 // +0x554, and the body returns 1. The enclosing class stays unnamed.
 #pragma once

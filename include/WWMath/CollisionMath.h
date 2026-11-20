@@ -53,12 +53,12 @@ public:
 	static bool Collide(const OBBoxClass &box0, const Vector3 &move0, const OBBoxClass &box1, const Vector3 &move1, CastResultStruct *result);	// 0x0072B5A0
 	static bool Collide(const AABoxClass &box, const Vector3 &move, const TriClass &tri, CastResultStruct *result);	// 0x00726790
 	static bool Intersection_Test(const AABoxClass &box, const TriClass &tri);	// 0x00725330
-	static bool Intersection_Test(const OBBoxClass &box, const TriClass &tri);	// 0x007221D0 (h03: MeshGeometryClass::intersect_obbox_brute_force 0x0016CD30)
+	static bool Intersection_Test(const OBBoxClass &box, const TriClass &tri);	// 0x007221D0 (MeshGeometryClass::intersect_obbox_brute_force 0x0016CD30)
 
 	static OverlapType Overlap_Test(const AABoxClass &box, const Vector3 &point);			// 0x0071AB30
 	static OverlapType Overlap_Test(const AABoxClass &box, const AABoxClass &box2);			// 0x0071ABB0
-	static OverlapType Overlap_Test(const AABoxClass &box, const LineSegClass &line);	// 0x00723870 (h03: RayCollisionTestClass::Cull 0x00197DE0)
-	static OverlapType Overlap_Test(const Vector3 &min, const Vector3 &max, const LineSegClass &line);	// inline in Zero Hour: centre = (min + max) * 0.5, extent = (max - min) * 0.5, then the box form (h03)
+	static OverlapType Overlap_Test(const AABoxClass &box, const LineSegClass &line);	// 0x00723870 (RayCollisionTestClass::Cull 0x00197DE0)
+	static OverlapType Overlap_Test(const Vector3 &min, const Vector3 &max, const LineSegClass &line);	// inline in Zero Hour: centre = (min + max) * 0.5, extent = (max - min) * 0.5, then the box form
 	static OverlapType Overlap_Test(const OBBoxClass &box, const AABoxClass &box2);			// 0x00724800
 	static OverlapType Overlap_Test(const FrustumClass &frustum, const SphereClass &sphere);	// 0x00719A20
 	static OverlapType Overlap_Test(const FrustumClass &frustum, const AABoxClass &box);	// 0x00719A70

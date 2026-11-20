@@ -111,7 +111,7 @@ protected:
 public:
 	// The mux's own load pass: an empty, out-of-line body (the shared `ret` 0x000B3FD0) that
 	// UpdateModule + UpgradeMux classes call on their +0x20 sub-object after the base's pass
-	// (AudioLoopUpgrade 0x004B7BAA, FireWeaponWhenDeadBehavior 0x00482C39) (h05, gen3 vtable-content list).
+	// (AudioLoopUpgrade 0x004B7BAA, FireWeaponWhenDeadBehavior 0x00482C39).
 	void upgradeMuxLoadPostProcess();
 };
 // SIZE 0x08
@@ -144,7 +144,7 @@ public:
 
 	// The CustomAnimAndDuration condition (module data +0x108): set (timed when it
 	// has frames) or cleared on the object. 0x004CE4A0/0x004CE4A8 are the
-	// apply/remove wrappers the upgrade implementations call (h05, from retail).
+	// apply/remove wrappers the upgrade implementations call (from retail).
 	void rva004CE41E(Bool apply);										// 0x004CE41E
 	void rva004CE4A0();													// 0x004CE4A0
 	void rva004CE4A8();													// 0x004CE4A8
@@ -160,7 +160,7 @@ protected:
 	virtual Bool requiresAllConflictingUpgrades() const;				// 0x00460AA2
 	virtual void processUpgradeRemoval() { getUpgradeModuleData()->m_upgradeMuxData.muxDataProcessUpgradeRemoval(getObject()); }	// fold 0x00460AD3: performUpgradeFX's bytes (both call the mux data's `ret 4` 0x0047A69C); slot 15 of every UpgradeModule table
 protected:
-	virtual void loadPostProcess();	// out of line (a jmp to BehaviorModule's), ICF-folded with UpdateModule's at 0x0058B03E; inline, MSVC folds it into each subclass's forwarder and loses retail's second level (0x00497805) (h05)
+	virtual void loadPostProcess();	// out of line (a jmp to BehaviorModule's), ICF-folded with UpdateModule's at 0x0058B03E; inline, MSVC folds it into each subclass's forwarder and loses retail's second level (0x00497805)
 };
 // SIZE 0x1C
 

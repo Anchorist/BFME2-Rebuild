@@ -1,8 +1,16 @@
+// cl: /O1 /EHs /EHc-
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G002D1E55 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
+#include "GameClient/AptCampaignReview.h"
+
 // FUNCTION: BFME2 0x002D1E55 size=58 name=?Rva002D1E55Create@@YGPAVRva0051268C@@PAX@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x002D1E8F size=58 name=?Rva002D1E8FCreate@@YGPAVRva00512AC8@@PAX@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+GameWindow *__stdcall createAptCampaignReviewWindow(GameWindowCreationData *creationData)
+{
+	return new AptCampaignReview(creationData);
+}
+
 // FUNCTION: BFME2 0x002D1EC9 size=58 name=?createAptScreenObjectives@@YGPAXPAX@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x002D1F03 size=58 name=?Rva002D1F03Create@@YGPAVRva005142B0@@PAX@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x002D1F3D size=58 name=?Rva002D1F3DCreate@@YGPAVRva004E8B38@@PAX@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

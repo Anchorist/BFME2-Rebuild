@@ -2,7 +2,6 @@
 // installs table RVA 0x007CEFA0 (three slots), then writes +0x58..+0x64.
 // W3DVolumetricShadow ctor 0x000F1528 and projected ctor 0x0010BA2C call
 // that constructor and begin their own members at +0x68. SIZE 0x68.
-// Older 0x58 private views describe only initialize's prefix.
 #pragma once
 #ifndef BFME2_WW3D2_SHADOW_H
 #define BFME2_WW3D2_SHADOW_H

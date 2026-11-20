@@ -106,7 +106,7 @@ class ScriptEngine : public SubsystemInterface, public Snapshot
 {
 public:
 	ScriptEngine();				// 0x00208343
-	void transferObjectName(const AsciiString &name, Object *unit);	// 0x00357960 (queue batch 28 landed it; a later header rewrite dropped it again: VeterancyCrateCollide::executeCrateBehavior 0x004BCFF0 needs it)
+	void transferObjectName(const AsciiString &name, Object *unit);	// 0x00357960 (VeterancyCrateCollide::executeCrateBehavior 0x004BCFF0 needs it)
 	virtual ~ScriptEngine();		// deleting 0x0020C0C7
 
 	virtual void init();			// slot 1, 0x00205AFD

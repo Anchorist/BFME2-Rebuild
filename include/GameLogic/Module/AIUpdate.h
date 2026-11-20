@@ -130,7 +130,7 @@ typedef _STL::map<LocomotorSetType, LocomotorTemplateVector> LocomotorTemplateMa
 // The destructor 0x0026E1FC deletes +0x14 (null-tested) and destroys +0x58, +0x44, +0x2C, +0x8 in that order.
 // buildFieldParse 0x002638FF adds the table 0x007F9378; members are its entries (offset, parse function's type), named
 // as in Zero Hour where Zero Hour has the field and after the INI token for BFME 2's own. The map still spells the
-// class TransportAIUpdateModuleData at 0x0026E5D7/0x0026E1FC/0x0026E67D/0x002638FF/0x0024BDF2 (h07's rename request).
+// class TransportAIUpdateModuleData at 0x0026E5D7/0x0026E1FC/0x0026E67D/0x002638FF/0x0024BDF2.
 class AIUpdateModuleData : public ModuleData
 {
 public:
@@ -225,15 +225,15 @@ public:
 	void SetEmotionState(int state, Object *target);	// 0x0026320D
 	void rva00263298();						// 0x00263298
 	void rva00262FFF();						// 0x00262FFF (38 B; StealthUpdate setWakeupIfInRange 0x00373DBE calls it on an object it just woke)
-	Bool rva00262DD3(const Object *other) const;	// 0x00262DD3 (f08: GateOpenAndCloseBehavior push-away 0x00498DF3)
+	Bool rva00262DD3(const Object *other) const;	// 0x00262DD3 (GateOpenAndCloseBehavior push-away 0x00498DF3)
 	void rva002632E1();						// 0x002632E1
 	int getCurrentStateID() const;			// 0x00262FC3
 	void rva0026331C();						// 0x0026331C
 	void setLocomotorUpgrade(Bool set);	// 0x00262804 (Zero Hour's name; placeholder row): stores m_upgradedLocomotors and re-chooses the normal set (slot 142) when the normal or upgraded set is current
 	Bool isMoving() const;					// 0x00264688
 	void restartWaypointPath();				// 0x0026293E
-	void setDesiredSpeed(Real speed);	// 0x002628F9 (+0x44 m_desiredSpeed; role name on a placeholder-class row; decl_queue f04 14:50, ACCEPTED k10)
-	ObjectID getIgnoredObstacleID() const;	// 0x0006E009 (+0x164 m_ignoreObstacleID; role name on a placeholder row; decl_queue f04 15:05, ACCEPTED k10)
+	void setDesiredSpeed(Real speed);	// 0x002628F9 (+0x44 m_desiredSpeed; role name on a placeholder-class row)
+	ObjectID getIgnoredObstacleID() const;	// 0x0006E009 (+0x164 m_ignoreObstacleID; role name on a placeholder row)
 	void destroyPathAndIdle();				// 0x00262D2D
 	void startGuardingHere(Int unknownValue);	// 0x00262D40
 	Int hasTemporaryState() const;			// 0x002632B3
@@ -309,14 +309,14 @@ public:
 	void ignoreObstacle(const Object *);	// 0x00268d88 N:ledger
 	void setCanPathThroughUnits(Bool canPath) { m_canPathThroughUnits = canPath; }
 	Bool isWaitingForPath() const { return m_waitingForPath; }
-	Bool hasDesiredAngle() const;	// 0x0033F8D4: m_unk0x1A0 != FLT_MAX (AIFaceDirectionState::onEnter 0x00342572; map ?rva0033F8D4@AIUpdateInterface@@QBE_NXZ, ?:placeholder; decl_queue f04 18:20, ACCEPTED k11)
+	Bool hasDesiredAngle() const;	// 0x0033F8D4: m_unk0x1A0 != FLT_MAX (AIFaceDirectionState::onEnter 0x00342572; map ?rva0033F8D4@AIUpdateInterface@@QBE_NXZ, ?:placeholder)
 	Path *getPath() { return m_path; }		// inline (Zero Hour's): AIMoveAwayPanicState::update 0x00347B3D reads +0x140 in place
 	AIStateMachine *getStateMachine() { return m_stateMachine; }	// inline (AIGuardRetaliateState::onEnter 0x003463DA reads +0x30)	// inline in AIInternalMoveToState::computePath
-	void clearWaypointPath();				// 0x0026295E (f07's role name, placeholder row): empties m_waypointCount and clears +0x3BF; ScriptActions' face and move rows call it
+	void clearWaypointPath();				// 0x0026295E (role name, placeholder row): empties m_waypointCount and clears +0x3BF; ScriptActions' face and move rows call it
 	void friend_endingMove();				// 0x00262AEA (Zero Hour name; placeholder row): sets +0x3B6, clears +0x3B7; AIInternalMoveToState::onExit 0x003473A4 calls it
 	void rva00262ACE();						// 0x00262ACE: clears +0x3B6/+0x16C/+0x3B8, sets +0x3B7 (computePath calls it after a request)	// inline in AIDockState's update/onExit
 	Object *getNextMoodTarget(Bool, Bool);	// 0x00268eb8 N:ledger
-	void resetNextMoodCheckTime();	// 0x00263025 (decl_queue f01 08:21)
+	void resetNextMoodCheckTime();	// 0x00263025
 	WhichTurretType friend_getTurretSync() const { return (WhichTurretType)m_turretSyncFlag; }
 	void friend_setTurretSync(WhichTurretType turret) { m_turretSyncFlag = turret; }
 	UnsignedInt friend_getNextMoodCheckTime() const { return m_unk0x21C; }
@@ -353,7 +353,7 @@ protected:
 	virtual void loadPostProcess();						// slot 1, 0x002686A4
 	virtual const char *GetSnapshotName() const;		// slot 2, 0x0026E982
 
-	virtual SleepyUpdatePhase getUpdatePhase() const { return (SleepyUpdatePhase)0; }	// slot 12 is the shared `xor eax,eax; ret` 0x000D43D0 in every AI module's table, not UpdateModule's 0x0022C4CB (f08, from WanderAIUpdate's table 0x00C53D30)
+	virtual SleepyUpdatePhase getUpdatePhase() const { return (SleepyUpdatePhase)0; }	// slot 12 is the shared `xor eax,eax; ret` 0x000D43D0 in every AI module's table, not UpdateModule's 0x0022C4CB (from WanderAIUpdate's table 0x00C53D30)
 
 public:
 	virtual UpdateSleepTime update();	// update interface slot 0, 0x0026E267 N:ledger (DozerAIUpdate::update 0x00489800 and WanderAIUpdate::update 0x004A9424 call it)
@@ -479,7 +479,7 @@ protected:
 public:
 	virtual void vslot088() {}	// slot 88, the shared `ret` 0x000B3FD0
 	virtual void vslot089() {}	// slot 89, the shared `ret` 0x000B3FD0
-	virtual Bool vslot090() { return false; }	// slot 90, the shared `xor al,al; ret` 0x0047A699: SpecialAbilityUpdate 0x00450AE9 and 0x0044F28E test al after the call (f11)
+	virtual Bool vslot090() { return false; }	// slot 90, the shared `xor al,al; ret` 0x0047A699: SpecialAbilityUpdate 0x00450AE9 and 0x0044F28E test al after the call
 	virtual Bool isBusy() const;	// slot 91, N:ledger ?isBusy@AIUpdateInterface@@UBE_NXZ
 	// Slots 92-102: the per-class interface accessors (Zero Hour names). Each pair
 	// is one accessor declared non-const then const, which MSVC lays out const

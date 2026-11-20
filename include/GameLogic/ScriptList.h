@@ -28,8 +28,7 @@ class Script;
 class ScriptGroup;
 class ScriptList;
 
-// The chunk writers walk a link chain and read the list's tables.  The map still spells their chain argument as the old private
-// view did (Script * / ScriptGroup *); the argument really is the first link (ScriptLink * / ScriptGroupLink *), cast at the entry
+// The chunk writers walk a link chain and read the list's tables.  The map still spells their chain argument (Script * / ScriptGroup *); the argument really is the first link (ScriptLink * / ScriptGroupLink *), cast at the entry
 // and at the callers while the map still records those parameter types.
 void WriteScriptDataChunk(DataChunkOutput &chunkWriter, ScriptList *list, Script *links);	// 0x003B5994
 void WriteGroupDataChunk(DataChunkOutput &chunkWriter, ScriptList *list, ScriptGroup *links);	// 0x003B6975

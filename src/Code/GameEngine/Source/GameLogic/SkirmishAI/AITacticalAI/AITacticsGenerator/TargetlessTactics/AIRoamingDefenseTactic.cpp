@@ -9,6 +9,9 @@
 // Edges: left=rests-on:name right=rests-on:name; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion
 // FUNCTION: BFME2 0x005AAB91 size=11 name=??1AIRoamingDefenseTactic@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
+AIRoamingDefenseTactic::~AIRoamingDefenseTactic()
+{
+}
 
 // FUNCTION: BFME2 0x005AAB9C size=9 name=?run@AIRoamingDefenseTactic@@UAEXXZ evidence=N:ledger tier=B hypothesis:cohesion
 void AIRoamingDefenseTactic::run()

@@ -4,7 +4,7 @@
 // ZH's next/name/pointSize/height/fontData/bold names are corroborated by
 // styled lookup21857E and W3DFontLibrary::loadFontData902A6. BFME2 pointSize
 // is float; +1C controls raster-size scaling. The donor MemoryPoolObject
-// has no independently evidenced retail class/table (h03); no base is invented.
+// has no independently evidenced retail class/table; no base is invented.
 class GameFont {
 public:
     GameFont() {}                  // 0x002175BA (vptr; the name string is cleared), inline at its one user

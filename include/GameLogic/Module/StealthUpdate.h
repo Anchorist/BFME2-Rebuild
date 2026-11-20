@@ -1,9 +1,9 @@
 // Portions derived from Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-// StealthUpdate.h: promoted from Draft by f10 (2026-11-17): constructor 0x00374B02 and xfer 0x00374942
+// StealthUpdate.h: promoted from Draft: constructor 0x00374B02 and xfer 0x00374942
 // are written against it. The two 1,024-bit upgrade masks at +0x48 and +0xC8 are not transferred by xfer;
 // rva003748BD (0x003748BD) fills them from the module data's RequiredUpgradeNames / ForbiddenUpgradeNames.
 // StealthUpdate.h: the StealthUpdate module. SIZE 0x14C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x00374B02 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x00374B02 calls UpdateModule first; it stores the
 // tables 0x00C17F20 at +0x0, 0x00BEFF90 at +0xC, 0x00C17F14 at +0x10. Members are what xfer (0x00374942) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -99,7 +99,7 @@ public:
 	Real getFriendlyOpacityMin() const;   // 0x00373D45: the module data's FriendlyOpacityMin (x87 result)
 	UnsignedByte isOneRingReady();   // 0x00373EB6: the logic frame has reached the ring cooldown at +0x28 (updateOneRing tests the same word)
 	Bool hasRequiredUpgrades() const;   // 0x00373EC6: the object's upgrades hold every required bit and no forbidden bit (the masks rva003748BD fills)
-	void updateOneRing();   // 0x00374815 (map: placeholder class Rva00373EC6, which Object::rva0028F4BC hands back as the stealth module): One Ring start/refresh, f10
+	void updateOneRing();   // 0x00374815 (map: placeholder class Rva00373EC6, which Object::rva0028F4BC hands back as the stealth module): One Ring start/refresh
 	protected:
 	void hintDetectableWhileUnstealthed();   // 0x0037441E
 	UpdateSleepTime calcSleepTime() const;   // 0x00373D4C (probe)

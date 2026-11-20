@@ -1,8 +1,7 @@
 #pragma once
 // SIZE 0x8. No base or virtual functions.
 // Retail XferSaveAsText::operator== 0x0060DC12 reads these typed fields in order;
-// old private views and library headers corroborate the layout. Names follow
-// those views; the transfer format strings independently label the components.
+// the transfer format strings label the components.
 
 #include <stddef.h>
 struct RealRange

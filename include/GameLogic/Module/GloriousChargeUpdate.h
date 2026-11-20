@@ -1,4 +1,4 @@
-// GloriousChargeUpdate.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x004AD5C8, 0x004AD5CE);
+// GloriousChargeUpdate.h:
 // name, size, bases and virtual order are retail facts given below.
 // GloriousChargeUpdate.h: the GloriousChargeUpdate module. SIZE 0x94 (ModuleFactory operator new).
 // Target facts: the constructor 0x004AD680 calls SpecialAbilityUpdate first; it stores the

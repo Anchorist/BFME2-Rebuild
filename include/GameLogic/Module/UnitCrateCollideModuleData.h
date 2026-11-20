@@ -1,10 +1,10 @@
-// UnitCrateCollideModuleData.h: promoted from include/Draft by h05 (round 10). Proven by 1 row that MATCH against it on main (0x00255AB8);
+// UnitCrateCollideModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // UnitCrateCollideModuleData.h: the INI data of UnitCrateCollide. SIZE 0x64.
 // Target facts: ModuleFactory registers the module with operator new 0x64 and
 // constructor RVA 0x00255A72; buildFieldParse RVA 0x002511F3 calls CrateCollideModuleData::buildFieldParse, then adds VA 0x00BEFAF4 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_UNIT_CRATE_COLLIDE_MODULE_DATA_H

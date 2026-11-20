@@ -1,6 +1,6 @@
 // ObjectGuardingHelper.h: the helper module that tracks which objects guard an object and which object this
 // object guards (Object+0x23C points at it; Object::rva0028BC05 / rva0028BC17 forward to addGuarder /
-// removeGuarder). Target facts (f14, 2026-11-18): the constructor 0x004DF418 calls ObjectHelper's
+// removeGuarder). Target facts: the constructor 0x004DF418 calls ObjectHelper's
 // 0x0028C8DF, stores the tables 0x00861588 at +0x0, 0x007EFF90 at +0xC and 0x0086157C at +0x10, builds the guarder
 // list at +0x24 (0x0029FB3B), clears the guarded ID at +0x20 and sets the wake frame to 0x3FFFFFFF; the destructor
 // 0x004DF324 resets the tables, destroys the list (0x00268902) and runs ObjectHelper's. The +0x10 table's slot 0

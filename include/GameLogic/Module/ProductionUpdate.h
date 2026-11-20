@@ -220,7 +220,7 @@ public:
 	_STL::vector<AsciiString> m_pendingTypeNames;						// 0x130 slot 13 push_back (0x0049F8A9), dtor 0x0049E1BF destroys it, 0x0049E368 walks and erases it
 	Bool m_unk0x13C;													// 0x13C xfer Bool
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x140
 typedef char ProductionUpdate_size[(sizeof(ProductionUpdate) == 0x140) ? 1 : -1];

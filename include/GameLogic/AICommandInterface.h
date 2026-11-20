@@ -1,5 +1,5 @@
 // AICommandInterface.h: SAGE AI command entry points (Zero Hour AI.h).
-// Target facts (old repo Code/GameEngine/Include/GameLogic/Module/AIUpdate.h):
+// Target facts:
 // AIUpdateInterface derives from UpdateModule (0x20 bytes), then this interface,
 // so it sits at AIUpdateInterface+0x20; BloodthirstyUpdate (0x0044E4A9) adds 0x20
 // to Object::getAI's result before calling aiIdle. Slot 0 is aiDoCommand; the
@@ -38,7 +38,7 @@ public:
 	void aiEvacuate(bool, CommandSourceType);	// 0x002AE6B3
 	void aiMoveToObject(Object *, CommandSourceType);	// 0x00352ECA
 	void aiMoveToPositionAndFaceDirection(Coord3D const *, CommandSourceType, float);	// 0x0036E906
-	void aiAttackMoveToPosition(const Coord3D *pos, Int maxShotsToFire, CommandSourceType cmdSource);	// 0x00295A0F (the map's placeholder Rva00295A0FCommands::Rva00295A0FCommand takes (pointer, int, int): Zero Hour's wrapper; AssaultTransportAIUpdate::giveFinalOrders 0x0048F6EE calls it, f08)
+	void aiAttackMoveToPosition(const Coord3D *pos, Int maxShotsToFire, CommandSourceType cmdSource);	// 0x00295A0F (the map's placeholder Rva00295A0FCommands::Rva00295A0FCommand takes (pointer, int, int): Zero Hour's wrapper; AssaultTransportAIUpdate::giveFinalOrders 0x0048F6EE calls it)
 	void aiAttackMoveToPositionAndFaceDirection(Coord3D const *, int, CommandSourceType, float);	// 0x0036E97F
 	void aiMoveToPositionAmphibious(Coord3D const *, CommandSourceType);	// 0x0036EA01
 	void aiTightenToPosition(Coord3D const *, CommandSourceType);	// 0x0036EA74

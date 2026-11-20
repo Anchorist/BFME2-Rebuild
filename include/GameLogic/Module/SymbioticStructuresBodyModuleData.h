@@ -1,4 +1,4 @@
-// SymbioticStructuresBodyModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x00256D50);
+// SymbioticStructuresBodyModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // SymbioticStructuresBodyModuleData.h: the INI data of SymbioticStructuresBody. SIZE 0x68.
 // Target facts: ModuleFactory registers the module with operator new 0x68 and

@@ -87,7 +87,14 @@ static const FieldParse s_audioGameLODFieldParse[] =
 // Tier A; object=O0020202B evidence=W flags=align=U;ehform=EH_prolog
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=proven:name
-// FUNCTION: BFME2 0x0020200D size=30 name=?newBenchProfile@GameLODManager@@QAEPAUBenchProfile@1@XZ evidence=X:map request (standalone ca6e45a3dd (a-both-real, by hand)) tier=B hypothesis:mm1-held-object-same-path
+// FUNCTION: BFME2 0x0020200D size=30 name=?newBenchProfile@GameLODManager@@QAEPAUBenchProfile@1@XZ evidence=X:map request (standalone ca6e45a3dd) tier=B hypothesis:mm1-held-object-same-path
+GameLODManager::BenchProfile *GameLODManager::newBenchProfile()
+{
+	if (m_numBenchProfiles < 16)
+		return &m_benchProfiles[(++m_numBenchProfiles) - 1];
+	return 0;
+}
+
 // FUNCTION: BFME2 0x0020202B size=45 name=?newLODPreset@GameLODManager@@QAEPAULODPresetInfo@@W4StaticGameLODLevel@@@Z evidence=N:ledger
 LODPresetInfo *GameLODManager::newLODPreset(StaticGameLODLevel index) { if (m_numLevelPresets[index] < 32) return &m_lodPresets[index][(++m_numLevelPresets[index])-1]; return 0; }
 

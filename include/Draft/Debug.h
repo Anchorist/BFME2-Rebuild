@@ -1,6 +1,0 @@
-// Debug was promoted to include/debug/Debug.h. This forward keeps headers and units
-// written against the draft path compiling while they are queued; include the
-// promoted header in new code, and remove this file only once nothing on main
-// or in flight includes it.
-#pragma once
-#include "debug/Debug.h"

@@ -1,9 +1,9 @@
-// Promoted from Draft by f03 (AutoHealBehavior's helpers read these fields).
+// AutoHealBehavior's helpers read these fields.
 // AutoHealBehaviorModuleData.h: the INI data of AutoHealBehavior. SIZE 0x160.
 // Target facts: ModuleFactory registers the module with operator new 0x160 and
 // constructor RVA 0x00254DE7; buildFieldParse RVA 0x00256929 adds VA 0x00BF3CE0 at +0x0 and UpgradeMuxData at +0x8.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_AUTO_HEAL_BEHAVIOR_MODULE_DATA_H

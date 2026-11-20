@@ -1,6 +1,5 @@
 // cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS
 // stlport46
-#include "Draft/AptOnline/OnlineQuickMatch.h"
 #include "GameNetwork/GameSpy/PeerThread.h"
 #include "GameClient/AptOnlineShell.h"
 #include "GameClient/AptOnlineQuickMatch.h"
@@ -29,16 +28,21 @@ int Rva005BA33EGet(void)
 	return g_Va00E06550;
 }
 
+inline AptOnlineShell *AptOnline::OnlineQuickMatch::getShell() const
+{
+	return static_cast<AptOnlineShell *>(m_screen);
+}
+
 // FUNCTION: BFME2 0x005BA344 size=7 name=?StartSimple@OnlineQuickMatch@AptOnline@@QAEXPBD@Z evidence=N:ledger tier=B hypothesis:K
 void AptOnline::OnlineQuickMatch::StartSimple(const char *)
 {
-	m_x79 = true;
+	m_playRequested = true;
 }
 
 // FUNCTION: BFME2 0x005BA34B size=14 name=?PlayGame@OnlineQuickMatch@AptOnline@@QAEXPBD@Z evidence=N:ledger tier=B hypothesis:K
 void AptOnline::OnlineQuickMatch::PlayGame(const char *)
 {
-	m_x79 = true;
+	m_playRequested = true;
 	m_state = 1;
 }
 
@@ -46,8 +50,8 @@ void AptOnline::OnlineQuickMatch::PlayGame(const char *)
 void AptOnline::OnlineQuickMatch::OnFoundMovieDone(const char *)
 {
 	m_state = 2;
-	if (m_x7A)
-		m_x7A = false;
+	if (m_foundMoviePlaying)
+		m_foundMoviePlaying = false;
 }
 
 // FUNCTION: BFME2 0x005BA36D size=50 name=?rva005BA36D@AptOnlineQuickMatch@@QAEPAVRva0054D8D8@@XZ evidence=?:placeholder tier=B hypothesis:K
@@ -82,7 +86,7 @@ void __stdcall rva005ba587(unsigned int, UnicodeString)
 // FUNCTION: BFME2 0x005BA593 size=142 name=??1OnlineQuickMatch@AptOnline@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x005BA626 size=200 name=?rva005BA626@Rva005BA626@@QAE_NXZ evidence=?:placeholder tier=A
-bool AptOnlineQuickMatch::rva005BA626()
+bool AptOnline::OnlineQuickMatch::rva005BA626()
 {
 	if (m_playersCombo == 0)
 		return false;
@@ -102,7 +106,7 @@ bool AptOnlineQuickMatch::rva005BA626()
 }
 
 // FUNCTION: BFME2 0x005BA6EE size=277 name=?rva005BA6EE@Rva005BA6EE@@QAE_NXZ evidence=?:placeholder tier=A
-bool AptOnlineQuickMatch::rva005BA6EE()
+bool AptOnline::OnlineQuickMatch::rva005BA6EE()
 {
 	if (m_pingCombo == 0)
 		return false;
@@ -149,13 +153,13 @@ void AptOnline::OnlineQuickMatch::Cancel(const char *)
 	request.peerRequestType = 0x12;
 	TheGameSpyPeerMessageQueue->addRequest(request);
 	m_state = 0;
-	m_shell->joinPreferredRoom();
+	getShell()->joinPreferredRoom();
 }
 
 // FUNCTION: BFME2 0x005BAB7E size=844 name=??0OnlineQuickMatch@AptOnline@@QAE@PAV1@@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x005BAECA size=107 name=?rva005BAECA@OnlineQuickMatch@AptOnline@@QAEHHHEH@Z evidence=?:placeholder tier=A
-int AptOnline::OnlineQuickMatch::onKeyInput(int, int message, unsigned char key, int flags)
+int AptOnline::OnlineQuickMatch::rva005A6582(int, int message, unsigned char key, int flags)
 {
 	if (message == 0x15)
 	{
@@ -166,7 +170,7 @@ int AptOnline::OnlineQuickMatch::onKeyInput(int, int message, unsigned char key,
 			{
 				if (m_state == 1)
 				{
-					((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_shell->m_callbackOwner, "CallChild", 1, "EscapeKeyPressed", 0, 0, 0, 0);
+					((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(getShell()->m_callbackOwner, "CallChild", 1, "EscapeKeyPressed", 0, 0, 0, 0);
 					Cancel(0);
 					return 1;
 				}
@@ -194,14 +198,14 @@ int AptOnline::OnlineQuickMatch::onKeyInput(int, int message, unsigned char key,
 // FUNCTION: BFME2 0x005BBF15 size=1375 name=?rva005BBF15@AptOnlineQuickMatch@@QAEXXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x005BC474 size=33 name=?Run@Rva005BC474Box@@QAEXXZ evidence=?:placeholder tier=A
-void AptOnline::OnlineQuickMatch::Run()
+void AptOnline::OnlineQuickMatch::Update()
 {
-	if (!m_x78)
+	if (!m_preferencesReady)
 		rva005BB5CE();
-	if (m_x79)
+	if (m_playRequested)
 	{
 		rva005BBF15();
-		m_x79 = false;
+		m_playRequested = false;
 	}
 }
 

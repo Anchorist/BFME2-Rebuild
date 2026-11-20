@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0xD8 and
 // constructor RVA 0x00490DDB; buildFieldParse RVA 0x0024D655 calls SpecialAbilityUpdateModuleData::buildFieldParse, then adds VA 0x00BEEED0 at +0x0.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_MODEL_CONDITION_SPECIAL_ABILITY_UPDATE_MODULE_DATA_H

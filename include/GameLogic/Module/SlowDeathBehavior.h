@@ -1,6 +1,6 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 // SlowDeathBehavior.h: the SlowDeathBehavior module. SIZE 0x50 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x0045D4B4 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x0045D4B4 calls UpdateModule first; it stores the
 // tables 0x00C1C780 at +0x20, 0x00C4EF80 at +0x24, 0x00C42040 at +0x0, 0x00C42DA8 at +0xC, 0x00C42034 at +0x10, 0x00C42030 at +0x20, 0x00C42020 at +0x24. Members are what xfer (0x0045D3CB) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -103,8 +103,8 @@ public:
 	virtual void beginSlowDeath(const DamageInfo *damageInfo);	// override: beginSlowDeath slot 0 at +0x24 (0x0045DE65)
 	virtual Int getProbabilityModifier(const DamageInfo *damageInfo) const;	// override: getProbabilityModifier slot 1 at +0x24 (0x0045D5DA)
 	virtual Bool isDieApplicable(const DamageInfo *damageInfo) const;	// override: isDieApplicable slot 2 at +0x24 (0x0045D49E)
-	virtual Bool vslot03() const { return true; }	// override: slot 3 at +0x24 is the shared `mov al,1; ret` 0x0050B5C6 (f08)
-	virtual DisabledMaskType getDisabledTypesToProcess() const;	// override: update slot 1 at +0x10 (retail 0x004DF396, returns DISABLEDMASK_ALL) (f08)
+	virtual Bool vslot03() const { return true; }	// override: slot 3 at +0x24 is the shared `mov al,1; ret` 0x0050B5C6
+	virtual DisabledMaskType getDisabledTypesToProcess() const;	// override: update slot 1 at +0x10 (retail 0x004DF396, returns DISABLEDMASK_ALL)
 
 protected:
 	virtual const char *GetSnapshotName() const;
@@ -123,7 +123,7 @@ public:
 	Bool m_unk0x48;                                // +0x48; xfer Bool
 	UnsignedInt m_unk0x4C;                         // +0x4C; xfer UnsignedInt
 protected:
-	virtual void loadPostProcess();	// retail slot 0x00497805: the UpdateModule forward, out of line (ShipSlowDeathBehavior's calls it) (h05, gen3 vtable-content list)
+	virtual void loadPostProcess();	// retail slot 0x00497805: the UpdateModule forward, out of line (ShipSlowDeathBehavior's calls it)
 };
 // SIZE 0x50
 typedef char SlowDeathBehavior_size[(sizeof(SlowDeathBehavior) == 0x50) ? 1 : -1];

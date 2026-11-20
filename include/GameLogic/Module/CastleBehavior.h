@@ -52,6 +52,9 @@ public:
 	// Snapshot slot 1 at 0x003956E8 also removes the owner from the pathfinder when the castle state at +0x34 is nonzero.
 	virtual void loadPostProcess();
 
+	void registerOwnedObject(Object *object);
+	static NameKeyType rva0003955DA();
+
 	void playEvaEventsForCastlePacking();
 	Bool checkForAutoPack();
 	Object *buildCastleStructure(BuildListInfo *info, Bool flag);
@@ -63,7 +66,7 @@ public:
 	Bool rva003977F6(ObjectTypes *types);		// 0x003977F6: does any owned or packed object's template belong to the list
 	void rva0039792B();						// 0x0039792B: adds the owned and packed objects to the pathfinder map
 
-	Int m_34;									// 0x34
+	Int m_castleState;									// Castle registration assigns this state and post-load pathfinding tests it.
 	Int m_38;									// 0x38
 	Bool m_3C;									// 0x3C
 	Bool m_3D;									// 0x3D

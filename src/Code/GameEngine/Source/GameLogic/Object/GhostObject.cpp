@@ -6,7 +6,7 @@
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:Z, hypothesis:cohesion, hypothesis:name:Z
 #include "Common/Xfer.h"
-#include "Draft/GhostObject.h"
+#include "GameLogic/GhostObject.h"
 #include "GameLogic/GhostObjectManager.h"
 // FUNCTION: BFME2 0x00305927 size=4 name=?vslot00@GhostObject@@UBEPBXXZ evidence=N:ledger tier=B hypothesis:name:Z
 
@@ -44,8 +44,8 @@ void GhostObjectManager::xfer(Xfer *xfer)
 
 // FUNCTION: BFME2 0x00305A8F size=161 name=??0GhostObject@@QAE@XZ evidence=N:ledger tier=B hypothesis:K
 
-// FUNCTION: BFME2 0x00305B30 size=6 name=?name@GhostObject@@QBEPBDXZ evidence=N:ledger tier=B hypothesis:K
-const char *GhostObject::name() const
+// FUNCTION: BFME2 0x00305B30 size=6 name=?GetSnapshotName@GhostObject@@MBEPBDXZ evidence=N:ledger tier=B hypothesis:K
+const char *GhostObject::GetSnapshotName() const
 {
 	return "GhostObject";
 }

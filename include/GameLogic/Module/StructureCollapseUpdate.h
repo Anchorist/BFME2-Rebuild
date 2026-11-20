@@ -1,5 +1,5 @@
 // StructureCollapseUpdate.h: the update module that makes a destroyed structure shudder, sink and burst apart.
-// SIZE 0x44 (ModuleFactory operator new). Promoted out of Draft.
+// SIZE 0x44 (ModuleFactory operator new).
 // Layout is Zero Hour's: class StructureCollapseUpdate : public UpdateModule, public DieModuleInterface.
 // Target facts (retail game.dat):
 // - Ctor 0x004A42E4 calls UpdateModule's, stores the tables 0x00C52648 at +0, 0x00C5263C at +0x10 (update interface)

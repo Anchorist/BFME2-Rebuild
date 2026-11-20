@@ -15,6 +15,7 @@
 #include "GameLogic/GameLogic.h"
 #include "GameLogic/Object.h"
 #include "GameLogic/Damage.h"
+#include "GameLogic/AIGroup.h"
 #include "Common/ThingTemplate.h"
 #include "GameLogic/Module/AIUpdate.h"
 #include "GameLogic/ObjectFilter.h"
@@ -1115,6 +1116,28 @@ void TeamPrototype::rva003A0CD1()
 // FUNCTION: BFME2 0x003A0E6E size=244 name=?evaluateProductionCondition@TeamPrototype@@QAE_NXZ evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x003A0F62 size=112 name=?getTeamAsAIGroup@Team@@QAEXPAVAIGroup@@@Z evidence=N:ledger tier=A
+void Team::getTeamAsAIGroup(AIGroup *pAIGroup)
+{
+	if (pAIGroup == NULL)
+		return;
+
+	// Horde-spawned members and members still under construction are not commanded as part of the team.
+	for (DLINK_ITERATOR<Object> iter = iterate_TeamMemberList(); !iter.done(); iter.advance())
+	{
+		Object *member = iter.cur();
+		if (member->isProducedByHorde())
+			continue;
+		if (member->testStatus(OBJECT_STATUS_UNDER_CONSTRUCTION))
+			continue;
+		if (member->getProducerID() != 0)
+		{
+			Object *producer = TheGameLogic->findObjectByID(member->getProducerID());
+			if (producer != NULL && producer->getTemplate()->isKindOf(KINDOF_HORDE))
+				continue;
+		}
+		pAIGroup->add(member);
+	}
+}
 
 // FUNCTION: BFME2 0x003A0FD2 size=137 name=?getRelationship@Team@@QBE?AW4Relationship@@PBV1@@Z evidence=N:ledger tier=A
 Relationship Team::getRelationship(const Team *that) const

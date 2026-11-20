@@ -124,7 +124,7 @@ public:
 	Bool m_disableTrees;                                   // +0xEC DisableTrees
 	Real m_artilleryMaxFriendlyFire;                       // +0xF0 ArtilleryMaxFriendlyFire; percent
 	unsigned char m_unk0xF4[8];
-	AIAttackPrioritySet *m_attackPrioritySets;			// +0xFC head of the attack-priority sets of the AttackPriority INI block (ScriptEngine::getAttackInfo 0x00205DDD walks it; decl_queue f02, ACCEPTED k11)
+	AIAttackPrioritySet *m_attackPrioritySets;			// +0xFC head of the attack-priority sets of the AttackPriority INI block (ScriptEngine::getAttackInfo 0x00205DDD walks it)
 	TAiData *m_next;                                      // +0x100, the override chain AI::reset 0x002FEB3A unwinds
 	Int m_buildPhase1PerSecondPriorityModifier;            // +0x104 BuildPhase1_PerSecondPriorityModifier
 	Int m_buildPhase2PerSecondPriorityModifier;            // +0x108 BuildPhase2_PerSecondPriorityModifier
@@ -159,7 +159,7 @@ public:
 	Object *findClosestAlly(const Object *me, Real range, UnsignedInt flags);	// 0x002FDBC4
 	Object *findClosestRepulsor(const Object *me, Real range);	// 0x002FDC9A
 	static Real getAdjustedVisionRangeForObject(const Object *obj, Int flags);	// 0x002FDD0A
-	static Bool isTargetInWeaponRange(Object *source, Object *target);	// 0x002FE193 (map ?rva002FE193@AI@@SA_NPAVObject@@0@Z, ?:placeholder; AIGuardOuterState::onEnter 0x005439F2; decl_queue f04 18:03, ACCEPTED k11)
+	static Bool isTargetInWeaponRange(Object *source, Object *target);	// 0x002FE193 (map ?rva002FE193@AI@@SA_NPAVObject@@0@Z, ?:placeholder; AIGuardOuterState::onEnter 0x005439F2)
 
 	UnsignedInt getNextGroupID() { return ++m_nextGroupID; }	// inline (AIGroup::AIGroup 0x0036E4C7)
 	Pathfinder *pathfinder() { return m_pathfinder; }

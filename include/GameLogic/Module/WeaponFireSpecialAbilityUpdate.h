@@ -1,5 +1,5 @@
 // WeaponFireSpecialAbilityUpdate.h: a special ability that fires a dedicated weapon.
-// Target facts (old repo Code/GameEngine/Source/GameLogic/Object/Update/WeaponFireSpecialAbilityUpdate.cpp):
+// Target facts:
 //  - module data extends SpecialAbilityUpdateModuleData (0xC8): SpecialWeapon name
 //    +0xC8, WhichSpecialWeapon +0xCC, SkipContinue +0xD0, BusyForDuration +0xD4,
 //    NeedLivingTargets +0xD8, PlayWeaponPreFireFX +0xD9;
@@ -54,7 +54,7 @@ protected:
 
 	Weapon *m_weapon;		// 0x88
 protected:
-	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's 0x00497805 (h05 r13)
+	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's 0x00497805
 };
 // SIZE 0x8C
 

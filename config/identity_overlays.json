@@ -7,19 +7,90 @@
     "ledger-fold-member"
   ],
   "rounds": {
+    "requests": {
+      "PModuleDataTypedNullPair.csv": {
+        "changes": 3,
+        "refused": 0,
+        "held": 0
+      },
+      "PClearanceSelectorPair3Keys.csv": {
+        "changes": 3,
+        "refused": 0,
+        "held": 0
+      },
+      "PHordeFormationAmoebaPolicyPair.csv": {
+        "changes": 2,
+        "refused": 0,
+        "held": 0
+      },
+      "PHordeSwarmSharedBaseMemberFlag.csv": {
+        "changes": 4,
+        "refused": 0,
+        "held": 0
+      },
+      "PDozerTypedCallViewPairAdditive.csv": {
+        "changes": 2,
+        "refused": 0,
+        "held": 0
+      },
+      "PProductionSnapshotNamePair.csv": {
+        "changes": 1,
+        "refused": 0,
+        "held": 0
+      },
+      "PProductionSpeedApplyPair.csv": {
+        "changes": 1,
+        "refused": 0,
+        "held": 0
+      },
+      "PRender2DSentenceLifetimeKeys.csv": {
+        "changes": 4,
+        "refused": 0,
+        "held": 0
+      },
+      "PDrawModuleBaseTable.csv": {
+        "changes": 1,
+        "refused": 0,
+        "held": 0
+      },
+      "PAptCampaignReviewSystemKey.csv": {
+        "changes": 1,
+        "refused": 0,
+        "held": 0
+      },
+      "PAptCampaignReviewFactoryPair.csv": {
+        "changes": 2,
+        "refused": 0,
+        "held": 0
+      },
+      "PGarrisonSlaughterSlot29Pair.csv": {
+        "changes": 2,
+        "refused": 0,
+        "held": 0
+      },
+      "PAptPlayerCanonicalLayoutPair.csv": {
+        "changes": 3,
+        "refused": 0,
+        "held": 0
+      }
+    },
     "dataR": {
       "parts": [
         {
-          "added": 1,
+          "added": 2,
           "already": 0,
           "refused": 0
         }
       ],
       "legacy_keys_retired": 0
     },
-    "labels": {}
+    "labels": {
+      "name_evidence": 14,
+      "why": 2,
+      "evidence": 1
+    }
   },
-  "step_changes": 1,
+  "step_changes": 2,
   "changes": [
     {
       "rva": "0x0009FD78",
@@ -122325,6 +122396,1217 @@
       "confidence": "proven",
       "basis": "rebuilt evidence",
       "evidence": "rebuilt evidence (One actual four-byte definition and two independent native same-position typed COFF references): Authenticated MessageStream.cpp COFF SHA 167b972674079821474dab806df22ad7906312104f16d788c043ae5db0b65df0 emits the single typed external in .bss at section 3 +4. An existing non-proven"
+    },
+    {
+      "rva": "0x007BB554",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7Snapshot@@6B@",
+      "source": "snapshot-table-007bb554",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Actual lifetimes landed f38d80269d. Authenticated 1c8f057e5f3af91f7e3c41b6e3cafc244b38f64b COFF beea667add6962d62ae9643b4c9184fd47ae45c5a9287a15b76c659318468222. Native 0x63904 restores the four-cell shared Snapshot base. The exact +0x40 COFF reference selects that base. It contains the Snapshot del"
+    },
+    {
+      "rva": "0x0047A699",
+      "kind": "alias",
+      "old": "",
+      "name": "?slot08@ModuleData@@UBE_NXZ",
+      "source": "production-speed-module-slot08",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native ProductionSpeedBonus data ctor 0x4C2FE6 stores table 0x85CA80. Slot 8 operand 0x85CAA0 targets exact 33 C0 C3 body 0x47A699. Emitted table in authenticated exact 98-byte 64bc505022 source comparison has the typed ModuleData slot08. See and r5_produ"
+    },
+    {
+      "rva": "0x00153565",
+      "kind": "alias",
+      "old": "",
+      "name": "?Register_FX_Shader_Parameter_Source@@YAXPBDPAVFXShaderParameterSourceNamespace@@@Z",
+      "source": "review",
+      "confidence": "provisional",
+      "basis": "fold-alias",
+      "evidence": "Exact 154 body writes native name[64] via actual direct CRT _mbscpy then the namespace pointer at +0x40 and registers the record. Exact emitted section on 1408875707."
+    },
+    {
+      "rva": "0x001532E1",
+      "kind": "alias",
+      "old": "",
+      "name": "?Unregister_FX_Shader_Parameter_Source@@YAXPBD@Z",
+      "source": "review",
+      "confidence": "provisional",
+      "basis": "fold-alias",
+      "evidence": "Exact 63-byte body joins typed callers and native _strcmpi IAT, and removes the same record via 0x153223. Exact emitted section on 1408875707."
+    },
+    {
+      "rva": "0x000910FB",
+      "kind": "alias",
+      "old": "",
+      "name": "?Get_LOD_Count@RenderObjClass@@UBEHXZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native slot 81 at 0x7C6038, 0x7C7850, 0x7D35A8 and 0x7D26E0 selects 0x910FB. Two authenticated ec4604d910 COFF sections from W3DDynamicLight and W3DStatusCircle emit the exact 4-byte 33 C0 40 C3 body with no relocations. Object SHA and symbol locations in"
+    },
+    {
+      "rva": "0x007C650C",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7RefCountClass@@6B@",
+      "source": "hanim-table-007c650c",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "RefCountClass lifetime 0x72882/0x72892/0x72899 uses the same cells 0x6CE57 and 0x72899. Native HAnim dtor final base store at 0x196160 matches own COFF section 34 DIR32. Authenticated 6c5e26b555 COFF 857c7ed13dbfe5aa1469770f9be6a3a78ed67e882db84d41ffd97d9a52741b6c"
+    },
+    {
+      "rva": "0x007D5CB8",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7HAnimClass@@6BRefCountClass@@@",
+      "source": "hanim-table-007d5cb8",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Native HAnimClass constructor 0x18D170 installs primary at +0; existing typed candidate extents independently show 23 entries up to next vtable 0x7D5D14. Slot 1 selects 0x18D1C0 exact scalar keeper, slot0 inherited 0x6CE57. Authenticated 6c5e26b555 COFF 857c7ed13dbfe5aa1469770f9be6a3a78ed67e882db84d"
+    },
+    {
+      "rva": "0x007D5CAC",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7HAnimClass@@6BHashableClass@@@",
+      "source": "hanim-table-007d5cac",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Native ctor and dtor differentiates base +8 pointer stored in 0x18D170/0x196150. Exact two slots adjustor 0x18E730 and 0x18D1A0, terminated by native zero dword at 0x7D5CB4. Authenticated 6c5e26b555 COFF 857c7ed13dbfe5aa1469770f9be6a3a78ed67e882db84d41ffd97d9a52741b6c"
+    },
+    {
+      "rva": "0x007D4628",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7?$VectorClass@PAVVertexMaterialClass@@@@6B@",
+      "source": "material-vector-007d4628",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Exact 411d0bdedd COFF 87011be3938b8400122a3ef4fc8949bab1db71408c0008bfb9f50557df78e799. 0x1701A8 dtor restores at +8, COFF section 84. Native cells 16FAA0/196920/1A3720/154A30/1964F0/154BE0."
+    },
+    {
+      "rva": "0x007D4640",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7?$VectorClass@VTextureAsset@@@@6B@",
+      "source": "material-vector-007d4640",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Exact 411d0bdedd COFF 87011be3938b8400122a3ef4fc8949bab1db71408c0008bfb9f50557df78e799. 0x16ED80+0x23 and 0x17016D install, COFF section 96. Native cells 16FF50/196920/16F710/16F8B0/1964F0/154BE0."
+    },
+    {
+      "rva": "0x007D4658",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7?$DynamicVectorClass@PAVVertexMaterialClass@@@@6B@",
+      "source": "material-vector-007d4658",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Exact 411d0bdedd COFF 87011be3938b8400122a3ef4fc8949bab1db71408c0008bfb9f50557df78e799. 0x1708D0+0x3F installs at +8, COFF section 175. Native cells 16FF30/196920/121380/16FED0/1969C0/154BE0."
+    },
+    {
+      "rva": "0x007D4688",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7?$DynamicVectorClass@VTextureAsset@@@@6B@",
+      "source": "material-vector-007d4688",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Exact 411d0bdedd COFF 87011be3938b8400122a3ef4fc8949bab1db71408c0008bfb9f50557df78e799. 0x1708D0+0x67 installs at +0x20, COFF section 212. Native cells 1708B0/196920/16FE30/16FE60/1969C0/154BE0."
+    },
+    {
+      "rva": "0x0016ED80",
+      "kind": "alias",
+      "old": "",
+      "name": "??0?$VectorClass@VTextureAsset@@@@QAE@HPBVTextureAsset@@@Z",
+      "source": "material-vector-0016ed80",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact 411d0bdedd COFF 87011be3938b8400122a3ef4fc8949bab1db71408c0008bfb9f50557df78e799. Exact 191-byte native/compiled constructor. Same-position call in native 132-byte MaterialInfo constructor at +0x5B chooses this body."
+    },
+    {
+      "rva": "0x007EFCF8",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7UntamedAllegianceSpecialPower@@6BBehaviorModuleInterface@@@",
+      "source": "untamed-secondary-table",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "P15 5c44090d3a Boat ctor/dtor both MATCH and unproven solely on this symbol. Native ctor store at 0x4C7B1C and dtor at 0x4C7B3C both set +0xC to VA 0xBEFCF8. Authenticated COFF sections 8, symbol 55/53, exact 0xBC bytes and 47 DIR32s. Ctor compiled +0x19 and dtor +0x09 point here. Native slot 47 sta"
+    },
+    {
+      "rva": "0x002533D3",
+      "kind": "alias",
+      "old": "",
+      "name": "?getSpecialPower@SpecialPowerModule@@UAEPAVSpecialPowerModuleInterface@@XZ",
+      "source": "untamed-slot8-get-special-power",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "P15 native Behavior subobject 0x7EFCF8[8] is 0x2533D3; two independent lifetime COFFs relocate exact slot +0x20 to the same typed inline SpecialPowerModule member. Ctor COFF COMDAT section symbol index 319 emits the exact 13 bytes. See r5_untamed_get_special_power.diff and r5_untamed_behavior_table."
+    },
+    {
+      "rva": "0x00588D24",
+      "kind": "alias",
+      "old": "",
+      "name": "?regatherUnit@ExitState@HordeGarrisonContain@@QAE_NPAV2@PAVObject@@@Z",
+      "source": "garrison-regather-worker",
+      "confidence": "provisional",
+      "basis": "fold-alias",
+      "evidence": "Source main 34e979300c. Exact 117-byte COFF SHA-256 9c94b84cb33f9f111444b59724dda10db8752ba1d8832b33b5fb03043cece03e. Native garrison 0x479ADA passes object+0x9E0 as receiver and two real Object/HordeGarrisonContain pointer arguments. The worker calls horde slot 8 regather and writes the native Cont"
+    },
+    {
+      "rva": "0x0036AE51",
+      "kind": "alias",
+      "old": "",
+      "name": "?toList@ContainmentListView@@QAE?AV?$list@PAVObject@@V?$allocator@PAVObject@@@_STL@@@_STL@@XZ",
+      "source": "rider10-36AE51",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "The native RiderChange slot10 body calls this 40-byte helper at +0x25. Boat emits the exact named source body and its object pointer list copy and empty-list operands match 0x36ADF9 and 0xA0362C."
+    },
+    {
+      "rva": "0x0047EA58",
+      "kind": "alias",
+      "old": "",
+      "name": "?containSlot10@RiderChangeContain@@UAEPAVObject@@XZ",
+      "source": "rider10-47EA58",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native RiderChange own +0x20 contain table slot 10 selects this body. Normal unit EH profile gives the exact 100 bytes and the three nested helper addresses match physically."
+    },
+    {
+      "rva": "0x00479BDD",
+      "kind": "rename",
+      "old": "?rva004632E0@HordeGarrisonContain@@UAEXPAVObject@@@Z",
+      "name": "?getClosestRider@HordeGarrisonContain@@UAEPAVObject@@PBVCoord3D@@@Z",
+      "source": "garrison-closest-rider-slot61",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Source 119ad26eb5..bbb8a22737. Native HordeGarrison and Production Contain slot 61 override the base getClosestRider. Exact 22-byte forwarding body passes this+0x9E0 and the original container/Coord3D to 0x588C4E."
+    },
+    {
+      "rva": "0x00479F29",
+      "kind": "rename",
+      "old": "?rva004626CA@HordeGarrisonContain@@UAEPBVCoord3D@@XZ",
+      "name": "?containSlot86@HordeGarrisonContain@@UAEPBVCoord3D@@XZ",
+      "source": "garrison-offset-479f29",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Current authenticated 2aa4bff535 Boat COFF and per-body native differences in slot 86, +0xBC entry position, named Coord3D local native VA E036B8 and guard E036C4, _atexit 0x6291F8, exit node 0x7B85E0."
+    },
+    {
+      "rva": "0x00479F62",
+      "kind": "rename",
+      "old": "?rva004626AF@HordeGarrisonContain@@UAEPBVCoord3D@@XZ",
+      "name": "?containSlot87@HordeGarrisonContain@@UAEPBVCoord3D@@XZ",
+      "source": "garrison-offset-479f62",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Current authenticated 2aa4bff535 Boat COFF and per-body native differences in slot 87, +0xB0 entry offset, local VA E036C8 and guard E036D4, same _atexit, exit node 0x7B85E1."
+    },
+    {
+      "rva": "0x00479F9B",
+      "kind": "rename",
+      "old": "?rva00464829@HordeGarrisonContain@@UAEPBVCoord3D@@XZ",
+      "name": "?containSlot88@HordeGarrisonContain@@UBEPBVCoord3D@@XZ",
+      "source": "garrison-offset-479f9b",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Current authenticated 2aa4bff535 Boat COFF and per-body native differences in const slot 88, +0xC8 exit offset, local VA E036D8 and guard E036E4, same _atexit, exit node 0x7B85E2. Both Production lifetime objects stop at this table cell after the slot61 pair."
+    },
+    {
+      "rva": "0x00588C4E",
+      "kind": "rename",
+      "old": "?rva00588C4E@Rva0047A040Base9E0@@QAEPAVObject@@PAXPBVCoord3D@@@Z",
+      "name": "?getClosestRider@ExitState@HordeGarrisonContain@@QAEPAVObject@@PAV2@PBVCoord3D@@@Z",
+      "source": "garrison-closest-rider-worker",
+      "confidence": "provisional",
+      "basis": "rename",
+      "evidence": "Source 119ad26eb5..bbb8a22737. Authenticated Boat output 214/214. The native contained list, Horde member list and visibility check filter candidates before the minimum squared XY distance. The only instruction diffs are FLT_MAX and the exact Drawable calls."
+    },
+    {
+      "rva": "0x00479C35",
+      "kind": "rename",
+      "old": "?rva00479C35@HordeGarrisonContain@@QAEXPAVCoord3D@@0@Z",
+      "name": "?transformGarrisonOffset@HordeGarrisonContain@@IBEXPBVCoord3D@@PAV2@@Z",
+      "source": "garrison-offset-479c35",
+      "confidence": "provisional",
+      "basis": "rename",
+      "evidence": "Current authenticated 2aa4bff535 Boat COFF and per-body native differences in exact 164 bytes, helper called from 0x479F29/62/9B with configured entry and exit offsets. Native input operands and result align with Move/Coord3D adjustments. Preserve the reconstructed"
+    },
+    {
+      "rva": "0x00843528",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7ProductionQueueHordeContain@@6BBehaviorModuleInterface@@@",
+      "source": "production-behavior-table",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Native lifetime stores 0x481359 and 0x481236 at receiver +0xC. Exact COFF f97ed78fa1e8b8296f2892879b20cd4b510162979632862c3fb10e850d413c7b section 39, 47 DIR32 cells in ."
+    },
+    {
+      "rva": "0x00846560",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7ProductionQueueHordeContain@@6BUpdateModule@@@",
+      "source": "production-update-table",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Native lifetime stores 0x481360 and 0x48123D at receiver +0x10. Exact COFF f97ed78fa1e8b8296f2892879b20cd4b510162979632862c3fb10e850d413c7b section 38, three DIR32 cells in ."
+    },
+    {
+      "rva": "0x00479BC5",
+      "kind": "alias",
+      "old": "",
+      "name": "?getObjectGarrisonPointIndex@HordeGarrisonContain@@UAEHW4ObjectID@@@Z",
+      "source": "garrison-primary-index27",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Actual P17 source keeper with b2fcfaabb8. Native primary slot 27 selects the five-byte JMP to 0x479292. Exact authenticated source COFF DISP32 at +1 names GarrisonContain's own getObjectGarrisonPointIndex. See and ."
+    },
+    {
+      "rva": "0x00479FD4",
+      "kind": "alias",
+      "old": "",
+      "name": "?garrisonSlot28@HordeGarrisonContain@@UAE_NPAVObject@@@Z",
+      "source": "garrison-primary-slot28",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Ordinary b2fcfaabb8 source and authenticated exact 81-byte body under native primary slot 28. Native 0x4E536, two 0x28AFA9 calls, receiver +0x20 and count/size slots at +0x114/+0x70 witness the table identity. See"
+    },
+    {
+      "rva": "0x000768FE",
+      "kind": "alias",
+      "old": "",
+      "name": "?Get_Transform@DX8Wrapper@@SAXW4_D3DTRANSFORMSTATETYPE@@AAVMatrix4@@@Z",
+      "source": "dx8-get-transform-sdk",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact d0c649c971 source uses SDK enum also used by Set_Transform. Authenticated COFF 19a619f559b9e89f612bbba2ed24db3781188b2c1d3a086b5de1c2deef274a5b emits 790-byte native body and exact state/projection argument layout."
+    },
+    {
+      "rva": "0x00305B30",
+      "kind": "alias",
+      "old": "",
+      "name": "?GetSnapshotName@GhostObject@@MBEPBDXZ",
+      "source": "ghost-snapshot-name",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native GhostObject ctor 0x305AD4 installs table 0x80793C. Its +8 Snapshot slot-2 cell 0x807944 selects the six-byte const name getter 0x305B30. Native XferSave::operator==(Snapshot &) uses that slot and takes no extra argument. The retained donor string and byte-identical compiled function are docum"
+    },
+    {
+      "rva": "0x00807D2C",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7BuffLogic@@6BSnapshot@@@",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Native 0x3067B1 installs at +0. Authenticated source table has outer class BuffLogic and four Snapshot cells."
+    },
+    {
+      "rva": "0x00807D3C",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7BuffLogic@@6BSubsystemInterface@@@",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Native 0x3067AB installs at +4 and restores in destructor 0x3067EC. Authenticated table has 14 cells."
+    },
+    {
+      "rva": "0x003067C4",
+      "kind": "rename",
+      "old": "?GetSnapshotName@GODupBase@@MBEPBDXZ",
+      "name": "?GetSnapshotName@BuffLogic@@MBEPBDXZ",
+      "source": "buff-snapshot-name",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Six emitted bytes, native Snapshot table 0x807D2C slot 2, literal BuffLogic. 0x647B8 constructs the same base in W3DBuffLogic."
+    },
+    {
+      "rva": "0x003067D2",
+      "kind": "rename",
+      "old": "??1GODupBase@@UAE@XZ",
+      "name": "??1BuffLogic@@UAE@XZ",
+      "source": "buff-base-dtor",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact 60-byte ordinary destructor. Native restores both BuffLogic tables then the Snapshot table."
+    },
+    {
+      "rva": "0x0030680E",
+      "kind": "rename",
+      "old": "??_GGODupBase@@UAEPAXI@Z",
+      "name": "??_GBuffLogic@@UAEPAXI@Z",
+      "source": "buff-base-deleting",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Authenticated 28-byte scalar COFF table target, native slot 0 at 0x807D2C. Keep the existing keeper."
+    },
+    {
+      "rva": "0x003067CA",
+      "kind": "rename",
+      "old": "??_EGODupBase@@W3AEPAXI@Z",
+      "name": "??_EBuffLogic@@W3AEPAXI@Z",
+      "source": "buff-base-secondary",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native 83 E9 04 E9 thunk at the SubsystemInterface table 0x807D3C slot 0 dispatches to 0x30680E."
+    },
+    {
+      "rva": "0x00779B3E",
+      "kind": "rename",
+      "old": "__ehhandler$??1GODupBase@@UAE@XZ",
+      "name": "__ehhandler$??1BuffLogic@@UAE@XZ",
+      "source": "buff-base-handler",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native BuffLogic dtor 0x3067D2 names VA 0xB79B3E. The emitted new handler is bound to the same destructor. Preserve other accepted parent spellings."
+    },
+    {
+      "rva": "0x00341E2D",
+      "kind": "rename",
+      "old": "?xfer@AIGoingIdleState@@MAEXPAVXfer@@@Z",
+      "name": "?xfer@BuffLogic@@MAEXPAVXfer@@@Z",
+      "source": "buff-base-xfer",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native BuffLogic Snapshot slot 3 at 0x807D38 selects exactly this folded 27-byte version helper. Keep AIGoingIdleState as owner."
+    },
+    {
+      "rva": "0x00362518",
+      "kind": "rename",
+      "old": "?MakeNormalBuff@BuffInstance@@QAE_NHHPAX0H@Z",
+      "name": "?MakeNormalBuff@BuffInstance@@QAE_NHHPBVThingTemplate@@PAVDrawable@@H@Z",
+      "source": "buff-make-normal",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Existing 171-byte body is byte-equal under the emitted typed key. Its ThingTemplate and Drawable call evidence is at 0x362561."
+    },
+    {
+      "rva": "0x003625C3",
+      "kind": "rename",
+      "old": "?MakeGlowOutlineBuff@BuffInstance@@QAE_NHHPAXHHM@Z",
+      "name": "?MakeGlowOutlineBuff@BuffInstance@@QAE_NHHPAVDrawable@@HHM@Z",
+      "source": "buff-make-outline",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Existing 70-byte body is byte-equal under the emitted typed key. Its call passes the same BuffManager +4 Drawable."
+    },
+    {
+      "rva": "0x00362702",
+      "kind": "rename",
+      "old": "?DoXfer@BuffManager@@MAEXPAVXfer@@@Z",
+      "name": "?xfer@BuffManager@@MAEXPAVXfer@@@Z",
+      "source": "buff-manager-xfer",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact 109-byte inherited Snapshot override. Native 0x817088 slot 3 selects it. Writes and clears the +4 Drawable in the xfer scratch cell."
+    },
+    {
+      "rva": "0x003627F9",
+      "kind": "rename",
+      "old": "?TurnOnBuff@BuffManager@@QAEXHPAXHHM@Z",
+      "name": "?TurnOnBuff@BuffManager@@QAEXHPBVThingTemplate@@HHM@Z",
+      "source": "buff-enable-buff",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native forwards the template to MakeNormalBuff. The emitted typed spelling has the same 105 bytes."
+    },
+    {
+      "rva": "0x003628D3",
+      "kind": "rename",
+      "old": "?DoXfer@BuffInstance@@MAEXPAVXfer@@@Z",
+      "name": "?xfer@BuffInstance@@MAEXPAVXfer@@@Z",
+      "source": "buff-instance-xfer",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact 482-byte inherited Snapshot override, native 0x817068 slot 3. Required by previously credited 0x362D25."
+    },
+    {
+      "rva": "0x0077E1AB",
+      "kind": "rename",
+      "old": "__ehhandler$?DoXfer@BuffInstance@@MAEXPAVXfer@@@Z",
+      "name": "__ehhandler$?xfer@BuffInstance@@MAEXPAVXfer@@@Z",
+      "source": "buff-instance-xfer-handler",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native 0x3628D3 names the handler directly, with emitted COFF confirming the typed parent."
+    },
+    {
+      "rva": "0x00362DBD",
+      "kind": "rename",
+      "old": "??0BuffManager@@QAE@H@Z",
+      "name": "??0BuffManager@@QAE@PAVDrawable@@@Z",
+      "source": "buff-manager-ctor",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "The typed constructor stores Drawable at +4 and constructs nine native 0x44-byte BuffInstances. Existing 89-byte body now compares byte-equal as the typed key."
+    },
+    {
+      "rva": "0x0030682A",
+      "kind": "rename",
+      "old": "?addBuff@BuffLogic@@QAEPAXPAX0@Z",
+      "name": "?addBuff@BuffLogic@@QAEPAVTBuff@@PBVThingTemplate@@PAVDrawable@@@Z",
+      "source": "buff-add-buff-operands",
+      "confidence": "provisional",
+      "basis": "rename",
+      "evidence": "Native caller 0x362561 and xfer caller pass the ThingTemplate fields; 0x3068FD forwards the Drawable and receives TBuff via 0x091F2A, 0x06819B and 0x0D3B27. New key is an emitted consumer relocation."
+    },
+    {
+      "rva": "0x00419BA5",
+      "kind": "rename",
+      "old": "?rva00419BA5@Rva00419BA5@@QAEXXZ",
+      "name": "?release@TBuff@@QAEXXZ",
+      "source": "buff-release-effect",
+      "confidence": "provisional",
+      "basis": "rename",
+      "evidence": "Native 0x362570 and 0x362609 use the TBuff receiver and the same 19-byte destroy/free routine. The typed consumer emits this key. Keep every legacy generic release recipient."
+    },
+    {
+      "rva": "0x0077E232",
+      "kind": "rename",
+      "old": "__ehhandler$??1BuffManager@@UAE@XZ",
+      "name": "__ehhandler$??0BuffManager@@QAE@PAVDrawable@@@Z",
+      "source": "buff-manager-ctor-handler",
+      "confidence": "provisional",
+      "basis": "rename",
+      "evidence": "Native ctor 0x362DBD directly loads shared handler VA 0xB7E232; authenticated COFF names ctor. Preserve the destructor and require its current map role untouched."
+    },
+    {
+      "rva": "0x003F3739",
+      "kind": "rename",
+      "old": "?clear@ConnectionVec@@QAEXXZ",
+      "name": "?clear@?$vector@VLivingWorldRegionConnection@@V?$allocator@VLivingWorldRegionConnection@@@_STL@@@_STL@@QAEXXZ",
+      "source": "region-connection-clear",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "The existing 11-byte clear body is exactly emitted from the vendored vector template. Direct relocation at operand +6 selects 0x3F35B0."
+    },
+    {
+      "rva": "0x003F35B0",
+      "kind": "rename",
+      "old": "?rva003F35B0@ConnectionVec@@QAEPAVLivingWorldRegionConnection@@PAV2@0@Z",
+      "name": "?erase@?$vector@VLivingWorldRegionConnection@@V?$allocator@VLivingWorldRegionConnection@@@_STL@@@_STL@@QAEPAVLivingWorldRegionConnection@@PAV3@0@Z",
+      "source": "region-connection-erase",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact 51 bytes, selected by native clear 0x3F3739. Calls 0x3F325A and 0x3F0CA1 at operands +21 and +32."
+    },
+    {
+      "rva": "0x003F0CA1",
+      "kind": "rename",
+      "old": "?Rva003F0CA1_DestroyRange@@YAXPAVLivingWorldRegionConnection@@0@Z",
+      "name": "??$_Destroy@PAVLivingWorldRegionConnection@@@_STL@@YAXPAVLivingWorldRegionConnection@@0@Z",
+      "source": "region-connection-destroy-range",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Authenticated template compares exact 24 bytes and calls native 0x52BF81 at operand +15. The hand-written duplicate was deleted on the final source pin."
+    },
+    {
+      "rva": "0x0052BF81",
+      "kind": "rename",
+      "old": "?Rva0052BF81_DestroyTagged@@YAXPAVLivingWorldRegionConnection@@0ABU__false_type@_STL@@@Z",
+      "name": "??$__destroy_aux@PAVLivingWorldRegionConnection@@@_STL@@YAXPAVLivingWorldRegionConnection@@0ABU__false_type@0@@Z",
+      "source": "region-connection-destroy-tagged",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Authenticated 26-byte range destructor compares exact. Native 0x3F0CA1 selects this specialization. Preserve the historical owner in LivingWorldCampaign.cpp."
+    },
+    {
+      "rva": "0x003F325A",
+      "kind": "rename",
+      "old": "?Rva003F325ACopy@@YAPAVRva003F2A11@@PAV1@00@Z",
+      "name": "??$__copy_ptrs@PAVLivingWorldRegionConnection@@PAV1@@_STL@@YAPAVLivingWorldRegionConnection@@PAV1@00ABU__false_type@0@@Z",
+      "source": "region-connection-copy-ptrs",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact 29-byte STLport body; native erase selects it. Direct operand +20 goes to 0x3F2A3E."
+    },
+    {
+      "rva": "0x003F2A3E",
+      "kind": "rename",
+      "old": "?Rva003F2A3E@@YAPAVRva003F2A11@@PAV1@00@Z",
+      "name": "??$__copy@PAVLivingWorldRegionConnection@@PAV1@H@_STL@@YAPAVLivingWorldRegionConnection@@PAV1@00ABUrandom_access_iterator_tag@0@PAH@Z",
+      "source": "region-connection-copy",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact 50-byte STLport loop. Direct operand +29 calls the class assignment at 0x3F2A11."
+    },
+    {
+      "rva": "0x003F2A11",
+      "kind": "rename",
+      "old": "?rva003F2A11@Rva003F2A11@@QAEAAV1@ABV1@@Z",
+      "name": "??4LivingWorldRegionConnection@@QAEAAV0@ABV0@@Z",
+      "source": "region-connection-assign-connection",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact 45-byte implicit assignment. Native relocations call StringBase::set at 0x366F0 and Coord2D vector assignment 0x1D9BEE."
+    },
+    {
+      "rva": "0x001D9BEE",
+      "kind": "rename",
+      "old": "??4?$vector@UBfmePod8@@V?$allocator@UBfmePod8@@@_STL@@@_STL@@QAEAAV01@ABV01@@Z",
+      "name": "??4?$vector@VCoord2D@@V?$allocator@VCoord2D@@@_STL@@@_STL@@QAEAAV01@ABV01@@Z",
+      "source": "region-connection-assign-detours",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact 177-byte emitted vector assignment, selected by native region connection at 0x3F2A32. Preserve other folding owners and aliases."
+    },
+    {
+      "rva": "0x003EFE82",
+      "kind": "rename",
+      "old": "?Rva003EFE82Get@@YAHPAURva003EFE82Obj@@PAX@Z",
+      "name": "?XferLivingWorldRegionID@@YAXPAVXfer@@PAH@Z",
+      "source": "region-connection-region-id",
+      "confidence": "provisional",
+      "basis": "rename",
+      "evidence": "0x3F3082 passes the Xfer and destination region ID. The native helper calls Xfer slot 37 with LivingWorldRegionID."
+    },
+    {
+      "rva": "0x003F2C0C",
+      "kind": "rename",
+      "old": "?Rva003F2C0CXfer@@YAPAVXfer@@PAV1@PAV?$vector@UBfmeE8@@V?$allocator@UBfmeE8@@@_STL@@@_STL@@@Z",
+      "name": "?Rva003F2C0CXfer@@YAPAVXfer@@PAV1@PAV?$vector@VCoord2D@@V?$allocator@VCoord2D@@@_STL@@@_STL@@@Z",
+      "source": "region-connection-detour-xfer",
+      "confidence": "provisional",
+      "basis": "rename",
+      "evidence": "Native 0x3F2C6D and 0x3F2CC6 use Xfer slot 20, Coord2D, on the vector elements at eight-byte stride. New spelling is a typed consumer relocation."
+    },
+    {
+      "rva": "0x004E0777",
+      "kind": "rename",
+      "old": "?GetSnapshotName@LivingWorldBuilding@@UAEPBDXZ",
+      "name": "?GetSnapshotName@LivingWorldBuilding@@UBEPBDXZ",
+      "source": "living-world-building-snapshot-name",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact six-byte MISNAMED in the sole includer on 85e9bbb27d..922a0c294b. Native slot 2 of table 0x00861618 returns the LivingWorldBuilding literal. The constructor stores that table at +0 and the destructor restores the canonical Snapshot table, whose slot 2 is const."
+    },
+    {
+      "rva": "0x002AC6B1",
+      "kind": "rename",
+      "old": "?addTimer@Player@@QAEXPBVSpecialPowerTemplate@@I@Z",
+      "name": "?addNewSharedSpecialPowerTimer@Player@@QAEXPBVSpecialPowerTemplate@@I@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "48 bytes; copies exact final template ID and frame to the native Player+0x704 list; predecessor source corresponds per method and a77a956568 has exact native and emitted evidence in"
+    },
+    {
+      "rva": "0x002AC6E1",
+      "kind": "rename",
+      "old": "?resetOrStart@Player@@QAEXPBVSpecialPowerTemplate@@@Z",
+      "name": "?resetOrStartSpecialPowerReadyFrame@Player@@QAEXPBVSpecialPowerTemplate@@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "123 bytes; matches ID, resets from native current frame plus adjusted reload, or appends current frame on miss; predecessor source corresponds per method and a77a956568 has exact native and emitted evidence in"
+    },
+    {
+      "rva": "0x002AC75C",
+      "kind": "rename",
+      "old": "?rva002AC75C@Player@@QAEXPBVSpecialPowerTemplate@@I@Z",
+      "name": "?expressSpecialPowerReadyFrame@Player@@QAEXPBVSpecialPowerTemplate@@I@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "68 bytes; carries exact cached native end node across template lookup, replaces or inserts the passed frame; predecessor source corresponds per method and a77a956568 has exact native and emitted evidence in"
+    },
+    {
+      "rva": "0x002AC7A0",
+      "kind": "rename",
+      "old": "?getOrStart@Player@@QAEIPBVSpecialPowerTemplate@@@Z",
+      "name": "?getOrStartSpecialPowerReadyFrame@Player@@QAEIPBVSpecialPowerTemplate@@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "70 bytes; returns existing frame for matching native ID or inserts and returns current frame; predecessor source corresponds per method and a77a956568 has exact native and emitted evidence in"
+    },
+    {
+      "rva": "0x005BC474",
+      "kind": "rename",
+      "old": "?Run@OnlineQuickMatch@AptOnline@@QAEXXZ",
+      "name": "?Update@OnlineQuickMatch@AptOnline@@UAEXXZ",
+      "source": "quick-match-update-override",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Same native constructor and table; slot three selects 0x5BC474. Exact 33-byte Boat body on d4063ddb63 with native call targets 0x5BB5CE and 0x5BBF15. See r5_apt_quick_match_5bc474.diff and COFF digest."
+    },
+    {
+      "rva": "0x005BAECA",
+      "kind": "alias",
+      "old": "",
+      "name": "?rva005A6582@OnlineQuickMatch@AptOnline@@UAEHHHEH@Z",
+      "source": "quick-match-key-override",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native ctor 0x5BAB7E calls AptOnlineScreen 0x56DC4C and stores table 0x873E24. Slot four selects 0x5BAECA. Exact 107-byte Boat body on d4063ddb63. The DIR32 call-child strings and the owner and Cancel call offsets are unchanged. See r5_apt_quick_match_5baeca.diff and COFF digest."
+    },
+    {
+      "rva": "0x005BA234",
+      "kind": "alias",
+      "old": "",
+      "name": "?slot10@AptOnlineOpenPlay@@UAEPBDXZ",
+      "source": "apt-open-play-prefix",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native ctor 0x5BA1FD installs VA 0x873D34, whose slot 10 points to 0x5BA234 and returns string VA 0xC66380 OnlineOpenPlay. Exact six-byte body on da1d7bae7f COFF daf2a52336d4e70272da1a1807e63bf47e553758df07259528f7b0f122b843ff, r5_apt_open_play_prefix.diff."
+    },
+    {
+      "rva": "0x005117B7",
+      "kind": "rename",
+      "old": "?vfunc_0x04@AptMessenger@@UAEHHEH@Z",
+      "name": "?input@AptMessenger@@UAE?AW4WindowMsgHandledType@@III@Z",
+      "source": "apt-messenger-input",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "45a052b06b on P14 119ad26eb5. Native AptMessenger ctor 0x51215B stores primary 0x8659A0 and its slot 1 is 0x5117B7. _bfme_AptGameWindow constructor is called at 0x512173, passed the first argument. Actual base GameWindow input has this exact interface. Boat COFF proves 40 bytes and retail call 0x511"
+    },
+    {
+      "rva": "0x009EDA21",
+      "kind": "data-identity",
+      "name": "?FogEnable@DX8Wrapper@@1_NA",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (Authenticated exact source definitions and native same-position SceneClass render operands): Sole defining 4897b0bb51 dxwrapper.cpp COFF 1f2315a48a1c77caed59a1ec95197144235e4445ee3dddfaaf5f1178e1415cb5, section 3 +0xC9C. Zero-fill native storage.; Exact 502-byte SceneClass::Render "
+    },
+    {
+      "rva": "0x009EDA24",
+      "kind": "data-identity",
+      "name": "?FogColor@DX8Wrapper@@1KA",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (Authenticated exact source definitions and native same-position SceneClass render operands): Sole defining 4897b0bb51 dxwrapper.cpp COFF 1f2315a48a1c77caed59a1ec95197144235e4445ee3dddfaaf5f1178e1415cb5, section 3 +0xCA0. Zero-fill native storage.; Exact 502-byte SceneClass::Render "
+    },
+    {
+      "rva": "0x009EDA28",
+      "kind": "data-identity",
+      "name": "?FogStart@DX8Wrapper@@1MA",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (Authenticated exact source definitions and native same-position SceneClass render operands): Sole defining 4897b0bb51 dxwrapper.cpp COFF 1f2315a48a1c77caed59a1ec95197144235e4445ee3dddfaaf5f1178e1415cb5, section 3 +0xCA4. Zero-fill native storage.; Exact 502-byte SceneClass::Render "
+    },
+    {
+      "rva": "0x009EDA2C",
+      "kind": "data-identity",
+      "name": "?FogEnd@DX8Wrapper@@1MA",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (Authenticated exact source definitions and native same-position SceneClass render operands): Sole defining 4897b0bb51 dxwrapper.cpp COFF 1f2315a48a1c77caed59a1ec95197144235e4445ee3dddfaaf5f1178e1415cb5, section 3 +0xCA8. Zero-fill native storage.; Exact 502-byte SceneClass::Render "
+    },
+    {
+      "rva": "0x009B621C",
+      "kind": "data-identity",
+      "name": "?ShaderDirty@ShaderClass@@1_NA",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (Authenticated exact source definitions and native same-position SceneClass render operands): Sole defining 4897b0bb51 shader.cpp COFF cd325cf54d1435011534a9bc693f787a382b5de72eda3079f1a222b8d4debf93, section 3 +0x0. Initialized one-byte native data.; Exact 502-byte SceneClass::Rend"
+    },
+    {
+      "rva": "0x009EC4F4",
+      "kind": "data-identity",
+      "name": "?render_state_changed@DX8Wrapper@@1IA",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (Exact compiled DIR32 consumers with authenticated existing typed COFF storage and native field addends): Authenticated defining dxwrapper.cpp COFF 4c3adf9173b54a1e75d71c8f576fcc56fce2739b8b6f1bcbcdb479aa020c2f54 on 4e266c0af1d1fbdc1a97d8c6cd4a7ac1c30b254e emits the only typed stora"
+    },
+    {
+      "rva": "0x009EE5D8",
+      "kind": "data-identity",
+      "name": "?render_state@DX8Wrapper@@1URenderStateStruct@@A",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (Exact compiled DIR32 consumers with authenticated existing typed COFF storage and native field addends): Authenticated defining dxwrapper.cpp COFF 4c3adf9173b54a1e75d71c8f576fcc56fce2739b8b6f1bcbcdb479aa020c2f54 on 4e266c0af1d1fbdc1a97d8c6cd4a7ac1c30b254e emits the only typed stora"
+    },
+    {
+      "rva": "0x009EDBF0",
+      "kind": "data-identity",
+      "name": "?DeviceProjectionMatrix@DX8Wrapper@@1VMatrix4@@A",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (Exact compiled DIR32 consumers with authenticated existing typed COFF storage and native field addends): Authenticated defining dxwrapper.cpp COFF 4c3adf9173b54a1e75d71c8f576fcc56fce2739b8b6f1bcbcdb479aa020c2f54 on 4e266c0af1d1fbdc1a97d8c6cd4a7ac1c30b254e emits the only typed stora"
+    },
+    {
+      "rva": "0x00A03138",
+      "kind": "data-identity",
+      "name": "?TheVictoryConditions@@3PAVVictoryConditions@@A",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (Existing sole typed definition and independent native named initialization and consumer operand): Authenticated 5c44090d3a VictoryConditions.cpp COFF 10495ee69c273af7cfebfa31e85da73e5ffcf5805c13fce513616808e0dc9ca8 defines the sole typed .bss pointer (section 3 +0).; Native 0x3BA8C"
+    },
+    {
+      "rva": "0x00A036B8",
+      "kind": "data-identity",
+      "name": "?worldPosition@?1??containSlot86@HordeGarrisonContain@@UAEPBVCoord3D@@XZ@4V3@A",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (P17 source-local BSS relocations with authenticated definitions and equal native extents. Scope is the map owner ID retained:O00479BCA.): Exact P17 source b4eb215b12 Garrison Boat COFF a0c3c516d79b55be42b872886c4a3a73cb361008bb11330629bbd65ea34f18f7. Defined .bss section 60, offset"
+    },
+    {
+      "rva": "0x00A036C4",
+      "kind": "data-identity",
+      "name": "?$S1@?1??containSlot86@HordeGarrisonContain@@UAEPBVCoord3D@@XZ@4IA",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (P17 source-local BSS relocations with authenticated definitions and equal native extents. Scope is the map owner ID retained:O00479BCA.): Exact P17 source b4eb215b12 Garrison Boat COFF a0c3c516d79b55be42b872886c4a3a73cb361008bb11330629bbd65ea34f18f7. Defined .bss section 61, offset"
+    },
+    {
+      "rva": "0x00A036C8",
+      "kind": "data-identity",
+      "name": "?worldPosition@?1??containSlot87@HordeGarrisonContain@@UAEPBVCoord3D@@XZ@4V3@A",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (P17 source-local BSS relocations with authenticated definitions and equal native extents. Scope is the map owner ID retained:O00479BCA.): Exact P17 source b4eb215b12 Garrison Boat COFF a0c3c516d79b55be42b872886c4a3a73cb361008bb11330629bbd65ea34f18f7. Defined .bss section 64, offset"
+    },
+    {
+      "rva": "0x00A036D4",
+      "kind": "data-identity",
+      "name": "?$S3@?1??containSlot87@HordeGarrisonContain@@UAEPBVCoord3D@@XZ@4IA",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (P17 source-local BSS relocations with authenticated definitions and equal native extents. Scope is the map owner ID retained:O00479BCA.): Exact P17 source b4eb215b12 Garrison Boat COFF a0c3c516d79b55be42b872886c4a3a73cb361008bb11330629bbd65ea34f18f7. Defined .bss section 65, offset"
+    },
+    {
+      "rva": "0x00A036D8",
+      "kind": "data-identity",
+      "name": "?worldPosition@?1??containSlot88@HordeGarrisonContain@@UBEPBVCoord3D@@XZ@4V3@A",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (P17 source-local BSS relocations with authenticated definitions and equal native extents. Scope is the map owner ID retained:O00479BCA.): Exact P17 source b4eb215b12 Garrison Boat COFF a0c3c516d79b55be42b872886c4a3a73cb361008bb11330629bbd65ea34f18f7. Defined .bss section 68, offset"
+    },
+    {
+      "rva": "0x00A036E4",
+      "kind": "data-identity",
+      "name": "?$S5@?1??containSlot88@HordeGarrisonContain@@UBEPBVCoord3D@@XZ@4IA",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (P17 source-local BSS relocations with authenticated definitions and equal native extents. Scope is the map owner ID retained:O00479BCA.): Exact P17 source b4eb215b12 Garrison Boat COFF a0c3c516d79b55be42b872886c4a3a73cb361008bb11330629bbd65ea34f18f7. Defined .bss section 69, offset"
+    },
+    {
+      "rva": "0x00A01E74",
+      "kind": "data-identity",
+      "name": "?TheBuffXferDrawable@@3PAVDrawable@@A",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (Authenticated unique typed definition and native write/clear/read chain): Sole real emitted pointer on e1b9ee1f06de5cc4221fa5b159ae01a637356a6d plus authenticated COFF 0400a7dbf184e889f442a62b090e301c64133c3237ded5f0f87c2a0405da682a, section 3 offset 0, four zero-fill bytes with no"
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?slot25@ModuleData@@UBEPBVQueueProductionExitUpdateModuleData@@XZ",
+      "source": "module-data-typed-null-25",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "P13 ec4604d910. Source bfd175ff97 emits the same null body. Rider native table 0x847B00 slot 25, cell 0x847b64, selects shared xor eax,eax; ret 0xD43D0. Boat identifies this exact missing fold key on 0x47EABC."
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?slot26@ModuleData@@UBEPBVLevelUpUpgradeModuleData@@XZ",
+      "source": "module-data-typed-null-26",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "P13 ec4604d910. Source bfd175ff97 emits the same null body. Rider native table 0x847B00 slot 26, cell 0x847b68, selects shared xor eax,eax; ret 0xD43D0. Boat identifies this exact missing fold key on 0x47EABC."
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?slot28@ModuleData@@UBEPBVRespawnUpdateModuleData@@XZ",
+      "source": "module-data-typed-null-28",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "P13 ec4604d910. Source bfd175ff97 emits the same null body. Rider native table 0x847B00 slot 28, cell 0x847b70, selects shared xor eax,eax; ret 0xD43D0. Boat identifies this exact missing fold key on 0x47EABC."
+    },
+    {
+      "rva": "0x00483C69",
+      "kind": "rename",
+      "old": "?rva00483C69@ClearanceTestingSlowDeathBehavior@@UAEPAVRva00483C69Interface@@XZ",
+      "name": "?getClearanceTestGeometryInterface@ClearanceTestingSlowDeathBehavior@@UAEPAVClearanceTestGeometryInterface@@XZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "P13 source 5495ed5ad3. Native primary 0x849E4C slot 13. Own 12-byte body returns complete object+0x50. Exact emitted code, no relocations."
+    },
+    {
+      "rva": "0x00483C75",
+      "kind": "rename",
+      "old": "?get@ClearanceTestingSlowDeathBehavior@@UBEHXZ",
+      "name": "?slot24@ClearanceTestingSlowDeathBehavior@@UAEPAVClearanceTestGeometryInterface@@XZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "P13 source 5495ed5ad3. Native Behavior 0x849D90 slot 24. Own 13-byte body returns the same +0x50 interface from a +0xC receiver. Exact emitted code, no relocations."
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?slot24@BehaviorModule@@UAEPAVClearanceTestGeometryInterface@@XZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "P13 source 5495ed5ad3. Native base Behavior table 0x7EE9C0 slot 24 returns null with 33 C0 C3. Same new typed default is the only unproven operand on post-P13 0x4BB130; retain all existing null keys."
+    },
+    {
+      "rva": "0x00584F37",
+      "kind": "rename",
+      "old": "?isUnitRotating@HordeMeleeFormation@@UAE_NH@Z",
+      "name": "?isUnitRotating@HordeMeleeFormation@@UBE_NH@Z",
+      "source": "horde-formation-rotating",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "0x586D8E installs the 0x86FD90 table and shared 0x5D6FCC base. That table cell 8 targets 0x584F37. The same const base method is used with HoldGround. Full exact 52 bytes in 59a3a1dbc0 Boat COFF, native and COFF comparison in r5_horde_policy_584f37.diff."
+    },
+    {
+      "rva": "0x00587548",
+      "kind": "rename",
+      "old": "?setUnitNeedsNewAttackPos@HordeMeleeAmoeba@@UAEXPAXH@Z",
+      "name": "?setUnitNeedsNewAttackPos@HordeMeleeAmoeba@@UAEXPAVObject@@H@Z",
+      "source": "horde-amoeba-reposition-unit",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "0x587D9C stores 0x86FF38 after shared 0x5D6FCC call. Its cell 12 targets 0x587548, exact 52 bytes in 59a3a1dbc0 Boat object. Formation cell 12 reads the same first argument at Object +0x258. Exact evidence r5_horde_policy_587548.diff."
+    },
+    {
+      "rva": "0x00583BE6",
+      "kind": "rename",
+      "old": "?isUnitMoving@HordeMeleeSwarm@@QAE_NH@Z",
+      "name": "?isUnitMoving@HordeMeleeSwarm@@UAE_NH@Z",
+      "source": "horde-swarm-slot7",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native ctor 0x5843DA calls shared HordeMeleeBase 0x5D6FCC and sets 0x86FC80. Cell 7 selects 0x583BE6; exact 52 B emitted in 014ec457eb, native/COFF comparison and authenticated object digest in"
+    },
+    {
+      "rva": "0x00583C1A",
+      "kind": "rename",
+      "old": "?isUnitRotating@HordeMeleeSwarm@@QAE_NH@Z",
+      "name": "?isUnitRotating@HordeMeleeSwarm@@UBE_NH@Z",
+      "source": "horde-swarm-slot8",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native ctor 0x5843DA calls shared HordeMeleeBase 0x5D6FCC and sets 0x86FC80. Cell 8 selects 0x583C1A; exact 52 B emitted in 014ec457eb, native/COFF comparison and authenticated object digest in HoldGround shares the same query slot. The accepted native const leaf at 0x58372"
+    },
+    {
+      "rva": "0x00583C4E",
+      "kind": "rename",
+      "old": "?canUnitRotate@HordeMeleeSwarm@@QAE_NH@Z",
+      "name": "?canUnitRotate@HordeMeleeSwarm@@UAE_NH@Z",
+      "source": "horde-swarm-slot9",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native ctor 0x5843DA calls shared HordeMeleeBase 0x5D6FCC and sets 0x86FC80. Cell 9 selects 0x583C4E; exact 58 B emitted in 014ec457eb, native/COFF comparison and authenticated object digest in TheGameLogic DIR32 at +0x27 still names native VA 0xDFE78C."
+    },
+    {
+      "rva": "0x00583CE0",
+      "kind": "rename",
+      "old": "?setUnitNeedsNewAttackPos@HordeMeleeSwarm@@QAEXHH@Z",
+      "name": "?setUnitNeedsNewAttackPos@HordeMeleeSwarm@@UAEXPAVObject@@H@Z",
+      "source": "horde-swarm-slot12",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native ctor 0x5843DA calls shared HordeMeleeBase 0x5D6FCC and sets 0x86FC80. Cell 12 selects 0x583CE0; exact 42 B emitted in 014ec457eb, native/COFF comparison and authenticated object digest in Swarm ignores the first argument, but Formation implementation reads its Object"
+    },
+    {
+      "rva": "0x004EC2D4",
+      "kind": "alias",
+      "old": "",
+      "name": "?rva004EC2D4@Rva002A8AB1Record@@QAEXW4ObjectID@@@Z",
+      "source": "dozer-completion-receiver",
+      "confidence": "provisional",
+      "basis": "fold-alias",
+      "evidence": "Native caller 0x488CC4 dispatches to the result of SkirmishAIManager 0x2A8AB1 with no receiver adjustment, passes Object::getID, and the callee compares it with its construction record ID. The typed consumer remains exact 44 bytes and loses only this proof."
+    },
+    {
+      "rva": "0x002ACECC",
+      "kind": "alias",
+      "old": "",
+      "name": "?removePhantomStructureID@Player@@QAEXW4ObjectID@@@Z",
+      "source": "dozer-phantom-player",
+      "confidence": "provisional",
+      "basis": "fold-alias",
+      "evidence": "Native 0x489E52 uses Object::getControllingPlayer as this and passes the phantom ObjectID. The callee removes it from Player+0x754 via 0x2ABFC3 and ObjectIDList erase 0x2ABB20. The 99-byte typed caller is exact and loses only this proof."
+    },
+    {
+      "rva": "0x00481273",
+      "kind": "alias",
+      "old": "",
+      "name": "?GetSnapshotName@ProductionQueueHordeContain@@UBEPBDXZ",
+      "source": "production-name-481273",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Primary table VA 0x849040 slot 2 points to existing six-byte name body returning ProductionQueueHordeContain at VA 0xBF5914. Authenticated f2925c51bf COFF b4ab9edd46d5b6c6237bb2ee331cf82ce49d6a0485ec5bad5e438ccc8bcb87d4 and exact r5_production_name_p17.diff."
+    },
+    {
+      "rva": "0x004C2F6A",
+      "kind": "alias",
+      "old": "",
+      "name": "?doSpecialPower@ProductionSpeedBonus@@UAEXI@Z",
+      "source": "production-speed-apply-unsigned",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact 124-byte native apply loop and authenticated 84e5465cd8 emitted operator under the canonical unsigned SpecialPowerModule interface. Only the old signed map binding is MISNAMED in and the native instruction and relocation comparison is r5_production_spe"
+    },
+    {
+      "rva": "0x00001DAC",
+      "kind": "alias",
+      "old": "",
+      "name": "??1SentenceDataStruct@Render2DSentenceClass@@QAE@XZ",
+      "source": "sentence-dtor-does-not-adjust",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native 36-byte element vector constructor 0x154CD0 +0x44/+0x88 selects this exact five-byte E9 to 0x176CB0. Authenticated 195f7fda42 COFF 33c9feb4c0e5 uses the same destructor and terminal REL32."
+    },
+    {
+      "rva": "0x00001E13",
+      "kind": "alias",
+      "old": "",
+      "name": "??1RendererDataStruct@Render2DSentenceClass@@QAE@XZ",
+      "source": "renderer-data-destructor-adjusts",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native eight-byte element vector ctor 0x154DA0 +0x44/+0x85 selects this exact eight-byte add ecx,4 and E9 to 0x176CB0. Authenticated 195f7fda42 COFF 33c9feb4c0e5 matches both bound operands."
+    },
+    {
+      "rva": "0x00176CB0",
+      "kind": "alias",
+      "old": "",
+      "name": "??1SurfaceClass@@QAE@XZ",
+      "source": "surface-dtor-provider",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Both exact annotated destructor bodies jump to 0x176CB0. The 13-byte native provider uses the typed Surface IDirect3DSurface9::Release cell, slot 2, with the authenticated COFF name and reference."
+    },
+    {
+      "rva": "0x00116600",
+      "kind": "alias",
+      "old": "",
+      "name": "??0SurfaceClass@@QAE@PAVIDirect3DSurface9@@@Z",
+      "source": "surface-ctor-provider",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native 0x157E80+0xC0 calls this exact 25-byte constructor/store and native COM AddRef slot 1. Authenticated/render2dsentence COFF selects the same typed Surface constructor."
+    },
+    {
+      "rva": "0x007C9690",
+      "kind": "vtable-binding",
+      "old": "",
+      "name": "??_7DrawModule@@6B@",
+      "source": "draw-module-base-007c9690",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Native DrawModule 0xB19A1 installs the exact 62-cell table and 0xCEB6F reinstalls it from its destructor. Derived W3DLightDraw 0xCFA42+0x3F and authenticated 3d5d2c5f18 COFF DIR32 +0x41 name the same parent table. checked all 62 authenticated native cell targets and the existing 248-byte bound."
+    },
+    {
+      "rva": "0x005127F3",
+      "kind": "rename",
+      "old": "?rva005127F3@AptCampaignReview@@UAEHHII@Z",
+      "name": "?system@AptCampaignReview@@UAE?AW4WindowMsgHandledType@@III@Z",
+      "source": "apt-review-system",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native 0x865A54 +0x08 selects owned 27B 0x5127F3. Caller 0x31452F tail dispatches the three unsigned words through slot 2. Authenticated COFF primary has exact emitted symbol and existing 0x51274F proof."
+    },
+    {
+      "rva": "0x00512C82",
+      "kind": "rename",
+      "old": "?Rva00512C82Get@@YAHXZ",
+      "name": "?getWindowFactory@AptCampaignReview@@UAEP6GPAVGameWindow@@PAUGameWindowCreationData@@@ZXZ",
+      "source": "apt-review-factory-accessor",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native 0x865A54 +0x1C selects owned 6B 0x512C82. Exact compiled six bytes with DIR32 at +1 and emitted own table slot +0x1C, preserving the GameWindowFactory ABI."
+    },
+    {
+      "rva": "0x002D1E8F",
+      "kind": "rename",
+      "old": "?Rva002D1E8FCreate@@YGPAVRva00512AC8@@PAX@Z",
+      "name": "?createAptCampaignReviewWindow@@YGPAVGameWindow@@PAUGameWindowCreationData@@@Z",
+      "source": "apt-review-factory-pointer",
+      "confidence": "provisional",
+      "basis": "rename",
+      "evidence": "0x512C82 returns this dedicated factory address. Native 0x2D1E8F is a 58-byte one-argument stdcall boundary, allocates 0x27C, passes the creation word to 0x512AC8, and returns the pointer unchanged. COFF DIR32+1 agrees. Both old and new keys refer to the same factory."
+    },
+    {
+      "rva": "0x00479B7F",
+      "kind": "alias",
+      "old": "",
+      "name": "?garrisonSlot29@HordeGarrisonContain@@UAEXPAVObject@@@Z",
+      "source": "hordegarrison-slot29",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Actual 0d248fe049 source. Native 0x8465E4 primary cell 29 selects the exact 34-byte 0x479B7F. Exact COFF and native calls to OpenContain 0x464830 +0xA and own worker 0x588D99 +0x19. See ."
+    },
+    {
+      "rva": "0x00480584",
+      "kind": "alias",
+      "old": "",
+      "name": "?garrisonSlot29@SlaughterHordeContain@@UAEXPAVObject@@@Z",
+      "source": "slaughter-hordegarrison-own29",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native Slaughter 0x848B14 and Citadel 0x848D34 choose exact 27B override, plus native 0x4804DD and 0x479B7F call operands. Authenticated 7c6d72efc7 COFF section 88+0x74 -> section 48. Keep distinct from native HordeGarrison slot 29 at 0x8465E4."
+    },
+    {
+      "rva": "0x0022244D",
+      "kind": "rename",
+      "old": "?vfunc_0x30@AptPlayer@@UAEXXZ",
+      "name": "?draw@AptPlayer@@UAEXXZ",
+      "source": "apt-player-draw",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native 0x7E6E80 slot 12 is the existing 36-byte AptPlayer body. Real SubsystemInterface slot 12 supplies draw with the same void-thiscall ABI. Isolated compiled source is exact and MISNAMED by the old evidence key."
+    },
+    {
+      "rva": "0x00222471",
+      "kind": "rename",
+      "old": "?clearPending@AptPlayer@@QAEXXZ",
+      "name": "?reset@AptPlayer@@UAEXXZ",
+      "source": "apt-player-reset",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native 0x7E6E80 slot 9 is the exact eight-byte clear, Base slot 9 is reset. Existing nonvirtual clear body now fills the real inherited slot. Raw exact candidate is MISNAMED by the incumbent nonvirtual symbol."
+    },
+    {
+      "rva": "0x00222A33",
+      "kind": "rename",
+      "old": "?PopFocus@AptPlayer@@QAEXPAVAptFocusTarget@@@Z",
+      "name": "?PopFocus@AptPlayer@@QAEXH@Z",
+      "source": "apt-player-focus-level",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native callers 0x2B5147 and 0x514D1F push immediate -1. 0x40FCED passes the Apt window +0x274 level index, and updateFocus 0x224818 treats the vector top as -1,14 or the level number. The 32-byte body is exact under the Int declaration."
+    },
+    {
+      "rva": "0x009CD4D0",
+      "kind": "data-identity",
+      "name": "_TheDamageNames",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (AOD owner-local named-array extent, content and exact DIR32 binding): Authenticated O004BBEDD COFF SHA-256 53d88d602b6c2f55ec445664893c6af9a69123eb81cd67083e244fa6f6dbe0d4, section 20 +0x0, class-3 static.; All 27 ordered native string-pointer entries and null terminator matched by"
+    },
+    {
+      "rva": "0x009CD550",
+      "kind": "data-identity",
+      "name": "_TheDeathNames",
+      "source": "R",
+      "confidence": "proven",
+      "basis": "rebuilt evidence",
+      "evidence": "rebuilt evidence (AOD owner-local named-array extent, content and exact DIR32 binding): Authenticated O004BBEDD COFF SHA-256 53d88d602b6c2f55ec445664893c6af9a69123eb81cd67083e244fa6f6dbe0d4, section 20 +0x80, class-3 static.; All 24 ordered native string-pointer entries and null terminator matched b"
+    },
+    {
+      "rva": "0x0051E262",
+      "kind": "rename",
+      "old": "?OpenScreen@AptScoreScreen@@SA_NHH@Z",
+      "name": "?OpenScreen@AptScoreScreen@@SA_NHPAUAptScoreObjectives@@@Z",
+      "source": "m10 stage exact x12 ScoreScreen",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact emitted typed key and owned witness in x12/qa2-score-screen-pair.md"
+    },
+    {
+      "rva": "0x00A04914",
+      "kind": "data-identity",
+      "old": "?g_00E04914@@3HA",
+      "name": "?g_00E04914@@3PAVAptScoreScreen@@A",
+      "source": "m10 stage exact x12 ABI data rekey",
+      "confidence": "H",
+      "basis": "same native four-byte cell; grade retained"
+    },
+    {
+      "rva": "0x004D51A7",
+      "kind": "rename",
+      "old": "?setSlotSocket@Transport@@QAEXPAXGPAH@Z",
+      "name": "?setSlotSocket@Transport@@QAEXPAVUDP@@GPBUBfmeNetAddress@@@Z",
+      "source": "m10 stage exact x12 NATTransport",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact emitted typed key and owned witness in x12/qa2-network-pairs.md"
+    },
+    {
+      "rva": "0x004D51ED",
+      "kind": "rename",
+      "old": "?setDestAddrToSocket@Transport@@QAEXHPAX@Z",
+      "name": "?setDestAddrToSocket@Transport@@QAEXHPBUBfmeNetAddress@@@Z",
+      "source": "m10 stage exact x12 NATTransport",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact emitted typed key and owned witness in x12/qa2-network-pairs.md"
+    },
+    {
+      "rva": "0x005A6DAC",
+      "kind": "rename",
+      "old": "?SetUDPSocketForSlot@NAT@@QAE_NGGPAX@Z",
+      "name": "?SetUDPSocketForSlot@NAT@@QAE_NGGPBUBfmeNetAddress@@@Z",
+      "source": "m10 stage exact x12 NATTransport",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact emitted typed key and owned witness in x12/qa2-network-pairs.md"
+    },
+    {
+      "rva": "0x0079E4A7",
+      "kind": "rename",
+      "old": "__ehhandler$?SetUDPSocketForSlot@NAT@@QAE_NGGPAX@Z",
+      "name": "__ehhandler$?SetUDPSocketForSlot@NAT@@QAE_NGGPBUBfmeNetAddress@@@Z",
+      "source": "m10 stage exact x12 NATTransport",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact emitted typed key and owned witness in x12/qa2-network-pairs.md"
+    },
+    {
+      "rva": "0x00447773",
+      "kind": "rename",
+      "old": "?getLANSlot@LANGameInfo@@QAEPAXH@Z",
+      "name": "?getLANSlot@LANGameInfo@@QBEPBVLANGameSlot@@H@Z",
+      "source": "m10 stage exact x12 LAN",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact emitted typed key and owned witness in x12/qa2-network-pairs.md"
+    },
+    {
+      "rva": "0x0057C71F",
+      "kind": "rename",
+      "old": "?GetStartPositionInfoForSlot@AptMapPreview@@QAEPAXH@Z",
+      "name": "?GetStartPositionInfoForSlot@AptMapPreview@@QAEPBUPlayerPosition@@H@Z",
+      "source": "m10 stage exact x12 AptMapPreview",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact emitted typed key and owned witness in x12/qa2-apt-map-preview-pair.md"
+    },
+    {
+      "rva": "0x0057C7BA",
+      "kind": "rename",
+      "old": "?rva0057C7BA@AptMapPreview@@QAEXH@Z",
+      "name": "?setMode@AptMapPreview@@QAEXH@Z",
+      "source": "m10 stage exact x12 AptMapPreview",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Exact emitted typed key and owned witness in x12/qa2-apt-map-preview-pair.md"
     }
   ],
   "refused": [

@@ -4,7 +4,7 @@
 // script runs against, a zero word, a text label, and the flag word 0x100000. The two retail labels seen are
 // "AptImported_Init_Actions" (0x006E46A0, 0x006E6A30) and "AptDoFrameControls" (0x0070F370). Field names are
 // this header's: the labels show the third member is a description string; the second is the function a
-// queued call or a timer runs (the old decomp's AptRun-Functions and AptTimerFunc setups fill it; the script
+// queued call or a timer runs (the script
 // runs of AptAnimation and AptMovie leave it zero).
 class AptCIH;
 class AptValue;

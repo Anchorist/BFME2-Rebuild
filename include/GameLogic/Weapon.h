@@ -1,6 +1,6 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 // Weapon.h: SAGE weapon instance. Partial layout. SIZE 0x60.
-// Target facts (old repo Code/GameEngine/Include/GameLogic/Weapon.h): Weapon derives
+// Target facts: Weapon derives
 // from Snapshot; constructor 0x002CC23D, destructor 0x002CC39E (slot 0 ??_G
 // 0x002CCE37); loadAmmoNow 0x002CE1AC. The owner id is at +0x08.
 // xfer 0x002CDD47 transfers, in order, ObjectID +0x08, WeaponSlotType +0x0C, uint
@@ -213,7 +213,7 @@ public:
 	// WeaponSet::findAmmoPipShowingWeapon 0x002C73F7 and findWaypointFollowingCapableWeapon
 	// 0x002C741C read the template's flags in place.
 	Bool isShowsAmmoPips() const { return m_template->isShowsAmmoPips(); }
-	Real getContinueAttackRange() const { return m_template->getContinueAttackRange(); }	// inline (decl_queue h07 14:42, ACCEPTED k10)
+	Real getContinueAttackRange() const { return m_template->getContinueAttackRange(); }	// inline
 	Bool isCapableOfFollowingWaypoints() const { return m_template->isCapableOfFollowingWaypoints(); }
 	WeaponStatus getStatus() const;							// 0x002CCFC7
 	Bool rva002CE74B(const Object *source, const Object *victim);	// 0x002CE74B (map placeholder; Object::fireCurrentWeapon 0x00291873 fires through it under object status 37)

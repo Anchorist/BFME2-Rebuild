@@ -5,21 +5,20 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: none; hard membership, hypothetical extent
-#include "GameLogic/GODupBase.h"
-#include "Draft/BuffLogic.h"
+#include "GameLogic/BuffLogic.h"
 
 // The singleton (retail VA 0x00DFF190).
 BuffLogic *TheBuffLogic = NULL;
 
 // FUNCTION: BFME2 0x00306782 size=66 name=??0GODupBase@@QAE@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-class+shared-data
 // FUNCTION: BFME2 0x003067C4 size=6 name=?name@Rva003067C4Named@@QBEPBDXZ evidence=?:placeholder tier=A
-const char *GODupBase::GetSnapshotName() const
+const char *BuffLogic::GetSnapshotName() const
 {
 	return "BuffLogic";
 }
 
 // FUNCTION: BFME2 0x003067D2 size=60 name=??1GODupBase@@UAE@XZ evidence=N:ledger tier=A
-GODupBase::~GODupBase()
+BuffLogic::~BuffLogic()
 {
 }
 

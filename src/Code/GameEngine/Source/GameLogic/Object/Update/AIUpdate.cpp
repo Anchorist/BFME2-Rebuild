@@ -970,6 +970,13 @@ Real Object::rva00263763(const void *other) const
 
 // FUNCTION: BFME2 0x0026385A size=10 name=?get@Rva0026385AByteChase32Field@@QBEEXZ evidence=?:placeholder tier=B hypothesis:name:invented
 
+DamageInfo::DamageInfo()
+{
+	out.m_actualDamageDealt = 0.0f;
+	out.m_actualDamageClipped = 0.0f;
+	out.m_noEffect = false;
+}
+
 // FUNCTION: BFME2 0x002638C2 size=10 name=?get@Rva002638C2ShrNAndField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:name:invented
 
 // FUNCTION: BFME2 0x002638CC size=14 name=?rva002638CC@Locomotor@@QAEX_N@Z evidence=?:placeholder tier=B hypothesis:name:invented

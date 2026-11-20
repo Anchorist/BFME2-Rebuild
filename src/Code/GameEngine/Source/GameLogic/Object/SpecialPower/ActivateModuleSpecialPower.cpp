@@ -15,6 +15,11 @@
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
 // FUNCTION: BFME2 0x004CDD02 size=49 name=??0ActivateModuleSpecialPower@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+ActivateModuleSpecialPower::ActivateModuleSpecialPower(Thing *thing, const ModuleData *moduleData)
+	: SpecialAbilityUpdate(thing, moduleData)
+{
+}
+
 // FUNCTION: BFME2 0x004CDD33 size=6 name=?Rva004CDD33Get@@YAHXZ evidence=?:placeholder
 const char *ActivateModuleSpecialPower::GetSnapshotName() const
 {

@@ -721,7 +721,8 @@
       "object_evidence": "X:closure",
       "accepted_names": [
         "?rva0036AE51@Rva0036AE51ListView@@QAE?AV?$list@URva0036ADF9Element@@V?$allocator@URva0036ADF9Element@@@_STL@@@_STL@@XZ",
-        "?rva0036AE51@Rva0036AE51ListView@@QAE?AV?$list@PAVObject@@V?$allocator@PAVObject@@@_STL@@@_STL@@XZ"
+        "?rva0036AE51@Rva0036AE51ListView@@QAE?AV?$list@PAVObject@@V?$allocator@PAVObject@@@_STL@@@_STL@@XZ",
+        "?toList@ContainmentListView@@QAE?AV?$list@PAVObject@@V?$allocator@PAVObject@@@_STL@@@_STL@@XZ"
       ],
       "parent": null,
       "object": "retained:O00367564",

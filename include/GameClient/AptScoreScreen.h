@@ -47,11 +47,11 @@ public:
 	void InitGadgets(const char *name, void *argument, GameWindow *window);	// 0x0051C7CC
 	void heroVetUpgrade(int index, char *result, bool skip);	// 0x0051C992: Apt query "heroVetUpgrade%d"
 	void rva0051BF2D();								// 0x0051BF2D: finishes the screen once the +0x284 flag was already set
-	static bool OpenScreen(int mode, int objectives);	// 0x0051E262
+	static bool OpenScreen(int mode, AptScoreObjectives *objectives);	// 0x0051E262
 	void CollectGameData();							// 0x0051DE3D
 
 	int m_step;										// +0x27C
-	int m_x280;										// +0x280
+	int m_mode;										// +0x280
 	bool m_flag284;									// +0x284
 	unsigned char m_pad285[3];
 	AptScoreObjectives *m_data;						// +0x288

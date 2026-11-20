@@ -1,7 +1,7 @@
 // cl: /O1
 #include "GameClient/AptGuiFX.h"
 #include "GameClient/AptMessageBox.h"
-#include "Draft/AptMessenger.h"
+#include "GameClient/AptMessenger.h"
 #include "Apt/BfmeAptWindowManager.h"
 #include "GameClient/DisplayStringManager.h"
 #include "GameClient/DisplayString.h"

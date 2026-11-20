@@ -1,4 +1,4 @@
-// AimWeaponBehavior.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x0045B14D, 0x0045B198);
+// AimWeaponBehavior.h:
 // name, size, bases and virtual order are retail facts given below.
 // AimWeaponBehavior.h: the AimWeaponBehavior module. SIZE 0x24 (ModuleFactory operator new).
 // Target facts: the constructor 0x0045B226 calls UpdateModule first; it stores the

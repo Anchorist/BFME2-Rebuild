@@ -49,7 +49,8 @@
         "?IsCRC@XferSaveAsText@@UBE_NXZ",
         "?IsLightCRC@XferSaveAsText@@UBE_NXZ",
         "?isContactWeapon@WeaponTemplate@@QBE_NXZ",
-        "?slot09@ModuleData@@UBE_NXZ"
+        "?slot09@ModuleData@@UBE_NXZ",
+        "?slot08@ModuleData@@UBE_NXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"

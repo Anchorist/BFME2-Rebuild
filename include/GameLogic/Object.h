@@ -123,8 +123,8 @@ class Object : public Thing, public Snapshot, public ShroudObjectClient,
 	public PartitionClient, public CollisionClient
 {
  friend class WallUpgradeUpdate;
- friend class SpecialPowerModule;	// SpecialPowerModule::ApplyPowerToObject 0x00493EA7 calls the private findAttributeModifierPoolUpdate 0x0028BDD7 (f11)
- friend class GameLogic;	// Object::setID 0x0028B532 is protected (IAE); GameLogic::SwapObjectIDs 0x00242BB4 calls it on both objects (f01)
+ friend class SpecialPowerModule;	// SpecialPowerModule::ApplyPowerToObject 0x00493EA7 calls the private findAttributeModifierPoolUpdate 0x0028BDD7
+ friend class GameLogic;	// Object::setID 0x0028B532 is protected (IAE); GameLogic::SwapObjectIDs 0x00242BB4 calls it on both objects
 public:
 	Object(const ThingTemplate *thingTemplate, const CreateMask *mask, Team *team, ObjectID id);	// 0x00298EA9
 
@@ -185,11 +185,11 @@ public:
     void rva0028C2DD(Coord3D *) const;
     void rva0029660C(const Coord3D *,int);
     void rva0028DA28();
-    void onReducedToRubble();	// 0x00298E6A: what the structure-rubble helper 0x004BDA67 tail-jumps to (f14)
-    void rva0028DAB9();	// 0x0028DAB9 (f14: ActiveBody structure-rubble helper 0x004BDA67, template CommandPointBonus > 0)
+    void onReducedToRubble();	// 0x00298E6A: what the structure-rubble helper 0x004BDA67 tail-jumps to
+    void rva0028DAB9();	// 0x0028DAB9 (ActiveBody structure-rubble helper 0x004BDA67, template CommandPointBonus > 0)
     const AsciiString *rva00290E67() const;		// 0x00290E67 (?rva00290E67@Object@@QBEPBVAsciiString@@XZ: the object's command-set name; CommandButtonHuntUpdate::xfer 0x004953EE)
     void rva0028CDEB(const Rva00346BC0 &,bool);		// 0x0028CDEB: the mangled name's mask type is Rva00346BC0 (was spelled ObjectStatusMask here, which mangles differently)
-    void clearMask(const Rva00346BC0 &mask) { rva0028CDEB(mask, false); }	// inline in retail; the out-of-line copy is 0x0044E5AA (f11)
+    void clearMask(const Rva00346BC0 &mask) { rva0028CDEB(mask, false); }	// inline in retail; the out-of-line copy is 0x0044E5AA
     void fireCurrentWeapon(Object *,int);
 	SpecialPowerModuleInterface *getSpecialPowerModule(const SpecialPowerTemplate *spt) const;	// 0x0028BB9E
 	SpecialAbilityUpdate *findSpecialAbilityUpdate(SpecialPowerType type) const;	// 0x0028BD92
@@ -202,8 +202,8 @@ public:
 	// Weapon.cpp rows over 0x002C97E8 / 0x002636F6: from this object's position to a point
 	// (0x002C9846), and from a point to another object (0x002C9856).
 	Real rva002C9846(const Coord3D *pos) const;
-	Bool getWorldspaceBestContactPoint(Coord3D *result, const Coord3D *from, const char *boneName, Int a, Int b, Bool c) const;	// 0x002904DC (SpecialAbilityUpdate::isWithinStartAbilityRange 0x0044F28E; decl_queue f11 15:33, ACCEPTED k11)
-	Real Get3DCenterDistanceSquared(const Coord3D *point) const;	// 0x001E435D (map spells the parameter with the provisional class BfmeVec3EJ; decl_queue f11 15:33, ACCEPTED k11)
+	Bool getWorldspaceBestContactPoint(Coord3D *result, const Coord3D *from, const char *boneName, Int a, Int b, Bool c) const;	// 0x002904DC (SpecialAbilityUpdate::isWithinStartAbilityRange 0x0044F28E)
+	Real Get3DCenterDistanceSquared(const Coord3D *point) const;	// 0x001E435D (map spells the parameter with the provisional class BfmeVec3EJ)
 	Coord3D rva00265514(const Object *other) const;	// 0x00265514: the 2D border vector from other to this object (Weapon::computeApproachTarget 0x002CAEA3)
 	Coord3D Get2DBorderVectorTo(const Coord3D *pos) const;	// 0x002C986B (Weapon::computeApproachTarget 0x002CAEA3)
 	Real rva002C9856(const Coord3D *pos, const Object *other) const;
@@ -217,8 +217,8 @@ public:
 	// 0x00263763 (map placeholder name): passes this+0x38, other+0x38 and other
 	// to the helper 0x002636F6 and returns its Real.
 	Real rva00263763(const void *other) const;
-	Real getDistanceSquaredToObject(const Object *other) const;	// 0x0044E6B8 (this+0x38, other and other+0x38 go to the geometry-aware distance 0x0028ED19; SpecialAbilityUpdate::isWithinStartAbilityRange 0x0044F28E; decl_queue f11 16:15, ACCEPTED k11)
-	Object *getCurrentVictim() const;	// 0x0028ACA0: m_ai's current victim (AIUpdateInterface::getCurrentVictim 0x00268D71) when m_ai slot 111 (+0x1BC) answers true, else NULL; map row ?rva0028ACA0@Object@@QBEPAV1@XZ (?:placeholder); decl_queue k02 17:45, ACCEPTED k11
+	Real getDistanceSquaredToObject(const Object *other) const;	// 0x0044E6B8 (this+0x38, other and other+0x38 go to the geometry-aware distance 0x0028ED19; SpecialAbilityUpdate::isWithinStartAbilityRange 0x0044F28E)
+	Object *getCurrentVictim() const;	// 0x0028ACA0: m_ai's current victim (AIUpdateInterface::getCurrentVictim 0x00268D71) when m_ai slot 111 (+0x1BC) answers true, else NULL; map row ?rva0028ACA0@Object@@QBEPAV1@XZ (?:placeholder)
 	// 0x0028DCC4 (map placeholder name): registers the object with the
 	// partition and collision managers (the counterpart of 0x0028BAC0).
 	void rva0028DCC4();
@@ -246,7 +246,7 @@ public:
 	void addSkillPointsForDamage(const Object *victim, Real damage);
 	const WeaponSetFlags &getWeaponSetFlags() const;	// 0x0028B7AE `lea eax,[ecx+0x370]; ret` (map: placeholder ?get@Rva0028B7AELeaGetter)
 	void setTeam(Team *team);				// 0x00298AE4 (TaintSpecialPower::addObject 0x004C4940 calls it)
-	void friend_bindToDrawable(Drawable *draw);				// 0x0029080C (GameLogic::bindObjectAndDrawable 0x0023CD4A, sendObjectDestroyed 0x0023CD67; decl_queue f13 05:50, ACCEPTED k06 05:27)
+	void friend_bindToDrawable(Drawable *draw);				// 0x0029080C (GameLogic::bindObjectAndDrawable 0x0023CD4A, sendObjectDestroyed 0x0023CD67)
 	Relationship getRelationship(const Object *that) const;
 	Bool hasUpgrade(const UpgradeTemplate *) const;
 	void removeUpgrade(const UpgradeTemplate *upgrade);	// 0x00290D42 (UpgradeDie::onDie 0x00486C00 calls it)
@@ -256,9 +256,9 @@ public:
 	void onCapture(Player *oldOwner, Player *newOwner);	// 0x002966A0 (Zero Hour's)
 	void updateUpgradeModules();	// 0x00292EEA (Player::onUpgradeCompleted 0x002AD93A calls it for every member; Zero Hour's name)
 	void giveUpgrade(const UpgradeTemplate *upgrade);	// 0x00293077 (GrantUpgradeCreate::onBuildComplete 0x004B9093 calls it)
-	Bool affectedByUpgrade(const UpgradeTemplate *upgrade) const;	// 0x002940B9 (Team::rva0039E8FF 0x0039E8FF calls it on every member without a horde interface; Zero Hour's name; decl_queue f13 05:59, ACCEPTED k08)
-	Bool isProducedByHorde();	// 0x002931BA (role name; the map row ?rva002931BA@Object@@QAE_NXZ is a placeholder on Object: the object was spawned by a horde, Team::getTeamAsAIGroup 0x003A0F62 skips such members; decl_queue f13 06:38, ACCEPTED k08)
-	void setPathfinderGoal(Int a, Int b);	// 0x0028ACEE (role name; the map row ?rva0028ACEE@Object@@QAEXHH@Z is a placeholder on Object: forwards to the PathfinderPosGoalManager at +0xA4, which registers a goal through SetGoal 0x004DE109; GiantBird state onExit bodies call it; decl_queue f01 07:55, ACCEPTED k08)
+	Bool affectedByUpgrade(const UpgradeTemplate *upgrade) const;	// 0x002940B9 (Team::rva0039E8FF 0x0039E8FF calls it on every member without a horde interface; Zero Hour's name)
+	Bool isProducedByHorde();	// 0x002931BA (role name; the map row ?rva002931BA@Object@@QAE_NXZ is a placeholder on Object: the object was spawned by a horde, Team::getTeamAsAIGroup 0x003A0F62 skips such members)
+	void setPathfinderGoal(Int a, Int b);	// 0x0028ACEE (role name; the map row ?rva0028ACEE@Object@@QAEXHH@Z is a placeholder on Object: forwards to the PathfinderPosGoalManager at +0xA4, which registers a goal through SetGoal 0x004DE109; GiantBird state onExit bodies call it)
 	void addGuarder(Object *guarder);	// 0x0028BC05 (18-byte forwarder to ObjectGuardingHelper 0x004DF4B5; ObjectGuardingHelper::setGuardedObject 0x004DF3B0 calls it)
 	void removeGuarder(Object *guarder);	// 0x0028BC17 (forwarder to ObjectGuardingHelper 0x004DF3F8; stopGuarding 0x004DF2FC calls it)
 	CellShroudStatus getShroudStatusForPlayer(Int playerIndex) const;	// 0x0028D2A2
@@ -278,7 +278,7 @@ public:
 	Real rva002972B1(Real range);			// 0x002972B1 the threat a unit poses within range
 	// 0x0006F039 (COMDAT in W3DScene.cpp, 17 link referrers): the masked one-bit test of the model
 	// conditions (`and eax,[esi+edx*4+0x10C]; neg; sbb`). Out of line in retail; the map's name
-	// is m05 c2's rename of the ledger's isKindOf spelling. (k02 declares it at the publish.)
+	// is a rename of the ledger's isKindOf spelling.
 	Bool testModelConditionState(ModelConditionFlagType t) const;
 	// 0x0028E58E: Zero Hour's getRadarPriority: the template's RadarPriority (+0x5F0, a signed
 	// byte), else STRUCTURE for a garrisonable contain or KindOf bit 49 (RadarObject 0x00050125).
@@ -296,7 +296,7 @@ public:
 	void *rva0028BD3A() const;							// 0x0028BD3A: the first slot-33 answer
 	Bool isSlaved() const;								// 0x0028C4ED (map: placeholder): any slaved-update interface
 	void setWeaponSetFlag(WeaponSetType);
-	// f11 (WeaponSetSpecialAbilityUpdate 0x0049251D, HeroModeSpecialAbilityUpdate 0x00492231/0x0049226C, TeleportSpecialAbilityUpdate 0x00492DAB):
+	// (WeaponSetSpecialAbilityUpdate 0x0049251D, HeroModeSpecialAbilityUpdate 0x00492231/0x0049226C, TeleportSpecialAbilityUpdate 0x00492DAB):
 	void clearWeaponSetFlag(WeaponSetType);	// 0x00290A10
 	Bool hasWeaponTemplateSetFor(WeaponSetType flag) const;	// 0x0029091E: builds a one-bit WeaponSetFlags and returns findWeaponTemplateSet(mask) != 0
 	void setBusyUntilFrame(Int frame);	// 0x002900E0: setStatus(0x4A, true), stores the frame at +0x42C
@@ -338,7 +338,7 @@ public:
 	Bool IsAtGoalPosition() const;					// 0x0028ADB0
 	void restartAllSpecialPowerRecharges() const;						// 0x0028B265: every special power restarts its recharge (1.0f)
 	Bool getIsUndetectedDefector() const { return (m_privateStatus & UNDETECTED_DEFECTOR) != 0; }	// read inline
-	Bool isOffMap() const { return (m_privateStatus & OFF_MAP) != 0; }	// read inline (AIUpdateInterface::privateAttackPosition 0x0026DB1A; decl_queue h07 14:42, ACCEPTED k10)
+	Bool isOffMap() const { return (m_privateStatus & OFF_MAP) != 0; }	// read inline (AIUpdateInterface::privateAttackPosition 0x0026DB1A)
 	Bool isInList(Object **listHead) const;		// 0x0028B47C
 	SpawnBehaviorInterface *getSpawnBehaviorInterface() const;	// 0x0028BCD4
 	void leaveGroup();							// 0x0028C01F
@@ -367,13 +367,13 @@ public:
 	Bool testStatus(ObjectStatusTypes bit) const;
 	Bool testBit(Int bit) const;	// 0x0028D891 (map ?testBit@Object@@QBE_NH@Z; ScriptConditions::evaluateUnitHasToggledWeapon 0x003E89A9 calls it with 0x18, 0x19, 0x1A)
 	void setStatus(ObjectStatusTypes bit, Bool set);
-	void setScriptStatus(ObjectScriptStatusBit bit, Bool set);	// 0x00292969 (ScriptActions 0x003C058A, 0x003C05DE, 0x003BBD39, 0x003BBD61; f07)
+	void setScriptStatus(ObjectScriptStatusBit bit, Bool set);	// 0x00292969 (ScriptActions 0x003C058A, 0x003C05DE, 0x003BBD39, 0x003BBD61)
 	void clearScriptStatus(ObjectScriptStatusBit bit);	// 0x002934D9: Zero Hour's setScriptStatus(bit, false), out of line in retail
-	Bool canUnloadOnLandAt(Coord3D *pos);	// 0x0028ECDB: an amphibious ship transport with a contain module that can unload at a land point (AIUpdateInterface::privateFollowWaypointPath 0x0026B8E5, privateFollowPath 0x0026BA84; h07)
-	void adjustModelConditionForWeaponStatus();	// 0x0028DB3C (ObjectWeaponStatusHelper::update 0x0028F976, AIUpdateInterface::privateIdle 0x0026D5FB; Zero Hour's name; h07)
-	void report(Object *victim, Int kind);	// 0x00294D61 (ActiveBody::attemptDamage 0x004BFE07 reports a kill on the damage source; f14)
-	void addSkillPointsForDamage(Object *victim, Real ratio);	// 0x0028B749 (forwards to the controlling player; f14)
-	void notifyDamageDealt(DamageInfo *damageInfo, Object *victim) const;	// 0x0028B1D4 (f14)
+	Bool canUnloadOnLandAt(Coord3D *pos);	// 0x0028ECDB: an amphibious ship transport with a contain module that can unload at a land point (AIUpdateInterface::privateFollowWaypointPath 0x0026B8E5, privateFollowPath 0x0026BA84)
+	void adjustModelConditionForWeaponStatus();	// 0x0028DB3C (ObjectWeaponStatusHelper::update 0x0028F976, AIUpdateInterface::privateIdle 0x0026D5FB; Zero Hour's name)
+	void report(Object *victim, Int kind);	// 0x00294D61 (ActiveBody::attemptDamage 0x004BFE07 reports a kill on the damage source)
+	void addSkillPointsForDamage(Object *victim, Real ratio);	// 0x0028B749 (forwards to the controlling player)
+	void notifyDamageDealt(DamageInfo *damageInfo, Object *victim) const;	// 0x0028B1D4
 	void clearStatus(ObjectStatusTypes bit);
 	Coord3D *getPlanarDirectionTo(Coord3D *direction, const Object *other) const;	// ?getPlanarDirectionTo@Object@@QBEPAUCoord3D@@PAU2@PBV1@@Z
 	// Inline: the out-of-line copy 0x0023D394 (`add ecx,0x1C8; jmp
@@ -402,14 +402,14 @@ public:
 	// 0x0028AF65: the weapon set's current lock status is non-zero (Weapon::isAmmoReady
 	// 0x002CC3FF calls it).
 	Bool isCurWeaponLocked() const;
-	Bool hasWeaponLockStatus() const;							// 0x0028B7B5 (role name: m_weaponSet +0x24 is nonzero; AIAttackState::loadPostProcess 0x00346063 calls it; decl_queue f04 14:35, ACCEPTED k10)
+	Bool hasWeaponLockStatus() const;							// 0x0028B7B5 (role name: m_weaponSet +0x24 is nonzero; AIAttackState::loadPostProcess 0x00346063 calls it)
 	Bool chooseBestWeaponForTarget(const Object *victim, WeaponChoiceCriteria criteria, CommandSourceType commandSource);	// 0x0028AF4A
 	Real getLargestWeaponRange() const;	// 0x0028AE13
 	void calcNaturalRallyPoint(Coord2D *pt);	// 0x0028B65F (Zero Hour's)
 	void reactToTurretChange(WhichTurretType turret, Real oldRotation, Real oldPitch);	// 0x0028B141 (Zero Hour's; TurretAI 0x004D8B14)
 	// +0x380: Weapon::computeBonus 0x002C9A6F ORs it into the bonus conditions.
 	UnsignedInt getWeaponBonusCondition() const { return m_weaponBonusCondition; }
-	Bool testWeaponBonusCondition(Int bit) const { return ((m_weaponBonusCondition >> bit) & 1) != 0; }	// retail tests the shifted form (PropagandaTowerBehavior 0x00481A9E; f08)
+	Bool testWeaponBonusCondition(Int bit) const { return ((m_weaponBonusCondition >> bit) & 1) != 0; }	// retail tests the shifted form (PropagandaTowerBehavior 0x00481A9E)
 	void setWeaponBonusCondition(Int bit) { m_weaponBonusCondition |= (1u << bit); }
 	void clearWeaponBonusCondition(Int bit) { m_weaponBonusCondition &= ~(1u << bit); }
     bool rva00298893();
@@ -428,7 +428,7 @@ public:
 	const GeometryInfo *getAdditionalGeometryInfo(Int index) const;
 	Bool getSingleLogicalBonePosition(const char *boneName, Coord3D *pos, Matrix3D *transform) const;	// 0x0028BEE0
 	Bool getSingleLogicalBonePositionOnTurret(WhichTurretType turret, const char *boneName, Coord3D *pos, Matrix3D *transform) const;	// 0x0028E1AC
-	Int getMultiLogicalBonePosition(const char *boneNamePrefix, Int maxBones, Coord3D *positions, Matrix3D *transforms, Bool worldSpace, Int turretIndex) const;	// 0x0028BF81 (ActiveBody::createParticleSystems 0x004BE24A calls it at 0x004BE2B1; decl_queue f14 05:25, ACCEPTED k06)
+	Int getMultiLogicalBonePosition(const char *boneNamePrefix, Int maxBones, Coord3D *positions, Matrix3D *transforms, Bool worldSpace, Int turretIndex) const;	// 0x0028BF81 (ActiveBody::createParticleSystems 0x004BE24A calls it at 0x004BE2B1)
 
 	// Model conditions at +0x10C..+0x158. Zero Hour's Object runs the same clear/set
 	// sequence and notifies through 0x0028AE6D only when the clear bit is set
@@ -506,7 +506,7 @@ public:
 	// without one.
 	Bool rva0028C15E(Int a, Real *value, Int b, Int c);
 	// 0x0028ADEC: whether any of the object's weapons deals damage (Zero Hour's hasAnyDamageWeapon);
-	// PropagandaTowerBehavior::effectLogic 0x00481A9E calls it on the target (f08).
+	// PropagandaTowerBehavior::effectLogic 0x00481A9E calls it on the target.
 	Bool hasAnyDamageWeapon() const;
 	Real rva0028B842() const;	// 0x0028B842 (Locomotor::getMaxSpeed 0x001E46E1: the crew-powered speed factor)
 	Bool rva00293926(KindOfType kind);	// 0x00293926 (Locomotor 0x001E468F)
@@ -516,16 +516,16 @@ public:
 	Real getLocomotorSpeed() const;	// 0x0028AC7D (StealthUpdate::rva00373F59 0x00373F59)
 	void replaceModelConditionFlags(const Int *flags, Bool forceDrawableUpdate);	// 0x0028CFF5 (StealthUpdate::changeVisualDisguise 0x00374BC8)
 	void forceRefreshSubObjectUpgradeStatus() const;	// 0x0028B3D7 (StealthUpdate::changeVisualDisguise 0x00374BC8)
-	// f14 (ActiveBody::setCorrectDamageState 0x004BE8BD, loadPostProcess 0x004BF40F):
+	// (ActiveBody::setCorrectDamageState 0x004BE8BD, loadPostProcess 0x004BF40F):
 	void setGeometryInfoZ(Real height);	// 0x0028ABFC
 	void rva0028AB75(Bool flag);	// 0x0028AB75
 	void rva0029895A(const GeometryInfo *geometry);	// 0x0029895A
-	// 0x0028FB6F (f06: CaveContain::removeFromContain 0x004666C9, OpenContain 0x00462FB3): the rider learns its container is gone.
+	// 0x0028FB6F (CaveContain::removeFromContain 0x004666C9, OpenContain 0x00462FB3): the rider learns its container is gone.
 	void onRemovedFrom(Object *container);
-	// 0x0028ADD5 (p03): true when the object has no ammunition left.
+	// 0x0028ADD5: true when the object has no ammunition left.
 	Bool isOutOfAmmo() const;
-	void defect(Team *newTeam, UnsignedInt detectionTime);	// 0x00298C76 (f06: CaveContain 0x00466848 changeTeamOnAllConnectedCaves)
-	Int getTransportSlotCount();	// 0x0028FBBE (h09: ControlBar::populateInvDataCallback 0x0053B98C)
+	void defect(Team *newTeam, UnsignedInt detectionTime);	// 0x00298C76 (CaveContain 0x00466848 changeTeamOnAllConnectedCaves)
+	Int getTransportSlotCount();	// 0x0028FBBE (ControlBar::populateInvDataCallback 0x0053B98C)
 	// 0x0028C1CC: true while the current weapon is not ready and, when it is, while
 	// the firing tracker's last frame (+0x240 -> +0x44) is recent.
 	Bool rva0028C1CC() const;
@@ -538,7 +538,7 @@ public:
 	Bool addAttributeModifierToPool(const AsciiString &name, int strength);
 	void removeAttributeModifierFromPool(const AsciiString &name);	// 0x0028EB42
 	void setCommandSetStringOverride(const AsciiString &name);	// 0x0029336F: the command-set override the upgrade applies
-	Bool hasCommandButton(const CommandButton *button);	// 0x002922D9: whether the button is one of this object's own (its special power's module, then the command set named by rva00290E67); map row ?rva002922D9@Object@@QAE_NPBVCommandButton@@@Z (?:placeholder); decl_queue f07 19:09, ACCEPTED k12
+	Bool hasCommandButton(const CommandButton *button);	// 0x002922D9: whether the button is one of this object's own (its special power's module, then the command set named by rva00290E67); map row ?rva002922D9@Object@@QAE_NPBVCommandButton@@@Z (?:placeholder)
 	void doCommandButton(const CommandButton *button, Int arg, Bool flag);	// 0x00296749
 	void doCommandButtonAtPosition(const CommandButton *button, const Coord3D *pos, Int arg, Int flag);	// 0x00297149
 	void rva00297000(const CommandButton *button, Object *obj, Int arg, Int flag);	// 0x00297000
@@ -564,8 +564,8 @@ public:
 	const ExperienceTracker *getExperienceTracker() const { return m_experienceTracker; }
 	UpdateModule *findUpdateModule(NameKeyType key) const { return (UpdateModule *)findModule(key); }
 	const Weapon *getCurrentWeapon(WeaponSlotType *slot = 0) const;	// 0x0028AEBD
-	void setFiringConditionForCurrentWeapon();	// 0x0028FC8F (decl_queue f04 18:08, ACCEPTED k11)
-	void fireCurrentWeapon(const Coord3D *pos);	// 0x00291916 (fires the current weapon at pos; AIRampageState helper 0x0034BE57; decl_queue f04 18:08, ACCEPTED k11)
+	void setFiringConditionForCurrentWeapon();	// 0x0028FC8F
+	void fireCurrentWeapon(const Coord3D *pos);	// 0x00291916 (fires the current weapon at pos; AIRampageState helper 0x0034BE57)
 	Bool isMobile() const;						// 0x002907A1 (AIUpdateInterface::privateFacePosition 0x00267D65, privateTightenToPosition 0x00267DAD)
 	Weapon *getWeaponInWeaponSlot(WeaponSlotType slot) const { return m_weaponSet.getWeaponInSlot(slot); }
 	Real getVisionRange() const;
@@ -656,7 +656,7 @@ public:
 	ObjectSMCHelper *m_smcHelper;					// 0x230 setSpecialModelConditionState 0x0028AEB2 forwards to it
 	void *m_234;									// 0x234
 	ObjectDefectionHelper *m_defectionHelper;		// 0x238 (startDefectionTimer 0x0028BFF9 starts its timer)
-	ObjectGuardingHelper *m_guardingHelper;			// 0x23C (the helper module: addGuarder/removeGuarder forward to it; decl_queue f14 06:55, ACCEPTED k08)
+	ObjectGuardingHelper *m_guardingHelper;			// 0x23C (the helper module: addGuarder/removeGuarder forward to it)
 	FiringTracker *m_firingTracker;					// 0x240
 	BehaviorModule **m_behaviors;					// 0x244
 	Bool m_248;										// 0x248
@@ -683,7 +683,7 @@ public:
 	Object *m_prevTeamMember;						// 0x328 the TeamMemberList DLINK pair (0x0028A6E7 prependTo, 0x0028A704 removeFrom)
 	Object *m_nextTeamMember;						// 0x32C
 	WeaponSet m_weaponSet;							// 0x330
-	WeaponSetFlags m_weaponSetFlags;				// 0x370 BitFlags<104> (h06: WeaponSet chooses its template set from it)
+	WeaponSetFlags m_weaponSetFlags;				// 0x370 BitFlags<104> (WeaponSet chooses its template set from it)
 	UnsignedInt m_weaponBonusCondition;				// 0x380 (Weapon::computeBonus)
 	unsigned char m_384[6];							// 0x384
 	Coord3D m_currentTargetPosition;	// 0x38C Lua's drawable target distance and bearing are measured to this position.

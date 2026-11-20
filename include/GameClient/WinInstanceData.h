@@ -10,7 +10,6 @@ class VideoBuffer;
 class UnicodeString;
 // SIZE 0x1A8. Ctor0x0032225A, init0x00322174 and GameWindow's member
 // +0x30..+0x1D7. One deleting-dtor slot at table RVA0x0080D830.
-// 17 synthesized views: opaque prefixes are not competing field layouts.
 // Names: donor (ZH); offsets independently confirmed by parser/setter bodies.
 class WinInstanceData {
 public:
@@ -44,7 +43,7 @@ public:
     int m_tooltipDelay; // 198
     DisplayString *m_text, *m_tooltip; // 19C,1A0
     DisplayString *getTextDisplayString() { return m_text; }       // inline accessors (Zero Hour spelling)
-    GameFont *getFont() { return m_font; }       // inline accessor (Zero Hour spelling; GadgetListBox 0x00324C61, 0x00323E95; f12)
+    GameFont *getFont() { return m_font; }       // inline accessor (Zero Hour spelling; GadgetListBox 0x00324C61, 0x00323E95)
     DisplayString *getTooltipDisplayString() { return m_tooltip; }
     VideoBuffer *m_videoBuffer; // 1A4
 };

@@ -1,4 +1,4 @@
-// Diagnostic pilot import; object boundaries may be unproven.
+// Object boundaries may be unproven.
 // FUNCTION: BFME2 0x004AE7A7 size=6 name=?GetSnapshotName@DetachableRiderUpdate@@MBEPBDXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x004AE7AD size=72 name=?xfer@DetachableRiderUpdate@@MAEXPAVXfer@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x004AE832 size=69 name=?getModuleNameKey@DetachableRiderUpdate@@UBE?AW4NameKeyType@@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
@@ -7,7 +7,7 @@
 // FUNCTION: BFME2 0x004AE909 size=12 name=?get@Rva004AE909ImulAddField@@QBEHH@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x004AE988 size=114 name=?killRider@DetachableRiderUpdate@@QAEXXZ evidence=N:ledger
 #include "Common/INI.h"
-#include "Common/ModelConditionMask.h"
+#include "Common/BitFlags.h"
 #include "Common/INIException.h"
 #include <string.h>
 void *AllocateRawBytes(unsigned int,const void *);
@@ -27,7 +27,7 @@ int GetGameLogicRandomValue(int,int,char*,int);
 #include "GameLogic/Module/RiderInfoArray.h"
 #include "Common/NameKeyGenerator.h"
 #include "Common/Xfer.h"
-// GameLogic/Object/Update/DetachableRiderUpdate.cpp: retail translation unit (pilot skeleton).
+// GameLogic/Object/Update/DetachableRiderUpdate.cpp: retail translation unit (skeleton).
 // Write each function below its FUNCTION annotation, in this (retail) order.
 // Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
 // Shared types belong in include/; no class or struct with a body in this file.
@@ -46,7 +46,7 @@ void DetachableRiderUpdate::xfer(Xfer *xfer)
  *xfer == version;
  UpdateModule::xfer(xfer);
  *xfer == m_active;
- *xfer == reinterpret_cast<bool &>(m_riderIndex);
+ *xfer == m_riderIndex;
 }
 
 
@@ -105,7 +105,7 @@ void DetachableRiderUpdate::killRider()
 	if (count < 1)
 		return;
 	int randomIndex = GetGameLogicRandomValue(0, count - 1, "C:\\projects\\bfme2patch103\\bfme2\\Code\\GameEngine\\Source\\GameLogic\\Object\\Update\\DetachableRiderUpdate.cpp", 0x114);
-	unsigned char b = (randomIndex != 0);
+	bool b = randomIndex != 0;
 	m_riderIndex = b;
 	RiderInfo *deathEntry = (RiderInfo *)((char *)arrayHolder->m_records.m_begin + (unsigned int)b * 0x54);
 	obj->setModelConditionFlags(deathEntry->m_conditions);
@@ -143,7 +143,7 @@ void ParseRiderInfo(INI *ini,void *instance,void *store,const void *)
  RiderInfo info;
  const char *token=ini->getNextToken(ini->m_sepsColon);
  if(token==0 || strcmp(token,"AnimState")!=0) throw INIException(3,"AnimState expected");
- int bit=ModelConditionMask::getSingleBitFromName(ini->getNextToken());
+ int bit=BitFlags<591>::getSingleBitFromName(ini->getNextToken());
  info.m_conditions=ModelConditionFlags(ModelConditionFlags::kInit,bit);
  token=ini->getNextToken(ini->m_sepsColon);
  if(token==0 || strcmp(token,"AnimTime")!=0) throw INIException(3,"AnimDuration expected");

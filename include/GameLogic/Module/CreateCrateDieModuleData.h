@@ -1,4 +1,4 @@
-// CreateCrateDieModuleData.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x004858F4, 0x0025739D);
+// CreateCrateDieModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // CreateCrateDieModuleData.h: the INI data of CreateCrateDie. SIZE 0x3C.
 // Target facts: ModuleFactory registers the module with operator new 0x3C and

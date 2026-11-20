@@ -2,8 +2,8 @@
 // SuperweaponInfo: the HUD entry for one superweapon timer (name + countdown strings).
 // Evidence (retail): setFont 0x0029A4CA / drawName 0x0029A541 / drawTime 0x0029A585 / getHeight 0x0029A5CA
 // read the name DisplayString at +4, the time DisplayString at +8 and the colour at +0xC; setText 0x0029B878
-// sets both strings' text through DisplayString slot 1; the class has a vtable pointer at +0 (the old decomp's
-// views agree on a virtual destructor). NOTE: the constructor/destructor rows 0x0029B8B0/0x0029B8DD that store
+// sets both strings' text through DisplayString slot 1; the class has a vtable pointer at +0.
+// NOTE: the constructor/destructor rows 0x0029B8B0/0x0029B8DD that store
 // VA 0x00BFD02C belong to NamedTimerInfo (an AsciiString at +4 and a UnicodeString at +8), not to this class.
 // The rest of the object (power template, power name, ...), its constructor and its SIZE are not recovered here.
 #include "Common/GameType.h"

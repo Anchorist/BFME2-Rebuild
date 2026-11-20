@@ -82,7 +82,7 @@ public:
 	virtual Drawable * pickDrawable(const ICoord2D *screen, Bool forceAttack, Int pickType) = 0;	// slot 9, W3DView 0x0008B1E5
 	virtual Int iterateDrawablesInRegion(IRegion2D *screenRegion, Bool (*callback)(Drawable *, void *), void *userData) = 0;	// slot 10, W3DView 0x00086245
 	virtual void slot11();	// slot 11, target 0x000D1407 (name and signature not evidenced)
-	virtual void drawDebugCircle(const Coord3D *position, Real radius, UnsignedInt color);	// slot 12, target 0x000D1407 (a shared `ret 0xC` stub: three stack arguments; role name, evidence ActiveBody 0x004BF9ED: `TheTacticalView->slot12(&pos, radius, 0xFFFF8000)` when a debug flag is set; f14 request 20:26)
+	virtual void drawDebugCircle(const Coord3D *position, Real radius, UnsignedInt color);	// slot 12, target 0x000D1407 (a shared `ret 0xC` stub: three stack arguments; role name, evidence ActiveBody 0x004BF9ED: `TheTacticalView->slot12(&pos, radius, 0xFFFF8000)` when a debug flag is set)
 	virtual void getScreenCornerWorldPointsAtZ(Coord3D *topLeft, Coord3D *topRight, Coord3D *bottomLeft, Coord3D *bottomRight, Real z);	// slot 13, View 0x0025EC22
 	virtual void setWidth(Int width);	// slot 14, W3DView 0x00087B81
 	virtual Int getWidth();	// slot 15, target 0x002A79A1; returns Int, added to the origin in getScreenCornerWorldPointsAtZ 0x0025EC22
@@ -93,7 +93,7 @@ public:
 	virtual void forceRedraw() = 0;	// slot 20, W3DView 0x0008D134
 	virtual void lookAt(const Coord3D *o);	// slot 21, View 0x0025EA7C; xfer 0x0025F020 calls it with the loaded position
 	virtual void initHeightForMap();	// slot 22, W3DView 0x0008D807
-	virtual Int scrollBy(Coord2D *delta);	// slot 23 (returns 0: View 0x0025EAD5 ends `xor eax,eax; ret 4`), target 0x0025EAD5; Zero Hour scrollBy: ScriptActions 0x003BACCA pushes the address of a stack {float,float} (f07 06:40 post)
+	virtual Int scrollBy(Coord2D *delta);	// slot 23 (returns 0: View 0x0025EAD5 ends `xor eax,eax; ret 4`), target 0x0025EAD5; Zero Hour scrollBy: ScriptActions 0x003BACCA pushes the address of a stack {float,float}
 	virtual void moveCameraTo(const Coord3D *position, CameraMarker *marker, Int milliseconds, Int shutter, Real easeIn, Real easeOut);	// slot 24, target 0x0025EEF5 (a six-argument stub, `ret 0x18`); Zero Hour's name; ScriptActions 0x003BAAE4 passes the marker found by name (View +0x80 list, lookup 0x0025F385 whose this is the View) as the second argument, 0x003BAD15 passes 0 for it and for the milliseconds
 	virtual void moveCameraAlongWaypointPath(Waypoint *way, Int milliseconds, Int shutter, Real easeIn, Real easeOut, Real unk, Int mode);	// slot 25, target 0x0025EF01 (an empty body, `ret 0x1C`: seven arguments); Zero Hour's name, BFME 2 has three Reals and a trailing Int (ScriptActions 0x003BB0C7 calls it with a waypoint record, the milliseconds, 1, three scaled Reals and an Int)
 	virtual void slot26(Int value);	// slot 26, target 0x0047A69C (name and signature not evidenced)

@@ -67,8 +67,8 @@ struct FindPositionOptions
 
 // Zero Hour's DistanceCalculationType (the fourth argument of getClosestObject and
 // iterateObjectsInRange). Retail's findClosestRepulsor and TunnelNetworkScan call
-// getClosestObject with 1 and 0; Zero Hour spells 0 FROM_CENTER_2D, but the
-// old repo's matched bodies named 0 FROM_CENTER_3D; the values are the fact.
+// getClosestObject with 1 and 0; Zero Hour spells 0 FROM_CENTER_2D, but this enum
+// names 0 FROM_CENTER_3D; the values are the fact.
 enum DistanceCalculationType
 {
 	FROM_CENTER_3D = 0,
@@ -120,7 +120,7 @@ public:
  void rva007397C0(Int playerIndex);
  void revealMapForPlayerPermanently(Int playerIndex);	// 0x00739790
  void undoRevealMapForPlayerPermanently(Int playerIndex);	// 0x007397B0
- void doShroudReveal(const Coord2D *center, Real radius, Int playerMask);	// 0x00739A30 (decl_queue f02 15:4x, ACCEPTED k10; ScriptEngine::doNamedMapReveal 0x003577DA)
+ void doShroudReveal(const Coord2D *center, Real radius, Int playerMask);	// 0x00739A30
  void undoShroudReveal(const Coord2D *center, Real radius, Int playerMask);	// 0x00739BE0
  void doShroudRevealRegion(const Region2D *region, Int extra, UnsignedInt playerMask);	// 0x00739AF0
  void undoShroudRevealRegion(const Region2D *region, Int extra, UnsignedInt playerMask);	// 0x00739CA0

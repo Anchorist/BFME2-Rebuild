@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Common/GameType.h"
 #include "Common/Snapshot.h"
 #include "Common/SubsystemInterface.h"
 
@@ -18,6 +19,7 @@ public:
     void rva002C6A76(Team *team);
     void rva004EC072(TeamPrototype *team);
     void rva004EC07D(TeamPrototype *team);
+    void rva004EC2D4(ObjectID objectID); // Dozer completion calls this on the returned record
     void onUnitCreated(Object *factory, Object *unit);
 };
 

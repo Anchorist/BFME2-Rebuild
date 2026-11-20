@@ -34,7 +34,9 @@ class ModuleData;
 class Object;
 class Xfer;
 class Snapshot;
-class StateMachine;
+class WorkerStateMachine;
+class DozerPrimaryStateMachine;
+class SupplyTruckStateMachine;
 
 // PROVISIONAL name (see above).
 class WorkerAIInterface
@@ -122,21 +124,21 @@ public:
 	Int m_unk0x49C;																// +0x49C, four raw bytes in xfer
 	Int m_carriedSupplyBoxes;																// +0x4A0; removeSupplyBox decrements this and updates the drawable box count
 	ObjectID m_unk0x4A4;														// +0x4A4, xfer'd through XferObjectID
-	Coord3D m_unk0x4A8;															// +0x4A8, xfer'd through the Coord3DBase slot
+	Coord3D m_playerHarvestPosition;		// Last harvest location requested by the player.
 	Bool m_unk0x4B4;															// +0x4B4
 	UnsignedInt m_unk0x4B8;														// +0x4B8, the last transfer (unsigned)
 	Bool m_unk0x4BC;															// +0x4BC
 	Bool m_unk0x4BD;															// +0x4BD
 	Bool m_unk0x4BE;															// +0x4BE
-	StateMachine *m_unk0x4C0;														// +0x4C0, xfer'd as a Snapshot
-	StateMachine *m_unk0x4C4;														// +0x4C4, the first Snapshot xfer'd
-	StateMachine *m_unk0x4C8;														// +0x4C8, xfer'd after the dock points
+	WorkerStateMachine *m_workerMachine;	// Runs the general worker state.
+	DozerPrimaryStateMachine *m_dozerMachine;	// Runs construction and repair tasks.
+	SupplyTruckStateMachine *m_supplyMachine;	// Runs supply collection and delivery.
 	Int m_buildingSoundHandle;													// +0x4CC, 1 in the constructor; TheAudio's slot 88
 };
 // SIZE 0x4D0
 typedef char WorkerAIUpdate_off_m_tasks[(offsetof(WorkerAIUpdate, m_tasks) == 0x3F0) ? 1 : -1];
 typedef char WorkerAIUpdate_off_m_dockPoints[(offsetof(WorkerAIUpdate, m_dockPoints) == 0x40C) ? 1 : -1];
-typedef char WorkerAIUpdate_off_m_unk0x4C0[(offsetof(WorkerAIUpdate, m_unk0x4C0) == 0x4C0) ? 1 : -1];
+typedef char WorkerAIUpdate_off_m_workerMachine[(offsetof(WorkerAIUpdate, m_workerMachine) == 0x4C0) ? 1 : -1];
 typedef char WorkerAIUpdate_size[(sizeof(WorkerAIUpdate) == 0x4D0) ? 1 : -1];
 
 #endif

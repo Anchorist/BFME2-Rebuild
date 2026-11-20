@@ -1,7 +1,7 @@
-// OCLUpdate.h: promoted from include/Draft by h05 (round 10). Proven by 3 rows that MATCH against it on main (0x0049B2C1, 0x0049B303, 0x0049B310);
+// OCLUpdate.h:
 // name, size, bases and virtual order are retail facts given below.
 // OCLUpdate.h: the OCLUpdate module. SIZE 0x2C (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x0049B381 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x0049B381 calls UpdateModule first; it stores the
 // tables 0x00C50B40 at +0x0, 0x00BEFF90 at +0xC, 0x00C50B34 at +0x10. Members are what xfer (0x0049B421) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -44,7 +44,7 @@ public:
 	UnsignedInt m_timerStartedFrame;                    // +0x24; xfer UnsignedInt
 	Int m_currentCount;                            // +0x28; xfer Int (version 2 and later)
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x2C
 typedef char OCLUpdate_size[(sizeof(OCLUpdate) == 0x2C) ? 1 : -1];

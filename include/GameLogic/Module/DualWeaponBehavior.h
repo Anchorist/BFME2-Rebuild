@@ -1,4 +1,4 @@
-// DualWeaponBehavior.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x0045ADDA, 0x0045ADE0);
+// DualWeaponBehavior.h:
 // name, size, bases and virtual order are retail facts given below.
 // DualWeaponBehavior.h: the DualWeaponBehavior module. SIZE 0x28 (ModuleFactory operator new).
 // Target facts: the constructor 0x0045AE55 calls UpdateModule first; it stores the

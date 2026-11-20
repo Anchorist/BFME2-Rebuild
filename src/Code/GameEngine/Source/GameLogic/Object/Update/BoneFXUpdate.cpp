@@ -1,5 +1,5 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-// Diagnostic pilot import; object boundaries may be unproven.
+// Object boundaries may be unproven.
 // FUNCTION: BFME2 0x0048707A size=124 name=?onObjectCreated@BoneFXUpdate@@MAEXXZ evidence=N:ledger
 // FUNCTION: BFME2 0x004870F6 size=69 name=?parseGameClientRandomDelay@@YAXPAVINI@@PAXPAVGameClientRandomVariable@@@Z evidence=N:ledger
 // FUNCTION: BFME2 0x0048713B size=54 name=?computeNextClientFXTime@BoneFXUpdate@@IAEXPBUBaseBoneListInfo@@AAH@Z evidence=N:ledger
@@ -24,7 +24,7 @@
 // FUNCTION: BFME2 0x00487B7D size=248 name=?doParticleSystemAtBone@BoneFXUpdate@@IAEXPBVParticleSystemTemplate@@PBUCoord3D@@@Z evidence=N:ledger
 // FUNCTION: BFME2 0x00487C75 size=349 name=?xfer@BoneFXUpdate@@MAEXPAVXfer@@@Z evidence=N:ledger
 // FUNCTION: BFME2 0x00487DEE size=332 name=?update@BoneFXUpdate@@UAE?AW4UpdateSleepTime@@XZ evidence=N:ledger
-// GameLogic/Object/Update/BoneFXUpdate.cpp: retail translation unit (pilot skeleton).
+// GameLogic/Object/Update/BoneFXUpdate.cpp: retail translation unit (skeleton).
 // Write each function below its FUNCTION annotation, in this (retail) order.
 // Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
 // Shared types belong in include/; no class or struct with a body in this file.

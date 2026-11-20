@@ -1,5 +1,9 @@
 # Find a contribution
 
+The newest lists are on the repository's `progress` branch, regenerated automatically
+after every change to `main` (with `PROGRESS.md`, the project's progress card). The copies
+in this directory are from the last snapshot of `main`; prefer the `progress` branch when it exists.
+
 These tables are dated tab-separated files. Their first line gives the
 measurement date and revision. Compare it with your checked-out `main`.
 The function tables may come from different revisions, and a ready entry
@@ -19,8 +23,9 @@ header that is in use. [Files to finish](files.tsv) lists every source file
 that still owns functions not yet credited MATCH, closest to finished first:
 `owned_functions`, `not_yet_matched` and `bytes_not_yet_matched` say how much
 is left, `link_referrers_waiting` how much of the rebuilt game waits on it,
-and `class_header` whether the file's class already has a real header
-(`real`), only a Draft (`draft`), none (`none`), or the file is still named by
+and `class_header` whether a header named like the file (or defining a class
+named like it) exists outside Draft (`real`), only in Draft (`draft`), or not
+at all (`none`), a quick name test, not the check's FINISHED rule; or the file is still named by
 address (`address-named`: identifying its real name and place is a
 contribution of its own). The verdicts are the maintainers' dated checker
 state, named in the first line.
@@ -125,18 +130,13 @@ base. Standalone link and runtime evidence come from separate checks.
 
 ## Claim an item
 
-After choosing an address, search open draft pull requests by RVA and file
-name. Open a draft pull request and put one `Claim: 0x00ABCDEF` line per
-address in its description. Substitute the actual RVA. When the bot is
-enabled, switch to the `claims` branch on the repository's GitHub page and
-open `worklist/claims.json`. A plain clone of main can omit that branch. If
-the index has yet to be published, use the open drafts to check for overlap.
-Claims are advisory. Follow the [claim rules](../ci/README.md#claim-a-worklist-item)
-for the cap, expiry and release. Coordinate headers by path in an issue or
-draft description. The bot tracks function addresses only. Updating the
-address list refreshes its expiry. Mark the pull request ready or close
-it to clear the draft claims. Eligibility to run the checker starts with
-maintainer admission. Claims only help people avoid duplicate work.
+Claims are a convention, not a lock. Before you start, search the open pull
+requests for the address, file or header. Then open a draft pull request
+whose description starts with your claim: `Claim: src/path/File.cpp` for a
+file, `Claim: include/Draft/X.h` for a Draft header, or one `Claim: 0x00ABCDEF`
+line per function. Nothing publishes claims yet; the open pull requests are
+the list. Close or finish a claimed pull request when you stop, so the item
+is free again. For a header, also say in an issue which files you will touch.
 
 ## Worked examples
 

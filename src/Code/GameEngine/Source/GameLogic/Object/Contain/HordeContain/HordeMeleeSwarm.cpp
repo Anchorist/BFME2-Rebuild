@@ -1,5 +1,5 @@
 // cl: /O1
-#include "Draft/HordeMeleeSwarm.h"
+#include "GameLogic/Module/HordeMeleeSwarm.h"
 #include "GameLogic/GameLogic.h"
 #include "Common/Xfer.h"
 #include "Common/XferException.h"
@@ -27,7 +27,7 @@
 // FUNCTION: BFME2 0x00583B54 size=27 name=?Rva00583B54FillN@@YAPAVRva002337F0@@PAV1@IABURva002337F0Blk@@@Z evidence=?:placeholder tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x00583B6F size=119 name=?rva00583B6F@Rva00583B6F@@QAEXXZ evidence=?:placeholder tier=B hypothesis:K
-void HordeMeleeSwarm::rva00583B6F()
+void HordeMeleeSwarm::meleeSlot04()
 {
 	ContainmentListView riders = m_horde->getList();
 	Object *horde = m_horde->getObject();
@@ -52,7 +52,7 @@ bool HordeMeleeSwarm::isUnitMoving(int index)
 }
 
 // FUNCTION: BFME2 0x00583C1A size=52 name=?isUnitRotating@HordeMeleeSwarm@@QAE_NH@Z evidence=N:ledger tier=B hypothesis:cohesion
-bool HordeMeleeSwarm::isUnitRotating(int index)
+bool HordeMeleeSwarm::isUnitRotating(int index) const
 {
 	if (index < 0 || (unsigned int)index >= m_units.size())
 		return false;
@@ -82,7 +82,7 @@ void HordeMeleeSwarm::setUnitArrived(int index)
 }
 
 // FUNCTION: BFME2 0x00583CE0 size=42 name=?setUnitNeedsNewAttackPos@HordeMeleeSwarm@@QAEXHH@Z evidence=N:ledger tier=B hypothesis:cohesion
-void HordeMeleeSwarm::setUnitNeedsNewAttackPos(int, int index)
+void HordeMeleeSwarm::setUnitNeedsNewAttackPos(Object *, Int index)
 {
 	if (index >= 0 && (unsigned int)index < m_units.size())
 		m_units[index].m_needsNewAttackPos = true;
@@ -114,7 +114,7 @@ bool HordeMeleeSwarm::getUnitAttackPosition(int index, Coord3D *pos)
 // FUNCTION: BFME2 0x00584644 size=939 name=?updateMeleeAttack@HordeMeleeSwarm@@UAEXPAVObject@@@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x00584A7D size=30 name=?rva00584A7D@Rva00584A7D@@QAEXI@Z evidence=?:placeholder tier=A
-void HordeMeleeSwarm::rva00584A7D(UnsignedInt count)
+void HordeMeleeSwarm::meleeSlot02(UnsignedInt count)
 {
 	if (m_units.size() < count)
 		m_units.resize(count);
@@ -130,7 +130,7 @@ void HordeMeleeSwarm::xfer(Xfer *xfer)
 	*xfer == name;
 	if (name.compare(expected) != 0)
 		throw XferException(4, "Xfer data saved by %s is now being loaded by %s", name.str(), expected.str());
-	*xfer == m_unk0x14;
+	*xfer == m_membershipChanged;
 	Int count = (Int)m_units.size();
 	*xfer == count;
 	if (xfer->IsLoading())

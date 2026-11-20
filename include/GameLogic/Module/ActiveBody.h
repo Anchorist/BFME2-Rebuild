@@ -49,12 +49,12 @@ public:
 	virtual int rva004BF8AC();									// 14: thunk 0x004BF8AC, jumps to Armor::rva001D9083 on the armor at +0xF8 (map: Rva004BF8AC)
 	virtual ObjectID getClearableLastAttacker() const;			// 15: 0x004BF8DF, 0 once the +0xC6 flag is set, else the last damage source id at +0x48 (Zero Hour's name)
 	virtual void clearLastAttacker();							// 16: 0x004BF8ED, sets the +0xC6 flag (Zero Hour's name)
-	virtual void validateArmorAndDamageFX() const;				// 17: 0x004BE1AE (primary slot 17: estimateDamage 0x004BDB01 and attemptDamage 0x004BFE07 reach it as `call [eax+0x44]`; publish 3a accepts the UBE spelling)
+	virtual void validateArmorAndDamageFX() const;				// 17: 0x004BE1AE (primary slot 17: estimateDamage 0x004BDB01 and attemptDamage 0x004BFE07 reach it as `call [eax+0x44]`)
 protected:
 	virtual void doDamageFX(const DamageInfo *damageInfo);		// 18: 0x004BED62 (MAE)
 	virtual void createParticleSystems(const AsciiString &boneBaseName, const ParticleSystemTemplate *systemTemplate, Int maxSystems);	// 19: 0x004BE24A (MAE)
 public:
-	virtual void deleteAllParticleSystems();					// 20: 0x004BE3EF, pops the particle list at +0xC8 (Zero Hour's name; the ledger spells it W3DModelDraw::stopClientParticleSystems, a wrong class: waits on the map)
+	virtual void deleteAllParticleSystems();					// 20: 0x004BE3EF, pops the particle list at +0xC8 (Zero Hour's name; the ledger spells it W3DModelDraw::stopClientParticleSystems, a wrong class)
 	virtual void setCorrectDamageState(Bool forceUpdate);		// 21: 0x004BE8BD
 	virtual void rva004BF9ED();									// 22: 0x004BF9ED, called by onDelete
 

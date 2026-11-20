@@ -1,4 +1,4 @@
-// AudioLoopUpgrade.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x004B7B81, 0x004B7BBB);
+// AudioLoopUpgrade.h:
 // name, size, bases and virtual order are retail facts given below.
 // AudioLoopUpgrade.h: the AudioLoopUpgrade module. SIZE 0x30 (ModuleFactory operator new).
 // Target facts: the constructor 0x004B7CBC calls UpdateModule first; it stores the

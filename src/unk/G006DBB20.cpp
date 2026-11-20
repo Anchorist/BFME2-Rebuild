@@ -17,6 +17,6 @@
 // FUNCTION: BFME2 0x006DBDB0 size=5 name=?apply@Rva006DBDB0DwordOrSetter@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x006DBDC0 size=5 name=?clear@AptValue@@QAEXXZ evidence=S:strong (caller-this+position+layout) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x006DBDD0 size=10 name=?get@AptValue@@QBEHXZ evidence=S:strong (caller-this+position+layout) tier=B hypothesis:mm1-gap-unit
-// FUNCTION: BFME2 0x006DBDE0 size=110 name=?isXmlNode@AptValue@@QBE_NXZ evidence=X:map request (no_map_row a-both-real/vt-split, 1 refs) tier=B hypothesis:mm1-gap-unit
-// FUNCTION: BFME2 0x006DBE50 size=110 name=?isXml@AptValue@@QBE_NXZ evidence=X:map request (no_map_row a-both-real/vt-split, 1 refs) tier=B hypothesis:mm1-gap-unit
-// FUNCTION: BFME2 0x006DBEC0 size=110 name=?isXmlAttributes@AptValue@@QBE_NXZ evidence=X:map request (no_map_row a-both-real/vt-split, 1 refs) tier=B hypothesis:mm1-gap-unit
+// FUNCTION: BFME2 0x006DBDE0 size=110 name=?isXmlNode@AptValue@@QBE_NXZ evidence=X:map request (no_map_row, vtable split, 1 refs) tier=B hypothesis:mm1-gap-unit
+// FUNCTION: BFME2 0x006DBE50 size=110 name=?isXml@AptValue@@QBE_NXZ evidence=X:map request (no_map_row, vtable split, 1 refs) tier=B hypothesis:mm1-gap-unit
+// FUNCTION: BFME2 0x006DBEC0 size=110 name=?isXmlAttributes@AptValue@@QBE_NXZ evidence=X:map request (no_map_row, vtable split, 1 refs) tier=B hypothesis:mm1-gap-unit

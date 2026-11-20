@@ -1,5 +1,5 @@
 // RainOfFireUpdate.h: rains weapon fire over the tactical view and darkens the screen.
-// Target facts (old repo Code/GameEngine/Source/GameLogic/Object/Update/RainOfFireUpdateView.h):
+// Target facts:
 // the module is 0x38 bytes: UpdateModule (0x20), a two-slot interface at +0x20,
 // then the start frame +0x24, darkness +0x28, scale +0x2C, pending shots +0x30
 // and the ramp +0x34. Module data (field table VA 0x00C54B00): StartRainTime

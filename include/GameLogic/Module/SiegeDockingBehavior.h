@@ -1,4 +1,4 @@
-// SiegeDockingBehavior.h: promoted from include/Draft. Proven by 3 rows that MATCH against it on main (0x004599DF, 0x004599E5, 0x0045A16D);
+// SiegeDockingBehavior.h:
 // name, size, bases and virtual order are retail facts given below.
 // SiegeDockingBehavior.h: the SiegeDockingBehavior module. SIZE 0x34 (ModuleFactory operator new).
 // Target facts: the constructor 0x0045996C calls UpdateModule first; it stores the

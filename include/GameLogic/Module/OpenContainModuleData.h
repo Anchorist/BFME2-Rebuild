@@ -2,7 +2,7 @@
 // Target facts: ModuleFactory registers the module with operator new 0x98 and
 // constructor RVA 0x00465124; buildFieldParse RVA 0x0046523D adds VA 0x00C438B0 at +0x0 and DieMuxData at +0x8.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 // Unresolved (byte storage up to the next member, named after the token):
 //   m_enterSound +0x38: INI::parseAudioEventRTS 0x00339900

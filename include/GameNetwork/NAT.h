@@ -69,7 +69,7 @@ public:
 	Int connectionUpdate();											// 0x005A879B
 	void StartNegotiationAction(Int target, Int cookie);			// 0x005A89C2
 	void processGlobalMessage(Int slotNum, const char *options);	// 0x005A8ABF
-	Bool SetUDPSocketForSlot(UnsignedShort port, UnsignedShort slot, void *address);	// 0x005A6DAC
+	Bool SetUDPSocketForSlot(UnsignedShort port, UnsignedShort slot, const BfmeNetAddress *address);	// 0x005A6DAC
 	AsciiString getConnectionStateName(Int state);					// 0x005A6E7A
 	void setCurrentConnectionState(Int state);						// 0x005A6C90
 

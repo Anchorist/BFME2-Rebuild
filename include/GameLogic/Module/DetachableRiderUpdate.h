@@ -16,7 +16,7 @@ protected:
  virtual void xfer(Xfer *);
 private:
  bool m_active; // 0x20
- unsigned char m_riderIndex; // 0x21
+ bool m_riderIndex; // True selects the second entry; serialized as a bool.
 protected:
 	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };

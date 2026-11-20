@@ -19,6 +19,7 @@
 #include "Common/GameType.h"
 #include "GameNetwork/TransportMessage.h"
 #include "GameNetwork/NetPacketAddress.h"
+#include "GameNetwork/BfmeNetAddress.h"
 
 class UDP;
 class AsciiString;
@@ -46,8 +47,8 @@ public:
 	Bool queueSend(NetPacketAddress *address, const UnsignedByte *data, Int length);	// 0x004D4EC6
 	Bool allowBroadcasts(Bool allow);						// 0x004D5112
 	void RemoveSocketForSlot(UnsignedShort slot);			// 0x004D5133
-	void setSlotSocket(void *socket, UnsignedShort slot, Int *address);	// 0x004D51A7
-	void setDestAddrToSocket(Int slot, void *address);		// 0x004D51ED
+	void setSlotSocket(UDP *socket, UnsignedShort slot, const BfmeNetAddress *address);	// 0x004D51A7
+	void setDestAddrToSocket(Int slot, const BfmeNetAddress *address);		// 0x004D51ED
 	Real getIncomingBytesPerSecond() const;
 	Real getIncomingPacketsPerSecond() const;
 	Real getOutgoingBytesPerSecond() const;
@@ -61,7 +62,7 @@ public:
 		SocketEntry();
 		~SocketEntry() {}
 		UDP *m_udp;							// +0
-		NetPacketAddress m_address;			// +4
+		BfmeNetAddress m_address;			// +4
 	};
 
 	TransportMessage m_outBuffer[128];						// +0x00000

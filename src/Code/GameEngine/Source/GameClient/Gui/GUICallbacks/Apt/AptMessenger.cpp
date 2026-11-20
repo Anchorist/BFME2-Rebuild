@@ -1,5 +1,5 @@
 // cl: /O1
-#include "Draft/AptMessenger.h"
+#include "GameClient/AptMessenger.h"
 #include "Common/UnicodeString.h"
 #include "Common/AsciiString.h"
 #include "Apt/BfmeAptWindowManager.h"
@@ -35,14 +35,14 @@ void Rva00511730(int);
 void AptMessenger::OnInitialized(const char *)
 {
 	m_refresh = true;
-	if (m_gap0x27C == 0)
-		m_gap0x27C = 1;
+	if (m_state == UNINITIALIZED)
+		m_state = INITIALIZED;
 }
 
 // FUNCTION: BFME2 0x0051155B size=142 name=?GameWindowSize@AptMessenger@@QAEXPBVCoord2D@@0PAX1@Z evidence=N:ledger tier=B hypothesis:K
 void AptMessenger::GameWindowSize(const Coord2D *position, const Coord2D *size, void *, void *)
 {
-	GameWindow *window = (GameWindow *)this;
+	GameWindow *window = this;
 	int x;
 	int y;
 	int width;
@@ -61,7 +61,7 @@ void AptMessenger::IsOpen(int query, char *result, bool skip)
 {
 	if (query == 0 && !skip)
 	{
-		if (g_aptMessenger && !g_aptMessenger->m_closing)
+		if (g_aptMessenger && !g_aptMessenger->m_flag278)
 			_mbscpy((unsigned char *)result, (const unsigned char *)"1");
 		else
 			_mbscpy((unsigned char *)result, (const unsigned char *)"0");
@@ -90,34 +90,34 @@ void AptMessenger::OpenScreen()
 // FUNCTION: BFME2 0x00511730 size=135 name=?Rva00511730@@YAXH@Z evidence=?:placeholder tier=B hypothesis:K
 void Rva00511730(int)
 {
-	if (g_aptMessenger != 0 && !g_aptMessenger->m_closing)
+	if (g_aptMessenger != 0 && !g_aptMessenger->m_flag278)
 	{
-		g_aptMessenger->m_gap0x27C = 2;
-		g_aptMessenger->m_closing = true;
-		if (g_aptMessenger->m_window298 != 0)
-			g_Va00E048C0.set(GadgetTextEntryGetText(g_aptMessenger->m_window298));
+		g_aptMessenger->m_state = AptMessenger::CLOSE_REQUESTED;
+		g_aptMessenger->m_flag278 = true;
+		if (g_aptMessenger->m_textEntry != 0)
+			g_Va00E048C0.set(GadgetTextEntryGetText(g_aptMessenger->m_textEntry));
 		else
 			g_Va00E048C0.set(UnicodeString::TheEmptyString);
 	}
 }
 
 // FUNCTION: BFME2 0x005117B7 size=40 name=?rva005117B7@Rva005117B7@@QAEHHEH@Z evidence=?:placeholder tier=B hypothesis:K
-int AptMessenger::vfunc_0x04(int message, unsigned char key, int state)
+WindowMsgHandledType AptMessenger::input(unsigned int message, unsigned int key, unsigned int state)
 {
 	if (message == 0x15)
 	{
-		switch (key)
+		switch (static_cast<unsigned char>(key))
 		{
 		case 1:
 			if (state & 1)
 			{
 				Rva00511730(0);
-				return 1;
+				return MSG_HANDLED;
 			}
 			break;
 		}
 	}
-	return 0;
+	return MSG_IGNORED;
 }
 
 // FUNCTION: BFME2 0x005117DF size=23 name=?OnMessengerBttn@AptMessenger@@SAXPBD@Z evidence=N:ledger tier=B hypothesis:K
@@ -142,14 +142,14 @@ void Rva005118F3Show(int tab, bool clear)
 		g_Va00E046BC = tab;
 		if (g_aptMessenger)
 		{
-			((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(g_aptMessenger->m_level, "ShowActiveTab", 0, 0, 0, 0, 0, 0);
+			((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(g_aptMessenger->m_callbackOwner, "ShowActiveTab", 0, 0, 0, 0, 0, 0);
 			g_aptMessenger->m_refresh = true;
 			ChatWindowsInGame *oldList = g_aptMessenger->m_lists[oldTab];
 			ChatWindowsInGame *newList = g_aptMessenger->m_lists[g_Va00E046BC];
 			if (oldList)
 				oldList->rva005AFD43(0, UnicodeString::TheEmptyString);
 			if (newList)
-				newList->rva005AFD43(g_aptMessenger->m_window298, g_Va00E048C0);
+				newList->rva005AFD43(g_aptMessenger->m_textEntry, g_Va00E048C0);
 		}
 	}
 	if (clear)

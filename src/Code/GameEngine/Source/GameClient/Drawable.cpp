@@ -15,7 +15,7 @@
 #include "GameClient/DrawModule.h"
 #include "Common/ThingTemplate.h"
 #include "GameLogic/GameLogic.h"
-#include "Draft/BuffManager.h"
+#include "GameClient/BuffManager.h"
 #include "GameClient/DisplayStringManager.h"
 #include "GameClient/GameClient.h"
 #include "GameClient/InGameUI.h"

@@ -7,6 +7,9 @@
 // Edges: left=rests-on:name right=rests-on:name; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion
 // FUNCTION: BFME2 0x005A9ACD size=11 name=??1AISiegeGatesTactic@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
+AISiegeGatesTactic::~AISiegeGatesTactic()
+{
+}
 
 // FUNCTION: BFME2 0x005A9AD8 size=72 name=?canRun@AISiegeGatesTactic@@UAE_NPAX@Z evidence=N:ledger tier=B hypothesis:cohesion
 

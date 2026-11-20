@@ -1,4 +1,4 @@
-// SpawnUnitBehaviorModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x002559F1);
+// SpawnUnitBehaviorModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // SpawnUnitBehaviorModuleData.h: the INI data of SpawnUnitBehavior. SIZE 0x20.
 // Target facts: ModuleFactory registers the module with operator new 0x20 and

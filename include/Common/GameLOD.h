@@ -49,7 +49,7 @@ public:
     AudioInfo m_audioInfo[2];
 
     LODPresetInfo m_lodPresets[5][32];
-    BenchProfile m_benchProfiles[16];	// +0x1628, indexed by the preincremented count at 0x0020200D.
+    BenchProfile m_benchProfiles[16];	// +0x1628, the record at count - 1 once newBenchProfile 0x0020200D has incremented the count.
     int m_staticLevel;				// +0x1768 set by rva00202739, which applies the level through rva002022E9 first
     int m_dynamicLevel;				// +0x176C set by rva0020276C, which loads the dynamic record into +0x178C
     int m_audioLevel;				// +0x1770 set by rva00202790 (0 or 1), which tells the audio system

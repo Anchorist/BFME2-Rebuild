@@ -1,4 +1,4 @@
-// SupplyTruckAIUpdate.h: the supply truck AI update (f03, promoted from Draft). SIZE 0x408 (ModuleFactory operator new).
+// SupplyTruckAIUpdate.h: the supply truck AI update. SIZE 0x408 (ModuleFactory operator new).
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 // Target facts: the constructor 0x004A71A1 calls AIUpdateInterface first and stores the tables 0x00C52FB0 at +0x0,
 // 0x00BFA3C0 at +0xC, 0x00C52FA0 at +0x10, 0x00C47B88 at +0x20, 0x00C52F88 at +0x24 and 0x00C52F38 at +0x3E4 (the
@@ -25,7 +25,7 @@ class SupplyTruckStateMachine;
 // SupplyCenterActionDelay +0x68, SupplyWarehouseActionDelay +0x6C, SupplyWarehouseScanDistance +0x70, HarvestTrees
 // +0x74, HarvestActivationRange +0x78, HarvestPreparationTime +0x7C, HarvestActionTime +0x80 (durations: UnsignedInt).
 // The base is the AI module data, which the map still spells TransportAIUpdateModuleData (0x0026E5D7 is the base call
-// of every AI update's module data; h07 asks the map to rename it AIUpdateModuleData).
+// of every AI update's module data; renamed AIUpdateModuleData here).
 class SupplyTruckAIUpdateModuleData : public AIUpdateModuleData
 {
 public:
@@ -109,7 +109,7 @@ public:
 	const SupplyTruckAIUpdateModuleData *getSupplyTruckAIUpdateModuleData() const { return static_cast<const SupplyTruckAIUpdateModuleData *>(getModuleData()); }
 
 protected:
-	virtual void loadPostProcess() { AIUpdateInterface::loadPostProcess(); }	// slot 1: retail 0x0049A7EE, the fold of the AI updates' `jmp AIUpdateInterface::loadPostProcess` (h05 r9)
+	virtual void loadPostProcess() { AIUpdateInterface::loadPostProcess(); }	// slot 1: retail 0x0049A7EE, the fold of the AI updates' `jmp AIUpdateInterface::loadPostProcess`
 	virtual const char *GetSnapshotName() const;
 	virtual AIStateMachine *makeStateMachine();							// 0x004A6E33
 	virtual void xfer(Xfer *xfer);										// 0x004A6B3A

@@ -11,6 +11,7 @@
 #include "Common/NameKeyGenerator.h"
 #include "GameClient/GadgetStaticText.h"
 #include "GameClient/GadgetTextEntry.h"
+#include "GameClient/GadgetPushButton.h"
 
 // The window manager singleton (retail VA 0x00DFEF1C).
 GameWindowManager *TheWindowManager = NULL;
@@ -21,9 +22,30 @@ extern GameWindowTransitionsHandler *TheTransitionHandler;
 // Edges: left=unknown-rows right=unknown-rows
 // FUNCTION: BFME2 0x002C045D size=42 name=?GadgetButtonSetEnabledImage123_Rva002C045D@@YAXPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x002C0487 size=42 name=?GadgetButtonSetDisabledImage_Rva002C0487@@YAXPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+void GadgetButtonSetDisabledImage_Rva002C0487(GameWindow *g, const Image *image)
+{
+	g->winSetDisabledImage(0, image);
+	g->winSetEnabledImage(5, NULL);
+	g->winSetEnabledImage(6, NULL);
+}
+
 // FUNCTION: BFME2 0x002C04B1 size=42 name=?GadgetButtonSetDisabledImage123_Rva002C04B1@@YAXPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x002C04DB size=42 name=?GadgetButtonSetHiliteImage_Rva002C04DB@@YAXPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+void GadgetButtonSetHiliteImage_Rva002C04DB(GameWindow *g, const Image *image)
+{
+	g->winSetHiliteImage(0, image);
+	g->winSetEnabledImage(5, NULL);
+	g->winSetEnabledImage(6, NULL);
+}
+
 // FUNCTION: BFME2 0x002C0505 size=42 name=?GadgetButtonSetHiliteImage123_Rva002C0505@@YAXPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+void GadgetButtonSetHiliteImage123_Rva002C0505(GameWindow *g, const Image *image)
+{
+	g->winSetHiliteImage(1, image);
+	g->winSetEnabledImage(2, NULL);
+	g->winSetEnabledImage(3, NULL);
+}
+
 // FUNCTION: BFME2 0x002C052F size=16 name=?Rva002C052F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x002C053F size=16 name=?Rva002C053F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x002C054F size=16 name=?Rva002C054F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
@@ -47,6 +69,11 @@ extern GameWindowTransitionsHandler *TheTransitionHandler;
 // FUNCTION: BFME2 0x002C0724 size=27 name=?Rva002C0724Set@@YAXPAVRva003140C8DwordField@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x002C073F size=16 name=?Rva002C073F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x002C074F size=16 name=?GadgetButtonSetEnabledColor@@YAXPAVGameWindow@@H@Z evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
+void GadgetButtonSetEnabledColor(GameWindow *g, int color)
+{
+	g->winSetEnabledColor(0, color);
+}
+
 // FUNCTION: BFME2 0x002C075F size=16 name=?Rva002C075F@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x002C076F size=16 name=?Rva002C076F@@YAHPAVGameWindow@@PBVImage@@@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x002C077F size=16 name=?Rva002C077F@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers

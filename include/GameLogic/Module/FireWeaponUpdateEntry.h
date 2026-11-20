@@ -1,5 +1,5 @@
 // FireWeaponUpdateEntry.h: one live FireWeaponNugget of a FireWeaponUpdate. SIZE 0x18.
-// Target facts (old repo FireWeaponUpdate.cpp, Rva0048BDF8Entry): Rva0048BDF8Helper
+// Target facts: Rva0048BDF8Helper
 // (0x0048BDF8) news one per nugget whose weapon template exists: the weapon +0x00,
 // the next fire frame +0x04 (0xFFFFFFFF never), one-shot +0x08 and the offset
 // +0x0C. The module's entry list (+0x24) holds them as ints.

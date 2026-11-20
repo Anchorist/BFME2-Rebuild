@@ -9,6 +9,7 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 #include "Common/UpgradeMaskType.h"
 #include "Common/Player.h"
+#include "Common/SpecialPowerTemplate.h"
 #include "Common/Xfer.h"
 #include <algorithm>
 #include "Common/PlayerTemplate.h"
@@ -1135,12 +1136,67 @@ void Player::rva002AC673()
 }
 
 // FUNCTION: BFME2 0x002AC6B1 size=48 name=?addTimer@Rva002AC6B1PlayerTimers@@QAEXPBVSpecialPowerTemplate@@I@Z evidence=?:placeholder tier=A
+void Player::addNewSharedSpecialPowerTimer(const SpecialPowerTemplate *power, UnsignedInt frame)
+{
+	SpecialPowerReadyTimerType timer;
+	timer.m_templateID = power->getFO()->m_id;
+	timer.m_readyFrame = frame;
+	m_specialPowerReadyTimerList.push_back(timer);
+}
+
 
 // FUNCTION: BFME2 0x002AC6E1 size=123 name=?resetOrStart@Rva002AC6B1PlayerTimers@@QAEXPBVSpecialPowerTemplate@@@Z evidence=?:placeholder tier=A
+void Player::resetOrStartSpecialPowerReadyFrame(const SpecialPowerTemplate *power)
+{
+	const UnsignedInt templateID = power->getFO()->m_id;
+	const UnsignedInt frame = TheGameLogic->getFrame();
+	for (SpecialPowerReadyTimerList::iterator it = m_specialPowerReadyTimerList.begin();
+		it != m_specialPowerReadyTimerList.end(); ++it)
+	{
+		if (it->m_templateID == templateID)
+		{
+			const UnsignedInt reloadTime = power->getFO()->m_reloadTime;
+			const UnsignedInt adjustment = (UnsignedInt)((Real)reloadTime * m_spellRechargeModifier);
+			it->m_readyFrame = frame + (adjustment < reloadTime ? adjustment + reloadTime : 0);
+			return;
+		}
+	}
+	addNewSharedSpecialPowerTimer(power, frame);
+}
+
 
 // FUNCTION: BFME2 0x002AC75C size=68 name=?rva002AC75C@Rva002AC6B1PlayerTimers@@QAEXPBVSpecialPowerTemplate@@I@Z evidence=?:placeholder tier=A
+void Player::expressSpecialPowerReadyFrame(const SpecialPowerTemplate *power, UnsignedInt frame)
+{
+	const SpecialPowerReadyTimerList::iterator end = m_specialPowerReadyTimerList.end();
+	for (SpecialPowerReadyTimerList::iterator it = m_specialPowerReadyTimerList.begin();
+		it != end; ++it)
+	{
+		if (it->m_templateID == power->getFO()->m_id)
+		{
+			it->m_readyFrame = frame;
+			return;
+		}
+	}
+	addNewSharedSpecialPowerTimer(power, frame);
+}
+
 
 // FUNCTION: BFME2 0x002AC7A0 size=70 name=?getOrStart@Rva002AC6B1PlayerTimers@@QAEIPBVSpecialPowerTemplate@@@Z evidence=?:placeholder tier=A
+UnsignedInt Player::getOrStartSpecialPowerReadyFrame(const SpecialPowerTemplate *power)
+{
+	const UnsignedInt templateID = power->getFO()->m_id;
+	const UnsignedInt frame = TheGameLogic->getFrame();
+	for (SpecialPowerReadyTimerList::iterator it = m_specialPowerReadyTimerList.begin();
+		it != m_specialPowerReadyTimerList.end(); ++it)
+	{
+		if (it->m_templateID == templateID)
+			return it->m_readyFrame;
+	}
+	addNewSharedSpecialPowerTimer(power, frame);
+	return frame;
+}
+
 
 // FUNCTION: BFME2 0x002AC7E6 size=305 name=?localApplyBattlePlanBonusesToObject@@YAHPAVObject@@PAX@Z evidence=N:ledger tier=A
 

@@ -1,5 +1,5 @@
 // SlaveWatcherBehavior.h: the SlaveWatcherBehavior module. SIZE 0xA4 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004845CB calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004845CB calls UpdateModule first; it stores the
 // tables 0x00C4A264 at +0x0, 0x00BEFF90 at +0xC, 0x00C4A258 at +0x10. Members are what xfer (0x00484673) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -35,7 +35,7 @@ public:
 	SlaveWatcherBehavior(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004847A9)
-	ObjectID getWatchedObjectID() const;	// 0x0030D377: the 4-byte getter of the first member at +0x20, folded with other classes' (the map spells it ?getDataLength@NetWrapperCommandMsg@@QAEIXZ); ObjectCreationUpgrade 0x004B463C reads the object it names (f03)
+	ObjectID getWatchedObjectID() const;	// 0x0030D377: the 4-byte getter of the first member at +0x20, folded with other classes' (the map spells it ?getDataLength@NetWrapperCommandMsg@@QAEIXZ); ObjectCreationUpgrade 0x004B463C reads the object it names
 
 protected:
 	virtual const char *GetSnapshotName() const;
@@ -44,7 +44,7 @@ protected:
 public:
 	UnsignedByte m_gap0x20[0x84];
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0xA4
 typedef char SlaveWatcherBehavior_size[(sizeof(SlaveWatcherBehavior) == 0xA4) ? 1 : -1];

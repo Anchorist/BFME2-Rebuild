@@ -12,7 +12,7 @@ DEFINE_AUTO_POOL(MultiListNodeClass, 256);
 // object=O00610640 name-evidence=L name-tier=library
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: duplicate path; held alternatives O00065858
+// Duplicate path; alternative object O00065858
 // Hypothesis rules: hypothesis:Z, hypothesis:name:L, hypothesis:padding
 // FUNCTION: BFME2 0x00610640 size=7 name=??1GenericMultiListClass@@UAE@XZ evidence=N:ledger tier=B hypothesis:Z
 GenericMultiListClass::~GenericMultiListClass(void)

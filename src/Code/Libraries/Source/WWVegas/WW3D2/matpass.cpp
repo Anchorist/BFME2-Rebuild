@@ -3,7 +3,7 @@
 // object=O0013EDD0 name-evidence=Z name-tier=Z
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: duplicate path; held alternatives O0030D3AD
+// Duplicate path; alternative object O0030D3AD
 // Hypothesis rules: hypothesis:K, hypothesis:Z, hypothesis:name:Z, hypothesis:padding
 #include "WW3D2/MaterialPassClass.h"
 // FUNCTION: BFME2 0x0013EDD0 size=104 name=??0MaterialPassClass@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:Z

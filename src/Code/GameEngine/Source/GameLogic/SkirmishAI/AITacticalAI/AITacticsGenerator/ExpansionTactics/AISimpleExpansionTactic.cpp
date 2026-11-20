@@ -7,6 +7,9 @@
 // Edges: left=no-edge-evidence right=rests-on:name; proof_first=false
 // Hypothesis rules: hypothesis:K
 // FUNCTION: BFME2 0x005AA860 size=11 name=??1AISimpleExpansionTactic@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
+AISimpleExpansionTactic::~AISimpleExpansionTactic()
+{
+}
 
 // FUNCTION: BFME2 0x005AA86B size=34 name=?startCreateNewBase@AISimpleExpansionTactic@@QAEXXZ evidence=N:ledger tier=B hypothesis:K
 

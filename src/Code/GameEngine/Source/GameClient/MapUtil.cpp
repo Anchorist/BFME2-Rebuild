@@ -7,6 +7,7 @@
 #include <new>
 #include "GameClient/MapUtil.h"
 #include "GameClient/MapCache.h"
+#include "Common/GlobalData.h"
 MapCache *TheMapCache;	// VA 0x00DFF12C
 #include "Common/FileSystem.h"
 
@@ -60,10 +61,35 @@ bool FileSystem::createDirectory(const AsciiString &path)
 // FUNCTION: BFME2 0x00300AEA size=404 name=?bfme_getBaseDisplayName@MapMetaData@@QAE?AVUnicodeString@@XZ evidence=N:ledger
 
 // FUNCTION: BFME2 0x00300C7E size=144 name=?bfme_getDisplayName@MapMetaData@@QAE?AVUnicodeString@@_N@Z evidence=N:ledger
+UnicodeString MapMetaData::bfme_getDisplayName(bool includePlayerCount)
+{
+	UnicodeString name = bfme_getBaseDisplayName();
+	if (includePlayerCount && m_numPlayers >= 2)
+	{
+		UnicodeString suffix;
+		suffix.format(L" (%d)", m_numPlayers);
+		name.concat(suffix);
+	}
+	return name;
+}
 
 // FUNCTION: BFME2 0x00300D0E size=108 name=?rva00300D0E@MapMetaData@@QAE?AVUnicodeString@@XZ evidence=?:placeholder
 
 // FUNCTION: BFME2 0x00300D7A size=200 name=?rva00300D7A@Rva00300D7A@@QAE?AVAsciiString@@XZ evidence=?:placeholder
+AsciiString MapCache::getUserMapDir()
+{
+	AsciiString path;
+	if (GetRegistryUseLocalUserMaps())
+	{
+		path.format("%s", "UserData\\Maps");
+	}
+	else
+	{
+		path.set(TheWritableGlobalData->rva002360DE().str());
+		path.concat(getMapDir());
+	}
+	return path;
+}
 
 // FUNCTION: BFME2 0x00300E42 size=114 name=?Rva00300E42Check@@YA_NPAVGameInfo@@@Z evidence=?:placeholder
 

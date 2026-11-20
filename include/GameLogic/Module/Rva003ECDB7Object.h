@@ -1,6 +1,6 @@
 // Rva003ECDB7Object.h: the 0x554-byte heap record ThreatFinderUpdate keeps at
 // +0x20 and registers with the threat-finder manager by name.
-// Target facts (old repo ThreatFinderUpdate.cpp, Rva003ECDB7Unregister.cpp):
+// Target facts:
 // the record is 20 0x44-byte ThreatInfo entries plus an AsciiString name at
 // +0x550; ??1Rva003ECDB7Object 0x003ECDB7 unregisters the name when it is not
 // the shared empty string and then destroys it, and registerName 0x003ECE09

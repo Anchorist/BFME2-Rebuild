@@ -559,4 +559,7 @@ typedef char GlobalDataNext[(offsetof(GlobalData, m_next) == 0x1250) ? 1 : -1];
 
 extern GlobalData *TheWritableGlobalData;
 
+// The registry switch that makes the user map directory the local UserData\Maps (0x00235159).
+Bool GetRegistryUseLocalUserMaps();
+
 #endif

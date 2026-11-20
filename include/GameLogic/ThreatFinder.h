@@ -1,5 +1,5 @@
 // ThreatFinder.h: the per-module threat table the threat-finder update owns.
-// Target facts (old repo ThreatFinderUpdate.cpp, ThreatFinderGetThreatForPlayer.cpp):
+// Target facts:
 // twenty 0x44-byte ThreatInfo records from +0, a pad dword, the search position at
 // +0x554, the radius at +0x560, the frame the table was last built at +0x564 and
 // the exclude-structures flag at +0x568. calculateThreatLevel 0x003ECFBC refills

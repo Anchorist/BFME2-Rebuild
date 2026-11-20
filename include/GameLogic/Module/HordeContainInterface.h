@@ -139,7 +139,7 @@ public:
 	virtual void hordeSlot73() = 0;	// 73 0x0046F822 (a folded flag setter)
 	virtual void rva0046F8B2() = 0;	// 74 0x0046F8B2
 	virtual UnsignedByte hordeSlot75() = 0;	// 75 0x0046F82A (a folded byte getter)
-	// 76-154: the rest of retail's table 0x00C44C58 (155 slots), decoded from the map names (a/f06 session 11; neutral hordeSlotNN where the map names a placeholder class or a fold)
+	// 76-154: the rest of retail's table 0x00C44C58 (155 slots), decoded from the map names (neutral hordeSlotNN where the map names a placeholder class or a fold)
 	virtual void hordeSlot76(void *, void *) = 0;	// 76 0x0050B238
 	virtual void startMeleeAttack(Object *) = 0;	// 77 0x0046A5EF
 	virtual void rva00468FDC() = 0;	// 78 0x00468FDC
@@ -159,10 +159,10 @@ public:
 	virtual void rva0046D384(Team *) = 0;	// 92 0x0046D384
 	virtual void hordeSlot93(Int value) = 0;	// 93 0x0046F7D7
 	virtual void hordeSlot94() = 0;	// 94 0x0046F7E4
-	virtual UnsignedInt rva004697CD() = 0;	// 95 0x004697CD: a total read unsigned (ScriptConditions::evaluateUnitHealth 0x003E5587 converts it as unsigned, f02)
+	virtual UnsignedInt rva004697CD() = 0;	// 95 0x004697CD: a total read unsigned (ScriptConditions::evaluateUnitHealth 0x003E5587 converts it as unsigned)
 	virtual UnsignedInt rva0046D3FC(ObjectFilter *) = 0;	// 96 0x0046D3FC: a count (riders plus filtered entries); ModifyVictimForHorde 0x00268BD5 compares it unsigned (test; jbe)
 	virtual Int rva00468F68() = 0;	// 97 0x00468F68
-	virtual UnsignedInt rva00468F7E() = 0;	// 98 0x00468F7E: a total read unsigned (evaluateUnitHealth 0x003E5587, f02)
+	virtual UnsignedInt rva00468F7E() = 0;	// 98 0x00468F7E: a total read unsigned (evaluateUnitHealth 0x003E5587)
 	virtual Object * rva004708BC(const Matrix3D *) = 0;	// 99 0x004708BC
 	virtual void hordeSlot100() = 0;	// 100 0x0046D4BD
 	virtual void hordeSlot101() = 0;	// 101 0x00468F9F

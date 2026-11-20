@@ -2,7 +2,7 @@
 // stlport46
 #include <stdio.h>
 #include <string.h>
-#include "Draft/AptPlayer.h"
+#include "GameClient/AptPlayer.h"
 #include "GameClient/GameWindowManager.h"
 #include "GameClient/GameWindow.h"
 #include "Common/AsciiString.h"
@@ -20,7 +20,6 @@ void Rva006CC880(void);
 void Rva0041154FHide(void);
 void Rva006CC600(const char *, char *);
 void Rva00411E80(int);
-static char s_result[256];
 void Rva00411B52(void);
 void Rva006CDF60(void);
 int __stdcall Rva00222B19AptCall(void *, const char *, const char *, int, const char *, void *, void *, void *, void *);
@@ -39,11 +38,11 @@ BfmeAptWindowManager *g_bfmeAptWindowManager = 0;
 // FUNCTION: BFME2 0x00222435 size=11 name=?rva00222435@@YAXI@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers+shared-data
 // FUNCTION: BFME2 0x00222440 size=13 name=?rva00222440@@YAXI@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers+shared-data
 // FUNCTION: BFME2 0x0022244D size=36 name=?rva0022244D@Rva0022244D@@QAEXXZ evidence=?:placeholder tier=B hypothesis:cohesion
-void AptPlayer::vfunc_0x30()
+void AptPlayer::draw()
 {
 	if (m_refreshPending)
 	{
-		vfunc_0x28();
+		update();
 		m_refreshPending = false;
 	}
 	Rva00411523();
@@ -52,7 +51,7 @@ void AptPlayer::vfunc_0x30()
 }
 
 // FUNCTION: BFME2 0x00222471 size=8 name=?rva00222471@Rva00222471@@QAEXXZ evidence=?:placeholder tier=B hypothesis:cohesion
-void AptPlayer::clearPending()
+void AptPlayer::reset()
 {
 	m_flag329 = false;
 }
@@ -60,7 +59,7 @@ void AptPlayer::clearPending()
 // FUNCTION: BFME2 0x00222479 size=8 name=?enable@Rva00222479ByteOneSetter@@QAEXXZ evidence=?:placeholder tier=A
 void AptPlayer::enable()
 {
-	m_flag310 = true;
+	m_enabled = true;
 }
 
 // FUNCTION: BFME2 0x00222481 size=93 name=?UnloadLevel@AptPlayer@@QAE_NH@Z evidence=N:ledger tier=A
@@ -142,7 +141,7 @@ void AptPlayer::unloadAllLevels()
 		}
 	}
 	m_dirty = true;
-	vfunc_0x28();
+	update();
 }
 
 // FUNCTION: BFME2 0x00222647 size=78 name=?rva00222647@Slot@Rva00062908Host@@QAEXHABVAsciiString@@0H@Z evidence=?:placeholder tier=A
@@ -150,12 +149,12 @@ void AptPlayer::AptLevel::assign(int index, const AsciiString &directory, const 
 {
 	m_name = file;
 	m_directory = directory;
-	m_x0C = index;
+	m_index = index;
 	if (m_flags & 2)
 		m_flags &= 0xFD;
 	if (m_flags & 1)
 		m_flags &= 0xFE;
-	m_window = window;
+	m_window = static_cast<GameWindow *>(window);
 	if (m_flags & 8)
 		m_flags &= 0xF7;
 }
@@ -198,7 +197,7 @@ bool AptPlayer::HideLevel(int level)
 // FUNCTION: BFME2 0x002227DF size=85 name=?rva002227DF@Rva002227DF@@QAEXXZ evidence=?:placeholder tier=A
 void AptPlayer::loadBackground()
 {
-	m_owner = (void *)AddLevel(AsciiString("Apt\\"), AsciiString("Background.apt"), true, 0);
+	m_backgroundLevel = AddLevel(AsciiString("Apt\\"), AsciiString("Background.apt"), true, 0);
 }
 
 // FUNCTION: BFME2 0x00222834 size=90 name=?Rva00222834Get@@YA?AVAsciiString@@H@Z evidence=?:placeholder tier=A
@@ -236,9 +235,9 @@ AsciiString Rva002228E8Get(float value)
 // FUNCTION: BFME2 0x00222A2B size=8 name=?rva00222A2B@Rva00222A19@@UAEHXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x00222A33 size=32 name=?PopFocus@AptPlayer@@QAEXPAVAptFocusTarget@@@Z evidence=N:ledger tier=A
-void AptPlayer::PopFocus(AptFocusTarget *target)
+void AptPlayer::PopFocus(int level)
 {
-	if (m_focus.back() == (void *)target)
+	if (m_focus.back() == level)
 	{
 		m_focus.pop_back();
 		m_focusChanged = true;
@@ -248,7 +247,7 @@ void AptPlayer::PopFocus(AptFocusTarget *target)
 // FUNCTION: BFME2 0x00222A53 size=56 name=?rva00222A53@Rva00222A8BTarget@@QAEEXZ evidence=?:placeholder tier=A
 bool AptPlayer::isActive()
 {
-	if (m_focus.back() != (void *)-1 && m_focusWindow != 0 && m_focusWindow == TheWindowManager->winGetFocus())
+	if (m_focus.back() != -1 && m_focusWindow != 0 && m_focusWindow == TheWindowManager->winGetFocus())
 		return true;
 	return m_flag329;
 }
@@ -256,6 +255,7 @@ bool AptPlayer::isActive()
 // FUNCTION: BFME2 0x00222A8B size=142 name=?invoke@Rva00222A8BTarget@@QAEHPAXPBDH10000@Z evidence=?:placeholder tier=A
 int AptPlayer::invoke(void *level, const char *name, int a, const char *text, void *b, void *c, void *d, void *e)
 {
+	static char s_result[256];
 	s_result[0] = 0;
 	if ((unsigned int)level >= 14)
 		return (int)s_result;
@@ -268,6 +268,7 @@ int AptPlayer::invoke(void *level, const char *name, int a, const char *text, vo
 // FUNCTION: BFME2 0x00222B19 size=180 name=?Rva00222B19AptCall@@YGHPAXPBD1H10000@Z evidence=?:placeholder tier=A
 int __stdcall Rva00222B19AptCall(void *level, const char *name1, const char *name2, int a, const char *text, void *b, void *c, void *d, void *e)
 {
+	static char s_result[256];
 	s_result[0] = 0;
 	AsciiString path;
 	if ((unsigned int)level != 14)
@@ -286,10 +287,10 @@ int __stdcall Rva00222B19AptCall(void *level, const char *name1, const char *nam
 int AptPlayer::invokeAndRefresh(void *level, const char *name, int a, const char *text, void *b, void *c, void *d, void *e)
 {
 	int result = invoke(level, name, a, text, b, c, d, e);
-	if (!m_flag312)
+	if (!m_refreshDeferred)
 	{
 		m_refreshPending = true;
-		vfunc_0x28();
+		update();
 	}
 	return result;
 }
@@ -298,10 +299,10 @@ int AptPlayer::invokeAndRefresh(void *level, const char *name, int a, const char
 int AptPlayer::callAndRefresh(void *level, const char *name1, const char *name2, int a, const char *text, void *b, void *c, void *d, void *e)
 {
 	int result = Rva00222B19AptCall(level, name1, name2, a, text, b, c, d, e);
-	if (!m_flag312)
+	if (!m_refreshDeferred)
 	{
 		m_refreshPending = true;
-		vfunc_0x28();
+		update();
 	}
 	return result;
 }
@@ -351,26 +352,26 @@ void AptPlayer::hideBackground(bool flag)
 {
 	if (this == 0)
 		return;
-	switch (m_mode)
+	switch (m_backgroundMode)
 	{
 	case 0:
-		if (flag && m_pendingMode != 0)
+		if (flag && m_savedBackgroundMode != 0)
 		{
-			m_mode = m_pendingMode;
-			m_pendingMode = 0;
+			m_backgroundMode = m_savedBackgroundMode;
+			m_savedBackgroundMode = 0;
 			hideBackground(true);
 		}
 		break;
 	case 1:
-		invoke(m_owner, "HideFrontEndBackground", 1, flag ? "1" : "0", 0, 0, 0, 0);
-		m_pendingMode = 1;
+		invoke(reinterpret_cast<void *>(m_backgroundLevel), "HideFrontEndBackground", 1, flag ? "1" : "0", 0, 0, 0, 0);
+		m_savedBackgroundMode = 1;
 		break;
 	case 2:
-		invoke(m_owner, "HideInGameBackground", 1, flag ? "1" : "0", 0, 0, 0, 0);
-		m_pendingMode = 2;
+		invoke(reinterpret_cast<void *>(m_backgroundLevel), "HideInGameBackground", 1, flag ? "1" : "0", 0, 0, 0, 0);
+		m_savedBackgroundMode = 2;
 		break;
 	}
-	m_mode = 0;
+	m_backgroundMode = 0;
 }
 
 // FUNCTION: BFME2 0x0022309D size=98 name=??BRva002226E5TextPlusString@@QAE?AVAsciiString@@XZ evidence=N:ledger tier=A
@@ -480,7 +481,7 @@ void AptPlayer::updateFocus()
 {
 	if (m_focusChanged)
 	{
-		void **focusEnd = m_focus.end();
+		int *focusEnd = m_focus.end();
 		m_focusChanged = false;
 		int focusLevel = (int)focusEnd[-1];
 		if (focusLevel != 14)
@@ -542,7 +543,7 @@ void AptPlayer::updateFocus()
 // FUNCTION: BFME2 0x00224BC9 size=18 name=?check@Rva00224BC9Owner@@QAE_NXZ evidence=?:placeholder tier=A
 void AptPlayer::removeBackground()
 {
-	((AptPlayer *)g_bfmeAptWindowManager)->RemoveLevel((int)m_owner);
+	((AptPlayer *)g_bfmeAptWindowManager)->RemoveLevel(m_backgroundLevel);
 }
 
 // FUNCTION: BFME2 0x00224BDB size=155 name=?rva00224BDB@Rva00224BDBMap@@QAEAAVRva0022300F@@ABVAsciiString@@@Z evidence=?:placeholder tier=A
@@ -556,12 +557,12 @@ void AptPlayer::removeBackground()
 // FUNCTION: BFME2 0x00224F6C size=633 name=?HandleOverButtons@AptPlayer@@QAEXXZ evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x002251E5 size=180 name=?rva002251E5@Rva00222A8BTarget@@QAEXXZ evidence=?:placeholder tier=A
-void AptPlayer::vfunc_0x28()
+void AptPlayer::update()
 {
-	if (m_flag310)
+	if (m_enabled)
 	{
 		TheShell->pop();
-		m_flag310 = false;
+		m_enabled = false;
 	}
 	if (m_dirty)
 	{
@@ -582,9 +583,9 @@ void AptPlayer::vfunc_0x28()
 	if (m_refreshPending && elapsed < 34)
 		elapsed = 34;
 	m_refreshPending = false;
-	m_flag312 = true;
+	m_refreshDeferred = true;
 	Rva006CF1B0(elapsed);
-	m_flag312 = false;
+	m_refreshDeferred = false;
 	m_lastTime = now;
 	m_flag329 = Rva006CD100Get();
 	HandleOverButtons();

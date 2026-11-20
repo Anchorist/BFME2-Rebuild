@@ -38,6 +38,10 @@ CollideModule::CollideModule(Thing *thing, const ModuleData *moduleData) : Behav
 {
 }
 
+CollideModule::~CollideModule()
+{
+}
+
 // FUNCTION: BFME2 0x004BB733 size=6 name=?Rva004BB733Get@@YAHXZ evidence=?:placeholder
 const char *CollideModule::GetSnapshotName() const
 {

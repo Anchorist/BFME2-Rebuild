@@ -80,14 +80,14 @@ public:
 	ObjectID m_28;								// 0x28 (XferObjectID takes an ObjectID *)
 	Bool m_2C;									// 0x2C
 public:
-	virtual UpdateSleepTime update();	// 0x00455477, UpdateModuleInterface slot 0; retail's table has this class's own (h05, gen3 vtable-content list)
+	virtual UpdateSleepTime update();	// 0x00455477, UpdateModuleInterface slot 0; retail's table has this class's own
 
 private:
 	void rva00455BDD(const ThingTemplate *tmpl, const Coord3D *position, Real angle);	// 0x00455BDD: clears the objects in the way
 	Bool rva00455C98(const ThingTemplate *tmpl, const Coord3D *position, Real angle, Player *owner);	// 0x00455C98
 	void rva0045527A(ObjectID id);								// 0x0045527A: sets m_28 and shows or hides the owner object
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
 };
 // SIZE 0x30
 typedef char FoundationAIUpdate_size[(sizeof(FoundationAIUpdate) == 0x30) ? 1 : -1];

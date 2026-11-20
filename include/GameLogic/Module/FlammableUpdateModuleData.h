@@ -1,6 +1,5 @@
 // FlammableUpdateModuleData.h: the INI data of the flammable module.
-// Target facts (old repo reference/shims/bfme2_flammableupdate/GameLogic/Module/
-// FlammableUpdate.h): the own INI table is 0x00C4C600 and the factory
+// Target facts: the own INI table is 0x00C4C600 and the factory
 // (0x0024D068) news 0x58 bytes and calls 0x0048D541. The burning-sound holder at
 // +0x18 is released by the destructor through Release_Ref 0x00050ED3, and the
 // FireFXList vector at +0x28 is torn down by 0x0048D003/0x0048D042.

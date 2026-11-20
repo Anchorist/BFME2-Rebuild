@@ -22,7 +22,6 @@ public:
 	ProductionQueueHordeContain(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
-	const char *name() const;
 	virtual ~ProductionQueueHordeContain();
 
 protected:

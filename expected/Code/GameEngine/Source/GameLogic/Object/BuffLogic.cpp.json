@@ -9,8 +9,8 @@
       "role": "thunk",
       "parent_rva": "0x0030680E",
       "fold_group": "",
-      "name": "??_EGODupBase@@W3AEPAXI@Z",
-      "name_evidence": "N:ledger",
+      "name": "??_EBuffLogic@@W3AEPAXI@Z",
+      "name_evidence": "X:map request",
       "confidence": "high",
       "evidence": "X:this-adjustor sub ecx,imm8",
       "object_id": "O003067C4",
@@ -22,6 +22,7 @@
       "parent": "0x0030680E",
       "object": "O003067C4",
       "accepted_names": [
+        "??_EBuffLogic@@W3AEPAXI@Z",
         "??_EGODupBase@@W3AEPAXI@Z"
       ],
       "seed_tier": "A",
@@ -34,8 +35,8 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "??_GGODupBase@@UAEPAXI@Z",
-      "name_evidence": "N:ledger",
+      "name": "??_GBuffLogic@@UAEPAXI@Z",
+      "name_evidence": "X:map request",
       "confidence": "high",
       "evidence": "X:scalar-deleting-dtor shape",
       "object_id": "O003067C4",
@@ -47,6 +48,7 @@
       "parent": null,
       "object": "O003067C4",
       "accepted_names": [
+        "??_GBuffLogic@@UAEPAXI@Z",
         "??_GGODupBase@@UAEPAXI@Z"
       ],
       "seed_tier": "A",
@@ -84,8 +86,8 @@
       "role": "ehhandler",
       "parent_rva": "",
       "fold_group": "H00779B3E",
-      "name": "__ehhandler$??1GODupBase@@UAE@XZ",
-      "name_evidence": "?:placeholder",
+      "name": "__ehhandler$??1BuffLogic@@UAE@XZ",
+      "name_evidence": "X:map request",
       "confidence": "high",
       "evidence": "X:eh-stub FuncInfo=0x00922268;X:parent-by-prologue;X:EH stub shared by 2 functions (ICF-folded handler and FuncInfo)",
       "object_id": "unknown",
@@ -97,6 +99,7 @@
       "parent": null,
       "object": "O003067C4",
       "accepted_names": [
+        "__ehhandler$??1BuffLogic@@UAE@XZ",
         "__ehhandler$??1GODupBase@@UAE@XZ"
       ],
       "seed_tier": "B",

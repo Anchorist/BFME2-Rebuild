@@ -8,18 +8,14 @@
 #include "Common/INI.h"
 #include "Common/INI/FieldParse.h"
 #include "GameLogic/LivingWorldRegion.h"
-#include "Draft/LivingWorldRegionConnection.h"
+#include "GameLogic/LivingWorldRegionConnection.h"
 #include "Common/Xfer.h"
-#include "Draft/ConnectionVec.h"
 
 // Helpers owned by their own units (rows at these RVAs elsewhere in the map).
-// The tagged range destroy (0x0052BF81) takes the empty tag by reference.
-void Rva0052BF81_DestroyTagged(LivingWorldRegionConnection *first, LivingWorldRegionConnection *last, const _STL::__false_type &tag);
-// The region-ID getter (0x003EFE82) takes the transfer object as an opaque pointer.
-struct Rva003EFE82Obj;
-int Rva003EFE82Get(Rva003EFE82Obj *obj, void *out);
+// Transfers the LivingWorldRegionID enum by its serialized name at 0x003EFE82.
+void XferLivingWorldRegionID(Xfer *xfer, int *regionID);
 // The detour-vector transfer (0x003F2C0C).
-Xfer *Rva003F2C0CXfer(Xfer *xfer, _STL::vector<BfmeE8> *detourPoints);
+Xfer *Rva003F2C0CXfer(Xfer *xfer, _STL::vector<Coord2D> *detourPoints);
 
 // FUNCTION: BFME2 0x003EFCD1 size=102 name=?xfer@RegionBonusInfo@@MAEXPAVXfer@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003EFD37 size=6 name=?GetSnapshotName@RegionBonusInfo@@MBEPBDXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
@@ -78,11 +74,6 @@ Xfer *Rva003F2C0CXfer(Xfer *xfer, _STL::vector<BfmeE8> *detourPoints);
 // FUNCTION: BFME2 0x003F0B92 size=218 name=?Rva003F0B92Fallback@@YAHHH@Z evidence=?:placeholder
 
 // FUNCTION: BFME2 0x003F0CA1 size=24 name=?Rva003F0CA1_DestroyRange@@YAXPAVLivingWorldRegionConnection@@0@Z evidence=?:placeholder
-void Rva003F0CA1_DestroyRange(LivingWorldRegionConnection *first, LivingWorldRegionConnection *last)
-{
-	_STL::__false_type tag;
-	Rva0052BF81_DestroyTagged(first, last, tag);
-}
 
 // FUNCTION: BFME2 0x003F0CB9 size=115 name=?apply@Rva003F119CList@@QAEXABURva003F0CB9Call@@@Z evidence=?:placeholder
 
@@ -224,12 +215,12 @@ int LivingWorldRegion::rva003F1053()
 
 // FUNCTION: BFME2 0x003F247D size=83 name=??0LivingWorldRegionConnection@@QAE@ABV0@@Z evidence=N:ledger
 LivingWorldRegionConnection::LivingWorldRegionConnection(const LivingWorldRegionConnection &that)
-	: m_regionName(that.m_regionName), m_numberAllowed(that.m_numberAllowed), m_detourPoints(that.m_detourPoints)
+	: m_regionName(that.m_regionName), m_destinationRegionID(that.m_destinationRegionID), m_detourPoints(that.m_detourPoints)
 {
 }
 
 // FUNCTION: BFME2 0x003F24D0 size=6 name=?GetSnapshotName@LivingWorldRegionConnection@@UAEPBDXZ evidence=N:ledger
-const char *LivingWorldRegionConnection::GetSnapshotName()
+const char *LivingWorldRegionConnection::GetSnapshotName() const
 {
 	return "LivingWorldRegionConnection";
 }
@@ -238,7 +229,7 @@ const char *LivingWorldRegionConnection::GetSnapshotName()
 
 // FUNCTION: BFME2 0x003F24F3 size=36 name=??0LivingWorldRegionConnection@@QAE@XZ evidence=N:ledger
 LivingWorldRegionConnection::LivingWorldRegionConnection()
-	: m_regionName(), m_numberAllowed(-1), m_detourPoints()
+	: m_regionName(), m_destinationRegionID(-1), m_detourPoints()
 {
 }
 
@@ -280,15 +271,13 @@ LivingWorldRegionConnection::~LivingWorldRegionConnection()
 // FUNCTION: BFME2 0x003F300A size=74 name=?SetupRegionOwnership@LivingWorldRegion@@QAEXXZ evidence=N:ledger
 
 // FUNCTION: BFME2 0x003F3054 size=70 name=?DoXfer@LivingWorldRegionConnection@@UAEXAAVXfer@@@Z evidence=N:ledger
-void LivingWorldRegionConnection::DoXfer(Xfer &xfer)
+void LivingWorldRegionConnection::xfer(Xfer *xfer)
 {
 	Xfer::Version version(1, 1);
-	xfer == version;
-	xfer == m_regionName;
-	// The count word is transferred as "LivingWorldRegionID" (the string at 0x00C36BB8)
-	// by the helper that takes the transfer object as its opaque first argument.
-	Rva003EFE82Get(reinterpret_cast<Rva003EFE82Obj *>(&xfer), &m_numberAllowed);
-	Rva003F2C0CXfer(&xfer, &m_detourPoints);
+	*xfer == version;
+	*xfer == m_regionName;
+	XferLivingWorldRegionID(xfer, &m_destinationRegionID);
+	Rva003F2C0CXfer(xfer, &m_detourPoints);
 }
 
 // FUNCTION: BFME2 0x003F3110 size=22 name=?rva003F3110@Gen_00528EC0@@QAEPAV1@ABF@Z evidence=?:placeholder
@@ -329,10 +318,7 @@ void parseConnection(INI *ini, void *, void *store, const void *)
 // FUNCTION: BFME2 0x003F3708 size=49 name=?rva003F3708@LivingWorldRegion@@QAEPAUElem003B2540@@H@Z evidence=?:placeholder
 
 // FUNCTION: BFME2 0x003F3739 size=11 name=?clear@ConnectionVec@@QAEXXZ evidence=N:ledger
-void ConnectionVec::clear()
-{
-	rva003F35B0(m_start, m_finish);
-}
+template void _STL::vector<LivingWorldRegionConnection>::clear();
 
 // FUNCTION: BFME2 0x003F3967 size=334 name=??0LivingWorldRegion@@QAE@PAXHABVAsciiString@@@Z evidence=N:ledger
 

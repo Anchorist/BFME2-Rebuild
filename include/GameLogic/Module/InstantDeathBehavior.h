@@ -30,7 +30,7 @@ public:
 protected:
 	virtual void xfer(Xfer *xfer);
 protected:
-	virtual void loadPostProcess() { DieModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to DieModule's, ICF-folded across classes (h05)
+	virtual void loadPostProcess() { DieModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to DieModule's, ICF-folded across classes
 };
 // SIZE 0x14
 typedef char InstantDeathBehavior_size[(sizeof(InstantDeathBehavior) == 0x14) ? 1 : -1];

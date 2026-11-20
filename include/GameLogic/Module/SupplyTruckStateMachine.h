@@ -1,4 +1,4 @@
-// SupplyTruckStateMachine.h: the state machine a SupplyTruckAIUpdate keeps at +0x3E8 (f03, promoted from Draft).
+// SupplyTruckStateMachine.h: the state machine a SupplyTruckAIUpdate keeps at +0x3E8.
 // Target facts: its destructor 0x004A6C59 stores table 0x00C532A8 and tail-jumps to ~StateMachine 0x004D759C, so it derives
 // from StateMachine directly (not AIStateMachine); slot 2 is 0x004A6C64 (the map's `name`, a GetSnapshotName body) and
 // slot 3 is the shared xfer 0x0033FB0B. The transition tests below are the file statics the state table passes as

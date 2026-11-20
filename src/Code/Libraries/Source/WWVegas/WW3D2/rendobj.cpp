@@ -24,7 +24,7 @@
 // object=O0013B430 name-evidence=L name-tier=library
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: duplicate path; held alternatives O0013B160
+// Duplicate path; alternative object O0013B160
 // Hypothesis rules: hypothesis:Z, hypothesis:name:L, hypothesis:padding
 // Zero Hour's file-static identity test (retail: the out-of-line copy at 0x0013B3A0, called with the matrix in ecx).
 static inline bool Check_Is_Transform_Identity(const Matrix3D &m)

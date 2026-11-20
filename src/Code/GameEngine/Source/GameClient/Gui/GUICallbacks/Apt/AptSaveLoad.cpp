@@ -6,7 +6,7 @@
 #include "GameClient/GadgetTextEntry.h"
 #include "Common/UnicodeString.h"
 #include "GameLogic/LivingWorldLogic.h"
-#include "Draft/AptPlayer.h"
+#include "GameClient/AptPlayer.h"
 #include "Apt/BfmeAptWindowManager.h"
 #include "GameNetwork/GameInfo.h"
 #include "GameNetwork/GameSpy/StagingRoomGameInfo.h"

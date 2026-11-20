@@ -1,6 +1,5 @@
 // FlammableUpdate.h: manages the Aflame and Burned statuses and their effects.
-// Target facts (old repo reference/shims/bfme2_flammableupdate/GameLogic/Module/
-// FlammableUpdate.h): the instance factory 0x0024D030 news 0x50 bytes and calls
+// Target facts: the instance factory 0x0024D030 news 0x50 bytes and calls
 // the 0x0048C64F constructor. UpdateModule's base ends at +0x20, the
 // DamageModuleInterface table sits at +0x20 and the members follow from +0x24;
 // 0x0048C582 (xfer) reads status +0x24, the three end frames +0x28/+0x2C/+0x30,

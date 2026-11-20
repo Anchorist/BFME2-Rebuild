@@ -1,4 +1,4 @@
-// PartTheHeavensUpdate.h: promoted from include/Draft. Proven by 5 rows that MATCH against it on main (0x004AC93C, 0x004AC942, 0x004ACAAA, 0x004ACBB3, 0x004ACBE8);
+// PartTheHeavensUpdate.h:
 // name, size, bases and virtual order are retail facts given below.
 // PartTheHeavensUpdate.h: the PartTheHeavensUpdate module. SIZE 0x28 (ModuleFactory operator new).
 // Target facts: the constructor 0x004AC998 calls UpdateModule first; it stores the

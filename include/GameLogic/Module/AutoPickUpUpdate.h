@@ -1,5 +1,5 @@
 // AutoPickUpUpdate.h: object scans for and picks up nearby objects. SIZE 0x2C.
-// Target facts (old repo Code/GameEngine/Source/GameLogic/Object/Update/AutoPickUpUpdate.cpp):
+// Target facts:
 // the module is 0x2C bytes: UpdateModule (0x20), the AutoPickUpUpdateInterface
 // vptr at +0x20, then the scan countdown +0x24 and two flags +0x28/+0x29.
 // xfer (0x00495C77) is Version(1, 2), UpdateModule::xfer, +0x24, +0x28, and +0x29

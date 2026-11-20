@@ -766,7 +766,7 @@ void AptScriptFunctionBase::SetLocalVariable(const EAStringC *name, AptValue *va
 {
     if (!spFrameStack)
         CreateFrameStack();
-    ((AptValueWithHash *)spFrameStack)->GetNativeHash()->Set(name, value);
+    spFrameStack->GetNativeHash()->Set(name, value);
 }
 
 // FUNCTION: BFME2 0x006FE400 size=42 name=?rva006FE400@Rva006FE400@@QAEHPAXPAURva008A4570Owner@@@Z evidence=?:placeholder
@@ -1953,11 +1953,11 @@ void AptActionInterpreter::_FunctionAptActionDefineLocal2(AptActionInterpreter *
         bool exists;
         if (!AptScriptFunctionBase::spFrameStack) {
             if (function->mpCreatorScope)
-                exists = ((AptValueWithHash *)function->mpCreatorScope)->GetNativeHash()->Lookup(name) != 0;
+                exists = function->mpCreatorScope->GetNativeHash()->Lookup(name) != 0;
             else
                 exists = false;
         } else {
-            exists = ((AptValueWithHash *)AptScriptFunctionBase::spFrameStack)->GetNativeHash()->Lookup(name) != 0;
+            exists = AptScriptFunctionBase::spFrameStack->GetNativeHash()->Lookup(name) != 0;
         }
         if (!exists) {
             AptValue *undefined = gpUndefinedValue;

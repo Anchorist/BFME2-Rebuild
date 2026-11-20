@@ -32,6 +32,8 @@ public:
 	ClearanceTestingSlowDeathBehavior(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
+	virtual ClearanceTestGeometryInterface *getClearanceTestGeometryInterface();
+	virtual ClearanceTestGeometryInterface *slot24();
 	virtual const GeometryInfo *getClearanceTestGeometry() const;
 	virtual void getClearanceTestGeometryCenter(Coord3D *center);
 	virtual Real getClearanceTestGeometryAngle() const;

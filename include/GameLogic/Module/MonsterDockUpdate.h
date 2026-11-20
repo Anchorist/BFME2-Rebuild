@@ -1,5 +1,5 @@
 // MonsterDockUpdate.h: the MonsterDockUpdate module. SIZE 0x90 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004A139A calls DockUpdate first; it stores the
+// Target facts: the constructor 0x004A139A calls DockUpdate first; it stores the
 // tables 0x00C51D74 at +0x0, 0x00C51B20 at +0xC, 0x00C51D68 at +0x10, 0x00C51D18 at +0x20. Members are what xfer (0x004A14C2) transfers after DockUpdate::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -69,7 +69,7 @@ public:
 	Bool m_unk0x89;                                // +0x89; xfer Bool
 	Int m_unk0x8C;                                 // +0x8C; xfer Int
 public:
-	virtual void onDockReached(Object *docker);	// 0x004A1610, DockUpdateInterface slot 10; retail's table has this class's own (h05, gen3 vtable-content list)
+	virtual void onDockReached(Object *docker);	// 0x004A1610, DockUpdateInterface slot 10; retail's table has this class's own
 };
 // SIZE 0x90
 typedef char MonsterDockUpdate_size[(sizeof(MonsterDockUpdate) == 0x90) ? 1 : -1];

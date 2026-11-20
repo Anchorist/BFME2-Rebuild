@@ -1,5 +1,5 @@
 // SpecialDisguiseUpdate.h: a special ability that disguises the unit as another template.
-// Target facts (old repo Code/GameEngine/Source/GameLogic/Object/Update/SpecialDisguiseUpdate*.cpp):
+// Target facts:
 //  - module data extends SpecialAbilityUpdateModuleData (0xC8): TriggerInstantlyOnCreate
 //    +0xC8, OpacityTarget +0xCC, DisguiseAsTemplate +0xD0, DisguisedAsEnemy +0xD4,
 //    DisguiseFX +0xD8, ForceMounted +0xDC;
@@ -67,7 +67,7 @@ protected:
 	Real m_unk0x8C;				// 0x8C
 	Bool m_unk0x90;				// 0x90
 protected:
-	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's (h05)
+	virtual void loadPostProcess() { SpecialAbilityUpdate::loadPostProcess(); }	// retail slot 1 0x00483CEF: a jmp to SpecialAbilityUpdate's
 };
 // SIZE 0x94
 

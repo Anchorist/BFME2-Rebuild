@@ -11,7 +11,7 @@
 //  - Type values read from the senders: joinGroupRoom 4, leaveGroupRoom 5, the slot-0x20 rejoin 6, leaveStagingRoom 12. They
 //    are Zero Hour's order up to 5; from 6 on the retail list has one more entry than Zero Hour's (leaveStagingRoom is 12 where
 //    Zero Hour's is 11), so only the evidenced values are named.
-//  - The NAT negotiator's messages are type 13 (the player-to-player message; the old decomp's "13" with the id string "NAT", the
+//  - The NAT negotiator's messages are type 13 (the player-to-player message, id string "NAT"; the
 //    receiving nick at +4, the text at +0x40 and the staging-room flag byte at +0x118).
 //  - The queue is GameSpyInfo's `TheGameSpyPeerMessageQueue` (VA 0x00E02340); its table: 0 destructor, 1 startThread, 2 endThread,
 //    3 isThreadRunning, 4 isConnected, 5 isConnecting, 6 addRequest (+0x18), 7 getRequest, 8 addResponse, 9 getResponse, 10
@@ -131,7 +131,7 @@ public:
 	_STL::string command;						// +0xE8
 	_STL::string commandOptions;				// +0xF4
 	_STL::vector<AsciiString> m_unk0x100;		// +0x100
-	// The per-type payload from +0x10C (0x23C bytes). Field order and widths are the old decomp's views of the callbacks that fill
+	// The per-type payload from +0x10C (0x23C bytes). Field order and widths follow the callbacks that fill
 	// them (the connect, group-room, join, player, listing-games and quickmatch callbacks 0x0038B9F8..0x0038CBBA), in Zero Hour's names.
 	union
 	{

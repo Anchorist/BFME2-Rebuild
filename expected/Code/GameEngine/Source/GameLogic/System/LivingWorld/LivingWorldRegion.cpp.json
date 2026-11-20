@@ -550,13 +550,14 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?Rva003F2C0CXfer@@YAPAVXfer@@PAV1@PAV?$vector@UBfmeE8@@V?$allocator@UBfmeE8@@@_STL@@@_STL@@@Z",
-      "name_evidence": "?:placeholder",
+      "name": "?Rva003F2C0CXfer@@YAPAVXfer@@PAV1@PAV?$vector@VCoord2D@@V?$allocator@VCoord2D@@@_STL@@@_STL@@@Z",
+      "name_evidence": "X:map request",
       "confidence": "high",
       "evidence": "N:template-instantiation",
       "object_id": "retained:O003F08EE",
       "object_evidence": "X:closure",
       "accepted_names": [
+        "?Rva003F2C0CXfer@@YAPAVXfer@@PAV1@PAV?$vector@VCoord2D@@V?$allocator@VCoord2D@@@_STL@@@_STL@@@Z",
         "?Rva003F2C0CXfer@@YAPAVXfer@@PAV1@PAV?$vector@UBfmeE8@@V?$allocator@UBfmeE8@@@_STL@@@_STL@@@Z"
       ],
       "parent": null,

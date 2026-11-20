@@ -24,7 +24,7 @@
 // object=O00182120 name-evidence=L name-tier=library
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: duplicate path; held alternatives O00187660
+// Duplicate path; alternative object O00187660
 // Hypothesis rules: hypothesis:cohesion, hypothesis:init-votes, hypothesis:name:L, hypothesis:padding
 // The crash-report flag (0x000387C0) and the callsite recorder (0x00038790): the map's own identities.
 bool bfmeRva000387C0();

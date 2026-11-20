@@ -1,5 +1,5 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-// Diagnostic pilot import; object boundaries may be unproven.
+// Object boundaries may be unproven.
 // FUNCTION: BFME2 0x0048C50D size=81 name=?calcSleepTime@FlammableUpdate@@IAE?AW4UpdateSleepTime@@XZ evidence=N:ledger
 // FUNCTION: BFME2 0x0048C55E size=28 name=?stopBurningSound@FlammableUpdate@@IAEXXZ evidence=N:ledger
 // FUNCTION: BFME2 0x0048C57A size=8 name=?wouldIgnite@FlammableUpdate@@QAE_NXZ evidence=N:ledger
@@ -129,7 +129,7 @@ enum
 };
 static const DisabledType DISABLED_TYPE_4 = (DisabledType)4;
 
-// GameLogic/Object/Update/FlammableUpdate.cpp: retail translation unit (pilot skeleton).
+// GameLogic/Object/Update/FlammableUpdate.cpp: retail translation unit (skeleton).
 // Write each function below its FUNCTION annotation, in this (retail) order.
 // Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
 // Shared types belong in include/; no class or struct with a body in this file.

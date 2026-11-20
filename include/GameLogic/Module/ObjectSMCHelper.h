@@ -1,6 +1,6 @@
 // ObjectSMCHelper.h: the helper module that times an object's special model conditions (Object::m_smcHelper,
-// Object::setSpecialModelConditionState 0x0028AEB2 forwards to setModelConditionState). Target facts (f14,
-// 2026-11-18): the destructor 0x004DE767 resets the tables 0x007FC088 at +0x0, 0x007EFF90 at +0xC and
+// Object::setSpecialModelConditionState 0x0028AEB2 forwards to setModelConditionState). Target facts:
+// the destructor 0x004DE767 resets the tables 0x007FC088 at +0x0, 0x007EFF90 at +0xC and
 // 0x007FC07C at +0x10 and destroys the std::list at +0x20 (clear 0x0023DAA5, base 0x004EC395); the list's
 // nodes hold two dwords at +8/+0xC (the condition and the frame it ends: update 0x004DE7C2 ends every entry whose
 // frame has passed, framesUntilNext 0x004DE700 takes the smallest frame), xfer 0x004DE906 stores the count, then each

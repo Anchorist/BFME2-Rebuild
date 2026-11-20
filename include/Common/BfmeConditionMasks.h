@@ -1,6 +1,6 @@
 // BfmeConditionMasks.h: the 76-byte condition-mask builders Object's condition
 // setters take. Identities are not recovered; each name is its address.
-// Target facts (old repo DockUpdate.cpp onExitReached 0x0058977F / onEnterReached
+// Target facts (DockUpdate onExitReached 0x0058977F / onEnterReached
 // 0x00589DDD): Object::rva0028CFB2 (0x0028CFB2) takes two 19-word masks, one
 // built by the 0x001E4912 builder (two bits) and one by the 0x0028F59A
 // constructor (one bit); the setters pass 0x53/0x51 with 0x54 and 0x52/0x51

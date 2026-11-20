@@ -924,6 +924,17 @@ void AICommandInterface::rva0036F6A7(float value, CommandSourceType cmdSource)
 	aiDoCommand(&parms);
 }
 
+const _STL::vector<ObjectID> &AIGroup::getAllIDs()
+{
+	m_lastRequestedIDs.clear();
+	for (_STL::list<Object *>::const_iterator it = m_memberList.begin(); it != m_memberList.end(); ++it)
+	{
+		if (*it)
+			m_lastRequestedIDs.push_back((*it)->getID());
+	}
+	return m_lastRequestedIDs;
+}
+
 // FUNCTION: BFME2 0x0036F757 size=448 name=?groupScatter@AIGroup@@QAEXW4CommandSourceType@@@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x0036F917 size=231 name=?groupTightenToPosition@AIGroup@@QAEXPBVCoord3D@@_NW4CommandSourceType@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A

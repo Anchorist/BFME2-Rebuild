@@ -77,6 +77,25 @@ IDirect3DTexture8 *W3DShaderManager::getRenderTexture(void)
 // FUNCTION: BFME2 0x000768F5 size=9 name=?Rva000768F5@@YA_NPAW4ChipsetType@@PAW4CpuType@@PAHPA_KPAM44@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x000768FE size=790 name=?Get_Transform@DX8Wrapper@@SAXW4D3DTRANSFORMSTATETYPE@@AAVMatrix4@@@Z evidence=N:ledger tier=A
+void DX8Wrapper::Get_Transform(D3DTRANSFORMSTATETYPE transform, Matrix4 &m)
+{
+	switch ((int)transform) {
+	case D3DTS_WORLD:
+		if (render_state_changed & WORLD_IDENTITY) m.Make_Identity();
+		else m = render_state.world.Transpose();
+		break;
+	case D3DTS_VIEW:
+		if (render_state_changed & VIEW_IDENTITY) m.Make_Identity();
+		else m = render_state.view.Transpose();
+		break;
+	case D3DTS_PROJECTION:
+		m = DeviceProjectionMatrix.Transpose();
+		break;
+	default:
+		m.Make_Identity();
+		break;
+	}
+}
 
 // FUNCTION: BFME2 0x00076C14 size=1918 name=?setShroudTex@W3DShaderManager@@SAHH@Z evidence=N:ledger tier=A
 

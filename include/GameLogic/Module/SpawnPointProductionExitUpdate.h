@@ -1,4 +1,4 @@
-// SpawnPointProductionExitUpdate.h: promoted from include/Draft. Proven by 6 rows that MATCH against it on main (0x004A3B8F, 0x004A3BD6, 0x004A3CEA, 0x004A3E3E, 0x004A3F04, 0x004A3F3B);
+// SpawnPointProductionExitUpdate.h:
 // name, size, bases and virtual order are retail facts given below.
 // SpawnPointProductionExitUpdate.h: the SpawnPointProductionExitUpdate module. SIZE 0xF4 (ModuleFactory operator new).
 // Target facts: the constructor 0x004A3C1B calls UpdateModule first; it stores the

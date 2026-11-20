@@ -1,31 +1,65 @@
-// AptOnlineQuickMatch.h: the quick match lobby screen ("QuickMatch.apt" panel of the online shell): the AptOnline::OnlineQuickMatch
-// sub-screen base plus the preference combo boxes.
-//
-// Target facts (retail game.dat; RVAs):
-//  - Derives AptOnline::OnlineQuickMatch (Draft/AptOnline/OnlineQuickMatch.h: the shell pointer at +0x58, the state at +0x60, the
-//    QMPref preferences object at +0x64). The screen's own members start at +0x7C: the three combo boxes the preference rows fill,
-//    "players versus players" at +0x84 (0x005BA626: entries 1 versus 1 and 2 versus 2, selected by the preferences' player count),
-//    the maximum ping at +0x8C (0x005BA6EE: one entry per hundred milliseconds up to the GameSpy configuration's ping timeout, then
-//    "Any") and the ladder at +0x90 (0x005BA36D reads the selected ladder's list item).
+// The QuickMatch.apt sub-screen. The native constructor installs its ten-slot
+// table after AptOnlineScreen. The allocation in the online shell is 0xA0 bytes.
 #pragma once
-#ifndef BFME2_APTONLINEQUICKMATCH_H
-#define BFME2_APTONLINEQUICKMATCH_H
 
-#include "Draft/AptOnline/OnlineQuickMatch.h"
+#include <stddef.h>
+#include "Common/QuickMatchPreferences.h"
+#include "GameClient/AptOnline.h"
 
-class GameWindow;
+class AptOnlineShell;
+class Image;
+class PeerResponse;
 
-class AptOnlineQuickMatch : public AptOnline::OnlineQuickMatch
+class AptOnline::OnlineQuickMatch : public AptOnlineScreen
 {
 public:
-	bool rva005BA626();										// 0x005BA626: refills the players-versus-players combo box
-	bool rva005BA6EE();										// 0x005BA6EE: refills the maximum ping combo box
+	OnlineQuickMatch(AptOnline *screen);
+	virtual ~OnlineQuickMatch();
+	virtual void InitGadgets();
+	virtual void Update();
+	virtual int rva005A6582(int window, int message, unsigned char key, int flags);
+	virtual int GameWindowSystem(GameWindow *, unsigned int, unsigned int, unsigned int) { return 1; }
+	virtual void slot6();
 
-	unsigned char m_gap7C[0x84 - 0x7C];						// +0x7C not recovered
-	GameWindow *m_playersCombo;								// +0x84
-	unsigned char m_gap88[4];								// +0x88 not recovered
-	GameWindow *m_pingCombo;								// +0x8C
-	GameWindow *m_ladderCombo;								// +0x90
+	void StartSimple(const char *);
+	void PlayGame(const char *);
+	void OnFoundMovieDone(const char *);
+	void WidenSearch(const char *);
+	void Cancel(const char *);
+	void rva005BA39F(int value);
+	void InitGadgets(const char *name, void *data, GameWindow *window);
+	void OnMatched(PeerResponse &response);
+
+private:
+	AptOnlineShell *getShell() const;
+	void rva005BB5CE();
+	void rva005BBF15();
+	bool rva005BA626();
+	bool rva005BA6EE();
+
+	int m_state;
+	QuickMatchPreferences m_prefs;
+	bool m_preferencesReady;
+	bool m_playRequested;
+	bool m_foundMoviePlaying;
+	unsigned int m_boundGadgets;
+	GameWindow *m_colorCombo;
+	GameWindow *m_playersCombo;
+	GameWindow *m_sideCombo;
+	GameWindow *m_pingCombo;
+	GameWindow *m_ladderCombo;
+	const Image *m_selectedImage;
+	const Image *m_unselectedImage;
+	int m_ladderTeamSize;
+
+	friend struct AptOnlineQuickMatchLayout;
 };
 
-#endif
+struct AptOnlineQuickMatchLayout
+{
+	typedef AptOnline::OnlineQuickMatch Screen;
+	typedef char Preferences[offsetof(Screen, m_prefs) == 0x64 ? 1 : -1];
+	typedef char Combos[offsetof(Screen, m_colorCombo) == 0x80 ? 1 : -1];
+	typedef char LadderTeamSize[offsetof(Screen, m_ladderTeamSize) == 0x9C ? 1 : -1];
+	typedef char Size[sizeof(Screen) == 0xA0 ? 1 : -1];
+};

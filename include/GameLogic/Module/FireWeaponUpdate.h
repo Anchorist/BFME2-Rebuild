@@ -99,7 +99,7 @@ private:
 	_STL::list<int> m_entries; // +0x24
 	Bool m_entriesReady; // +0x28
 };
-// SIZE 0x2C (h05): ModuleFactory allocates 0x2C for FireWeaponUpdate (constructor 0x0048C0C5),
+// SIZE 0x2C: ModuleFactory allocates 0x2C for FireWeaponUpdate (constructor 0x0048C0C5),
 // and the members above end with m_entriesReady at +0x28.
 typedef char FireWeaponUpdate_size[(sizeof(FireWeaponUpdate) == 0x2C) ? 1 : -1];
 

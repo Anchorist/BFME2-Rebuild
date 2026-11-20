@@ -1,4 +1,4 @@
-// Promoted from Draft: the 0xC4-byte member at +0x3E4 (the map's Rva0026AFDAMember) is the AI update's record of
+// The 0xC4-byte member at +0x3E4 (the map's Rva0026AFDAMember) is the AI update's record of
 // its most recent command, now AIStoredCommand (GameLogic/AIStoredCommand.h). The +0xC/+0x10/+0x20/+0x24 tables the
 // constructor stores are the interface subobjects AIUpdateInterface already has (UpdateModule at +0, AICommandInterface at
 // +0x20, CollideModuleInterface at +0x24), not new bases.

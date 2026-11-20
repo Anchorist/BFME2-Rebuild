@@ -10,13 +10,7 @@
 #ifndef BFME2_OBJECTIDLIST_H
 #define BFME2_OBJECTIDLIST_H
 
-#include <list>
-#include "Common/GameType.h"
-#include "Common/FreelistPool.h"
-
-typedef _STL::list<ObjectID, FreelistAllocator<ObjectID> > ObjectIDList;
-typedef ObjectIDList::iterator ObjectIDListIterator;
-typedef ObjectIDList::const_iterator ObjectIDListConstIterator;
+#include "Common/ObjectIDListType.h"
 
 // The pooled lists' erase. PROVISIONAL form: an explicit specialization per
 // pooled element type. Target facts: all four retail copies, Object *

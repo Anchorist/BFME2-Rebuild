@@ -1,0 +1,33 @@
+name: "Ledger: correct config/map.json"
+description: Ask for a change to the ledger (an accepted name, an owner file, an extent). Pull requests cannot edit config/.
+title: "Ledger: "
+body:
+  - type: input
+    id: rva
+    attributes:
+      label: Address (RVA)
+      placeholder: "0x00293E08"
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: What the ledger says now
+      description: The row's name, owner file and size as you read them (see docs/ledger-and-checks.md, "Find a row and its owner").
+    validations:
+      required: true
+  - type: textarea
+    id: proposed
+    attributes:
+      label: What it should say
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: >-
+        The address facts in baseline/game.dat, the callers or table slots, or the Zero Hour counterpart that support
+        the change. If a pull request depends on this change, link it.
+    validations:
+      required: true

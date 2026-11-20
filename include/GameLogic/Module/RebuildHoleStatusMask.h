@@ -12,10 +12,10 @@ public:
 	Rva00346BC0() {}
 	Rva00346BC0(int unused, int first, int second, int third, int fourth);	// 0x00346BC0: DozerAIUpdate.cpp 0x00489256 builds the mask 0x3C, 3, 0x4F, 0x63 with it, then 0x0028CDEB
 	// 0x0044EAF3 (map placeholder ?rva0044EAF3@Rva0044EAF3@@QAEPAV1@HIII@Z, out of line, returns this): a mask holding three statuses;
-	// SpecialAbilityUpdate::onExit 0x004502CE builds (0, 0x18, 0x46, 0x17) with it for the status clearer 0x0028CDEB (f11).
+	// SpecialAbilityUpdate::onExit 0x004502CE builds (0, 0x18, 0x46, 0x17) with it for the status clearer 0x0028CDEB.
 	Rva00346BC0(int unused, int first, int second, int third);
 	// 0x0023DA79 (map placeholder ?rva0023DA79@Rva0023DA79@@QAEPAV1@HH@Z, out of line, returns this): a mask holding one status;
-	// Object::setStatus 0x0023DB0E builds (0, bit) with it for the status setter 0x0028CDEB (f11).
+	// Object::setStatus 0x0023DB0E builds (0, bit) with it for the status setter 0x0028CDEB.
 	Rva00346BC0(int unused, int bit);
 	unsigned m_bits[4];
 };

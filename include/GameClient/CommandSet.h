@@ -4,7 +4,6 @@
 #include "GameClient/CommandButton.h"
 // Target: allocation31B072=0x9C; ctor409FFA builds Overridable, name+10,
 // 32 button pointers+14 and dwords+94/+98. Table83906C has one destructor.
-// Eight old compiled views and canonical header agree on this physical layout.
 class INI;
 struct FieldParse;
 class CommandSet : public Overridable

@@ -13,11 +13,14 @@
 #include "GameLogic/GameLogic.h"
 #include "GameClient/GameClient.h"
 #include "debug/Debug.h"
-#include "Draft/BuffLogic.h"
+#include "GameLogic/BuffLogic.h"
 #include "WW3D2/W3DGlowOutlineMaterialPassClass.h"
 #include "GameClient/GlowMaterial.h"
-#include "Draft/BuffInstance.h"
-#include "Draft/BuffManager.h"
+#include "GameClient/TBuff.h"
+#include "GameClient/BuffManager.h"
+
+// Holds the active Drawable only while a manager transfers its buff slots.
+Drawable *TheBuffXferDrawable;
 
 extern Debug *theDebug;
 // Existing map identities: the crash-report flag (0x000387C0) and the callsite recorder (0x00038790).
@@ -73,7 +76,7 @@ void GlowMaterial::loadPostProcess()
 }
 
 // FUNCTION: BFME2 0x00362518 size=171 name=?MakeNormalBuff@BuffInstance@@QAE_NHHPAX0H@Z evidence=N:ledger tier=A
-bool BuffInstance::MakeNormalBuff(int type, int subType, void *thingTemplate, void *drawable, int duration)
+bool BuffInstance::MakeNormalBuff(int type, int subType, const ThingTemplate *thingTemplate, Drawable *drawable, int duration)
 {
 	if (type < 9 && type >= 1 && thingTemplate != 0 && drawable != 0)
 	{
@@ -81,21 +84,21 @@ bool BuffInstance::MakeNormalBuff(int type, int subType, void *thingTemplate, vo
 		{
 			m_type = type;
 			m_subType = subType;
-			m_thing = static_cast<const ThingTemplate *>(thingTemplate);
-			m_glow = static_cast<Rva00419BA5 *>(TheBuffLogic->addBuff(thingTemplate, drawable));
+			m_thing = thingTemplate;
+			m_glow = TheBuffLogic->addBuff(thingTemplate, drawable);
 		}
 		else if (thingTemplate != m_thing)
 		{
-			m_glow->rva00419BA5();
+			m_glow->release();
 			m_glow = 0;
 			m_type = type;
 			m_subType = subType;
-			m_thing = static_cast<const ThingTemplate *>(thingTemplate);
-			m_glow = static_cast<Rva00419BA5 *>(TheBuffLogic->addBuff(thingTemplate, drawable));
+			m_thing = thingTemplate;
+			m_glow = TheBuffLogic->addBuff(thingTemplate, drawable);
 		}
-		else if (m_glow->m_state == 2)
+		else if (m_glow->m_state == TBuff::FADING_OUT)
 		{
-			m_glow->m_state = 1;
+			m_glow->m_state = TBuff::ACTIVE;
 			m_glow->m_intensity = 1.0f;
 		}
 		if (m_glow != 0)
@@ -111,7 +114,7 @@ bool BuffInstance::MakeNormalBuff(int type, int subType, void *thingTemplate, vo
 }
 
 // FUNCTION: BFME2 0x003625C3 size=70 name=?MakeGlowOutlineBuff@BuffInstance@@QAE_NHHPAXHHM@Z evidence=N:ledger tier=A
-bool BuffInstance::MakeGlowOutlineBuff(int type, int subType, void *drawable, int duration, int color, float intensity)
+bool BuffInstance::MakeGlowOutlineBuff(int type, int subType, Drawable *drawable, int duration, int color, float intensity)
 {
 	if (bfmeRva000387C0())
 	{
@@ -129,7 +132,7 @@ void BuffInstance::TurnOff(bool immediate)
 	{
 		if (m_glow != 0)
 		{
-			m_glow->rva00419BA5();
+			m_glow->release();
 			m_glow = 0;
 		}
 		m_active = false;
@@ -140,7 +143,7 @@ void BuffInstance::TurnOff(bool immediate)
 		{
 		case 1:
 			if (m_glow != 0)
-				m_glow->m_state = 2;
+				m_glow->m_state = TBuff::FADING_OUT;
 			m_active = false;
 			break;
 		default:
@@ -169,7 +172,7 @@ void BuffManager::TurnOffBuff(int type, bool immediate)
 // FUNCTION: BFME2 0x003626EA size=24 name=?rva003626EA@Rva003626CE@@QAEXABUBlock3@@@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x00362702 size=109 name=?DoXfer@BuffManager@@MAEXPAVXfer@@@Z evidence=N:ledger tier=A
-void BuffManager::DoXfer(Xfer *xfer)
+void BuffManager::xfer(Xfer *xfer)
 {
 	Xfer::Version version(1, 1);
 	*xfer == version;
@@ -177,10 +180,10 @@ void BuffManager::DoXfer(Xfer *xfer)
 	{
 		Int count = 9;
 		*xfer == count;
-		g_Va00E01E74 = m_drawable;
+		TheBuffXferDrawable = m_drawable;
 		for (Int i = 0; i < count; ++i)
-			m_buffs[i].DoXfer(xfer);
-		g_Va00E01E74 = 0;
+			m_buffs[i].xfer(xfer);
+		TheBuffXferDrawable = 0;
 	}
 }
 
@@ -194,15 +197,15 @@ void BuffInstance::Update(unsigned int frame)
 		if (!m_material.IsActive() && frame > m_frameLimit)
 			TurnOff(false);
 	}
-	if (m_glow != 0 && m_glow->m_state == 3)
+	if (m_glow != 0 && m_glow->m_state == TBuff::INACTIVE)
 	{
-		m_glow->rva00419BA5();
+		m_glow->release();
 		m_glow = 0;
 	}
 }
 
 // FUNCTION: BFME2 0x003627F9 size=105 name=?TurnOnBuff@BuffManager@@QAEXHPAXHHM@Z evidence=N:ledger tier=A
-void BuffManager::TurnOnBuff(int type, void *thingTemplate, int duration, int color, float intensity)
+void BuffManager::TurnOnBuff(int type, const ThingTemplate *thingTemplate, int duration, int color, float intensity)
 {
 	if (type < 9 && type >= 1)
 	{
@@ -226,7 +229,7 @@ void BuffManager::TurnOnBuff(int type, void *thingTemplate, int duration, int co
 // FUNCTION: BFME2 0x003628A6 size=45 name=?rva003628A6@Rva003628A6@@QAEXPAX@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x003628D3 size=482 name=?DoXfer@BuffInstance@@MAEXPAVXfer@@@Z evidence=N:ledger tier=A
-void BuffInstance::DoXfer(Xfer *xfer)
+void BuffInstance::xfer(Xfer *xfer)
 {
 	Xfer::Version version(1, 5);
 	*xfer == version;
@@ -265,11 +268,11 @@ void BuffInstance::DoXfer(Xfer *xfer)
 	{
 		if (hasGlow)
 		{
-			if (m_thing != 0 && g_Va00E01E74 != 0)
+			if (m_thing != 0 && TheBuffXferDrawable != 0)
 			{
-				m_glow = static_cast<Rva00419BA5 *>(TheBuffLogic->addBuff((void *)m_thing, g_Va00E01E74));
+				m_glow = TheBuffLogic->addBuff(m_thing, TheBuffXferDrawable);
 				xfer->BeginBlock("TBUFF");
-				m_glow->DoXfer(xfer);
+				m_glow->xfer(xfer);
 				xfer->EndBlock();
 			}
 			else
@@ -281,7 +284,7 @@ void BuffInstance::DoXfer(Xfer *xfer)
 	else if (hasGlow)
 	{
 		xfer->BeginBlock("TBUFF");
-		m_glow->DoXfer(xfer);
+		m_glow->xfer(xfer);
 		xfer->EndBlock();
 	}
 	*xfer == m_color;
@@ -316,8 +319,8 @@ const char *BuffInstance::GetSnapshotName() const
 // FUNCTION: BFME2 0x00362D6C size=81 name=??1BuffInstance@@UAE@XZ evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x00362DBD size=89 name=??0BuffManager@@QAE@H@Z evidence=N:ledger tier=A
-BuffManager::BuffManager(int drawable)
-	: m_drawable((void *)drawable)
+BuffManager::BuffManager(Drawable *drawable)
+	: m_drawable(drawable)
 {
 	((Rva00239FE4 *)TheGameClient)->rva00239FE4((const ModuleData *)this);
 }

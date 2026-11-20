@@ -46,7 +46,7 @@ float GetGameLogicRandomValueReal(float,float,char*,int);
 float Cos(float);
 float Sin(float);
 #define PI 3.14159265359f
-// GameLogic/Object/Update/OneRingPenaltyUpdate.cpp: retail translation unit (pilot skeleton).
+// GameLogic/Object/Update/OneRingPenaltyUpdate.cpp: retail translation unit (skeleton).
 // Write each function below its FUNCTION annotation, in this (retail) order.
 // Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
 // Shared types belong in include/; no class or struct with a body in this file.

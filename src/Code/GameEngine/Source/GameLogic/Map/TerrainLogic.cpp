@@ -315,10 +315,22 @@ Bridge *TerrainLogic::findBridgeLayerAt(const Coord3D *pLoc, PathfindLayerEnum l
 // FUNCTION: BFME2 0x0027F519 size=112 name=?apply@Rva00281A33List@@QAEXABURva0027F519Call@@@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x0027F5A6 size=27 name=?rva0027F5A6@Rva0027F5A6@@QAE?AVAsciiString@@XZ evidence=?:placeholder tier=A
+AsciiString Waypoint::getPathLabel1() const
+{
+	return m_pathLabel1;
+}
 
 // FUNCTION: BFME2 0x0027F5C1 size=27 name=?rva0027F5C1@Rva0027F5C1@@QAE?AVAsciiString@@XZ evidence=?:placeholder tier=A
+AsciiString Waypoint::getPathLabel2() const
+{
+	return m_pathLabel2;
+}
 
 // FUNCTION: BFME2 0x0027F5DC size=27 name=?rva0027F5DC@Rva0027F5DC@@QAE?AVAsciiString@@XZ evidence=?:placeholder tier=A
+AsciiString Waypoint::getPathLabel3() const
+{
+	return m_pathLabel3;
+}
 
 // FUNCTION: BFME2 0x0027F5F7 size=651 name=?xfer@Waypoint@@QAEXPAVXfer@@@Z evidence=N:ledger tier=A
 

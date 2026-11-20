@@ -1,4 +1,4 @@
-// WallHubBehavior.h: promoted from include/Draft. Proven by 2 rows that MATCH against it on main (0x00452DA3, 0x00452F25);
+// WallHubBehavior.h:
 // name, size, bases and virtual order are retail facts given below.
 // WallHubBehavior.h: the WallHubBehavior module. SIZE 0x28 (ModuleFactory operator new).
 // Target facts: the constructor 0x00452E27 calls UpdateModule first; it stores the

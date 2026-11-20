@@ -16,6 +16,7 @@ class GameWindow;
 class GameInfoTarget;
 class MapMetaData;
 class GameSlot;
+struct PlayerPosition;
 
 class AptMapPreview
 {
@@ -33,7 +34,7 @@ public:
 	void rva0057CD66();													// 0x0057CD66: selects the campaign the scenario combo box shows
 	int rva0057CDA1(unsigned int message, unsigned int data1, unsigned int data2);	// 0x0057CDA1: the scenario combo box's selection message (0x4026) selects its campaign
 	void rva0057E24B(int game);													// 0x0057E24B: stores the game handle in the target and refreshes the preview
-	void *GetStartPositionInfoForSlot(int);								// 0x0057C71F: the start-position record of a slot (its team at +4), or null
+	const PlayerPosition *GetStartPositionInfoForSlot(int slot);								// 0x0057C71F: the start-position record of a slot (its team at +4), or null
 	void UpdateMapTitle(MapMetaData *map);									// 0x0057C8D1: shows the map's display name in the title field (a blank for no map)
 	void bfmeSetMapDescription(MapMetaData *map);						// 0x0057C892: refills the description list with the map's first line
 	void rva0057E058();													// 0x0057E058

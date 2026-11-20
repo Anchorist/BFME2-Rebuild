@@ -57,6 +57,11 @@ Real normalizeAngle(Real angle);	// 0x00238954 (GameCommon.cpp)
 // FUNCTION: BFME2 0x0033F2DC size=10 name=?rva0033F2DC@Rva0033F14C@@QAEX_N@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-pointers-mixed
 // FUNCTION: BFME2 0x0033F2E6 size=17 name=?rva0033F2E6@Rva0033F14C@@QAEXPBVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=B hypothesis:mm1-contiguity-pointers-mixed
 // FUNCTION: BFME2 0x0033F2F7 size=6 name=?GetSnapshotName@AIInternalMoveToState@@MBEPBDXZ evidence=X:map request (link (from standalone link 0cf3e833)) tier=B hypothesis:mm1-neighbour-pointers-mixed
+const char *AIInternalMoveToState::GetSnapshotName() const
+{
+	return "AIInternalMoveToState";
+}
+
 // FUNCTION: BFME2 0x0033F31A size=6 name=?name@Rva0033F31ANamed@@QBEPBDXZ evidence=?:placeholder tier=B hypothesis:mm1-neighbour-pointers-mixed
 // FUNCTION: BFME2 0x0033F33D size=33 name=??0AIBackAwayAndCowerState@@QAE@PAVStateMachine@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers+class+shared-data
 // FUNCTION: BFME2 0x0033F35E size=6 name=?GetSnapshotName@AIBackAwayAndCowerState@@MBEPBDXZ evidence=N:ledger tier=B hypothesis:cohesion

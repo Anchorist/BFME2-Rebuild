@@ -33,12 +33,16 @@ public:
 	CanAttackResult getCanAttackObject(const Object *obj, const Object *victim, CommandSourceType commandSource, AbleToAttackType attackType); // 0x0041C6CF
 	bool canPlayerGarrison(const Player *player, const Object *target, CommandSourceType commandSource); // 0x0041C21B
 	bool canResumeConstructionOf(const Object *object, const Object *b, CommandSourceType commandSource); // 0x0041BF47
+	bool canMakeObjectDefector(const Object *obj, const Object *objectToMakeDefector, CommandSourceType commandSource);
 	bool canGetRepairedAt(const Object *obj, const Object *repairDock, CommandSourceType commandSource); // 0x0041BBE4 (AIUpdateInterface::privateGetRepaired 0x0026DDBB)
 	bool canGetHealedAt(const Object *obj, const Object *healDest, CommandSourceType commandSource); // 0x0041BE93 (AIUpdateInterface::privateGetHealed 0x0026DD89)
 	bool canDoSpecialPowerAtObject(const Object *source, const Object *target, CommandSourceType commandSource, const SpecialPowerTemplate *power, unsigned int commandOptions, bool flag); // 0x0041CFCC (GrabPassengerSpecialPower::doSpecialPowerAtObject 0x004C504E)
 	bool canEnterObject(const Object *obj, const Object *target, CommandSourceType commandSource, CanEnterType modifier, bool flag, bool *outFlag); // 0x0041C2D0 (the map files it under class BFMEActionManager; every other ActionManager row and the function-local statics of canDoSpecialPowerAtObject/canTransferSuppliesAt say ActionManager)
 	bool Rva0041B94AGet(Object *obj, Object *target, int commandSource); // 0x0041B94A (AIUpdateInterface::privateMoveToObject 0x0026472F)
-	bool canTransferSuppliesAt(const Object *obj, const Object *dest); // 0x0041BCA1
+	bool canTransferSuppliesAt(const Object *obj, const Object *dest);
+	bool canConvertObjectToCarBomb(const Object *obj, const Object *objectToConvert, CommandSourceType commandSource);	// 0x0041B9B0
+	bool canHijackVehicle(const Object *obj, const Object *objectToHijack, CommandSourceType commandSource);	// 0x0041C001
+	bool canDockAt(const Object *obj, const Object *dockDest, CommandSourceType commandSource, bool checkClearToUse);	// 0x0041BE3A
 	bool canRepairObject(const Object *repairer, const Object *target, CommandSourceType commandSource); // 0x0041CE99 (DozerAIUpdate::update 0x00489800 and privateRepair 0x00488AC9 call it)
 };
 

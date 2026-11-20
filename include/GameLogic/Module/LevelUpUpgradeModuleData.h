@@ -15,6 +15,7 @@ class LevelUpUpgradeModuleData : public UpgradeModuleData
 public:
 	LevelUpUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	virtual const LevelUpUpgradeModuleData *slot26() const { return this; }
 	virtual Bool slot12() const { return true; }
 
 	Int m_levelsToGain;                                    // +0x118 LevelsToGain

@@ -1,5 +1,5 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-// Diagnostic pilot import; object boundaries may be unproven.
+// Object boundaries may be unproven.
 // FUNCTION: BFME2 0x0048B97A size=58 name=?Rva0048B97A_InitObject@@YAXPAVINI@@PAXHH@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0048B9D0 size=74 name=?rva0048B9D0@FireWeaponUpdate@@QAEXPBVWeaponTemplate@@@Z evidence=?:placeholder
 // FUNCTION: BFME2 0x0048BA3E size=105 name=?rva0048BA3E@FireWeaponUpdate@@IAE?AW4UpdateSleepTime@@XZ evidence=?:placeholder
@@ -21,7 +21,7 @@
 #include "GameLogic/Object.h"
 #include "GameLogic/Weapon.h"
 #include "GameLogic/WeaponStore.h"
-// GameLogic/Object/Update/FireWeaponUpdate.cpp: retail translation unit (pilot skeleton).
+// GameLogic/Object/Update/FireWeaponUpdate.cpp: retail translation unit (skeleton).
 // Write each function below its FUNCTION annotation, in this (retail) order.
 // Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
 // Shared types belong in include/; no class or struct with a body in this file.
@@ -110,7 +110,7 @@ void FireWeaponUpdate::xfer(Xfer *xfer)
 				FireWeaponUpdateEntry *entry = (FireWeaponUpdateEntry *)*it;
 				*xfer == entry->m_oneShot;
 				*xfer == entry->m_nextFireFrame;
-				*xfer == reinterpret_cast<Coord3DBase &>(entry->m_offset);
+				*xfer == entry->m_offset;
 				*xfer == *entry->m_weapon;
 			}
 		}
@@ -121,7 +121,7 @@ void FireWeaponUpdate::xfer(Xfer *xfer)
 				FireWeaponUpdateEntry *entry = (FireWeaponUpdateEntry *)*it;
 				*xfer == entry->m_oneShot;
 				*xfer == entry->m_nextFireFrame;
-				*xfer == reinterpret_cast<Coord3DBase &>(entry->m_offset);
+				*xfer == entry->m_offset;
 				*xfer == *entry->m_weapon;
 			}
 		}

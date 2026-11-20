@@ -13215,6 +13215,14 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 64
+        },
+        {
+          "rva": "0x009EDBF0",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (Exact compiled DIR32 consumers with authenticated existing typed COFF storage and native field addends): Authenticated defining dxwrapper.cpp COFF 4c3adf9173b54a1e75d71c8f576fcc56fce2739b8b6f1bcbcdb479aa020c2f54 on 4e266c0af1d1fbdc1a97d8c6cd4a7ac1c30b254e emits the only typed storage symbol, section 3 offset 0xD28.; Exact Get_Transform COFF 19a619f559b9e89f612bbba2ed24db3781188b2c1d3a086b5de1c2deef274a5b at source d0c649c971 and native byte-anchored 0x768FE. The exact native projection arm reads all 16 float components from +0x00 through +0x3C of one matrix. The source type emits matching same-position DIR32 addends. Retain the adjacent separate ProjectionMatrix storage.",
+          "defined_in": "src/Code/Libraries/Source/WWVegas/WW3D2/dxwrapper.cpp"
         }
       ]
     },
@@ -13693,6 +13701,14 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009EDA24",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (Authenticated exact source definitions and native same-position SceneClass render operands): Sole defining 4897b0bb51 dxwrapper.cpp COFF 1f2315a48a1c77caed59a1ec95197144235e4445ee3dddfaaf5f1178e1415cb5, section 3 +0xCA0. Zero-fill native storage.; Exact 502-byte SceneClass::Render 0x141170 consumer COFF 6498fbbc85a863a898267a2498c59b18123b3e8ace2897aabd4ec5cf7c7e40e1. Native and compiled operand match the packed D3DCOLOR dword store. Keep old H keys on their existing address.",
+          "defined_in": "src/Code/Libraries/Source/WWVegas/WW3D2/dxwrapper.cpp"
         }
       ]
     },
@@ -13705,6 +13721,14 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 3
+        },
+        {
+          "rva": "0x009EDA21",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (Authenticated exact source definitions and native same-position SceneClass render operands): Sole defining 4897b0bb51 dxwrapper.cpp COFF 1f2315a48a1c77caed59a1ec95197144235e4445ee3dddfaaf5f1178e1415cb5, section 3 +0xC9C. Zero-fill native storage.; Exact 502-byte SceneClass::Render 0x141170 consumer COFF 6498fbbc85a863a898267a2498c59b18123b3e8ace2897aabd4ec5cf7c7e40e1. Native and compiled operand match the byte store and adjacent native padding. Keep old H keys on their existing address.",
+          "defined_in": "src/Code/Libraries/Source/WWVegas/WW3D2/dxwrapper.cpp"
         }
       ]
     },
@@ -18467,6 +18491,14 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 1
+        },
+        {
+          "rva": "0x009B621C",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (Authenticated exact source definitions and native same-position SceneClass render operands): Sole defining 4897b0bb51 shader.cpp COFF cd325cf54d1435011534a9bc693f787a382b5de72eda3079f1a222b8d4debf93, section 3 +0x0. Initialized one-byte native data.; Exact 502-byte SceneClass::Render 0x141170 consumer COFF 6498fbbc85a863a898267a2498c59b18123b3e8ace2897aabd4ec5cf7c7e40e1. Native and compiled operand match the explicit byte store 1, and separate native Set_Shader 0x662E5 touches the same cell. Keep old H keys on their existing address.",
+          "defined_in": "src/Code/Libraries/Source/WWVegas/WW3D2/shader.cpp"
         }
       ]
     },
@@ -43413,18 +43445,6 @@
         }
       ]
     },
-    "?g_00E04914@@3HA": {
-      "candidates": [
-        {
-          "rva": "0x00A04914",
-          "kind": "named-data",
-          "evidence_class": "H",
-          "proven": false,
-          "why": "old data ledger name; no independently checked reference identity",
-          "size": 4
-        }
-      ]
-    },
     "?g_00E04930@@3HA": {
       "candidates": [
         {
@@ -64662,6 +64682,14 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 656
+        },
+        {
+          "rva": "0x009EE5D8",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (Exact compiled DIR32 consumers with authenticated existing typed COFF storage and native field addends): Authenticated defining dxwrapper.cpp COFF 4c3adf9173b54a1e75d71c8f576fcc56fce2739b8b6f1bcbcdb479aa020c2f54 on 4e266c0af1d1fbdc1a97d8c6cd4a7ac1c30b254e emits the only typed storage symbol, section 3 offset 0xD68.; Exact Get_Transform COFF 19a619f559b9e89f612bbba2ed24db3781188b2c1d3a086b5de1c2deef274a5b at source d0c649c971 and native byte-anchored 0x768FE. The exact world and view branches respectively read two distinct native 64-byte matrix ranges at +0x1EC and +0x22C. All native source-side component operands align. The measurement leaves the recorded touched byte extents unchanged.",
+          "defined_in": "src/Code/Libraries/Source/WWVegas/WW3D2/dxwrapper.cpp"
         }
       ]
     },
@@ -64674,6 +64702,14 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009EC4F4",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (Exact compiled DIR32 consumers with authenticated existing typed COFF storage and native field addends): Authenticated defining dxwrapper.cpp COFF 4c3adf9173b54a1e75d71c8f576fcc56fce2739b8b6f1bcbcdb479aa020c2f54 on 4e266c0af1d1fbdc1a97d8c6cd4a7ac1c30b254e emits the only typed storage symbol, section 3 offset 0x84.; Exact Get_Transform COFF 19a619f559b9e89f612bbba2ed24db3781188b2c1d3a086b5de1c2deef274a5b at source d0c649c971 and native byte-anchored 0x768FE. The exact 0x768FE two dirty-state byte tests both use native base+2 with masks 4 and 8. Recorded DIR32 addend 2 is identical. Defined unsigned bit mask, separate from render_state_changes.",
+          "defined_in": "src/Code/Libraries/Source/WWVegas/WW3D2/dxwrapper.cpp"
         }
       ]
     },
@@ -114976,6 +115012,15 @@
           "why": "rebuilt evidence (rebuilt-evidence data identity v1): layout:2 own-code, content",
           "defined_in": "src/Code/GameEngine/Source/Common/INI/inihelp.cpp",
           "scope": "O003389DD"
+        },
+        {
+          "rva": "0x009CD550",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (AOD owner-local named-array extent, content and exact DIR32 binding): Authenticated O004BBEDD COFF SHA-256 53d88d602b6c2f55ec445664893c6af9a69123eb81cd67083e244fa6f6dbe0d4, section 20 +0x80, class-3 static.; All 24 ordered native string-pointer entries and null terminator matched by . verified all three field-table DIR32 target positions at 0x85A4A8 and native array extent 100. Existing candidate scopes stay.",
+          "defined_in": "src/unk/O004BBEDD.cpp",
+          "scope": "O004BBEDD"
         }
       ]
     },
@@ -119815,6 +119860,15 @@
           "why": "rebuilt evidence (rebuilt-evidence data identity v1): layout:2 own-code, content",
           "defined_in": "src/Code/GameEngine/Source/Common/INI/inihelp.cpp",
           "scope": "O003389DD"
+        },
+        {
+          "rva": "0x009CD4D0",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (AOD owner-local named-array extent, content and exact DIR32 binding): Authenticated O004BBEDD COFF SHA-256 53d88d602b6c2f55ec445664893c6af9a69123eb81cd67083e244fa6f6dbe0d4, section 20 +0x0, class-3 static.; All 27 ordered native string-pointer entries and null terminator matched by . verified all three field-table DIR32 target positions at 0x85A4A8 and native array extent 112. Existing candidate scopes stay.",
+          "defined_in": "src/unk/O004BBEDD.cpp",
+          "scope": "O004BBEDD"
         }
       ]
     },
@@ -121048,6 +121102,144 @@
           "proven": true,
           "why": "rebuilt evidence (Native singleton construction and carried R proof at the same existing storage): Existing proved native four-byte singleton binding 0x009FEEF8. Native 0x2A9A18 and 0x49936A access the same storage. 0x2A9725 installs the subsystem and Snapshot vptrs, native 0x2A92E4 returns SkirmishAIManager and GameEngine 0x22F8FA allocates 0x944.; Source 13ceaa4db3 changes the pointer type on the existing single definition in SkirmishAIManager.cpp and retypes the same callers. Old proved key remains accepted to cover untouched users. No second data object.",
           "defined_in": "src/Code/GameEngine/Source/GameLogic/SkirmishAI/SkirmishAIManager.cpp"
+        }
+      ]
+    },
+    "?FogStart@DX8Wrapper@@1MA": {
+      "candidates": [
+        {
+          "rva": "0x009EDA28",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (Authenticated exact source definitions and native same-position SceneClass render operands): Sole defining 4897b0bb51 dxwrapper.cpp COFF 1f2315a48a1c77caed59a1ec95197144235e4445ee3dddfaaf5f1178e1415cb5, section 3 +0xCA4. Zero-fill native storage.; Exact 502-byte SceneClass::Render 0x141170 consumer COFF 6498fbbc85a863a898267a2498c59b18123b3e8ace2897aabd4ec5cf7c7e40e1. Native and compiled operand match the first float store and independently named renderer fog start reader. Keep old H keys on their existing address.",
+          "defined_in": "src/Code/Libraries/Source/WWVegas/WW3D2/dxwrapper.cpp"
+        }
+      ]
+    },
+    "?FogEnd@DX8Wrapper@@1MA": {
+      "candidates": [
+        {
+          "rva": "0x009EDA2C",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (Authenticated exact source definitions and native same-position SceneClass render operands): Sole defining 4897b0bb51 dxwrapper.cpp COFF 1f2315a48a1c77caed59a1ec95197144235e4445ee3dddfaaf5f1178e1415cb5, section 3 +0xCA8. Zero-fill native storage.; Exact 502-byte SceneClass::Render 0x141170 consumer COFF 6498fbbc85a863a898267a2498c59b18123b3e8ace2897aabd4ec5cf7c7e40e1. Native and compiled operand match the second distinct float store and renderer fog end reader. Keep old H keys on their existing address.",
+          "defined_in": "src/Code/Libraries/Source/WWVegas/WW3D2/dxwrapper.cpp"
+        }
+      ]
+    },
+    "?TheVictoryConditions@@3PAVVictoryConditions@@A": {
+      "candidates": [
+        {
+          "rva": "0x00A03138",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (Existing sole typed definition and independent native named initialization and consumer operand): Authenticated 5c44090d3a VictoryConditions.cpp COFF 10495ee69c273af7cfebfa31e85da73e5ffcf5805c13fce513616808e0dc9ca8 defines the sole typed .bss pointer (section 3 +0).; Native 0x3BA8C4 reads this cell at native operand 0x3BA8CD and calls table +0x60. Exact ScriptActions COFF 20564f6ba748b66697fe7bc7caecb1249cc907a58061298c16f910e51505032d has this DIR32 at function +0x9 with corresponding call.; Existing class-D interface key has native GameEngine initialization with the exact TheVictoryConditions string, same address. Keep that proof and its key separately.",
+          "defined_in": "src/Code/GameEngine/Source/GameLogic/ScriptEngine/VictoryConditions.cpp"
+        }
+      ]
+    },
+    "?worldPosition@?1??containSlot86@HordeGarrisonContain@@UAEPBVCoord3D@@XZ@4V3@A": {
+      "candidates": [
+        {
+          "rva": "0x00A036B8",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (P17 source-local BSS relocations with authenticated definitions and equal native extents. Scope is the map owner ID retained:O00479BCA.): Exact P17 source b4eb215b12 Garrison Boat COFF a0c3c516d79b55be42b872886c4a3a73cb361008bb11330629bbd65ea34f18f7. Defined .bss section 60, offset 0, byte span 12.; Native slot 86 RVA 0x479F29 has same-position DIR32 field(s) to the named unique zero-filled storage. Keep all old historical H candidates.",
+          "defined_in": "src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HordeGarrisonContain.cpp",
+          "scope": "retained:O00479BCA"
+        }
+      ]
+    },
+    "?$S1@?1??containSlot86@HordeGarrisonContain@@UAEPBVCoord3D@@XZ@4IA": {
+      "candidates": [
+        {
+          "rva": "0x00A036C4",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (P17 source-local BSS relocations with authenticated definitions and equal native extents. Scope is the map owner ID retained:O00479BCA.): Exact P17 source b4eb215b12 Garrison Boat COFF a0c3c516d79b55be42b872886c4a3a73cb361008bb11330629bbd65ea34f18f7. Defined .bss section 61, offset 0, byte span 4.; Native slot 86 RVA 0x479F29 has same-position DIR32 field(s) to the named unique zero-filled storage. Keep all old historical H candidates.",
+          "defined_in": "src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HordeGarrisonContain.cpp",
+          "scope": "retained:O00479BCA"
+        }
+      ]
+    },
+    "?worldPosition@?1??containSlot87@HordeGarrisonContain@@UAEPBVCoord3D@@XZ@4V3@A": {
+      "candidates": [
+        {
+          "rva": "0x00A036C8",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (P17 source-local BSS relocations with authenticated definitions and equal native extents. Scope is the map owner ID retained:O00479BCA.): Exact P17 source b4eb215b12 Garrison Boat COFF a0c3c516d79b55be42b872886c4a3a73cb361008bb11330629bbd65ea34f18f7. Defined .bss section 64, offset 0, byte span 12.; Native slot 87 RVA 0x479F62 has same-position DIR32 field(s) to the named unique zero-filled storage. Keep all old historical H candidates.",
+          "defined_in": "src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HordeGarrisonContain.cpp",
+          "scope": "retained:O00479BCA"
+        }
+      ]
+    },
+    "?$S3@?1??containSlot87@HordeGarrisonContain@@UAEPBVCoord3D@@XZ@4IA": {
+      "candidates": [
+        {
+          "rva": "0x00A036D4",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (P17 source-local BSS relocations with authenticated definitions and equal native extents. Scope is the map owner ID retained:O00479BCA.): Exact P17 source b4eb215b12 Garrison Boat COFF a0c3c516d79b55be42b872886c4a3a73cb361008bb11330629bbd65ea34f18f7. Defined .bss section 65, offset 0, byte span 4.; Native slot 87 RVA 0x479F62 has same-position DIR32 field(s) to the named unique zero-filled storage. Keep all old historical H candidates.",
+          "defined_in": "src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HordeGarrisonContain.cpp",
+          "scope": "retained:O00479BCA"
+        }
+      ]
+    },
+    "?worldPosition@?1??containSlot88@HordeGarrisonContain@@UBEPBVCoord3D@@XZ@4V3@A": {
+      "candidates": [
+        {
+          "rva": "0x00A036D8",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (P17 source-local BSS relocations with authenticated definitions and equal native extents. Scope is the map owner ID retained:O00479BCA.): Exact P17 source b4eb215b12 Garrison Boat COFF a0c3c516d79b55be42b872886c4a3a73cb361008bb11330629bbd65ea34f18f7. Defined .bss section 68, offset 0, byte span 12.; Native slot 88 RVA 0x479F9B has same-position DIR32 field(s) to the named unique zero-filled storage. Keep all old historical H candidates.",
+          "defined_in": "src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HordeGarrisonContain.cpp",
+          "scope": "retained:O00479BCA"
+        }
+      ]
+    },
+    "?$S5@?1??containSlot88@HordeGarrisonContain@@UBEPBVCoord3D@@XZ@4IA": {
+      "candidates": [
+        {
+          "rva": "0x00A036E4",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (P17 source-local BSS relocations with authenticated definitions and equal native extents. Scope is the map owner ID retained:O00479BCA.): Exact P17 source b4eb215b12 Garrison Boat COFF a0c3c516d79b55be42b872886c4a3a73cb361008bb11330629bbd65ea34f18f7. Defined .bss section 69, offset 0, byte span 4.; Native slot 88 RVA 0x479F9B has same-position DIR32 field(s) to the named unique zero-filled storage. Keep all old historical H candidates.",
+          "defined_in": "src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HordeGarrisonContain.cpp",
+          "scope": "retained:O00479BCA"
+        }
+      ]
+    },
+    "?TheBuffXferDrawable@@3PAVDrawable@@A": {
+      "candidates": [
+        {
+          "rva": "0x00A01E74",
+          "kind": "named-data",
+          "evidence_class": "R",
+          "proven": true,
+          "why": "rebuilt evidence (Authenticated unique typed definition and native write/clear/read chain): Sole real emitted pointer on e1b9ee1f06de5cc4221fa5b159ae01a637356a6d plus authenticated COFF 0400a7dbf184e889f442a62b090e301c64133c3237ded5f0f87c2a0405da682a, section 3 offset 0, four zero-fill bytes with no raw data.; Exact native 0x362702 copies its receiver+4 Drawable to the scratch at 0x362747 and clears at 0x362763. Exact 0x3628D3 reads at 0x362A2B and passes it with the typed ThingTemplate to the independently bound BuffLogic call. Same-position DIR32s preserve old key and storage.; Semantic witness grade requested as provisional. The class-R flag refers to the defining/consumer relocation identity.",
+          "defined_in": "src/Code/GameEngine/Source/GameClient/BuffManager.cpp"
+        }
+      ]
+    },
+    "?g_00E04914@@3PAVAptScoreScreen@@A": {
+      "candidates": [
+        {
+          "rva": "0x00A04914",
+          "kind": "named-data",
+          "evidence_class": "H",
+          "proven": false,
+          "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
         }
       ]
     }
@@ -161565,6 +161757,160 @@
         "owner_class": "?$MultiListClass@VDX8PolygonRendererClass@@",
         "owner_ctor_rvas": "",
         "evidence": "X:binding (meshmodel-7D34E0): Exact COFF is a four-byte vftable with one deleting slot. Both MeshModel ctor bodies store this 0x7D34E0 MultiListClass<DX8PolygonRendererClass> at +0x9C. Retail slot 0 selects 0x144850.",
+        "confidence": "high"
+      }
+    ],
+    "??_7Snapshot@@6B@": [
+      {
+        "rva": "0x007BB554",
+        "slots": "4",
+        "slot_rvas": "0x00001750|0x0003B810|0x0003B810|0x0003B810",
+        "owner_class": "Snapshot",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding (snapshot-table-007bb554): Actual lifetimes landed f38d80269d. Authenticated 1c8f057e5f3af91f7e3c41b6e3cafc244b38f64b COFF beea667add6962d62ae9643b4c9184fd47ae45c5a9287a15b76c659318468222. Native 0x63904 restores the four-cell",
+        "confidence": "high"
+      }
+    ],
+    "??_7RefCountClass@@6B@": [
+      {
+        "rva": "0x007C650C",
+        "slots": "2",
+        "slot_rvas": "0x0006CE57|0x00072899",
+        "owner_class": "RefCountClass",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding (hanim-table-007c650c): RefCountClass lifetime 0x72882/0x72892/0x72899 uses the same cells 0x6CE57 and 0x72899. Native HAnim dtor final base store at 0x196160 matches own COFF section 34 DIR32. Authenticated 6c5e26b555 COFF",
+        "confidence": "high"
+      }
+    ],
+    "??_7HAnimClass@@6BRefCountClass@@@": [
+      {
+        "rva": "0x007D5CB8",
+        "slots": "23",
+        "slot_rvas": "0x0006CE57|0x0018D1C0|0x0003B810|0x0003B810|0x0003B810|0x0003B810|0x0003B810|0x0003B810|0x0003B810|0x0003B810|0x0003B810|0x0003B810|0x0003B810|0x0003B810|0x0003B810|0x0018D1B0|0x0018D1B0|0x0018D1B0|0x0018D1B0|0x0018D1B0|0x0018D1B0|0x0013B5E0|0x0003B810",
+        "owner_class": "HAnimClass",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding (hanim-table-007d5cb8): Native HAnimClass constructor 0x18D170 installs primary at +0; existing typed candidate extents independently show 23 entries up to next vtable 0x7D5D14. Slot 1 selects 0x18D1C0 exact scalar keeper, s",
+        "confidence": "high"
+      }
+    ],
+    "??_7HAnimClass@@6BHashableClass@@@": [
+      {
+        "rva": "0x007D5CAC",
+        "slots": "2",
+        "slot_rvas": "0x0018E730|0x0018D1A0",
+        "owner_class": "HAnimClass",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding (hanim-table-007d5cac): Native ctor and dtor differentiates base +8 pointer stored in 0x18D170/0x196150. Exact two slots adjustor 0x18E730 and 0x18D1A0, terminated by native zero dword at 0x7D5CB4. Authenticated 6c5e26b555 C",
+        "confidence": "high"
+      }
+    ],
+    "??_7?$VectorClass@PAVVertexMaterialClass@@@@6B@": [
+      {
+        "rva": "0x007D4628",
+        "slots": "6",
+        "slot_rvas": "0x0016FAA0|0x00196920|0x001A3720|0x00154A30|0x001964F0|0x00154BE0",
+        "owner_class": "?$VectorClass@PAVVertexMaterialClass@@",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding (material-vector-007d4628): Exact 411d0bdedd COFF 87011be3938b8400122a3ef4fc8949bab1db71408c0008bfb9f50557df78e799. 0x1701A8 dtor restores at +8, COFF section 84. Native cells 16FAA0/196920/1A3720/154A30/1964F0/154BE0.",
+        "confidence": "high"
+      }
+    ],
+    "??_7?$VectorClass@VTextureAsset@@@@6B@": [
+      {
+        "rva": "0x007D4640",
+        "slots": "6",
+        "slot_rvas": "0x0016FF50|0x00196920|0x0016F710|0x0016F8B0|0x001964F0|0x00154BE0",
+        "owner_class": "?$VectorClass@VTextureAsset@@",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding (material-vector-007d4640): Exact 411d0bdedd COFF 87011be3938b8400122a3ef4fc8949bab1db71408c0008bfb9f50557df78e799. 0x16ED80+0x23 and 0x17016D install, COFF section 96. Native cells 16FF50/196920/16F710/16F8B0/1964F0/154BE0.",
+        "confidence": "high"
+      }
+    ],
+    "??_7?$DynamicVectorClass@PAVVertexMaterialClass@@@@6B@": [
+      {
+        "rva": "0x007D4658",
+        "slots": "6",
+        "slot_rvas": "0x0016FF30|0x00196920|0x00121380|0x0016FED0|0x001969C0|0x00154BE0",
+        "owner_class": "?$DynamicVectorClass@PAVVertexMaterialClass@@",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding (material-vector-007d4658): Exact 411d0bdedd COFF 87011be3938b8400122a3ef4fc8949bab1db71408c0008bfb9f50557df78e799. 0x1708D0+0x3F installs at +8, COFF section 175. Native cells 16FF30/196920/121380/16FED0/1969C0/154BE0.",
+        "confidence": "high"
+      }
+    ],
+    "??_7?$DynamicVectorClass@VTextureAsset@@@@6B@": [
+      {
+        "rva": "0x007D4688",
+        "slots": "6",
+        "slot_rvas": "0x001708B0|0x00196920|0x0016FE30|0x0016FE60|0x001969C0|0x00154BE0",
+        "owner_class": "?$DynamicVectorClass@VTextureAsset@@",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding (material-vector-007d4688): Exact 411d0bdedd COFF 87011be3938b8400122a3ef4fc8949bab1db71408c0008bfb9f50557df78e799. 0x1708D0+0x67 installs at +0x20, COFF section 212. Native cells 1708B0/196920/16FE30/16FE60/1969C0/154BE0.",
+        "confidence": "high"
+      }
+    ],
+    "??_7UntamedAllegianceSpecialPower@@6BBehaviorModuleInterface@@@": [
+      {
+        "rva": "0x007EFCF8",
+        "slots": "47",
+        "slot_rvas": "0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x002533D3|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x00251C11|0x00251C24|0x0047A69C|0x0047A69C",
+        "owner_class": "UntamedAllegianceSpecialPower",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding (untamed-secondary-table): P15 5c44090d3a Boat ctor/dtor both MATCH and unproven solely on this symbol. Native ctor store at 0x4C7B1C and dtor at 0x4C7B3C both set +0xC to VA 0xBEFCF8. Authenticated COFF sections 8, symbol 55/5",
+        "confidence": "high"
+      }
+    ],
+    "??_7ProductionQueueHordeContain@@6BBehaviorModuleInterface@@@": [
+      {
+        "rva": "0x00843528",
+        "slots": "47",
+        "slot_rvas": "0x000D43D0|0x003730FC|0x004543A9|0x0046644A|0x004647C0|0x000D43D0|0x000D43D0|0x004523A9|0x000D43D0|0x002533D3|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x0047A69C|0x000B3FD0|0x0047A69C|0x0047A69C",
+        "owner_class": "ProductionQueueHordeContain",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding (production-behavior-table): Native lifetime stores 0x481359 and 0x481236 at receiver +0xC. Exact COFF f97ed78fa1e8b8296f2892879b20cd4b510162979632862c3fb10e850d413c7b section 39, 47 DIR32 cells in .",
+        "confidence": "high"
+      }
+    ],
+    "??_7ProductionQueueHordeContain@@6BUpdateModule@@@": [
+      {
+        "rva": "0x00846560",
+        "slots": "3",
+        "slot_rvas": "0x00479643|0x00253376|0x0044DF8D",
+        "owner_class": "ProductionQueueHordeContain",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding (production-update-table): Native lifetime stores 0x481360 and 0x48123D at receiver +0x10. Exact COFF f97ed78fa1e8b8296f2892879b20cd4b510162979632862c3fb10e850d413c7b section 38, three DIR32 cells in r5_production_p17_tables.ts",
+        "confidence": "high"
+      }
+    ],
+    "??_7BuffLogic@@6BSnapshot@@@": [
+      {
+        "rva": "0x00807D2C",
+        "slots": "4",
+        "slot_rvas": "0x0030680E|0x000B3FD0|0x003067C4|0x00341E2D",
+        "owner_class": "BuffLogic",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding: Native 0x3067B1 installs at +0. Authenticated source table has outer class BuffLogic and four Snapshot cells.",
+        "confidence": "high"
+      }
+    ],
+    "??_7BuffLogic@@6BSubsystemInterface@@@": [
+      {
+        "rva": "0x00807D3C",
+        "slots": "14",
+        "slot_rvas": "0x003067CA|0x000B3FD0|0x001B5384|0x000B3FD0|0x005CB9FF|0x0047A699|0x000D43D0|0x0047A69C|0x000B3FD0|0x000B3FD0|0x000B3FD0|0x005CB9FF|0x000B3FD0|0x0047A69C",
+        "owner_class": "BuffLogic",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding: Native 0x3067AB installs at +4 and restores in destructor 0x3067EC. Authenticated table has 14 cells.",
+        "confidence": "high"
+      }
+    ],
+    "??_7DrawModule@@6B@": [
+      {
+        "rva": "0x007C9690",
+        "slots": "62",
+        "slot_rvas": "0x000CEF83|0x000B3FD0|0x000B19BD|0x004CBF58|0x0003B810|0x000B3FD0|0x000B3FD0|0x000B3FD0|0x000B3FD0|0x000D43D0|0x000D43D0|0x0003B810|0x0003B810|0x0003B810|0x0003B810|0x000B3FD0|0x0047A69C|0x0047A699|0x0047A69C|0x0047A69C|0x0047A69C|0x0050B238|0x0047A69C|0x0047A69C|0x0047A69C|0x0050B238|0x0047A69C|0x0050B238|0x000B3FD0|0x0047A69C|0x0047A69C|0x0047A69C|0x0047A69C|0x000D1407|0x000B3FD0|0x0003B810|0x000B3FD0|0x0050B5C6|0x0003B810|0x0003B810|0x0047A699|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x002BFBF0|0x000D43D0|0x000D43D0|0x0047A69C|0x0050B238|0x0047A699|0x0050B238|0x000B3FD0|0x0047A69C|0x0047A69C|0x0050B5C6|0x000B3FD0",
+        "owner_class": "DrawModule",
+        "owner_ctor_rvas": "",
+        "evidence": "X:binding (draw-module-base-007c9690): Native DrawModule 0xB19A1 installs the exact 62-cell table and 0xCEB6F reinstalls it from its destructor. Derived W3DLightDraw 0xCFA42+0x3F and authenticated 3d5d2c5f18 COFF DIR32 +0x41 name the same",
         "confidence": "high"
       }
     ]

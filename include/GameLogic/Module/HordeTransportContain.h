@@ -6,7 +6,6 @@
 // exit 0x00C45CFC, contain 0x00C45D30) and sets +0x120 = -1000 and the byte
 // +0x124 = 0. xfer 0x0047714A writes its version, TransportContain::xfer, then
 // xferInt(+0x120) and xferBool(+0x124). +0x11C..+0x11F are not established.
-// Handed to h05's generator for the remaining members and overrides.
 #pragma once
 #ifndef BFME2_HORDETRANSPORTCONTAIN_H
 #define BFME2_HORDETRANSPORTCONTAIN_H

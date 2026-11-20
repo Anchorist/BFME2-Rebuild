@@ -138,4 +138,20 @@ ShellMenuScheme *ShellMenuSchemeManager::newShellMenuScheme(AsciiString name)
 }
 
 // FUNCTION: BFME2 0x00200984 size=113 name=?parseShellMenuSchemeDefinition@INI@@SAXPAV1@@Z evidence=N:ledger tier=B hypothesis:K
+void INI::parseShellMenuSchemeDefinition(INI *ini)
+{
+	AsciiString name;
+	ShellMenuSchemeManager *schemeManager;
+	ShellMenuScheme *scheme;
 
+	const char *c = ini->getNextToken();
+	name.set(c);
+
+	schemeManager = TheShell->getShellMenuSchemeManager();
+	if (!schemeManager)
+		return;
+
+	scheme = schemeManager->newShellMenuScheme(name);
+
+	ini->initFromINI(scheme, schemeManager->getFieldParse());
+}

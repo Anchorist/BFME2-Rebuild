@@ -34,6 +34,9 @@ extern NameKeyGenerator *TheNameKeyGenerator;
 #include "Common/GameEngine.h"
 #include "GameClient/DisplayStringManager.h"
 #include "GameLogic/GameLogic.h"
+#include "Common/GlobalData.h"
+#include "GameLogic/LivingWorldLogic.h"
+extern LivingWorldLogic *TheLivingWorldLogic;
 #include "GameClient/GameClient.h"
 #include "GameLogic/Module/BehaviorModule.h"
 #include "GameLogic/Module/SpecialPowerModule.h"
@@ -168,6 +171,12 @@ void InGameUI::beginAreaSelectHint(const GameMessage *message)
 }
 
 // FUNCTION: BFME2 0x0029A7C4 size=38 name=?createGarrisonHint@InGameUI@@UAEXPBVGameMessage@@@Z evidence=N:ledger tier=B hypothesis:Z
+void InGameUI::createGarrisonHint(const GameMessage *msg)
+{
+	Drawable *draw = TheGameClient->findDrawableByID(msg->getArgument(0)->drawableID);
+	if (draw)
+		draw->onSelected();
+}
 
 // FUNCTION: BFME2 0x0029A7EA size=7 name=?get@Rva0029A7EADwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:Z
 
@@ -290,6 +299,12 @@ bool InGameUI::isPlacementAnchored( void )
 // FUNCTION: BFME2 0x0029AB03 size=8 name=?disable@Rva0029AB03ByteZeroSetter@@QAEXXZ evidence=?:placeholder tier=B hypothesis:Z
 
 // FUNCTION: BFME2 0x0029AB0B size=23 name=?getPlacementAngle@InGameUI@@UAEMXZ evidence=N:ledger tier=B hypothesis:Z
+float InGameUI::getPlacementAngle()
+{
+	if (m_placeIcon[0])
+		return m_placeIcon[0]->getOrientation();
+	return 0.0f;
+}
 
 // FUNCTION: BFME2 0x0029AB22 size=19 name=?setEngineInputEnabled@InGameUI@@QAEX_N@Z evidence=N:ledger tier=B hypothesis:Z
 void InGameUI::setEngineInputEnabled(bool enabled)
@@ -401,6 +416,12 @@ void InGameUI::clearTooltipsDisabled()
 }
 
 // FUNCTION: BFME2 0x0029B068 size=65 name=?areTooltipsDisabled@InGameUI@@UBE_NXZ evidence=N:ledger tier=B hypothesis:Z
+bool InGameUI::areTooltipsDisabled() const
+{
+	if (!TheWritableGlobalData->m_useHelpTextSystem)
+		return true;
+	return !(TheLivingWorldLogic && TheLivingWorldLogic->isSelectionLocked()) && TheGameLogic->getFrame() < field7EC;
+}
 
 // FUNCTION: BFME2 0x0029B0A9 size=137 name=?IdleWorkerSystem@@YA?AW4WindowMsgHandledType@@PAVGameWindow@@III@Z evidence=N:ledger tier=A
 WindowMsgHandledType IdleWorkerSystem(GameWindow *window, unsigned int msg, unsigned int mData1, unsigned int mData2)

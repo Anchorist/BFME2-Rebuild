@@ -1,7 +1,7 @@
 // ScriptAction.h: one action of a map script, chained through +0x3C. Target facts: the vptr at +0x00
 // (the virtual destructor is slot 0); the action type at +0x04, the parameter count at +0x08 and the
 // parameter pointers at +0x0C (ScriptAction's destructor 0x003B43CC, which mirrors Condition's, reads
-// them), the next action at +0x3C. The constructors store the table at +0x00 (see the old header's notes).
+// them), the next action at +0x3C. The constructors store the table at +0x00.
 #pragma once
 #ifndef BFME2_SCRIPTACTION_H
 #define BFME2_SCRIPTACTION_H

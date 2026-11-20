@@ -1,10 +1,10 @@
-// StructureToppleUpdateModuleData.h: promoted from include/Draft by h05 (round 10). Proven by 2 rows that MATCH against it on main (0x004A651B, 0x00257BE7);
+// StructureToppleUpdateModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // StructureToppleUpdateModuleData.h: the INI data of StructureToppleUpdate. SIZE 0xBC.
 // Target facts: ModuleFactory registers the module with operator new 0xBC and
 // constructor RVA 0x00257A5E; buildFieldParse RVA 0x004A651B adds VA 0x00C52BD8 at +0x0 and DieMuxData at +0x8.
 // Offsets are the table entries'; each type is what the entry's parse function stores
-// (h05 fpgen: INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
+// (INI::parseReal -> Real, parseDurationUnsignedInt -> UnsignedInt, ...);
 // names are the INI tokens. Byte gaps are bytes no table entry writes.
 #pragma once
 #ifndef BFME2_STRUCTURE_TOPPLE_UPDATE_MODULE_DATA_H

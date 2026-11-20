@@ -1,5 +1,5 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-// Diagnostic pilot import; object boundaries may be unproven.
+// Object boundaries may be unproven.
 // FUNCTION: BFME2 0x0058964F size=18 name=?isClearToEnter@DockUpdate@@UBE_NPBVObject@@@Z evidence=N:ledger
 // FUNCTION: BFME2 0x00589661 size=10 name=?setDockCrippled@DockUpdate@@UAEX_N@Z evidence=N:ledger
 // FUNCTION: BFME2 0x005896B0 size=17 name=??0DockUpdateModuleData@@QAE@XZ evidence=N:ledger
@@ -26,7 +26,7 @@
 // FUNCTION: BFME2 0x0058A1A1 size=239 name=?reserveApproachPosition@DockUpdate@@UAE_NPAVObject@@PAUCoord3D@@PAH@Z evidence=N:ledger
 // FUNCTION: BFME2 0x0058A290 size=384 name=??0DockUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger
 // FUNCTION: BFME2 0x0058A410 size=439 name=?xfer@DockUpdate@@MAEXPAVXfer@@@Z evidence=N:ledger
-// GameLogic/Object/Update/DockUpdate/DockUpdate.cpp: retail translation unit (pilot skeleton).
+// GameLogic/Object/Update/DockUpdate/DockUpdate.cpp: retail translation unit (skeleton).
 // Write each function below its FUNCTION annotation, in this (retail) order.
 // Bodies matched in the old repo (read-only reference) are listed per function as old=<source>.
 // Shared types belong in include/; no class or struct with a body in this file.
@@ -491,30 +491,6 @@ UpdateSleepTime DockUpdate::update()
 	return UPDATE_SLEEP_NONE;
 }
 
-
-// The growth path: retail's copy expands the old storage's release inline as a
-// direct free instead of calling _M_clear, so spell the algorithm out rather
-// than let this unit emit a second variant of it.
-namespace _STL {
-template <> void vector<ObjectID>::_M_insert_overflow(ObjectID *position, const ObjectID &value,
-	const __false_type &, size_t fillLength, bool atEnd)
-{
-	const size_type oldSize = size();
-	const size_type length = oldSize + (max)(oldSize, fillLength);
-	pointer start = this->_M_end_of_storage.allocate(length);
-	pointer finish = __uninitialized_copy(this->_M_start, position, start, __false_type());
-	if (fillLength == 1) {
-		_Construct(finish, value);
-		++finish;
-	} else
-		finish = __uninitialized_fill_n(finish, fillLength, value, __false_type());
-	if (!atEnd)
-		finish = __uninitialized_copy(position, this->_M_finish, finish, __false_type());
-	if (this->_M_start != 0)
-		free(this->_M_start);
-	_M_set(start, finish, start + length);
-}
-}
 
 template void _STL::vector<ObjectID>::_M_fill_insert(ObjectID *, size_t, const ObjectID &);
 

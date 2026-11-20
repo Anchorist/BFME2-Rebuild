@@ -1,7 +1,7 @@
 // LocomotorTemplate.h: a locomotor's INI definition, from retail's field-parse table
-// (VA 0x00BDE2F8; h05 fpgen). Types are what each entry's parse function stores; names are
-// the INI tokens. Proved by validate 0x001E38B9 and the dtor 0x001E4DB0 (h07).
-// h07: SIZE 0x154 (LocomotorStore::parseLocomotorTemplateDefinition 0x001E8A94 allocates
+// (VA 0x00BDE2F8). Types are what each entry's parse function stores; names are
+// the INI tokens. Proved by validate 0x001E38B9 and the dtor 0x001E4DB0.
+// SIZE 0x154 (LocomotorStore::parseLocomotorTemplateDefinition 0x001E8A94 allocates
 // 0x154); base Overridable (ctor 0x001E4ABE stores -1 at +0xC, 0 at +4/+8 and table
 // 0x00BDE8B4, whose one slot is the deleting dtor; Locomotor's ctor and the store's reset
 // call friend_getFinalOverride / deleteOverrides on it). +0x10 is a zeroed word (Zero Hour's

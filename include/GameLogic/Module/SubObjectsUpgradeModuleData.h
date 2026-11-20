@@ -1,7 +1,7 @@
 // SubObjectsUpgradeModuleData.h: the INI data of SubObjectsUpgrade. SIZE 0x154.
 // Target facts: ModuleFactory registers the module with operator new 0x154 and
 // constructor RVA 0x00257768; buildFieldParse RVA 0x004B52EB adds the UpgradeMuxData at +0x8 and VA 0x00C57D38 at +0x0.
-// Promoted from Draft by f03. The destructor 0x004B5214 destroys, in reverse order, an 8-byte-element vector at
+// Promoted from Draft. The destructor 0x004B5214 destroys, in reverse order, an 8-byte-element vector at
 // +0x13C (after clearing it: erase(begin, end)), three vectors of AsciiString at +0x130, +0x124 and +0x118, then
 // stores ModuleData's table. UpgradeTexture's parse function (0x004B5293) grows the +0x13C vector by one element and
 // reads three tokens into it: the first lands in the element's first string, the second is skipped, the third lands
@@ -30,7 +30,7 @@ struct SubObjectTexturePair
 // SIZE 0x8
 
 // Base UpgradeModuleData: the constructor 0x00257768 calls its constructor 0x00253487 first, and the
-// table keeps its slot 10 (`mov al,1`, 0x0050B5C6) (h05 r9).
+// table keeps its slot 10 (`mov al,1`, 0x0050B5C6).
 class SubObjectsUpgradeModuleData : public UpgradeModuleData
 {
 public:

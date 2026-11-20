@@ -42,7 +42,7 @@ bool g_bfmeDockingTraceActive = false;
 // FUNCTION: BFME2 0x004A9617 size=53 name=?rva004A9617@Rva004A9617@@UAE_NXZ evidence=?:placeholder tier=B hypothesis:cohesion
 Bool WorkerAIUpdate::isCurrentlyFerryingSupplies() const
 {
-	StateMachine *machine = m_unk0x4C8;
+	StateMachine *machine = m_supplyMachine;
 	if (machine != 0)
 	{
 		switch (machine->getCurrentStateID())
@@ -131,7 +131,7 @@ void WorkerAIUpdate::privateHarvest(const Coord3D *pos, CommandSourceType cmdSou
 	AIUpdateInterface::privateHarvest(pos, cmdSource);
 	if (cmdSource == CMD_FROM_PLAYER && pos != 0)
 	{
-		m_unk0x4A8 = *pos;
+		m_playerHarvestPosition = *pos;
 		m_unk0x4B4 = true;
 	}
 }
@@ -140,7 +140,7 @@ void WorkerAIUpdate::privateHarvest(const Coord3D *pos, CommandSourceType cmdSou
 void WorkerAIUpdate::cancelTask(DozerTask task)
 {
 	internalCancelTask(task);
-	m_unk0x4C4->resetToDefaultState();
+	m_dozerMachine->resetToDefaultState();
 }
 
 // FUNCTION: BFME2 0x004A97EE size=16 name=?isTaskPending@WorkerAIUpdate@@UAE_NW4DozerTask@@@Z evidence=N:ledger tier=A
@@ -205,19 +205,19 @@ Bool WorkerAIUpdate::loseOneBox()
 // FUNCTION: BFME2 0x004A98D6 size=62 name=?isSupplyTruckBrainActiveAndBusy@WorkerAIUpdate@@QAE_NXZ evidence=N:ledger tier=A
 Bool WorkerAIUpdate::isSupplyTruckBrainActiveAndBusy()
 {
-	return m_unk0x4C0->getCurrentStateID() == 1 && m_unk0x4C8->getCurrentStateID() == 1;
+	return m_workerMachine->getCurrentStateID() == 1 && m_supplyMachine->getCurrentStateID() == 1;
 }
 
 // FUNCTION: BFME2 0x004A9914 size=11 name=?rva004A9914@Rva004A9914Owner@@QAEXXZ evidence=?:placeholder tier=A
 void WorkerAIUpdate::resetSupplyTruckMachine()
 {
-	m_unk0x4C8->resetToDefaultState();
+	m_supplyMachine->resetToDefaultState();
 }
 
 // FUNCTION: BFME2 0x004A991F size=11 name=?rva004A991F@Rva004A991F@@QAEXXZ evidence=?:placeholder tier=A
 void WorkerAIUpdate::resetDozerMachine()
 {
-	m_unk0x4C4->resetToDefaultState();
+	m_dozerMachine->resetToDefaultState();
 }
 
 // FUNCTION: BFME2 0x004A9964 size=11 name=??1WorkerStateMachine@@UAE@XZ evidence=N:ledger tier=A
@@ -344,23 +344,23 @@ void WorkerAIUpdate::privateRepair(Object *obj, CommandSourceType source)
 // FUNCTION: BFME2 0x004A9ED5 size=218 name=?createMachines@WorkerAIUpdate@@AAEXXZ evidence=N:ledger tier=A
 void WorkerAIUpdate::createMachines()
 {
-	if (m_unk0x4C0 == 0)
+	if (m_workerMachine == 0)
 	{
 		WorkerStateMachine *workerMachine = new WorkerStateMachine(m_object);
-		m_unk0x4C0 = reinterpret_cast<StateMachine *>(workerMachine);
-		if (m_unk0x4C4 == 0)
+		m_workerMachine = workerMachine;
+		if (m_dozerMachine == 0)
 		{
 			DozerPrimaryStateMachine *dozerMachine = new DozerPrimaryStateMachine(m_object);
-			m_unk0x4C4 = reinterpret_cast<StateMachine *>(dozerMachine);
+			m_dozerMachine = dozerMachine;
 			dozerMachine->initDefaultState();
 		}
-		if (m_unk0x4C8 == 0)
+		if (m_supplyMachine == 0)
 		{
 			SupplyTruckStateMachine *supplyMachine = new SupplyTruckStateMachine(m_object);
-			m_unk0x4C8 = reinterpret_cast<StateMachine *>(supplyMachine);
+			m_supplyMachine = supplyMachine;
 			supplyMachine->initDefaultState();
 		}
-		m_unk0x4C0->initDefaultState();
+		m_workerMachine->initDefaultState();
 	}
 }
 
@@ -383,7 +383,7 @@ void WorkerAIUpdate::xfer(Xfer *xfer)
 		XferObjectID(xfer, &m_tasks[task].m_targetObjectID);
 		*xfer == m_tasks[task].m_startFrame;
 	}
-	*xfer == *m_unk0x4C4;
+	*xfer == *m_dozerMachine;
 	xfer->XferRawBytes(&m_currentTask, 4);
 	Int dockTaskCount = 3;
 	*xfer == dockTaskCount;
@@ -394,19 +394,19 @@ void WorkerAIUpdate::xfer(Xfer *xfer)
 		for (Int point = 0; point < 3; ++point)
 		{
 			*xfer == m_dockPoints[task][point].m_valid;
-			*xfer == static_cast<Coord3DBase &>(m_dockPoints[task][point].m_position);
+			*xfer == m_dockPoints[task][point].m_position;
 		}
 	}
 	xfer->XferRawBytes(&m_unk0x49C, 4);
-	*xfer == *m_unk0x4C8;
+	*xfer == *m_supplyMachine;
 	XferObjectID(xfer, &m_unk0x4A4);
-	*xfer == static_cast<Coord3DBase &>(m_unk0x4A8);
+	*xfer == m_playerHarvestPosition;
 	*xfer == m_unk0x4B4;
 	*xfer == m_carriedSupplyBoxes;
 	*xfer == m_unk0x4BC;
 	*xfer == m_unk0x4BE;
 	*xfer == m_unk0x4BD;
-	*xfer == *m_unk0x4C0;
+	*xfer == *m_workerMachine;
 	if (TheAudio != 0)
 		TheAudio->xferAudioHandle(xfer, &m_buildingSoundHandle);
 	*xfer == m_unk0x4B8;
@@ -494,8 +494,8 @@ UpdateSleepTime WorkerAIUpdate::update()
 	AIUpdateInterface::update();
 	if (!m_object->isEffectivelyDead() && !m_unk0x3CC)
 	{
-		m_unk0x4C0->updateStateMachine();
-		StateMachine *brain = m_unk0x4C0;
+		m_workerMachine->updateStateMachine();
+		StateMachine *brain = m_workerMachine;
 		if (brain != 0)
 		{
 			if (brain->getCurrentStateID() == 0)
@@ -511,11 +511,11 @@ UpdateSleepTime WorkerAIUpdate::update()
 							cancelTask(DOZER_TASK_REPAIR);
 					}
 				}
-				m_unk0x4C4->updateStateMachine();
+				m_dozerMachine->updateStateMachine();
 			}
 			else
 			{
-				m_unk0x4C8->updateStateMachine();
+				m_supplyMachine->updateStateMachine();
 			}
 		}
 	}
@@ -667,7 +667,7 @@ void WorkerAIUpdate::newTask(DozerTask task, Object *target)
 	if (target == 0)
 		return;
 	m_unk0x4A4 = INVALID_ID;
-	m_unk0x4A8.zero();
+	m_playerHarvestPosition.zero();
 	m_unk0x4B4 = false;
 	if (task == DOZER_TASK_BUILD || task == DOZER_TASK_REPAIR)
 	{
@@ -724,14 +724,14 @@ void WorkerAIUpdate::newTask(DozerTask task, Object *target)
 	m_tasks[task].m_targetObjectID = target->getID();
 	m_tasks[task].m_startFrame = TheGameLogic->getFrame();
 
-	m_unk0x4C4->resetToDefaultState();
+	m_dozerMachine->resetToDefaultState();
 
-	if (m_unk0x4C0->getCurrentStateID() == 1)
+	if (m_workerMachine->getCurrentStateID() == 1)
 	{
 		AIUpdateInterface *ai = m_object->getAI();
 		if (ai != 0)
 			ai->aiIdle(CMD_FROM_AI);
-		m_unk0x4C0->setState(0);
+		m_workerMachine->setState(0);
 	}
 }
 
@@ -777,7 +777,7 @@ void WorkerAIUpdate::aiDoCommand(const AICommandParms *parms)
 			cancelTask(getCurrentTask());
 		AIUpdateInterface::aiDoCommand(parms);
 		if (parms->m_cmdSource == CMD_FROM_PLAYER)
-			m_unk0x4C4->resetToDefaultState();
+			m_dozerMachine->resetToDefaultState();
 		break;
 	}
 

@@ -1,6 +1,6 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 // Portions derived from Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
-// Diagnostic pilot import; object boundaries may be unproven.
+// Object boundaries may be unproven.
 // FUNCTION: BFME2 0x00362EEE size=112 name=??0LaserUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger
 // FUNCTION: BFME2 0x00362F5E size=6 name=?Rva00362F5EGet@@YAHXZ evidence=?:placeholder
 // FUNCTION: BFME2 0x00362F64 size=95 name=??1LaserUpdate@@UAE@XZ evidence=N:ledger

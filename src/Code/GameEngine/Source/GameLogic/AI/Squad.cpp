@@ -42,6 +42,18 @@ void Squad::addObjectID(ObjectID objectID)
 	m_objectIDs.push_back(objectID);
 }
 
+const _STL::vector<Object *> &Squad::getAllObjectsKeepingIDs()
+{
+	m_objectsCached.clear();
+	for (_STL::vector<ObjectID>::const_iterator it = m_objectIDs.begin(); it != m_objectIDs.end(); ++it)
+	{
+		Object *object = TheGameLogic->findObjectByID(*it);
+		if (object)
+			m_objectsCached.push_back(object);
+	}
+	return m_objectsCached;
+}
+
 // FUNCTION: BFME2 0x004D6D4F size=70 name=?bfmeCompact@Gen_0018BC70@@QAEPAVBfmeVecAK@@_N@Z evidence=N:ledger tier=A
 const _STL::vector<Object *> &Squad::getLiveObjects(Bool pruneDeadIDs)
 {

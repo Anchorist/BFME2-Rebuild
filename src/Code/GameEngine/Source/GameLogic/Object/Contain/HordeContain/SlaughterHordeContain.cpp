@@ -108,6 +108,12 @@ NameKeyType SlaughterHordeContain::getModuleNameKey() const
 // FUNCTION: BFME2 0x004804DD size=167 name=?rva004804DD@SlaughterHordeContain@@AAEXPAVObject@@@Z evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x00480584 size=27 name=?rva00479B7F@SlaughterHordeContain@@UAEXPAVObject@@@Z evidence=?:placeholder tier=B hypothesis:cohesion
+void SlaughterHordeContain::garrisonSlot29(Object *object)
+{
+	rva004804DD(object);
+	HordeGarrisonContain::garrisonSlot29(object);
+}
+
 
 // FUNCTION: BFME2 0x0048059F size=91 name=??0CitadelSlaughterHordeContain@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 CitadelSlaughterHordeContain::CitadelSlaughterHordeContain(Thing *thing, const ModuleData *moduleData) :

@@ -1,0 +1,37 @@
+name: "Evidence: a missing fact"
+description: Ask for, or offer, evidence for a name, a type, a class layout or a virtual-table order.
+title: "Evidence: "
+body:
+  - type: input
+    id: subject
+    attributes:
+      label: Function, class or member
+      description: The name as it appears in the source, and its address (RVA) if it has one.
+      placeholder: "SpecialPowerStore::findSpecialPowerTemplateByID, 0x003B0FD0"
+    validations:
+      required: true
+  - type: input
+    id: files
+    attributes:
+      label: Files
+      description: The source and header files involved, with line numbers.
+      placeholder: "src/Code/GameEngine/Source/Common/RTS/SpecialPower.cpp:286"
+  - type: textarea
+    id: question
+    attributes:
+      label: What is unknown or disputed
+      description: One fact per issue if you can.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: >-
+        Where the fact comes from: an address and what the code does there in baseline/game.dat, a string or export,
+        the class's own virtual table, or corresponding Zero Hour code (reference/...:line). Do not paste byte or
+        disassembly dumps; cite addresses and offsets.
+  - type: textarea
+    id: unconfirmed
+    attributes:
+      label: What you could not confirm

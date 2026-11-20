@@ -2,7 +2,6 @@
 // stlport46
 #include <stddef.h>
 #include "Common/Player.h"
-#include "Common/SpecialPowerTimers.h"
 #include "Common/SpecialPowerTemplate.h"
 #include "GameLogic/GameLogic.h"
 #include "GameLogic/Object.h"
@@ -25,7 +24,7 @@ bool SpecialPowerUpdateModule::isReady() const
 		{
 			const SpecialPowerTemplate *power = data->m_specialPowerTemplate;
 			if (power->getFO()->m_sharedSyncedTimer)
-				return TheGameLogic->getFrame() >= ((Rva002AC6B1PlayerTimers *)player)->getOrStart(power);
+				return TheGameLogic->getFrame() >= player->getOrStartSpecialPowerReadyFrame(power);
 		}
 	}
 	return m_pausedCount == 0 && TheGameLogic->getFrame() >= m_unk0x28;
@@ -47,7 +46,7 @@ float SpecialPowerUpdateModule::getPercentReady() const
 	{
 		Player *player = obj->getControllingPlayer();
 		if (player != 0 && data->m_specialPowerTemplate->isSharedNSync())
-			readyFrame = ((Rva002AC6B1PlayerTimers *)player)->getOrStart(getSpecialPowerTemplate());
+			readyFrame = player->getOrStartSpecialPowerReadyFrame(getSpecialPowerTemplate());
 	}
 	GameLogic *gameLogic = TheGameLogic;
 	const Real framesLeft = (Real)(UnsignedInt)(readyFrame - gameLogic->getFrame());
@@ -65,7 +64,7 @@ unsigned int SpecialPowerUpdateModule::getReadyFrame() const
 		{
 			Player *player = obj->getControllingPlayer();
 			if (player)
-				return ((Rva002AC6B1PlayerTimers *)player)->getOrStart(getSpecialPowerTemplate());
+				return player->getOrStartSpecialPowerReadyFrame(getSpecialPowerTemplate());
 		}
 	}
 	if (m_pausedCount > 0 || m_object->m_disabledMask.any())
@@ -103,7 +102,7 @@ void SpecialPowerUpdateModule::startPowerRecharge(float readyFraction)
 	const SpecialPowerTemplate *power = moduleData->m_specialPowerTemplate;
 	if (power->getFO()->m_sharedSyncedTimer)
 	{
-		((Rva002AC6B1PlayerTimers *)player)->resetOrStart(power);
+		player->resetOrStartSpecialPowerReadyFrame(power);
 	}
 	else
 	{

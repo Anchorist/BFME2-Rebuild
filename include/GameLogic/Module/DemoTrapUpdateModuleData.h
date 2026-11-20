@@ -1,4 +1,4 @@
-// DemoTrapUpdateModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x00495AA9);
+// DemoTrapUpdateModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // DemoTrapUpdateModuleData.h: the INI data of DemoTrapUpdate. SIZE 0x40.
 // Target facts: ModuleFactory registers the module with operator new 0x40 and

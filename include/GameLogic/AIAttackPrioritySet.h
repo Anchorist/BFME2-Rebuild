@@ -3,7 +3,6 @@
 // compares [set+4] with the name, follows [set+0x10] to the next set; on a hit it copies the default
 // priority [set+8] and walks the entry list at [set+0xC] (the list's sentinel pointer is the member itself,
 // then node->next at +0, prev at +4, the element from +8: template name at node +8, priority at node +0xC).
-// Decl_queue f02 (re-post of 15:1x), ACCEPTED k11.
 #pragma once
 #ifndef BFME2_AIATTACKPRIORITYSET_H
 #define BFME2_AIATTACKPRIORITYSET_H

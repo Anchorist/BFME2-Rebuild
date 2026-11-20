@@ -5,7 +5,7 @@
 // object=O0011C320 name-evidence=Z name-tier=Z
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: duplicate path; held alternatives O0013F2E0
+// Duplicate path; alternative object O0013F2E0
 // Hypothesis rules: hypothesis:Z, hypothesis:name:Z, hypothesis:padding
 // FUNCTION: BFME2 0x0011C320 size=23 name=?Get_Light_Direction@LightEnvironmentClass@@QBEABVVector3@@H@Z evidence=N:ledger tier=B hypothesis:name:Z
 const Vector3 &LightEnvironmentClass::Get_Light_Direction(int index) const

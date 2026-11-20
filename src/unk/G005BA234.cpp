@@ -3,4 +3,9 @@
 // object=G005BA234 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x005BA234 size=6 name=?Rva005BA234Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+const char *AptOnlineOpenPlay::slot10()
+{
+	return "OnlineOpenPlay";
+}
+
 // FUNCTION: BFME2 0x005BA2C5 size=6 name=?Rva005BA2C5Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

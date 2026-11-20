@@ -88,7 +88,7 @@ public:
 	virtual void slot43(float readyFraction);
 	virtual void startPowerRecharge(float readyFraction);						// 0x0058943A
 	virtual Rva002390CB getInitiateSound() const;								// 0x00589560
-	// The rest of table 0x00870108: shared bodies (h05 r13, retail slot targets).
+	// The rest of table 0x00870108: shared bodies (retail slot targets).
 	virtual bool specialPowerSlot03() const { return m_pausedCount > 0; }		// slot 3, 0x005778AD (`cmp [ecx+8],eax; setg al` on the +0x24 interface)
 	virtual void onSpecialPowerCreation() {}									// slot 7, the shared `ret` 0x000B3FD0
 	virtual void setReadyFrame(unsigned int frame) { m_unk0x28 = frame; }		// slot 8, the shared setter 0x002B230F (`mov [ecx+4],eax; ret 4`)
@@ -109,7 +109,7 @@ protected:
 	UnsignedInt m_pausedOnFrame;	// +0x30
 	Real m_pausedPercent;		// +0x34
 protected:
-	virtual void loadPostProcess();	// 0x00497805, a jmp to UpdateModule's; out of line, so its subclasses' own forwarders (0x00483CEF) jump here (h05)
+	virtual void loadPostProcess();	// 0x00497805, a jmp to UpdateModule's; out of line, so its subclasses' own forwarders (0x00483CEF) jump here
 };
 // SIZE 0x38
 

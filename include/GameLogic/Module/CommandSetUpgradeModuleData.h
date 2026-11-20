@@ -1,4 +1,4 @@
-// CommandSetUpgradeModuleData.h: promoted from include/Draft. Proven by 1 row that MATCH against it on main (0x004B3A90);
+// CommandSetUpgradeModuleData.h:
 // name, size, bases and virtual order are retail facts given below.
 // CommandSetUpgradeModuleData.h: the INI data of CommandSetUpgrade. SIZE 0x11C.
 // Target facts: ModuleFactory registers the module with operator new 0x11C and

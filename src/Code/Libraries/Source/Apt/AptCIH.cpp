@@ -40,7 +40,7 @@ bool rva006EE6C0(AptValue *object, const EAStringC *name, AptValue *value); // 0
 // object=O006E0440 name-evidence=F name-tier=F
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: W-in-F contradiction
+// Conflicting placement evidence (W-in-F).
 // Hypothesis rules: hypothesis:K, hypothesis:contradicted-by-W, hypothesis:padding
 // FUNCTION: BFME2 0x006E0440 size=21 name=?rva006E0440@Rva006E0440@@QAEXXZ evidence=?:placeholder tier=A
 void AptCIH::PreDestroy()

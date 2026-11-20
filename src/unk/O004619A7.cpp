@@ -3,7 +3,7 @@
 // Tier B; object=O004619A7 evidence=invented flags=align=U;ehform=EH_prolog
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
-#include "Draft/FakePathfindPortalBehaviour.h"
+#include "GameLogic/Module/FakePathfindPortalBehaviour.h"
 #include "Common/NameKeyGenerator.h"
 // FUNCTION: BFME2 0x0046183B size=112 name=?rva0046183B@FakePathfindPortalBehaviour@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x004618AB size=41 name=?regWaypointsWithPathfinder@FakePathfindPortalBehaviour@@AAEXXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file

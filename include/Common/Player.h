@@ -37,6 +37,7 @@
 #include "Common/Handicap.h"
 #include "Common/ScoreKeeper.h"
 #include "Common/Money.h"
+#include "Common/ObjectIDListType.h"
 #include "Common/Command.h"
 #include "Common/UnitRevivalTracker.h"
 #include "Common/Snapshot.h"
@@ -128,6 +129,12 @@ public:
 // Zero Hour's PlayerTeamList, on the TeamPrototype * pool in BFME 2 (see m_playerTeamPrototypes).
 typedef _STL::list<TeamPrototype *, FreelistAllocator<TeamPrototype *> > PlayerTeamList;
 
+struct SpecialPowerReadyTimerType
+{
+	UnsignedInt m_templateID;
+	UnsignedInt m_readyFrame;
+};
+
 class Player : public Snapshot, public ScienceQueryInterface, public SciencePurchasePointTracker
 {
 public:
@@ -183,6 +190,10 @@ public:
 	void buildUpgrade(const AsciiString &upgrade);	// 0x002A9DEC (AIPlayer::buildUpgrade 0x004F2C14)
 	Bool getListInScoreScreen();	// 0x002A9DA5 (+0x33C)
 	void setListInScoreScreen(Bool listInScoreScreen);	// 0x002A9D98 (+0x33C; Zero Hour's name)
+	void addNewSharedSpecialPowerTimer(const SpecialPowerTemplate *power, UnsignedInt frame);
+	void resetOrStartSpecialPowerReadyFrame(const SpecialPowerTemplate *power);
+	void expressSpecialPowerReadyFrame(const SpecialPowerTemplate *power, UnsignedInt frame);
+	UnsignedInt getOrStartSpecialPowerReadyFrame(const SpecialPowerTemplate *power);
 	Real getSpellRechargeModifier() const;	// 0x002AA0B1
 	Int getSquadNumberForObject(const Object *objToFind) const;	// 0x002AA191
 	void setColorsFromDict(const Dict *d);	// 0x002A9ACC (Zero Hour's colour block of initFromDict; the map types the argument const Dict *)
@@ -194,6 +205,7 @@ public:
 	void onUnitCreated(Object *, Object *);	// 0x002A9C5F
 	Bool isSupplySourceSafe(Int minSupplies);	// 0x002A9CA4 (Zero Hour's AI forwarder: the AIPlayer's answer, else true; map placeholder rva002A9CA4)
 	bool rva002A9CB8();	// 0x002A9CB8
+	void removePhantomStructureID(ObjectID objectID); // 0x002ACECC
 	void onStructureConstructionComplete(Object *, Object *, bool);	// 0x002A9D02
 	bool isLocalPlayer() const;	// 0x002A9D89
 	int getSupplyBoxValue();	// 0x002A9DAC
@@ -419,7 +431,8 @@ public:
 	Int m_spellRechargeModifierCount;	// +0x6FC
 	_STL::list<UnsignedShort> m_forbiddenTemplateIDs;	// +0x700 template IDs this player may not build: allowedToBuild 0x002ABE24
 									// searches it for ThingTemplate +0x5D8 (find<_List_iterator<short> >); the ctor 0x002B0F3C builds it
-	unsigned char m_unk0x704[0x4];		// +0x704 a list
+	typedef _STL::list<SpecialPowerReadyTimerType> SpecialPowerReadyTimerList;
+	SpecialPowerReadyTimerList m_specialPowerReadyTimerList;	// +0x704
 	Squad *m_squads[10];			// +0x708 Zero Hour's NUM_HOTKEY_SQUADS hotkey squads (zeroed by the ctor; 0x002AA191, 0x002AA1BF)
 	Squad *m_currentSelection;		// +0x730 Zero Hour's: the dtor deletes it; getCurrentSelectionAsAIGroup 0x002AA164 calls 0x004D6E95, which sits among Squad's methods (isOnSquad 0x004D6BCD, xfer 0x004D6EC4)
 	Bool m_isPlayerDead;			// +0x734 Zero Hour's member after m_currentSelection; isPlayerActive 0x002AA231 tests it with m_observer; read by 0x002AA22A (14 callers; map: placeholder ?get@Rva002AA22AByteField)
@@ -427,7 +440,7 @@ public:
 	UnitRevivalTracker m_unitRevivalTracker;	// +0x738
 	AsciiString m_unk0x74C;			// +0x74C
 	Int m_planningModeState;		// +0x750 planning-mode state (evaluatePlayerIsInPlanningMode 0x003E54B4 tests == 2; setPlanningModeState 0x002AA257)
-	unsigned char m_unk0x754[0x4];		// +0x754 (0x0029FB3B in the ctor)
+	ObjectIDList m_phantomStructureIDs;	// +0x754; 0x002ACECC removes an ID with pooled erase 0x002ABB20
 };
 // SIZE 0x758
 typedef char PlayerTemplateOffset[(offsetof(Player, m_playerTemplate) == 0x34) ? 1 : -1];

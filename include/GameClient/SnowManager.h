@@ -19,8 +19,8 @@ public:
 	virtual void update() = 0;												// slot 10 (the shared __purecall)
 	virtual void updateIniSettings();										// slot 14, 0x00201165
 
-	void *m_unk0x0C;														// +0x0C the 0x4000-byte buffer init allocates
-	Real m_unk0x10;															// +0x10
+	Real *m_startingHeights;												// +0x0C the 64 by 64 float height field init allocates (0x4000 bytes; Zero Hour names it m_startingHeights)
+	Real m_time;															// +0x10 zeroed by init (Zero Hour: m_time)
 	Real m_unk0x14;															// +0x14 (1.0f)
 	Real m_unk0x18[10];														// +0x18..0x3F
 	Bool m_unk0x40;															// +0x40 (1)

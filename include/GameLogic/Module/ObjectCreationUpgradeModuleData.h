@@ -1,4 +1,4 @@
-// Promoted from Draft: m_deathAnimAndDuration is the CustomAnimAndDuration the parse function
+// M_deathAnimAndDuration is the CustomAnimAndDuration the parse function
 // stores (constructor 0x004B425B writes -1, 0, 0 there; ObjectCreationUpgrade 0x004B463C reads its
 // animation type at +0x140 and its frame count at +0x144).
 // ObjectCreationUpgradeModuleData.h: the INI data of ObjectCreationUpgrade. SIZE 0x154.

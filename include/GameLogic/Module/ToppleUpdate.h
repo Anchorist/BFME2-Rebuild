@@ -1,7 +1,7 @@
-// ToppleUpdate.h: promoted from include/Draft by h05 (round 10). Proven by 2 rows that MATCH against it on main (0x004A8125, 0x004A812E);
+// ToppleUpdate.h:
 // name, size, bases and virtual order are retail facts given below.
 // ToppleUpdate.h: the ToppleUpdate module. SIZE 0x58 (ModuleFactory operator new).
-// Target facts (h05 modgen): the constructor 0x004A8201 calls UpdateModule first; it stores the
+// Target facts: the constructor 0x004A8201 calls UpdateModule first; it stores the
 // tables 0x00C40818 at +0x20, 0x00C5386C at +0x0, 0x00C5A260 at +0xC, 0x00C53860 at +0x10, 0x00C53848 at +0x20. Members are what xfer (0x004A86E7) transfers after UpdateModule::xfer,
 // typed by the Xfer slot each goes through, in that order; m_unk names are offsets
 // (no map or donor name established). Bytes xfer does not touch are gaps.
@@ -69,7 +69,7 @@ public:
 	ObjectID m_stumpID;                            // +0x50; xfer ObjectID
 	Real m_bounceDamping;                          // +0x54; xfer Real; update 0x004A878F subtracts it from the module data's bounce velocity, then adds 0.025
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's (h05)
+	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 1 0x00497805: a jmp to UpdateModule's
 };
 // SIZE 0x58
 typedef char ToppleUpdate_size[(sizeof(ToppleUpdate) == 0x58) ? 1 : -1];

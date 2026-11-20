@@ -33,7 +33,7 @@ extern "C" __declspec(dllimport) int __stdcall lstrlen(const char *);
 // object=O001AF650 name-evidence=L name-tier=library
 // Membership is selected per row. Tier A: structure + F/W name. Tier L: structure + library (upstream) name. Tier B: explicit hypotheses.
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
-// Seeded by gen2b additions: duplicate path; held alternatives O001A0F80
+// Duplicate path; alternative object O001A0F80
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:name:L, hypothesis:padding
 // FUNCTION: BFME2 0x001AF650 size=345 name=?Free_Props@ParticleEmitterDefClass@@MAEXXZ evidence=N:ledger tier=L hypothesis:name:L
 void ParticleEmitterDefClass::Free_Props()

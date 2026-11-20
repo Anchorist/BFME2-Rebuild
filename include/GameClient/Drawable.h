@@ -10,7 +10,6 @@
 //    0x00279FFC; slots 0, 1, 2 and 6 keep Thing's bodies. Slots 8..14 carry
 //    the map's names (several still address-named).
 //  - Members: the ctor's stores and sub-object constructors. Names agree with
-//    the earlier decompilation's 94 class views or with
 //    Zero Hour's member order where the ctor agrees with it; the rest stay
 //    unnamed of the measured type or byte gaps. Three Matrix3Ds (3 x 0x10
 //    rows each, eh-vector ctor) at +0x170, +0x1A0 (the instance matrix
@@ -186,19 +185,19 @@ protected:
 public:
  const Matrix3D *getInstanceMatrix() const { return &m_instance; }
  void setInstanceMatrix(const Matrix3D *,bool);
- void colorFlash(const RGBColor *peak, UnsignedInt decayFrames, UnsignedInt attackFrames, UnsignedInt sustainAtPeak);	// 0x0027541E (h09)
+ void colorFlash(const RGBColor *peak, UnsignedInt decayFrames, UnsignedInt attackFrames, UnsignedInt sustainAtPeak);	// 0x0027541E
  void colorTint(const RGBColor *peak);	// 0x00275490
- void flashAsSelected(const RGBColor *color);	// 0x00278C7C (h09: CommandTranslator::createAttackMessage 0x004293EE; Zero Hour's name)
- UnicodeString getCaptionText();	// 0x0027653A (h09: ControlBar::populateBeacon 0x0050DBE6; copies the caption at +0x344)
+ void flashAsSelected(const RGBColor *color);	// 0x00278C7C (CommandTranslator::createAttackMessage 0x004293EE; Zero Hour's name)
+ UnicodeString getCaptionText();	// 0x0027653A (ControlBar::populateBeacon 0x0050DBE6; copies the caption at +0x344)
  void saturateRGB(RGBColor &color, Real factor);	// 0x002701A8
  void friend_bindToObject(Object *obj);	// 0x00274240
- void friend_clearSelected();	// 0x00276B95 (h09: InGameUI::deselectDrawable 0x0029F34F)
- void friend_setSelected();	// 0x002796B8 (h09: InGameUI::selectDrawable 0x002A3805)
+ void friend_clearSelected();	// 0x00276B95 (InGameUI::deselectDrawable 0x0029F34F)
+ void friend_setSelected();	// 0x002796B8 (InGameUI::selectDrawable 0x002A3805)
  void fadeIn(UnsignedInt frames);	// 0x002707A8: fade mode 1 from transparent; 0 frames shows at once
  void fadeOut(UnsignedInt frames);	// 0x00270756: fade mode 2 from opaque; 0 frames hides at once (FoundationAIUpdate::rva0045527A passes 10)
- // f14 (ActiveBody 0x004BE47D, 0x004BFE07): 0x0027675F returns the sound record at an index; the five wrappers pass a constant.
+ // (ActiveBody 0x004BE47D, 0x004BFE07): 0x0027675F returns the sound record at an index; the five wrappers pass a constant.
  Rva002390CB rva0027675F(Int index);	// 0x0027675F
- Rva002390CB getSoundMoveLoopDamaged();	// 0x0027682F, index 0x25 (donor-order role name, decl_queue f14 11:20 ACCEPTED)
+ Rva002390CB getSoundMoveLoopDamaged();	// 0x0027682F, index 0x25 (donor-order role name)
  Rva002390CB getSoundAmbient();	// 0x00276848, index 0x26
  Rva002390CB getSoundAmbientDamaged();	// 0x00276861, index 0x27
  Rva002390CB getSoundAmbientReallyDamaged();	// 0x0027687A, index 0x28
@@ -223,14 +222,14 @@ public:
  ClientUpdateModule *findClientUpdateModule(NameKeyType key); // 0x0027449C (the client update module with that name key, or NULL)
  void rva002791E7(const ModelConditionFlags &flags, UnsignedInt a, UnsignedInt b);	// 0x002791E7 (Object::rva0028AE6D hands it the object's conditions, 0, 0)
  void updateDrawable(); // 0x0027566B (StealthUpdate::changeVisualDisguise 0x00374BC8)
-	void replaceModelConditionFlags(const ModelConditionFlags &flags, UnsignedInt forceReplace, UnsignedInt unused);	// 0x002791E7 (f06: Object::rva0028AE6D 0x0028AE6D; Zero Hour's name)
+	void replaceModelConditionFlags(const ModelConditionFlags &flags, UnsignedInt forceReplace, UnsignedInt unused);	// 0x002791E7 (Object::rva0028AE6D 0x0028AE6D; Zero Hour's name)
  void setDrawableHidden(Bool hidden); // 0x00271601
  void setSelectable(Bool selectable); // 0x00271700
  void changedTeam(); // 0x002742AC
  void setIndicatorColor(Int color);	// 0x002741DE
  void rva002724FD(const AsciiString &name, Bool a, Bool b, Real c, Real d);	// 0x002724FD, object-draw slot 34
  bool rva00278689(const AsciiString &, bool, bool);	// 0x00278689, the sub-object show test the Lua CurDrawable callbacks call
- // 0x00272414, ?rva00272414@Drawable@@QAEXPBV?$vector@VAsciiString@@V?$allocator@VAsciiString@@@_STL@@@_STL@@@Z: takes a pointer to a vector<AsciiString> (SubObjectsUpgrade passes ExcludeSubobjects); spelled void* here because this header cannot see the vector type (f03)
+ // 0x00272414, ?rva00272414@Drawable@@QAEXPBV?$vector@VAsciiString@@V?$allocator@VAsciiString@@@_STL@@@_STL@@@Z: takes a pointer to a vector<AsciiString> (SubObjectsUpgrade passes ExcludeSubobjects); spelled void* here because this header cannot see the vector type
  void rva00272414(const void *names);
  // Refreshes the drawn state after a model-condition or texture swap
  // (retail call [edx+0x1C] from FlammableUpdate 0x0048C8F9 and 0x0048CB18).
@@ -243,6 +242,7 @@ public:
  DrawModule **getDrawModules() const;							// 0x002B224B, +0x14C
  DrawableID getID() const;										// 0x0055A88B, +0x100
  Object *getObject() const { return m_object; }					// +0xFC
+	void onSelected();	// 0x002754E3: records the object id in the game client, then runs the contain and horde-contain selection reactions
 	// 0x00270FEE: the bound object's current geometry (Object +0x104), else the template's (+0xA0).
 	const GeometryInfo *getGeometryInfo() const;
 	// 0x0027103F: the bound object's index-th additional geometry, else getGeometryInfo().
@@ -292,7 +292,7 @@ public:
 	void setShadowsEnabled(Bool enable);				// 0x00272A02 (map: rva00272A02); status bit 2, then each draw module's slot 12
 	void onDestroy();									// 0x00270234 (map: placeholder): Module::onDelete on every module of the three lists
 	void reactToGeometryChange();						// 0x002710EC (map: placeholder): each draw module's slot 39
-	void inheritSlaverFlags(const Object *slaver, SlavedUpdateInterface *slave);	// 0x002710AE (map: placeholder ?rva002710AE@Rva002710AE@@QAEXPAVBuildListInfo@@PAVArg2@@@Z): the slave's drawable takes the slaver's flag bytes +0x445/+0x446 (decl block f11 04:18, ACCEPTED k06)
+	void inheritSlaverFlags(const Object *slaver, SlavedUpdateInterface *slave);	// 0x002710AE (map: placeholder ?rva002710AE@Rva002710AE@@QAEXPAVBuildListInfo@@PAVArg2@@@Z): the slave's drawable takes the slaver's flag bytes +0x445/+0x446
 	void rva00271547();									// 0x00271547: re-evaluates the hidden flags (setDrawableHidden calls it)
 	void rva0027167F(Int value);						// 0x0027167F, object-draw slot 16
 	void notifyDrawableDependencyCleared();				// 0x002716AC (map: placeholder), object-draw slot 18
@@ -360,7 +360,7 @@ protected:
 	virtual void reactToTransformChange(const Matrix3D *oldMtx, const Coord3D *oldPos, Real oldAngle);	// Thing slot 5, 0x002742E5
 
 public:
-	Drawable(const ThingTemplate *thing, DrawableStatus statusBits, Int value);	// 0x002797BD (decl_queue h09 15:48, ACCEPTED k10)
+	Drawable(const ThingTemplate *thing, DrawableStatus statusBits, Int value);	// 0x002797BD
 	virtual ~Drawable();										// slot 7, 0x002793F0
 	virtual void rva0027299A(Int value);							// slot 8, 0x0027299A
 	virtual void setDeathDecalPosition(Int value);					// slot 9, 0x002729B5

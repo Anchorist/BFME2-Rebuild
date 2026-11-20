@@ -347,7 +347,7 @@ void NAT::retryFailedPairs()
 }
 
 // FUNCTION: BFME2 0x005A6DAC size=206 name=?SetUDPSocketForSlot@NAT@@QAE_NGGPAX@Z evidence=N:ledger tier=B hypothesis:K
-Bool NAT::SetUDPSocketForSlot(UnsignedShort port, UnsignedShort slot, void *address)
+Bool NAT::SetUDPSocketForSlot(UnsignedShort port, UnsignedShort slot, const BfmeNetAddress *address)
 {
 	if (slot >= 8)
 		return false;
@@ -370,7 +370,7 @@ Bool NAT::SetUDPSocketForSlot(UnsignedShort port, UnsignedShort slot, void *addr
 		return false;
 	}
 	m_transport->RemoveSocketForSlot(slot);
-	m_transport->setSlotSocket(socket, slot, (Int *)address);
+	m_transport->setSlotSocket(socket, slot, address);
 	return true;
 }
 

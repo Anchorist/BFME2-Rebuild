@@ -21,8 +21,8 @@
 //   selectSkillset (the map's names at that address, NetWrapperCommandMsg::setNumChunks and
 //   AIPlayer::setAIDifficulty, are folds). Slots 11..13 are folded constant bodies (return false /
 //   NULL / false, ret 8 for checkBridges), Zero Hour's inline defaults.
-// - Members: constructor 0x004F04FC writes every offset from +0x04 to +0x74 (old decomp's matching
-//   constructor, AIPlayerCtor.cpp, gives the order and values); isSupplySourceAttacked 0x004F1138
+// - Members: constructor 0x004F04FC writes every offset from +0x04 to +0x74;
+//   isSupplySourceAttacked 0x004F1138
 //   proves +0x6C/+0x70, updateBridgeRepair 0x004F418A proves +0x68, repairStructure 0x004F2F66 proves
 //   +0x48/+0x60, Player::getAiBaseCenter 0x002A9C26 proves +0x34/+0x40. Names are Zero Hour's, in
 //   Zero Hour's order, which retail's offsets follow exactly; +0x44 (m_baseRadius, constructor 10.0f)
@@ -30,8 +30,8 @@
 //   none offset-named.
 // - The two queue heads are Zero Hour's DLINKHEAD structs (MAKE_DLINK_HEAD): a head with its own
 //   constructor is a constructed subobject, which is what puts the head stores between the vptr
-//   store and the +0x0C store in 0x004F04FC. Retail's head has no destructor (the old decomp's
-//   matching constructor and destructor have no unwind state for it); Zero Hour's only asserts.
+//   store and the +0x0C store in 0x004F04FC. Retail's head has no destructor;
+//   Zero Hour's only asserts.
 #pragma once
 #ifndef BFME2_AIPLAYER_H
 #define BFME2_AIPLAYER_H

@@ -78,7 +78,7 @@ public:
     UpdateSleepTime rva0044F881();
 
 protected:
-    virtual void loadPostProcess(); // 0x00497805, a jmp to UpdateModule's; out of line, so its subclasses' own forwarders (0x00483CEF) jump here (h05)
+    virtual void loadPostProcess(); // 0x00497805, a jmp to UpdateModule's; out of line, so its subclasses' own forwarders (0x00483CEF) jump here
     virtual const char *GetSnapshotName() const; // slot 2, 0x0044F099 (retail table 0x0083FBA8)
     virtual void xfer(Xfer *);
     void validateSpecialObjects();
@@ -115,7 +115,7 @@ protected:
     bool m_83;
     unsigned int m_84;
 };
-// SIZE 0x88 (h05): ModuleFactory allocates 0x88 for the SpecialAbilityUpdate module itself
+// SIZE 0x88: ModuleFactory allocates 0x88 for the SpecialAbilityUpdate module itself
 // (operator new before its constructor 0x0044EF5E), and the members above end with m_84.
 typedef char SpecialAbilityUpdate_size[(sizeof(SpecialAbilityUpdate) == 0x88) ? 1 : -1];
 
