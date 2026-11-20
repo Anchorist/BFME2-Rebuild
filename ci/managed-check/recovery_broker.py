@@ -2,6 +2,8 @@
 
 import os
 from pathlib import Path
+import signal
+import subprocess
 import sys
 from time import sleep, time
 
@@ -56,8 +58,7 @@ def recovery_inputs(source, matrix, checksum, started, cutoff):
     return doc, api, start, cutoff
 
 
-def freeze_for_reserves(source, matrix, checksum, directory, target, started, cutoff):
-    doc, api, start, cutoff = recovery_inputs(source, matrix, checksum, started, cutoff)
+def collect_primary(doc, api, start, cutoff, directory, finish):
     prefix = "bfme-recovery-primary-" + api.run["attempt"] + "-"
     names = {prefix + label(pair): "primary-" + label(pair) for pair in groups(doc)}
     root = Path(directory)
@@ -71,13 +72,35 @@ def freeze_for_reserves(source, matrix, checksum, directory, target, started, cu
         if todo:
             transferred = api.primary(todo, names, root)
             seen.update({name: todo[name] for name in transferred})
-        if set(seen) == set(names) or time() >= cutoff:
-            break
-        sleep(max(0, min(POLL, cutoff - time())))
-    lease = freeze(doc, checksum, root, cutoff)
+        if set(seen) == set(names):
+            return True
+        if time() >= finish:
+            return False
+        sleep(max(0, min(POLL, finish - time())))
+
+
+def freeze_for_reserves(source, matrix, checksum, directory, target, started, cutoff):
+    doc, api, start, cutoff = recovery_inputs(source, matrix, checksum, started, cutoff)
+    collect_primary(doc, api, start, cutoff, directory, cutoff)
+    lease = freeze(doc, checksum, directory, cutoff)
     write(target, lease)
     output({"lease_sha": identity(lease), "reserve_needed": str(bool(lease["reserve"])).lower()})
     print(f"Frozen {len(lease['primary'])} paired groups; leased {len(lease['reserve'])} groups.")
+
+
+def fallback_primary(source, matrix, checksum, directory, target, started, cutoff):
+    doc, api, start, cutoff = recovery_inputs(source, matrix, checksum, started, cutoff)
+    # Allow the artifact service to settle after the original primary deadline.
+    # Inventory still accepts only checkpoints published before the original cutoff.
+    finish = max(cutoff + 60, min(cutoff + 320, time() + 30))
+    if not collect_primary(doc, api, start, cutoff, directory, finish):
+        raise ValueError("Expected every on-time primary receipt after recovery failed; found incomplete work.")
+    lease = freeze(doc, checksum, directory, cutoff)
+    if lease["reserve"]:
+        raise ValueError("Primary-only fallback must never lease reserve work.")
+    write(target, lease)
+    output({"lease_sha": identity(lease), "reserve_needed": "false"})
+    print(f"Verified {len(lease['primary'])} on-time paired groups after collector failure.")
 
 
 def wait_for_lease(source, matrix, checksum, target, started, cutoff):
@@ -85,6 +108,10 @@ def wait_for_lease(source, matrix, checksum, target, started, cutoff):
     end = cutoff + RESERVE_SECONDS
     name = "bfme-recovery-lease-" + api.run["attempt"]
     while time() < end:
+        if api.reserve_should_stop():
+            print("The exact attempt's protected reporter or collector finished; reserve stopped.", flush=True)
+            output({"reserve_needed": "false"})
+            return
         records = api.inventory({name}, earliest=start, cutoff=end)
         if records:
             dest = Path(target)
@@ -139,16 +166,78 @@ def gather_reserves(source, matrix, checksum, lease_path, lease_sha, directory, 
         sleep(max(0, min(POLL, end - time())))
 
 
+def stop_reserve(worker):
+    # The process group belongs only to the child started by this invocation.
+    if worker.poll() is not None:
+        return
+    try:
+        os.killpg(worker.pid, signal.SIGTERM)
+        worker.wait(timeout=2)
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(worker.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+    except ProcessLookupError:
+        pass
+    worker.wait()
+
+
+def supervised_reserve(decision, source, matrix, checksum, lease_path, lease_sha, slot, directory, started, cutoff):
+    # The supervisor receives only the decision. The scrubbed compiler
+    # is the only process that opens the separate source plan.
+    doc, api, _start, cutoff = recovery_inputs(decision, matrix, checksum, started, cutoff)
+    lease = read(lease_path, LEASE_LIMIT)
+    checked_lease(doc, checksum, lease, lease_sha)
+    if lease["primary_cutoff"] != cutoff or slot not in ("0", "1", "2", "3"):
+        raise ValueError("Foreign reserve cutoff or slot.")
+    if int(slot) not in lease["reserve"].values() or api.reserve_should_stop():
+        print("The protected collector needs no work from this reserve slot.", flush=True)
+        return
+    end = lease["reserve_cutoff"] - 5
+    remaining = int(end - time())
+    if remaining <= 0:
+        raise ValueError("Expected time left in the lease; found the reserve cutoff.")
+    env = {key: os.environ[key] for key in (
+        "PATH", "HOME", "LANG", "LC_ALL", "TMPDIR", "GITHUB_SHA", "GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT",
+    )}
+    argv = ["timeout", "--kill-after=2", str(remaining), sys.executable, "-B",
+            str(Path(__file__).with_name("wide_recovery.py")), "reserve", source, matrix, checksum,
+            lease_path, lease_sha, slot, directory]
+    with subprocess.Popen(argv, env=env, start_new_session=True) as worker:
+        try:
+            while True:
+                try:
+                    if worker.wait(timeout=POLL) != 0:
+                        raise ValueError("The isolated reserve compile did not finish successfully.")
+                    break
+                except subprocess.TimeoutExpired:
+                    if api.reserve_should_stop():
+                        print("Stopped this exact attempt's isolated reserve compile after terminal report or collector.", flush=True)
+                        return
+        finally:
+            stop_reserve(worker)
+    if time() >= lease["reserve_cutoff"] or api.reserve_should_stop():
+        print("Reserve output retired before upload.", flush=True)
+        return
+    if any(Path(directory).glob("reserve-*/group.json")):
+        output({"complete": "true"})
+
+
 def main(mode, *args):
     os.umask(0o077)
     if mode == "clock":
         anchor(*args)
     elif mode == "freeze":
         freeze_for_reserves(*args)
+    elif mode == "fallback":
+        fallback_primary(*args)
     elif mode == "lease":
         wait_for_lease(*args)
     elif mode == "gather":
         gather_reserves(*args)
+    elif mode == "reserve":
+        supervised_reserve(*args)
     else:
         raise ValueError("Unknown managed recovery step.")
 

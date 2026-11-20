@@ -12,7 +12,8 @@ permissions: {}
 
 concurrency:
   group: >-
-    managed-pr-${{ github.event.pull_request.number || github.event.client_payload.number }}-${{
+    managed-pr-${{ github.event_name == 'repository_dispatch' && 'dispatch' || github.event.pull_request.number }}-${{
+      github.event_name == 'repository_dispatch' && github.run_id ||
       ((github.event.action == 'edited' && github.event.changes.base.ref.from == '') ||
         ((github.event.action == 'labeled' || github.event.action == 'unlabeled') &&
           github.event.label.name != 'boat-ok')) && github.run_id || 'active' }}
@@ -256,6 +257,7 @@ jobs:
     needs: wide-plan
     if: needs.wide-plan.result == 'success'
     name: Compare wide shard ${{ matrix.index }}
+    continue-on-error: true
     timeout-minutes: 12
     strategy:
       fail-fast: false
@@ -480,6 +482,7 @@ jobs:
     needs: wide-plan
     if: needs.wide-plan.result == 'success'
     name: Reassign paired files on reserve ${{ matrix.slot }}
+    continue-on-error: true
     timeout-minutes: 14
     strategy:
       fail-fast: false
@@ -539,7 +542,7 @@ jobs:
             BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
             python3 -B ci/managed-check/recovery_broker.py lease "$RUNNER_TEMP/bfme-admission-status" \
               "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-recovery-lease" "$STARTED" "$CUTOFF"
-      - name: Compile only paired work assigned by the lease
+      - name: Supervise the isolated leased reserve compile
         shell: bash
         id: reserve
         if: steps.lease.outputs.reserve_needed == 'true'
@@ -548,22 +551,20 @@ jobs:
           STARTED: '${{ needs.wide-plan.outputs.started }}'
           CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
           SLOT: '${{ matrix.slot }}'
-          END: '${{ needs.wide-plan.outputs.reserve_cutoff }}'
           LEASE_SHA: '${{ steps.lease.outputs.lease_sha }}'
+          BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
         run: |
-          set -euo pipefail
-          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Compile only paired work assigned by the lease" "$rc" "$LINENO" >&2' ERR
-          test -z "${BFME_RECOVERY_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
-          left=$((END - $(date -u +%s) - 5))
-          (( left > 0 ))
-          timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected the leased reserve to finish. Found exit %s at line %s.\n" "$rc" "$LINENO" >&2' ERR
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
-            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
-            reserve "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" \
-            "$RUNNER_TEMP/bfme-recovery-lease/lease.json" "$LEASE_SHA" "$SLOT" "$RUNNER_TEMP/bfme-reserve"
-          if find "$RUNNER_TEMP/bfme-reserve" -type f -name group.json -print -quit | grep -q .; then
-            echo "complete=true" >> "$GITHUB_OUTPUT"
-          fi
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
+            BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
+            python3 -B ci/managed-check/recovery_broker.py reserve "$RUNNER_TEMP/bfme-admission-status" \
+              "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" \
+              "$RUNNER_TEMP/bfme-recovery-lease/lease.json" "$LEASE_SHA" "$SLOT" \
+              "$RUNNER_TEMP/bfme-reserve" "$STARTED" "$CUTOFF"
       - name: Save this runner's leased groups
         if: steps.reserve.outputs.complete == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -577,7 +578,10 @@ jobs:
     needs: wide-plan
     if: needs.wide-plan.result == 'success'
     name: Freeze, recover and verify wide receipts
+    continue-on-error: true
     timeout-minutes: 15
+    outputs:
+      complete: "${{ steps.verdict.outcome == 'success' }}"
     runs-on: boat-small/from=bfme2-compiler-v1
     permissions:
       contents: read
@@ -621,9 +625,15 @@ jobs:
           STARTED: '${{ needs.wide-plan.outputs.started }}'
           CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
           BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
+          FORCE_FALLBACK: '${{ vars.BFME_PRIMARY_FALLBACK_TEST }}'
+          EXACT_HEAD: '${{ github.event.pull_request.head.sha || github.event.client_payload.head }}'
         run: |
           set -euo pipefail
           trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Freeze verified primaries and bind unfinished work to reserve slots" "$rc" "$LINENO" >&2' ERR
+          if [[ "$FORCE_FALLBACK" == 'yes' && "$EXACT_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e ]]; then
+            printf '%s\n' 'Expected the primary collector to run. Found the owner-approved fallback test.' >&2
+            exit 64
+          fi
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
             GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
@@ -688,6 +698,7 @@ jobs:
               "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-shards" "$RUNNER_TEMP/bfme-verdict" \
               "$RUNNER_TEMP/lease.json" "$LEASE_SHA"
       - name: Save complete capped comparison
+        id: verdict
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: bfme-verdict-wide-${{ github.run_attempt }}
@@ -707,7 +718,7 @@ jobs:
     needs: [intake, compare, wide-plan, wide-join]
     if: >-
       always() && !cancelled() &&
-      (needs.compare.outputs.inline_matrix_sha != '' || needs.wide-join.result == 'success')
+      (needs.compare.outputs.inline_matrix_sha != '' || needs.wide-join.outputs.complete == 'true')
     name: Inline virtual behaviour (report only)
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 8
@@ -732,13 +743,13 @@ jobs:
           name: bfme-inline-narrow-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-inline-narrow'
       - name: Read protected wide matrix for this attempt
-        if: needs.wide-join.result == 'success'
+        if: needs.wide-join.outputs.complete == 'true'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: bfme-matrix-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-matrix'
       - name: Read same-attempt compact wide receipts
-        if: needs.wide-join.result == 'success'
+        if: needs.wide-join.outputs.complete == 'true'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: bfme-recovery-selected-${{ github.run_attempt }}
@@ -774,12 +785,11 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-
   inline-report:
-    needs: [pending, intake, compare, inline-virtual]
+    needs: [pending, intake, compare, wide-plan, wide-join, inline-virtual]
     if: >-
       always() && !cancelled() && needs.pending.result == 'success' &&
-      (needs.intake.outputs.route == 'compile' || needs.intake.outputs.route == 'wide')
+      (needs.intake.outputs.route == 'compile' || needs.intake.outputs.route == 'wide') && (needs.wide-plan.result != 'success' || needs.wide-join.outputs.complete == 'true')
     name: Publish inline virtual commit status
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 5
@@ -831,8 +841,8 @@ jobs:
           python3 -B ci/managed-check/inline_status.py "$path" "$RUNNER_TEMP/bfme-admission-status/decision.json"
 
   report:
-    needs: [pending, intake, compare, wide-join]
-    if: always() && !cancelled() && needs.intake.result != 'skipped'
+    needs: [pending, intake, compare, wide-plan, wide-join]
+    if: always() && !cancelled() && needs.intake.result != 'skipped' && (needs.wide-plan.result != 'success' || needs.wide-join.outputs.complete == 'true')
     name: Report on the pull request head
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 5
@@ -860,8 +870,8 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: bfme-plan-${{ github.run_attempt }}
-          path: '${{ runner.temp }}/bfme-plan'
+          name: bfme-admission-status-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-admission-status'
       - name: Read this run's comparison
         if: needs.compare.result == 'success'
         continue-on-error: true
@@ -870,7 +880,7 @@ jobs:
           name: bfme-verdict-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-verdict'
       - name: Read this run's joined wide comparison
-        if: needs.wide-join.result == 'success'
+        if: needs.wide-join.outputs.complete == 'true'
         continue-on-error: true
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
@@ -884,7 +894,7 @@ jobs:
         run: |
           set -Eeuo pipefail
           trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
-          python3 -B ci/managed-check/github_io.py finish "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-verdict"
+          python3 -B ci/managed-check/github_io.py finish "$RUNNER_TEMP/bfme-admission-status" "$RUNNER_TEMP/bfme-verdict"
       - name: Retain readable summary for the owner
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -894,3 +904,306 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+  wide-fallback:
+    needs: [wide-plan, wide-join, wide-compare]
+    if: always() && !cancelled() && needs.wide-plan.result == 'success' && needs.wide-join.outputs.complete != 'true'
+    name: Verify all primary checkpoints after collector failure
+    continue-on-error: true
+    timeout-minutes: 15
+    outputs:
+      complete: "${{ steps.verdict.outcome == 'success' }}"
+    runs-on: boat-small/from=bfme2-compiler-v1
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Check out the same protected main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+      - name: Read this run's source-free recovery decision
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-admission-status-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-admission-status'
+      - name: Read the protected source decision from this run
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-plan-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-plan'
+      - name: Read this run's exact compile assignments
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-matrix-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-matrix'
+      - name: Verify protected comparison and sealed image
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
+          cd /opt/boat-compiler
+          sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
+          sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Verify the complete and timely primary set
+        shell: bash
+        id: freeze
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
+          BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Verify the complete and timely primary set" "$rc" "$LINENO" >&2' ERR
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
+            BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
+            python3 -B ci/managed-check/recovery_broker.py fallback "$RUNNER_TEMP/bfme-admission-status" \
+              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-groups" \
+              "$RUNNER_TEMP/lease.json" "$STARTED" "$CUTOFF"
+      - name: Retain the exact primary-only recovery lease
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-recovery-fallback-lease-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/lease.json'
+          if-no-files-found: error
+          retention-days: 1
+      - name: Verify exactly one result per paired assignment
+        shell: bash
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
+          LEASE_SHA: '${{ steps.freeze.outputs.lease_sha }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Verify exactly one result per paired assignment" "$rc" "$LINENO" >&2' ERR
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            python3 -B ci/managed-check/wide_recovery.py join "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" \
+              "$RUNNER_TEMP/lease.json" "$LEASE_SHA" "$RUNNER_TEMP/bfme-groups" "$RUNNER_TEMP/bfme-shards"
+      - name: Join complete paired outcomes
+        shell: bash
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          LEASE_SHA: '${{ steps.freeze.outputs.lease_sha }}'
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
+            python3 -B ci/managed-check/wide.py join-selected "$RUNNER_TEMP/bfme-plan" \
+              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-shards" "$RUNNER_TEMP/bfme-verdict" \
+              "$RUNNER_TEMP/lease.json" "$LEASE_SHA"
+      - name: Save complete capped comparison
+        id: verdict
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-verdict-wide-fallback-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-verdict/verdict.json'
+          if-no-files-found: error
+          retention-days: 1
+      - name: Save selected sanitized advisory groups
+        continue-on-error: true
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-recovery-selected-fallback-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-shards/'
+          if-no-files-found: error
+          retention-days: 1
+
+  inline-fallback-virtual:
+    needs: [intake, compare, wide-plan, wide-fallback]
+    if: >-
+      always() && !cancelled() && needs.wide-fallback.outputs.complete == 'true' &&
+      (needs.compare.outputs.inline_matrix_sha != '' || needs.wide-fallback.outputs.complete == 'true')
+    name: Inline virtual behaviour after primary fallback
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 8
+    continue-on-error: true
+    permissions:
+      contents: read
+    steps:
+      - name: Check out protected evaluator and reference
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+      - name: Read private source admission for this attempt
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-plan-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-plan'
+      - name: Read private narrow advisory evidence
+        if: needs.compare.outputs.inline_matrix_sha != ''
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-inline-narrow-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-inline-narrow'
+      - name: Read protected wide matrix for this attempt
+        if: needs.wide-fallback.outputs.complete == 'true'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-matrix-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-matrix'
+      - name: Read same-attempt compact wide receipts
+        if: needs.wide-fallback.outputs.complete == 'true'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-recovery-selected-fallback-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-shards'
+      - name: Evaluate and render advisory result
+        shell: bash
+        env:
+          NARROW_SHA: '${{ needs.compare.outputs.inline_matrix_sha }}'
+          WIDE_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
+          dir="$RUNNER_TEMP/bfme-inline-narrow"
+          matrix="$dir/matrix.json"
+          sha="$NARROW_SHA"
+          if test -z "$sha"; then
+              dir="$RUNNER_TEMP/bfme-shards"
+              matrix="$RUNNER_TEMP/bfme-matrix/matrix.json"
+              sha="$WIDE_SHA"
+          fi
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C TMPDIR="$RUNNER_TEMP" \
+            GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
+            GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" \
+            python3 -B ci/managed-check/managed_inline_action.py "$RUNNER_TEMP/bfme-plan/plan.json" \
+              "$matrix" "$dir" "$sha" "$RUNNER_TEMP/bfme-inline-report"
+      - name: Retain report-only state and summary
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-inline-report-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-inline-report'
+          if-no-files-found: error
+          retention-days: 1
+
+  inline-fallback-report:
+    needs: [pending, intake, compare, wide-plan, wide-join, wide-fallback, inline-fallback-virtual]
+    if: >-
+      always() && !cancelled() && needs.pending.result == 'success' &&
+      (needs.intake.outputs.route == 'compile' || needs.intake.outputs.route == 'wide') && (needs.wide-plan.result == 'success' && needs.wide-join.outputs.complete != 'true')
+    name: Publish inline virtual status after primary fallback
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: write
+    steps:
+      - name: Check out protected status writer
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: ci/managed-check
+      - name: Verify protected writer
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+      - name: Read this attempt's sanitized inline status
+        id: receipt
+        if: needs.inline-fallback-virtual.result == 'success'
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-inline-report-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-inline-status'
+      - name: Read this attempt's source-free admission decision
+        if: steps.receipt.outcome == 'success'
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-admission-status-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-admission-status'
+      - name: Publish exact-head inline virtual status
+        shell: bash
+        env:
+          BFME_STATUS_TOKEN: '${{ github.token }}'
+          RECEIPT: '${{ steps.receipt.outcome }}'
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
+          if [[ "$RECEIPT" == success ]]; then
+            path="$RUNNER_TEMP/bfme-inline-status/inline-status.json"
+          else
+            path="$RUNNER_TEMP/bfme-inline-unavailable/inline-status.json"
+          fi
+          python3 -B ci/managed-check/inline_status.py "$path" "$RUNNER_TEMP/bfme-admission-status/decision.json"
+
+  fallback-report:
+    needs: [pending, intake, compare, wide-plan, wide-join, wide-fallback]
+    if: always() && !cancelled() && needs.intake.result != 'skipped' && (needs.wide-plan.result == 'success' && needs.wide-join.outputs.complete != 'true')
+    name: Report verified wide fallback on the pull request head
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: write
+    steps:
+      - name: Check out protected report writer
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: |
+            ci/managed-check
+            ci/managed-nt2
+      - name: Verify protected writer
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+      - name: Read this run's admission
+        if: needs.intake.result == 'success'
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-admission-status-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-admission-status'
+      - name: Read this run's comparison
+        if: needs.compare.result == 'success'
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-verdict-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-verdict'
+      - name: Read this run's joined wide comparison
+        if: needs.wide-fallback.outputs.complete == 'true'
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-verdict-wide-fallback-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-verdict'
+      - name: Publish job summary and exact-head commit status
+        shell: bash
+        env:
+          BFME_STATUS_TOKEN: '${{ github.token }}'
+          MANAGED_PUBLIC_REPORT: '${{ runner.temp }}/bfme-report'
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
+          python3 -B ci/managed-check/github_io.py finish "$RUNNER_TEMP/bfme-admission-status" "$RUNNER_TEMP/bfme-verdict"
+      - name: Retain readable summary for the owner
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-report-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-report'
+          if-no-files-found: ignore
+          retention-days: 7

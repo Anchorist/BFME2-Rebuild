@@ -85,6 +85,27 @@ class Actions:
         self.run_head = expected
         return epoch(row["run_started_at"])
 
+    def reserve_should_stop(self):
+        jobs = self.get(f"actions/runs/{self.run['id']}/attempts/{self.run['attempt']}/jobs?per_page=100")
+        if jobs["total_count"] > len(jobs["jobs"]):
+            raise ValueError("Too many protected jobs to identify the exact reporter.")
+        controls = {
+            "Report on the pull request head": None,
+            "Freeze, recover and verify wide receipts": None,
+        }
+        for job in jobs["jobs"]:
+            name = job["name"]
+            if name not in controls:
+                continue
+            if (controls[name] is not None or str(job["run_id"]) != self.run["id"]
+                    or str(job["run_attempt"]) != self.run["attempt"]
+                    or job["head_sha"] != self.run_head):
+                raise ValueError("Unexpected report or collector provenance.")
+            controls[name] = job
+        report, collector = controls.values()
+        return ((report is not None and report["status"] == "completed")
+                or (collector is not None and collector["status"] == "completed"))
+
     def inventory(self, names, *, earliest, cutoff):
         if not all(NAME_PATTERN.fullmatch(name) for name in names):
             raise ValueError("Unexpected recovery artifact name.")
