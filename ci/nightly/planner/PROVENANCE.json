@@ -1,0 +1,44 @@
+{
+ "coffsym.py": {
+  "output_sha256": "8952c8be244c50c714a3616841bd3e6b6da43795eb3f0c89d9422ef31832e0ca",
+  "rewrites": 0,
+  "source": "coffsym.py",
+  "source_sha256": "403ae09e33f223cdc79dfa64d111300cd528d63b2b7394c6d1e52786bedac819"
+ },
+ "extents.py": {
+  "output_sha256": "fd672fd9af833be7fda62a1d053dea3eba6d0c93f37b2650f8e8062c9ff2f76d",
+  "rewrites": 4,
+  "source": "extents.py",
+  "source_sha256": "49b33fe21b7d2bafb4aa29761ab9aafdcc95af57ce9e5a88e2c6567c6f73bd6b"
+ },
+ "hybrid.py": {
+  "output_sha256": "ad43af83483d1a2b367147a34697cdd88725c7f3a3d4ef86d17b62b4ba7f6424",
+  "rewrites": 23,
+  "source": "hybrid.py",
+  "source_sha256": "1af787bf8db04b99a7978cf22298c080120997465b8e3f4d539cb6ef0ef17233"
+ },
+ "libguard.py": {
+  "output_sha256": "8c69b2993be42c9d5543d4166c31c39f858a5518a40badfcfe25e5cda4f447f9",
+  "rewrites": 2,
+  "source": "libguard.py",
+  "source_sha256": "581371141f8bd66c39f2ea9bdd113a948fde8e66f07c34a6f000bf6d77926e58"
+ },
+ "localize2.py": {
+  "output_sha256": "0d045a8b18ac5ea44540228ce56f74dcbcb1f4bde1b882a343240ca997496af5",
+  "rewrites": 0,
+  "source": "localize2.py",
+  "source_sha256": "472933596fce4c78b4ef2797141a0c5c5d127efb13d75a00c2c27c00a0a624bb"
+ },
+ "padobj.py": {
+  "output_sha256": "7532df053702a119914e446752ce7ad52fa4372246b9b06e804ab8e2b12e34b8",
+  "rewrites": 0,
+  "source": "padobj.py",
+  "source_sha256": "ed3592ea1181df368cf3d4703b07313aab4ff78c5dd42001dfd84281f49129b5"
+ },
+ "resolve.py": {
+  "output_sha256": "e30ef27c164a6cf57b6936bad80289225a72e7437a91cab8b0d11542053d7bbe",
+  "rewrites": 0,
+  "source": "resolve.py",
+  "source_sha256": "0981473899be0da5bc83d6c0f4677bf87bb6a0e88f85ee675c0f28b4864121ba"
+ }
+}

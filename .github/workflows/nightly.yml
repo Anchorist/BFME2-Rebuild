@@ -1,0 +1,225 @@
+name: Nightly build and compare
+
+# Every night: compile every source file of main, substitute each file whose functions all match the original into
+# the original program's link, link that image, play it, and compare the game state with the original's recording.
+# How to read the result: ci/nightly/README.md.
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      skip_game:
+        description: 'Plan, compile, link and check the image, but do not play it'
+        type: boolean
+        default: false
+      probe:
+        description: 'Only check that the private nightly image starts and holds every input (no compile, no publish)'
+        type: boolean
+        default: false
+
+permissions: {}
+
+concurrency:
+  group: nightly-build
+  cancel-in-progress: false
+
+env:
+  SHARDS: '8'
+
+jobs:
+  compile:
+    if: github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' && !inputs.probe
+    name: Compile shard ${{ matrix.shard }}
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - name: Check out main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Verify the check package and the compiler image
+        shell: bash
+        run: |
+          set -uo pipefail
+          for d in ci/managed-check ci/managed-nt2; do
+            if ! out=$(cd "$d" && sha256sum -c --quiet bundle.sha256 2>&1); then
+              echo "::error::expected every file in $d to match its bundle.sha256; found: $out"; exit 1
+            fi
+          done
+          if ! out=$(cd ci/nightly && sha256sum -c --quiet files.sha256 2>&1); then
+            echo "::error::expected every file in ci/nightly to match files.sha256; found: $out"; exit 1
+          fi
+          got=$(printf '%s\n' '?f@X@@QAEHXZ' | ci/managed-nt2/engine/gen/bin/demangle)
+          if [ "$got" != 'public: int __thiscall X::f(void)' ]; then
+            echo "::error::expected the demangler to print 'public: int __thiscall X::f(void)'; found '$got'"; exit 1
+          fi
+          cd /opt/boat-compiler
+          if ! out=$(sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256 2>&1); then
+            echo "::error::expected the compiler image files to match their manifests; found: $out"; exit 1
+          fi
+          sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Compile and judge this shard
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C TMPDIR="$RUNNER_TEMP" \
+            GITHUB_SHA="$GITHUB_SHA" \
+            python3 -B ci/nightly/compile_main.py '${{ matrix.shard }}' "$SHARDS" "$RUNNER_TEMP/shard"
+      - name: Save this shard's objects and verdicts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: nightly-shard-${{ matrix.shard }}-a${{ github.run_attempt }}
+          path: '${{ runner.temp }}/shard'
+          if-no-files-found: error
+          retention-days: 2
+      - name: Save this shard's summary
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: nightly-shard-summary-${{ matrix.shard }}-a${{ github.run_attempt }}
+          path: '${{ runner.temp }}/shard/shard.json'
+          if-no-files-found: error
+          retention-days: 2
+
+  link-and-play:
+    needs: compile
+    if: >-
+      always() && github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
+      vars.BFME_NIGHTLY_GAME_RUNNER != '' && (inputs.probe || needs.compile.result == 'success')
+    name: Link, check and play the image
+    runs-on: ${{ vars.BFME_NIGHTLY_GAME_RUNNER }}
+    timeout-minutes: 200
+    permissions:
+      contents: read
+    steps:
+      - name: Check out main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Verify the nightly package
+        shell: bash
+        run: |
+          set -uo pipefail
+          if ! out=$(cd ci/nightly && sha256sum -c --quiet files.sha256 2>&1); then
+            echo "::error::expected every file in ci/nightly to match files.sha256; found: $out"; exit 1
+          fi
+      - name: Probe the image
+        if: inputs.probe
+        shell: bash
+        run: python3 -B ci/nightly/link_play.py --probe
+      - name: Read the compiled shards
+        if: '!inputs.probe'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: nightly-shard-[0-9]*-a${{ github.run_attempt }}
+          path: '${{ runner.temp }}/shards'
+      - name: Plan, link, check and play
+        if: '!inputs.probe'
+        shell: bash
+        env:
+          SKIP_GAME: '${{ inputs.skip_game && ''--no-game'' || '''' }}'
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          python3 -B ci/nightly/link_play.py "$RUNNER_TEMP/shards" "$RUNNER_TEMP/stage2" $SKIP_GAME
+          python3 -B -c 'import json,sys; d=json.load(open(sys.argv[1])); sys.exit(1 if d["stopped"] else 0)' \
+            "$RUNNER_TEMP/stage2/stage2.json"
+      - name: Save the stage result (counts and verdicts only)
+        if: always() && !inputs.probe
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: nightly-stage2-a${{ github.run_attempt }}
+          path: '${{ runner.temp }}/stage2/stage2.json'
+          if-no-files-found: warn
+          retention-days: 7
+
+  publish:
+    needs: [compile, link-and-play]
+    if: always() && github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' && !inputs.probe
+    name: Publish the result and raise or clear alarms
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      issues: write
+      actions: read
+    steps:
+      - name: Check out main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Read the shard summaries
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: nightly-shard-summary-*-a${{ github.run_attempt }}
+          path: '${{ runner.temp }}/shards'
+      - name: Read the link-and-play result
+        if: needs.link-and-play.result != 'skipped'
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: nightly-stage2-a${{ github.run_attempt }}
+          path: '${{ runner.temp }}/stage2'
+      - name: Read this run's job times
+        shell: bash
+        env:
+          GH_TOKEN: '${{ github.token }}'
+        run: |
+          set -uo pipefail
+          if ! curl -fsS -H "Authorization: Bearer $GH_TOKEN" -H 'Accept: application/vnd.github+json' \
+               "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs?per_page=100" \
+               -o "$RUNNER_TEMP/jobs.json"; then
+            echo "expected the run's job list from the GitHub API; found none, so timings are left out"
+            rm -f "$RUNNER_TEMP/jobs.json"
+          fi
+      - name: Write nightly.json and the summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B ci/nightly/result.py "$RUNNER_TEMP/shards" "$RUNNER_TEMP/stage2" "$RUNNER_TEMP/result" \
+            --compile-job '${{ needs.compile.result }}' --game-job '${{ needs.link-and-play.result }}' \
+            --game-live '${{ vars.BFME_NIGHTLY_GAME_RUNNER != '' }}' --shards-expected "$SHARDS" --jobs "$RUNNER_TEMP/jobs.json" > /dev/null
+          cat "$RUNNER_TEMP/result/summary.md" >> "$GITHUB_STEP_SUMMARY"
+      - name: Save nightly.json
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: nightly-result-a${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/result/nightly.json
+            ${{ runner.temp }}/result/summary.md
+          if-no-files-found: error
+          retention-days: 90
+      - name: Publish to the nightly branch
+        shell: bash
+        env:
+          NIGHTLY_PUSH_TOKEN: '${{ github.token }}'
+        run: python3 -B ci/nightly/publish_branch.py "$RUNNER_TEMP/result"
+      - name: Raise or clear the nightly alarms
+        if: always()
+        shell: bash
+        env:
+          ALARM_TOKEN: '${{ github.token }}'
+          RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        run: python3 -B ci/nightly/alarms.py "$RUNNER_TEMP/result/alarms.json" "$RUN_URL"
+      - name: Fail when the night failed
+        shell: bash
+        run: |
+          f="$RUNNER_TEMP/result/nightly.json"
+          if [ ! -f "$f" ]; then echo "::error::expected $f from the result step; found none"; exit 1; fi
+          r=$(python3 -B -c 'import json,sys; print(json.load(open(sys.argv[1]))["result"])' "$f")
+          echo "Nightly result: $r"
+          if [ "$r" = fail ]; then echo "::error::expected a clean night; found result fail (see the summary above)"; exit 1; fi
