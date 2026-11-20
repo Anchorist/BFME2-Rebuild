@@ -4,6 +4,8 @@ on:
   pull_request_target:
     branches: [main]
     types: [opened, reopened, synchronize, ready_for_review, edited]
+  repository_dispatch:
+    types: [bfme-remeasure]
   workflow_dispatch:
     inputs:
       pr_number:
@@ -19,18 +21,23 @@ on:
         required: true
         type: string
 
-permissions:
-  contents: read
-  pull-requests: read
-  statuses: write
+permissions: {}
 
 jobs:
   source-rules:
     if: github.ref == 'refs/heads/main'
     runs-on: boat-small/from=bfme2-compiler-v1
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: write
     timeout-minutes: 15
     concurrency:
-      group: bfme-source-rules-${{ github.event.pull_request.number || inputs.pr_number }}
+      group: >-
+        bfme-source-rules-${{ github.event_name == 'repository_dispatch' &&
+          format('remeasure-{0}-{1}-{2}', github.event.client_payload.number,
+            github.event.client_payload.head, github.event.client_payload.base) ||
+          github.event.pull_request.number || inputs.pr_number }}
       cancel-in-progress: true
     outputs:
       receipt: ${{ steps.publish.outputs.receipt }}
@@ -85,14 +92,13 @@ jobs:
         run: python3 -I -S -B source-rule-tools/tools/gates/workflow.py publish
 
       - name: Retain the exact checked source-rules decision
-        if: steps.publish.outcome == 'success' && github.event_name == 'pull_request_target'
+        if: steps.publish.outcome == 'success' && (github.event_name == 'pull_request_target' || github.event_name == 'repository_dispatch')
         shell: bash
         env:
           SOURCE_RULE_RECEIPT: '${{ steps.publish.outputs.receipt }}'
-          PR_NUMBER: '${{ github.event.pull_request.number }}'
         run: python3 -I -S -B source-rule-tools/tools/gates/landing_receipt.py "$RUNNER_TEMP/bfme-source-receipt"
       - name: Upload the exact source-rules decision
-        if: steps.publish.outcome == 'success' && github.event_name == 'pull_request_target'
+        if: steps.publish.outcome == 'success' && (github.event_name == 'pull_request_target' || github.event_name == 'repository_dispatch')
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: bfme-source-receipt-${{ github.run_attempt }}

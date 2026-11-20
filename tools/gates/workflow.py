@@ -116,6 +116,16 @@ def event(env):
             pr = read_json(env["GITHUB_EVENT_PATH"], 2 * 1024**2)["pull_request"]
             binding = Binding(repo, repo_id, pr["number"], tools, pr["head"]["sha"], tools, "main")
             binding.check_pr(pr)
+        elif env["GITHUB_EVENT_NAME"] == "repository_dispatch":
+            event_data = read_json(env["GITHUB_EVENT_PATH"], 2 * 1024**2)
+            payload = event_data["client_payload"]
+            if (event_data["action"] != "bfme-remeasure" or not isinstance(payload, dict)
+                    or set(payload) != {"number", "head", "base"}
+                    or not is_oid(payload["base"]) or not is_oid(payload["head"])):
+                raise ValueError
+            if payload["base"] != tools:
+                raise CheckUnavailable("main-moved")
+            binding = Binding(repo, repo_id, payload["number"], tools, payload["head"], tools, "main")
         elif env["GITHUB_EVENT_NAME"] == "workflow_dispatch":
             number = env["ARCHIVE_PR"]
             if not re.fullmatch(r"[1-9][0-9]{0,8}", number):
@@ -127,7 +137,11 @@ def event(env):
                 or not is_oid(binding.base) or not is_oid(binding.head)):
             raise ValueError
         return binding
-    except (CheckUnavailable, KeyError, TypeError, ValueError, OSError):
+    except CheckUnavailable as exc:
+        if exc.reason == "main-moved":
+            raise
+        raise CheckUnavailable("unexpected-event") from None
+    except (KeyError, TypeError, ValueError, OSError):
         raise CheckUnavailable("unexpected-event") from None
 
 
@@ -519,6 +533,12 @@ def publish(env):
         summary(env, explanation(reason))
         receipt = pending(binding, reason)
     output(env, "receipt", json.dumps(receipt, sort_keys=True, separators=(",", ":")))
+    if receipt["state"] == "pending":
+        reason = receipt.get("reason", "status-unavailable")
+        print(f"Expected a current source decision. Found: {REASONS[reason]}", file=sys.stderr)
+    elif receipt["state"] == "fail":
+        names = ", ".join(rule for rule, state in receipt["states"].items() if state == "failure")
+        print(f"Expected all source rules to pass. Found a refusal in {names}.", file=sys.stderr)
     return 0 if receipt["state"] == "pass" else 1
 
 
