@@ -1,14 +1,22 @@
-name: Check main state against a full recompute
+name: Check main state against a fresh measurement
 
-# Once a week, measure every source file of the main commit that the `state` branch
-# describes, with nothing carried over, and require the result to equal the published
-# state byte for byte. A difference opens the alarm issue "Incremental state differs
-# from a full recompute". Uses the same tools as every push (ci/managed-state/).
+# Every night, measure a rotating sample of about 32 source files of the main commit the
+# `state` branch describes, with nothing carried over, and require each result to equal the
+# published record (one compiler runner; every file is covered once in 102 nights). Started
+# by hand with `full`, measure every source file (about 104 compiler runners) and require the
+# whole result to equal the published state byte for byte. Any difference opens the alarm
+# issue "Incremental state differs from a full recompute". Uses the same tools as every push
+# (ci/managed-state/). Only the measuring job needs the compiler image.
 
 on:
   schedule:
-    - cron: '17 4 * * 0'
+    - cron: '17 4 * * *'
   workflow_dispatch:
+    inputs:
+      full:
+        description: 'Measure every source file (about 104 compiler runners) instead of the nightly sample'
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -21,20 +29,26 @@ jobs:
     if: >-
       github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
       vars.BFME_STATE_WORKFLOW_ENABLED == 'yes' && vars.BFME_STATE_BRANCH_ENABLED == 'yes'
-    name: Choose the commit to recompute
-    runs-on: boat-small/from=bfme2-compiler-v1
-    timeout-minutes: 5
+    name: Choose the commit and plan the measurement
+    runs-on: '${{ vars.BFME_STATE_PUBLISH_RUNNER || ''ubuntu-24.04'' }}'
+    timeout-minutes: 10
     permissions:
       contents: read
     outputs:
       sha: '${{ steps.target.outputs.sha }}'
       tree: '${{ steps.tree.outputs.tree }}'
+      batches: '${{ steps.plan.outputs.batches }}'
+      mode: '${{ steps.plan.outputs.mode }}'
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check out the tools from main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: '${{ github.sha }}'
-          fetch-depth: 0
+          path: tools-main
           persist-credentials: false
+          sparse-checkout: |
+            ci/state
+            ci/managed-state
       - name: Read the main commit the state branch describes
         id: target
         shell: bash
@@ -42,44 +56,46 @@ jobs:
           READ_TOKEN: '${{ github.token }}'
         run: |
           set -euo pipefail
-          (cd ci/state && sha256sum -c --quiet bundle.sha256) || { echo "::error::expected ci/state to match its bundle.sha256, found a difference"; exit 1; }
-          python3 -B ci/state/parity.py target
+          (cd tools-main/ci/state && sha256sum -c --quiet bundle.sha256) || { echo "::error::expected ci/state to match its bundle.sha256, found a difference"; exit 1; }
+          python3 -B tools-main/ci/state/parity.py target
+      - name: Check out that commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ steps.target.outputs.sha }}'
+          path: at-main
+          persist-credentials: false
       - name: Read its tree
         id: tree
         shell: bash
+        working-directory: at-main
         env:
           SHA: '${{ steps.target.outputs.sha }}'
         run: |
           set -euo pipefail
-          tree=$(git rev-parse --verify "$SHA^{tree}") || { echo "::error::expected main commit $SHA in the history of main, found it missing"; exit 1; }
+          tree=$(git rev-parse --verify "$SHA^{tree}") || { echo "::error::expected main commit $SHA, found it missing"; exit 1; }
           echo "tree=$tree" >> "$GITHUB_OUTPUT"
-
-  plan:
-    needs: target
-    name: Plan a full recompute
-    runs-on: boat-small/from=bfme2-compiler-v1
-    timeout-minutes: 5
-    permissions:
-      contents: read
-    outputs:
-      batches: '${{ steps.plan.outputs.batches }}'
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          ref: '${{ needs.target.outputs.sha }}'
-          persist-credentials: false
-      - name: Plan every source file, carrying nothing
+      - name: Plan the sample or the full measurement
         id: plan
         shell: bash
+        working-directory: at-main
         env:
-          TARGET: '${{ needs.target.outputs.sha }}'
+          TARGET: '${{ steps.target.outputs.sha }}'
+          FULL: '${{ inputs.full }}'
           STATE_BUDGET: '${{ vars.BFME_STATE_BUDGET_JOBS }}'
         run: |
           set -euo pipefail
           (cd ci/managed-state && sha256sum -c --quiet bundle.sha256)
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
           mkdir "$RUNNER_TEMP/state-plan"
-          GITHUB_SHA="$TARGET" python3 -B ci/managed-state/state_workflow.py plan "$RUNNER_TEMP/state-plan/state-plan.json"
+          if [ "$FULL" = "true" ]; then
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+            GITHUB_SHA="$TARGET" python3 -B ci/managed-state/state_workflow.py plan "$RUNNER_TEMP/state-plan/state-plan.json"
+          else
+            echo "mode=sample" >> "$GITHUB_OUTPUT"
+            python3 -B ../tools-main/ci/state/parity.py sample-plan --checkout . --main "$TARGET" \
+              --day "$(date -u +%F)" --out "$RUNNER_TEMP/state-plan/state-plan.json"
+            echo "batches=[0]" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: bfme-parity-plan-${{ github.run_attempt }}
@@ -88,7 +104,7 @@ jobs:
           if-no-files-found: error
 
   measure:
-    needs: [target, plan]
+    needs: target
     name: Measure batch ${{ matrix.batch }}
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 40
@@ -96,7 +112,7 @@ jobs:
       fail-fast: false
       max-parallel: 8
       matrix:
-        batch: '${{ fromJSON(needs.plan.outputs.batches) }}'
+        batch: '${{ fromJSON(needs.target.outputs.batches) }}'
     permissions:
       contents: read
     steps:
@@ -137,9 +153,9 @@ jobs:
           if-no-files-found: error
 
   compare:
-    needs: [target, plan, measure]
+    needs: [target, measure]
     name: Compare with the published state
-    runs-on: boat-small/from=bfme2-compiler-v1
+    runs-on: '${{ vars.BFME_STATE_PUBLISH_RUNNER || ''ubuntu-24.04'' }}'
     timeout-minutes: 10
     permissions:
       contents: read
@@ -160,6 +176,7 @@ jobs:
           path: '${{ runner.temp }}/state-shards'
           merge-multiple: false
       - name: Join the full recompute
+        if: needs.target.outputs.mode == 'full'
         shell: bash
         env:
           TARGET: '${{ needs.target.outputs.sha }}'
@@ -177,24 +194,32 @@ jobs:
           sparse-checkout: |
             ci/state
             ci/managed-state
-      - name: Require byte-for-byte equality
+      - name: Require equality with the published state
         id: compare
         shell: bash
         env:
           READ_TOKEN: '${{ github.token }}'
           TARGET: '${{ needs.target.outputs.sha }}'
           TREE: '${{ needs.target.outputs.tree }}'
+          MODE: '${{ needs.target.outputs.mode }}'
+          ATTEMPT: '${{ github.run_attempt }}'
         run: |
           set -euo pipefail
           (cd tools-main/ci/state && sha256sum -c --quiet bundle.sha256)
-          python3 -B tools-main/ci/state/parity.py compare --snapshot "$RUNNER_TEMP/full-state.json" \
-            --main "$TARGET" --tree "$TREE" --report "$RUNNER_TEMP/parity.txt"
+          if [ "$MODE" = full ]; then
+            python3 -B tools-main/ci/state/parity.py compare --snapshot "$RUNNER_TEMP/full-state.json" \
+              --main "$TARGET" --tree "$TREE" --report "$RUNNER_TEMP/parity.txt"
+          else
+            python3 -B tools-main/ci/state/parity.py compare-sample \
+              --shard "$RUNNER_TEMP/state-shards/bfme-state-$ATTEMPT-shard-0/state-shard-0.json" \
+              --main "$TARGET" --report "$RUNNER_TEMP/parity.txt"
+          fi
 
   alarms:
-    needs: [target, plan, measure, compare]
+    needs: [target, measure, compare]
     if: always() && github.ref == 'refs/heads/main' && needs.target.result != 'skipped'
     name: Open or close the parity alarm
-    runs-on: boat-small/from=bfme2-compiler-v1
+    runs-on: '${{ vars.BFME_STATE_PUBLISH_RUNNER || ''ubuntu-24.04'' }}'
     timeout-minutes: 5
     permissions:
       contents: read
@@ -210,18 +235,19 @@ jobs:
         env:
           ALARM_TOKEN: '${{ github.token }}'
           RESULT: '${{ needs.compare.outputs.result }}'
-          JOBS: 'target=${{ needs.target.result }} plan=${{ needs.plan.result }} measure=${{ needs.measure.result }} compare=${{ needs.compare.result }}'
+          MODE: '${{ needs.target.outputs.mode }}'
+          JOBS: 'target=${{ needs.target.result }} measure=${{ needs.measure.result }} compare=${{ needs.compare.result }}'
           TARGET: '${{ needs.target.outputs.sha }}'
           RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
         run: |
           set -euo pipefail
           (cd ci/alarms && sha256sum -c --quiet bundle.sha256) || { echo "::error::expected ci/alarms to match its bundle.sha256, found a difference"; exit 1; }
-          echo "Parity: result=${RESULT:-none} jobs: $JOBS"
+          echo "Parity (${MODE:-unknown}): result=${RESULT:-none} jobs: $JOBS"
           case "$RESULT" in
             equal) python3 -B ci/alarms/alarm.py clear state-parity --run-url "$RUN_URL" ;;
-            inconclusive) echo "No published state for $TARGET; the alarm is left as it is." ;;
+            inconclusive) echo "No comparable published state for $TARGET; the alarm is left as it is." ;;
             differs) python3 -B ci/alarms/alarm.py raise state-parity --run-url "$RUN_URL" \
-                       --detail "Expected the full recompute of main $TARGET to equal the state branch byte for byte, found differences. The run log lists the first files." ;;
+                       --detail "Expected the fresh ${MODE:-} measurement of main $TARGET to equal the state branch, found differences. The run log lists the first files." ;;
             *) python3 -B ci/alarms/alarm.py raise state-parity --run-url "$RUN_URL" \
-                 --detail "Expected the full recompute of main ${TARGET:-unknown} to complete, found: $JOBS" ;;
+                 --detail "Expected the fresh ${MODE:-} measurement of main ${TARGET:-unknown} to complete, found: $JOBS" ;;
           esac

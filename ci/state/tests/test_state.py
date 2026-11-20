@@ -27,8 +27,8 @@ import resolve  # noqa: E402
 import store  # noqa: E402
 
 CHECKER = "a" * 64
-ENV = {"GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@users.noreply.invalid",
-       "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@users.noreply.invalid",
+ENV = {"GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@users.noreply.github.com",
+       "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@users.noreply.github.com",
        "GIT_AUTHOR_DATE": "1700000000 +0000", "GIT_COMMITTER_DATE": "1700000000 +0000",
        "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull}
 
@@ -202,6 +202,34 @@ class ParityTests(Base):
         self.assertEqual(result, "inconclusive")
         self.assertEqual(parity.target(str(self.remote), ""), sha)
 
+    def test_sample_rotation_covers_every_file_once(self):
+        units = [f"src/f{i:04d}.cpp" for i in range(3253)]
+        seen = []
+        for day in range(parity.SAMPLE_GROUPS):
+            picked = parity.sample(units, (__import__("datetime").date(2001, 1, 1)
+                                           + __import__("datetime").timedelta(days=day)).isoformat())
+            self.assertTrue(31 <= len(picked) <= 32, len(picked))
+            self.assertEqual(picked, sorted(picked))
+            seen += picked
+        self.assertEqual(sorted(seen), units)
+
+    def test_sample_compare(self):
+        sha = self.repo.commits[0]
+        self.publish(snapshot(sha), sha)
+        shard = {"schema": 1, "main": sha, "checker": CHECKER, "plan": "x", "batch": 0,
+                 "units": {"src/b.cpp": snapshot(sha)["tus"]["src/b.cpp"]}}
+        path = self.save(shard, "shard.json")
+        out = []
+        self.assertEqual(parity.compare_sample(path, sha, str(self.remote), "", out=out.append)[0], "equal")
+        shard["units"]["src/b.cpp"]["rows"]["0x00402000"] = ["PARTIAL", 49.0]
+        path = self.save(shard, "shard.json")
+        result, lines = parity.compare_sample(path, sha, str(self.remote), "", out=out.append)
+        self.assertEqual(result, "differs")
+        self.assertIn("src/b.cpp: 0x00402000 expected ['PARTIAL', 49.0] found ['PARTIAL', 50.0]", lines[0])
+        shard["checker"] = "b" * 64
+        path = self.save(shard, "shard.json")
+        self.assertEqual(parity.compare_sample(path, sha, str(self.remote), "", out=out.append)[0], "inconclusive")
+
 
 class FakeIssues:
     def __init__(self):
@@ -269,7 +297,7 @@ class FakeRuns:
         return {"workflow_runs": self.runs}
 
 
-def run(i, status="completed", conclusion="success", sha="1" * 40, created="2026-11-20T10:00:00Z"):
+def run(i, status="completed", conclusion="success", sha="1" * 40, created="2001-01-03T10:00:00Z"):
     return {"id": i, "run_attempt": 1, "status": status, "conclusion": conclusion, "head_sha": sha,
             "head_branch": "main", "event": "push", "path": resolve.WORKFLOW, "created_at": created}
 
@@ -288,7 +316,7 @@ class ResolveTests(unittest.TestCase):
     def test_schedule_fallback(self):
         main = "1" * 40
         self.assertEqual(resolve.from_main(FakeRuns([run(1)]), main, 60)["run_id"], "1")
-        newest_failed = [run(1), run(2, conclusion="failure", created="2026-11-20T11:00:00Z")]
+        newest_failed = [run(1), run(2, conclusion="failure", created="2001-01-03T11:00:00Z")]
         self.assertEqual(resolve.from_main(FakeRuns(newest_failed), main, 60)["action"], "measure-failed")
         self.assertEqual(resolve.from_main(FakeRuns([run(3, status="in_progress")]), main, 60)["action"], "wait")
         self.assertEqual(resolve.from_main(FakeRuns([]), main, 60)["action"], "wait")
@@ -299,13 +327,13 @@ class ResolveTests(unittest.TestCase):
         skipped = resolve.require_artifact(FakeRuns([], []), found)
         self.assertEqual(skipped["action"], "wait")
         self.assertIn("without artifact", skipped["why"])
-        cancelled_then_ok = [run(1), run(2, conclusion="cancelled", created="2026-11-20T11:00:00Z")]
+        cancelled_then_ok = [run(1), run(2, conclusion="cancelled", created="2001-01-03T11:00:00Z")]
         self.assertEqual(resolve.from_main(FakeRuns(cancelled_then_ok), main, 60)["run_id"], "1")
 
 
 class Interface(unittest.TestCase):
     def test_measuring_workflow_name_and_artifact(self):
-        """The publisher follows ci1's workflow by name and reads its artifact by name."""
+        """The publisher follows the measuring workflow by name and reads its artifact by name."""
         text = (ROOT / ".github/workflows/state.yml").read_text()
         self.assertIn("name: Measure protected main state", text)
         self.assertIn("bfme-numeric-main-state-${{ github.run_attempt }}", text)
@@ -339,11 +367,28 @@ class WorkflowRules(unittest.TestCase, WriteJobs):
                 self.assertRegex(line, r"@[0-9a-f]{40}$", f"{path.name}: action not pinned: {line}")
             self.assertNotIn("secrets.", text, path.name)
             self.assertNotIn("pull_request", text, path.name)
-            self.assertIn("runs-on: boat-small/from=bfme2-compiler-v1", text)
             self.assert_main_only(text, path.name)
             self.assertNotRegex(text.lower(), r"\bgate\b")
             for block in re.findall(r"persist-credentials: (\S+)", text):
                 self.assertEqual(block, "false")
+
+    def test_only_the_measuring_job_uses_the_compiler_image(self):
+        """Runner starts on the compiler image are paid; every other job runs on a standard runner."""
+        expected = {"state-publish.yml": 0, "state-parity.yml": 1, "progress.yml": 0}
+        for name, boat in expected.items():
+            text = (ROOT / ".github/workflows" / name).read_text()
+            labels = re.findall(r"runs-on: (.+)", text)
+            self.assertEqual(sum(label.startswith("boat") for label in labels), boat, f"{name}: {labels}")
+            standard = "'${{ vars.BFME_STATE_PUBLISH_RUNNER || ''ubuntu-24.04'' }}'"
+            self.assertEqual(sum(label == standard for label in labels), len(labels) - boat, f"{name}: {labels}")
+
+    def test_measuring_workflow_can_call_the_publisher(self):
+        text = (ROOT / ".github/workflows/state-publish.yml").read_text()
+        for item in ("  workflow_call:\n", "measured_run_id:", "measured_attempt:", "measured_conclusion:",
+                     "RUN_ID: '${{ github.event.workflow_run.id || inputs.measured_run_id }}'",
+                     "RUN_CONCLUSION: '${{ github.event.workflow_run.conclusion || inputs.measured_conclusion }}'",
+                     "EVENT: '${{ inputs.measured_run_id && ''workflow_run'' || github.event_name }}'"):
+            self.assertIn(item, text)
 
 
 if __name__ == "__main__":

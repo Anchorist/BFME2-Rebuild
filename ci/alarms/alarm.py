@@ -28,7 +28,7 @@ KINDS = {
     "state-parity": ("Incremental state differs from a full recompute",
                      "The state kept up to date commit by commit disagrees with measuring everything again."),
     "progress-failed": ("Progress card could not be generated",
-                        "The job that writes PROGRESS.md and its pictures failed."),
+                        "The job that writes the progress card and its pictures failed."),
     "progress-down": ("A progress figure went down",
                       "A headline figure is lower than in the previous published card."),
     "nightly-build": ("Nightly build did not produce a checked image",

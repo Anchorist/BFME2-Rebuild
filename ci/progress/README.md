@@ -7,7 +7,7 @@ bytes (the date shown is the main commit's own date). A README can embed the pic
 
 | File on `progress` | What |
 | --- | --- |
-| `PROGRESS.md` | the card: four bars with one sentence each, the nightly checklist, one bar per part of the game, a table of recent history |
+| `README.md` | the card: four bars with one sentence each, the nightly checklist, one bar per part of the game, a table of recent history |
 | `progress.svg`, `history.svg` | the four bars; the four figures over time |
 | `card.json`, `history.json` | the same figures as data (one history point per main commit measured) |
 | `worklist/*.tsv` | the worklists, regenerated for the same main commit |

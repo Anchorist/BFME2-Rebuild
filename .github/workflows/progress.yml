@@ -1,7 +1,7 @@
 name: Progress card and worklists
 
 # Called by "Publish main state" after each newly published main state (and daily, for the nightly result), write the progress
-# card (PROGRESS.md, progress.svg, history.svg) and regenerate worklist/*.tsv for that main
+# card (README.md, progress.svg, history.svg) and regenerate worklist/*.tsv for that main
 # commit, and put them on the `progress` branch. Nothing here writes `main`; a push with the
 # Actions token starts no other workflow, so nothing loops.
 
@@ -27,7 +27,7 @@ jobs:
     if: >-
       github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' && vars.BFME_STATE_BRANCH_ENABLED == 'yes'
     name: Write the card and the worklists
-    runs-on: boat-small/from=bfme2-compiler-v1
+    runs-on: '${{ vars.BFME_STATE_PUBLISH_RUNNER || ''ubuntu-24.04'' }}'
     timeout-minutes: 30
     permissions:
       contents: write
@@ -105,7 +105,7 @@ jobs:
           set -euo pipefail
           python3 -B ci/progress/branch.py write --dir "$RUNNER_TEMP/out" --main "$MAIN" --checkout . \
             2>&1 | tee -a "$RUNNER_TEMP/log.txt"
-          cat "$RUNNER_TEMP/out/PROGRESS.md" >> "$GITHUB_STEP_SUMMARY"
+          cat "$RUNNER_TEMP/out/README.md" >> "$GITHUB_STEP_SUMMARY"
       - name: Keep the text for the alarms
         id: report
         if: always()
@@ -130,7 +130,7 @@ jobs:
     needs: build
     if: always() && github.ref == 'refs/heads/main' && needs.build.result != 'skipped'
     name: Open or close alarm issues
-    runs-on: boat-small/from=bfme2-compiler-v1
+    runs-on: '${{ vars.BFME_STATE_PUBLISH_RUNNER || ''ubuntu-24.04'' }}'
     timeout-minutes: 5
     permissions:
       contents: read

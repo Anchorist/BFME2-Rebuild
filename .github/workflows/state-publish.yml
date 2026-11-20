@@ -4,8 +4,28 @@ name: Publish main state
 # .github/workflows/state.yml) to the `state` branch as one small file per source file.
 # Pushing to `state` with the Actions token starts no other workflow, so nothing loops,
 # and `main` is never written here.
+#
+# Entry points. The measuring workflow calls this one at its end (workflow_call): that is
+# the path every measurement takes, including those started by the landing job, because
+# GitHub creates no workflow_run event for a run that the Actions token started.
+# workflow_run covers measurements started by a person; the schedule is a fallback.
+# No step here needs the compiler image, so every job runs on a standard GitHub runner.
 
 on:
+  workflow_call:
+    inputs:
+      measured_run_id:
+        description: 'The calling measurement run'
+        type: string
+        required: true
+      measured_attempt:
+        description: 'Its attempt'
+        type: string
+        required: true
+      measured_conclusion:
+        description: 'success when the measurement wrote its artifact, failure otherwise'
+        type: string
+        required: true
   workflow_run:
     workflows: ["Measure protected main state"]
     types: [completed]
@@ -38,7 +58,7 @@ jobs:
       (github.event_name != 'workflow_run' ||
         (github.event.workflow_run.conclusion != 'cancelled' && github.event.workflow_run.conclusion != 'skipped'))
     name: Publish the state branch
-    runs-on: boat-small/from=bfme2-compiler-v1
+    runs-on: '${{ vars.BFME_STATE_PUBLISH_RUNNER || ''ubuntu-24.04'' }}'
     timeout-minutes: 15
     permissions:
       contents: write
@@ -69,14 +89,15 @@ jobs:
         id: resolve
         shell: bash
         env:
-          EVENT: '${{ github.event_name }}'
-          RUN_ID: '${{ github.event.workflow_run.id }}'
-          RUN_ATTEMPT: '${{ github.event.workflow_run.run_attempt }}'
-          RUN_SHA: '${{ github.event.workflow_run.head_sha }}'
-          RUN_CONCLUSION: '${{ github.event.workflow_run.conclusion }}'
-          RUN_EVENT: '${{ github.event.workflow_run.event }}'
-          RUN_BRANCH: '${{ github.event.workflow_run.head_branch }}'
-          RUN_PATH: '${{ github.event.workflow_run.path }}'
+          # Called by the measuring run: describe that run exactly as a workflow_run event would.
+          EVENT: '${{ inputs.measured_run_id && ''workflow_run'' || github.event_name }}'
+          RUN_ID: '${{ github.event.workflow_run.id || inputs.measured_run_id }}'
+          RUN_ATTEMPT: '${{ github.event.workflow_run.run_attempt || inputs.measured_attempt }}'
+          RUN_SHA: '${{ github.event.workflow_run.head_sha || github.sha }}'
+          RUN_CONCLUSION: '${{ github.event.workflow_run.conclusion || inputs.measured_conclusion }}'
+          RUN_EVENT: '${{ github.event.workflow_run.event || github.event_name }}'
+          RUN_BRANCH: '${{ github.event.workflow_run.head_branch || github.ref_name }}'
+          RUN_PATH: '${{ github.event.workflow_run.path || ''.github/workflows/state.yml'' }}'
           MAIN_SHA: '${{ github.sha }}'
           INPUT_RUN_ID: '${{ inputs.run_id }}'
           READ_TOKEN: '${{ github.token }}'
@@ -133,7 +154,7 @@ jobs:
     needs: publish
     if: always() && github.ref == 'refs/heads/main' && needs.publish.result != 'skipped'
     name: Open or close alarm issues
-    runs-on: boat-small/from=bfme2-compiler-v1
+    runs-on: '${{ vars.BFME_STATE_PUBLISH_RUNNER || ''ubuntu-24.04'' }}'
     timeout-minutes: 5
     permissions:
       contents: read

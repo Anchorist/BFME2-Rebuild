@@ -1,4 +1,4 @@
-"""Write the progress card (PROGRESS.md, progress.svg, history.svg, history.json, card.json).
+"""Write the progress card (README.md, progress.svg, history.svg, history.json, card.json).
 
     python3 -B ci/progress/card.py --checkout . --state-dir STATE --nightly NIGHTLY.json|'' \
         --previous-history HISTORY.json|'' --out OUT
@@ -30,14 +30,30 @@ from layout import Refused, canonical, join  # noqa: E402  (ci/state)
 HISTORY_LIMIT = 2000
 BARS = (
     ("matched", "Code matched",
-     "Share of the original program's code, by bytes, that our source compiles back to exactly."),
+     "How much of the original game's code, by size, our source code compiles back to byte for byte."),
     ("proven", "Code proven",
-     "Share of the code, by bytes, whose match the checker could also prove (relocations and data references agree)."),
+     "How much of the code, by size, is matched and also confirmed at every place it refers to other "
+     "code or data, so the match cannot be a coincidence."),
     ("linking", "Linking",
-     "Share of the names a full link of the game needs that our source already provides."),
+     "How many of the names the game needs to be assembled into one program our source already provides."),
     ("finished", "Finished functions",
-     "Functions that are matched, proven, live in a properly named file, and whose class is declared in a real header."),
+     "Functions that are proven, sit in a properly named source file, and belong to a class declared in a "
+     "final header. Counted in functions, not bytes: small functions are often finished first, so this "
+     "figure can be ahead of the two above."),
 )
+UNITS = {"matched": "bytes", "proven": "bytes", "linking": "names", "finished": "functions"}
+# Readable names for the parts of the source tree (progress_card.subsystem labels).
+PART_NAMES = {
+    "Libraries": "Game libraries", "Tools": "Tools", "fesl": "FESL (EA online library)",
+    "gamespy-sdk": "GameSpy SDK (online library)", "lua-4.0.1": "Lua 4.0.1 (scripting library)",
+    "lzhl-1.0": "LZHL 1.0 (compression library)", "nbench": "nbench (benchmark library)",
+    "ppmalloc-1.26.11": "ppmalloc 1.26.11 (memory allocator)", "stlport-4.6": "STLport 4.6 (C++ library)",
+    "zlib-1.1.4": "zlib 1.1.4 (compression library)",
+    "unk": "Not yet placed in a named file", "Unplaced": "Not yet assigned to any file",
+}
+LAST = ("unk", "Unplaced")
+MONTHS = ("January", "February", "March", "April", "May", "June", "July", "August", "September",
+          "October", "November", "December")
 CHECKLIST = (
     ("starts", "Starts"),
     ("menu", "Reaches the main menu"),
@@ -65,10 +81,60 @@ def nightly_view(nightly):
     pair = nightly.get("provided_required_symbols")
     ok_pair = (isinstance(pair, list) and len(pair) == 2 and all(type(n) is int for n in pair)
                and 0 <= pair[0] <= pair[1] and pair[1] > 0)
+    compile_ = nightly.get("compile") if isinstance(nightly.get("compile"), dict) else {}
+    counts = {key: compile_.get(key) if type(compile_.get(key)) is int and compile_.get(key) >= 0 else None
+              for key in ("compiled", "files", "fully_matching")}
+    stages = nightly.get("stages") if isinstance(nightly.get("stages"), dict) else {}
+    result = nightly.get("result") if nightly.get("result") in ("pass", "fail", "partial") else None
     return {"sha": str(nightly["sha"])[:40], "date": str(nightly.get("date", ""))[:25], **flags,
             "equal_frames": frames if type(frames) is int and frames > 0 else None,
             "control_caught": nightly.get("control_caught") if type(nightly.get("control_caught")) is bool else None,
-            "linking": pair if ok_pair else None}
+            "linking": pair if ok_pair else None, "result": result, **counts,
+            "game_live": stages.get("link_and_play") not in (None, "not live", "skipped")}
+
+
+def nightly_sentence(night):
+    """One plain sentence for the nightly result."""
+    if night["compiled"] is not None and night["files"]:
+        built = f"{night['compiled']:,} of {night['files']:,} source files compile"
+        if night["fully_matching"] is not None:
+            built += f", {night['fully_matching']:,} of them match the original completely"
+    else:
+        built = ""
+    if night["result"] == "partial" and not night["game_live"]:
+        return "Compiles; the game run is not live yet" + (f" ({built})." if built else ".")
+    if night["result"] == "pass":
+        return "Builds and runs" + (f" ({built})." if built else ".")
+    if night["result"] == "fail":
+        return "The nightly build failed" + (f" ({built})." if built else ".")
+    return "Partly checked" + (f" ({built})." if built else ".")
+
+
+def human_date(stamp):
+    """An ISO time stamp in UTC becomes day, month name, year and time of day; a plain date stays a date."""
+    try:
+        moment = datetime.strptime(stamp, "%Y-%m-%dT%H:%M:%SZ")
+        return f"{moment.day} {MONTHS[moment.month - 1]} {moment.year}, {moment:%H:%M} UTC"
+    except ValueError:
+        try:
+            moment = datetime.strptime(stamp, "%Y-%m-%d")
+            return f"{moment.day} {MONTHS[moment.month - 1]} {moment.year}"
+        except ValueError:
+            return stamp or "date not given"
+
+
+def part_name(name):
+    if name in PART_NAMES:
+        return PART_NAMES[name]
+    for prefix, label in (("GameEngine / ", "Game engine: "), ("GameEngineDevice / ", "Platform layer: ")):
+        if name.startswith(prefix):
+            return label + name[len(prefix):]
+    return name
+
+
+def part_order(item):
+    name, pair = item
+    return (name in LAST, -pair[1], name)
 
 
 def measure(checkout, state, nightly):
@@ -119,42 +185,52 @@ def text_bar(pair):
     return "`" + "█" * fill + "░" * (20 - fill) + "`"
 
 
+REPO_URL = "https://github.com/Open-BFME/BFME2-Rebuild"
+
+
+def commit_link(sha):
+    return f"[`{sha[:12]}`]({REPO_URL}/commit/{sha})"
+
+
 def markdown(point, history):
-    units = {"matched": "bytes", "proven": "bytes", "linking": "names", "finished": "functions"}
-    lines = ["# Progress", "",
-             f"Measured on main commit `{point['main'][:12]}` ({point['date']}). "
-             "This page is written by a workflow from the measurements alone; nobody edits it.", "",
+    lines = ["# Battle for Middle-earth II rebuild: progress", "",
+             "How much of the original game (version 1.06) has been rebuilt as source code that compiles back "
+             "to the same machine code. Measured automatically after every change; nobody edits this page.", "",
+             f"Last measured: **{human_date(point['date'])}**, on commit {commit_link(point['main'])}.", "",
              "![Progress](progress.svg)", ""]
     for key, label, meaning in BARS:
-        lines += [f"**{label}**: {text_bar(point[key])} {figure(point[key], units[key])}  ", meaning, ""]
+        lines += [f"**{label}**: {text_bar(point[key])} {figure(point[key], UNITS[key])}  ", meaning, ""]
     lines += ["## Does the rebuilt game run?", ""]
     night = point["nightly"]
     if night is None:
         lines += ["The nightly build has not run yet. Each line below will say passed or failed once it has.", ""]
         lines += [f"- {label}: not run yet" for _, label in CHECKLIST]
     else:
-        lines += [f"Nightly build of main commit `{night['sha'][:12]}` ({night['date'] or 'date not given'}).", ""]
+        lines += [f"Nightly build of commit {commit_link(night['sha'])} ({human_date(night['date'])}): "
+                  + nightly_sentence(night), ""]
         for key, label in CHECKLIST:
             if key == "simulation_equal" and night["equal_frames"]:
                 label = f"Equals the original game for {night['equal_frames']:,} frames"
             result = night[key]
             lines.append(f"- {label}: " + ("passed" if result is True else "failed" if result is False else "not run yet"))
         if night["control_caught"] is False:
-            lines.append("- Warning: the deliberately changed control run was not caught, so the comparison above cannot be trusted tonight.")
+            lines.append("- Warning: a deliberately altered test run was not told apart from the original, "
+                         "so tonight's comparison cannot be trusted.")
     lines += ["", "## By part of the game", "",
-              "Code matched, by bytes, in each part of the source tree.", "",
-              "| Part | Matched | |", "| --- | ---: | --- |"]
-    for name, pair in point["subsystems"].items():
-        lines.append(f"| {name} | {figure(pair, 'bytes')} | {text_bar(pair)} |")
-    lines += ["", f"Provisional (Draft) headers still included by source: {point['drafts_in_use']:,}.", "",
+              "Code matched, by size, in each part of the source tree, largest part first.", "",
+              "| Part | Matched | Bar |", "| --- | ---: | --- |"]
+    for name, pair in sorted(point["subsystems"].items(), key=part_order):
+        lines.append(f"| {part_name(name)} | {figure(pair, 'bytes')} | {text_bar(pair)} |")
+    lines += ["", f"Provisional class declarations still in use (files under `include/Draft/` that some source "
+                  f"file includes): {point['drafts_in_use']:,}. Each should become a final header.", "",
               "## Over time", "", "![Progress over time](history.svg)", "",
-              "| Main commit | Date (UTC) | Matched | Proven | Linking | Finished |",
+              "| Commit | Measured | Matched | Proven | Linking | Finished |",
               "| --- | --- | ---: | ---: | ---: | ---: |"]
     for row in reversed(history[-30:]):
         cells = [f"{pct(row[k]):.2f}%" if pct(row.get(k)) is not None else "—"
                  for k in ("matched", "proven", "linking", "finished")]
-        lines.append(f"| `{row['main'][:12]}` | {row['date']} | " + " | ".join(cells) + " |")
-    lines += ["", "How each figure is computed: [ci/progress/README.md](https://github.com/Open-BFME/BFME2-Rebuild/blob/main/ci/progress/README.md).", ""]
+        lines.append(f"| {commit_link(row['main'])} | {human_date(row['date'])} | " + " | ".join(cells) + " |")
+    lines += ["", f"How each figure is computed, with its exact formula: [ci/progress/README.md]({REPO_URL}/blob/main/ci/progress/README.md).", ""]
     return "\n".join(lines)
 
 
@@ -178,7 +254,8 @@ def bars_svg(point):
     height = 40 + row * len(BARS)
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="Progress: four bars">',
            STYLE, f'<rect class="bg" width="{width}" height="{height}" rx="6"/>',
-           f'<text class="t2" x="16" y="24" font-size="12">Main {point["main"][:12]} · {point["date"][:10]}</text>']
+           f'<text class="t2" x="16" y="24" font-size="12">Battle for Middle-earth II rebuild · '
+           f'{esc(human_date(point["date"]))} · commit {point["main"][:12]}</text>']
     for i, (key, label, _) in enumerate(BARS):
         y = 40 + i * row
         value = pct(point[key])
@@ -236,7 +313,7 @@ def build(checkout, state_read, nightly, previous_history):
     return {
         "card.json": canonical(point),
         "history.json": canonical(history),
-        "PROGRESS.md": markdown(point, history).encode(),
+        "README.md": markdown(point, history).encode(),
         "progress.svg": bars_svg(point).encode(),
         "history.svg": history_svg(history).encode(),
     }, drops(history, point)

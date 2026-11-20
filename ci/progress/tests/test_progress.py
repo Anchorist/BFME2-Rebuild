@@ -22,8 +22,8 @@ sys.path.insert(0, str(ROOT / "ci/state/tests"))
 from test_state import WriteJobs  # noqa: E402
 from layout import Refused, split  # noqa: E402
 
-ENV = {"GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@users.noreply.invalid",
-       "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@users.noreply.invalid",
+ENV = {"GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@users.noreply.github.com",
+       "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@users.noreply.github.com",
        "GIT_AUTHOR_DATE": "1763600000 +0000", "GIT_COMMITTER_DATE": "1763600000 +0000",
        "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull}
 TU = "src/Code/GameEngine/Source/Common/Foo.cpp"
@@ -78,7 +78,7 @@ class CardTests(Tiny):
         self.assertIsNone(point["linking"])
         self.assertEqual(point["subsystems"], {"GameEngine / Common": [100, 150]})
         self.assertEqual(down, [])
-        text = files["PROGRESS.md"].decode()
+        text = files["README.md"].decode()
         self.assertIn("66.7% (100 of 150 bytes)", text)
         self.assertIn("- Starts: not run yet", text)
         self.assertIn("Linking**: `░░░░░░░░░░░░░░░░░░░░` not measured yet", text)
@@ -90,16 +90,40 @@ class CardTests(Tiny):
         self.assertEqual(self.build()[0], self.build()[0])
 
     def test_nightly_and_linking(self):
-        nightly = {"sha": "c" * 40, "date": "2026-11-21", "starts": True, "menu": True, "skirmish": False,
+        nightly = {"sha": "c" * 40, "date": "2001-01-04", "starts": True, "menu": True, "skirmish": False,
                    "simulation_equal": True, "equal_frames": 9000, "save_load": None, "control_caught": True,
                    "provided_required_symbols": [900, 1000]}
         files, _ = self.build(nightly)
-        text = files["PROGRESS.md"].decode()
+        text = files["README.md"].decode()
         self.assertIn("- Starts: passed", text)
         self.assertIn("- Plays a skirmish: failed", text)
         self.assertIn("- Equals the original game for 9,000 frames: passed", text)
         self.assertIn("- Saves and loads: not run yet", text)
         self.assertIn("90.0% (900 of 1,000 names)", text)
+
+    def test_partial_night_reads_plainly(self):
+        """A night whose game run is not live yet, in the shape the nightly workflow writes."""
+        nightly = {"schema": "bfme2-nightly/1", "sha": "d" * 40, "date": "2001-01-04", "result": "partial",
+                   "compile": {"compiled": 3253, "files": 3253, "fully_matching": 407},
+                   "stages": {"compile": "success", "link_and_play": "not live"},
+                   "starts": None, "menu": None, "skirmish": None, "simulation_equal": None, "save_load": None,
+                   "control_caught": None, "equal_frames": None, "provided_required_symbols": None}
+        text = self.build(nightly)[0]["README.md"].decode()
+        self.assertIn("(4 January 2001): Compiles; the game run is not live yet (3,253 of 3,253 source files "
+                      "compile, 407 of them match the original completely).", text)
+        self.assertIn("- Starts: not run yet", text)
+        self.assertNotIn("Warning", text)
+
+    def test_reader_facing_text(self):
+        text = self.build()[0]["README.md"].decode()
+        self.assertTrue(text.startswith("# Battle for Middle-earth II rebuild: progress\n"))
+        self.assertRegex(text, r"Last measured: \*\*\d{1,2} [A-Z][a-z]+ \d{4}, \d\d:\d\d UTC\*\*")
+        self.assertIn(f"[`{self.main[:12]}`](https://github.com/Open-BFME/BFME2-Rebuild/commit/{self.main})", text)
+        self.assertIn("Counted in functions, not bytes", text)
+        self.assertNotRegex(text, r"\b(checker|unk|Unplaced|PROGRESS)\b")
+        self.assertEqual(card.PART_NAMES["unk"], "Not yet placed in a named file")
+        self.assertEqual(card.human_date("2001-02-03"), "3 February 2001")
+        self.assertIn("| Game engine: Common | 66.7% (100 of 150 bytes) |", text)
 
     def test_drop_is_reported(self):
         before = {"main": "b" * 40, "date": "2000-01-01T00:00:00Z", "matched": [120, 150], "proven": [100, 150],
@@ -121,21 +145,21 @@ class WorklistInputTests(Tiny):
         wl = self.root / "worklist"
         wl.mkdir()
         (wl / "link_ranked.tsv").write_text(
-            "# measured_utc=2026-11-19T15:51:11Z revision=5c48db972b body_checked_against=0a6b4f7e08 left_out_written=54\n"
+            "# measured_utc=2001-01-02T15:51:11Z revision=5c48db972b body_checked_against=0a6b4f7e08 left_out_written=54\n"
             "referrers\tstate\trva\tfile\tsymbol\tfirst_referrer\tbody_check\n"
             "59\tplaceholder-owned:MISSING\t0x00401100\t" + TU + "\t?g@Foo@@QAEXXZ\tsrc/x.cpp\tnone-found\n")
         (wl / "unwritten_with_zero_hour_counterpart.tsv").write_text(
-            "# measured_utc=2026-11-19T17:52:36Z revision=89dbb655bd body_checked_against=0a6b4f7e08 left_out_written=373\n"
+            "# measured_utc=2001-01-02T17:52:36Z revision=89dbb655bd body_checked_against=0a6b4f7e08 left_out_written=373\n"
             "rva\tfunction\towner_file\tsize_bytes\tzero_hour_file\tzero_hour_line\tzero_hour_function\treference_kind\tlink_referrers\tready_at_snapshot\tbody_check\n"
             "0x00401100\tFoo::g\t" + TU + "\t50\t" + worklists.DONOR + "Foo.cpp\t12\tFoo::g\tdef\t3\tyes\tnone-found\n")
         out = Path(self.tmp.name) / "in"
         out.mkdir()
         worklists.inputs(self.root, self.main, self.state.__getitem__, out)
         ranked = (out / "ranked.tsv").read_text().splitlines()
-        self.assertEqual(ranked[0], "# generated=2026-11-19T15:51:11Z standalone=5c48db972b")
+        self.assertEqual(ranked[0], "# generated=2001-01-02T15:51:11Z standalone=5c48db972b")
         self.assertEqual(ranked[2].split("\t")[:3], ["59", "placeholder-owned:MISSING", "0x00401100"])
         unwritten = (out / "unwritten.tsv").read_text().splitlines()
-        self.assertEqual(unwritten[0], "# generated 2026-11-19T17:52:36Z main=89dbb655bd")
+        self.assertEqual(unwritten[0], "# generated 2001-01-02T17:52:36Z main=89dbb655bd")
         self.assertEqual(unwritten[2].split("\t")[4], "Foo.cpp:12,def")
         verdicts = json.loads((out / "verdicts.json").read_text())
         self.assertEqual(verdicts["tus"][TU]["rows"]["0x401100"], ["PARTIAL", 40.0])
@@ -147,7 +171,7 @@ class BranchTests(Tiny):
     def test_write_is_deterministic_and_idempotent(self):
         out = Path(self.tmp.name) / "out"
         out.mkdir()
-        (out / "PROGRESS.md").write_text("x\n")
+        (out / "README.md").write_text("x\n")
         commits = []
         for name in ("r1.git", "r2.git"):
             remote = Path(self.tmp.name) / name
