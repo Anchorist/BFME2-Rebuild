@@ -21,6 +21,7 @@ TESTS = [
      "expect_frames": 200, "timeout": 6000,
      "args": ["record", "--map", UDUN, "--seed", "1", "--until-frame", "5000", "--crc-every", "25", "--timeout", "6000"]},
     {"name": "save", "kind": "reload", "tool": "game_smoke.py", "control": "reload.json", "timeout": 1500,
+     "expect_before": 6, "expect_after": 20,
      "args": ["reload", "--player", "--seed", "1", "--until-frame", "600", "--crc-every", "25", "--timeout", "1500"]},
 ]
 
@@ -51,7 +52,23 @@ def reload_compare(control, run):
 
 
 def judge_test(test, found, rc, done=None):
-    """status: pass | differs | crash | control-blind. `detail` says what was expected and what was found."""
+    """status: pass | differs | crash | control-blind. `detail` says what was expected and what was found.
+
+    A run whose frames all held still fails as a crash when the game did not exit cleanly: no exit record, or an
+    exit code other than 0 (a crash in shutdown or in static destructors happens after the last checksum)."""
+    verdict = _judge_frames(test, found, rc, done)
+    if verdict["status"] not in ("pass",):
+        return verdict
+    if not done or "rc" not in done:
+        return dict(verdict, status="crash", detail="expected an exit record from the game run; found none, so a "
+                                                    "crash at shutdown cannot be ruled out")
+    if done["rc"] != 0:
+        return dict(verdict, status="crash", detail=f"expected the game to exit with code 0; found {done['rc']} "
+                                                    f"after: {verdict['detail']}")
+    return verdict
+
+
+def _judge_frames(test, found, rc, done=None):
     done = done or {}
     base = {"name": test["name"], "game_exit": done.get("rc", rc)}
     if test["kind"] == "reload":
@@ -61,9 +78,11 @@ def judge_test(test, found, rc, done=None):
         out = dict(base, outcome=found["outcome"], after_load=a, before_load=b)
         if found["outcome"] != "pass" and a["frames_compared"] == 0:
             return dict(out, status="crash", detail=f"expected outcome pass; found {found['outcome']!r} with no frames after the load")
+        minimum = {"before the save": test.get("expect_before", 1), "after the load": test.get("expect_after", 1)}
         for label, part in (("before the save", b), ("after the load", a)):
-            if part["frames_compared"] == 0:
-                return dict(out, status="crash", detail=f"expected checksum frames {label}; found none")
+            if part["frames_compared"] < minimum[label]:
+                return dict(out, status="crash", detail=f"expected at least {minimum[label]} checksum frames {label}; "
+                                                        f"found {part['frames_compared']}")
             if part["first_divergent_frame"] is not None:
                 return dict(out, status="differs", first_divergent_frame=part["first_divergent_frame"],
                             detail=f"expected every frame {label} equal; first differing frame {part['first_divergent_frame']}")

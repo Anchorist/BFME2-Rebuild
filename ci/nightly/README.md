@@ -7,7 +7,9 @@ plays exactly as the original does?** It runs in three parts.
    `boat-small/from=bfme2-compiler-v1`). Every `.c` and `.cpp` file under `src/` at the main commit is compiled with
    the same sealed compiler and judged with the same comparison as a pull request. A file whose functions all match
    the original is a candidate. Each job has a 40-minute deadline and records its machine's CPU count, model, busy
-   and hypervisor-taken (steal) time, so a slow night shows whether a machine was slow or starved.
+   and hypervisor-taken (steal) time, so a slow night shows whether a machine was slow or starved. The full source
+   projection the compiler receives is built once per job, not once per batch of 8 files. The sealed compiler takes
+   one request at a time, and each batch logs its compiler and comparison seconds.
 2. **Link, check and play** (a separate private repository, two hours later, one machine that holds the game). The link
    planner starts from the original program's own object files and substitutes every candidate file it can link
    safely. It links that image without forcing unresolved names, checks the size of every data object, and plays
@@ -18,11 +20,18 @@ plays exactly as the original does?** It runs in three parts.
    | the same with a deliberate change at frame 500 | the comparison must notice it at frame 500 (negative control) |
    | Fords of Isen II, seed 2, to frame 1000 | all 40 checksums equal |
    | Udun, seed 1, to frame 5000 | all 200 checksums equal |
-   | save at frame 600, load, play on | outcome pass, every checksum before the save and after the load equal |
+   | save at frame 600, load, play on | outcome pass, at least 6 checksums before the save and 20 after the load, all equal |
+
+   In every test the game must also exit with code 0 and leave an exit record: a run whose checksums all held but
+   which crashed while shutting down counts as a crash.
 
 3. **Publish the game result** (`nightly.yml` again, two hours after part 2, only when the repository variable
    `BFME_NIGHTLY_GAME_REPO` names the private repository). Reads the game run's result file from that repository with
-   one read-only token and publishes it here, replacing the compile result for the same commit.
+   one read-only token and publishes it here, replacing the compile result for the same commit and keeping that
+   run's linking figure. A run that played also writes `game/latest.json` on the `nightly` branch, which the
+   compile run never touches, so the last game result and its date stay visible between game runs. When no fresh game
+   result is there to publish, this part raises the `Nightly build did not produce a checked image` alarm with the
+   reason.
 
 Parts 1 and 3 write `nightly.json` and a readable summary to the `nightly` branch. Failures open or update one issue
 per kind of failure; a clean night closes it. Run by hand: **Actions → Nightly build and compare → Run workflow** on
@@ -45,8 +54,9 @@ per kind of failure; a clean night closes it. Run by hand: **Actions → Nightly
 | `result` | `pass` (everything ran and held), `fail`, or `partial` (compiled; the game run is not live or has not run yet) |
 | `stages` | `compile` and `link_and_play`: the job results, `runs separately` or `not live` |
 | `compile` | files, compiled, compile_errors, fully_matching, shards, slowest/fastest shard seconds, `per_shard` machine facts |
-| `provided_required_symbols` | the Linking figure: `[provided, needed]` names (see "Linking" below); `null` when not measured |
-| `link_census` | its detail: objects read, needed, missing, provided, missing names by kind, duplicate definitions |
+| `provided_required_symbols` | the Linking figure the card shows, `[provided, total]` (see "Linking" below); `null` when not measured |
+| `linking_unit` | `names` (names our written code refers to) or `functions` (functions of the whole original program) |
+| `link_census` | its detail: objects read, needed, missing, provided, missing names by kind, duplicates and their names, `program_functions` |
 | `files_substituted`, `functions` | rebuilt files and their functions in the linked image |
 | `plan`, `link`, `size_check` | planner counts, link result (image, unresolved, duplicates), blocking size findings |
 | `starts`, `menu`, `skirmish`, `save_load`, `simulation_equal`, `control_caught` | `true`, `false` or `null` (not run) |
@@ -68,6 +78,17 @@ and the list of names those libraries define (`link-names/library-names.txt`), r
 them; no game file and no private machine is involved. At 100% every name the rebuilt code needs has a definition,
 so the program can be linked from this source alone. The figure rises when a missing function or variable is
 written, and the needed count can grow when newly written code refers to more names.
+
+Because that count only sees names our written files refer to, the same step also measures the whole program: of
+every distinct function the original program has (the functions the ledger `config/map.json` owns), how many one of
+our compiled files defines under one of its accepted names. The repository variable `BFME_LINKING_HEADLINE` chooses
+which of the two figures the progress card shows (`program` for the whole-program functions, unset for the names our
+code refers to); `linking_unit` in `nightly.json` says which (`functions` or `names`), and both are always in
+`link_census`. Names defined twice (which a real link refuses) are counted and listed there too. The missing names,
+each with the number of compiled files that refer to it and the first such file, are published as
+`link-missing.tsv` on the `nightly` branch, most referred first. The census only runs over exactly the objects the
+compile shards recorded (each judged file once, each object matching its compile receipt); anything else leaves the
+figure unmeasured for that run.
 
 ## Why a pull request cannot reach the game
 

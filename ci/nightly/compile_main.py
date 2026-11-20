@@ -6,8 +6,12 @@ Runs on the compiler image. Reuses the pull request check's own sealed-compiler 
 per-file judge (ci/managed-check, ci/managed-nt2) by import, so a nightly verdict is the same verdict a pull request
 gets. This shard takes the files whose position in the size-balanced assignment equals SHARD.
 
-Writes OUT_DIR/judge.jsonl (one judge result per file: functions, matches, rows, errors) and OUT_DIR/obj/ (the
-compiled objects with their compile receipts). Both come from public source only.
+The source projection (every file under src/ and include/, packed for the compiler) is the same for every batch of a
+run, so it is built once per runner and reused, not rebuilt for each batch of 8 files. Each batch logs its compiler
+and comparison seconds separately. The sealed compiler takes one request at a time on this image.
+
+Writes OUT_DIR/judge.jsonl (one judge result per file: functions, matches, rows, errors), OUT_DIR/obj/ (the
+compiled objects with their compile receipts) and OUT_DIR/shard.json. All come from public source only.
 """
 import json
 import os
@@ -58,15 +62,40 @@ def fail(expected, found):
     raise SystemExit(1)
 
 
-def main(shard, shards, out):
-    shard, shards, out = int(shard), int(shards), Path(out)
+def memoize_projection(measure_mod, compare_mod):
+    """Build the source projection and its packed form once per process (same commit for every batch)."""
+    built, packed = {}, {}
+    original_projection, original_pack = measure_mod.projection, measure_mod.pack_sources
+
+    def projection(git, revision):
+        key = (str(git.path), revision)
+        if key not in built:
+            built[key] = original_projection(git, revision)
+        return built[key]
+
+    def pack_sources(files):
+        key = id(files)
+        if key not in packed or packed[key][0] is not files:
+            packed[key] = (files, original_pack(files))
+        return packed[key][1]
+
+    measure_mod.projection = compare_mod.projection = projection
+    measure_mod.pack_sources = pack_sources
+    return built
+
+
+def compile_files(files, out, label):
+    """Compile and judge `files` (sorted TU paths) into out/; returns counts and batch seconds."""
     sha = os.environ.get("GITHUB_SHA", "")
     from common import PIN
+    import compare as compare_mod
     from compare import native_commands, protected_judge
     from gitrepo import Git
+    import measure as measure_mod
     from measure import audit, pin
     from wide import measure_batch
 
+    built = memoize_projection(measure_mod, compare_mod)
     checkout = Git(Path.cwd() / ".git")
     head = checkout.rev("HEAD")
     if head != sha:
@@ -76,16 +105,12 @@ def main(shard, shards, out):
         pin(baseline, PIN["baseline_sha256"])
     except ValueError:
         fail(f"baseline/game.dat with SHA-256 {PIN['baseline_sha256']}", "a different file")
-    started = monotonic()
-    cpu0 = cpu_times()
     tools = audit(PIN)
     out.mkdir(parents=True, exist_ok=True)
     (out / "obj").mkdir(exist_ok=True)
-    sizes = source_files(checkout, sha)
-    mine = assign(sizes, shards)[shard]
-    print(f"Nightly shard {shard + 1} of {shards}: {len(mine)} of {len(sizes)} source files.", flush=True)
-    counts = {"files": len(mine), "compiled": 0, "compile_errors": 0, "fully_matching": 0}
+    counts = {"files": len(files), "compiled": 0, "compile_errors": 0, "fully_matching": 0}
     batch_seconds = []
+    split = {"compile": 0.0, "compare": 0.0}
     with tempfile.TemporaryDirectory(prefix="bfme-nightly-") as name, open(out / "judge.jsonl", "w") as log:
         work = Path(name)
         git = Git(work / "source.git", initialize=True)
@@ -93,7 +118,7 @@ def main(shard, shards, out):
         git.run("update-ref", "refs/heads/main", sha)
         judge = protected_judge(work / "home", tools, baseline)
         judge.BARE = git.path
-        commands = native_commands(git, judge, sha, mine, tools)
+        commands = native_commands(git, judge, sha, files, tools)
         for begin in range(0, len(commands), BATCH):
             batch = commands[begin:begin + BATCH]
             names = [c["tu"] for c in batch]
@@ -101,7 +126,8 @@ def main(shard, shards, out):
                         compile={"head": batch}, changed_paths=[])
             job = work / f"batch-{begin}"
             t0 = monotonic()
-            results = measure_batch(git, judge, "head", plan, tools, job)
+            spans = {}
+            results = measure_batch(git, judge, "head", plan, tools, job, timing=spans)
             if list(results) != names:
                 fail(f"a judge result for each of {len(names)} files", f"{len(results)} results")
             for tu in names:
@@ -120,8 +146,26 @@ def main(shard, shards, out):
                 log.write(json.dumps(keep, sort_keys=True) + "\n")
             shutil.rmtree(job, ignore_errors=True)
             batch_seconds.append(round(monotonic() - t0, 1))
-            print(f"Nightly shard {shard + 1}: batch {begin // BATCH + 1}, {len(names)} files, "
-                  f"{monotonic() - t0:.1f} s.", flush=True)
+            for stage in ("compile", "compare"):
+                split[stage] += spans.get(stage, 0.0)
+            print(f"Nightly {label}: batch {begin // BATCH + 1}, {len(names)} files, {batch_seconds[-1]:.1f} s "
+                  f"(compiler {spans.get('compile', 0.0):.1f} s, comparison {spans.get('compare', 0.0):.1f} s).", flush=True)
+    counts["projections_built"] = len(built)
+    counts["compiler_s"] = round(split["compile"], 1)
+    counts["comparison_s"] = round(split["compare"], 1)
+    return counts, batch_seconds
+
+
+def main(shard, shards, out):
+    shard, shards, out = int(shard), int(shards), Path(out)
+    sha = os.environ.get("GITHUB_SHA", "")
+    started = monotonic()
+    cpu0 = cpu_times()
+    from gitrepo import Git
+    sizes = source_files(Git(Path.cwd() / ".git"), sha)
+    mine = assign(sizes, shards)[shard]
+    print(f"Nightly shard {shard + 1} of {shards}: {len(mine)} of {len(sizes)} source files.", flush=True)
+    counts, batch_seconds = compile_files(mine, out, f"shard {shard + 1}")
     counts["seconds"] = round(monotonic() - started, 1)
     ordered = sorted(batch_seconds)
     counts["batch_median_s"] = ordered[len(ordered) // 2] if ordered else None
