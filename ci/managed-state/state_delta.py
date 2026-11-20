@@ -10,7 +10,7 @@ from state_evidence import LIMIT, cached_pairs, header
 # implementation retain full-refresh semantics. state.yml can be carried only
 # across the reviewed producer-v2 to resume transport revision.
 REPORT_DIRS = ("docs/", "worklist/", "ci/state/", "ci/progress/", "ci/alarms/",
-               "ci/nightly/", "ci/landing/", "ci/public-text/", ".github/workflows/")
+               "ci/nightly/", "ci/landing/", "ci/admission/", "ci/public-text/", ".github/workflows/")
 STATE_FLOW = ".github/workflows/state.yml"
 TRANSPORT = {"ci/managed-state/state_delta.py", "ci/managed-state/state_fetch.py",
              "ci/managed-state/state_workflow.py",
@@ -34,6 +34,24 @@ COMPACT_GRAPH = {
         "21c6f500a947b2b957366fa346de2864cb3d017901e0e528bfd50220589abf82",
     ),
 }
+AUTOMATIC_GRAPH = {
+    "ci/managed-check/wide_recovery.py": (
+        '43ab19a7fd87bbf9e00c7fecdaba498b1c0da45e749a692ae383db7e4247af7d',
+        'af69c85ba0829c103afbcfe68d8b1788ee23ea34af0d87bb3f503f6734e4e433',
+    ),
+    "ci/managed-check/bundle.sha256": (
+        '21c6f500a947b2b957366fa346de2864cb3d017901e0e528bfd50220589abf82',
+        'ef8d015ae4a4c3b169b9572299f4171b68e4661b22ce63bf2bc121accb2fb336',
+    ),
+}
+# A retained checkpoint can precede either migration, or both of them.
+BUNDLE = "ci/managed-check/bundle.sha256"
+COMBINED_GRAPH = COMPACT_GRAPH | AUTOMATIC_GRAPH | {
+    path: (COMPACT_GRAPH[path][0], AUTOMATIC_GRAPH[path][1])
+    for path in COMPACT_GRAPH.keys() & AUTOMATIC_GRAPH.keys()
+}
+GRAPH_CHANGES = (COMPACT_GRAPH, AUTOMATIC_GRAPH, COMBINED_GRAPH)
+GRAPH_PATHS = set(COMBINED_GRAPH)
 COMPACT_SCOPE = {"ci/managed-state/state_delta.py", "ci/managed-state/state_origin.py",
                  "ci/managed-state/bundle.sha256"}
 MAX_DIFF_BYTES = 4 * 1024**2
@@ -45,25 +63,32 @@ def predecessors(root, main):
                str(ANCESTOR_LIMIT), main).decode("ascii").splitlines()
 
 
-def compact_graph_change(root, parent, main):
+def graph_blob(root, revision, path):
+    entry = git(root, "ls-tree", revision, "--", path)
+    if not entry:
+        return None
+    if not entry.startswith(b"100644 blob "):
+        raise ValueError("A graph control no longer has its approved file mode.")
+    return sha256(git(root, "show", f"{revision}:{path}")).hexdigest()
+
+
+def graph_change(root, parent, main, paths=None):
     try:
-        for path, expected in COMPACT_GRAPH.items():
-            observed = []
-            for revision in (parent, main):
-                tree = git(root, "ls-tree", revision, "--", path)
-                if not tree.startswith(b"100644 blob "):
-                    return False
-                observed.append(sha256(git(root, "show", f"{revision}:{path}")).hexdigest())
-            if tuple(observed) != expected:
-                return False
-    except (OSError, CalledProcessError):
-        return False
-    return True
+        for transition in GRAPH_CHANGES:
+            if paths is not None and set(transition) != paths:
+                continue
+            if all(tuple(graph_blob(root, rev, path) for rev in (parent, main)) == expected
+                   for path, expected in transition.items()):
+                return transition
+    except (OSError, ValueError, CalledProcessError):
+        return None
+    return None
 
 
 def publication_path(root, parent, main, file):
-    if file in COMPACT_GRAPH:
-        return compact_graph_change(root, parent, main)
+    if file in GRAPH_PATHS:
+        transition = graph_change(root, parent, main)
+        return transition is not None and file in transition
     if file == STATE_FLOW:
         fingerprints = tuple(sha256(git(root, "show", f"{rev}:{file}")).hexdigest()
                              for rev in (parent, main))
@@ -131,9 +156,9 @@ def inherited(root, main, snapshot, *, warn=print):
         if not all(safe_tu(item["tu"]) for item in requests):
             return {}
         identity = header(parent, tree)
-        prior_policy, graph_policy = COMPACT_GRAPH["ci/managed-check/bundle.sha256"]
-        if identity["policy"] == graph_policy and compact_graph_change(root, parent, main):
-            identity["policy"] = prior_policy
+        transition = graph_change(root, parent, main)
+        if transition and identity["policy"] == transition[BUNDLE][1]:
+            identity["policy"] = transition[BUNDLE][0]
         return unaffected(cached_pairs(old, identity, requests), changed)
     except (OSError, ValueError, TypeError, KeyError, AttributeError, CalledProcessError):
         warn("Previous exact state cannot be reused. A full initial refresh is required.")

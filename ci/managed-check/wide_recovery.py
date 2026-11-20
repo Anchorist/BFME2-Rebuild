@@ -4,6 +4,7 @@ from collections import defaultdict
 import os
 from pathlib import Path
 import re
+import subprocess
 import sys
 import tempfile
 from time import time
@@ -228,23 +229,33 @@ def main(mode, *args):
         lease = freeze(get_matrix(matrix, expected), expected, directory, int(cutoff))
         write(target, lease)
         print(identity(lease))
-    elif mode == "reserve":
-        source, matrix, expected, lease_path, lease_sha, slot, out = args
-        slot = int(slot)
+    elif mode in {"reserve", "reserve-group"}:
+        source, matrix, expected, lease_path, lease_sha, slot_arg, directory, *group = args
+        slot = int(slot_arg)
         if not 0 <= slot < RESERVES:
             raise ValueError("Unknown reserve runner slot.")
         plan, _ = admission(Path(source))
         doc = load_matrix(Path(matrix), expected, plan)
         lease = read(lease_path, 64 * 1024)
         planned, _ = checked_lease(doc, expected, lease, lease_sha)
-        out = Path(out)
-        out.mkdir(mode=0o700)
-        for pair in planned:
-            if lease["reserve"].get(label(pair)) != slot:
-                continue
+        assigned = {label(pair): pair for pair in planned if lease["reserve"].get(label(pair)) == slot}
+        out = Path(directory)
+        if mode == "reserve":
+            if group:
+                raise ValueError("A reserve slot does not take a group.")
+            out.mkdir(mode=0o700)
+            for key in assigned:
+                # A judge import binds its scratch home and process-wide tempfile
+                # settings. Give the next group a clean interpreter.
+                subprocess.run([sys.executable, "-B", str(Path(__file__).resolve()),
+                                "reserve-group", *args, key], check=True)
+        else:
+            if len(group) != 1 or group[0] not in assigned:
+                raise ValueError("The reserve group is not assigned to this slot.")
             if not lease["primary_cutoff"] <= time() < lease["reserve_cutoff"]:
                 raise ValueError("Reserve lease is not in its execution window.")
-            produce(plan, doc, expected, planned, pair, slot, out / ("reserve-" + label(pair)))
+            key = group[0]
+            produce(plan, doc, expected, planned, assigned[key], slot, out / ("reserve-" + key))
     elif mode == "join":
         matrix, expected, lease_path, lease_sha, directory, out = args
         records = reconstruct(get_matrix(matrix, expected), expected, read(lease_path, 64 * 1024),

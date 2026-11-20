@@ -10,7 +10,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "managed-check"))
 from common import HEX40, REPO, REPO_ID, encoded, read
 from github_status import GitHub
-from state_delta import COMPACT_GRAPH, COMPACT_SCOPE, REPORT_DIRS, compact_graph_change, predecessors
+from state_delta import COMPACT_SCOPE, GRAPH_PATHS, REPORT_DIRS, graph_change, predecessors
 from state_snapshot import git
 from state_fetch import WORKFLOW, select_artifact, select_run, verified_run
 
@@ -59,13 +59,13 @@ def report_only_push(root, sha, event):
     if names.pop() != b"":
         return False
     prefixes = tuple(prefix.encode("ascii") for prefix in REPORT_DIRS)
-    graph_paths = {path.encode("ascii") for path in COMPACT_GRAPH}
     scope_paths = {path.encode("ascii") for path in COMPACT_SCOPE}
     unclassified = {name for name in names if name != b"README.md" and not name.startswith(prefixes)}
     if not unclassified:
         return bool(names)
-    return (graph_paths <= unclassified <= graph_paths | scope_paths
-            and compact_graph_change(root, before, sha))
+    graph_paths = {path for path in GRAPH_PATHS if path.encode("ascii") in unclassified}
+    return (unclassified <= {path.encode("ascii") for path in graph_paths} | scope_paths
+            and graph_change(root, before, sha, graph_paths) is not None)
 
 
 def eligible(api, sha, seed, phase, *, root=None):
