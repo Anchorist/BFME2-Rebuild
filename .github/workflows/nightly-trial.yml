@@ -1,0 +1,134 @@
+name: Nightly trial (publishes nothing)
+
+# Proves a nightly package on the real runners before it replaces the nightly on main. A maintainer pushes the
+# candidate files to a branch and starts this workflow on that branch (Run workflow, choose the branch). It runs the
+# branch's own ci/nightly code exactly as the nightly would: start-up check, compile shards, the linking census and
+# the result step. It writes only to its own run: the job summary and a short-lived artifact. It never writes the
+# nightly branch, never opens or closes an issue and holds no write permission.
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 'all = the 16 shards of a full night; first-two = shards 0 and 1 only (a quick start-up proof)'
+        type: choice
+        options: [all, first-two]
+        default: all
+
+permissions: {}
+
+concurrency:
+  group: nightly-trial
+  cancel-in-progress: false
+
+env:
+  SHARDS: '16'
+
+jobs:
+  compile:
+    if: github.repository == 'Open-BFME/BFME2-Rebuild'
+    name: Trial compile shard ${{ matrix.shard }}
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 40
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ inputs.scope == 'first-two' && fromJSON('[0, 1]') || fromJSON('[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]') }}
+    steps:
+      - name: Check out the trial branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Verify the check package and the compiler image
+        shell: bash
+        run: |
+          set -uo pipefail
+          for d in ci/managed-check ci/managed-nt2; do
+            if ! out=$(cd "$d" && sha256sum -c --quiet bundle.sha256 2>&1); then
+              echo "::error::expected every file in $d to match its bundle.sha256; found: $out"; exit 1
+            fi
+          done
+          if ! out=$(cd ci/nightly && sha256sum -c --quiet files.sha256 2>&1); then
+            echo "::error::expected every file in ci/nightly to match files.sha256; found: $out"; exit 1
+          fi
+          cd /opt/boat-compiler
+          if ! out=$(sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256 2>&1); then
+            echo "::error::expected the compiler image files to match their manifests; found: $out"; exit 1
+          fi
+          sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Check the compile start-up
+        shell: bash
+        run: |
+          set -euo pipefail
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C TMPDIR="$RUNNER_TEMP" \
+            GITHUB_SHA="$GITHUB_SHA" \
+            python3 -B ci/nightly/compile_main.py --self-check
+      - name: Compile and judge this shard
+        shell: bash
+        env:
+          SHARD: '${{ matrix.shard }}'
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          if ! [[ "$SHARD" =~ ^([0-9]|1[0-5])$ ]]; then echo "::error::expected a shard number 0 to 15; found '$SHARD'"; exit 1; fi
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C TMPDIR="$RUNNER_TEMP" \
+            GITHUB_SHA="$GITHUB_SHA" \
+            python3 -B ci/nightly/compile_main.py "$SHARD" "$SHARDS" "$RUNNER_TEMP/shard"
+      - name: Keep this shard for the trial's result step
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: trial-shard-${{ matrix.shard }}-a${{ github.run_attempt }}
+          path: '${{ runner.temp }}/shard'
+          if-no-files-found: error
+          retention-days: 1
+
+  result:
+    needs: [compile]
+    if: always() && github.repository == 'Open-BFME/BFME2-Rebuild'
+    name: Trial result (written to this run only)
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the trial branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Read the trial shards
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: trial-shard-[0-9]*-a${{ github.run_attempt }}
+          path: '${{ runner.temp }}/objects'
+      - name: Measure linking and write the result
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p "$RUNNER_TEMP/result"
+          if ! python3 -B ci/nightly/link_census.py "$RUNNER_TEMP/objects" \
+               --names ci/nightly/link-names/library-names.txt --out "$RUNNER_TEMP/link.json" \
+               --map config/map.json --missing-out "$RUNNER_TEMP/result/link-missing.tsv"; then
+            echo "::warning::expected a linking figure from the trial's objects; found none"
+            rm -f "$RUNNER_TEMP/link.json"
+          fi
+          python3 -B ci/nightly/result.py "$RUNNER_TEMP/objects" none "$RUNNER_TEMP/result" \
+            --compile-job '${{ needs.compile.result }}' --game-job skipped --game-live false \
+            --shards-expected "$SHARDS" --link "$RUNNER_TEMP/link.json" > /dev/null
+          rc=$?
+          { echo "# Nightly TRIAL (published nowhere)"; echo; cat "$RUNNER_TEMP/result/summary.md"; } >> "$GITHUB_STEP_SUMMARY"
+          exit $rc
+      - name: Keep the trial result (one day)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: nightly-trial-result-a${{ github.run_attempt }}
+          path: '${{ runner.temp }}/result'
+          if-no-files-found: warn
+          retention-days: 1
