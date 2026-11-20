@@ -24,7 +24,7 @@ from pool_protocol import safe_diagnostics
 from reporting import GATES, STATES, numeric, safe_listing
 from wide_plan import identity
 
-RUNNERS = 16
+RUNNERS = 24
 BATCH = 8
 MAX_RECEIPT = 4 * 1024**2
 
@@ -67,13 +67,19 @@ def plan_matrix(source, out):
     with comparison_inputs(plan) as (_, git, tip, judge, tools):
         commands = {side: native_commands(git, judge, rev, plan["request_paths"], tools)
                     for side, rev in (("base", plan["base"]), ("head", tip))}
-    document = make(plan, commands, limit=RUNNERS)
+    runners = int(os.environ.get("MANAGED_WIDE_SHARDS", RUNNERS))
+    if runners not in (16, 24, 32):
+        raise ValueError("Select 16, 24 or 32 managed wide runners.")
+    document = make(plan, commands, limit=runners)
     out.mkdir(mode=0o700)
     write(out / "matrix.json", document)
     indexes = list(range(len(document["partition"]["shards"])))
     with Path(os.environ["GITHUB_OUTPUT"]).open("a") as stream:
         stream.write("shards=[" + ",".join(map(str, indexes)) + "]\n")
         stream.write("matrix_sha=" + identity(document) + "\n")
+        from wide_recovery import groups
+        stream.write("groups=" + encoded([{"shard": shard, "part": part}
+                                           for shard, part in groups(document)]).decode())
 
 
 def load_matrix(path, expected, plan):
@@ -135,11 +141,15 @@ def measure_batch(git, judge, side, plan, tools, job, *, timing=None):
 def compile_shard(source, matrix, expected, index, out):
     plan, _ = admission(source)
     doc = load_matrix(matrix, expected, plan)
+    compile_assigned(plan, doc, expected, index, out, label=str(index))
+
+
+def compile_assigned(plan, doc, expected, index, out, *, label):
     commands_by_side = assignment(doc, index, expected=expected)
     started = monotonic()
     total = {stage: 0.0 for stage in ("compile", "compare")}
     units = len(commands_by_side[SIDES["base"]])
-    print(f"Wide shard {index}: {units} translation units / {2 * units} paired sides planned.", flush=True)
+    print(f"Wide shard {label}: {units} translation units / {2 * units} paired sides planned.", flush=True)
     records, reports, details, inline_objects = [], {side: {} for side in SIDES}, {}, {}
     with comparison_inputs(plan) as (work, git, tip, judge, tools):
         owners = Owners(git, plan["base"])
@@ -166,7 +176,7 @@ def compile_shard(source, matrix, expected, index, out):
                         total[stage] += spans.get(stage, 0.0)
                     compile_s, compare_s = (f"{spans[stage]:.2f}" if stage in spans else "unavailable"
                                             for stage in ("compile", "compare"))
-                    print(f"Wide shard {index}: {side} batch {begin // BATCH + 1}, {len(names)} files, "
+                    print(f"Wide shard {label}: {side} batch {begin // BATCH + 1}, {len(names)} files, "
                           f"compiler RPC {compile_s} s, native comparison {compare_s} s.", flush=True)
                 if list(results) != names:
                     raise ValueError("The trusted comparator omitted a planned TU.")
@@ -211,8 +221,8 @@ def compile_shard(source, matrix, expected, index, out):
         except Exception:
             inline = None
             print("Inline virtual advisory evidence is unavailable for this shard.", file=sys.stderr)
-        print(f"Wide shard {index}: virtual extraction {monotonic() - atom_started:.2f} s.", flush=True)
-    print(f"Wide shard {index}: {units} paired files, compiler RPC {total['compile']:.2f} s, "
+        print(f"Wide shard {label}: virtual extraction {monotonic() - atom_started:.2f} s.", flush=True)
+    print(f"Wide shard {label}: {units} paired files, compiler RPC {total['compile']:.2f} s, "
           f"native comparison {total['compare']:.2f} s, elapsed {monotonic() - started:.2f} s.", flush=True)
     receipt = make_compact(doc, expected=expected, run=os.environ["GITHUB_RUN_ID"],
                            attempt=os.environ["GITHUB_RUN_ATTEMPT"],
@@ -252,7 +262,13 @@ def combine(source, matrix, expected, staging, out):
         if not path.name.startswith(prefix) or not re.fullmatch(r"(?:0|[1-9][0-9]?)", index) or not path.is_dir():
             raise ValueError("The wide download contains an unexpected artifact.")
         (normalized / ("shard-" + index)).symlink_to(path.resolve(strict=True))
-    tables, offsets = join_receipts(doc, normalized, expected, os.environ["GITHUB_RUN_ID"],
+    combine_selected(source, matrix, expected, normalized, out)
+
+
+def combine_selected(source, matrix, expected, staging, out, *, lease=None, lease_sha=None):
+    plan, plan_sha = admission(source)
+    doc = load_matrix(matrix, expected, plan)
+    tables, offsets = join_receipts(doc, staging, expected, os.environ["GITHUB_RUN_ID"],
                                     os.environ["GITHUB_RUN_ATTEMPT"])
 
     def lookup(path, row, own):
@@ -261,10 +277,20 @@ def combine(source, matrix, expected, staging, out):
     with comparison_inputs(plan) as (_, git, tip, judge, _tools):
         report, counts, functions = make_report(git, judge, plan, tip, tables["base"], tables["head"],
             lambda _path: None, lookup_difference=lookup)
+    stats = {"runners": len(doc["partition"]["shards"]), "paired_results": 2 * len(tables["base"])}
+    if lease:
+        from wide_recovery import checked_lease
+        assignment = read(lease, 65536)
+        checked_lease(doc, expected, assignment, lease_sha)
+        stats["recovery"] = {
+            "primary_groups": len(assignment["primary"]),
+            "reserved_groups": len(assignment["reserve"]),
+            "reserve_slots": len(set(assignment["reserve"].values())),
+        }
     out.mkdir(mode=0o700)
     write(out / "verdict.json", {key: plan[key] for key in ("version", "repo", "number", "base", "head", "tree")}
           | {"plan": plan_sha, "report": report, "counts": counts, "functions": functions,
-             "matrix": {"runners": len(doc["partition"]["shards"]), "paired_results": 2 * len(tables["base"])}})
+             "matrix": stats})
 
 
 def main(mode, *args):
@@ -277,6 +303,10 @@ def main(mode, *args):
     elif mode == "join":
         source, matrix, expected, staging, out = args
         combine(Path(source), Path(matrix), expected, Path(staging), Path(out))
+    elif mode == "join-selected":
+        source, matrix, expected, staging, out, lease, lease_sha = args
+        combine_selected(Path(source), Path(matrix), expected, Path(staging), Path(out),
+                         lease=Path(lease), lease_sha=lease_sha)
     else:
         raise ValueError("Unknown protected matrix operation.")
 

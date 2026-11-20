@@ -43,7 +43,8 @@ jobs:
         env:
           BFME_STATUS_TOKEN: '${{ github.token }}'
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
           python3 -B ci/managed-check/github_io.py start
 
@@ -71,19 +72,24 @@ jobs:
       - name: Verify protected check package
         shell: bash
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
           (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
       - name: Receive exact head as Git objects
         shell: bash
         env:
           BFME_READ_TOKEN: '${{ github.token }}'
-        run: python3 -B ci/managed-check/github_io.py fetch "$RUNNER_TEMP/bfme-receive"
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
+          python3 -B ci/managed-check/github_io.py fetch "$RUNNER_TEMP/bfme-receive"
       - name: Validate source and determine affected files
         id: plan
         shell: bash
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             GITHUB_OUTPUT="$GITHUB_OUTPUT" TMPDIR="$RUNNER_TEMP" \
             python3 -B ci/managed-check/intake.py "$RUNNER_TEMP/bfme-receive" "$RUNNER_TEMP/bfme-plan"
@@ -126,7 +132,8 @@ jobs:
       - name: Verify image and comparison inputs
         shell: bash
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
           (
             cd ci/managed-nt2
@@ -141,7 +148,8 @@ jobs:
         id: compile
         shell: bash
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           test -z "${BFME_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
@@ -174,9 +182,14 @@ jobs:
     outputs:
       shards: '${{ steps.plan.outputs.shards }}'
       matrix_sha: '${{ steps.plan.outputs.matrix_sha }}'
+      groups: '${{ steps.plan.outputs.groups }}'
+      started: '${{ steps.clock.outputs.started }}'
+      primary_cutoff: '${{ steps.clock.outputs.primary_cutoff }}'
+      reserve_cutoff: '${{ steps.clock.outputs.reserve_cutoff }}'
     runs-on: boat-small/from=bfme2-compiler-v1
     permissions:
       contents: read
+      actions: read
     steps:
       - name: Check out the same protected main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -191,19 +204,37 @@ jobs:
       - name: Verify protected comparison and sealed image
         shell: bash
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
           (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
           cd /opt/boat-compiler
           sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
           sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Set exact attempt recovery deadlines
+        shell: bash
+        id: clock
+        env:
+          BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Set exact attempt recovery deadlines" "$rc" "$LINENO" >&2' ERR
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
+            BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
+            python3 -B ci/managed-check/recovery_broker.py clock "$RUNNER_TEMP/bfme-plan"
       - name: Create exact compile plan and shard assignments
         shell: bash
         id: plan
+        env:
+          MANAGED_WIDE_SHARDS: "${{ vars.BFME_WIDE_SHARDS || '24' }}"
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
-            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_OUTPUT="$GITHUB_OUTPUT" MANAGED_WIDE_SHARDS="$MANAGED_WIDE_SHARDS" \
             python3 -B ci/managed-check/wide.py plan "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix"
       - name: Save the protected paired plan
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -217,10 +248,10 @@ jobs:
     needs: wide-plan
     if: needs.wide-plan.result == 'success'
     name: Compare wide shard ${{ matrix.index }}
-    timeout-minutes: 20
+    timeout-minutes: 12
     strategy:
       fail-fast: false
-      max-parallel: 16
+      max-parallel: 32
       matrix:
         index: '${{ fromJSON(needs.wide-plan.outputs.shards) }}'
     runs-on: boat-small/from=bfme2-compiler-v1
@@ -245,41 +276,212 @@ jobs:
       - name: Verify protected comparison and sealed image
         shell: bash
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
           (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
           cd /opt/boat-compiler
           sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
           sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
-      - name: Compile and compare only assigned files
+      - name: Compile paired primary group 0
         shell: bash
+        id: group0
         env:
           PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
           SHARD: '${{ matrix.index }}'
+          PART: '0'
+          GROUPS: '${{ needs.wide-plan.outputs.groups }}'
+          TEST_DELAY: '${{ vars.BFME_RECOVERY_TEST_SHARD }}'
+          TRUSTED_HEAD: '${{ github.event.pull_request.head.sha }}'
         run: |
           set -euo pipefail
-          test -z "${BFME_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
-            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" \
-            GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
-            python3 -B ci/managed-check/wide.py compile "$RUNNER_TEMP/bfme-plan" \
-              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$RUNNER_TEMP/bfme-shard"
-      - name: Save sanitized shard verdict
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Compile paired primary group 0" "$rc" "$LINENO" >&2' ERR
+          if ! python3 -c 'import json,sys; raise SystemExit({"shard":int(sys.argv[1]),"part":int(sys.argv[2])} not in json.loads(sys.argv[3]))' "$SHARD" "$PART" "$GROUPS"; then
+            exit 0
+          fi
+          left=$((CUTOFF - $(date -u +%s) - 5))
+          if (( left <= 0 )); then exit 0; fi
+          if [[ "$TRUSTED_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e && "$TEST_DELAY" == "$SHARD" && "$PART" != 0 ]]; then
+            echo "Protected delayed primary shard $SHARD group $PART waits for reassignment."
+            sleep "$left"
+            exit 0
+          fi
+          test -z "${BFME_RECOVERY_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
+          rc=0
+          timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            compile "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$PART" \
+            "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
+          if (( rc == 124 || rc == 137 )); then
+            echo "Primary shard $SHARD group $PART reached its deadline."
+            exit 0
+          fi
+          (( rc == 0 ))
+          echo "complete=true" >> "$GITHUB_OUTPUT"
+      - name: Save paired primary checkpoint 0
+        if: steps.group0.outputs.complete == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: bfme-wide-${{ github.run_attempt }}-${{ matrix.index }}
-          path: '${{ runner.temp }}/bfme-shard/shard.json'
+          name: bfme-recovery-primary-${{ github.run_attempt }}-${{ matrix.index }}-0
+          path: '${{ runner.temp }}/bfme-paired-0/group.json'
+          if-no-files-found: error
+          retention-days: 1
+      - name: Compile paired primary group 1
+        shell: bash
+        id: group1
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
+          SHARD: '${{ matrix.index }}'
+          PART: '1'
+          GROUPS: '${{ needs.wide-plan.outputs.groups }}'
+          TEST_DELAY: '${{ vars.BFME_RECOVERY_TEST_SHARD }}'
+          TRUSTED_HEAD: '${{ github.event.pull_request.head.sha }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Compile paired primary group 1" "$rc" "$LINENO" >&2' ERR
+          if ! python3 -c 'import json,sys; raise SystemExit({"shard":int(sys.argv[1]),"part":int(sys.argv[2])} not in json.loads(sys.argv[3]))' "$SHARD" "$PART" "$GROUPS"; then
+            exit 0
+          fi
+          left=$((CUTOFF - $(date -u +%s) - 5))
+          if (( left <= 0 )); then exit 0; fi
+          if [[ "$TRUSTED_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e && "$TEST_DELAY" == "$SHARD" && "$PART" != 0 ]]; then
+            echo "Protected delayed primary shard $SHARD group $PART waits for reassignment."
+            sleep "$left"
+            exit 0
+          fi
+          test -z "${BFME_RECOVERY_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
+          rc=0
+          timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            compile "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$PART" \
+            "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
+          if (( rc == 124 || rc == 137 )); then
+            echo "Primary shard $SHARD group $PART reached its deadline."
+            exit 0
+          fi
+          (( rc == 0 ))
+          echo "complete=true" >> "$GITHUB_OUTPUT"
+      - name: Save paired primary checkpoint 1
+        if: steps.group1.outputs.complete == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-recovery-primary-${{ github.run_attempt }}-${{ matrix.index }}-1
+          path: '${{ runner.temp }}/bfme-paired-1/group.json'
+          if-no-files-found: error
+          retention-days: 1
+      - name: Compile paired primary group 2
+        shell: bash
+        id: group2
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
+          SHARD: '${{ matrix.index }}'
+          PART: '2'
+          GROUPS: '${{ needs.wide-plan.outputs.groups }}'
+          TEST_DELAY: '${{ vars.BFME_RECOVERY_TEST_SHARD }}'
+          TRUSTED_HEAD: '${{ github.event.pull_request.head.sha }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Compile paired primary group 2" "$rc" "$LINENO" >&2' ERR
+          if ! python3 -c 'import json,sys; raise SystemExit({"shard":int(sys.argv[1]),"part":int(sys.argv[2])} not in json.loads(sys.argv[3]))' "$SHARD" "$PART" "$GROUPS"; then
+            exit 0
+          fi
+          left=$((CUTOFF - $(date -u +%s) - 5))
+          if (( left <= 0 )); then exit 0; fi
+          if [[ "$TRUSTED_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e && "$TEST_DELAY" == "$SHARD" && "$PART" != 0 ]]; then
+            echo "Protected delayed primary shard $SHARD group $PART waits for reassignment."
+            sleep "$left"
+            exit 0
+          fi
+          test -z "${BFME_RECOVERY_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
+          rc=0
+          timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            compile "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$PART" \
+            "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
+          if (( rc == 124 || rc == 137 )); then
+            echo "Primary shard $SHARD group $PART reached its deadline."
+            exit 0
+          fi
+          (( rc == 0 ))
+          echo "complete=true" >> "$GITHUB_OUTPUT"
+      - name: Save paired primary checkpoint 2
+        if: steps.group2.outputs.complete == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-recovery-primary-${{ github.run_attempt }}-${{ matrix.index }}-2
+          path: '${{ runner.temp }}/bfme-paired-2/group.json'
+          if-no-files-found: error
+          retention-days: 1
+      - name: Compile paired primary group 3
+        shell: bash
+        id: group3
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
+          SHARD: '${{ matrix.index }}'
+          PART: '3'
+          GROUPS: '${{ needs.wide-plan.outputs.groups }}'
+          TEST_DELAY: '${{ vars.BFME_RECOVERY_TEST_SHARD }}'
+          TRUSTED_HEAD: '${{ github.event.pull_request.head.sha }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Compile paired primary group 3" "$rc" "$LINENO" >&2' ERR
+          if ! python3 -c 'import json,sys; raise SystemExit({"shard":int(sys.argv[1]),"part":int(sys.argv[2])} not in json.loads(sys.argv[3]))' "$SHARD" "$PART" "$GROUPS"; then
+            exit 0
+          fi
+          left=$((CUTOFF - $(date -u +%s) - 5))
+          if (( left <= 0 )); then exit 0; fi
+          if [[ "$TRUSTED_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e && "$TEST_DELAY" == "$SHARD" && "$PART" != 0 ]]; then
+            echo "Protected delayed primary shard $SHARD group $PART waits for reassignment."
+            sleep "$left"
+            exit 0
+          fi
+          test -z "${BFME_RECOVERY_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
+          rc=0
+          timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            compile "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$PART" \
+            "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
+          if (( rc == 124 || rc == 137 )); then
+            echo "Primary shard $SHARD group $PART reached its deadline."
+            exit 0
+          fi
+          (( rc == 0 ))
+          echo "complete=true" >> "$GITHUB_OUTPUT"
+      - name: Save paired primary checkpoint 3
+        if: steps.group3.outputs.complete == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-recovery-primary-${{ github.run_attempt }}-${{ matrix.index }}-3
+          path: '${{ runner.temp }}/bfme-paired-3/group.json'
           if-no-files-found: error
           retention-days: 1
 
-  wide-join:
-    needs: [wide-plan, wide-compare]
-    if: needs.wide-compare.result == 'success'
-    name: Verify all wide receipts and assemble verdict
-    timeout-minutes: 5
+  wide-reserve:
+    needs: wide-plan
+    if: needs.wide-plan.result == 'success'
+    name: Reassign paired files on reserve ${{ matrix.slot }}
+    timeout-minutes: 14
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        slot: [0, 1, 2, 3]
     runs-on: boat-small/from=bfme2-compiler-v1
     permissions:
       contents: read
+      actions: read
     steps:
       - name: Check out the same protected main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -296,31 +498,177 @@ jobs:
         with:
           name: bfme-matrix-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-matrix'
-      - name: Read all same-run sanitized shard receipts
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          pattern: bfme-wide-${{ github.run_attempt }}-*
-          path: '${{ runner.temp }}/bfme-shards'
-          merge-multiple: false
       - name: Verify protected comparison and sealed image
         shell: bash
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
           (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
           cd /opt/boat-compiler
           sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
           sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Wait for protected paired-work lease
+        shell: bash
+        id: lease
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
+          BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Wait for protected paired-work lease" "$rc" "$LINENO" >&2' ERR
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
+            BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
+            python3 -B ci/managed-check/recovery_broker.py lease "$RUNNER_TEMP/bfme-plan" \
+              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-recovery-lease" "$STARTED" "$CUTOFF"
+      - name: Compile only paired work assigned by the lease
+        shell: bash
+        id: reserve
+        if: steps.lease.outputs.reserve_needed == 'true'
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
+          SLOT: '${{ matrix.slot }}'
+          END: '${{ needs.wide-plan.outputs.reserve_cutoff }}'
+          LEASE_SHA: '${{ steps.lease.outputs.lease_sha }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Compile only paired work assigned by the lease" "$rc" "$LINENO" >&2' ERR
+          test -z "${BFME_RECOVERY_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
+          left=$((END - $(date -u +%s) - 5))
+          (( left > 0 ))
+          timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            reserve "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" \
+            "$RUNNER_TEMP/bfme-recovery-lease/lease.json" "$LEASE_SHA" "$SLOT" "$RUNNER_TEMP/bfme-reserve"
+          if find "$RUNNER_TEMP/bfme-reserve" -type f -name group.json -print -quit | grep -q .; then
+            echo "complete=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Save this runner's leased groups
+        if: steps.reserve.outputs.complete == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-recovery-reserve-${{ github.run_attempt }}-${{ matrix.slot }}
+          path: '${{ runner.temp }}/bfme-reserve/'
+          if-no-files-found: error
+          retention-days: 1
+
+  wide-join:
+    needs: wide-plan
+    if: needs.wide-plan.result == 'success'
+    name: Freeze, recover and verify wide receipts
+    timeout-minutes: 15
+    runs-on: boat-small/from=bfme2-compiler-v1
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Check out the same protected main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+      - name: Read the protected source decision from this run
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-plan-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-plan'
+      - name: Read this run's exact compile assignments
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-matrix-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-matrix'
+      - name: Verify protected comparison and sealed image
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
+          cd /opt/boat-compiler
+          sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
+          sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Freeze verified primaries and bind unfinished work to reserve slots
+        shell: bash
+        id: freeze
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
+          BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Freeze verified primaries and bind unfinished work to reserve slots" "$rc" "$LINENO" >&2' ERR
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
+            BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
+            python3 -B ci/managed-check/recovery_broker.py freeze "$RUNNER_TEMP/bfme-plan" \
+              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-groups" \
+              "$RUNNER_TEMP/lease.json" "$STARTED" "$CUTOFF"
+      - name: Publish the protected reserve assignment
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-recovery-lease-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/lease.json'
+          if-no-files-found: error
+          retention-days: 1
+      - name: Collect exact leased results before the deadline
+        shell: bash
+        if: steps.freeze.outputs.reserve_needed == 'true'
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
+          BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
+          LEASE_SHA: '${{ steps.freeze.outputs.lease_sha }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Collect exact leased results before the deadline" "$rc" "$LINENO" >&2' ERR
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
+            BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
+            python3 -B ci/managed-check/recovery_broker.py gather "$RUNNER_TEMP/bfme-plan" \
+              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/lease.json" "$LEASE_SHA" \
+              "$RUNNER_TEMP/bfme-groups" "$STARTED" "$CUTOFF"
+      - name: Verify exactly one result per paired assignment
+        shell: bash
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
+          LEASE_SHA: '${{ steps.freeze.outputs.lease_sha }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Verify exactly one result per paired assignment" "$rc" "$LINENO" >&2' ERR
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            python3 -B ci/managed-check/wide_recovery.py join "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" \
+              "$RUNNER_TEMP/lease.json" "$LEASE_SHA" "$RUNNER_TEMP/bfme-groups" "$RUNNER_TEMP/bfme-shards"
       - name: Join complete paired outcomes
         shell: bash
         env:
           PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          LEASE_SHA: '${{ steps.freeze.outputs.lease_sha }}'
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
-            python3 -B ci/managed-check/wide.py join "$RUNNER_TEMP/bfme-plan" \
-              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-shards" "$RUNNER_TEMP/bfme-verdict"
+            python3 -B ci/managed-check/wide.py join-selected "$RUNNER_TEMP/bfme-plan" \
+              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-shards" "$RUNNER_TEMP/bfme-verdict" \
+              "$RUNNER_TEMP/lease.json" "$LEASE_SHA"
       - name: Save complete capped comparison
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -328,12 +676,20 @@ jobs:
           path: '${{ runner.temp }}/bfme-verdict/verdict.json'
           if-no-files-found: error
           retention-days: 1
+      - name: Save selected sanitized advisory groups
+        continue-on-error: true
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-recovery-selected-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-shards/'
+          if-no-files-found: error
+          retention-days: 1
 
   inline-virtual:
-    needs: [intake, compare, wide-plan, wide-compare]
+    needs: [intake, compare, wide-plan, wide-join]
     if: >-
       always() && !cancelled() &&
-      (needs.compare.outputs.inline_matrix_sha != '' || needs.wide-compare.result == 'success')
+      (needs.compare.outputs.inline_matrix_sha != '' || needs.wide-join.result == 'success')
     name: Inline virtual behaviour (report only)
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 8
@@ -358,25 +714,25 @@ jobs:
           name: bfme-inline-narrow-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-inline-narrow'
       - name: Read protected wide matrix for this attempt
-        if: needs.wide-compare.result == 'success'
+        if: needs.wide-join.result == 'success'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: bfme-matrix-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-matrix'
       - name: Read same-attempt compact wide receipts
-        if: needs.wide-compare.result == 'success'
+        if: needs.wide-join.result == 'success'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          pattern: bfme-wide-${{ github.run_attempt }}-*
+          name: bfme-recovery-selected-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-shards'
-          merge-multiple: false
       - name: Evaluate and render advisory result
         shell: bash
         env:
           NARROW_SHA: '${{ needs.compare.outputs.inline_matrix_sha }}'
           WIDE_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
           (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
           dir="$RUNNER_TEMP/bfme-inline-narrow"
@@ -402,7 +758,7 @@ jobs:
 
 
   inline-report:
-    needs: [pending, intake, compare, wide-compare, inline-virtual]
+    needs: [pending, intake, compare, inline-virtual]
     if: >-
       always() && !cancelled() && needs.pending.result == 'success' &&
       (needs.intake.outputs.route == 'compile' || needs.intake.outputs.route == 'wide')
@@ -422,7 +778,10 @@ jobs:
           sparse-checkout: ci/managed-check
       - name: Verify protected writer
         shell: bash
-        run: (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
       - name: Read this attempt's sanitized inline status
         id: receipt
         if: needs.inline-virtual.result == 'success'
@@ -444,7 +803,8 @@ jobs:
           BFME_STATUS_TOKEN: '${{ github.token }}'
           RECEIPT: '${{ steps.receipt.outcome }}'
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           if [[ "$RECEIPT" == success ]]; then
             path="$RUNNER_TEMP/bfme-inline-status/inline-status.json"
           else
@@ -473,7 +833,10 @@ jobs:
             ci/managed-nt2
       - name: Verify protected writer
         shell: bash
-        run: (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
       - name: Read this run's admission
         if: needs.intake.result == 'success'
         continue-on-error: true
@@ -500,7 +863,10 @@ jobs:
         env:
           BFME_STATUS_TOKEN: '${{ github.token }}'
           MANAGED_PUBLIC_REPORT: '${{ runner.temp }}/bfme-report'
-        run: python3 -B ci/managed-check/github_io.py finish "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-verdict"
+        run: |
+          set -Eeuo pipefail
+          trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
+          python3 -B ci/managed-check/github_io.py finish "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-verdict"
       - name: Retain readable summary for the owner
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

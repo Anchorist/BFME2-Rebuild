@@ -30,7 +30,7 @@ def plan(binding, rows, *, image_sha256, policy_sha256, limit=16):
         raise ValueError("wide plan requires exact head, base and tree")
     if not all(isinstance(digest, str) and HASH.fullmatch(digest) for digest in (image_sha256, policy_sha256)):
         raise ValueError("wide plan requires image and policy digests")
-    if type(limit) is not int or not 1 <= limit <= 16:
+    if type(limit) is not int or not 1 <= limit <= 32:
         raise ValueError("wide plan requests an unavailable number of runners")
     grouped, keys = defaultdict(list), set()
     for row in rows:

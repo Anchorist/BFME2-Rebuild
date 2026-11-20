@@ -68,6 +68,25 @@ def masked_git_errors(stderr, token):
     lines = ("".join(ch if ch.isprintable() else " " for ch in line) for line in text[:4096].splitlines())
     return [line for line in lines if line.strip()][:24]
 
+ 
+def wide_notes(matrix, units):
+    if (not isinstance(matrix, dict) or set(matrix) not in (
+            {"runners", "paired_results"}, {"runners", "paired_results", "recovery"})
+            or type(matrix["runners"]) is not int or not 1 <= matrix["runners"] <= 32
+            or type(matrix["paired_results"]) is not int or matrix["paired_results"] != 2 * units):
+        raise ValueError("Expected the full bounded paired matrix. Found missing or incompatible measurements.")
+    yield f"{matrix['runners']} primary Boat assignments returned {matrix['paired_results']} paired TU results."
+    if "recovery" in matrix:
+        stats = matrix["recovery"]
+        if (set(stats) != {"primary_groups", "reserved_groups", "reserve_slots"}
+                or any(type(value) is not int for value in stats.values())
+                or not 0 < stats["primary_groups"] + stats["reserved_groups"] <= 4 * matrix["runners"]
+                or min(stats.values()) < 0 or not 0 <= stats["reserve_slots"] <= min(4, stats["reserved_groups"])
+                or bool(stats["reserve_slots"]) != bool(stats["reserved_groups"])):
+            raise ValueError("Expected a bounded recovery summary. Found invalid counts.")
+        yield (f"{stats['primary_groups']} groups finished on primary runners. "
+               f"{stats['reserved_groups']} groups finished on {stats['reserve_slots']} reserve slots.")
+
 
 def publish(phase, admission=None, result=None):
     from quality_format import quality_report
@@ -108,10 +127,7 @@ def publish(phase, admission=None, result=None):
                 metadata["emitted_data"] = record["emitted_data"]
             if decision["kind"] == "wide":
                 matrix = verdict["matrix"]
-                if (set(matrix) != {"runners", "paired_results"} or type(matrix["runners"]) is not int
-                        or not 1 <= matrix["runners"] <= 16 or matrix["paired_results"] != 2 * record["judged"]):
-                    raise ValueError("The wide verdict lacks complete paired measurements.")
-                record["messages"].append(f"{matrix['runners']} Boat runners checked {matrix['paired_results']} paired TU results.")
+                record["messages"].extend(wide_notes(matrix, record["judged"]))
                 metadata["matrix"] = matrix
             write(out / "verdict.json", identity | metadata)
     report = quality_report(binding["base"], binding["head"], record) + "\n"
