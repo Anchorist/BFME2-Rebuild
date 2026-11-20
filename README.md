@@ -2,21 +2,26 @@
 
 How much of the original game (version 1.06) has been rebuilt as source code that compiles back to the same machine code. Measured automatically after every change; nobody edits this page.
 
-Last measured: **20 November 2026, 19:03 UTC**, on commit [`69da5d735238`](https://github.com/Open-BFME/BFME2-Rebuild/commit/69da5d7352386882778ba9c6ba4a5934ffdd3be5).
+Measured **20 November 2026**. The code figures describe commit [`69da5d735238`](https://github.com/Open-BFME/BFME2-Rebuild/commit/69da5d7352386882778ba9c6ba4a5934ffdd3be5) (20 November 2026, 19:03 UTC); the build checks run every day.
 
 ![Progress](progress.svg)
 
-**Code matched**: `█████░░░░░░░░░░░░░░░` 25.8% (1,633,525 of 6,333,616 bytes)  
-How much of the original game's code, by size, our source code compiles back to byte for byte.
+## The figures
 
-**Code proven**: `███░░░░░░░░░░░░░░░░░` 17.2% (1,089,034 of 6,333,616 bytes)  
-How much of the code, by size, is matched and also confirmed at every place it refers to other code or data, so the match cannot be a coincidence.
+![The four figures](detail.svg)
+
+**Byte match**: `█████░░░░░░░░░░░░░░░` 25.8% (1,633,525 of 6,333,616 bytes)  
+How much of the original game's code, by size, our source code compiles back to byte for byte.
 
 **Linking**: `░░░░░░░░░░░░░░░░░░░░` not measured yet  
 How many of the names the game needs to be assembled into one program our source already provides.
+Not measured yet: the daily build will report this figure.
+
+**Code proven**: `███░░░░░░░░░░░░░░░░░` 17.2% (1,089,034 of 6,333,616 bytes)  
+How much of the code, by size, is byte-matched and also confirmed at every place it refers to other code or data, so the match cannot be a coincidence.
 
 **Finished functions**: `█████░░░░░░░░░░░░░░░` 24.6% (10,222 of 41,565 functions)  
-Functions that are proven, sit in a properly named source file, and belong to a class declared in a final header. Counted in functions, not bytes: small functions are often finished first, so this figure can be ahead of the two above.
+Functions that are proven, sit in a properly named source file, and belong to a class declared in a final header. Counted in functions, not bytes: small functions are often finished first, so this figure can be ahead of the byte figures.
 
 ## Does the rebuilt game run?
 
@@ -30,9 +35,9 @@ Nightly build of commit [`69da5d735238`](https://github.com/Open-BFME/BFME2-Rebu
 
 ## By part of the game
 
-Code matched, by size, in each part of the source tree, largest part first.
+Byte match, by size, in each part of the source tree, largest part first.
 
-| Part | Matched | Bar |
+| Part | Byte match | Bar |
 | --- | ---: | --- |
 | Game engine: GameLogic | 26.2% (388,095 of 1,483,402 bytes) | `█████░░░░░░░░░░░░░░░` |
 | Game libraries | 50.1% (544,067 of 1,085,466 bytes) | `██████████░░░░░░░░░░` |
@@ -60,9 +65,9 @@ Provisional class declarations still in use (files under `include/Draft/` that s
 
 ![Progress over time](history.svg)
 
-| Commit | Measured | Matched | Proven | Linking | Finished |
+| Commit | Date | Byte match | Linking | Proven | Finished |
 | --- | --- | ---: | ---: | ---: | ---: |
-| [`69da5d735238`](https://github.com/Open-BFME/BFME2-Rebuild/commit/69da5d7352386882778ba9c6ba4a5934ffdd3be5) | 20 November 2026, 19:03 UTC | 25.79% | 17.19% | — | 24.59% |
-| [`64fce00c1ee6`](https://github.com/Open-BFME/BFME2-Rebuild/commit/64fce00c1ee661f0ee508ad724887717cd302ecb) | 20 November 2026, 18:29 UTC | 25.69% | 16.91% | — | 24.19% |
+| [`69da5d735238`](https://github.com/Open-BFME/BFME2-Rebuild/commit/69da5d7352386882778ba9c6ba4a5934ffdd3be5) | 20 November 2026, 19:03 UTC | 25.79% | — | 17.19% | 24.59% |
+| [`64fce00c1ee6`](https://github.com/Open-BFME/BFME2-Rebuild/commit/64fce00c1ee661f0ee508ad724887717cd302ecb) | 20 November 2026, 18:29 UTC | 25.69% | — | 16.91% | 24.19% |
 
 How each figure is computed, with its exact formula: [ci/progress/README.md](https://github.com/Open-BFME/BFME2-Rebuild/blob/main/ci/progress/README.md).

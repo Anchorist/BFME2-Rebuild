@@ -1,28 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="640" height="224" viewBox="0 0 640 224" role="img" aria-label="Progress: four bars">
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="344" viewBox="0 0 880 344" role="img" aria-label="Byte match 25.8 percent, linking not measured yet, 10222 of 41565 functions finished, the game run has not run yet">
 <style>
-.bg{fill:#fcfcfb}.t1{fill:#0b0b0b}.t2{fill:#52514e}.track{fill:#e4e3df}.fill{fill:#2a78d6}
-.grid{stroke:#e4e3df;stroke-width:1}.s1{stroke:#2a78d6}.s2{stroke:#eb6834}.s3{stroke:#1baf7a}.s4{stroke:#eda100}
-.d1{fill:#2a78d6}.d2{fill:#eb6834}.d3{fill:#1baf7a}.d4{fill:#eda100}
-@media (prefers-color-scheme: dark){.bg{fill:#1a1a19}.t1{fill:#f0efec}.t2{fill:#c3c2b7}.track{fill:#383835}
-.fill{fill:#3987e5}.grid{stroke:#383835}.s1{stroke:#3987e5}.s2{stroke:#d95926}.s3{stroke:#199e70}.s4{stroke:#c98500}
-.d1{fill:#3987e5}.d2{fill:#d95926}.d3{fill:#199e70}.d4{fill:#c98500}}
+.card{fill:#0d1117;stroke:#30363d}.box{fill:#161b22;stroke:#30363d}.track{fill:#21262d}
+.strong{fill:#f0f6fc}.muted{fill:#8b949e}.blue{fill:#3987e5}.orange{fill:#d95926}.green{fill:#3fb950}.red{fill:#f85149}
+.sblue{stroke:#3987e5}.sgreen{stroke:#3fb950}.sred{stroke:#f85149}.smuted{stroke:#8b949e}.srule{stroke:#30363d}
+.fgreen{fill:#0f2a17;stroke:#3fb950}.fdash{fill:none;stroke:#8b949e}
 text{font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif}
+@media (prefers-color-scheme: light){
+.card{fill:#ffffff;stroke:#d0d7de}.box{fill:#f6f8fa;stroke:#d0d7de}.track{fill:#eaeef2}
+.strong{fill:#1f2328}.muted{fill:#59636e}.blue{fill:#2a78d6}.orange{fill:#eb6834}.green{fill:#1a7f37}.red{fill:#cf222e}
+.sblue{stroke:#2a78d6}.sgreen{stroke:#1a7f37}.sred{stroke:#cf222e}.smuted{stroke:#59636e}.srule{stroke:#d0d7de}
+.fgreen{fill:#e6f4ea;stroke:#1a7f37}.fdash{stroke:#59636e}}
 </style>
-<rect class="bg" width="640" height="224" rx="6"/>
-<text class="t2" x="16" y="24" font-size="12">Battle for Middle-earth II rebuild · 20 November 2026, 19:03 UTC · commit 69da5d735238</text>
-<text class="t1" x="16" y="54" font-size="14" font-weight="600">Code matched</text>
-<text class="t1" x="624" y="54" font-size="14" text-anchor="end">25.8%</text>
-<rect class="track" x="16" y="62" width="608" height="10" rx="4"/>
-<rect class="fill" x="16" y="62" width="156.8" height="10" rx="4"/>
-<text class="t1" x="16" y="100" font-size="14" font-weight="600">Code proven</text>
-<text class="t1" x="624" y="100" font-size="14" text-anchor="end">17.2%</text>
-<rect class="track" x="16" y="108" width="608" height="10" rx="4"/>
-<rect class="fill" x="16" y="108" width="104.5" height="10" rx="4"/>
-<text class="t1" x="16" y="146" font-size="14" font-weight="600">Linking</text>
-<text class="t1" x="624" y="146" font-size="14" text-anchor="end">not measured yet</text>
-<rect class="track" x="16" y="154" width="608" height="10" rx="4"/>
-<text class="t1" x="16" y="192" font-size="14" font-weight="600">Finished functions</text>
-<text class="t1" x="624" y="192" font-size="14" text-anchor="end">24.6%</text>
-<rect class="track" x="16" y="200" width="608" height="10" rx="4"/>
-<rect class="fill" x="16" y="200" width="149.5" height="10" rx="4"/>
+<rect class="card" x="0.5" y="0.5" width="879" height="343" rx="12"/>
+<text class="muted" x="28" y="36" font-size="12" font-weight="600" letter-spacing="1.4">BATTLE FOR MIDDLE-EARTH II · REBUILD</text>
+<text class="muted" x="852" y="36" font-size="12" text-anchor="end">20 Nov 2026 · measured by machine, daily at noon ET</text>
+<text class="strong" x="28" y="68" font-size="22" font-weight="700">Road to a game built from source</text>
+<rect class="box" x="28" y="92" width="400" height="150" rx="10"/>
+<text class="muted" x="52" y="122" font-size="12" font-weight="600" letter-spacing="1.4">BYTE MATCH</text>
+<text class="strong" x="52" y="178" font-size="54" font-weight="700">25.8%</text>
+<text class="muted" x="52" y="204" font-size="13">of the original program, rebuilt byte for byte</text>
+<rect class="track" x="52" y="216" width="352" height="10" rx="5"/>
+<rect class="blue" x="52" y="216" width="90.8" height="10" rx="5"/>
+<rect class="box" x="452" y="92" width="400" height="150" rx="10"/>
+<text class="muted" x="476" y="122" font-size="12" font-weight="600" letter-spacing="1.4">LINKING</text>
+<text class="muted" x="476" y="178" font-size="54" font-weight="700">—</text>
+<text class="muted" x="476" y="204" font-size="13">not measured yet; the daily build will report it</text>
+<rect class="track" x="476" y="216" width="352" height="10" rx="5"/>
+<text class="strong" x="28" y="286" font-size="24" font-weight="700">10,222</text>
+<text class="muted" x="28" y="306" font-size="12">functions finished,</text>
+<text class="muted" x="28" y="322" font-size="12">of 41,565</text>
+<text class="strong" x="310" y="286" font-size="24" font-weight="700">—</text>
+<text class="muted" x="310" y="306" font-size="12">rebuilt files play identically</text>
+<text class="muted" x="310" y="322" font-size="12">inside the original game (not run yet)</text>
+<text class="strong" x="592" y="286" font-size="24" font-weight="700">3,253</text>
+<text class="muted" x="592" y="306" font-size="12">source files compiled and</text>
+<text class="muted" x="592" y="322" font-size="12">compared with the game every day</text>
 </svg>

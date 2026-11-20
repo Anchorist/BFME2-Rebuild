@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="830" height="372" viewBox="0 0 830 372" role="img" aria-label="Battle for Middle-earth II rebuild, measured 20 November 2026: Byte match 25.8%, Linking not measured yet, Code proven 17.2%, Finished functions 24.6%">
+<style>
+.bg{fill:#fcfcfb}.t1{fill:#0b0b0b}.t2{fill:#52514e}.track{fill:#e4e3df}.fill{fill:#2a78d6}
+.grid{stroke:#e4e3df;stroke-width:1}.s1{stroke:#2a78d6}.s2{stroke:#eb6834}.s3{stroke:#1baf7a}.s4{stroke:#eda100}
+.d1{fill:#2a78d6}.d2{fill:#eb6834}.d3{fill:#1baf7a}.d4{fill:#eda100}
+@media (prefers-color-scheme: dark){.bg{fill:#1a1a19}.t1{fill:#f0efec}.t2{fill:#c3c2b7}.track{fill:#383835}
+.fill{fill:#3987e5}.grid{stroke:#383835}.s1{stroke:#3987e5}.s2{stroke:#d95926}.s3{stroke:#199e70}.s4{stroke:#c98500}
+.d1{fill:#3987e5}.d2{fill:#d95926}.d3{fill:#199e70}.d4{fill:#c98500}}
+text{font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif}
+</style>
+<rect class="bg" width="830" height="372" rx="8"/>
+<text class="t1" x="24" y="36" font-size="20" font-weight="600">Battle for Middle-earth II rebuild</text>
+<text class="t2" x="806" y="36" font-size="18" text-anchor="end">Measured 20 November 2026</text>
+<text class="t1" x="24" y="92" font-size="24" font-weight="600">Byte match</text>
+<text class="t1" x="806" y="92" font-size="30" font-weight="600" text-anchor="end">25.8%</text>
+<rect class="track" x="24" y="102" width="782" height="20" rx="10"/>
+<rect class="fill" x="24" y="102" width="201.7" height="20" rx="10"/>
+<text class="t2" x="24" y="141" font-size="15">1,633,525 of 6,333,616 bytes</text>
+<text class="t1" x="24" y="182" font-size="24" font-weight="600">Linking</text>
+<text class="t2" x="806" y="182" font-size="20" text-anchor="end">not measured yet</text>
+<rect class="track" x="24" y="192" width="782" height="20" rx="10"/>
+<text class="t1" x="24" y="267" font-size="19" font-weight="600">Code proven</text>
+<text class="t1" x="806" y="267" font-size="19" font-weight="600" text-anchor="end">17.2%</text>
+<rect class="track" x="24" y="277" width="782" height="12" rx="6"/>
+<rect class="fill" x="24" y="277" width="134.5" height="12" rx="6"/>
+<text class="t1" x="24" y="325" font-size="19" font-weight="600">Finished functions</text>
+<text class="t1" x="806" y="325" font-size="19" font-weight="600" text-anchor="end">24.6%</text>
+<rect class="track" x="24" y="335" width="782" height="12" rx="6"/>
+<rect class="fill" x="24" y="335" width="192.3" height="12" rx="6"/>
+</svg>
