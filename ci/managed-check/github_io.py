@@ -11,8 +11,8 @@ from gitrepo import Git, GitFailure
 
 
 def fetch(work):
-    binding = event()
     api = GitHub()
+    binding = event(api)
     pr = api.current(binding)
     binding["approved"] = admitted(pr, binding["event_association"])
     work.mkdir(mode=0o700)
@@ -90,8 +90,8 @@ def wide_notes(matrix, units):
 
 def publish(phase, admission=None, result=None):
     from quality_format import quality_report
-    binding = event()
     api = GitHub()
+    binding = event(api)
     api.current(binding)
     if phase == "start":
         api.status(binding, "pending", "Waiting for protected intake and Boat comparison")

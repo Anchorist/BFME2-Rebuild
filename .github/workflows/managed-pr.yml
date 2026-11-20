@@ -5,11 +5,14 @@ on:
     branches: [main]
     types: [opened, reopened, synchronize, ready_for_review, labeled, unlabeled, edited]
 
+  repository_dispatch:
+    types: [bfme-remeasure]
+
 permissions: {}
 
 concurrency:
   group: >-
-    managed-pr-${{ github.event.pull_request.number }}-${{
+    managed-pr-${{ github.event.pull_request.number || github.event.client_payload.number }}-${{
       ((github.event.action == 'edited' && github.event.changes.base.ref.from == '') ||
         ((github.event.action == 'labeled' || github.event.action == 'unlabeled') &&
           github.event.label.name != 'boat-ok')) && github.run_id || 'active' }}
@@ -196,6 +199,11 @@ jobs:
         with:
           ref: '${{ github.sha }}'
           persist-credentials: false
+      - name: Read this run's source-free recovery decision
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-admission-status-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-admission-status'
       - name: Read the protected source decision from this run
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
@@ -224,7 +232,7 @@ jobs:
             GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
             BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
-            python3 -B ci/managed-check/recovery_broker.py clock "$RUNNER_TEMP/bfme-plan"
+            python3 -B ci/managed-check/recovery_broker.py clock "$RUNNER_TEMP/bfme-admission-status"
       - name: Create exact compile plan and shard assignments
         shell: bash
         id: plan
@@ -294,7 +302,7 @@ jobs:
           PART: '0'
           GROUPS: '${{ needs.wide-plan.outputs.groups }}'
           TEST_DELAY: '${{ vars.BFME_RECOVERY_TEST_SHARD }}'
-          TRUSTED_HEAD: '${{ github.event.pull_request.head.sha }}'
+          TRUSTED_HEAD: '${{ github.event.pull_request.head.sha || github.event.client_payload.head }}'
         run: |
           set -euo pipefail
           trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Compile paired primary group 0" "$rc" "$LINENO" >&2' ERR
@@ -340,7 +348,7 @@ jobs:
           PART: '1'
           GROUPS: '${{ needs.wide-plan.outputs.groups }}'
           TEST_DELAY: '${{ vars.BFME_RECOVERY_TEST_SHARD }}'
-          TRUSTED_HEAD: '${{ github.event.pull_request.head.sha }}'
+          TRUSTED_HEAD: '${{ github.event.pull_request.head.sha || github.event.client_payload.head }}'
         run: |
           set -euo pipefail
           trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Compile paired primary group 1" "$rc" "$LINENO" >&2' ERR
@@ -386,7 +394,7 @@ jobs:
           PART: '2'
           GROUPS: '${{ needs.wide-plan.outputs.groups }}'
           TEST_DELAY: '${{ vars.BFME_RECOVERY_TEST_SHARD }}'
-          TRUSTED_HEAD: '${{ github.event.pull_request.head.sha }}'
+          TRUSTED_HEAD: '${{ github.event.pull_request.head.sha || github.event.client_payload.head }}'
         run: |
           set -euo pipefail
           trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Compile paired primary group 2" "$rc" "$LINENO" >&2' ERR
@@ -432,7 +440,7 @@ jobs:
           PART: '3'
           GROUPS: '${{ needs.wide-plan.outputs.groups }}'
           TEST_DELAY: '${{ vars.BFME_RECOVERY_TEST_SHARD }}'
-          TRUSTED_HEAD: '${{ github.event.pull_request.head.sha }}'
+          TRUSTED_HEAD: '${{ github.event.pull_request.head.sha || github.event.client_payload.head }}'
         run: |
           set -euo pipefail
           trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Compile paired primary group 3" "$rc" "$LINENO" >&2' ERR
@@ -488,6 +496,11 @@ jobs:
         with:
           ref: '${{ github.sha }}'
           persist-credentials: false
+      - name: Read this run's source-free recovery decision
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-admission-status-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-admission-status'
       - name: Read the protected source decision from this run
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
@@ -524,7 +537,7 @@ jobs:
             GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
             BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
-            python3 -B ci/managed-check/recovery_broker.py lease "$RUNNER_TEMP/bfme-plan" \
+            python3 -B ci/managed-check/recovery_broker.py lease "$RUNNER_TEMP/bfme-admission-status" \
               "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-recovery-lease" "$STARTED" "$CUTOFF"
       - name: Compile only paired work assigned by the lease
         shell: bash
@@ -575,6 +588,11 @@ jobs:
         with:
           ref: '${{ github.sha }}'
           persist-credentials: false
+      - name: Read this run's source-free recovery decision
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-admission-status-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-admission-status'
       - name: Read the protected source decision from this run
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
@@ -611,7 +629,7 @@ jobs:
             GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
             BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
-            python3 -B ci/managed-check/recovery_broker.py freeze "$RUNNER_TEMP/bfme-plan" \
+            python3 -B ci/managed-check/recovery_broker.py freeze "$RUNNER_TEMP/bfme-admission-status" \
               "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-groups" \
               "$RUNNER_TEMP/lease.json" "$STARTED" "$CUTOFF"
       - name: Publish the protected reserve assignment
@@ -638,7 +656,7 @@ jobs:
             GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
             BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
-            python3 -B ci/managed-check/recovery_broker.py gather "$RUNNER_TEMP/bfme-plan" \
+            python3 -B ci/managed-check/recovery_broker.py gather "$RUNNER_TEMP/bfme-admission-status" \
               "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/lease.json" "$LEASE_SHA" \
               "$RUNNER_TEMP/bfme-groups" "$STARTED" "$CUTOFF"
       - name: Verify exactly one result per paired assignment

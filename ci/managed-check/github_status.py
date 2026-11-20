@@ -16,18 +16,33 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
-def event():
+def event(api=None):
     if (os.environ.get("GITHUB_REPOSITORY") != REPO
             or os.environ.get("GITHUB_REPOSITORY_ID") != str(REPO_ID)
             or os.environ.get("GITHUB_REF") != "refs/heads/main"
-            or os.environ.get("GITHUB_EVENT_NAME") != "pull_request_target"):
+            or os.environ.get("GITHUB_EVENT_NAME") not in {"pull_request_target", "repository_dispatch"}):
         raise ValueError("This workflow requires the approved protected repository and main.")
     payload = read(os.environ["GITHUB_EVENT_PATH"], 2 * 1024**2)
-    pr = payload["pull_request"]
-    base, head, number = os.environ["GITHUB_SHA"], pr["head"]["sha"], pr["number"]
-    validate_pr(pr, number, head)
+    base = os.environ["GITHUB_SHA"]
     if not HEX40.fullmatch(base):
-        raise ValueError("The workflow revision is invalid.")
+        raise ValueError("Expected a full protected main revision. Found an invalid workflow SHA.")
+    if os.environ["GITHUB_EVENT_NAME"] == "repository_dispatch":
+        request = payload.get("client_payload")
+        if (payload.get("action") != "bfme-remeasure" or not isinstance(request, dict)
+                or set(request) != {"number", "head", "base"}
+                or type(request["number"]) is not int or not 0 < request["number"] < 10**9
+                or not isinstance(request["head"], str) or not HEX40.fullmatch(request["head"])
+                or request["base"] != base or api is None):
+            raise ValueError("Expected a bfme-remeasure request for this protected main and a full PR head. Found an invalid or stale dispatch.")
+        number, head = request["number"], request["head"]
+        pr = api.call(f"pulls/{number}")
+        if ((pr.get("head") or {}).get("sha") != head
+                or api.call("git/ref/heads/main")["object"]["sha"] != base or pr.get("state") != "open"):
+            raise Superseded()
+    else:
+        pr = payload["pull_request"]
+        head, number = pr["head"]["sha"], pr["number"]
+    validate_pr(pr, number, head)
     return {"number": number, "base": base, "head": head, "login": "bfme-boat", "uid": 1,
             "event_association": pr.get("author_association")}
 

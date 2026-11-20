@@ -37,8 +37,8 @@ def verified_state(record, binding, admission):
 
 
 def publish(path, admission):
-    binding = event()
     api = GitHub()
+    binding = event(api)
     api.current(binding)
     if path.is_file() and admission.is_file():
         state, text = verified_state(read(path, 4096), binding, read(admission, 4096))

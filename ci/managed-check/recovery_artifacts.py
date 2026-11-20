@@ -31,10 +31,20 @@ def epoch(value):
     return int(ts.timestamp())
 
 
+class ArtifactPending(Exception):
+    """GitHub lists this immutable artifact, but its ZIP is temporarily unreadable."""
+
+
+def unavailable_zip(status):
+    return status in (404, 409, 429) or 500 <= status < 600
+
+
 class Actions:
-    def __init__(self, head):
+    def __init__(self, head, *, base=None):
         self.run = active_run()
         self.head = head
+        self.base = base
+        self.run_head = head
         self.token = os.environ.pop("BFME_RECOVERY_READ_TOKEN", "")
         if (os.environ.get("GITHUB_REPOSITORY") != REPO
                 or os.environ.get("GITHUB_REPOSITORY_ID") != str(REPO_ID)
@@ -67,10 +77,12 @@ class Actions:
 
     def anchor(self):
         row = self.get(f"actions/runs/{self.run['id']}/attempts/{self.run['attempt']}")
+        expected = {"pull_request_target": self.head, "repository_dispatch": self.base}.get(row["event"])
         if (str(row["id"]) != self.run["id"] or str(row["run_attempt"]) != self.run["attempt"]
-                or row["head_sha"] != self.head or row["path"] != ".github/workflows/managed-pr.yml"
-                or row["event"] != "pull_request_target"):
-            raise ValueError("The GitHub attempt differs from the protected recovery run.")
+                or expected is None or row["head_sha"] != expected
+                or row["path"] != ".github/workflows/managed-pr.yml"):
+            raise ValueError("Expected the protected recovery attempt and revision. Found different Actions metadata.")
+        self.run_head = expected
         return epoch(row["run_started_at"])
 
     def inventory(self, names, *, earliest, cutoff):
@@ -85,7 +97,7 @@ class Actions:
                     continue
                 run = row["workflow_run"]
                 if (str(run["id"]) != self.run["id"] or run["repository_id"] != REPO_ID
-                        or run["head_sha"] != self.head or row["expired"]):
+                        or run["head_sha"] != self.run_head or row["expired"]):
                     raise ValueError("The recovery artifact has foreign provenance.")
                 if not earliest <= epoch(row["created_at"]) < cutoff:
                     continue
@@ -105,6 +117,8 @@ class Actions:
             response = self.api.open(self.request(f"actions/artifacts/{ident}/zip"), timeout=12)
         except urllib.error.HTTPError as error:
             if error.code != 302:
+                if unavailable_zip(error.code):
+                    raise ArtifactPending(f"GitHub ZIP {ident} is unavailable (HTTP {error.code}).") from None
                 raise ValueError(f"Expected a protected GitHub ZIP; found HTTP {error.code}.") from None
             location = error.headers["Location"]
             error.close()
@@ -117,11 +131,13 @@ class Actions:
             try:
                 response = self.api.open(urllib.request.Request(location), timeout=15)
             except urllib.error.HTTPError as exc:
+                if unavailable_zip(exc.code):
+                    raise ArtifactPending(f"Signed ZIP {ident} is unavailable (HTTP {exc.code}).") from None
                 raise ValueError(f"Expected a signed storage ZIP; found HTTP {exc.code}.") from None
             except (urllib.error.URLError, TimeoutError):
-                raise ValueError("Expected a signed storage ZIP; found unavailable storage.") from None
+                raise ArtifactPending(f"Signed ZIP {ident} is temporarily unreachable.") from None
         except (urllib.error.URLError, TimeoutError):
-            raise ValueError("Expected a protected GitHub ZIP; found unavailable service.") from None
+            raise ArtifactPending(f"GitHub ZIP {ident} is temporarily unreachable.") from None
         data = self.bounded(response, ZIP_LIMIT)
         if sha256(data).hexdigest() != expected:
             raise ValueError("Recovery artifact ZIP differs from its GitHub digest.")
@@ -158,6 +174,11 @@ class Actions:
     def primary(self, artifacts, names, output):
         def save(name):
             dest = Path(output) / names[name]
-            self.extract(artifacts[name], {"group.json"}, GROUP_LIMIT, dest)
+            try:
+                self.extract(artifacts[name], {"group.json"}, GROUP_LIMIT, dest)
+            except ArtifactPending as exc:
+                print(f"Expected primary checkpoint {name}; found {exc} Retrying before freeze.", flush=True)
+                return None
+            return name
         with ThreadPoolExecutor(max_workers=6) as threads:
-            list(threads.map(save, sorted(artifacts)))
+            return {name for name in threads.map(save, sorted(artifacts)) if name is not None}

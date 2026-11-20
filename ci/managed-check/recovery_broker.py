@@ -5,12 +5,11 @@ from pathlib import Path
 import sys
 from time import sleep, time
 
-from common import read, write
-from recovery_artifacts import Actions
-from wide import admission, load_matrix
+from common import HEX40, HEX64, REPO_ID, read, write
+from recovery_artifacts import Actions, ArtifactPending
 from wide_plan import identity
 from wide_recovery import (
-    GROUP_LIMIT, RESERVE_SECONDS, checked_lease, freeze, groups, label,
+    GROUP_LIMIT, RESERVE_SECONDS, checked_lease, freeze, get_matrix, groups, label,
 )
 
 PRIMARY_SECONDS = 520
@@ -24,20 +23,34 @@ def output(values):
             target.write(f"{key}={value}\n")
 
 
+def source_free_decision(source):
+    decision = read(Path(source) / "decision.json", 4096)
+    if (set(decision) != {"version", "repo", "number", "base", "head", "tree", "kind", "plan"}
+            or decision["version"] != 1 or decision["repo"] != REPO_ID
+            or type(decision["number"]) is not int or decision["number"] <= 0
+            or decision["kind"] != "wide" or decision["base"] != os.environ["GITHUB_SHA"]
+            or not all(HEX40.fullmatch(decision[key]) for key in ("base","head","tree"))
+            or not HEX64.fullmatch(decision["plan"])):
+        raise ValueError("Expected source-free protected wide authorization; found an invalid decision.")
+    return decision
+
+
 def anchor(source):
-    plan, _ = admission(Path(source))
-    start = Actions(plan["head"]).anchor()
+    decision = source_free_decision(source)
+    start = Actions(decision["head"], base=decision["base"]).anchor()
     cutoff = start + PRIMARY_SECONDS
     output({"started": start, "primary_cutoff": cutoff, "reserve_cutoff": cutoff + RESERVE_SECONDS})
 
 
 def recovery_inputs(source, matrix, checksum, started, cutoff):
-    plan, _ = admission(Path(source))
-    doc = load_matrix(Path(matrix), checksum, plan)
+    decision = source_free_decision(source)
+    doc = get_matrix(Path(matrix), checksum)
+    if doc["partition"]["binding"] != {key: decision[key] for key in ("base", "head", "tree")}:
+        raise ValueError("Expected the authorized wide matrix; found different revisions.")
     start, cutoff = int(started), int(cutoff)
     if cutoff - start != PRIMARY_SECONDS or start > time() or start + 900 < time():
         raise ValueError("A recovery job has an unavailable attempt window.")
-    api = Actions(plan["head"])
+    api = Actions(decision["head"], base=decision["base"])
     if api.anchor() != start:
         raise ValueError("The recovery clock is not the service's attempt clock.")
     return doc, api, start, cutoff
@@ -56,8 +69,8 @@ def freeze_for_reserves(source, matrix, checksum, directory, target, started, cu
             raise ValueError("A primary checkpoint changed after its service timestamp was verified.")
         todo = {name: value for name, value in observed.items() if name not in seen}
         if todo:
-            api.primary(todo, names, root)
-            seen.update(todo)
+            transferred = api.primary(todo, names, root)
+            seen.update({name: todo[name] for name in transferred})
         if set(seen) == set(names) or time() >= cutoff:
             break
         sleep(max(0, min(POLL, cutoff - time())))
@@ -75,8 +88,12 @@ def wait_for_lease(source, matrix, checksum, target, started, cutoff):
         records = api.inventory({name}, earliest=start, cutoff=end)
         if records:
             dest = Path(target)
-            dest.mkdir(mode=0o700)
-            api.extract(records[name], {"lease.json"}, LEASE_LIMIT, dest)
+            try:
+                api.extract(records[name], {"lease.json"}, LEASE_LIMIT, dest)
+            except ArtifactPending as exc:
+                print(f"Expected the protected lease; found {exc} Retrying before reserve cutoff.", flush=True)
+                sleep(max(0, min(POLL, end - time())))
+                continue
             lease = read(dest / "lease.json", LEASE_LIMIT)
             digest = identity(lease)
             checked_lease(doc, checksum, lease, digest)
@@ -109,7 +126,11 @@ def gather_reserves(source, matrix, checksum, lease_path, lease_sha, directory, 
         for name, artifact in current.items():
             if name in seen:
                 continue
-            api.extract(artifact, allowed[name], GROUP_LIMIT, Path(directory))
+            try:
+                api.extract(artifact, allowed[name], GROUP_LIMIT, Path(directory))
+            except ArtifactPending as exc:
+                print(f"Expected leased output {name}; found {exc} Retrying before reserve cutoff.", flush=True)
+                continue
             seen.add(name)
         if seen == allowed.keys():
             return

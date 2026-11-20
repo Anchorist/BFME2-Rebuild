@@ -49,10 +49,11 @@ def latest_statuses(items):
     return results
 
 
-def start_runs(api, binding):
+def start_runs(api, binding, *, inline_required=True):
     # Commit status entries can be written by other actors. They select a
     # candidate run only. The protected run and its artifacts prove the result.
     head = binding["head"]
+    required = tuple(FLOW) if inline_required else (CONTEXT, RULES)
     latest = {}
     for page in range(1, 5):
         entries = api.call(f"commits/{head}/statuses?per_page=100&page={page}")
@@ -60,10 +61,10 @@ def start_runs(api, binding):
             raise Waiting("Expected GitHub's status list with writer identities. Found a different response.")
         latest.update({context: status for context, status in latest_statuses(entries).items()
                        if context not in latest})
-        if len(latest) == len(FLOW) or len(entries) < 100:
+        if all(context in latest for context in required) or len(entries) < 100:
             break
     runs = {}
-    for context in FLOW:
+    for context in required:
         status = latest.get(context, {})
         state = status.get("state")
         if state != "success":
@@ -76,18 +77,20 @@ def start_runs(api, binding):
         if not target or base_marker not in (status.get("description") or ""):
             raise Waiting(f"Expected {context} to link its protected run on {binding['base'][:12]}. Found a stale or missing binding.")
         runs[context] = target[1]
-    if runs[CONTEXT] != runs[INLINE]:
+    if inline_required and runs[CONTEXT] != runs[INLINE]:
         raise Waiting("Expected match and inline virtual from the same run. Found different runs.")
     result = {}
     for context in (CONTEXT, RULES):
         run = api.call("actions/runs/" + runs[context])
+        event = run.get("event")
+        run_sha = {"pull_request_target": binding["head"], "repository_dispatch": binding["base"]}.get(event)
         if (str(run.get("id")) != runs[context] or run.get("path") != FLOW[context]
-                or run.get("event") != "pull_request_target" or run.get("head_sha") != binding["head"]
+                or run_sha is None or run.get("head_sha") != run_sha
                 or (run.get("repository") or {}).get("id") != REPO_ID
                 or run.get("status") != "completed" or run.get("conclusion") != "success"
                 or not NUMBER.fullmatch(str(run.get("run_attempt", "")))):
             raise Waiting(f"Expected a completed, successful protected {context} run for the PR head. Found incompatible run metadata.")
-        linked = run.get("pull_requests") or []
+        linked = (run.get("pull_requests") or []) if event == "pull_request_target" else []
         if linked and not any(item.get("number") == binding["number"]
                               and (item.get("head") or {}).get("sha") == binding["head"]
                               and (item.get("base") or {}).get("sha") == binding["base"]
@@ -116,14 +119,15 @@ def maintainer_review(api, pr, binding, allow):
     raise Waiting("Too many review records to verify the latest maintainer approval.")
 
 
-def compare_receipts(match, inline, rules, binding, match_attempt, match_run, rules_attempt, rules_run, rules_policy):
+def compare_receipts(match, inline, rules, binding, match_attempt, match_run, rules_attempt, rules_run, rules_policy,
+                     *, inline_required=True):
     base, head, number = (binding[key] for key in ("base", "head", "number"))
     if (match.get("repo") != REPO_ID or match.get("version") != 1 or match.get("number") != number
             or match.get("base") != base or match.get("head") != head or match.get("kind") != "ok"
             or not HEX40.fullmatch(match.get("tree", "")) or not HEX64.fullmatch(match.get("plan", ""))):
         raise Waiting("The match receipt does not prove this exact main and pull request.")
     positions = {key: match[key] for key in ("base", "head", "tree")}
-    if (inline.get("binding") != positions or inline.get("plan") != match["plan"]
+    if inline_required and (not isinstance(inline, dict) or inline.get("binding") != positions or inline.get("plan") != match["plan"]
             or inline.get("number") != number or inline.get("repo") != REPO_ID
             or inline.get("run") != match_run or inline.get("attempt") != match_attempt
             or inline.get("policy_sha256") != policy() or inline.get("state") != "pass"
