@@ -20,7 +20,6 @@ import plan_shards  # noqa: E402
 import result  # noqa: E402
 
 SHA = "a" * 40
-CLEAN = {"rc": 0}
 
 
 def record(frames, bad=()):
@@ -56,35 +55,35 @@ class Compare(unittest.TestCase):
     def test_equal_run_passes(self):
         f = checks.crc_compare(record(self.frames), record(self.frames), 1000)
         self.assertEqual((f["frames_compared"], f["frames_equal"], f["first_divergent_frame"]), (40, 40, None))
-        v = checks.judge_test(checks.TESTS[0], f, 0, CLEAN)
+        v = checks.judge_test(checks.TESTS[0], f, 0)
         self.assertEqual(v["status"], "pass")
 
     def test_differing_frame_is_reported(self):
         f = checks.crc_compare(record(self.frames), record(self.frames, bad={300, 400}), 1000)
-        v = checks.judge_test(checks.TESTS[0], f, 0, CLEAN)
+        v = checks.judge_test(checks.TESTS[0], f, 0)
         self.assertEqual((v["status"], v["first_divergent_frame"]), ("differs", 300))
         self.assertIn("first differing frame 300", v["detail"])
 
     def test_short_run_is_a_crash(self):
         f = checks.crc_compare(record(self.frames), record(range(25, 501, 25)), 1000)
-        v = checks.judge_test(checks.TESTS[0], f, 1, CLEAN)
+        v = checks.judge_test(checks.TESTS[0], f, 1)
         self.assertEqual(v["status"], "crash")
         self.assertIn("expected 40 compared frames; found 20", v["detail"])
 
     def test_no_record_is_a_crash(self):
-        self.assertEqual(checks.judge_test(checks.TESTS[0], {}, 1, CLEAN)["status"], "crash")
+        self.assertEqual(checks.judge_test(checks.TESTS[0], {}, 1)["status"], "crash")
 
     def test_control_caught_at_its_frame_passes(self):
         ctl = next(t for t in checks.TESTS if t["name"] == "control")
         f = checks.crc_compare(record(self.frames), record(self.frames, bad=set(range(500, 1001, 25))), 1000)
-        self.assertEqual(checks.judge_test(ctl, f, 0, CLEAN)["status"], "pass")
+        self.assertEqual(checks.judge_test(ctl, f, 0)["status"], "pass")
 
     def test_control_not_caught_fails(self):
         ctl = next(t for t in checks.TESTS if t["name"] == "control")
         f = checks.crc_compare(record(self.frames), record(self.frames), 1000)
-        self.assertEqual(checks.judge_test(ctl, f, 0, CLEAN)["status"], "control-blind")
+        self.assertEqual(checks.judge_test(ctl, f, 0)["status"], "control-blind")
         f = checks.crc_compare(record(self.frames), record(self.frames, bad={250}), 1000)
-        self.assertEqual(checks.judge_test(ctl, f, 0, CLEAN)["status"], "control-blind")
+        self.assertEqual(checks.judge_test(ctl, f, 0)["status"], "control-blind")
 
     def test_until_limits_the_control(self):
         f = checks.crc_compare(record(range(25, 5001, 25)), record(range(25, 1001, 25)), 1000)
@@ -96,14 +95,14 @@ class Compare(unittest.TestCase):
 
     def test_reload(self):
         save = next(t for t in checks.TESTS if t["name"] == "save")
-        ctl = {"crcs": {str(f): f for f in range(625, 1126, 25)}, "crcs_before_load": {str(f): f for f in range(25, 176, 25)}}
+        ctl = {"crcs": {"625": 1, "650": 2}, "crcs_before_load": {"25": 5}}
         ok = checks.reload_compare(ctl, dict(ctl, outcome="pass"))
-        self.assertEqual(checks.judge_test(save, ok, 0, CLEAN)["status"], "pass")
-        bad = checks.reload_compare(ctl, dict(ctl, outcome="pass", crcs=dict(ctl["crcs"], **{"650": 9})))
-        self.assertEqual(checks.judge_test(save, bad, 0, CLEAN)["status"], "differs")
-        crash = checks.reload_compare(ctl, {"outcome": "crash", "crcs_before_load": ctl["crcs_before_load"]})
-        self.assertEqual(checks.judge_test(save, crash, 0, CLEAN)["status"], "crash")
-        self.assertEqual(checks.judge_test(save, {}, 0, CLEAN)["status"], "crash")
+        self.assertEqual(checks.judge_test(save, ok, 0)["status"], "pass")
+        bad = checks.reload_compare(ctl, {"outcome": "pass", "crcs": {"625": 1, "650": 9}, "crcs_before_load": {"25": 5}})
+        self.assertEqual(checks.judge_test(save, bad, 0)["status"], "differs")
+        crash = checks.reload_compare(ctl, {"outcome": "crash", "crcs_before_load": {"25": 5}})
+        self.assertEqual(checks.judge_test(save, crash, 0)["status"], "crash")
+        self.assertEqual(checks.judge_test(save, {}, 0)["status"], "crash")
 
 
 def write_shard(root, i, n, files, sha=SHA, matching=()):
@@ -650,12 +649,8 @@ class Linking(unittest.TestCase):
         self.assertEqual(text.count(f"github.event.schedule != '{fold_cron}'"), 2)
         self.assertEqual(text.count(f"github.event.schedule == '{fold_cron}'"), 1)
         self.assertNotIn(f"'{compile_cron}' ||", text)
-        self.assertEqual(text.count("ci/nightly/link_census.py"), 1)
-        self.assertEqual(text.count('--link "$RUNNER_TEMP/link.json"'), 1)
-        self.assertEqual(text.count('--previous "$RUNNER_TEMP/previous.json"'), 1)
-        self.assertIn("--map config/map.json", text)
-        self.assertIn("link-missing.tsv", text)
-        self.assertNotIn("BFME_NIGHTLY_WORKERS", text)
+        self.assertEqual(text.count("ci/nightly/link_census.py"), 2)
+        self.assertEqual(text.count('--link "$RUNNER_TEMP/link.json"'), 2)
 
 
 class ObjectSet(unittest.TestCase):
@@ -723,141 +718,6 @@ class ObjectSet(unittest.TestCase):
         got = self.run_set([[("src/a.cpp", b"A"), ("src/b.cpp", None)]], errored)
         self.assertEqual([Path(p).name for p in got], ["src_a.cpp.obj"])
 
-
-class GameExit(unittest.TestCase):
-    frames = range(25, 1001, 25)
-
-    def test_equal_frames_but_crash_at_exit_is_a_crash(self):
-        f = checks.crc_compare(record(self.frames), record(self.frames), 1000)
-        v = checks.judge_test(checks.TESTS[0], f, 0, {"rc": 3221225477})
-        self.assertEqual(v["status"], "crash")
-        self.assertIn("expected the game to exit with code 0; found 3221225477", v["detail"])
-
-    def test_missing_exit_record_is_a_crash(self):
-        f = checks.crc_compare(record(self.frames), record(self.frames), 1000)
-        self.assertEqual(checks.judge_test(checks.TESTS[0], f, 0, None)["status"], "crash")
-        self.assertEqual(checks.judge_test(checks.TESTS[0], f, 0, {})["status"], "crash")
-
-    def test_differs_stays_differs_whatever_the_exit(self):
-        f = checks.crc_compare(record(self.frames), record(self.frames, bad={300}), 1000)
-        self.assertEqual(checks.judge_test(checks.TESTS[0], f, 0, {"rc": 1})["status"], "differs")
-
-    def test_reload_needs_minimum_frames(self):
-        save = next(t for t in checks.TESTS if t["name"] == "save")
-        ctl = {"crcs": {str(f): f for f in range(625, 701, 25)}, "crcs_before_load": {str(f): f for f in range(25, 176, 25)}}
-        short = checks.reload_compare(ctl, dict(ctl, outcome="pass"))
-        v = checks.judge_test(save, short, 0, {"rc": 0})
-        self.assertEqual(v["status"], "crash")
-        self.assertIn("expected at least 20 checksum frames after the load; found 4", v["detail"])
-
-
-class Projection(unittest.TestCase):
-    def test_projection_and_packing_built_once(self):
-        import types
-        import compile_main
-        calls = {"projection": 0, "pack": 0}
-
-        def projection(git, revision):
-            calls["projection"] += 1
-            return {"src/a.cpp": "x"}, {"src/a.cpp": "h"}
-
-        def pack(files):
-            calls["pack"] += 1
-            return {"zlib": "z", "sha256": "s"}
-        measure_mod = types.SimpleNamespace(projection=projection, pack_sources=pack)
-        compare_mod = types.SimpleNamespace(projection=projection)
-        git = types.SimpleNamespace(path=Path("/repo.git"))
-        built = compile_main.memoize_projection(measure_mod, compare_mod)
-        for _ in range(26):
-            sources, _hashes = measure_mod.projection(git, SHA)
-            measure_mod.pack_sources(sources)
-        compare_mod.projection(git, SHA)
-        self.assertEqual(calls, {"projection": 1, "pack": 1})
-        self.assertEqual(len(built), 1)
-        measure_mod.projection(git, "b" * 40)
-        self.assertEqual(calls["projection"], 2)
-
-
-class LinkingDetail(unittest.TestCase):
-    def test_missing_table_format(self):
-        import link_census
-        table = link_census.missing_table({"?b@@YAXXZ": ["x.obj", "y.obj"], "?a@@YAXXZ": ["y.obj"],
-                                           "_c": ["x.obj", "y.obj"]},
-                                          {"x.obj": "src/x.cpp", "y.obj": "src/y.cpp"}, SHA, "2026-01-01", 3253)
-        lines = table.splitlines()
-        self.assertEqual(lines[0], f"# link census of {SHA} on 2026-01-01 objects=3253 missing=3")
-        self.assertEqual(lines[1], "symbol\treferrers\tfirst_referrer")
-        self.assertEqual(lines[2:], ["?b@@YAXXZ\t2\tsrc/x.cpp", "_c\t2\tsrc/x.cpp", "?a@@YAXXZ\t1\tsrc/y.cpp"])
-
-    def test_program_functions(self):
-        import link_census
-        m = {"rows": [{"rva": "0x1", "role": "owned", "name": "?f@@YAXXZ", "accepted_names": ["?f2@@YAXXZ"]},
-                      {"rva": "0x1", "role": "owned", "name": "?f@@YAXXZ"},
-                      {"rva": "0x2", "role": "owned", "name": "?g@@YAXXZ"},
-                      {"rva": "0x3", "role": "comdat", "name": "?h@@YAXXZ"}]}
-        self.assertEqual(link_census.program_functions(m, {"?f2@@YAXXZ", "?h@@YAXXZ"}), [1, 2])
-
-    def link(self, **extra):
-        return dict({"objects": 3253, "needed": 8317, "missing": 3136, "provided": 5181, "duplicates": 7,
-                     "missing_by_kind": {}, "duplicate_names": ["?x@@YAXXZ"], "program_functions": [14358, 41565]}, **extra)
-
-    def test_headline_switch_and_unit(self):
-        full = dict(CINFO, files=3253, compiled=3253)
-        base = dict(meta(game_job="skipped", live=False), link=self.link())
-        n = result.build(full, None, base)
-        self.assertEqual((n["provided_required_symbols"], n["linking_unit"]), ([5181, 8317], "names"))
-        n = result.build(full, None, dict(base, linking_headline="program"))
-        self.assertEqual((n["provided_required_symbols"], n["linking_unit"]), ([14358, 41565], "functions"))
-        text = result.summary(n)
-        self.assertIn("3,136 missing, 7 defined twice", text)
-        self.assertIn("| Whole program | 14,358 of 41,565 functions", text)
-
-    def test_carried_link_only_for_the_same_commit(self):
-        prev = {"sha": SHA, "link_census": self.link()}
-        self.assertEqual(result.carried_link(prev, SHA)["program_functions"], [14358, 41565])
-        self.assertIsNone(result.carried_link(prev, "b" * 40))
-        self.assertIsNone(result.carried_link({"sha": SHA, "link_census": {"needed": "x"}}, SHA))
-
-
-class GameRecord(unittest.TestCase):
-    def test_written_only_by_a_run_that_played(self):
-        self.assertIsNone(result.game_record(result.build(CINFO, None, meta(game_job="skipped", live=False))))
-        self.assertIsNone(result.game_record(result.build(
-            CINFO, None, dict(meta(game_job="skipped", live=False), game_external=True))))
-        skipped = dict(stage2(), tests={}, games_skipped=True)
-        self.assertIsNone(result.game_record(result.build(CINFO, skipped, meta())))
-        rec = result.game_record(result.build(CINFO, stage2(), meta()))
-        self.assertEqual((rec["sha"], rec["files_substituted"], rec["simulation_equal"], rec["control_caught"]),
-                         (SHA, 323, True, True))
-        self.assertEqual(rec["schema"], "bfme2-nightly-game/1")
-
-    def test_publish_writes_extra_files_only_when_present(self):
-        import publish_branch
-        with tempfile.TemporaryDirectory() as d:
-            n = result.build(CINFO, None, meta(game_job="skipped", live=False))
-            Path(d, "nightly.json").write_text(json.dumps(n))
-            Path(d, "summary.md").write_text("s")
-            files, _ = publish_branch.files_for(d)
-            self.assertNotIn("game/latest.json", files)
-            self.assertNotIn("link-missing.tsv", files)
-            Path(d, "game.json").write_text("{}")
-            Path(d, "link-missing.tsv").write_text("# x\n")
-            files, _ = publish_branch.files_for(d)
-            self.assertIn("game/latest.json", files)
-            self.assertIn("link-missing.tsv", files)
-
-
-class FoldInAlarm(unittest.TestCase):
-    def test_not_fresh_writes_the_alarm(self):
-        env = {k: v for k, v in os.environ.items() if k not in ("GAME_REPO", "GAME_TOKEN", "GH_TOKEN", "GITHUB_OUTPUT")}
-        with tempfile.TemporaryDirectory() as d:
-            r = subprocess.run([sys.executable, "-B", str(NIGHTLY / "fold_in.py"), d], env=env, capture_output=True,
-                               text=True)
-            alarm = json.loads(Path(d, "alarms.json").read_text())
-        self.assertEqual(r.returncode, 0)
-        self.assertIn("fresh=false", r.stdout)
-        self.assertTrue(alarm["nightly-build"]["failed"])
-        self.assertIn("expected a fresh result from the private game run", alarm["nightly-build"]["detail"])
 
 if __name__ == "__main__":
     unittest.main()

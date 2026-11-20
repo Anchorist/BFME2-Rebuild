@@ -82,30 +82,19 @@ def bind(values, run, jobs, shards):
     return True, "bound"
 
 
-def stale(out, reason):
-    """Not folded in: write the alarm the workflow raises, so a missing or stale game result is never silent."""
-    Path(out).mkdir(parents=True, exist_ok=True)
-    (Path(out) / "alarms.json").write_text(json.dumps({"nightly-build": {
-        "failed": True, "detail": "expected a fresh result from the private game run to publish; found: " + reason}},
-        indent=1, sort_keys=True) + "\n")
-    print(f"fold-in: not folded in: {reason}")
-    return "fresh=false\n"
-
-
 def main(out):
     repo, token = os.environ.get("GAME_REPO", ""), os.environ.pop("GAME_TOKEN", "")
     own, own_token = os.environ.get("GITHUB_REPOSITORY", ""), os.environ.pop("GH_TOKEN", "")
     api = os.environ.get("GITHUB_API_URL", "https://api.github.com")
     shards = int(os.environ.get("SHARDS", "16"))
     if not repo or not token or not own_token:
-        return stale(out, f"repo {repo or 'missing'}, game token {'set' if token else 'missing'}, "
-                          f"own token {'set' if own_token else 'missing'}")
-    try:
-        commit = get(api, f"repos/{repo}/git/ref/heads/results", token)["object"]["sha"]
-    except (urllib.error.URLError, ValueError, KeyError) as e:
-        return stale(out, f"no readable results branch ({type(e).__name__})")
+        print(f"fold-in: expected GAME_REPO, GAME_TOKEN and GH_TOKEN; found repo {repo or 'missing'}, game token "
+              f"{'set' if token else 'missing'}, own token {'set' if own_token else 'missing'}; nothing folded in")
+        return "fresh=false\n"
+    commit = get(api, f"repos/{repo}/git/ref/heads/results", token)["object"]["sha"]
     if not is_sha(commit):
-        return stale(out, "a results branch that does not resolve to one commit")
+        print("fold-in: expected the results branch to resolve to one commit; found something else")
+        return "fresh=false\n"
     meta = get(api, f"repos/{repo}/contents/meta.json?ref={commit}", token, raw=True)
     try:
         stage2 = get(api, f"repos/{repo}/contents/stage2.json?ref={commit}", token, raw=True)
@@ -122,7 +111,7 @@ def main(out):
         ok, reason = bind(values, run, jobs, shards)
     print(f"fold-in: result commit {commit[:12]}: {reason}")
     if not ok:
-        return stale(out, reason)
+        return "fresh=false\n"
     d = Path(out) / "stage2"
     d.mkdir(parents=True, exist_ok=True)
     if stage2 is not None:

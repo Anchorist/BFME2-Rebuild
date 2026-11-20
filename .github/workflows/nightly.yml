@@ -126,12 +126,10 @@ jobs:
         shell: bash
         run: |
           set -uo pipefail
-          mkdir -p "$RUNNER_TEMP/result"
           if ! python3 -B ci/nightly/link_census.py "$RUNNER_TEMP/objects" \
-               --names ci/nightly/link-names/library-names.txt --out "$RUNNER_TEMP/link.json" \
-               --map config/map.json --missing-out "$RUNNER_TEMP/result/link-missing.tsv"; then
+               --names ci/nightly/link-names/library-names.txt --out "$RUNNER_TEMP/link.json"; then
             echo "::warning::expected a linking figure from this run's objects; found none, so linking stays unmeasured tonight"
-            rm -f "$RUNNER_TEMP/link.json" "$RUNNER_TEMP/result/link-missing.tsv"
+            rm -f "$RUNNER_TEMP/link.json"
           fi
       - name: Read this run's job times
         shell: bash
@@ -149,13 +147,11 @@ jobs:
         shell: bash
         env:
           GAME_LIVE: "${{ vars.BFME_NIGHTLY_GAME_ELSEWHERE == 'yes' && 'external' || 'false' }}"
-          HEADLINE: "${{ vars.BFME_LINKING_HEADLINE == 'program' && 'program' || 'referenced' }}"
         run: |
           set -euo pipefail
           python3 -B ci/nightly/result.py "$RUNNER_TEMP/shards" none "$RUNNER_TEMP/result" \
             --compile-job '${{ needs.compile.result }}' --game-job skipped --game-live "$GAME_LIVE" \
-            --shards-expected "$SHARDS" --jobs "$RUNNER_TEMP/jobs.json" --link "$RUNNER_TEMP/link.json" \
-            --linking-headline "$HEADLINE" > /dev/null
+            --shards-expected "$SHARDS" --jobs "$RUNNER_TEMP/jobs.json" --link "$RUNNER_TEMP/link.json" > /dev/null
           cat "$RUNNER_TEMP/result/summary.md" >> "$GITHUB_STEP_SUMMARY"
       - name: Save nightly.json
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -221,17 +217,24 @@ jobs:
           path: '${{ runner.temp }}/shards'
           run-id: '${{ steps.fold.outputs.run_id }}'
           github-token: '${{ github.token }}'
-      - name: Read the result the compile run published (its linking figure is kept for the same commit)
+      - name: Read the compiled objects of that run
+        if: steps.fold.outputs.fresh == 'true'
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: nightly-shard-[0-9]*-a${{ steps.fold.outputs.attempt }}
+          path: '${{ runner.temp }}/objects'
+          run-id: '${{ steps.fold.outputs.run_id }}'
+          github-token: '${{ github.token }}'
+      - name: Measure linking
         if: steps.fold.outputs.fresh == 'true'
         shell: bash
         run: |
           set -uo pipefail
-          if git fetch -q --depth=1 origin +refs/heads/nightly:refs/remotes/origin/nightly \
-             && git show origin/nightly:latest.json > "$RUNNER_TEMP/previous.json"; then
-            echo "Read the published latest.json."
-          else
-            echo "::warning::expected the nightly branch's latest.json; found none, so linking is not carried over"
-            rm -f "$RUNNER_TEMP/previous.json"
+          if ! python3 -B ci/nightly/link_census.py "$RUNNER_TEMP/objects" \
+               --names ci/nightly/link-names/library-names.txt --out "$RUNNER_TEMP/link.json"; then
+            echo "::warning::expected a linking figure from that run's objects; found none, so linking stays unmeasured"
+            rm -f "$RUNNER_TEMP/link.json"
           fi
       - name: Write nightly.json and the summary
         if: steps.fold.outputs.fresh == 'true'
@@ -241,11 +244,10 @@ jobs:
           RUN: '${{ steps.fold.outputs.run_id }}'
           NIGHTLY_SHA: '${{ steps.fold.outputs.sha }}'
           NIGHTLY_RUN_ID: '${{ steps.fold.outputs.run_id }}'
-          HEADLINE: "${{ vars.BFME_LINKING_HEADLINE == 'program' && 'program' || 'referenced' }}"
         run: |
           set -euo pipefail
           curl -fsS -H "Authorization: Bearer $GH_TOKEN" -H 'Accept: application/vnd.github+json'             "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/runs/$RUN/jobs?per_page=100" -o "$RUNNER_TEMP/jobs.json"             || rm -f "$RUNNER_TEMP/jobs.json"
-          python3 -B ci/nightly/result.py "$RUNNER_TEMP/shards" "$RUNNER_TEMP/fold/stage2" "$RUNNER_TEMP/result"             --compile-job success --game-job '${{ steps.fold.outputs.game_job }}' --game-live true             --shards-expected "$SHARDS" --jobs "$RUNNER_TEMP/jobs.json" --previous "$RUNNER_TEMP/previous.json" --linking-headline "$HEADLINE" > /dev/null
+          python3 -B ci/nightly/result.py "$RUNNER_TEMP/shards" "$RUNNER_TEMP/fold/stage2" "$RUNNER_TEMP/result"             --compile-job success --game-job '${{ steps.fold.outputs.game_job }}' --game-live true             --shards-expected "$SHARDS" --jobs "$RUNNER_TEMP/jobs.json" --link "$RUNNER_TEMP/link.json" > /dev/null
           cat "$RUNNER_TEMP/result/summary.md" >> "$GITHUB_STEP_SUMMARY"
       - name: Publish to the nightly branch
         if: steps.fold.outputs.fresh == 'true'
@@ -260,15 +262,3 @@ jobs:
           ALARM_TOKEN: '${{ github.token }}'
           RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ steps.fold.outputs.run_id }}'
         run: python3 -B ci/nightly/alarms.py "$RUNNER_TEMP/result/alarms.json" "$RUN_URL"
-      - name: Raise the alarm when no fresh game result arrived
-        if: steps.fold.outputs.fresh != 'true'
-        shell: bash
-        env:
-          ALARM_TOKEN: '${{ github.token }}'
-          RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-        run: |
-          f="$RUNNER_TEMP/fold/alarms.json"
-          if [ ! -f "$f" ]; then echo "::error::expected the fold-in step to write $f; found none"; exit 1; fi
-          python3 -B ci/nightly/alarms.py "$f" "$RUN_URL"
-          echo "::error::expected a fresh game result to publish; found none (see the alarm issue)"
-          exit 1

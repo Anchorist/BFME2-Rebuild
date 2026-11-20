@@ -1,7 +1,6 @@
 """Linking figure: how many of the names the rebuilt program needs are provided.
 
-  python3 -B ci/nightly/link_census.py SHARD_ROOT --names ci/nightly/link-names/library-names.txt --out OUT.json
-      [--map config/map.json] [--missing-out MISSING.tsv]
+  python3 -B ci/nightly/link_census.py OBJECT_DIR [OBJECT_DIR ...] --names ci/nightly/link-names/library-names.txt --out OUT.json
 
 Reads the symbol tables of every compiled object (`*.obj`) in the given directories and resolves them the way the
 linker would, against each other and against the names the standard libraries and import libraries define (listed
@@ -18,7 +17,6 @@ The same objects and the same names file always give the same numbers.
 import argparse
 import collections
 import json
-import os
 from pathlib import Path
 import sys
 
@@ -46,6 +44,7 @@ def census(object_paths, library_names):
                           "undefs": [], "weak": {}}
     r = resolve.resolve(order + ["<libraries>"], idx)
     missing = {n for n in r["unresolved"] if n not in LINKER_KNOWN}
+    defined_here = collections.defaultdict(set)
     needed = set()
     for p in order:
         s = idx[p]
@@ -54,47 +53,9 @@ def census(object_paths, library_names):
         needed |= {n for n in refs - own if n not in LINKER_KNOWN}
     needed |= missing
     by_kind = collections.Counter(kind(n) for n in missing)
-    referrers = {n: sorted(Path(p).name for p in r["unresolved"][n]) for n in missing}
-    defined = set()
-    for p in order:
-        defined |= set(idx[p].get("defs", {}))
     return {"objects": len(order), "needed": len(needed), "missing": len(missing),
             "provided": len(needed) - len(missing), "pair": [len(needed) - len(missing), len(needed)],
-            "missing_by_kind": dict(sorted(by_kind.items())), "duplicates": len(r["duplicates"]),
-            "duplicate_names": sorted(r["duplicates"]),
-            "_referrers": referrers, "_defined": defined}
-
-
-def program_functions(map_json, defined):
-    """Of every distinct function address the ledger says the original program owns, how many our files define
-    under one of its accepted names: [provided, total]."""
-    names = collections.defaultdict(set)
-    for row in map_json["rows"]:
-        if row.get("role") == "owned":
-            names[row["rva"]].update([row["name"]] + list(row.get("accepted_names") or []))
-    provided = sum(1 for ns in names.values() if ns & defined)
-    return [provided, len(names)]
-
-
-def source_of(root):
-    """{object file name: source path} from the shards' judge.jsonl."""
-    out = {}
-    for jl in Path(root).rglob("judge.jsonl"):
-        for line in jl.read_text().splitlines():
-            if line.strip():
-                tu = json.loads(line)["tu"]
-                out[tu.replace("/", "_") + ".obj"] = tu
-    return out
-
-
-def missing_table(referrers, source, sha, date, objects):
-    """The missing names, most referred first: one row per name with the number of rebuilt objects referring to it
-    and the source path of the first such object in sorted order."""
-    rows = sorted(referrers.items(), key=lambda kv: (-len(kv[1]), kv[0]))
-    out = [f"# link census of {sha} on {date} objects={objects} missing={len(rows)}",
-           "symbol\treferrers\tfirst_referrer"]
-    out += [f"{n}\t{len(rs)}\t{source.get(rs[0], rs[0]) if rs else ''}" for n, rs in rows]
-    return "\n".join(out) + "\n"
+            "missing_by_kind": dict(sorted(by_kind.items())), "duplicates": len(r["duplicates"])}
 
 
 def object_set(root):
@@ -140,8 +101,6 @@ def main():
     ap.add_argument("root", help="directory holding the compile shards (judge.jsonl, obj/)")
     ap.add_argument("--names", required=True)
     ap.add_argument("--out", required=True)
-    ap.add_argument("--map", help="config/map.json of the measured commit: adds the whole-program function figure")
-    ap.add_argument("--missing-out", help="write the missing names with their referrer counts as TSV")
     a = ap.parse_args()
     try:
         objs = object_set(a.root)
@@ -151,19 +110,9 @@ def main():
         raise SystemExit(f"link census: expected compiled objects in {a.root}; found none")
     names = [l.strip() for l in Path(a.names).read_text().splitlines() if l.strip() and not l.startswith("#")]
     res = census(objs, names)
-    referrers, defined = res.pop("_referrers"), res.pop("_defined")
-    if a.map:
-        res["program_functions"] = program_functions(json.loads(Path(a.map).read_text()), defined)
-    if a.missing_out:
-        import datetime
-        sha = os.environ.get("NIGHTLY_SHA") or os.environ.get("GITHUB_SHA", "")
-        day = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
-        Path(a.missing_out).write_text(missing_table(referrers, source_of(a.root), sha, day, res["objects"]))
     Path(a.out).write_text(json.dumps(res, indent=1, sort_keys=True) + "\n")
     print(f"link census: {res['objects']} objects; {res['provided']} of {res['needed']} needed names provided, "
-          f"{res['missing']} missing, {res['duplicates']} defined twice"
-          + (f"; {res['program_functions'][0]} of {res['program_functions'][1]} functions of the original program "
-             "defined" if a.map else ""))
+          f"{res['missing']} missing")
 
 
 if __name__ == "__main__":
