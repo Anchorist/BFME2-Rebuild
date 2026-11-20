@@ -1,7 +1,7 @@
 # Nightly build and compare
 
 Every night answers one question: **how much of the rebuilt source can replace the original program while the game
-plays exactly as the original does?** It runs in two parts.
+plays exactly as the original does?** It runs in three parts.
 
 1. **Compile** (`.github/workflows/nightly.yml`, every night, 16 parallel jobs on the compiler image
    `boat-small/from=bfme2-compiler-v1`). Every `.c` and `.cpp` file under `src/` at the main commit is compiled with
@@ -20,9 +20,13 @@ plays exactly as the original does?** It runs in two parts.
    | Udun, seed 1, to frame 5000 | all 200 checksums equal |
    | save at frame 600, load, play on | outcome pass, every checksum before the save and after the load equal |
 
-Each part writes `nightly.json` and a readable summary to the `nightly` branch; the game run replaces the compile
-run's result for the same commit. Failures open or update one issue per kind of failure; a clean night closes it.
-Run part 1 by hand: **Actions → Nightly build and compare → Run workflow** on `main`.
+3. **Publish the game result** (`nightly.yml` again, two hours after part 2, only when the repository variable
+   `BFME_NIGHTLY_GAME_REPO` names the private repository). Reads the game run's result file from that repository with
+   one read-only token and publishes it here, replacing the compile result for the same commit.
+
+Parts 1 and 3 write `nightly.json` and a readable summary to the `nightly` branch. Failures open or update one issue
+per kind of failure; a clean night closes it. Run by hand: **Actions → Nightly build and compare → Run workflow** on
+`main` (tick `fold_game_result` for part 3).
 
 ## Where the result is
 
@@ -67,10 +71,14 @@ lives, not what our files say:
    starts ("a `from=` snapshot that does not exist"). One deliberate probe from this repository shows that refusal.
 2. No file in this repository names a machine image that holds game files. The compile image holds the compiler and
    public headers only.
-3. The private repository's workflow runs only on its own schedule or by hand. It reads this repository's public
-   compile results and publishes back counts, verdicts, frame numbers and hashes through a token stored only there.
-4. What it publishes passes `ci/nightly/scrub.py`: paths are cut to their last part and anything the public-text
-   check flags is removed. It never publishes an image, an object, a log or a checksum value.
+3. The private repository's workflow runs only on its own schedule or by hand, reads this repository's public
+   compile results, and writes its result to its own branch. It holds no credential for this repository.
+4. This repository reads that result with one token that can only read the private repository, used only by a
+   scheduled or hand-started job on `main` (pull requests from forks never receive secrets). Only this repository's
+   own workflows write here.
+5. What is published passes `ci/nightly/scrub.py` twice (on the game machine and again here): paths are cut to their
+   last part and anything the public-text check flags is removed. It never publishes an image, an object, a log or
+   a checksum value.
 
 ## What stays private
 
@@ -81,5 +89,5 @@ only on the private image. The compile stage handles only public source and its 
 
 `compile_main.py` and `plan_shards.py` (part 1), `link_play.py`, `play.sh`, `regset.py`, `checks.py`, `planner/`
 (part 2, run by the private repository from this repository's code), `result.py`, `publish_branch.py`, `alarms.py`,
-`scrub.py` (both). Image layout: [IMAGE.md](IMAGE.md). Origin of the planner files: [PROVENANCE.md](PROVENANCE.md).
+`scrub.py` (all), `fold_in.py` (part 3). Image layout: [IMAGE.md](IMAGE.md). Origin of the planner files: [PROVENANCE.md](PROVENANCE.md).
 Tests: `python3 -B -m unittest discover -s ci/nightly/tests`.

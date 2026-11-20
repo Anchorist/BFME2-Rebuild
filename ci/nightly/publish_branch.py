@@ -44,7 +44,7 @@ def files_for(result_dir):
 
 def main(result_dir):
     token = os.environ.pop("NIGHTLY_PUSH_TOKEN", "")
-    repo = os.environ.get("GITHUB_REPOSITORY", "")
+    repo = os.environ.get("NIGHTLY_REPOSITORY") or os.environ.get("GITHUB_REPOSITORY", "")
     if not token or not repo:
         raise SystemExit("nightly publish: expected NIGHTLY_PUSH_TOKEN and GITHUB_REPOSITORY; found "
                          f"token {'set' if token else 'missing'}, repository {repo or 'missing'}")

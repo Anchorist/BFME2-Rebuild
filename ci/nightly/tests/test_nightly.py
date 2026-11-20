@@ -1,5 +1,5 @@
 """Offline tests of the nightly package: python3 -B -m unittest discover -s ci/nightly/tests"""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import json
 import os
 from pathlib import Path
@@ -487,6 +487,92 @@ class LinkOnly(unittest.TestCase):
         self.assertEqual(n["result"], "partial")
         self.assertTrue(n["headline"].startswith("links and checks: 323 rebuilt files"))
         self.assertEqual(result.alarms(n), {"nightly-build": {"failed": False, "detail": "built and checked"}})
+
+
+class FoldIn(unittest.TestCase):
+    def setUp(self):
+        import fold_in
+        from datetime import timezone as tz
+        self.f = fold_in
+        self.now = datetime(2026, 1, 2, 7, 17).replace(tzinfo=tz.utc)
+        self.meta = {"sha": SHA, "public_run_id": 44, "public_run_attempt": 1, "game_job": "success",
+                     "workflow": ".github/workflows/nightly.yml",
+                     "finished_at": datetime(2026, 1, 2, 6, 30).strftime(result.STAMP)}
+        self.values = {"sha": SHA, "run_id": 44, "attempt": 1, "game_job": "success"}
+        self.run = {"path": ".github/workflows/nightly.yml", "head_sha": SHA, "head_branch": "main",
+                    "run_attempt": 1, "conclusion": "success"}
+        self.jobs = [{"name": f"Compile shard {i}", "conclusion": "success"} for i in range(3)]
+
+    def test_fresh(self):
+        ok, why, out = self.f.decide(self.meta, {"sha": SHA}, self.now)
+        self.assertTrue(ok, why)
+        self.assertEqual(out, self.values)
+
+    def test_refused_results(self):
+        old = dict(self.meta, finished_at=datetime(2026, 1, 1, 6, 30).strftime(result.STAMP))
+        for meta, stage2 in ((old, None), (self.meta, {"sha": "b" * 40}), (self.meta, {"tests": {}}),
+                             (dict(self.meta, sha="zz"), None), (dict(self.meta, workflow=".github/workflows/x.yml"), None),
+                             ({k: v for k, v in self.meta.items() if k != "public_run_id"}, None)):
+            self.assertFalse(self.f.decide(meta, stage2, self.now)[0], (meta, stage2))
+
+    def test_unknown_job_outcome_counts_as_failure(self):
+        self.assertEqual(self.f.decide(dict(self.meta, game_job="weird"), None, self.now)[2]["game_job"], "failure")
+
+    def test_bind(self):
+        self.assertTrue(self.f.bind(self.values, self.run, self.jobs, 3)[0])
+        for run in (dict(self.run, path=".github/workflows/other.yml"), dict(self.run, head_sha="b" * 40),
+                    dict(self.run, run_attempt=2), dict(self.run, conclusion="failure"), dict(self.run, head_branch="x")):
+            self.assertFalse(self.f.bind(self.values, run, self.jobs, 3)[0], run)
+        self.assertFalse(self.f.bind(self.values, self.run, self.jobs[:2], 3)[0])
+        self.assertFalse(self.f.bind(self.values, self.run, [dict(self.jobs[0], conclusion="failure")] + self.jobs[1:], 3)[0])
+
+    def test_both_files_read_at_one_commit_while_the_branch_moves(self):
+        commits = iter(["c" * 40, "d" * 40])
+        seen = []
+
+        def fake_get(api, path, token, raw=False):
+            seen.append(path)
+            if path.endswith("git/ref/heads/results"):
+                return {"object": {"sha": next(commits)}}
+            if "contents/meta.json" in path:
+                return dict(self.meta, finished_at=datetime.now(timezone.utc).strftime(result.STAMP))
+            if "contents/stage2.json" in path:
+                return {"sha": SHA, "tests": {}}
+            if path.endswith("/jobs?per_page=100"):
+                return {"jobs": [{"name": f"Compile shard {i}", "conclusion": "success"} for i in range(16)]}
+            return self.run
+        saved = self.f.get
+        self.f.get = fake_get
+        env = {"GAME_REPO": "o/game", "GAME_TOKEN": "t", "GH_TOKEN": "u", "GITHUB_REPOSITORY": "o/pub", "SHARDS": "16"}
+        old = {k: os.environ.get(k) for k in env}
+        os.environ.update(env)
+        try:
+            with tempfile.TemporaryDirectory() as d:
+                out = self.f.main(d)
+        finally:
+            self.f.get = saved
+            for k, v in old.items():
+                if v is None:
+                    os.environ.pop(k, None)
+                else:
+                    os.environ[k] = v
+        self.assertIn("fresh=true", out)
+        contents = [p for p in seen if "/contents/" in p]
+        self.assertEqual(contents, [f"repos/o/game/contents/meta.json?ref={'c' * 40}",
+                                    f"repos/o/game/contents/stage2.json?ref={'c' * 40}"])
+        self.assertEqual(sum(p.endswith("git/ref/heads/results") for p in seen), 1)
+
+    def test_without_tokens_nothing_is_folded(self):
+        env = {k: v for k, v in os.environ.items() if k not in ("GAME_REPO", "GAME_TOKEN", "GH_TOKEN", "GITHUB_OUTPUT")}
+        with tempfile.TemporaryDirectory() as d:
+            r = subprocess.run([sys.executable, "-B", str(NIGHTLY / "fold_in.py"), d], env=env, capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("fresh=false", r.stdout)
+
+    def test_game_failure_without_stage2_fails_the_night(self):
+        n = result.build(CINFO, None, meta(game_job="failure"))
+        self.assertEqual(n["result"], "fail")
+        self.assertTrue(result.alarms(n)["nightly-build"]["failed"])
 
 
 if __name__ == "__main__":

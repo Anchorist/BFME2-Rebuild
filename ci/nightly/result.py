@@ -247,8 +247,10 @@ def main():
     s2p = Path(a.stage2) / "stage2.json"
     stage2 = json.loads(s2p.read_text()) if s2p.is_file() else None
     jobs = json.loads(Path(a.jobs).read_text()).get("jobs") if a.jobs and Path(a.jobs).is_file() else None
-    server, repo, run = os.environ.get("GITHUB_SERVER_URL", ""), os.environ.get("GITHUB_REPOSITORY", ""), os.environ.get("GITHUB_RUN_ID", "")
-    meta = {"sha": os.environ.get("GITHUB_SHA", ""), "run_id": run, "date": datetime.now(timezone.utc).strftime("%Y-%m-%d"), "event": os.environ.get("GITHUB_EVENT_NAME"),
+    server = os.environ.get("GITHUB_SERVER_URL", "")
+    repo = os.environ.get("NIGHTLY_REPOSITORY") or os.environ.get("GITHUB_REPOSITORY", "")
+    run = os.environ.get("NIGHTLY_RUN_ID") or os.environ.get("GITHUB_RUN_ID", "")
+    meta = {"sha": os.environ.get("NIGHTLY_SHA") or os.environ.get("GITHUB_SHA", ""), "run_id": run, "date": datetime.now(timezone.utc).strftime("%Y-%m-%d"), "event": os.environ.get("GITHUB_EVENT_NAME"),
             "run_url": f"{server}/{repo}/actions/runs/{run}" if run else None,
             "compile_job": a.compile_job, "game_job": a.game_job, "game_live": a.game_live == "true", "game_external": a.game_live == "external",
             "machine": machine_time(jobs)}

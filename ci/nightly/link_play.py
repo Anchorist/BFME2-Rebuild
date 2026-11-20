@@ -194,7 +194,7 @@ def main():
         return 1
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    sha = os.environ.get("GITHUB_SHA", "")
+    sha = os.environ.get("NIGHTLY_SHA") or os.environ.get("GITHUB_SHA", "")
     result = {"stage": "link-and-play", "sha": sha, "timings": {}, "tests": {}, "stopped": None,
               "games_skipped": bool(a.no_game)}
     started = monotonic()

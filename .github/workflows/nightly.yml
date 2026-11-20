@@ -3,12 +3,19 @@ name: Nightly build and compare
 # Every night: compile and judge every source file of main with the sealed compiler and publish the result.
 # The game run (link the hybrid image, play it, compare it with the original) happens in a separate private
 # repository on a separate private machine image; nothing in this repository starts it or names its image.
+# The second schedule reads that run's result (one read-only token) and publishes it here.
 # Why, and how to read the result: ci/nightly/README.md.
 
 on:
   schedule:
     - cron: '17 3 * * *'
+    - cron: '17 7 * * *'
   workflow_dispatch:
+    inputs:
+      fold_game_result:
+        description: 'Instead of compiling, fold the private game run result into the nightly branch'
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -21,7 +28,9 @@ env:
 
 jobs:
   compile:
-    if: github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main'
+    if: >-
+      github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
+      github.event.schedule != '17 7 * * *' && !inputs.fold_game_result
     name: Compile shard ${{ matrix.shard }}
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 40
@@ -84,7 +93,9 @@ jobs:
 
   publish:
     needs: [compile]
-    if: always() && github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main'
+    if: >-
+      always() && github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
+      github.event.schedule != '17 7 * * *' && !inputs.fold_game_result
     name: Publish the result and raise or clear alarms
     runs-on: boat-small/from=bfme2-compiler-v1
     timeout-minutes: 15
@@ -156,3 +167,64 @@ jobs:
           r=$(python3 -B -c 'import json,sys; print(json.load(open(sys.argv[1]))["result"])' "$f")
           echo "Nightly result: $r"
           if [ "$r" = fail ]; then echo "::error::expected a clean night; found result fail (see the summary above)"; exit 1; fi
+
+  fold-in:
+    if: >-
+      github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
+      (github.event.schedule == '17 7 * * *' || inputs.fold_game_result) && vars.BFME_NIGHTLY_GAME_REPO != ''
+    name: Publish the private game run's result
+    runs-on: boat-small/from=bfme2-compiler-v1
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      issues: write
+      actions: read
+    steps:
+      - name: Check out main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Read the game result (read-only token for the private repository)
+        id: fold
+        shell: bash
+        env:
+          GAME_REPO: '${{ vars.BFME_NIGHTLY_GAME_REPO }}'
+          GAME_TOKEN: '${{ secrets.BFME_NIGHTLY_GAME_READ }}'
+          GH_TOKEN: '${{ github.token }}'
+        run: python3 -B ci/nightly/fold_in.py "$RUNNER_TEMP/fold"
+      - name: Read the shard summaries of the compile run it played
+        if: steps.fold.outputs.fresh == 'true'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: nightly-shard-summary-*-a${{ steps.fold.outputs.attempt }}
+          path: '${{ runner.temp }}/shards'
+          run-id: '${{ steps.fold.outputs.run_id }}'
+          github-token: '${{ github.token }}'
+      - name: Write nightly.json and the summary
+        if: steps.fold.outputs.fresh == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: '${{ github.token }}'
+          RUN: '${{ steps.fold.outputs.run_id }}'
+          NIGHTLY_SHA: '${{ steps.fold.outputs.sha }}'
+          NIGHTLY_RUN_ID: '${{ steps.fold.outputs.run_id }}'
+        run: |
+          set -euo pipefail
+          curl -fsS -H "Authorization: Bearer $GH_TOKEN" -H 'Accept: application/vnd.github+json'             "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/runs/$RUN/jobs?per_page=100" -o "$RUNNER_TEMP/jobs.json"             || rm -f "$RUNNER_TEMP/jobs.json"
+          python3 -B ci/nightly/result.py "$RUNNER_TEMP/shards" "$RUNNER_TEMP/fold/stage2" "$RUNNER_TEMP/result"             --compile-job success --game-job '${{ steps.fold.outputs.game_job }}' --game-live true             --shards-expected "$SHARDS" --jobs "$RUNNER_TEMP/jobs.json" > /dev/null
+          cat "$RUNNER_TEMP/result/summary.md" >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish to the nightly branch
+        if: steps.fold.outputs.fresh == 'true'
+        shell: bash
+        env:
+          NIGHTLY_PUSH_TOKEN: '${{ github.token }}'
+        run: python3 -B ci/nightly/publish_branch.py "$RUNNER_TEMP/result"
+      - name: Raise or clear the nightly alarms
+        if: steps.fold.outputs.fresh == 'true'
+        shell: bash
+        env:
+          ALARM_TOKEN: '${{ github.token }}'
+          RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ steps.fold.outputs.run_id }}'
+        run: python3 -B ci/nightly/alarms.py "$RUNNER_TEMP/result/alarms.json" "$RUN_URL"
