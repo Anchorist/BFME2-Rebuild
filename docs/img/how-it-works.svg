@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="140" viewBox="0 0 880 140" role="img" aria-label="How it works: write a function in ordinary C++; machines build it with the 2003 compiler and compare it with the game byte for byte; it lands by itself in minutes.">
+<style>
+.card{fill:#0d1117;stroke:#30363d}.box{fill:#161b22;stroke:#30363d}.track{fill:#21262d}
+.strong{fill:#f0f6fc}.muted{fill:#8b949e}.blue{fill:#3987e5}.orange{fill:#d95926}.green{fill:#3fb950}.red{fill:#f85149}
+.sblue{stroke:#3987e5}.sgreen{stroke:#3fb950}.sred{stroke:#f85149}.smuted{stroke:#8b949e}.srule{stroke:#30363d}
+.fgreen{fill:#0f2a17;stroke:#3fb950}.fdash{fill:none;stroke:#8b949e}
+text{font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif}
+@media (prefers-color-scheme: light){
+.card{fill:#ffffff;stroke:#d0d7de}.box{fill:#f6f8fa;stroke:#d0d7de}.track{fill:#eaeef2}
+.strong{fill:#1f2328}.muted{fill:#59636e}.blue{fill:#2a78d6}.orange{fill:#eb6834}.green{fill:#1a7f37}.red{fill:#cf222e}
+.sblue{stroke:#2a78d6}.sgreen{stroke:#1a7f37}.sred{stroke:#cf222e}.smuted{stroke:#59636e}.srule{stroke:#d0d7de}
+.fgreen{fill:#e6f4ea;stroke:#1a7f37}.fdash{stroke:#59636e}}
+</style>
+<rect class="card" x="0.5" y="0.5" width="879" height="139" rx="12"/>
+<rect class="box" x="28" y="24" width="256" height="92" rx="10"/>
+<circle class="blue" cx="56" cy="52" r="13"/>
+<text x="56" y="57" font-size="14" font-weight="700" text-anchor="middle" fill="#ffffff">1</text>
+<text class="strong" x="80" y="57" font-size="16" font-weight="700">Write a function</text>
+<text class="muted" x="48" y="84" font-size="12.5">Ordinary C++, by hand</text>
+<text class="muted" x="48" y="101" font-size="12.5">or with your coding agent.</text>
+<path class="smuted" d="M290 70 H304" stroke-width="2" fill="none"/>
+<path class="muted" d="M302 64 l9 6 l-9 6 z"/>
+<rect class="box" x="312" y="24" width="256" height="92" rx="10"/>
+<circle class="blue" cx="340" cy="52" r="13"/>
+<text x="340" y="57" font-size="14" font-weight="700" text-anchor="middle" fill="#ffffff">2</text>
+<text class="strong" x="364" y="57" font-size="16" font-weight="700">Machines check it</text>
+<text class="muted" x="332" y="84" font-size="12.5">Built with the 2003 compiler and</text>
+<text class="muted" x="332" y="101" font-size="12.5">compared with the game, byte for byte.</text>
+<path class="smuted" d="M574 70 H588" stroke-width="2" fill="none"/>
+<path class="muted" d="M586 64 l9 6 l-9 6 z"/>
+<rect class="box" x="596" y="24" width="256" height="92" rx="10"/>
+<circle class="blue" cx="624" cy="52" r="13"/>
+<text x="624" y="57" font-size="14" font-weight="700" text-anchor="middle" fill="#ffffff">3</text>
+<text class="strong" x="648" y="57" font-size="16" font-weight="700">It lands by itself</text>
+<text class="muted" x="616" y="84" font-size="12.5">In minutes. If it fails, the report</text>
+<text class="muted" x="616" y="101" font-size="12.5">names the function or the rule.</text>
+</svg>

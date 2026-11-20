@@ -1,119 +1,80 @@
-# Battle for Middle-earth II: engine rebuild
+<h1 align="center">Battle for Middle-earth II, rebuilt</h1>
 
-We are rewriting the program code of *The Lord of the Rings: The Battle for
-Middle-earth II* (EA, 2006, patch 1.06) as clean, readable C++ that compiles
-back to the exact machine code of the original game.
+<p align="center">
+The engine of <em>The Battle for Middle-earth II</em> (EA, 2006, patch 1.06), rewritten as clean C++<br>
+that compiles to the exact bytes of the original game.<br>
+When it is finished, anyone can build the game from source, patch it and mod it.
+</p>
 
-**Work in progress. Nothing built from this repository can be played yet.**
+<p align="center">
+<a href="#jump-in">Jump in</a> ·
+<a href="#why-a-new-repository">Why a new repository</a> ·
+<a href="#roadmap">Roadmap</a> ·
+<a href="https://discord.gg/wCvA2XqPUT">Discord</a>
+</p>
 
-![Progress](https://raw.githubusercontent.com/Open-BFME/BFME2-Rebuild/progress/progress.svg)
+<p align="center">
+<img src="docs/img/progress-card.svg" width="880" alt="Progress: byte match 25.7 percent, linking 62.1 percent, 10,054 of 41,565 functions finished, 366 rebuilt files play identically inside the original game">
+</p>
 
-The two numbers that matter:
+<p align="center"><sub>
+<b>Byte match</b> is how much of the original program our C++ compiles back to, byte for byte.
+<b>Linking</b> is how many of the names a complete game needs our source already provides.<br>
+Machines measure both after every change to <code>main</code> and every day around noon US Eastern.
+Not playable yet. <a href="https://github.com/Open-BFME/BFME2-Rebuild/tree/progress">Full progress card</a>
+</sub></p>
 
-- **Byte match** ("Code matched" above): how much of the original program's
-  code our C++ compiles back to, byte for byte.
-- **Linking**: how many of the names a complete game needs our source already
-  provides. At 100% the game builds from this source alone.
+## Jump in
 
-Nobody types these in. Machines on [Boat](https://boat.dev) measure them
-after every change to `main` and again every day around noon US Eastern
-time, and a workflow redraws the picture. The full card, with one row
-for each part of the game, is on the
-[`progress` branch](https://github.com/Open-BFME/BFME2-Rebuild/tree/progress).
+Most of this code is written by AI coding agents, and yours are welcome. Paste this into yours:
 
-## The goal
-
-Source code for the whole game that anyone can read, build and change: fix
-bugs, patch it, mod it. The game's source was never released, so it has to be
-written again from the shipped program.
-
-To know the new code is right, and not just similar, each function must
-compile to the same bytes as the original when built with the 2003 Microsoft
-compiler the game was built with.
-
-## How it works
-
-1. You write a function in C++ and open a pull request.
-2. The checks compile it with the original compiler and compare the result,
-   byte for byte, with the original program in `baseline/game.dat`. They also
-   check that the source is ordinary C++ and not assembly in disguise.
-3. If it passes, it lands by itself within minutes. If it does not, the
-   report names the function or the rule that refused it.
-
-There is nothing to install: the checks run on the project's machines. A pull
-request from a fork gets the source rules at once and the compile check after
-the maintainer admits it. Changes to shared headers under `include/`, and to
-the checks themselves, also wait for the maintainer.
-
-## Where it stands (2026-11-20)
-
-| Question | Answer |
-| --- | --- |
-| How much code is matched? | About a quarter. The picture above is the live figure. |
-| How far is linking? | The daily linking figure is being switched on, so its bar still reads "not measured yet". The last link by hand was missing 3,130 names. |
-| Does the rebuilt code behave like the original? | Yes, where it has been tested: 366 rebuilt files (6,147 functions) swapped into the original game play identically on two maps and through save and load. |
-| Does the game build from this source alone? | Not yet. Too much is still unwritten for it to link by itself. |
-
-Much of the source is not good yet. Many files are still named by address
-instead of by their real name, and many types are stand-ins. An independent
-review listed what is wrong: [known weaknesses](docs/known-weaknesses.md).
-
-## Get your agents started
-
-Most of this code is written by AI coding agents, and yours are welcome.
-
-1. Fork the repository and clone your fork.
-2. Start your agent in the clone. It reads [AGENTS.md](AGENTS.md) by itself.
-3. Give it this to begin:
-
-   ```text
-   Read AGENTS.md and docs/agents.md. Pick one small unwritten function from
-   worklist/unwritten_with_zero_hour_counterpart.tsv that no open pull request
-   claims. Read its bytes in baseline/game.dat and its Zero Hour counterpart
-   under reference/. Write it below its FUNCTION line and open a draft pull
-   request that starts with a Claim line and the evidence. Then read the
-   check's report and fix from it, three rounds at most.
-   ```
-
-The [agents guide](docs/agents.md) has the rest: what an agent needs
-installed, how to read a function's bytes, how to run several agents without
-them colliding, and what gets a pull request refused.
-
-## Take part by hand
-
-1. Pick a file from the [worklist](worklist/README.md).
-2. Read the [contribution guide](CONTRIBUTING.md) and look at
-   [five finished files](docs/reference-files.md) to see the standard.
-3. Open a pull request. The [pull-request guide](ci/README.md) explains what
-   the checks report.
-
-A plain clone is enough to start. It holds the original program, to read any
-function's bytes from, and the source of Zero Hour (the 2003 predecessor,
-which EA released in 2025) under `reference/`, to compare with. On Windows,
-clone with long paths enabled:
-
-```sh
-git clone -c core.longpaths=true https://github.com/Open-BFME/BFME2-Rebuild.git
+```text
+Fork and clone https://github.com/Open-BFME/BFME2-Rebuild, then read AGENTS.md
+and docs/agents.md. Write one small unwritten function from the worklist and
+open a draft pull request for it. Fix it from the report the checks post, three
+rounds at most, then tell me the link and what the checks said.
 ```
 
-## More
+There is no compiler to install: machines check every pull request. Prefer to
+work by hand? Start with the [contribution guide](CONTRIBUTING.md), the
+[worklist](worklist/README.md) and [five finished files](docs/reference-files.md).
 
-| Page | What it answers |
-| --- | --- |
-| [docs/status.md](docs/status.md) | The detailed numbers |
-| [docs/measurements.md](docs/measurements.md) | Where each number comes from and what a clone can reproduce |
-| [RULES.md](RULES.md) | The source rules a pull request must pass |
-| [docs/source-quality.md](docs/source-quality.md) | What good source means here |
-| [docs/naming.md](docs/naming.md) | How names are chosen |
-| [SECURITY.md](SECURITY.md) | How to report a security problem privately |
+<p align="center">
+<img src="docs/img/how-it-works.svg" width="880" alt="How it works: write a function in ordinary C++; machines build it with the 2003 compiler and compare it with the game byte for byte; it lands by itself in minutes">
+</p>
+
+## Why a new repository
+
+The earlier project, [Open-BFME-2](https://github.com/Open-BFME/Open-BFME-2),
+matched every piece of the game. But the pieces were made one at a time and do
+not fit together into something you can build. Here a piece counts only when
+it is real source, in its real file. The number starts lower, and every point
+stays done. That earlier work is the foundation: this repository is filled in
+from it.
+
+<p align="center">
+<img src="docs/img/earlier-and-new.svg" width="880" alt="The earlier repository: thousands of loose pieces, 100 percent matched one at a time, in 17,504 files, a working game only when forced. This repository: the same pieces in their real files, 25.7 percent matched, 3,253 files, 366 of them already playing identically in the real game">
+</p>
+
+## Roadmap
+
+- [x] Pull requests are checked and landed with no person in the loop
+- [ ] Byte match reaches 100%, with real source only
+- [ ] Linking reaches 100%: the game builds from this source alone
+- [ ] The rebuilt game starts, plays a skirmish, saves and loads, and equals the original frame for frame
+- [ ] Then the fun part: 60/120 FPS, the memory fix, better crash logs, multiple CPU cores, WorldBuilder source
+
+## Read more
+
+[Status in detail](docs/status.md) ·
+[Known weaknesses](docs/known-weaknesses.md) ·
+[Agents guide](docs/agents.md) ·
+[Source rules](RULES.md) ·
+[What the checks report](ci/README.md) ·
+[Where the numbers come from](docs/measurements.md) ·
+[Security](SECURITY.md)
 
 The maintainer is the GitHub account [@Ancalgonn](https://github.com/Ancalgonn).
-
-This repository follows the earlier
-[Open-BFME-2](https://github.com/Open-BFME/Open-BFME-2) project, which matched
-every function byte for byte, one function per file. This one organises that
-result into real source files with shared headers
-([comparison](docs/status.md#the-earlier-project)).
 
 ## Licence and affiliation
 

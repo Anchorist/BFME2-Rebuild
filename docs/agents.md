@@ -6,6 +6,7 @@ agent reads by itself; this page is for you, and for the agent to read once.
 ## What an agent needs
 
 - `git`, and a way to open pull requests (the `gh` command is enough).
+  On Windows, clone with `-c core.longpaths=true`: some reference paths are long.
 - `objdump` from binutils, to read the original program. Any disassembler
   that opens a 32-bit Windows program will do.
 - No compiler, no Wine and no copy of the game. The checks compile on the
