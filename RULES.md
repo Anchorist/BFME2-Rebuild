@@ -15,6 +15,9 @@ a file and line, and a way to fix the change.
 | **G7 Definitions** | Put new class, struct and union definitions in shared headers and keep one definition per named type or externally linked object. | Add a second `struct FileInfo` to a private header. | Include the existing shared definition. |
 | **G8 Names** | Introduce address-shaped names only when the base ledger accepts that exact spelling. | Add `sub_00401234` with no accepted name. | Use an evidence-backed name or ask a maintainer to record the accepted spelling. |
 
+Keep compiler directives such as `// cl:` and SDK markers unchanged.
+If a different setting is needed, file a ledger request with the file, the requested setting, and the evidence for it.
+
 G4b appears in the summary for review. It has no status and does not
 affect the source rules result.
 
