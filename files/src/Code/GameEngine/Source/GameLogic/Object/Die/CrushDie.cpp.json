@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x00486136":["MATCH",100,false],"0x0048614F":["MATCH",100,true],"0x00486155":["MATCH",100,true],"0x0048619A":["MATCH",100,true],"0x004862E1":["MATCH",100,false],"0x00486327":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Die/CrushDie.cpp","verified":false}

@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x007392B0":["MATCH",100,true],"0x00739440":["MATCH",100,true],"0x007394F0":["MATCH",100,true],"0x00739560":["MATCH",100,true],"0x007395C0":["MATCH",100,true],"0x00739610":["MATCH",100,true],"0x00739640":["MATCH",100,false]},"gate_sha256":[],"schema":1,"tu":"src/gamespy-sdk/GameSpy/gp/gpiOperation.c","verified":false}

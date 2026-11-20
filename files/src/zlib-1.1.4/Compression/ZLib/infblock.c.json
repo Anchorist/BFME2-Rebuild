@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x00694720":["MATCH",100,true],"0x006947A0":["MATCH",100,true],"0x00694840":["MATCH",100,true],"0x006953D0":["MATCH",100,true],"0x00695460":["MATCH",100,true],"0x006954A0":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/zlib-1.1.4/Compression/ZLib/infblock.c","verified":true}

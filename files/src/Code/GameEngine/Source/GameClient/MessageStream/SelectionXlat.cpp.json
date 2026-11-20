@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x0042FA63":["MISSING",0,false],"0x0042FB8F":["MISSING",0,false],"0x0042FCD1":["MISSING",0,false],"0x0042FD9E":["MATCH",100,false],"0x0042FE7F":["MISSING",0,false],"0x00430000":["MATCH",100,true],"0x0043003C":["MISSING",0,false]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameClient/MessageStream/SelectionXlat.cpp","verified":false}

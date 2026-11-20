@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004C0951":["MATCH",100,false],"0x004C0982":["MATCH",100,true],"0x004C09A1":["MATCH",100,true],"0x004C09B5":["MATCH",100,true],"0x004C0A16":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Body/StructureBody.cpp","verified":false}

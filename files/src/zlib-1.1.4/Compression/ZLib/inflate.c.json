@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x006906C0":["MATCH",100,true],"0x00690710":["MATCH",100,true],"0x00690760":["MATCH",100,true],"0x00690860":["MATCH",100,true],"0x00690880":["MATCH",100,true],"0x00690C80":["MATCH",100,true],"0x00690D10":["MATCH",100,true],"0x00690DE0":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/zlib-1.1.4/Compression/ZLib/inflate.c","verified":true}

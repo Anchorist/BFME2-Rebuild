@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x0069D500":["MATCH",100,true],"0x0069D550":["MATCH",100,true],"0x0069D590":["MATCH",100,true],"0x0069D5B0":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/gamespy-sdk/GameSpy/qr2/qr2regkeys.c","verified":true}

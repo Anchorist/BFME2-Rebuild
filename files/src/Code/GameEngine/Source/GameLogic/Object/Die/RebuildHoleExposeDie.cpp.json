@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004866F3":["MATCH",100,true],"0x0048671F":["MATCH",100,false],"0x00486746":["MATCH",100,true],"0x00486768":["MATCH",100,false],"0x00486792":["MATCH",100,true],"0x004867D7":["MATCH",100,true],"0x004867FE":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Die/RebuildHoleExposeDie.cpp","verified":false}

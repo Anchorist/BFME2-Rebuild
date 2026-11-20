@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004B55C8":["MATCH",100,false],"0x004B55E8":["MATCH",100,true],"0x004B55EE":["MATCH",100,true],"0x004B5633":["MATCH",100,false],"0x004B5680":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Upgrade/WeaponBonusUpgrade.cpp","verified":false}

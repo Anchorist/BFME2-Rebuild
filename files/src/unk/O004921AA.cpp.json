@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004921AA":["MATCH",100,true],"0x004921D0":["MATCH",100,true],"0x00492231":["MATCH",100,true],"0x0049226C":["MATCH",100,true],"0x0049227B":["MISSING",0,false],"0x004922F1":["MISSING",0,false],"0x00492329":["MISSING",0,false]},"gate_sha256":[],"schema":1,"tu":"src/unk/O004921AA.cpp","verified":false}

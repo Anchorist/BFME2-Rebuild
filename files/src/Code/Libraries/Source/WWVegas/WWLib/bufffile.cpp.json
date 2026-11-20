@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x0061ADE0":["MATCH",100,false],"0x0061AE00":["MATCH",100,false],"0x0061AE30":["MATCH",100,false],"0x0061AF30":["MATCH",100,true],"0x0061AF60":["MATCH",100,false],"0x0061AFD0":["MATCH",100,true],"0x0061B000":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/Libraries/Source/WWVegas/WWLib/bufffile.cpp","verified":false}

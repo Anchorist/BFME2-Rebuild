@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004864AA":["MATCH",100,false],"0x004864C3":["MATCH",100,true],"0x004864C9":["MATCH",100,true],"0x0048650E":["MATCH",100,false],"0x00486554":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Die/DestroyDie.cpp","verified":false}

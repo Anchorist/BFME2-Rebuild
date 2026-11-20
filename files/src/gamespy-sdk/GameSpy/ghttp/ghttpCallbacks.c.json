@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x006BAE30":["MATCH",100,true],"0x006BAE90":["MATCH",100,true],"0x006BAEE0":["MATCH",100,false]},"gate_sha256":[],"schema":1,"tu":"src/gamespy-sdk/GameSpy/ghttp/ghttpCallbacks.c","verified":false}

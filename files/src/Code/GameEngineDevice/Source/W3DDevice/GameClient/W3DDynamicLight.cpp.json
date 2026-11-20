@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x0006DD63":["MATCH",100,true],"0x0006DD6F":["MATCH",100,false],"0x0006DE3D":["MATCH",100,true],"0x0006DF81":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DDynamicLight.cpp","verified":false}

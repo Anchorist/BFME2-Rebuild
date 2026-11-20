@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x0049B6DD":["MISSING",0,false],"0x0049B750":["MATCH",100,true],"0x0049B8A0":["MATCH",100,true],"0x0049B98A":["MISSING",0,false],"0x0049BBA3":["MATCH",100,true],"0x0049BBB3":["MISSING",0,false],"0x0049BBD5":["MISSING",0,false],"0x0049BCA3":["MISSING",0,false]},"gate_sha256":[],"schema":1,"tu":"src/unk/O0049B750.cpp","verified":false}

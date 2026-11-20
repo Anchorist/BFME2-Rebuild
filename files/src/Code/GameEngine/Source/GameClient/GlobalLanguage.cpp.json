@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x001EA3F4":["MATCH",100,false],"0x001EA40D":["MATCH",100,true],"0x001EA55A":["MISSING",0,false],"0x001EA77F":["MISSING",0,false],"0x001EA9B5":["MISSING",0,false],"0x001EABAB":["MISSING",0,false],"0x001EAD69":["MISSING",0,false]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameClient/GlobalLanguage.cpp","verified":false}

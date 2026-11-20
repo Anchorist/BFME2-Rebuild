@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x006BA950":["MATCH",100,true],"0x006BAA00":["MATCH",100,true],"0x006BAB10":["MATCH",100,true],"0x006BAB50":["MATCH",100,true],"0x006BABA0":["MATCH",100,true],"0x006BAC50":["MATCH",100,true],"0x006BACD0":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/gamespy-sdk/GameSpy/ghttp/ghttpConnection.c","verified":true}

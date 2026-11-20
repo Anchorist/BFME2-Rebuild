@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004C86B4":["MISSING",0,false],"0x004C86DE":["MATCH",100,true],"0x004C86E4":["WRONG_REFERENCE",0,false],"0x004C86FD":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/unk/O004C86DE.cpp","verified":false}

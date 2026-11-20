@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x0047F946":["MATCH",100,true],"0x0047F97E":["MATCH",100,true],"0x0047F9C3":["MATCH",100,true],"0x0047FA55":["MATCH",100,false],"0x0047FABF":["PARTIAL",68.2,false],"0x0047FAFE":["MISSING",0,false]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Update/CivilianSpawnUpdate.cpp","verified":false}

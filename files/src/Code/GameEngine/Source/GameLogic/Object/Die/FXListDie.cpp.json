@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x00486579":["MATCH",100,false],"0x00486592":["MATCH",100,true],"0x00486598":["MATCH",100,true],"0x004865DD":["MATCH",100,false],"0x00486623":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Die/FXListDie.cpp","verified":false}

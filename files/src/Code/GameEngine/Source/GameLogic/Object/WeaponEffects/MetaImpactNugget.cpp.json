@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x00509DF8":["MATCH",100,true],"0x00509E43":["MISSING",0,false],"0x00509F3A":["MISSING",0,false],"0x0050A1E9":["MISSING",0,false],"0x0050A4A2":["MISSING",0,false]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/WeaponEffects/MetaImpactNugget.cpp","verified":false}

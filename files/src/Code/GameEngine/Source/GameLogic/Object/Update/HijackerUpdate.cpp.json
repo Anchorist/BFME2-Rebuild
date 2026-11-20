@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004A3F81":["MATCH",100,true],"0x004A3FA4":["MATCH",100,true],"0x004A3FAA":["MATCH",100,true],"0x004A4010":["MATCH",100,true],"0x004A4055":["MATCH",100,false],"0x004A40BB":["MATCH",100,true],"0x004A40DB":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Update/HijackerUpdate.cpp","verified":false}

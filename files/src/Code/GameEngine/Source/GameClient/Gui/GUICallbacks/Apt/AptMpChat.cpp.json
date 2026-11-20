@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x0057FDBF":["MATCH",100,false],"0x0057FDE0":["MATCH",100,true],"0x0057FDEF":["MATCH",100,false],"0x0057FECE":["MISSING",0,false],"0x0057FFB9":["MISSING",0,false]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptMpChat.cpp","verified":false}

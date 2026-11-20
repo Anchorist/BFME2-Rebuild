@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004B48D3":["MATCH",100,false],"0x004B48F3":["MATCH",100,true],"0x004B48F9":["MATCH",100,true],"0x004B493E":["MATCH",100,true],"0x004B4960":["MATCH",100,false],"0x004B49AD":["MATCH",100,true],"0x004B49E2":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Upgrade/StatusBitsUpgrade.cpp","verified":false}

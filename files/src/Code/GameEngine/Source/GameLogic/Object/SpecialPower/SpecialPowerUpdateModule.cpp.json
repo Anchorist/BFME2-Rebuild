@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x00589297":["MATCH",100,true],"0x005892F6":["MATCH",100,true],"0x005893AD":["MATCH",100,true],"0x00589414":["MATCH",100,true],"0x0058943A":["MATCH",100,true],"0x00589560":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/SpecialPower/SpecialPowerUpdateModule.cpp","verified":false}

@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004BCC13":["MATCH",100,false],"0x004BCC3D":["MATCH",100,true],"0x004BCC43":["MATCH",100,false],"0x004BCC5C":["MATCH",100,true],"0x004BCCBD":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Collide/CrateCollide/UnitCrateCollide.cpp","verified":false}

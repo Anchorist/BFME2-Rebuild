@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004C086E":["MATCH",100,false],"0x004C0898":["MATCH",100,true],"0x004C08B7":["MATCH",100,true],"0x004C0918":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Body/ImmortalBody.cpp","verified":false}

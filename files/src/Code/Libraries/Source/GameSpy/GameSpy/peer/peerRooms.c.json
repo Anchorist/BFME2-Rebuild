@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x006A49A0":["MATCH",100,true],"0x006A4A10":["MATCH",100,true],"0x006A4A80":["MATCH",100,true],"0x006A4AD0":["MATCH",100,true],"0x006A4D40":["MATCH",100,true],"0x006A4DB0":["MATCH",100,true],"0x006A4EC0":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/Libraries/Source/GameSpy/GameSpy/peer/peerRooms.c","verified":true}

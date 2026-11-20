@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x0069D5E0":["MISNAMED",0,false],"0x0069D620":["MATCH",100,true],"0x0069D650":["MATCH",100,false],"0x0069D770":["MATCH",100,true],"0x0069D7E0":["MATCH",100,true],"0x0069D8C0":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/gamespy-sdk/GameSpy/available.c","verified":false}

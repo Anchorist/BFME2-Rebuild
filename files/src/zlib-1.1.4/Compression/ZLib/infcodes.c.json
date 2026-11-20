@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x006954B0":["MATCH",100,true],"0x006954F0":["MATCH",100,true],"0x00695C10":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/zlib-1.1.4/Compression/ZLib/infcodes.c","verified":true}

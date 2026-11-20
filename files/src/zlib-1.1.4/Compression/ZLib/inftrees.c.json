@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x00695C30":["MATCH",100,true],"0x00696120":["MATCH",100,true],"0x006961D0":["MATCH",100,true],"0x00696360":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/zlib-1.1.4/Compression/ZLib/inftrees.c","verified":true}

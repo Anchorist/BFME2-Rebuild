@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x00322174":["MATCH",100,true],"0x0032225A":["MATCH",100,true],"0x003222B8":["MATCH",100,true],"0x00322352":["MATCH",100,true],"0x003223B3":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameClient/Gui/WinInstanceData.cpp","verified":false}

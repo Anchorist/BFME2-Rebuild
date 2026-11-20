@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004135CD":["MATCH",100,true],"0x004138C7":["MISSING",0,false],"0x0041393F":["MISSING",0,false],"0x00413B4D":["MISSING",0,false]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/System/LivingWorld/AutoResolve/LivingWorldAutoResolveSciencePurchasePointBonus.cpp","verified":false}

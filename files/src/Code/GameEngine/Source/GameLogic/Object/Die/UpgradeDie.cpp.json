@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x00486B56":["MATCH",100,false],"0x00486B6F":["MATCH",100,true],"0x00486B75":["MATCH",100,true],"0x00486BBA":["MATCH",100,false],"0x00486C00":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Die/UpgradeDie.cpp","verified":false}

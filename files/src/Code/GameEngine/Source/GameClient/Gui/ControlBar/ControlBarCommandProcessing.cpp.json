@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x00539997":["MATCH",100,true],"0x005399D0":["MATCH",100,true],"0x00539A13":["MISSING",0,false],"0x00539A65":["MISSING",0,false]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameClient/Gui/ControlBar/ControlBarCommandProcessing.cpp","verified":false}

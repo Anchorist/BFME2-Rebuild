@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x006A4F40":["MATCH",100,true],"0x006A4F70":["MATCH",100,true],"0x006A5150":["MATCH",100,true],"0x006A51A0":["MATCH",100,true],"0x006A52C0":["MATCH",100,false],"0x006A5370":["MATCH",100,true],"0x006A53E0":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/Libraries/Source/GameSpy/GameSpy/peer/peerAutoMatch.c","verified":false}

@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x0074DEB0":["MATCH",100,true],"0x0074DEF0":["MATCH",100,true],"0x0074DF60":["MATCH",100,true],"0x0074E000":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/lua-4.0.1/Lua/lstate.c","verified":true}

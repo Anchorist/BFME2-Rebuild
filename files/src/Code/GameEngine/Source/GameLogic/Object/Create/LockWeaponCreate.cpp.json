@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004B8C0E":["MATCH",100,false],"0x004B8C3E":["MATCH",100,false],"0x004B8C57":["MATCH",100,true],"0x004B8C9C":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/Create/LockWeaponCreate.cpp","verified":false}

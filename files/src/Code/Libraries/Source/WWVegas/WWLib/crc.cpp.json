@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x006199B0":["MATCH",100,true],"0x006199C0":["MATCH",100,true],"0x006199D0":["MATCH",100,true],"0x00619A00":["MATCH",100,true],"0x00619AC0":["MATCH",100,true],"0x00619B00":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/Libraries/Source/WWVegas/WWLib/crc.cpp","verified":true}

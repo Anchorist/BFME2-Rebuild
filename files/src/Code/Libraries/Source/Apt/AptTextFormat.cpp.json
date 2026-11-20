@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x00710580":["MATCH",100,true],"0x00710810":["MATCH",100,false]},"gate_sha256":[],"schema":1,"tu":"src/Code/Libraries/Source/Apt/AptTextFormat.cpp","verified":false}

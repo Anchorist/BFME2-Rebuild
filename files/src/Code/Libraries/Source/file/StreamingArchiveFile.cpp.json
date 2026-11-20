@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x00605A28":["MATCH",100,true],"0x00605A45":["MATCH",100,true],"0x00605A82":["MATCH",100,true],"0x00605ADD":["MATCH",100,true],"0x00605B36":["MATCH",100,true],"0x00605B68":["MATCH",100,true]},"gate_sha256":[],"schema":1,"tu":"src/Code/Libraries/Source/file/StreamingArchiveFile.cpp","verified":true}

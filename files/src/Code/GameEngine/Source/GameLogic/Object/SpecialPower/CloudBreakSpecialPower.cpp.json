@@ -1,0 +1,1 @@
+{"error":false,"functions":{"0x004C4582":["MATCH",100,true],"0x004C4621":["MISSING",0,false],"0x004C479A":["MATCH",100,false],"0x004C47F3":["MATCH",100,true],"0x004C482B":["MISSING",0,false]},"gate_sha256":[],"schema":1,"tu":"src/Code/GameEngine/Source/GameLogic/Object/SpecialPower/CloudBreakSpecialPower.cpp","verified":false}
