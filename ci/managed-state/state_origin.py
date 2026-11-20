@@ -10,7 +10,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "managed-check"))
 from common import HEX40, REPO, REPO_ID, encoded, read
 from github_status import GitHub
-from state_delta import REPORT_DIRS, predecessors
+from state_delta import REPORT_DIRS, REPORT_FILES, predecessors
 from state_snapshot import git
 from state_fetch import WORKFLOW, select_artifact, select_run, verified_run
 
@@ -59,7 +59,8 @@ def report_only_push(root, sha, event):
     if names.pop() != b"":
         return False
     prefixes = tuple(prefix.encode("ascii") for prefix in REPORT_DIRS)
-    return bool(names) and all(name.startswith(prefixes) for name in names)
+    files = {name.encode("ascii") for name in REPORT_FILES}
+    return bool(names) and all(name in files or name.startswith(prefixes) for name in names)
 
 
 def eligible(api, sha, seed, phase, *, root=None):

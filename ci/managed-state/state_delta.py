@@ -10,7 +10,9 @@ from state_evidence import LIMIT, cached_pairs, header
 # implementation retain full-refresh semantics. state.yml can be carried only
 # across the reviewed producer-v2 to resume transport revision.
 REPORT_DIRS = ("docs/", "worklist/", "ci/state/", "ci/progress/", "ci/alarms/",
-               "ci/nightly/", "ci/landing/", ".github/workflows/")
+               "ci/nightly/", "ci/landing/", "ci/public-text/", ".github/workflows/")
+REPORT_FILES = {"README.md", "ci/managed-state/state_delta.py",
+                "ci/managed-state/state_origin.py", "ci/managed-state/bundle.sha256"}
 STATE_FLOW = ".github/workflows/state.yml"
 TRANSPORT = {"ci/managed-state/state_delta.py", "ci/managed-state/state_fetch.py",
              "ci/managed-state/state_workflow.py",
