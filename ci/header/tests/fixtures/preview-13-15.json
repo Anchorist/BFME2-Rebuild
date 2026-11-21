@@ -1,0 +1,212 @@
+{
+ "base": "5f2f839c078003a5be5d71a98107d6c587d654db",
+ "results": [
+  {
+   "explicit_removed": [
+    {
+     "line": 380,
+     "message": "This change removes or renames W3DView::m_unk0x2458.",
+     "path": "include/GameClient/W3DView.h",
+     "remedy": "Restore it or add Removed-Declaration: W3DView::m_unk0x2458 to the last commit.",
+     "rule": "H4"
+    }
+   ],
+   "head": "323c3497f340415ab963db88119785227128af45",
+   "header_paths": [
+    "include/GameClient/W3DView.h"
+   ],
+   "pr": 13,
+   "preview": [
+    {
+     "findings": [],
+     "rule": "H3",
+     "state": "pass"
+    },
+    {
+     "findings": [
+      {
+       "line": 124,
+       "message": "This header change needs a complete declaration comparison.",
+       "path": "include/GameClient/W3DView.h",
+       "remedy": "Wait for the declaration check to finish on this revision.",
+       "rule": "H4"
+      }
+     ],
+     "rule": "H4",
+     "state": "held"
+    },
+    {
+     "findings": [
+      {
+       "line": 124,
+       "message": "This header change needs a complete inline-function comparison.",
+       "path": "include/GameClient/W3DView.h",
+       "remedy": "Wait for the inline check to finish on this revision.",
+       "rule": "H6"
+      }
+     ],
+     "rule": "H6",
+     "state": "held"
+    },
+    {
+     "findings": [],
+     "rule": "H7",
+     "state": "pass"
+    },
+    {
+     "findings": [],
+     "rule": "H8",
+     "state": "pass"
+    }
+   ],
+   "tree": "e1b19e47b99e09c0697d18a9e89a9f45e1b97560",
+   "unknown_scopes": []
+  },
+  {
+   "explicit_removed": [
+    {
+     "line": 20,
+     "message": "This change removes or renames RenderDeviceDescClass::m_opaque.",
+     "path": "include/WW3D2/RenderDeviceDescClass.h",
+     "remedy": "Restore it or add Removed-Declaration: RenderDeviceDescClass::m_opaque to the last commit.",
+     "rule": "H4"
+    }
+   ],
+   "head": "d9852248883b2b14aaaf50b0797a8b7084f2f46e",
+   "header_paths": [
+    "include/WW3D2/RenderDeviceDescClass.h",
+    "include/WW3D2/WW3D.h"
+   ],
+   "pr": 14,
+   "preview": [
+    {
+     "findings": [],
+     "rule": "H3",
+     "state": "pass"
+    },
+    {
+     "findings": [
+      {
+       "line": 4,
+       "message": "This header change needs a complete declaration comparison.",
+       "path": "include/WW3D2/RenderDeviceDescClass.h",
+       "remedy": "Wait for the declaration check to finish on this revision.",
+       "rule": "H4"
+      }
+     ],
+     "rule": "H4",
+     "state": "held"
+    },
+    {
+     "findings": [
+      {
+       "line": 4,
+       "message": "This header change needs a complete inline-function comparison.",
+       "path": "include/WW3D2/RenderDeviceDescClass.h",
+       "remedy": "Wait for the inline check to finish on this revision.",
+       "rule": "H6"
+      }
+     ],
+     "rule": "H6",
+     "state": "held"
+    },
+    {
+     "findings": [],
+     "rule": "H7",
+     "state": "pass"
+    },
+    {
+     "findings": [
+      {
+       "line": 11,
+       "message": "This file's preprocessor change needs a complete shared-header comparison.",
+       "path": "include/WW3D2/RenderDeviceDescClass.h",
+       "remedy": "Wait for the shared-header comparison or remove the local override.",
+       "rule": "H8"
+      }
+     ],
+     "rule": "H8",
+     "state": "held"
+    }
+   ],
+   "tree": "0876fac1a4ed7e98facd1992241bad1969aa39a9",
+   "unknown_scopes": [
+    {
+     "line": 22,
+     "path": "include/WW3D2/RenderDeviceDescClass.h"
+    },
+    {
+     "line": 21,
+     "path": "include/WW3D2/RenderDeviceDescClass.h"
+    },
+    {
+     "line": 37,
+     "path": "include/WW3D2/WW3D.h"
+    }
+   ]
+  },
+  {
+   "explicit_removed": [],
+   "head": "d0023f3a15ab2e8e81e132e6cbf0a148aebea01d",
+   "header_paths": [
+    "include/GameClient/AptPlayer.h",
+    "include/GameClient/GameWindow.h"
+   ],
+   "pr": 15,
+   "preview": [
+    {
+     "findings": [],
+     "rule": "H3",
+     "state": "pass"
+    },
+    {
+     "findings": [
+      {
+       "line": 48,
+       "message": "This header change needs a complete declaration comparison.",
+       "path": "include/GameClient/AptPlayer.h",
+       "remedy": "Wait for the declaration check to finish on this revision.",
+       "rule": "H4"
+      }
+     ],
+     "rule": "H4",
+     "state": "held"
+    },
+    {
+     "findings": [
+      {
+       "line": 48,
+       "message": "This header change needs a complete inline-function comparison.",
+       "path": "include/GameClient/AptPlayer.h",
+       "remedy": "Wait for the inline check to finish on this revision.",
+       "rule": "H6"
+      }
+     ],
+     "rule": "H6",
+     "state": "held"
+    },
+    {
+     "findings": [],
+     "rule": "H7",
+     "state": "pass"
+    },
+    {
+     "findings": [
+      {
+       "line": 12,
+       "message": "This file's preprocessor change needs a complete shared-header comparison.",
+       "path": "src/Code/GameEngine/Source/GameClient/Gui/AptPlayer.cpp",
+       "remedy": "Wait for the shared-header comparison or remove the local override.",
+       "rule": "H8"
+      }
+     ],
+     "rule": "H8",
+     "state": "held"
+    }
+   ],
+   "tree": "ce125411daa76d63e906b67e601077307399fc8f",
+   "unknown_scopes": []
+  }
+ ],
+ "source_policy": "663777e28a136b0d43ddd1a871ed5346a36ddf92ef94c502171be2146eb2bd7d"
+}

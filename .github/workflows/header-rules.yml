@@ -1,0 +1,96 @@
+name: BFME II header rules
+
+# Writes one status, "BFME II / Header rules", for each open pull request that changes include/: the composition of
+# H1-H8 (ci/header/compose.py). The landing workflow reads it only when BFME_AUTO_HEADERS is "yes". Everything runs
+# on GitHub-hosted runners. The pull request's files are fetched as Git objects in a step that holds no token, and
+# nothing from them is run.
+on:
+  # The compiler check asks for this after measuring a header change (bot-started runs start no workflow_run).
+  repository_dispatch:
+    types: [bfme-header-rules]
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Only this pull request (empty means every open pull request that changes include/)
+        required: false
+        default: ''
+        type: string
+
+permissions: {}
+
+jobs:
+  plan:
+    if: github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      pull-requests: read
+      contents: read
+    outputs:
+      pulls: ${{ steps.plan.outputs.pulls }}
+    steps:
+      - name: Read the header rules tools from main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: |
+            ci/header
+      - name: Choose the pull requests that change include/
+        id: plan
+        shell: bash
+        env:
+          BFME_HEADER_TOKEN: '${{ github.token }}'
+          BFME_HEADER_PR: '${{ inputs.pr_number }}'
+        run: python3 -I -B ci/header/collect.py plan
+
+  rules:
+    needs: plan
+    if: needs.plan.outputs.pulls != '[]' && needs.plan.outputs.pulls != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        pull: ${{ fromJSON(needs.plan.outputs.pulls) }}
+    concurrency:
+      group: bfme-header-rules-${{ matrix.pull.number }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: write
+    steps:
+      - name: Read the header rules and source checks from main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: |
+            ci/header
+            tools/gates
+      - name: Verify the header rules tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! (cd ci/header && sha256sum -c --quiet bundle.sha256); then
+            echo "Expected every file listed in ci/header/bundle.sha256 to match. Found a difference." >&2
+            exit 1
+          fi
+      - name: Check the header source rules on the pull request's Git objects (no token in this step)
+        shell: bash
+        env:
+          PR_NUMBER: '${{ matrix.pull.number }}'
+          PR_HEAD: '${{ matrix.pull.head }}'
+          PR_BASE: '${{ matrix.pull.base }}'
+        run: |
+          env -i PATH=/usr/bin:/bin HOME="$RUNNER_TEMP" RUNNER_TEMP="$RUNNER_TEMP" LANG=C \
+            python3 -I -B ci/header/collect.py preview "$PR_NUMBER" "$PR_HEAD" "$PR_BASE" "$RUNNER_TEMP/header-preview.json"
+      - name: Compose H1-H8 and write BFME II / Header rules
+        shell: bash
+        env:
+          BFME_HEADER_TOKEN: '${{ github.token }}'
+        run: python3 -I -B ci/header/collect.py publish "$RUNNER_TEMP/header-preview.json"
