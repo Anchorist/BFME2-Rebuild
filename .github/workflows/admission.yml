@@ -10,11 +10,9 @@ on:
   # The landing workflow asks for a new admission before re-measuring a fork pull request on a newer main.
   repository_dispatch:
     types: [bfme-admit-request]
-  # A person's push to main (an install, a sync) moves main with nothing else event-driven behind it, and the hourly
-  # schedule runs late or not at all, so the push starts the same retry. A landing by the Actions bot starts no push
-  # run; the landing workflow's own bfme-land-next / bfme-admit-request chain covers that case.
-  push:
-    branches: [main]
+  # A person's push to main starts the retry through .github/workflows/admission-push.yml (workflow_dispatch):
+  # GitHub refused a push trigger in this file (startup_failure). A landing by the Actions bot starts no push run;
+  # the landing workflow's own bfme-land-next / bfme-admit-request chain covers that case.
   schedule:
     - cron: '41 * * * *'
   workflow_dispatch:
@@ -26,12 +24,12 @@ jobs:
     if: github.repository == 'Open-BFME/BFME2-Rebuild'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    # One retry at a time (push, schedule, by hand). A newer retry waits and replaces any older waiting one; a running
+    # One retry at a time (schedule, by hand, or after a push via admission-push.yml). A newer retry waits and replaces any older waiting one; a running
     # retry is never cancelled, and one whose main has moved stops at once (admit.py: superseded). Events and
     # landing requests for single pull requests are not grouped.
     concurrency:
       group: >-
-        ${{ (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         && 'bfme-admission-retry' || format('bfme-admission-{0}', github.run_id) }}
       cancel-in-progress: false
     permissions:
@@ -82,7 +80,7 @@ jobs:
           BFME_ADMISSION_TOKEN: '${{ github.token }}'
         run: python3 -I -B ci/admission/admit.py request
       - name: Retry held and undecided fork pull requests, oldest first
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         shell: bash
         env:
           BFME_ADMISSION_TOKEN: '${{ github.token }}'

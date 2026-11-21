@@ -50,8 +50,8 @@ receipt yet (whether or not GitHub has caught up with its preview), admission as
 machine). It does this at most once an hour for one commit on one `main`, and the status reads
 `Held: checking the source rules on main …, retried automatically`. As soon as the source rules have published,
 that workflow asks admission to decide again for this pull request, so it is admitted within minutes, not at the
-next hourly run. A person's push to `main` starts the same run at once, so nothing waits for the hour after an
-install. If the source rules find that the commit conflicts with the new `main`, or shares no history with
+next hourly run. A person's push to `main` starts the same run at once (through `admission-push.yml`), so nothing
+waits for the hour after an install. If the source rules find that the commit conflicts with the new `main`, or shares no history with
 it, the status says so and nothing more is requested until you push. A receipt for another `main`, another commit,
 another pull request or other rules is never used.
 

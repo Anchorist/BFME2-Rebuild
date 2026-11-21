@@ -1,0 +1,26 @@
+name: BFME II admission after a push
+
+# A person's push to main (an install, a sync) moves main with nothing else event-driven behind it, and the hourly
+# admission schedule runs late or not at all. This starts the admission retry at once, as a workflow_dispatch of
+# admission.yml on main (its retry mode; it decides by itself, from main's code). It is a separate file because GitHub
+# refused the push trigger in admission.yml itself. No checkout, no pull request content, no input.
+# A landing by the Actions bot starts no push run; the landing workflow covers that case.
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  retry:
+    if: github.repository_id == '1464323350' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      actions: write
+    steps:
+      - name: Start the admission retry on main
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run admission.yml --repo "$GITHUB_REPOSITORY" --ref main
