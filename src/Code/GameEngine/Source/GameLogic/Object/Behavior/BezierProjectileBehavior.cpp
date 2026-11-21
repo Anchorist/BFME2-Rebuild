@@ -29,7 +29,12 @@
 
 // FUNCTION: BFME2 0x0045BF6E size=101 name=??1BezierProjectileBehavior@@UAE@XZ evidence=N:ledger
 
+#include "GameLogic/Module/BezierProjectileBehavior.h"
 // FUNCTION: BFME2 0x0045BFD3 size=6 name=?GetSnapshotName@BezierProjectileBehavior@@MBEPBDXZ evidence=N:ledger
+const char *BezierProjectileBehavior::GetSnapshotName() const
+{
+	return "BezierProjectileBehavior";
+}
 
 // FUNCTION: BFME2 0x0045BFD9 size=69 name=?getModuleNameKey@BezierProjectileBehavior@@UBE?AW4NameKeyType@@XZ evidence=N:ledger
 

@@ -1,4 +1,9 @@
+// cl: /O1
+#include "Common/LANPreferences.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0044D285 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x0044D285 size=11 name=??1LANPreferences@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+LANPreferences::~LANPreferences()
+{
+}

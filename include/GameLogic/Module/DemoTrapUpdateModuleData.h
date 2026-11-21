@@ -24,6 +24,7 @@ class DemoTrapUpdateModuleData : public ModuleData
 public:
 	DemoTrapUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	const WeaponTemplate * m_detonationWeapon;             // +0x8 DetonationWeapon
 	KindOfMaskType m_ignoreTargetTypes;                    // +0xC IgnoreTargetTypes; BitFlags<218>

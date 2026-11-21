@@ -39,6 +39,7 @@ public:
 	virtual DamageModuleInterface *getDamage() { return this; }
 	virtual UpgradeModuleInterface *getUpgrade() { return this; }
 	FireWeaponWhenDamagedBehavior(Thing *thing, const ModuleData *moduleData);	// 0x00482803
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual void upgradeRemovalImplementation();
 	virtual void upgradeImplementation();
 	virtual ~FireWeaponWhenDamagedBehavior();

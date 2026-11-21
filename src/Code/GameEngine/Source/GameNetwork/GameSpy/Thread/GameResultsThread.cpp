@@ -7,6 +7,9 @@
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:name:Z
 // FUNCTION: BFME2 0x00419CD4 size=11 name=??1GameResultsInterface@@UAE@XZ evidence=N:ledger tier=B hypothesis:legacy-membership
+GameResultsInterface::~GameResultsInterface()
+{
+}
 // FUNCTION: BFME2 0x00419D18 size=18 name=??0GameResultsInterface@@QAE@XZ evidence=N:ledger tier=B hypothesis:K
 GameResultsInterface::GameResultsInterface()
 {

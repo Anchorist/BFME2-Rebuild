@@ -96,6 +96,7 @@ public:
 	virtual DieModuleInterface *getDie() { return this; }
 	virtual SlowDeathBehaviorInterface *getSlowDeathBehaviorInterface() { return this; }
 	SlowDeathBehavior(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~SlowDeathBehavior();	// out of line: subclass destructors tail-jump to it
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x0045DB0B)

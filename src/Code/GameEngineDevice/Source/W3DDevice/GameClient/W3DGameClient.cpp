@@ -18,10 +18,15 @@
 #include "GameClient/Drawable.h"
 #include "Common/ThingFactory.h"
 #include "GameClient/RayEffectSystem.h"
+#include "GameClient/GameClient.h"
 
 extern Int TheW3DFrameLengthInMsec;	// 0x00DE204C
 extern RayEffectSystem *TheRayEffects;	// 0x00DFEFF4
 // FUNCTION: BFME2 0x0004C457 size=6 name=?GetSnapshotName@GameClient@@MBEPBDXZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-pointers-mixed
+const char *GameClient::GetSnapshotName() const
+{
+	return "GameClient";
+}
 // FUNCTION: BFME2 0x0004C45D size=53 name=?rva0004C45D@Rva004C743@@UAEPAXXZ evidence=?:placeholder tier=B hypothesis:cohesion
 void *W3DGameClient::rva0004C45D()
 {

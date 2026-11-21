@@ -69,7 +69,6 @@ public:
     static AptValue **spRegBlockCurrentFrameBase; // VA 0x00E18354
     static int snRegBlockCurrentFrameCount;       // VA 0x00E18350 (the count comes first in retail: matched code reads it there)
     static int snRegisterBlockSize;               // VA 0x00E18358
-    static AptFrameStack *spFrameStack;           // VA 0x00E1835C (the interpreter's DefineLocal reads it directly)
     // SetArgument 0x00709C10 / 0x0070A400 store into the scope's hash (the AptNativeHash at +8) in place.
     static void SetScopeVariable(const EAStringC *name, AptValue *value) { ((AptValueWithHash *)spFrameStack)->mNativeHash.Set(name, value); }
 
@@ -80,6 +79,8 @@ protected:
     AptScriptFunctionBase(AptVirtualFunctionTable_Indices type, AptScriptFunctionBase *parent, AptCIH *cih, bool flag);
     AptScriptFunctionBase(AptVirtualFunctionTable_Indices type, AptScriptFunctionBase *parent, AptCIH *cih);
     virtual ~AptScriptFunctionBase();
+
+    static AptFrameStack *spFrameStack;           // VA 0x00E1835C
 
 
     AptCIH *mpCIH;                       // 0x20

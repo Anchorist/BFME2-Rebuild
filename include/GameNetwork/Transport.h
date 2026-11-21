@@ -38,7 +38,7 @@ public:
 	Transport();											// 0x004D4AF2
 	~Transport();
 	Bool init(const TransportAddress *address);				// 0x004D5219
-	Bool rva004D53B5(void *address);						// 0x004D53B5 (init without a socket: starts winsock, records the address and clears both rings and the statistics; the map has no better name)
+	Bool rva004D53B5(UnsignedInt localIP);						// 0x004D53B5 (init without a socket: starts winsock, records the address and clears both rings and the statistics; the map has no better name)
 	void Rva004D5496();										// 0x004D5496 (called once after the constructor; the map has no better name)
 	Bool init(AsciiString ip, UnsignedShort port);			// 0x004D5534
 	Bool doRecv(Rva00594DC0 *receiver);						// 0x004D4D08

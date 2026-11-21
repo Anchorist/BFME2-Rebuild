@@ -67,6 +67,7 @@ class StructureToppleUpdate : public UpdateModule, public DieModuleInterface
 {
 public:
 	StructureToppleUpdate(Thing *thing, const ModuleData *moduleData);	// 0x004A5556
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~StructureToppleUpdate();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void onDie(const DamageInfo *damageInfo);

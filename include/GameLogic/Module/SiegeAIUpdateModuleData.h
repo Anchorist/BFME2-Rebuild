@@ -14,6 +14,7 @@ class SiegeAIUpdateModuleData : public AIUpdateModuleData
 public:
 	SiegeAIUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 };
 typedef char SiegeAIUpdateModuleData_size[(sizeof(SiegeAIUpdateModuleData) == 0x64) ? 1 : -1];
 

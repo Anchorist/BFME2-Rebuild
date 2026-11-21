@@ -22,6 +22,9 @@ namespace Msvcr71
 #include "GameNetwork/GameSpy/GameSpyConfig.h"
 #include "Common/CustomMatchPreferences.h"
 #include "GameClient/GameText.h"
+#include "GameClient/MapCache.h"
+extern "C" __declspec(dllimport) unsigned long __stdcall GetTickCount(void);
+AsciiString getDefaultMap(Bool multiplayer);
 void GSMessageBoxOk(UnicodeString title, UnicodeString message, void (*okFunc)());	// 0x00548C59
 // The five group-room ids the lobby falls back to (retail VAs 0x00E02328, 0x00E0232C, 0x00E02330, 0x00E02334, 0x00E02338; the map holds them under these old-ledger names).
 extern Int g_lobbyRoom2ID;
@@ -127,6 +130,11 @@ int GameSpyInfo::getMaxMessagesPerUpdate(void)
 	return m_maxMessagesPerUpdate;
 }
 
+void GameSpyInfo::setMOTD(const AsciiString &motd)
+{
+	m_motd = motd;
+}
+
 
 // FUNCTION: BFME2 0x003820A4 size=45 name=?rva003820A4@Rva003820A4@@QAEXPAURva0038201DNode@@@Z evidence=?:placeholder tier=B hypothesis:cohesion
 
@@ -137,6 +145,10 @@ int GameSpyInfo::getMaxMessagesPerUpdate(void)
 // FUNCTION: BFME2 0x003821B9 size=30 name=?get@Rva003821B9AsciiField@@QBE?AVAsciiString@@XZ evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x003821E2 size=52 name=?assign@Rva003821E2@@QAEXVUnicodeString@@@Z evidence=?:placeholder tier=B hypothesis:cohesion
+void GameSpyStagingRoom::assign(UnicodeString name)
+{
+	m_gameName = name;
+}
 
 // FUNCTION: BFME2 0x00382216 size=30 name=?get@Rva00382216AsciiField@@QBE?AVAsciiString@@XZ evidence=?:placeholder tier=B hypothesis:cohesion
 AsciiString GameSpyGameSlot::getPingString() const
@@ -177,8 +189,41 @@ GameSpyGameSlot &GameSpyGameSlot::operator=(const GameSpyGameSlot &that)
 }
 
 // FUNCTION: BFME2 0x00382623 size=324 name=?rva00382623@Rva00382623@@QAEXXZ evidence=?:placeholder tier=A
+void GameSpyInfo::markAsStagingRoomHost()
+{
+	m_currentStagingRoomID = 0;
+	m_unk0x5DC = 0;
+	m_unk0x5E0 = true;
+	m_localStagingRoom.reset();
+	m_localStagingRoom.enterGame();
+	m_localStagingRoom.setSeed(GetTickCount());
+	GameSlot slot;
+	UnicodeString name;
+	name.translate(m_localName);
+	GameSlotConnectInfo none;
+	none.m_ip = 0;
+	none.m_port = 0;
+	slot.setState(SLOT_PLAYER, name, &none);
+	BfmeNetAddress info;
+	info.m_ip = m_localIP2;
+	info.m_port = 8088;
+	m_localStagingRoom.m_localAddress = info;
+	slot.m_address = info;
+	m_localStagingRoom.setSlot(0, slot);
+	m_localStagingRoom.setLocalName(m_localName);
+	TheMapCache->updateCache();
+	m_localStagingRoom.setMap(getDefaultMap(true));
+	m_localStagingRoom.adjustSlotsForMap();
+}
 
 // FUNCTION: BFME2 0x00382767 size=24 name=?addToBuddyList@GameSpyInfo@@UAEXH@Z evidence=N:ledger tier=A
+void GameSpyInfo::addToBuddyList(Int profileID)
+{
+	return;
+	UnicodeString buddyAddstr;
+	buddyAddstr = UnicodeString();
+	UnicodeString s;
+}
 
 // FUNCTION: BFME2 0x0038277F size=194 name=?getPingValue@GameSpyInfo@@UAEHABVAsciiString@@@Z evidence=N:ledger tier=A
 // Two hex digits of a ping string as a number (Zero Hour's static helper).
@@ -322,8 +367,16 @@ Bool GameSpyInfo::isBuddy(Int profileID)
 
 
 // FUNCTION: BFME2 0x0038374D size=6 name=?Rva0038374DGet@@YAHXZ evidence=?:placeholder tier=A
+const char *GameSpyStagingRoom::GetSnapshotName() const
+{
+	return "GameSpyStagingRoom";
+}
 
 // FUNCTION: BFME2 0x00383753 size=7 name=?get@Rva00383753DwordField@@QBEHXZ evidence=?:placeholder tier=A
+Int GameSpyStagingRoom::slot8() const
+{
+	return m_reportedNumPlayers;
+}
 
 // FUNCTION: BFME2 0x0038375A size=7 name=?get@Rva0038375ADwordField@@QBEHXZ evidence=?:placeholder tier=A
 Int GameSpyStagingRoom::slot9() const
@@ -332,6 +385,10 @@ Int GameSpyStagingRoom::slot9() const
 }
 
 // FUNCTION: BFME2 0x00383761 size=7 name=?get@Rva00383761DwordField@@QBEHXZ evidence=?:placeholder tier=A
+Int GameSpyStagingRoom::slot21()
+{
+	return m_pingValue;
+}
 
 // FUNCTION: BFME2 0x00383784 size=79 name=?rva00383784@Rva00386374@@UAEXVGameSpyStagingRoom@@@Z evidence=?:placeholder tier=A
 void GameSpyInfo::updateStagingRoom(GameSpyStagingRoom room)

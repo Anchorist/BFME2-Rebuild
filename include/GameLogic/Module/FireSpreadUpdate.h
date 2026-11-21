@@ -19,6 +19,7 @@ class FireSpreadUpdate : public UpdateModule
 {
 public:
 	FireSpreadUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;					// slot 4, 0x0048B690 (the map spells it as a static: rva00048B690)
 	virtual UpdateSleepTime update();
 

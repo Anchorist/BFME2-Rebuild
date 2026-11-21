@@ -44,6 +44,7 @@ class CastleBehaviorModuleData : public ModuleData
 public:
 	CastleBehaviorModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_repairHealthPercentPerSecond;					// +0x08 RepairHealthPercentPerSecond
 	Int m_buildVariation;									// +0x0C BuildVariation

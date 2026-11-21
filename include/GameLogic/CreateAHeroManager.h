@@ -114,6 +114,7 @@ public:
 	void LoadMyHeroList();							// 0x0021F47E
 	void UnbindHeroFromObjectAndUpdate(class Object *object);	// 0x00219757: grants the player the unbind upgrade for a Create-a-Hero object
 	Rva0040A3F9 *rva0021F797();						// 0x0021F797: loads the heroes, then returns the list
+	Bool GetAvailableHeroesForFaction(_STL::vector<UnsignedInt> *available, Int faction);	// 0x0021D548
 	void rva0021A428(const CreateAHeroData &hero);	// 0x0021A428 (AptSkirmish::InitCreateAHeroOnStartGame 0x005218AF calls it for the host slot's hero)
 
 	// One sub-class record of a create-a-hero class (0xD8 bytes, retail's element of the class's

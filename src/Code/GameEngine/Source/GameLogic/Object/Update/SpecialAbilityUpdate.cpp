@@ -252,10 +252,10 @@ void SpecialAbilityUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
 }
 
 // FUNCTION: BFME2 0x0044EDA6 size=97 name=?vslot08@SpecialAbilityUpdate@@UAE_NH@Z evidence=N:ledger
-bool SpecialAbilityUpdate::vslot08(int power)
+bool SpecialAbilityUpdate::vslot08(const Coord3D *location)
 {
 	const SpecialAbilityUpdateModuleData *data = (const SpecialAbilityUpdateModuleData *)getModuleData();
-	if (data && rva0044E7A8(power))
+	if (data && rva0044E7A8(location))
 	{
 		SpecialPowerType type = data->m_specialPowerTemplate->getFO()->m_type;
 		if (type == (SpecialPowerType)0x28 || type == (SpecialPowerType)0x27)

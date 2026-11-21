@@ -28,6 +28,7 @@ class W3DPropDraw : public DrawModule
 {
 public:
 	W3DPropDraw(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	virtual NameKeyType getModuleNameKey() const;							// 0x000CEEE6 (map: the static placeholder rva000CEEE6)
 	virtual void doDrawModule(const Matrix3D *transformMtx) {}				// slot 11, folded `ret 4`

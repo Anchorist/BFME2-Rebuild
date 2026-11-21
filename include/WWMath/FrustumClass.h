@@ -15,9 +15,13 @@
 #include "WWMath/PlaneClass.h"
 #include "WWMath/Vector3.h"
 
+class Vector2;
+
 class FrustumClass
 {
 public:
+	// Builds the frustum from the camera transform, the viewport corners and the near and far distances.
+	void Init(const Matrix3D &camera, const Vector2 &vpmin, const Vector2 &vpmax, float znear, float zfar, bool ortho);
 	const Vector3 &Get_Bound_Min(void) const { return BoundMin; }
 	const Vector3 &Get_Bound_Max(void) const { return BoundMax; }
 

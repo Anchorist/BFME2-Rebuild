@@ -7,6 +7,7 @@
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:cohesion
 #include "GameLogic/Module/DynamicPortalBehaviour.h"
+#include "GameLogic/GameLogic.h"
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/UpgradeModule.h"
 #include "Common/Xfer.h"
@@ -120,14 +121,37 @@ DynamicPortalBehaviour::~DynamicPortalBehaviour()
 // FUNCTION: BFME2 0x00460F90 size=711 name=?createWaypoints@DynamicPortalBehaviour@@QAEXXZ evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x00461257 size=29 name=?rva00461257@DynamicPortalBehaviour@@AAEXXZ evidence=?:placeholder tier=A
+void DynamicPortalBehaviour::rva00461257()
+{
+	if (!m_wasDestroyed)
+	{
+		if (((const unsigned char *)getModuleData())[0x13C] || m_unk0x3C)
+			createWaypoints();
+	}
+}
 
 // FUNCTION: BFME2 0x00461274 size=16 name=?loadPostProcess@DynamicPortalBehaviour@@MAEXXZ evidence=N:ledger tier=A
+void DynamicPortalBehaviour::loadPostProcess()
+{
+	UpgradeModule::loadPostProcess();
+	rva00461257();
+}
 
 // FUNCTION: BFME2 0x00461284 size=22 name=?mapLoadPostProcess@DynamicPortalBehaviour@@UAEXPBVDict@@@Z evidence=N:ledger tier=A
+void DynamicPortalBehaviour::mapLoadPostProcess(const Dict *properties)
+{
+	if (!TheGameLogic->m_unk0x6E)
+		rva00461257();
+}
 
 // FUNCTION: BFME2 0x0046129A size=149 name=?upgradeImplementation@DynamicPortalBehaviour@@UAEXXZ evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x0046132F size=12 name=?onBuildComplete@DynamicPortalBehaviour@@UAEXXZ evidence=N:ledger tier=A
+void DynamicPortalBehaviour::onBuildComplete()
+{
+	m_wasDestroyed = false;
+	rva00461257();
+}
 
 // FUNCTION: BFME2 0x0046133B size=176 name=?parseWayPoint@DynamicPortalBehaviourData@@SAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=A
 

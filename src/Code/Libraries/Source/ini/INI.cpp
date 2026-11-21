@@ -68,6 +68,15 @@ static const float RADS_PER_DEGREE = 0.017453292f;
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:Z, hypothesis:init-votes, hypothesis:padding
 // FUNCTION: BFME2 0x0002BAA0 size=26 name=??0MultiIniFieldParse@@QAE@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+MultiIniFieldParse::MultiIniFieldParse()
+{
+	m_count = 0;
+	for (int i = 0; i < MAX_MULTI_FIELDS; ++i)
+	{
+		m_extraOffset[i] = 0;
+		m_fieldParse[i] = 0;
+	}
+}
 // FUNCTION: BFME2 0x0002BABA size=10 name=?getNthFieldParse@MultiIniFieldParse@@QBEPBUFieldParse@@H@Z evidence=N:ledger tier=B hypothesis:Z
 const FieldParse *MultiIniFieldParse::getNthFieldParse(int i) const
 {

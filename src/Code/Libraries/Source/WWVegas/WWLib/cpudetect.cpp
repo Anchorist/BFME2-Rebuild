@@ -1033,6 +1033,92 @@ void CPUDetectClass::Init_Processor_String()
 
 
 // FUNCTION: BFME2 0x00612770 size=1872 name=?Init_Processor_Log@CPUDetectClass@@CAXXZ evidence=N:ledger tier=B hypothesis:K
+#define SYSLOG(n) work.Format n ; CPUDetectClass::ProcessorLog += work;
+void CPUDetectClass::Init_Processor_Log()
+{
+	StringClass work(0, true);
+
+	SYSLOG(("Operating System: "));
+	switch (OSVersionPlatformId) {
+	case VER_PLATFORM_WIN32s: SYSLOG(("Windows 3.1")); break;
+	case VER_PLATFORM_WIN32_WINDOWS: SYSLOG(("Windows 9x")); break;
+	case VER_PLATFORM_WIN32_NT: SYSLOG(("Windows NT")); break;
+	}
+	SYSLOG(("\r\n"));
+
+	SYSLOG(("Operating system version %d.%d\r\n", OSVersionNumberMajor, OSVersionNumberMinor));
+	SYSLOG(("Operating system build: %d.%d.%d\r\n",
+		(OSVersionBuildNumber & 0xff000000) >> 24,
+		(OSVersionBuildNumber & 0x00ff0000) >> 16,
+		(OSVersionBuildNumber & 0x0000ffff)));
+	SYSLOG(("OS-Info: %s\r\n", OSVersionExtraInfo.Peek_Buffer()));
+
+	SYSLOG(("Processor: %s\r\n", CPUDetectClass::Get_Processor_String()));
+	SYSLOG(("Clock speed: ~%dMHz\r\n", ProcessorSpeed));
+	StringClass cpu_type(0, true);
+	switch (ProcessorType) {
+	case 0: cpu_type = "Original OEM"; break;
+	case 1: cpu_type = "Overdrive"; break;
+	case 2: cpu_type = "Dual"; break;
+	case 3: cpu_type = "*Intel Reserved*"; break;
+	}
+	SYSLOG(("Processor type: %s\r\n", cpu_type.Peek_Buffer()));
+
+	SYSLOG(("\r\n"));
+
+	SYSLOG(("Total physical memory: %dMb\r\n", (unsigned)(TotalPhysicalMemory / (1024 * 1024))));
+	SYSLOG(("Available physical memory: %dMb\r\n", (unsigned)(AvailablePhysicalMemory / (1024 * 1024))));
+	SYSLOG(("Total page file size: %dMb\r\n", (unsigned)(TotalPageMemory / (1024 * 1024))));
+	SYSLOG(("Total available page file size: %dMb\r\n", (unsigned)(AvailablePageMemory / (1024 * 1024))));
+	SYSLOG(("Total virtual memory: %dMb\r\n", (unsigned)(TotalVirtualMemory / (1024 * 1024))));
+	SYSLOG(("Available virtual memory: %dMb\r\n", (unsigned)(AvailableVirtualMemory / (1024 * 1024))));
+
+	SYSLOG(("\r\n"));
+
+	SYSLOG(("CPUID: %s\r\n", CPUDetectClass::Has_CPUID_Instruction() ? "Yes" : "No"));
+	SYSLOG(("RDTSC: %s\r\n", CPUDetectClass::Has_RDTSC_Instruction() ? "Yes" : "No"));
+	SYSLOG(("CMOV: %s\r\n", HasCMOVSupport ? "Yes" : "No"));
+	SYSLOG(("MMX: %s\r\n", CPUDetectClass::Has_MMX_Instruction_Set() ? "Yes" : "No"));
+	SYSLOG(("SSE: %s\r\n", CPUDetectClass::Has_SSE_Instruction_Set() ? "Yes" : "No"));
+	SYSLOG(("SSE2: %s\r\n", CPUDetectClass::Has_SSE2_Instruction_Set() ? "Yes" : "No"));
+	SYSLOG(("3DNow!: %s\r\n", CPUDetectClass::Has_3DNow_Instruction_Set() ? "Yes" : "No"));
+	SYSLOG(("Extended 3DNow!: %s\r\n", CPUDetectClass::Has_Extended_3DNow_Instruction_Set() ? "Yes" : "No"));
+	SYSLOG(("CPU Feature bits: 0x%x\r\n", FeatureBits));
+	SYSLOG(("Ext. CPU Feature bits: 0x%x\r\n", ExtendedFeatureBits));
+
+	SYSLOG(("\r\n"));
+
+	if (L1DataCacheSize) {
+		SYSLOG(("L1 Data Cache: %d byte cache lines, %d way set associative, %dk\r\n",
+			L1DataCacheLineSize, L1DataCacheSetAssociative, L1DataCacheSize / 1024));
+	} else {
+		SYSLOG(("L1 Data Cache: None\r\n"));
+	}
+
+	if (L1InstructionCacheSize) {
+		SYSLOG(("L1 Instruction Cache: %d byte cache lines, %d way set associative, %dk\r\n",
+			L1InstructionCacheLineSize, L1InstructionCacheSetAssociative, L1InstructionCacheSize / 1024));
+	} else {
+		SYSLOG(("L1 Instruction Cache: None\r\n"));
+	}
+
+	if (L1InstructionTraceCacheSize) {
+		SYSLOG(("L1 Instruction Trace Cache: %d way set associative, %dk \xb5OPs\r\n",
+			L1InstructionCacheSetAssociative, L1InstructionCacheSize / 1024));
+	} else {
+		SYSLOG(("L1 Instruction Trace Cache: None\r\n"));
+	}
+
+	if (L2CacheSize) {
+		SYSLOG(("L2 Cache: %d byte cache lines, %d way set associative, %dk\r\n",
+			L2CacheLineSize, L2CacheSetAssociative, L2CacheSize / 1024));
+	} else {
+		SYSLOG(("L2 cache: None\r\n"));
+	}
+	SYSLOG(("\r\n"));
+}
+#undef SYSLOG
+
 
 // FUNCTION: BFME2 0x00612ED0 size=488 name=?Init_Compact_Log@CPUDetectClass@@CAXXZ evidence=N:ledger tier=B hypothesis:K
 

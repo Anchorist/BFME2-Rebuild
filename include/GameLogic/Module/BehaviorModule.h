@@ -121,6 +121,7 @@ public:
 protected:
 	virtual ~BehaviorModule() {}
 	virtual void loadPostProcess();										// Snapshot slot 1
+	virtual const char *GetSnapshotName() const;						// Snapshot slot 2, 0x0024A791
 	virtual void xfer(Xfer *xfer);											// Snapshot slot 3
 
 public:

@@ -1098,7 +1098,7 @@ EAStringC EAStringC::rva006D5690(int count) const
 }
 
 // FUNCTION: BFME2 0x006D5770 size=217 name=?Mid@EAStringC@@QBE?AV1@H@Z evidence=N:ledger
-// 96% of retail 0x006D5770: the body is the old ledger's EAStringCMid.cpp port
+// 96% of retail 0x006D5770: the body is a port of EAStringCMid.cpp
 // (empty via EAStringC(), else copy *this and ChangeBuffer(size,start,size,...));
 // this build is 209 bytes against 217, the difference sitting in the
 // copy/ChangeBuffer tail.

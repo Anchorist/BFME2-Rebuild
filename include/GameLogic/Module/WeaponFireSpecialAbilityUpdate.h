@@ -40,7 +40,7 @@ public:
 	virtual void startPacking(bool);
 	virtual void startUnpacking();
 	virtual UpdateSleepTime update();
-	virtual bool vslot08(int value);
+	virtual bool vslot08(const Coord3D *location);
 
 	const WeaponFireSpecialAbilityUpdateModuleData *getWeaponFireSpecialAbilityUpdateModuleData() const
 	{

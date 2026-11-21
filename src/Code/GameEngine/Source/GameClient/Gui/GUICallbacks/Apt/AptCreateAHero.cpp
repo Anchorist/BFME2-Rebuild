@@ -3,7 +3,7 @@
 #include "GameClient/AptMyHero.h"
 #include "GameClient/Shell.h"
 #include "GameLogic/GameLogic.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "Common/GlobalData.h"
 #include "Common/MessageStream.h"
 extern "C" unsigned char *__cdecl _mbscpy(unsigned char *, const unsigned char *);
@@ -21,7 +21,7 @@ bool AptCreateAHero::canLeave()
 {
 	if (TheGameLogic != 0 && TheShell != 0 && TheGameLogic->m_gameMode != 7)
 	{
-		((Rva00222A8BTarget *)g_bfmeAptWindowManager)->rva002233A6(1);
+		g_bfmeAptWindowManager->showBackground(1);
 		return false;
 	}
 	return true;
@@ -33,7 +33,7 @@ void Rva00513866(void)
 	if (AptCreateAHero::s_instance != 0)
 	{
 		TheMessageStream->appendMessage((GameMessage::Type)0x1d);
-		((Rva00222479ByteOneSetter *)g_bfmeAptWindowManager)->enable();
+		g_bfmeAptWindowManager->enable();
 	}
 }
 

@@ -1,7 +1,7 @@
 // cl: /O1
 #include "GameClient/AptPlayerTribute.h"
 #include "GameClient/Shell.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include <string.h>
 #include "Common/AsciiString.h"
 #include "Common/UnicodeString.h"
@@ -59,7 +59,7 @@ void AptPlayerTribute::CloseScreen()
 	{
 		screen->m_flag278 = true;
 		TheShell->setClearBackground(true);
-		((Rva00222479ByteOneSetter *)g_bfmeAptWindowManager)->enable();
+		g_bfmeAptWindowManager->enable();
 	}
 }
 

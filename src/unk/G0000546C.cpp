@@ -1,5 +1,7 @@
 // cl: /O1
 #include "Common/Xfer.h"
+// The typed transfer operators of Xfer. Each passes the value to the XferData virtual with a four character tag for
+// its type ('byte', 'ubyt', 'bool', 'int', 'i64', 'uint', 'shrt', 'usht', 'real') and its size.
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0000546C name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.

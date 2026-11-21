@@ -6,6 +6,11 @@
 // Edges: left=no-edge-evidence right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
 // FUNCTION: BFME2 0x00180581 size=6 name=?Rva00180581Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:K
+// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+int Rva00180581Get()
+{
+	return 0x50415254;	// the four bytes spell "PART"
+}
 
 // FUNCTION: BFME2 0x00180587 size=39 name=?rva00180587@Rva001805E0@@UAEPAVParticleEmitterClass@@XZ evidence=?:placeholder tier=B hypothesis:K
 

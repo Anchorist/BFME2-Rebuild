@@ -35,6 +35,7 @@ class DamageFilteredCreateObjectDie : public DieModule, public DamageModuleInter
 public:
 	char const * name() const;
 	DamageFilteredCreateObjectDie(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual DamageModuleInterface *getDamage() { return this; }	// override: getDamage slot 4 at +0xC (0x00485EE9, emitted inline)

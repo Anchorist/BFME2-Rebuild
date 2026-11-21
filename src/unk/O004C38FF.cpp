@@ -8,6 +8,10 @@
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/ElvenWoodSpecialPower.h"
 // FUNCTION: BFME2 0x004C38D5 size=42 name=??0ElvenWoodSpecialPower@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+ElvenWoodSpecialPower::ElvenWoodSpecialPower(Thing *thing, const ModuleData *moduleData)
+	: SpecialPowerModule(thing, moduleData)
+{
+}
 // FUNCTION: BFME2 0x004C38FF size=6 name=?Rva004C38FFGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
 const char *ElvenWoodSpecialPower::GetSnapshotName() const
 {

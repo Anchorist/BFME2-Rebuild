@@ -8,6 +8,11 @@
 // FUNCTION: BFME2 0x004D93F7 size=92 name=?countsAsMoveIntoCamp@@YAEIPBUBfmePointFD@@0@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x004D9453 size=76 name=?getVictimAndEnterMessage@@YAXPBVDrawableList@@W4Type@GameMessage@@PAVPickAndPlayInfo@@PAPAVObject@@PAW423@PA_N@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x004D949F size=6 name=?Rva004D949FGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
+// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+int Rva004D949FGet()
+{
+	return 0x80000000;
+}
 // FUNCTION: BFME2 0x004D94A5 size=14 name=?get@Rva004D94A5DivMovField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x004D94EE size=14 name=?get@Rva004D94EEDivMovField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:K
 

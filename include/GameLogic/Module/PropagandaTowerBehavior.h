@@ -52,6 +52,7 @@ class PropagandaTowerBehavior : public UpdateModule, public DieModuleInterface
 {
 public:
 	PropagandaTowerBehavior(Thing *thing, const ModuleData *moduleData);	// 0x004819CF
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~PropagandaTowerBehavior();									// 0x0048180C (deleting thunk 0x00481A38)
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void onObjectCreated();										// slot 5, 0x00481A54

@@ -12,7 +12,7 @@ public:
     virtual void startPreparation();
     virtual void triggerAbilityEffect();
     virtual bool continuePreparation();
-    virtual bool vslot08(int value);
+    virtual bool vslot08(const Coord3D *location);
     void rva00490AC5();
 protected:
     virtual const char *GetSnapshotName() const;	// slot 2, 0x004907F1 (the map spells it ?name@ArrowStormUpdate@@QBEPBDXZ)

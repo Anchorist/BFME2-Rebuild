@@ -269,6 +269,17 @@ void DX8MeshRendererClass::Unregister_Mesh_Type(MeshModelClass *mmc)
 // FUNCTION: BFME2 0x00144A00 size=225 name=??0DX8TextureCategoryClass@@QAE@PAVDX8FVFCategoryContainer@@PAPAVTextureClass@@VShaderClass@@PAVVertexMaterialClass@@H@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x00144AF0 size=212 name=??1DX8TextureCategoryClass@@UAE@XZ evidence=N:ledger tier=A
+DX8TextureCategoryClass::~DX8TextureCategoryClass(void)
+{
+	if (TheDX8MeshRenderer != NULL) {
+		while (DX8PolygonRendererClass *p_renderer = PolygonRendererList.Peek_Head()) {
+			TheDX8MeshRenderer->Unregister_Mesh_Type(p_renderer->Get_Mesh_Model_Class());
+		}
+	}
+	if (Material) {
+		Material->Release_Ref();
+	}
+}
 
 // FUNCTION: BFME2 0x00144BD0 size=88 name=?Add_Render_Task@DX8TextureCategoryClass@@QAEXPAVDX8PolygonRendererClass@@PAVMeshClass@@@Z evidence=N:ledger tier=A
 

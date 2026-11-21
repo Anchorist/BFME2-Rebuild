@@ -1,10 +1,34 @@
+// cl: /O1
+#include "GameClient/GameWindow.h"
+#include "GameClient/WinInstanceData.h"
+#include "GameClient/Image.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G000A47A7 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x000A47A7 size=7 name=?get@Rva000A47A7ByteField@@QBEEXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x000A47AE size=8 name=?Rva000A47AEGet@@YAHPBURva000A47AERecord@@@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x000A47B6 size=8 name=?getEnabledBorderColor1@@YAIPAVGameWindow@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+unsigned int getEnabledBorderColor1(GameWindow *window)
+{
+	return window->m_instData.m_enabledDrawData[1].borderColor;
+}
 // FUNCTION: BFME2 0x000A47BE size=8 name=?getEnabledImage1@@YAPBVImage@@PAVGameWindow@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+const Image * getEnabledImage1(GameWindow *window)
+{
+	return window->m_instData.m_enabledDrawData[1].image;
+}
 // FUNCTION: BFME2 0x000A47C6 size=8 name=?getEnabledImage3@@YAPBVImage@@PAVGameWindow@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+const Image * getEnabledImage3(GameWindow *window)
+{
+	return window->m_instData.m_enabledDrawData[3].image;
+}
 // FUNCTION: BFME2 0x000A47CE size=8 name=?getEnabledImage4@@YAPBVImage@@PAVGameWindow@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+const Image * getEnabledImage4(GameWindow *window)
+{
+	return window->m_instData.m_enabledDrawData[4].image;
+}
 // FUNCTION: BFME2 0x000A47D6 size=8 name=?getEnabledImage0@@YAPBVImage@@PAVGameWindow@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+const Image * getEnabledImage0(GameWindow *window)
+{
+	return window->m_instData.m_enabledDrawData[0].image;
+}

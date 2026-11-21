@@ -11,6 +11,7 @@ class W3DTornadoDraw : public DrawModule
 {
 public:
 	W3DTornadoDraw(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~W3DTornadoDraw();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void onDrawableBoundToObject();

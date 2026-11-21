@@ -42,6 +42,8 @@ public:
 	static void Set_Texture_Filter(int filter);					// 0x00117280
 	static int Get_Texture_Filter() { return TextureFilter; }
 	static unsigned int Get_Sync_Time(void) { return SyncTime; }	// the frame clock animations step from (Animatable3DObjClass::Set_Animation 0x001A4BF0 and Single_Anim_Progress 0x001A5320 read it)
+	// The time between the previous sync and this one.
+	static unsigned int Get_Frame_Time(void) { return SyncTime - PreviousSyncTime; }
 	// DX8MeshRendererClass::Request_Log_Statistics 0x00143D00 reads it.
 	static int Get_Frame_Count(void) { return FrameCount; }
 	static bool Is_Rendering(void) { return IsRendering; }

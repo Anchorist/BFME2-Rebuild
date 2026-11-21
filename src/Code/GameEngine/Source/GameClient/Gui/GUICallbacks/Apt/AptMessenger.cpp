@@ -2,7 +2,7 @@
 #include "GameClient/AptMessenger.h"
 #include "Common/UnicodeString.h"
 #include "Common/AsciiString.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "Common/Coord2D.h"
 #include "Common/GlobalData.h"
 #include "GameClient/GameWindow.h"
@@ -142,7 +142,7 @@ void Rva005118F3Show(int tab, bool clear)
 		g_Va00E046BC = tab;
 		if (g_aptMessenger)
 		{
-			((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(g_aptMessenger->m_callbackOwner, "ShowActiveTab", 0, 0, 0, 0, 0, 0);
+			g_bfmeAptWindowManager->invoke(g_aptMessenger->m_callbackOwner, "ShowActiveTab", 0, 0, 0, 0, 0, 0);
 			g_aptMessenger->m_refresh = true;
 			ChatWindowsInGame *oldList = g_aptMessenger->m_lists[oldTab];
 			ChatWindowsInGame *newList = g_aptMessenger->m_lists[g_Va00E046BC];

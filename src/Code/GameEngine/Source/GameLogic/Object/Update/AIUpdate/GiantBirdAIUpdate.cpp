@@ -379,6 +379,24 @@ void AIGiantBirdSwoopState::xfer(Xfer *xfer)
 }
 
 // FUNCTION: BFME2 0x003692ED size=141 name=?onExit@AIGiantBirdSwoopState@@UAEXW4StateExitType@@@Z evidence=N:ledger
+void AIGiantBirdSwoopState::onExit(StateExitType status)
+{
+	State::onExit(status);
+	Object *obj = getMachineOwner();
+	if (obj != NULL)
+	{
+		obj->clearModelConditionState((ModelConditionFlagType)61);
+		obj->clearModelConditionState((ModelConditionFlagType)103);
+		obj->clearModelConditionState((ModelConditionFlagType)72);
+		AIUpdateInterface *ai = obj->getAI();
+		if (ai != NULL)
+		{
+			ai->chooseLocomotorSet(0);
+			ai->setCurrentVictim(0);
+		}
+		obj->rva0028ACEE((Int)obj->getPosition(), 1);
+	}
+}
 
 // FUNCTION: BFME2 0x0036937A size=33 name=?xfer@AIGiantBirdAttack@@MAEXPAVXfer@@@Z evidence=N:ledger
 
@@ -391,6 +409,22 @@ void GiantBirdAIUpdate::setUnk0x4B8Bit5(Bool value)
 }
 
 // FUNCTION: BFME2 0x00369418 size=154 name=?onExit@AIGiantBirdFollowThruState@@UAEXW4StateExitType@@@Z evidence=N:ledger
+void AIGiantBirdFollowThruState::onExit(StateExitType status)
+{
+	State::onExit(status);
+	Object *obj = getMachineOwner();
+	obj->clearModelConditionState((ModelConditionFlagType)61);
+	obj->clearModelConditionState((ModelConditionFlagType)103);
+	obj->clearModelConditionState((ModelConditionFlagType)72);
+	obj->clearModelConditionState((ModelConditionFlagType)155);
+	obj->rva0028ACEE((Int)obj->getPosition(), 1);
+	GiantBirdAIUpdate *ai = (GiantBirdAIUpdate *)obj->getAI();
+	if (ai != NULL)
+	{
+		ai->m_unk0x558 = false;
+		ai->m_unk0x55C = 2;
+	}
+}
 
 // FUNCTION: BFME2 0x003694B2 size=222 name=?update@GiantBirdFollowWaypointPathState@@UAE?AW4StateReturnType@@XZ evidence=N:ledger
 

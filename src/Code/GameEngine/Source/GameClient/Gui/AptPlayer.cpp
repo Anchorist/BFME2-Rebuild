@@ -29,11 +29,10 @@ int __stdcall Rva00222B19AptCall(void *, const char *, const char *, int, const 
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:cohesion
-#include "Apt/BfmeAptWindowManager.h"
 
 // The Apt window manager global (retail VA 0x00DFE4CC, .bss): this unit's constructor installs it (0x00224F35) and its
 // .bss follows at 0x00DFE4D8; nothing else between InGameNotificationType's cell 0x00DFE4C4 and here writes it.
-BfmeAptWindowManager *g_bfmeAptWindowManager = 0;
+AptPlayer *g_bfmeAptWindowManager = 0;
 // FUNCTION: BFME2 0x002223FE size=55 name=?Rva002223FECreateLayout@@YGPAVAptWindowLayout@@PAX@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers+shared-data
 // FUNCTION: BFME2 0x00222435 size=11 name=?rva00222435@@YAXI@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers+shared-data
 // FUNCTION: BFME2 0x00222440 size=13 name=?rva00222440@@YAXI@Z evidence=?:placeholder tier=B hypothesis:mm1-contiguity-callers+shared-data
@@ -387,21 +386,21 @@ void AptPlayer::hideBackground(bool flag)
 // FUNCTION: BFME2 0x00223263 size=323 name=?WinCreate@AptPlayer@@QAEPAVGameWindow@@PBVAsciiString@@PAUAptLayoutInfoView@@@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x002233A6 size=74 name=?rva002233A6@Rva00222A8BTarget@@QAEXH@Z evidence=?:placeholder tier=A
-void Rva00222A8BTarget::rva002233A6(int mode)
+void AptPlayer::showBackground(int mode)
 {
 	m_backgroundMode = mode;
 	switch (mode)
 	{
 	case 1:
-		m_flag320 = 0;
-		invoke(m_backgroundLevel, "ShowFrontEndBackground", 0, 0, 0, 0, 0, 0);
+		m_savedBackgroundMode = 0;
+		invoke(reinterpret_cast<void *>(m_backgroundLevel), "ShowFrontEndBackground", 0, 0, 0, 0, 0, 0);
 		break;
 	case 2:
-		m_flag320 = 0;
-		invoke(m_backgroundLevel, "ShowInGameBackground", 0, 0, 0, 0, 0, 0);
+		m_savedBackgroundMode = 0;
+		invoke(reinterpret_cast<void *>(m_backgroundLevel), "ShowInGameBackground", 0, 0, 0, 0, 0, 0);
 		break;
 	case 0:
-		rva00222F55(false);
+		hideBackground(false);
 		break;
 	default:
 		break;
@@ -543,7 +542,7 @@ void AptPlayer::updateFocus()
 // FUNCTION: BFME2 0x00224BC9 size=18 name=?check@Rva00224BC9Owner@@QAE_NXZ evidence=?:placeholder tier=A
 void AptPlayer::removeBackground()
 {
-	((AptPlayer *)g_bfmeAptWindowManager)->RemoveLevel(m_backgroundLevel);
+	g_bfmeAptWindowManager->RemoveLevel(m_backgroundLevel);
 }
 
 // FUNCTION: BFME2 0x00224BDB size=155 name=?rva00224BDB@Rva00224BDBMap@@QAEAAVRva0022300F@@ABVAsciiString@@@Z evidence=?:placeholder tier=A

@@ -6,6 +6,10 @@
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/WeaponChangeSpecialPowerModule.h"
 // FUNCTION: BFME2 0x004C3FF8 size=42 name=??0WeaponChangeSpecialPowerModule@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+WeaponChangeSpecialPowerModule::WeaponChangeSpecialPowerModule(Thing *thing, const ModuleData *moduleData)
+	: SpecialPowerModule(thing, moduleData)
+{
+}
 // FUNCTION: BFME2 0x004C4022 size=6 name=?Rva004C4022Get@@YAHXZ evidence=?:placeholder
 const char *WeaponChangeSpecialPowerModule::GetSnapshotName() const
 {

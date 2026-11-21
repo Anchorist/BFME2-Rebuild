@@ -31,6 +31,7 @@ class SupplyCenterDockUpdate : public DockUpdate
 {
 public:
 	SupplyCenterDockUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~SupplyCenterDockUpdate() {}
 	virtual NameKeyType getModuleNameKey() const;
 	// Slot 12 of the +0x20 dock table per the header comment above. Its bytes are open: the

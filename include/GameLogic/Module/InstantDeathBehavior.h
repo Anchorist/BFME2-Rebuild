@@ -23,6 +23,7 @@ class InstantDeathBehavior : public DieModule
 {
 public:
 	InstantDeathBehavior(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual void onDie(const DamageInfo *damageInfo);

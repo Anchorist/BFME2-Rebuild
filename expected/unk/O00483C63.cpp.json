@@ -42,7 +42,8 @@
         "?loadPostProcess@ObjectRecoveryHelper@@MAEXXZ",
         "?loadPostProcess@ObjectRepulsorHelper@@MAEXXZ",
         "?loadPostProcess@ObjectWeaponStatusHelper@@MAEXXZ",
-        "?loadPostProcess@ClearanceTestingSlowDeathBehavior@@MAEXXZ"
+        "?loadPostProcess@ClearanceTestingSlowDeathBehavior@@MAEXXZ",
+        "?loadPostProcess@ObjectSMCHelper@@MAEXXZ"
       ],
       "parent": "0x00497805",
       "object": "retained:O00483C63",

@@ -39,6 +39,7 @@ class W3DRopeDraw : public DrawModule, public RopeDrawInterface
 {
 public:
 	W3DRopeDraw(Thing *thing, const ModuleData *moduleData);				// 0x000CA752
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~W3DRopeDraw();
 
 	virtual NameKeyType getModuleNameKey() const;							// 0x000CA7F6

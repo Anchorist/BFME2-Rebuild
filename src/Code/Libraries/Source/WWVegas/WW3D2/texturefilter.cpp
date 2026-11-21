@@ -2,7 +2,9 @@
 // dxsdk
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 #include "WW3D2/TextureFilterClass.h"
+#include <d3d8.h>
 #include "WW3D2/DX8Wrapper.h"
+#include "WW3D2/DX8Caps.h"
 // The per-stage filter tables, defined here in retail .bss order: 0x00DF3048, 0x00DF3188, 0x00DF32C8 (16 x 5 words each).
 unsigned int _MinTextureFilters[TextureFilterClass::MAX_TEXTURE_STAGES][TextureFilterClass::FILTER_TYPE_COUNT] = { 0 };
 unsigned int _MagTextureFilters[TextureFilterClass::MAX_TEXTURE_STAGES][TextureFilterClass::FILTER_TYPE_COUNT] = { 0 };
@@ -25,6 +27,7 @@ const unsigned SAMPLER_MINFILTER = 6;
 const unsigned SAMPLER_MIPFILTER = 7;
 const unsigned SAMPLER_ADDRESS_WRAP = 1;
 const unsigned SAMPLER_ADDRESS_CLAMP = 3;
+const unsigned SAMPLER_MAXANISOTROPY = 10;
 
 // FUNCTION: BFME2 0x0013EA30 size=291 name=?Apply@TextureFilterClass@@QAEXI@Z evidence=N:ledger tier=B hypothesis:name:Z
 void TextureFilterClass::Apply(unsigned int stage)
@@ -53,6 +56,75 @@ void TextureFilterClass::Apply(unsigned int stage)
 }
 
 // FUNCTION: BFME2 0x0013EB60 size=420 name=?_Init_Filters@TextureFilterClass@@SAXW4TextureFilterMode@1@@Z evidence=N:ledger tier=B hypothesis:Z
+void TextureFilterClass::_Init_Filters(TextureFilterMode filter_type)
+{
+	const D3DCAPS8 &dx8caps = DX8Wrapper::Get_Current_Caps()->Get_DX8_Caps();
+
+	_MinTextureFilters[0][FILTER_TYPE_NONE] = D3DTEXF_POINT;
+	_MagTextureFilters[0][FILTER_TYPE_NONE] = D3DTEXF_POINT;
+	_MipMapFilters[0][FILTER_TYPE_NONE] = D3DTEXF_NONE;
+
+	_MinTextureFilters[0][FILTER_TYPE_FAST] = D3DTEXF_LINEAR;
+	_MagTextureFilters[0][FILTER_TYPE_FAST] = D3DTEXF_LINEAR;
+	_MipMapFilters[0][FILTER_TYPE_FAST] = D3DTEXF_POINT;
+
+	_MagTextureFilters[0][FILTER_TYPE_BEST] = D3DTEXF_POINT;
+	_MinTextureFilters[0][FILTER_TYPE_BEST] = D3DTEXF_POINT;
+	_MipMapFilters[0][FILTER_TYPE_BEST] = D3DTEXF_POINT;
+
+	_MinTextureFilters[0][FILTER_TYPE_RESERVED] = D3DTEXF_POINT;
+	_MagTextureFilters[0][FILTER_TYPE_RESERVED] = D3DTEXF_POINT;
+	_MipMapFilters[0][FILTER_TYPE_RESERVED] = D3DTEXF_NONE;
+
+	if (dx8caps.TextureFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR) _MagTextureFilters[0][FILTER_TYPE_BEST] = D3DTEXF_LINEAR;
+	if (dx8caps.TextureFilterCaps & D3DPTFILTERCAPS_MINFLINEAR) _MinTextureFilters[0][FILTER_TYPE_BEST] = D3DTEXF_LINEAR;
+
+	// Set anisotropic filtering only if requested and available
+	if (filter_type == TEXTURE_FILTER_ANISOTROPIC) {
+		if (dx8caps.TextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC) _MagTextureFilters[0][FILTER_TYPE_BEST] = D3DTEXF_ANISOTROPIC;
+		if (dx8caps.TextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC) _MinTextureFilters[0][FILTER_TYPE_BEST] = D3DTEXF_ANISOTROPIC;
+	}
+
+	// Set linear mip filter only if requested trilinear or anisotropic, and linear available
+	if (filter_type == TEXTURE_FILTER_ANISOTROPIC || filter_type == TEXTURE_FILTER_TRILINEAR) {
+		if (dx8caps.TextureFilterCaps & D3DPTFILTERCAPS_MIPFLINEAR) _MipMapFilters[0][FILTER_TYPE_BEST] = D3DTEXF_LINEAR;
+	}
+
+	// For stages above zero, set best filter to the same as stage zero, except if anisotropic
+	unsigned int i;
+	for (i = 1; i < MAX_TEXTURE_STAGES; ++i) {
+		_MinTextureFilters[i][FILTER_TYPE_NONE] = _MinTextureFilters[i - 1][FILTER_TYPE_NONE];
+		_MagTextureFilters[i][FILTER_TYPE_NONE] = _MagTextureFilters[i - 1][FILTER_TYPE_NONE];
+		_MipMapFilters[i][FILTER_TYPE_NONE] = _MipMapFilters[i - 1][FILTER_TYPE_NONE];
+
+		_MinTextureFilters[i][FILTER_TYPE_FAST] = _MinTextureFilters[i - 1][FILTER_TYPE_FAST];
+		_MagTextureFilters[i][FILTER_TYPE_FAST] = _MagTextureFilters[i - 1][FILTER_TYPE_FAST];
+		_MipMapFilters[i][FILTER_TYPE_FAST] = _MipMapFilters[i - 1][FILTER_TYPE_FAST];
+
+		if (_MagTextureFilters[i - 1][FILTER_TYPE_BEST] == D3DTEXF_ANISOTROPIC) {
+			_MagTextureFilters[i][FILTER_TYPE_BEST] = D3DTEXF_LINEAR;
+		} else {
+			_MagTextureFilters[i][FILTER_TYPE_BEST] = _MagTextureFilters[i - 1][FILTER_TYPE_BEST];
+		}
+
+		if (_MinTextureFilters[i - 1][FILTER_TYPE_BEST] == D3DTEXF_ANISOTROPIC) {
+			_MinTextureFilters[i][FILTER_TYPE_BEST] = D3DTEXF_LINEAR;
+		} else {
+			_MinTextureFilters[i][FILTER_TYPE_BEST] = _MinTextureFilters[i - 1][FILTER_TYPE_BEST];
+		}
+		_MipMapFilters[i][FILTER_TYPE_BEST] = _MipMapFilters[i - 1][FILTER_TYPE_BEST];
+	}
+
+	// Set default to best. The level of best filter mode is controlled by the input parameter.
+	for (i = 0; i < MAX_TEXTURE_STAGES; ++i) {
+		_MinTextureFilters[i][FILTER_TYPE_DEFAULT] = _MinTextureFilters[i][FILTER_TYPE_BEST];
+		_MagTextureFilters[i][FILTER_TYPE_DEFAULT] = _MagTextureFilters[i][FILTER_TYPE_BEST];
+		_MipMapFilters[i][FILTER_TYPE_DEFAULT] = _MipMapFilters[i][FILTER_TYPE_BEST];
+
+		TEXTURE_FILTER_SET_SAMPLER_STATE(i, SAMPLER_MAXANISOTROPY, 2);
+	}
+}
+
 
 // FUNCTION: BFME2 0x0013ED20 size=38 name=?_Set_Default_Min_Filter@TextureFilterClass@@SAXW4FilterType@1@@Z evidence=N:ledger tier=B hypothesis:Z
 void TextureFilterClass::_Set_Default_Min_Filter(FilterType filter)

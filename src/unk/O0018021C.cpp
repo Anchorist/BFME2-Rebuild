@@ -8,6 +8,11 @@
 // FUNCTION: BFME2 0x0018021C size=82 name=??1Gen_dtor_00970f60@@UAE@XZ evidence=N:ledger tier=B hypothesis:name:invented
 
 // FUNCTION: BFME2 0x0018026E size=6 name=?Rva0018026EGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:K
+// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+int Rva0018026EGet()
+{
+	return 0x4D455348;	// the four bytes spell "MESH"
+}
 
 // FUNCTION: BFME2 0x00180274 size=248 name=?Load@Gen_dtor_00970f60@@UAEXXZ evidence=N:ledger tier=B hypothesis:K
 

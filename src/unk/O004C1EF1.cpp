@@ -8,6 +8,10 @@
 #include "GameLogic/Module/OathbreakerBody.h"
 #include "Common/NameKeyGenerator.h"
 // FUNCTION: BFME2 0x004C1EC7 size=42 name=??0OathbreakerBody@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+OathbreakerBody::OathbreakerBody(Thing *thing, const ModuleData *moduleData)
+	: ActiveBody(thing, moduleData)
+{
+}
 // FUNCTION: BFME2 0x004C1EF1 size=6 name=?Rva004C1EF1Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
 const char *OathbreakerBody::GetSnapshotName() const
 {

@@ -15,6 +15,7 @@ class HorseHordeContain : public HordeContain
 {
 public:
 	HorseHordeContain(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~HorseHordeContain();
 	virtual void returnToFormation(Bool flag);

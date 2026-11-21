@@ -32,7 +32,7 @@ public:
 	ToggleDeploySpecialAbilityUpdate(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void triggerAbilityEffect();	// override: triggerAbilityEffect slot 17 at +0x0 (0x004AE634)
-	virtual bool vslot08(int);	// override: vslot08 slot 8 at +0x20 (0x004AE583)
+	virtual bool vslot08(const Coord3D *location);	// override: vslot08 slot 8 at +0x20 (0x004AE583)
 	virtual void turnOff(Object *object);	// slot 23, 0x004AE5B8 (the same slot ToggleHiddenSpecialAbilityUpdate calls turnOff)
 	virtual void turnOn(Object *object);	// slot 24, 0x004AE6D7
 

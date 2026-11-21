@@ -8,6 +8,7 @@ class W3DBuffDraw : public DrawModule
 {
 public:
 	W3DBuffDraw(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void doDrawModule(const Matrix3D *) {}
 	virtual void setShadowsEnabled(Bool) {}

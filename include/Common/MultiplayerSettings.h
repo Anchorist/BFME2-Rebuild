@@ -38,6 +38,7 @@ public:
 	virtual void update() {}
 
 	MultiplayerColorDefinition *findMultiplayerColorDefinitionByName(AsciiString name);	// 0x00380E34
+	MultiplayerColorDefinition *newMultiplayerColorDefinition(AsciiString name);	// 0x003813B7
 	MultiplayerColorDefinition *getColor(Int index);									// 0x00381373
 	Int getNumColors() { if (m_numColors == 0) m_numColors = (Int)m_colorList.size(); return m_numColors; }	// inline (AptMpGameSetup::InitAvailableColors 0x004419FA)
 

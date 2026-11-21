@@ -351,6 +351,10 @@ SceneIterator *SimpleSceneClass::Create_Iterator(void)
 // FUNCTION: BFME2 0x00141DC0 size=44 name=?pushFront@Rva00141DC0@@QAEPAXPAX@Z evidence=?:placeholder
 
 // FUNCTION: BFME2 0x00141DF0 size=250 name=??1SimpleSceneClass@@UAE@XZ evidence=N:ledger
+SimpleSceneClass::~SimpleSceneClass(void)
+{
+	Remove_All_Render_Objects();
+}
 
 // FUNCTION: BFME2 0x00141EF0 size=151 name=?rva00141EF0@BfmeSceneVector@@QAEXPAPAUGen_00943CF0_Node@@@Z evidence=?:placeholder
 

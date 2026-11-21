@@ -74,6 +74,7 @@ class StringClass;
 class DX8Caps;
 class IDirect3DSurface9;
 struct IDirect3DDevice8;
+struct IDirect3DDevice9;
 
 // Zero Hour's counters: each DX8 call through the device counts one.
 extern unsigned number_of_DX8_calls;		// ?number_of_DX8_calls@@3IA, 0x00DEDA98
@@ -269,6 +270,8 @@ public:
 	static const Vector3 &Get_Ambient() { return Ambient_Color; }
 
 	static IDirect3DDevice8 *_Get_D3D_Device8() { return D3DDevice; }
+	// The same device through the Direct3D 9 slots retail calls it by (include WW3D2/IDirect3DDevice9.h to call through it).
+	static IDirect3DDevice9 *_Get_D3D_Device9() { return (IDirect3DDevice9 *)D3DDevice; }
 	static IDirect3D8 *_Get_D3D8() { return D3DInterface; }
 
 	static bool Reset_Device(bool reload_assets = true);									// 0x00122600

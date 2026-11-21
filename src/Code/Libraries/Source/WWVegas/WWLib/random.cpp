@@ -86,7 +86,20 @@ Random2Class::Random2Class(unsigned seed) :
 }
 
 // FUNCTION: BFME2 0x00619820 size=22 name=??RRandom2Class@@QAEHHH@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+int Random2Class::operator()(int minval, int maxval)
+{
+	return Pick_Random_Number(*this, minval, maxval);
+}
 
 // FUNCTION: BFME2 0x00619840 size=22 name=??RRandom3Class@@QAEHHH@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+int Random3Class::operator()(int minval, int maxval)
+{
+	return Pick_Random_Number(*this, minval, maxval);
+}
 
 // FUNCTION: BFME2 0x00619860 size=22 name=??RRandom4Class@@QAEHHH@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+int Random4Class::operator()(int minval, int maxval)
+{
+	return Pick_Random_Number(*this, minval, maxval);
+}
+

@@ -43,8 +43,9 @@ class GiveUpgradeUpdate : public SpecialAbilityUpdate
 {
 public:
 	GiveUpgradeUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
-	virtual bool vslot08(int);	// override: vslot08 slot 8 at +0x20 (0x0049C553)
+	virtual bool vslot08(const Coord3D *location);	// override: vslot08 slot 8 at +0x20 (0x0049C553)
 	virtual void initiateIntentToDoSpecialPower(const SpecialPowerTemplate *, const Object *, const Coord3D *, unsigned int, const Waypoint *);	// 0x0049C51A (SpecialPowerUpdateInterface slot 0 at +0x20)
 	void releaseTarget();
 	void GetDeliveryTarget();

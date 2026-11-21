@@ -82,8 +82,28 @@ void OwnedLockPtr<CriticalSectionClass::LockClass>::reset(CriticalSectionClass::
 }
 
 // FUNCTION: BFME2 0x00550B4C size=55 name=?endThread@GameSpyBuddyMessageQueue@@UAEXXZ evidence=N:ledger tier=A
+void GameSpyBuddyMessageQueue::endThread()
+{
+	if (m_thread)
+	{
+		m_threadLock.clear();
+		m_thread->Stop();
+		::delete m_thread;
+	}
+	m_thread = 0;
+}
 
 // FUNCTION: BFME2 0x00550FDD size=144 name=?startThread@GameSpyBuddyMessageQueue@@UAEXXZ evidence=N:ledger tier=A
+void GameSpyBuddyMessageQueue::startThread()
+{
+	if (!m_thread)
+	{
+		m_threadLock.reset(new MutexClass::LockClass(m_threadMutex, -1));
+		m_thread = new BuddyThreadClass(&m_threadMutex);
+		m_thread->Execute();
+		m_thread->waitForThreadReady();
+	}
+}
 
 // FUNCTION: BFME2 0x0055106D size=102 name=?getRequest@GameSpyBuddyMessageQueue@@UAE_NAAVBuddyRequest@@@Z evidence=N:ledger tier=A
 Bool GameSpyBuddyMessageQueue::getRequest(BuddyRequest &req)

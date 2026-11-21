@@ -24,6 +24,7 @@ class HordeTransportContainModuleData : public TransportContainModuleData
 public:
 	HordeTransportContainModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 };
 // SIZE 0x18C

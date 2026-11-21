@@ -1,6 +1,8 @@
 // cl: /O1
 // stlport46
 #include "GameClient/GameWindow.h"
+#include "GameClient/GameWindowManager.h"
+#include "Common/PlayerList.h"
 #include "Common/AsciiString.h"
 #include "Common/NameKeyGenerator.h"
 #include "GameClient/GadgetSlider.h"
@@ -33,6 +35,12 @@ const Image *GameWindow::winGetEnabledImage(int index)
 // FUNCTION: BFME2 0x0009DE26 size=372 name=?W3DCommandBarGridDraw@@YAXPAVGameWindow@@PAVWinInstanceData@@@Z evidence=N:ledger tier=B hypothesis:Z
 
 // FUNCTION: BFME2 0x0009DF9A size=67 name=?W3DCommandBarTopDraw@@YAXPAVGameWindow@@PAVWinInstanceData@@@Z evidence=N:ledger tier=B hypothesis:Z
+void W3DCommandBarTopDraw(GameWindow *window, WinInstanceData *instData)
+{
+	GameWindow *general = TheWindowManager->winGetWindowFromId(NULL, TheNameKeyGenerator->nameToKey("ControlBar.wnd:ButtonGeneral"));
+	if (general && !general->winIsHidden())
+		ThePlayerList->rva002A7DD0();
+}
 
 // FUNCTION: BFME2 0x0009DFDD size=904 name=?W3DDrawMapPreview@@YAXPAVGameWindow@@PAVWinInstanceData@@@Z evidence=N:ledger tier=B hypothesis:Z
 

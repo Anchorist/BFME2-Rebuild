@@ -3,8 +3,7 @@
 #include "Apt/AptValueVector.h"
 #include "Apt/DogmaAllocator.h"
 #include "Apt/Assert.h"
-// Existing old-decomp diagnostic symbol spellings; data identities remain
-// unproved at Object VERIFIED level and are not promoted as target names.
+// Placeholder spellings for diagnostic symbols; their identities are unproven, so they are not target names.
 extern void (__cdecl *g_bfmeAptAssertAtE17734)(const char *, const char *, int);
 extern int g_bfmeAptBreakOnAssertAtDDC01C;
 void __debugbreak();

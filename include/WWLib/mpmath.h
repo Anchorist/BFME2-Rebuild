@@ -10,7 +10,7 @@
 
 extern "C" {
 void XMP_Init(unsigned int *number, unsigned int value, int precision);		// 0x0061BD70
-int XMP_Count_Bits(const unsigned int *number, int precision);			// 0x0061BD90
+unsigned int XMP_Count_Bits(const unsigned int *number, int precision);			// 0x0061BD90
 int XMP_DER_Encode(const unsigned int *number, unsigned char *output, int precision);	// 0x0061C580
 void XMP_DER_Decode(unsigned int *number, const unsigned char *input, int precision);	// 0x0061C5E0
 int XMP_Exponent_Mod(unsigned int *expout, const unsigned int *expin, const unsigned int *exponent_ptr, const unsigned int *modulus, int precision);	// 0x0061D4C0

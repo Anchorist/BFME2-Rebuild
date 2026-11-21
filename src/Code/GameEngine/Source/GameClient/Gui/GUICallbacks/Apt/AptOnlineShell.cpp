@@ -1,7 +1,7 @@
 // cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS
 // stlport46
 #include "GameClient/AptOnlineShell.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "Common/UnicodeString.h"
 #include "GameClient/AptOptions.h"
 #include "Common/GameSpyMiscPreferences.h"
@@ -21,7 +21,7 @@ void AptOnlineShell::rva00516EA7()
 {
 	m_active = true;
 	if (g_bfmeAptWindowManager != 0)
-		((Rva00222A8BTarget *)g_bfmeAptWindowManager)->rva002233A6(1);
+		g_bfmeAptWindowManager->showBackground(1);
 }
 
 // FUNCTION: BFME2 0x00516EC0 size=19 name=?Options@AptOnline@@QAEXPBD@Z evidence=N:ledger tier=A
@@ -41,7 +41,7 @@ void AptOnline::ShellExit(const char *)
 // FUNCTION: BFME2 0x00516EE9 size=31 name=?rva00516EE9@Rva00517048@@QAEXXZ evidence=?:placeholder tier=A
 void AptOnlineShell::closeChatMessage()
 {
-	((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_callbackOwner, "ChatMessageClose", 0, 0, 0, 0, 0, 0);
+	g_bfmeAptWindowManager->invoke(m_callbackOwner, "ChatMessageClose", 0, 0, 0, 0, 0, 0);
 }
 
 // FUNCTION: BFME2 0x00516F08 size=25 name=?rva00516F08@AptOnline@@QAEXXZ evidence=?:placeholder tier=A
@@ -79,7 +79,7 @@ void AptOnlineShell::LoadChildScreen(const char *name)
 void AptOnlineShell::rva00517048(const UnicodeString &text)
 {
 	g_bfmeAptWindowManager->bfmeSetText(AsciiString("APT:ChatFriendLogInMessage"), text, false);
-	((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_callbackOwner, "ChatMessageOpen", 0, 0, 0, 0, 0, 0);
+	g_bfmeAptWindowManager->invoke(m_callbackOwner, "ChatMessageOpen", 0, 0, 0, 0, 0, 0);
 }
 
 // FUNCTION: BFME2 0x005170B4 size=25 name=?rva005170B4@AptOnline@@QAEXXZ evidence=?:placeholder tier=A

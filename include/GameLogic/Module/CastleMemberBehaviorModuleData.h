@@ -22,6 +22,7 @@ public:
 	CastleMemberBehaviorModuleData();
 	virtual ~CastleMemberBehaviorModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Int m_campDestroyedOwnerEvaEvent;		// +0x08 CampDestroyedOwnerEvaEvent
 	Int m_campDestroyedAllyEvaEvent;		// +0x0C CampDestroyedAllyEvaEvent

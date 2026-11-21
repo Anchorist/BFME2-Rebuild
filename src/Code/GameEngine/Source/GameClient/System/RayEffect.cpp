@@ -12,6 +12,20 @@
 RayEffectSystem *TheRayEffects = NULL;
 
 // FUNCTION: BFME2 0x002CED59 size=43 name=?findEntry@RayEffectSystem@@QAEPAUElem002CED84@@PAX@Z evidence=X:proven (caller-this) tier=B hypothesis:mm1-neighbour-callers
+RayEffectData *RayEffectSystem::findEntry(const Drawable *draw)
+{
+	RayEffectData *entry = NULL;
+	for (Int i = 0; i < MAX_RAY_EFFECTS; i++)
+	{
+		if (m_effectData[i].draw == draw)
+		{
+			entry = &m_effectData[i];
+			break;
+		}
+	}
+	return entry;
+}
+
 // FUNCTION: BFME2 0x002CED84 size=83 name=?addRayEffect@RayEffectSystem@@QAEXPBVDrawable@@PBVCoord3D@@1@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=B hypothesis:name:Z
 void RayEffectSystem::addRayEffect(const Drawable *draw, const Coord3D *startLoc, const Coord3D *endLoc)
 {
@@ -38,8 +52,26 @@ void RayEffectSystem::addRayEffect(const Drawable *draw, const Coord3D *startLoc
 
 
 // FUNCTION: BFME2 0x002CEDD7 size=26 name=?deleteRayEffect@RayEffectSystem@@QAEXPBVDrawable@@@Z evidence=N:ledger tier=B hypothesis:Z
+void RayEffectSystem::deleteRayEffect(const Drawable *draw)
+{
+	if (draw == NULL)
+		return;
+
+	RayEffectData *effectData = findEntry(draw);
+	if (effectData)
+		effectData->draw = NULL;
+}
 
 // FUNCTION: BFME2 0x002CEDF1 size=42 name=?getRayEffectData@RayEffectSystem@@QAEXPBVDrawable@@PAURayEffectData@@@Z evidence=N:ledger tier=B hypothesis:Z
+void RayEffectSystem::getRayEffectData(const Drawable *draw, RayEffectData *effectData)
+{
+	if (draw == NULL || effectData == NULL)
+		return;
+
+	RayEffectData *entry = findEntry(draw);
+	if (entry)
+		*effectData = *entry;
+}
 
 // FUNCTION: BFME2 0x002CEE63 size=51 name=?init@RayEffectSystem@@UAEXXZ evidence=N:ledger tier=B hypothesis:Z
 void RayEffectSystem::init(void)

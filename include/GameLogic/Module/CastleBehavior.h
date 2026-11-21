@@ -25,6 +25,7 @@ class Thing;
 class ModuleData;
 class Player;
 class Object;
+class DamageInfo;
 class PolygonTrigger;
 class BuildListInfo;
 class UpgradeTemplate;
@@ -56,6 +57,8 @@ public:
 	virtual void loadPostProcess();
 
 	void registerOwnedObject(Object *object);
+	Int apply(Int (__cdecl *check)(Object *, Int), Int argument);
+	void rva00398E4A(DamageInfo *damageInfo);
 	static NameKeyType rva0003955DA();
 
 	void playEvaEventsForCastlePacking();

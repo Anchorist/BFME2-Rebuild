@@ -25,6 +25,7 @@ class _bfme_AptGameWindow : public GameWindow, public AptCallbackHost
 public:
 	_bfme_AptGameWindow(void *);		// 0x0051268C
 	virtual ~_bfme_AptGameWindow();	// 0x005127D7
+	virtual GameWindowFactory getWindowFactory();	// GameWindow slot 7 (0x00510D87): the window factory shared by the Apt screens
 
 	int rva0051274F(int message, unsigned int data1, unsigned int data2);	// 0x0051274F: slot 2, the message handler a screen overrides (the map spells its signature this way)
 

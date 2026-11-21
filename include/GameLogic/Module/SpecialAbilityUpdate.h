@@ -40,7 +40,7 @@ public:
     virtual void setSpecialPowerOverridableDestination(const Coord3D *) {}
     virtual bool isPowerCurrentlyInUse(const CommandButton *) const;
     virtual bool vslot07(int);
-    virtual bool vslot08(int);
+    virtual bool vslot08(const Coord3D *location);
 
 protected:
     virtual void onExit(bool, bool);
@@ -60,7 +60,7 @@ public:
     SpecialPowerType getSpecialPowerType() const;
     SpecialPowerModuleInterface *rva0044E633();
     bool rva0044E85E(Coord3D *, float);
-    bool rva0044E7A8(int); // 0x0044E7A8 (map: placeholder Rva0044E7A8, in no source file): vslot08 calls it directly on the module with its argument
+    bool rva0044E7A8(const Coord3D *location); // 0x0044E7A8 (map: placeholder Rva0044E7A8, in no source file): vslot08 calls it directly on the module with its argument
     void startFacing(); // 0x00451EAC (map: placeholder Rva00451EAC; ecx is the module: idles the AI, sets +0x7E, faces the target object or position)
     unsigned int getPreparationFrames(); // 0x0044F633 (map: placeholder Rva0044F633; ecx is the module: reads the target ID +0x40 and the data)
     void rva0044EE07();

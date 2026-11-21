@@ -4,7 +4,7 @@
 #include "Common/UnicodeString.h"
 #include "GameClient/GameWindowManager.h"
 #include <string.h>
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 extern UnicodeString g_00E0447C;
 void Rva00433D07(GameWindow *, int);
 extern int g_Va00E04478;

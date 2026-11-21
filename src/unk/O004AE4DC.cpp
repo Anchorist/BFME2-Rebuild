@@ -28,12 +28,12 @@ NameKeyType ToggleDeploySpecialAbilityUpdate::getModuleNameKey() const
 }
 
 // FUNCTION: BFME2 0x004AE583 size=53 name=?vslot08@ToggleDeploySpecialAbilityUpdate@@UAE_NH@Z evidence=N:ledger
-bool ToggleDeploySpecialAbilityUpdate::vslot08(int arg)
+bool ToggleDeploySpecialAbilityUpdate::vslot08(const Coord3D *location)
 {
 	Object *object = getObject();
 	if (object->isKindOf(KINDOF_TREE) || object->isKindOf(KINDOF_CLUB))
 		return false;
-	return SpecialAbilityUpdate::vslot08(arg);
+	return SpecialAbilityUpdate::vslot08(location);
 }
 
 // FUNCTION: BFME2 0x004AE5B8 size=124 name=?rva004AE5B8@ToggleDeploySpecialAbilityUpdate@@QAEXPAX@Z evidence=?:placeholder

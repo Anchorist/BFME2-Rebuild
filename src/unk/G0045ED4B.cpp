@@ -1,7 +1,13 @@
+// cl: /O1
+#include "Common/Xfer.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0045ED4B name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x0045ED4B size=27 name=?rva0045ED4B@StancesBehavior@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0045ED66 size=24 name=?XferStancesEnum@@YAXPAVXfer@@PAH@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void XferStancesEnum(Xfer *xfer, int *value)
+{
+	xfer->XferEnum("StancesEnum", value, 4);
+}
 // FUNCTION: BFME2 0x0045ED7E size=14 name=?invokeCallback@Rva0045ED7E@@QAEXPAVRva0045ED7ETarget@@@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0045ED8C size=17 name=?buildFieldParse@StancesBehaviorModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit

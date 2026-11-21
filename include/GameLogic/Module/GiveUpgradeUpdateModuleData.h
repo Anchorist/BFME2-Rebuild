@@ -20,6 +20,7 @@ class GiveUpgradeUpdateModuleData : public SpecialAbilityUpdateModuleData
 public:
 	GiveUpgradeUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UnsignedByte m_unk0xC8[0xC];
 	const FXList * m_giveUpgradeEffect;                    // +0xD4 GiveUpgradeEffect

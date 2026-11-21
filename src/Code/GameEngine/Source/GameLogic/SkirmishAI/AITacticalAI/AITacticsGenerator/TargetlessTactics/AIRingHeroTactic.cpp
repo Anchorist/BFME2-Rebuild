@@ -10,6 +10,9 @@
 // Edges: left=no-edge-evidence right=no-edge-evidence; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
 // FUNCTION: BFME2 0x005AC7E1 size=11 name=??1AIRingHeroTactic@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
+AIRingHeroTactic::~AIRingHeroTactic()
+{
+}
 
 // FUNCTION: BFME2 0x005AC7EC size=94 name=??0AIRingHeroTactic@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:invented
 

@@ -21,6 +21,7 @@ class RebuildHoleBehaviorModuleData : public ModuleData
 public:
 	RebuildHoleBehaviorModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_workerRespawnDelay;                             // +0x8 WorkerRespawnDelay; duration
 	Real m_holeHealthRegen;                                // +0xC HoleHealthRegen%PerSecond; ctor 0x0048323E stores 0.1f

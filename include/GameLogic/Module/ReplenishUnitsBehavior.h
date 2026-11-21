@@ -32,6 +32,7 @@ class ReplenishUnitsBehavior : public UpdateModule, public UpgradeMux
 public:
 	virtual UpgradeModuleInterface *getUpgrade() { return this; }
 	ReplenishUnitsBehavior(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual void upgradeRemovalImplementation();
 	virtual void upgradeImplementation();
 	virtual NameKeyType getModuleNameKey() const;

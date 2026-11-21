@@ -23,6 +23,7 @@ public:
 	SlowDeathBehaviorModuleData();
 	virtual ~SlowDeathBehaviorModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	static void parseFX(INI *ini, void *instance, void *store, const void *userData);
 	static void parseOCL(INI *ini, void *instance, void *store, const void *userData);
 	static void parseWeapon(INI *ini, void *instance, void *store, const void *userData);

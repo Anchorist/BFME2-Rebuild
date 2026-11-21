@@ -11,6 +11,23 @@
 
 #include "WWLib/wwstring.h"
 
+// What the platform id and version numbers say about the operating system.
+struct OSInfoStruct
+{
+	const char *Code;
+	const char *SubCode;
+	const char *VersionString;
+	unsigned char VersionMajor;
+	unsigned char VersionMinor;
+	unsigned short VersionSub;
+	unsigned char BuildMajor;
+	unsigned char BuildMinor;
+	unsigned short BuildSub;
+};
+typedef char OSInfoStructSize[(sizeof(OSInfoStruct) == 0x14) ? 1 : -1];
+
+void Get_OS_Info(OSInfoStruct &os_info, unsigned platform_id, unsigned major_ver, unsigned minor_ver, unsigned build_num);
+
 class CPUDetectClass
 {
 public:

@@ -25,6 +25,7 @@ class SiegeAIUpdate : public AIUpdateInterface
 {
 public:
 	SiegeAIUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~SiegeAIUpdate();
 

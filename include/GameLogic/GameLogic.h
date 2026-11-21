@@ -47,6 +47,7 @@ class ThingTemplate;
 class Team;
 class CommandButton;
 class GameInfo;
+class Rva0023E928;
 struct CreateMask;
 
 // The object table: retail's instantiation is
@@ -122,6 +123,8 @@ public:
 	void lastHeardFrom(Int playerId);	// 0x0023CF1C
 	void processProgress(Int playerId, Int percentage);	// 0x0023D740
 	void processProgressComplete(Int playerId);	// 0x0023D76E
+	// Handles a type-30 save-game command message from the network; the ledger spells the message class as the placeholder Rva0023E928.
+	void ProcessSaveGameCommand(Rva0023E928 *cmd, Bool isLocal);
 	void clearGameData(Bool showScoreScreen, Bool unknown);	// 0x00376E92
 	void LivingWorldTacticalBattleComplete();	// 0x0023D914
 	void setMissionName(const AsciiString &name);	// 0x0023DC8E: kept unless empty or GlobalData +0x9AD is set

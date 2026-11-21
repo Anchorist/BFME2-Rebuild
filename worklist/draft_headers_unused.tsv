@@ -1,4 +1,4 @@
-# measured_utc=2026-11-20T23:44:49Z revision=c1c2293c23ab8f69260c1fa72fa46fa8ad3b1620 left_out_duplicates=10
+# measured_utc=2026-11-21T03:13:30Z revision=99e61c186a18f60875f69466a2832c629bcfdaa5 left_out_duplicates=10
 header	classes_defined
 include/Draft/AABTreeLinkClass.h	AABTreeLinkClass
 include/Draft/AIAttackApproachTargetState00C12678.h	AIAttackApproachTargetState00C12678
@@ -920,7 +920,6 @@ include/Draft/Rva004D6208.h	Rva004D6208
 include/Draft/Rva004D62A9.h	Rva004D62A9
 include/Draft/Rva004D64F5.h	Rva004D64F5
 include/Draft/Rva004D65DC.h	Rva004D65DC
-include/Draft/Rva004D67D0.h	Rva004D67D0
 include/Draft/Rva004D7476.h	Rva004D7476
 include/Draft/Rva004D7491.h	Rva004D7491
 include/Draft/Rva004D74AC.h	Rva004D74AC
@@ -1616,7 +1615,6 @@ include/Draft/W3DShrubBuffer.h	W3DShrubBuffer
 include/Draft/W3DSmudgeManager.h	W3DSmudgeManager
 include/Draft/W3DStreakDrawModuleData.h	W3DStreakDrawModuleData
 include/Draft/W3DTerrainVisual.h	W3DTerrainVisual
-include/Draft/W3DThingFactory.h	W3DThingFactory
 include/Draft/W3DTornadoDrawModuleData.h	W3DTornadoDrawModuleData
 include/Draft/W3DTreeBuffer.h	W3DTreeBuffer
 include/Draft/W3DVolumetricShadow.h	W3DVolumetricShadow

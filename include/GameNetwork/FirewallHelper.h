@@ -91,7 +91,10 @@ public:
 	Bool rva005952C4(void *message, UnsignedShort length, UnsignedShort *result);	// (the receiver Transport::doRecv offers every datagram first; true means it was consumed; the map holds it on the placeholder class Rva00594DC0)
 	void byteAdjust(ManglerMessage *message);				// 0x00594DC0 (the map holds it under the placeholder class Rva00594DC0: converts a received message to host order)
 	Bool sendToManglerFromPort(unsigned long mangler, UnsignedShort sourcePort, UnsignedShort firstPort, UnsignedShort secondPort, Bool flag);	// 0x0059517F (the map holds it under the placeholder class Rva0059517F)
-	void closeSpareSocket(UnsignedShort port);				// 0x0059534A (Zero Hour's name)
+	void closeSpareSocket(UnsignedShort port);
+	Int getFirewallHardness(UnsignedByte behavior);			// 0x00595020 (Zero Hour's getFirewallHardness by role)
+	Int getFirewallRetries(UnsignedByte behavior);			// 0x0059505B (Zero Hour's getFirewallRetries by role)
+	static void writeFirewallBehavior();					// 0x00595E46 (Zero Hour's writeFirewallBehavior; reads TheFirewallHelper)
 
 private:
 	ManglerMessage *findEmptyMessage();
@@ -104,7 +107,7 @@ private:
 	UnsignedInt m_lastSourcePortAllocationDelta;									// +0x10
 	SpareSocket m_spareSockets[8];							// +0x14
 	UnsignedInt m_manglers[4];								// +0x54
-	UnsignedInt m_numManglers;									// +0x64
+	Int m_numManglers;									// +0x64
 	UnsignedShort m_sparePorts[8];								// +0x68
 	UnsignedShort m_mangledPorts[8];								// +0x78
 	UnsignedShort m_packetID;								// +0x88
@@ -117,5 +120,7 @@ private:
 	Int m_currentTry;											// +0x18C (signed: detectionTest3Update 0x005957D5 compares it with jge)
 };
 // SIZE 0x190
+
+extern FirewallHelperClass *TheFirewallHelper;			// VA 0x00E063B0
 
 #endif

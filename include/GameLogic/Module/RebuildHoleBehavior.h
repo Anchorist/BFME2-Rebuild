@@ -33,6 +33,7 @@ class RebuildHoleBehavior : public UpdateModule, public DieModuleInterface, publ
 {
 public:
 	RebuildHoleBehavior(Thing *thing, const ModuleData *moduleData);					// 0x00483271
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~RebuildHoleBehavior();
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x00483645)

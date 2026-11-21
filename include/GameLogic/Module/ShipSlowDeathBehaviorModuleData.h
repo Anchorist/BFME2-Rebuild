@@ -14,6 +14,7 @@ class ShipSlowDeathBehaviorModuleData : public SlowDeathBehaviorModuleData
 public:
 	ShipSlowDeathBehaviorModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 };
 typedef char ShipSlowDeathBehaviorModuleData_size[(sizeof(ShipSlowDeathBehaviorModuleData) == 0x190) ? 1 : -1];
 

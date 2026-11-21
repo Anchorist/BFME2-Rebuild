@@ -591,6 +591,10 @@ int Object::rva0028B511() const
 }
 
 // FUNCTION: BFME2 0x0028B525 size=13 name=?set@Rva0028B525DwordSlot@@QAEXH@Z evidence=?:placeholder tier=A
+void Object::setDestinationLayer(PathfindLayerEnum layer)
+{
+	m_layer = layer;
+}
 
 // FUNCTION: BFME2 0x0028B532 size=55 name=?setID@Object@@IAEXW4ObjectID@@@Z evidence=N:ledger tier=A
 void Object::setID(ObjectID id)
@@ -2055,6 +2059,11 @@ void Object::healCompletely()
 // FUNCTION: BFME2 0x00290095 size=75 name=?rva00290095@Object@@QAEXXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002900E0 size=26 name=?rva002900E0@Object@@QAEXH@Z evidence=?:placeholder tier=A
+void Object::setBusyUntilFrame(Int frame)
+{
+	setStatus((ObjectStatusTypes)0x4A, true);
+	m_42c = frame;
+}
 
 // FUNCTION: BFME2 0x002900FA size=26 name=?rva002900FA@Object@@QAEXH@Z evidence=?:placeholder tier=A
 

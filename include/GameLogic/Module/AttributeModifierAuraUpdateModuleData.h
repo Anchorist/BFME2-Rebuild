@@ -21,6 +21,7 @@ class AttributeModifierAuraUpdateModuleData : public ModuleData
 public:
 	AttributeModifierAuraUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	AsciiString m_bonusName;                               // +0x8 BonusName
 	std::vector<AsciiString> m_unk0xC;	// The module-data destructor destroys each four-byte string owner.

@@ -38,6 +38,7 @@ class BattlePlanUpdateModuleData : public ModuleData
 public:
 	BattlePlanUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	const SpecialPowerTemplate * m_specialPowerTemplate;   // +0x8 SpecialPowerTemplate
 	UnsignedInt m_bombardmentPlanAnimationTime;            // +0xC BombardmentPlanAnimationTime; duration, frames

@@ -17,6 +17,8 @@
 
 #include "Common/UserPreferences.h"
 
+class CustomMatchPreferences;
+
 class GameModePreferences : public UserPreferences
 {
 public:
@@ -40,10 +42,14 @@ public:
 	AsciiString rva0044DBA5();													// 0x0044DBA5 (the custom-match password)
 	// Inline: AptLanLobby::OnLoadScreen 0x0044438A stores the mode through the LANPreferences member directly.
 	void setMode(int mode) { m_mode = mode; }
+	int getStrategicScenario();													// 0x0044D5A5: the saved strategic scenario, -1 when none
+	void setStrategicScenario(int scenario);									// 0x0044D5EE
+
+private:
+	const AsciiString &makeKey(const char *key) const;							// 0x0044D512 (the map spells it private)
+	friend class CustomMatchPreferences;										// 0x0054F5A4 and the lobby room id writer call it
 
 protected:
-	const AsciiString &makeKey(const char *key) const;							// 0x0044D512
-
 	int m_mode;																	// +0x14
 	mutable AsciiString m_keyBuffer;											// +0x18
 };

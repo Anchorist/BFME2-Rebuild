@@ -1,4 +1,8 @@
 // cl: /O1
+// stlport46
+#include "Common/INI.h"
+#include "GameLogic/Module/FloodUpdateModuleData.h"
+void parseFloodMember(INI *ini, void *instance, void *store, const void *userData);
 #include "GameLogic/Module/FloodUpdate.h"
 #include <string.h>
 #include "Common/NameKeyGenerator.h"
@@ -27,7 +31,21 @@ NameKeyType FloodUpdate::getModuleNameKey() const
 	return TheFloodUpdatePoolKey;
 }
 
+// Field parse table for FloodUpdateModuleData (decoded from retail image).
+static const FieldParse s_floodUpdateModuleDataFieldParse[] =
+{
+	{ "FloodMember", parseFloodMember, 0, 0x0 },
+	{ "AngleOfFlow", INI::parseAngleReal, 0, 0xC },
+	{ "DirectionIsRelative", INI::parseBool, 0, 0x10 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x0048E15B size=17 name=?buildFieldParse@FloodUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger
+void FloodUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_floodUpdateModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x0048E189 size=421 name=?rva0048E189@FloodUpdate@@QAEXXZ evidence=?:placeholder
 

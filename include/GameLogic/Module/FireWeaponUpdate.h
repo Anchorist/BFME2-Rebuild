@@ -77,6 +77,7 @@ class FireWeaponUpdate : public UpdateModule
 {
 public:
 	FireWeaponUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~FireWeaponUpdate();
 
 	virtual UpdateSleepTime update();

@@ -25,6 +25,7 @@ class RunOffMapBehavior : public BehaviorModule, public RunOffMapBehaviorInterfa
 {
 public:
 	RunOffMapBehavior(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual RunOffMapBehaviorInterface *getRunOffMapBehaviorInterface() { return this; }
 	virtual void triggerFlee();
 	virtual NameKeyType getModuleNameKey() const;

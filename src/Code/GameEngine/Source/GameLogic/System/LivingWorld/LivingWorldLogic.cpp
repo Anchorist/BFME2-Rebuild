@@ -15,7 +15,7 @@
 #include "GameClient/LivingWorld.h"
 #include "GameLogic/GameLogic.h"
 #include "Common/MessageStream.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 
 // The campaign logic singleton (retail VA 0x00DFEF10).
 LivingWorldLogic *TheLivingWorldLogic = NULL;
@@ -157,7 +157,7 @@ LivingWorldRegion *LivingWorldLogic::getRegionByID(int id)
 // FUNCTION: BFME2 0x002B29BD size=27 name=?rva002B29BD@LivingWorldLogic@@QAEXXZ evidence=?:placeholder tier=A
 void LivingWorldLogic::hideEndGame()
 {
-	((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke((void *)13, "HideEndGame", 0, 0, 0, 0, 0, 0);
+	g_bfmeAptWindowManager->invoke((void *)13, "HideEndGame", 0, 0, 0, 0, 0, 0);
 }
 
 // FUNCTION: BFME2 0x002B29EA size=14 name=?rva002B29EA@Rva002B29EA@@QAEXPAURva002B29EATarget@@H@Z evidence=?:placeholder tier=A

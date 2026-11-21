@@ -11,6 +11,8 @@
 #include "GameLogic/Module/ManTheWallsSpecialPowerModuleData.h"
 #include "GameLogic/Module/RepairSpecialPowerModuleData.h"
 #include "GameLogic/Module/NotifyTargetsOfImminentProbableCrushingUpdate.h"
+#include "GameLogic/Module/Module.h"
+#include "GameLogic/Module/UpdateModule.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=O0024EEBB name-evidence=W
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
@@ -111,6 +113,11 @@ ModuleData *SupplyTruckAIUpdateModuleData::friend_newModuleData(INI *ini)
 // FUNCTION: BFME2 0x0024FAB5 size=59 name=?friend_newModuleInstance@EmotionTrackerUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x0024FAF0 size=81 name=?friend_newModuleData@EmotionTrackerUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x0024FB41 size=6 name=?Rva0024FB41Get@@YAHXZ evidence=?:placeholder tier=A
+// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+int Rva0024FB41Get()
+{
+	return 513;
+}
 // FUNCTION: BFME2 0x0024FB47 size=56 name=?friend_newModuleInstance@EntEnragedUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x0024FB7F size=81 name=?friend_newModuleData@EntEnragedUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x0024FBD0 size=56 name=?friend_newModuleInstance@ThreatFinderUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
@@ -131,6 +138,11 @@ ModuleData *SupplyTruckAIUpdateModuleData::friend_newModuleData(INI *ini)
 // FUNCTION: BFME2 0x0024FF6B size=65 name=?friend_newModuleInstance@ObjectCreationUpgrade@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x0024FFAC size=84 name=?friend_newModuleData@ObjectCreationUpgradeModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00250000 size=6 name=?Rva00250000Get@@YAHXZ evidence=?:placeholder tier=A
+// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+int Rva00250000Get()
+{
+	return 129;
+}
 // FUNCTION: BFME2 0x00250006 size=56 name=?friend_newModuleInstance@RadarUpgrade@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x0025003E size=56 name=?friend_newModuleInstance@StatusBitsUpgrade@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00250076 size=56 name=?friend_newModuleInstance@StatusBitsUpgradeIfEldestKindof@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
@@ -160,10 +172,20 @@ ModuleData *SupplyTruckAIUpdateModuleData::friend_newModuleData(INI *ini)
 // FUNCTION: BFME2 0x00250696 size=56 name=?friend_newModuleInstance@ReplaceSelfUpgrade@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x002506CE size=84 name=?friend_newModuleData@ReplaceSelfUpgradeModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00250722 size=6 name=?Rva00250722Get@@YAHXZ evidence=?:placeholder tier=A
+// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+int Rva00250722Get()
+{
+	return 140;
+}
 // FUNCTION: BFME2 0x00250728 size=56 name=?friend_newModuleInstance@TooltipUpgrade@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00250760 size=56 name=?friend_newModuleInstance@AudioLoopUpgrade@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00250798 size=84 name=?friend_newModuleData@AudioLoopUpgradeModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x002507EC size=6 name=?Rva002507ECGet@@YAHXZ evidence=?:placeholder tier=A
+// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+int Rva002507ECGet()
+{
+	return 131;
+}
 // FUNCTION: BFME2 0x002507F2 size=56 name=?friend_newModuleInstance@RemoveUpgradeUpgrade@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x0025082A size=84 name=?friend_newModuleData@RemoveUpgradeUpgradeModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x0025087E size=56 name=?friend_newModuleInstance@BuildableHeroListUpgrade@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
@@ -290,6 +312,11 @@ void SpecialPowerModule::slot44()
 // FUNCTION: BFME2 0x002520DC size=56 name=?friend_newModuleInstance@DeflectSpecialPower@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00252114 size=81 name=?friend_newModuleData@DeflectSpecialPowerModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00252165 size=6 name=?Rva00252165Get@@YAHXZ evidence=?:placeholder tier=A
+// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+int Rva00252165Get()
+{
+	return 273;
+}
 // FUNCTION: BFME2 0x0025216B size=56 name=?friend_newModuleInstance@SiegeDeploySpecialPower@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x002521A3 size=81 name=?friend_newModuleData@SiegeDeploySpecialPowerModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x002521F4 size=56 name=?friend_newModuleInstance@SiegeDeployHordeSpecialPower@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
@@ -329,7 +356,16 @@ void SpecialPowerModule::slot44()
 // FUNCTION: BFME2 0x00252AD9 size=56 name=?friend_newModuleInstance@RadarMarkerClientUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00252B11 size=81 name=?friend_newModuleData@RadarMarkerClientUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00252B62 size=6 name=?Rva00252B62Get@@YAHXZ evidence=?:placeholder tier=A
+// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+int Rva00252B62Get()
+{
+	return 4096;
+}
 // FUNCTION: BFME2 0x00252B84 size=6 name=?GetSnapshotName@DrawableModule@@MBEPBDXZ evidence=N:ledger tier=A
+const char *DrawableModule::GetSnapshotName() const
+{
+	return "DrawableModule";
+}
 // FUNCTION: BFME2 0x00252B8A size=56 name=?friend_newModuleInstance@AnimationSoundClientBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00252BC2 size=81 name=?friend_newModuleData@AnimationSoundClientBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00252C13 size=81 name=?friend_newModuleData@ModelConditionSoundSelectorClientBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
@@ -363,6 +399,10 @@ void SpecialPowerModule::slot44()
 // FUNCTION: BFME2 0x0025330B size=29 name=?clear@?$BitFlags@$0CEP@W4ModelConditionFlagType@@@@QAEXI@Z evidence=X:map request tier=A
 // FUNCTION: BFME2 0x00253390 size=61 name=??0UpdateModule@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x002533CD size=6 name=?GetSnapshotName@UpdateModule@@MBEPBDXZ evidence=N:ledger tier=A
+const char *UpdateModule::GetSnapshotName() const
+{
+	return "UpdateModule";
+}
 // FUNCTION: BFME2 0x002533FC size=48 name=?ModuleFactoryDataAt002533FC@@YAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x0025342C size=73 name=??0UpgradeMuxData@@QAE@XZ evidence=X:map request (link / hybrid) tier=A
 // FUNCTION: BFME2 0x00253475 size=18 name=?rva00253475@@YAXAAVMultiIniFieldParse@@@Z evidence=?:placeholder tier=A
@@ -408,9 +448,17 @@ void SpecialPowerModule::slot44()
 // FUNCTION: BFME2 0x00253CFF size=56 name=?friend_newModuleData@DeletionUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00253D37 size=81 name=?ModuleFactoryDataAt00253D37@@YAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00253D88 size=42 name=??0HordeNotifyTargetsOfImminentProbableCrushingUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
+HordeNotifyTargetsOfImminentProbableCrushingUpdate::HordeNotifyTargetsOfImminentProbableCrushingUpdate(Thing *thing, const ModuleData *moduleData)
+	: UpdateModule(thing, moduleData)
+{
+}
 // FUNCTION: BFME2 0x00253DB2 size=69 name=?getModuleNameKey@HordeNotifyTargetsOfImminentProbableCrushingUpdate@@UBE?AW4NameKeyType@@XZ evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00253DF7 size=6 name=?name@Rva00253DF7Named@@QBEPBDXZ evidence=?:placeholder tier=A
 // FUNCTION: BFME2 0x00253E64 size=42 name=??0NotifyTargetsOfImminentProbableCrushingUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
+NotifyTargetsOfImminentProbableCrushingUpdate::NotifyTargetsOfImminentProbableCrushingUpdate(Thing *thing, const ModuleData *moduleData)
+	: UpdateModule(thing, moduleData)
+{
+}
 // FUNCTION: BFME2 0x00253E8E size=69 name=?getModuleNameKey@NotifyTargetsOfImminentProbableCrushingUpdate@@UBE?AW4NameKeyType@@XZ evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00253ED3 size=6 name=?name@Rva00253ED3Named@@QBEPBDXZ evidence=?:placeholder tier=A
 // FUNCTION: BFME2 0x00253F0E size=17 name=?buildFieldParse@GateOpenAndCloseBehaviorModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=A

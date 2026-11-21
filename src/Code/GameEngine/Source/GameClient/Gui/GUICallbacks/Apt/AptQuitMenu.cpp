@@ -1,7 +1,7 @@
 // cl: /O1
 #include "GameClient/AptQuitMenu.h"
 #include "GameClient/Shell.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "GameClient/AptOptions.h"
 #include "GameClient/AptSaveLoad.h"
 #include "GameLogic/GameLogic.h"
@@ -46,7 +46,7 @@ void Rva0051AF0BEnable(int mode)
 			TheAptQuitMenu->m_flag278 = true;
 			TheAptQuitMenu->m_closeMode = mode;
 			TheShell->setClearBackground(true);
-			((Rva00222479ByteOneSetter *)g_bfmeAptWindowManager)->enable();
+			g_bfmeAptWindowManager->enable();
 		}
 	}
 }

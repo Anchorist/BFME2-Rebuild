@@ -21,6 +21,7 @@ class ClearanceTestingSlowDeathBehaviorModuleData : public SlowDeathBehaviorModu
 public:
 	ClearanceTestingSlowDeathBehaviorModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	// The partition test uses this geometry at the object-space offset below.
 	GeometryInfo m_clearanceGeometry;

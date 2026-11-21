@@ -136,6 +136,7 @@ class DozerAIUpdate : public AIUpdateInterface, public DozerAIInterface		// +0x3
 {
 public:
 	DozerAIUpdate(Thing *thing, const ModuleData *moduleData);					// 0x004894F5
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	// AIUpdateInterface slots 92 and 93 return the dozer interface at +0x3E4.
 	virtual const DozerAIInterface *getDozerAIInterface() const { return this; }

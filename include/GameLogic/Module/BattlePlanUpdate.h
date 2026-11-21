@@ -85,6 +85,7 @@ class BattlePlanUpdate : public UpdateModule, public SpecialPowerUpdateInterface
 public:
 	virtual SpecialPowerUpdateInterface *getSpecialPowerUpdateInterface() { return this; }
 	BattlePlanUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual ~BattlePlanUpdate();
@@ -118,7 +119,7 @@ public:
 	virtual void setSpecialPowerOverridableDestination(const Coord3D *loc) {}
 	virtual bool isPowerCurrentlyInUse(const CommandButton *command = 0) const { return false; }
 	virtual bool vslot07(int value);
-	virtual bool vslot08(int) { return true; }
+	virtual bool vslot08(const Coord3D *) { return true; }
 	// Retail 0x004977F8 (non-virtual): the active plan, only while m_status is 2.
 	BattlePlanStatus getActiveBattlePlan() const;
 

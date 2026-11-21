@@ -6,6 +6,11 @@
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:cohesion, hypothesis:name:invented
 // FUNCTION: BFME2 0x00180AA0 size=6 name=?Rva00180AA0Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
+// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+int Rva00180AA0Get()
+{
+	return 0x41474752;	// the four bytes spell "AGGR"
+}
 
 // FUNCTION: BFME2 0x00180AA6 size=15 name=?rva00180AA6@Rva00180AA6NullForwarder@@QAEHXZ evidence=?:placeholder tier=B hypothesis:cohesion
 

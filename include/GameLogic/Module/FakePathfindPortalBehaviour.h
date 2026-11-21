@@ -22,6 +22,7 @@ class FakePathfindPortalBehaviour : public UpdateModule
 {
 public:
 	FakePathfindPortalBehaviour(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~FakePathfindPortalBehaviour();
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x00461DC7)

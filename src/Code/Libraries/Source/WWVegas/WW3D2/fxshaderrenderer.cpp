@@ -3,6 +3,7 @@
 // stlport46
 #include "WW3D2/FXShaderRenderer.h"
 #include "WW3D2/DX8Wrapper.h"
+#include "WW3D2/IDirect3DDevice9.h"
 
 struct IDirect3DVertexShader9;
 struct IDirect3DPixelShader9;
@@ -63,13 +64,11 @@ void FXShaderRenderer::Flush(void)
 		DX8Wrapper::Invalidate_Texture_Stages();
 
 		// SetVertexShader and SetPixelShader are slots 92 and 107 on the D3D9 device.
-		typedef HRESULT (__stdcall *SetVertexShaderFn)(IDirect3DDevice8 *, IDirect3DVertexShader9 *);
-		typedef HRESULT (__stdcall *SetPixelShaderFn)(IDirect3DDevice8 *, IDirect3DPixelShader9 *);
-		IDirect3DDevice8 *device = DX8Wrapper::_Get_D3D_Device8();
-		(*(SetVertexShaderFn **)device)[92](device, NULL);
+		IDirect3DDevice9 *device = DX8Wrapper::_Get_D3D_Device9();
+		device->SetVertexShader(NULL);
 		++number_of_DX8_calls;
-		device = DX8Wrapper::_Get_D3D_Device8();
-		(*(SetPixelShaderFn **)device)[107](device, NULL);
+		device = DX8Wrapper::_Get_D3D_Device9();
+		device->SetPixelShader(NULL);
 		++number_of_DX8_calls;
 	}
 }

@@ -5,7 +5,7 @@
 #include "GameNetwork/GameSlot.h"
 #include "Common/MultiplayerSettings.h"
 #include "Common/MultiplayerColorDefinition.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 
 // The C runtime's multibyte copy, called directly in the image.
 extern "C" unsigned char *__cdecl _mbscpy(unsigned char *dest, const unsigned char *src);
@@ -31,7 +31,7 @@ void AptLoadScreen::processProgress(int player, int percent)
 	char percentText[64];
 	sprintf(playerText, "%d", m_progress[player]);
 	sprintf(percentText, "%d", percent);
-	((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_owner, "SetBarTo", 2, playerText, percentText, 0, 0, 0);
+	g_bfmeAptWindowManager->invoke(m_owner, "SetBarTo", 2, playerText, percentText, 0, 0, 0);
 }
 
 // FUNCTION: BFME2 0x0043A1C0 size=130 name=?PlayerColor@AptLoadScreen@@QAEXHPAD_N@Z evidence=N:ledger tier=A

@@ -7,6 +7,10 @@
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:name:invented
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/TooltipUpgrade.h"
+#include <stddef.h>
+#include "Common/INI.h"
+#include "GameLogic/Module/TooltipUpgradeModuleData.h"
+#include "GameLogic/Module/UpgradeMuxData.h"
 // FUNCTION: BFME2 0x004B79AD size=32 name=??1TooltipUpgrade@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
 TooltipUpgrade::~TooltipUpgrade()
 {
@@ -26,6 +30,19 @@ NameKeyType TooltipUpgrade::getModuleNameKey() const
 }
 
 // FUNCTION: BFME2 0x004B7A2E size=34 name=?buildFieldParse@TooltipUpgradeModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:K
+static const FieldParse s_tooltipUpgradeModuleDataFieldParse[] =
+{
+	{ "DisplayName", INI::parseAsciiString, 0, offsetof(TooltipUpgradeModuleData, m_displayName) },
+	{ "Description", INI::parseAsciiString, 0, offsetof(TooltipUpgradeModuleData, m_description) },
+	{ 0, 0, 0, 0 }
+};
+
+void TooltipUpgradeModuleData::buildFieldParse(MultiIniFieldParse &p)
+{
+	p.add(UpgradeMuxData::getFieldParse(), 0x8);
+	p.add(s_tooltipUpgradeModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x004B7A50 size=49 name=??0TooltipUpgrade@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:K
 TooltipUpgrade::TooltipUpgrade(Thing *thing, const ModuleData *moduleData) :

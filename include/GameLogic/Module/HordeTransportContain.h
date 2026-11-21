@@ -16,6 +16,7 @@ class HordeTransportContain : public TransportContain
 {
 public:
 	HordeTransportContain(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void orderAllPassengersToExit(CommandSourceType cmdSource);	// ContainModuleInterface 32, 0x004772B8 (forwards to the horde exit helper at +0xFD)

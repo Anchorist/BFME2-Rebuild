@@ -1,7 +1,7 @@
 // cl: /O1
 #include "GameClient/AptStrategicPlayerStatus.h"
 #include "GameClient/Shell.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "stdio.h"
 struct GlobalA04934;
 extern GlobalA04934 *g_Va00A04934;
@@ -22,7 +22,7 @@ void Rva0052340DEnable(void)
 		{
 			screen->m_flag278 = true;
 			TheShell->setClearBackground(true);
-			((Rva00222479ByteOneSetter *)g_bfmeAptWindowManager)->enable();
+			g_bfmeAptWindowManager->enable();
 		}
 	}
 }

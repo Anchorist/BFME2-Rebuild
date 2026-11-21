@@ -12,6 +12,7 @@ class HealContain : public OpenContain
 {
 public:
 	HealContain(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	const HealContainModuleData *getHealContainModuleData() const
 	{

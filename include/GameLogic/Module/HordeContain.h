@@ -69,6 +69,7 @@ public:
 	friend class HordeMeleeSwarm;	// 0x00583B6F reads the horde's object
 	friend class HordeMeleeFormation;	// canUnitRotate reads the horde's formation slots
 	HordeContain(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~HordeContain();
 	virtual DisabledMaskType getDisabledTypesToProcess() const

@@ -139,6 +139,7 @@ protected:
 	Bool addRequestPlayerLeaveCommand(NetCommandRef *msg);		// 0x0058E8EA
 	Bool addRequestFrameDataCommand(NetCommandRef *msg);		// 0x0058E8EA
 	Bool rva0058EDEF(NetCommandRef *msg);
+	UnsignedByte rva00591A65(NetCommandRef *msg);
 	Bool rva005936DB(NetCommandRef *msg);
 	Bool isRoomForFrameMessage(NetCommandRef *msg);
 	Bool isAckBothRepeat(NetCommandRef *msg);

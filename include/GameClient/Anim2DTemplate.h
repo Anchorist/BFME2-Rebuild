@@ -17,6 +17,7 @@ class Anim2DTemplate
 {
 	friend class Anim2D;
 	friend class Anim2DCollection;
+	friend class INI;			// INI::parseAnim2DDefinition reads the field table
 public:
 	Anim2DTemplate(AsciiString name);
 	virtual ~Anim2DTemplate();

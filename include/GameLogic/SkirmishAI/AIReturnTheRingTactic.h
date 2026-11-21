@@ -18,6 +18,7 @@ public:
 	virtual unsigned int vslot04() { return m_unk0x58; } // native 0x003F3FCE
 	virtual void run();
 	virtual void update();
+	Bool findRingBearer();						// 0x005AB45B
 	Bool garrisonFortress();
 	virtual AITactic *create();							// Slot 9
 	virtual Bool vslot10() const { return true; } // native 0x0050B5C6

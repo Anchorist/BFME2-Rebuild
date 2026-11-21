@@ -67,7 +67,7 @@ public:
 	virtual bool isSpecialAbility() const { return false; }			// slot 1, shared 0x0047A699 (false)
 	virtual bool isPowerCurrentlyInUse(const CommandButton *command = 0) const;	// slot 6, 0x00494ABE: isActive()
 	virtual bool vslot07(int power);									// slot 7, 0x00494ADF: whether the module data names this power
-	virtual bool vslot08(int) { return true; }							// slot 8, shared `mov al,1; ret 4` 0x005CB9FA
+	virtual bool vslot08(const Coord3D *) { return true; }							// slot 8, shared `mov al,1; ret 4` 0x005CB9FA
 	virtual CommandOption getCommandOption() const { return (CommandOption)0; }	// slot 3, shared `xor eax,eax; ret` 0x000D43D0
 	virtual bool doesSpecialPowerHaveOverridableDestinationActive() const { return false; }	// slot 4, shared 0x0047A699
 	virtual void setSpecialPowerOverridableDestination(const Coord3D *loc) {}	// slot 5, shared `ret 4` 0x0047A69C

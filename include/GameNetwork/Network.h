@@ -38,6 +38,9 @@ struct NetLocalAddress
 class NetworkInterface : public SubsystemInterface
 {
 public:
+	// Empty, but retail's Network destructor stores this class's table before it runs SubsystemInterface's destructor,
+	// so the interface has a destructor of its own.
+	virtual ~NetworkInterface() {}
 	virtual void startNewSession() = 0;                                        // slot 0x38, 0x0025DFA1: resets the session state and tells the connection manager (slot 2)
 	virtual void vslot3C(Int frame) = 0;                                       // slot 0x3C, 0x0025DBAE: forwards update(state == 1, frame) to the connection manager's slot 3
 	virtual void vslot40(Int doInit) = 0;                                      // slot 0x40, 0x0025E970: starts a session when idle, runs the update above, then the disconnect screen and the state 3 hand-off

@@ -5,6 +5,16 @@
 // FUNCTION: BFME2 0x0024DC54 size=56 name=?friend_newModuleInstance@SpecialPowerModule@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024DC8C size=81 name=?friend_newModuleData@SpecialPowerModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024DCDD size=6 name=?Rva0024DCDDGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+int Rva0024DCDDGet()
+{
+	return 256;
+}
 // FUNCTION: BFME2 0x0024DCE3 size=6 name=?Rva0024DCE3Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+int Rva0024DCE3Get()
+{
+	return 257;
+}
 // FUNCTION: BFME2 0x0024DCE9 size=56 name=?friend_newModuleInstance@WeaponModeSpecialPowerUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024DD21 size=81 name=?friend_newModuleData@WeaponModeSpecialPowerUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit

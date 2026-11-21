@@ -2,7 +2,7 @@
 #include "GameClient/AptGuiFX.h"
 #include "GameClient/AptMessageBox.h"
 #include "GameClient/AptMessenger.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "GameClient/DisplayStringManager.h"
 #include "GameClient/DisplayString.h"
 bool g_Va00E022E0 = false;	// VA 0x00E022E0 (.bss; this unit's first data cell, data_rows C)
@@ -48,7 +48,7 @@ bool Rva003807AASentinelDiffers(void)
 // FUNCTION: BFME2 0x003807B7 size=60 name=?HideToolTip@@YAXXZ evidence=N:ledger tier=A
 void HideToolTip()
 {
-	((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(TheRva00222A8BOwner, "HideToolTip", 0, 0, 0, 0, 0, 0);
+	g_bfmeAptWindowManager->invoke(TheRva00222A8BOwner, "HideToolTip", 0, 0, 0, 0, 0, 0);
 	if (TheTooltipString)
 	{
 		TheDisplayStringManager->freeDisplayString(TheTooltipString);

@@ -17,6 +17,7 @@
 #include "GameNetwork/NetRequestFrameDataCommandMsg.h"
 #include "GameNetwork/NetRequestGameSpyStatsAuthKeyCommandMsg.h"
 #include "GameNetwork/NetGameSpyStatsAuthKeyCommandMsg.h"
+#include "GameNetwork/NetSaveGameCommandMsg.h"
 #include "GameNetwork/NetFileAnnounceCommandMsg.h"
 #include "GameNetwork/NetChatCommandMsg.h"
 #include "GameNetwork/NetKeepAliveCommandMsg.h"
@@ -463,6 +464,14 @@ AsciiString NetGameSpyStatsAuthKeyCommandMsg::getContentsAsAsciiString()
 }
 
 // FUNCTION: BFME2 0x004D6806 size=192 name=?getContentsAsAsciiString@Rva004D67D0@@UAE?AVAsciiString@@XZ evidence=?:placeholder tier=B hypothesis:Z
+AsciiString Rva004D67D0::getContentsAsAsciiString()
+{
+	AsciiString result;
+	AsciiString filenameAscii;
+	filenameAscii.translate(m_filename);
+	result.format("%s, action=%d reason = %d, filename=%s", NetCommandMsg::getContentsAsAsciiString().str(), m_action, m_reason, filenameAscii.str());
+	return result;
+}
 
 // FUNCTION: BFME2 0x004D68C6 size=443 name=?constructGameMessage@NetGameCommandMsg@@QAEPAVGameMessage@@XZ evidence=N:ledger tier=B hypothesis:Z
 
@@ -644,7 +653,7 @@ void NetAckStage2CommandMsg::setOriginalPlayerID(UnsignedByte playerID)
 }
 
 // NetCommandRef's constructor (COMDAT 0x0058B88A) and its folded destructor / detach (0x0058B8AE): defined here, not in
-// NetCommandRef.cpp, because that object is Object VERIFIED and an out-of-line extra would cost it the status.
+// NetCommandRef.cpp, because an out-of-line copy in that unit would be an extra row beyond the ones retail emits there.
 NetCommandRef::NetCommandRef(NetCommandMsg *msg)
 {
 	m_next = NULL;
@@ -672,4 +681,13 @@ void NetCommandRef::detach()
 AsciiString NetFileAnnounceCommandMsg::getPortableFilename() const
 {
 	return m_portableFilename;
+}
+
+Rva004D67D0::Rva004D67D0() : m_action(0), m_reason(0), m_filename(AsciiString(""))
+{
+	m_commandType = (NetCommandType)30;
+}
+
+Rva004D67D0::~Rva004D67D0()
+{
 }

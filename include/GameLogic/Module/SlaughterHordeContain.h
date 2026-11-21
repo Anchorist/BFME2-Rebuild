@@ -91,6 +91,7 @@ class SlaughterHordeContain : public HordeGarrisonContain
 {
 public:
 	SlaughterHordeContain(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~SlaughterHordeContain();
 	virtual Bool vslot20(Object *unit);

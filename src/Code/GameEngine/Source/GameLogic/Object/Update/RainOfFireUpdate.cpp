@@ -118,4 +118,3 @@ RainOfFireUpdate::~RainOfFireUpdate()
 
 
 
-// land smoke test RainOfFireUpdate

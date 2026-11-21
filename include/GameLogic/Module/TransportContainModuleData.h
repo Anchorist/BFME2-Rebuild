@@ -25,6 +25,7 @@ class TransportContainModuleData : public OpenContainModuleData
 public:
 	TransportContainModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Int m_slots;                                           // +0x98 Slots
 	Real m_exitPitchRate;                                  // +0x9C ExitPitchRate; angular velocity

@@ -1,3 +1,5 @@
+// cl: /O1
+#include "Common/Xfer.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G004FBF8E name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
@@ -5,5 +7,9 @@
 // FUNCTION: BFME2 0x004FC05C size=81 name=??1RegionAwardDispute@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x004FC0AD size=64 name=?rva004FC0AD@RegionAwardDispute@@QAEXPBVRva002E2903Player@@@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x004FC14B size=24 name=?XferLivingWorldBuildPlotID@@YAXPAVXfer@@PAX@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void XferLivingWorldBuildPlotID(Xfer *xfer, void *value)
+{
+	xfer->XferEnum("LivingWorldBuildPlotID", value, 4);
+}
 // FUNCTION: BFME2 0x004FC163 size=19 name=?Rva004FC163@@YAHI@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x004FC176 size=15 name=?rva004FC176@LivingWorldBuildPlot@@QAEXH@Z evidence=P:provisional (wb-file) tier=B hypothesis:mm1-gap-unit

@@ -40,6 +40,7 @@ class TransportContain : public OpenContain, public TransportPayloadInterface	//
 {
 public:
 	TransportContain(Thing *thing, const ModuleData *moduleData);		// 0x00468559
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	virtual NameKeyType getModuleNameKey() const;						// 0x00467EE1
 	virtual UpdateSleepTime update();									// 0x00468749

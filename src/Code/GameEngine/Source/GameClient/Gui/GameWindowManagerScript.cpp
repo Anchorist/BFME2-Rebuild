@@ -35,6 +35,7 @@ extern "C" char *__cdecl _mbscpy(char *,const char *);
 extern "C" __declspec(dllimport) int __cdecl sscanf(const char *,const char *,...);
 int scanInt(const char *,int &);
 int scanBool(const char *,bool &);
+GameWindow *peekWindow();
 int scanShort(const char *,short &);
 extern GameWindowCreationData g_windowScriptCreateRecord;
 
@@ -506,6 +507,63 @@ Bool parseTabControlData(char *token, WinInstanceData *instData, char *buffer, v
 // FUNCTION: BFME2 0x0031553A size=644 name=?parseData@@YA_NPAPAXPAD1@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x003157BE size=128 name=?copyGadgetDrawData_Rva003157BE@@YAXPAVGameWindow@@0PAX11@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0031583E size=342 name=?parseScreenRect@@YA_NPAD0PAH111@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+Bool parseScreenRect(Int *x, Int *y, Int *width, Int *height)
+{
+	GameWindow *parent = peekWindow();
+	IRegion2D screenRegion;
+	ICoord2D createRes;
+	char *seps = " ,:=\n\r\t";
+	char *c;
+
+	// UPPERLEFT
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, screenRegion.lo.x);
+	c = strtok(NULL, seps);
+	scanInt(c, screenRegion.lo.y);
+
+	// BOTTOMRIGHT
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, screenRegion.hi.x);
+	c = strtok(NULL, seps);
+	scanInt(c, screenRegion.hi.y);
+
+	// CREATIONRESOLUTION
+	c = strtok(NULL, seps);
+	c = strtok(NULL, seps);
+	scanInt(c, createRes.x);
+	c = strtok(NULL, seps);
+	scanInt(c, createRes.y);
+
+	// Scale the region by the ratio of the current resolution to the creation resolution.
+	Real xScale = (Real)TheDisplay->getWidth() / (Real)createRes.x;
+	Real yScale = (Real)TheDisplay->getHeight() / (Real)createRes.y;
+	screenRegion.lo.x = (Int)((Real)screenRegion.lo.x * xScale);
+	screenRegion.lo.y = (Int)((Real)screenRegion.lo.y * yScale);
+	screenRegion.hi.x = (Int)((Real)screenRegion.hi.x * xScale);
+	screenRegion.hi.y = (Int)((Real)screenRegion.hi.y * yScale);
+
+	// With a parent the position is relative to its client area, without one it is the screen.
+	if (parent)
+	{
+		ICoord2D parentScreenPos;
+
+		parent->winGetScreenPosition(&parentScreenPos.x, &parentScreenPos.y);
+		*x = screenRegion.lo.x - parentScreenPos.x;
+		*y = screenRegion.lo.y - parentScreenPos.y;
+	}
+	else
+	{
+		*x = screenRegion.lo.x;
+		*y = screenRegion.lo.y;
+	}
+
+	*width = screenRegion.hi.x - screenRegion.lo.x;
+	*height = screenRegion.hi.y - screenRegion.lo.y;
+
+	return TRUE;
+}
 // FUNCTION: BFME2 0x00315994 size=312 name=?parseTextColor@@YA_NPADPAVWinInstanceData@@0PAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 Bool parseTextColor(char *token, WinInstanceData *instData, char *buffer, void *data)
 {

@@ -49,6 +49,7 @@ class MonsterDockUpdate : public DockUpdate
 public:
 	virtual DockUpdateInterface *getDockUpdateInterface() { return this; }
 	MonsterDockUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual Bool dockSlot16(Object *docker);
 	virtual void onApproachReached(Object *docker);	// override: onApproachReached slot 8 at +0x20 (0x004A159E)

@@ -226,7 +226,8 @@
       "object": "O004BDB85",
       "accepted_names": [
         "?rva004BF8AC@SymbioticStructuresBody@@QAEHXZ",
-        "?rva004BF8AC@Rva004BF8AC@@QAEHXZ"
+        "?rva004BF8AC@Rva004BF8AC@@QAEHXZ",
+        "?rva004BF8AC@ActiveBody@@UAEHXZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null

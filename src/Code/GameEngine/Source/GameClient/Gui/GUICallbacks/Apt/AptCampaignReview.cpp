@@ -17,7 +17,7 @@ extern void *g_obj12F495C;
 void _bfme_closeAptScreen(const AsciiString &name);
 #include "GameClient/AptCampaignReview.h"
 #include "GameClient/Shell.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 extern void *g_obj12F495C;
 void Rva0051280EEnable(void);
 GameWindow *__stdcall createAptCampaignReviewWindow(GameWindowCreationData *creation);
@@ -43,7 +43,7 @@ WindowMsgHandledType AptCampaignReview::system(unsigned int message, unsigned in
 void Rva0051280EEnable(void)
 {
 	if (g_obj12F495C != 0)
-		((Rva00222479ByteOneSetter *)g_bfmeAptWindowManager)->enable();
+		g_bfmeAptWindowManager->enable();
 }
 
 // FUNCTION: BFME2 0x00512823 size=21 name=?Continue@AptCampaignReview@@QAEXPBD@Z evidence=N:ledger tier=B hypothesis:cohesion

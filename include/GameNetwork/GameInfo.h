@@ -58,6 +58,9 @@ class GameInfoOwned
 {
 public:
 	~GameInfoOwned();							// 0x00229840
+
+	UnsignedByte m_unk0x00[0x4C];				// +0x00..+0x4B: save-game metadata prefix before the saved slots
+	GameSlot m_slots[MAX_SLOTS];				// +0x4C..+0xDAB: eight saved slots (DoAnyHeroTransfer 0x0044C3D4 restores hero data from here)
 };
 
 class GameInfo : public Snapshot
@@ -103,8 +106,8 @@ public:
 	Int getNumNonObserverPlayers() const;		// 0x003FF23D
 	Int getNumOpenOrOccupiedSlots() const;		// 0x003FF987
 	Bool rva003FF457() const;					// 0x003FF457 (true when every occupied slot with a hero kind has its hero data)
-	void setGameRulesPreset(Int preset);
-	Bool hasSavedGameId() const;					// true when the 16-byte saved-game id at +0xCC is non-zero						// 0x003FF1A7 (stores the selector at +0x5C and refills the rules block when it changes)
+	void setGameRulesPreset(Int preset);						// stores the selector at +0x5C and refills the rules block when it changes
+	Bool hasSavedGameId() const;					// true when the 16-byte saved-game id at +0xCC is non-zero
 	Bool isHeroDataReadyForSlot(UnsignedShort slotNum) const;	// 0x003FF496
 	Bool isColorTaken(Int colorIndex, Int slotToIgnore) const;	// 0x003FF34A
 	Bool isStartPositionTaken(Int positionIndex, Int slotToIgnore) const;	// 0x003FF374

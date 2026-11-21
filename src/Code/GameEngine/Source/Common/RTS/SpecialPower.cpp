@@ -1,4 +1,4 @@
-// cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS /D_CRTIMP= /EHs /EHc-
+// cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT -Ireference/shims/bfmealloc_alloconly /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS /D_CRTIMP= /EHs /EHc-
 // stlport46
 // _CRTIMP= because retail calls the static CRT _free directly (canUseSpecialPower 0x003B1244, parseSpecialPowerDefinition, ~SpecialPowerStore)
 #include "Common/SpecialPowerStore.h"

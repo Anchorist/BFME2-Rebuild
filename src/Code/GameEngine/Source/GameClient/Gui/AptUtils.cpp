@@ -10,7 +10,7 @@
 #include <ctype.h>
 #include "Common/AsciiString.h"
 #include "Common/AptImageMode.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "GameClient/Mouse.h"
 #include "GameClient/AptTranslator.h"
 extern "C" __declspec(dllimport) int __cdecl _strcmpi(const char *, const char *);
@@ -35,7 +35,7 @@ void bfmeGoDYF(const char *text)
 // FUNCTION: BFME2 0x00412731 size=11 name=?CloseWindow@@YAXPBD@Z evidence=N:ledger tier=B hypothesis:K
 void CloseWindow(const char *)
 {
-	((Rva00222479ByteOneSetter *)g_bfmeAptWindowManager)->enable();
+	g_bfmeAptWindowManager->enable();
 }
 
 // FUNCTION: BFME2 0x0041273C size=75 name=?Rva0041273C@@YAXHPAD_N@Z evidence=?:placeholder tier=B hypothesis:K

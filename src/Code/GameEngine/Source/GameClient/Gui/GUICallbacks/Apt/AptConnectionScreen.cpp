@@ -4,7 +4,7 @@
 #include "GameNetwork/PortNegotiationSchema.h"
 #include "GameNetwork/GameSpy/GameSpyInfo.h"
 #include "GameNetwork/GameInfo.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "Common/AsciiString.h"
 #include "Common/UnicodeString.h"
 #include "GameNetwork/GameSpy/GameSpyConfig.h"

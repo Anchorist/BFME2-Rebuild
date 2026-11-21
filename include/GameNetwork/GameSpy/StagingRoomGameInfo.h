@@ -104,7 +104,7 @@ public:
 	Int m_reportedMaxPlayers;								// +0x1010 (slot 9 0x0038375A)
 	Int m_reportedNumObservers;								// +0x1014 (Zero Hour's third counter; not read here)
 	Int m_unk0x1018;										// +0x1018
-	statsgame_s *m_statsGame;								// +0x101C
+	statsgame_s *m_statsGame;						// GameSpy's per-game statistics record, owned by the staging room.
 };
 typedef char GameSpyStagingRoomSize[(sizeof(GameSpyStagingRoom) == 0x1020) ? 1 : -1];
 typedef char GameSpyStagingRoomSlotOffset[(offsetof(GameSpyStagingRoom, m_gameSpySlot) == 0xDC) ? 1 : -1];

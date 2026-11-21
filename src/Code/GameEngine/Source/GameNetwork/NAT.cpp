@@ -269,7 +269,7 @@ void NAT::attachSlotList(GameInfo *game, Int localSlot, UnsignedInt localIP, Uns
 	}
 	else
 	{
-		m_transport->rva004D53B5((void *)m_localIP);
+		m_transport->rva004D53B5(m_localIP);
 	}
 	m_schema.attachSlotList(m_slotList, (UnsignedShort)localSlot);
 	if (m_slotList != 0)

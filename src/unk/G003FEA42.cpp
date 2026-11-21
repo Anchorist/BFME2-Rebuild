@@ -1,15 +1,54 @@
+// cl: /O1
+#include "GameClient/AptPlayer.h"
+extern void *TheRva009C1A0COwner;
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G003FEA42 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x003FEA42 size=48 name=?setPlayerPowerCapState@@YAX_N@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void setPlayerPowerCapState(bool state)
+{
+	g_bfmeAptWindowManager->invoke(TheRva009C1A0COwner, "SetPlayerPowerCapState", 1, state ? "_ring" : "_evenstar", 0, 0, 0, 0);
+}
 // FUNCTION: BFME2 0x003FEA72 size=48 name=?setResourceIconState@@YAX_N@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void setResourceIconState(bool state)
+{
+	g_bfmeAptWindowManager->invoke(TheRva009C1A0COwner, "SetResourceIconState", 1, state ? "_show" : "_hide", 0, 0, 0, 0);
+}
 // FUNCTION: BFME2 0x003FEAA2 size=36 name=?showMovieButton@@YAXXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void showMovieButton()
+{
+	g_bfmeAptWindowManager->invoke(TheRva009C1A0COwner, "SetMovieButtonState", 1, "_show", 0, 0, 0, 0);
+}
 // FUNCTION: BFME2 0x003FEAC6 size=36 name=?hideMovieButton@@YAXXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void hideMovieButton()
+{
+	g_bfmeAptWindowManager->invoke(TheRva009C1A0COwner, "SetMovieButtonState", 1, "_hide", 0, 0, 0, 0);
+}
 // FUNCTION: BFME2 0x003FEAEA size=36 name=?fadePalantirButtonsZero@@YAXXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void fadePalantirButtonsZero()
+{
+	g_bfmeAptWindowManager->invoke(TheRva009C1A0COwner, "FadePalantirButtons", 1, "0", 0, 0, 0, 0);
+}
 // FUNCTION: BFME2 0x003FEB0E size=36 name=?fadePalantirButtonsOne@@YAXXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void fadePalantirButtonsOne()
+{
+	g_bfmeAptWindowManager->invoke(TheRva009C1A0COwner, "FadePalantirButtons", 1, "1", 0, 0, 0, 0);
+}
 // FUNCTION: BFME2 0x003FEB32 size=36 name=?showObserverStuff@@YAXXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void showObserverStuff()
+{
+	g_bfmeAptWindowManager->invoke(TheRva009C1A0COwner, "SetObserverStuffState", 1, "_show", 0, 0, 0, 0);
+}
 // FUNCTION: BFME2 0x003FEB56 size=36 name=?hideObserverStuff@@YAXXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void hideObserverStuff()
+{
+	g_bfmeAptWindowManager->invoke(TheRva009C1A0COwner, "SetObserverStuffState", 1, "_hide", 0, 0, 0, 0);
+}
 // FUNCTION: BFME2 0x003FEB7A size=48 name=?setFlashObjectivesButton@@YAX_N@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void setFlashObjectivesButton(bool state)
+{
+	g_bfmeAptWindowManager->invoke(TheRva009C1A0COwner, "FlashObjectivesButton", 1, state ? "_show" : "_hide", 0, 0, 0, 0);
+}
 // FUNCTION: BFME2 0x003FEBAA size=91 name=?rva00565170@@YAHH_N@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x003FEC05 size=197 name=?Rva003FEC05FadeScreenRegionToMapBlack@@YAHH_N@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x003FECCA size=52 name=?Rva003FECCASetPlayerFaction@@YAXPAPAX@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

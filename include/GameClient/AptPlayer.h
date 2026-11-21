@@ -14,6 +14,7 @@ class AptOverButtonHandler;
 class AptTimer;
 class GameWindow;
 class Image;
+class UnicodeString;
 struct Coord2D;
 
 // 0x224E10 constructs SubsystemInterface and installs the 21-slot table at
@@ -50,6 +51,9 @@ public:
 	int invokeAndRefresh(void *level, const char *name, int a, const char *text, void *b, void *c, void *d, void *e);
 	int callAndRefresh(void *level, const char *name1, const char *name2, int a, const char *text, void *b, void *c, void *d, void *e);
 	void hideBackground(bool flag);
+	void showBackground(int mode);
+	void bfmeSetText(const AsciiString &name, const UnicodeString &text, bool visible);
+	void rva002239E2(const AsciiString &name, const Image *image);
 	bool UnloadLevel(int level);
 	bool LoadLevel(unsigned int level);
 	void updateFocus();
@@ -130,3 +134,6 @@ private:
 };
 
 typedef char AptPlayer_size[(sizeof(AptPlayer) == 0x32C) ? 1 : -1];
+
+extern AptPlayer *g_bfmeAptWindowManager;
+int Rva002D3409Invoke(AptPlayer *player, int level, const char *name, const char *const &text);

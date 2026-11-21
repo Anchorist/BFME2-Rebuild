@@ -1,4 +1,4 @@
-// cl: /O1
+// cl: /O1 /arch:SSE
 // stlport46
 #include <new>
 #include <vector>
@@ -24,6 +24,17 @@ void PortNegotiationPing::reset()
 }
 
 // FUNCTION: BFME2 0x005DB885 size=95 name=?rva005DB885@Elem005DB98E@@QAEXH@Z evidence=?:placeholder tier=B hypothesis:K
+void PortNegotiationPing::recordPong(Int sendTime)
+{
+	Int rtt = timeGetTime() - sendTime;
+	if (rtt < 10000 && rtt > 0)
+	{
+		m_unk0x04 = m_unk0x0C * m_unk0x04 + rtt * 0.5;
+		m_unk0x0C += 1.0f;
+		m_unk0x04 /= m_unk0x0C;
+		m_unk0x10 = timeGetTime();
+	}
+}
 
 // FUNCTION: BFME2 0x005DB8E4 size=19 name=?rva005DB8E4@Rva005AB7BA@@QAEXXZ evidence=?:placeholder tier=B hypothesis:K
 void PortNegotiationPing::incrementSent()

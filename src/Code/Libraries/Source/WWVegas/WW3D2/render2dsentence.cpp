@@ -351,6 +351,36 @@ void FontCharsClass::Blit_Char(unsigned short c, unsigned short *dest_ptr, int d
 }
 
 // FUNCTION: BFME2 0x001588A0 size=225 name=?Blit_Char_Thai@FontCharsClass@@QAEXGPAGHHH@Z evidence=N:ledger tier=B hypothesis:K
+void FontCharsClass::Blit_Char_Thai(unsigned short ch, unsigned short *dest_ptr, int dest_stride, int dest_x, int dest_y)
+{
+	unsigned int *dest = reinterpret_cast<unsigned int *>(dest_ptr);
+	const FontCharsClassCharDataStruct *data = Get_Char_Data(ch);
+	if (data != 0 && data->Columns != 0) {
+		dest_x += data->Advance;
+		if (dest_x < 0)
+			dest_x = 0;
+		int dest_inc = dest_stride >> 2;
+		unsigned short *src_ptr = data->Pixels;
+		dest += (dest_inc * dest_y) + dest_x;
+
+		for (int row = 0; row < CharHeight; row++) {
+			for (int col = 0; col < data->Columns; col++) {
+				unsigned short pixel = *src_ptr;
+				unsigned int cur_data = pixel;
+				cur_data = (cur_data & 0xFFFFF000) << 4;
+				cur_data |= pixel & 0x0F00;
+				cur_data <<= 4;
+				cur_data |= pixel & 0x00F0;
+				cur_data <<= 4;
+				cur_data |= pixel & 0x000F;
+				cur_data <<= 4;
+				dest[col] |= cur_data;
+				src_ptr++;
+			}
+			dest += dest_inc;
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x00158990 size=515 name=?Rva00158990@Render2DSentenceClass@@AAEXPAVFontCharsClass@@PBG1_N@Z evidence=?:placeholder tier=B hypothesis:K
 

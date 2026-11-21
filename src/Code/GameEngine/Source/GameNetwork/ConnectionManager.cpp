@@ -55,6 +55,9 @@
 #include "GameNetwork/Network.h"
 #include "Common/StlAlgobase.h"
 #include "WWLib/systimer.h"
+#include "Common/GameAudio.h"
+#include "Common/MiscAudio.h"
+#include "Common/AudioEventRTS.h"
 
 extern UnsignedInt g_007ED97C;
 extern UnsignedInt g_00E043F4;		// VA 0x00E043F4 (the map's name; written by hasPacketRouterFrameStall)
@@ -188,6 +191,18 @@ void ConnectionManager::attachTransport(Transport *transport)
 }
 
 // FUNCTION: BFME2 0x004CF145 size=104 name=?Rva004CF145@@YAXXZ evidence=?:placeholder
+void Rva004CF145()
+{
+	if (TheAudio)
+	{
+		const MiscAudio *misc = TheAudio->getMiscAudio();
+		if (misc)
+		{
+			AudioEventRTS sound(misc->m_incomingChatNotification, 0);
+			TheAudio->addAudioEvent(&sound);
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x004CF1AD size=328 name=?processHero@ConnectionManager@@QAEXPAVNetCommandMsg@@@Z evidence=N:ledger
 

@@ -3,7 +3,7 @@
 #include "GameClient/AptMainMenu.h"
 #include "GameClient/Shell.h"
 #include "Common/UnicodeString.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "GameLogic/GameLogic.h"
 #include "Common/MessageStream.h"
 #include "Common/GameState.h"
@@ -27,7 +27,7 @@ void AptMainMenu::rva00514878()
 	if (m_action == 2)
 	{
 		m_action = 0;
-		((Rva00222A8BTarget *)g_bfmeAptWindowManager)->rva00222F55(false);
+		g_bfmeAptWindowManager->hideBackground(false);
 	}
 	TheShell->setShellMapOn(true);
 }

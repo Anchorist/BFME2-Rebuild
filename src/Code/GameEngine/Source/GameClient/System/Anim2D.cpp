@@ -6,6 +6,7 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:padding
+#include <stddef.h>
 #include "GameClient/Anim2D.h"
 #include "Common/INI.h"
 #include "GameClient/Anim2DCollection.h"
@@ -20,6 +21,31 @@
 
 // The 2D animation collection singleton (retail VA 0x00DFF068).
 Anim2DCollection *TheAnim2DCollection = NULL;
+
+// The names an animation definition gives its play mode, in enum order (retail VA 0x00DBCC84).
+char *Anim2DModeNames[] =
+{
+	"NONE",
+	"ONCE",
+	"ONCE_BACKWARDS",
+	"LOOP",
+	"LOOP_BACKWARDS",
+	"PING_PONG",
+	"PING_PONG_BACKWARDS",
+	NULL
+};
+
+// The fields of an animation definition (retail VA 0x00C031F0).
+const FieldParse Anim2DTemplate::s_anim2DFieldParseTable[] =
+{
+	{ "NumberImages", Anim2DTemplate::parseNumImages, NULL, 0 },
+	{ "Image", Anim2DTemplate::parseImage, NULL, 0 },
+	{ "ImageSequence", Anim2DTemplate::parseImageSequence, NULL, 0 },
+	{ "AnimationMode", INI::parseIndexList, Anim2DModeNames, offsetof(Anim2DTemplate, m_playMode) },
+	{ "AnimationDelay", INI::parseDurationUnsignedShort, NULL, offsetof(Anim2DTemplate, m_frameDuration) },
+	{ "RandomizeStartFrame", INI::parseBool, NULL, offsetof(Anim2DTemplate, m_randomStart) },
+	{ NULL, NULL, NULL, 0 }
+};
 // Portions derived from Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 
 extern GameClient *TheGameClient;
@@ -407,6 +433,27 @@ void Anim2DTemplate::parseImageSequence(INI *ini, void *instance, void *store, c
 }
 
 // FUNCTION: BFME2 0x002D7554 size=114 name=?parseAnim2DDefinition@INI@@SAXPAV1@@Z evidence=N:ledger tier=A
+void INI::parseAnim2DDefinition(INI *ini)
+{
+	AsciiString name;
+	Anim2DTemplate *animTemplate;
+
+	// read the name
+	const char *c = ini->getNextToken();
+	name.set(c);
+
+	// Animations do not support overrides: a name already in use is left alone.
+	if (!TheAnim2DCollection)
+		return;
+
+	animTemplate = TheAnim2DCollection->findTemplate(name);
+	if (animTemplate == NULL)
+		animTemplate = TheAnim2DCollection->newTemplate(name);
+	else
+		return;
+
+	ini->initFromINI(animTemplate, Anim2DTemplate::s_anim2DFieldParseTable);
+}
 
 // FUNCTION: BFME2 0x002D75C6 size=18 name=?init@Anim2DCollection@@UAEXXZ evidence=N:ledger tier=A
 

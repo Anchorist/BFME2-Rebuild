@@ -7,14 +7,12 @@
 #include "Common/UnicodeString.h"
 #include "GameLogic/LivingWorldLogic.h"
 #include "GameClient/AptPlayer.h"
-#include "Apt/BfmeAptWindowManager.h"
 #include "GameNetwork/GameInfo.h"
 #include "GameNetwork/GameSpy/StagingRoomGameInfo.h"
 #include "GameNetwork/GameSpy/GameSpyInfo.h"
 extern LivingWorldLogic *TheLivingWorldLogic;
 void Rva00433D07(GameWindow *, int);
 void Rva00434EFA(void);
-int Rva002D3409Invoke(Rva00222A8BTarget *, void *, const char *, const char *const &);
 extern "C" unsigned char *__cdecl _mbscpy(unsigned char *, const unsigned char *);
 extern "C" unsigned char *__cdecl _mbscat(unsigned char *, const unsigned char *);
 void Rva00437E9C(int);
@@ -204,8 +202,8 @@ void AptSaveLoad::rva004340AC()
 		if (m_mode == 0x10 && selected && selected->m_kind == 6 && !selected->m_flagDE4)
 			loadEnable = "0";
 		int level = AptPlayer::GetLevelIndex(this);
-		Rva002D3409Invoke((Rva00222A8BTarget *)g_bfmeAptWindowManager, (void *)level, "LoadButtonEnable", loadEnable);
-		Rva002D3409Invoke((Rva00222A8BTarget *)g_bfmeAptWindowManager, (void *)level, "DeleteButtonEnable", deleteEnable);
+		Rva002D3409Invoke(g_bfmeAptWindowManager, level, "LoadButtonEnable", loadEnable);
+		Rva002D3409Invoke(g_bfmeAptWindowManager, level, "DeleteButtonEnable", deleteEnable);
 	}
 }
 

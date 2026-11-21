@@ -4,7 +4,7 @@
 #include <string.h>
 #include "GameClient/AptLanLobby.h"
 #include "GameClient/GameWindowManager.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "GameClient/GadgetTextEntry.h"
 #include "GameClient/AptOptions.h"
 #include "GameNetwork/LANAPI.h"
@@ -38,7 +38,7 @@ void Rva00444040Enable(void)
 {
 	if (AptLanLobby::s_instance == 0)
 		return;
-	((Rva00222479ByteOneSetter *)g_bfmeAptWindowManager)->enable();
+	g_bfmeAptWindowManager->enable();
 }
 
 // FUNCTION: BFME2 0x00444083 size=113 name=?rva00444083@AptLanLobby@@QAEXH@Z evidence=?:placeholder tier=A
@@ -46,12 +46,12 @@ void AptLanLobby::rva00444083(int flags)
 {
 	if ((flags & 1) && !(m_x6BC & 1))
 	{
-		((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_callbackOwner, "EnableCreateGame", 0, 0, 0, 0, 0, 0);
+		g_bfmeAptWindowManager->invoke(m_callbackOwner, "EnableCreateGame", 0, 0, 0, 0, 0, 0);
 		m_x6BC |= 1;
 	}
 	if ((flags & 2) && !(m_x6BC & 2))
 	{
-		((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_callbackOwner, "EnableJoinGame", 0, 0, 0, 0, 0, 0);
+		g_bfmeAptWindowManager->invoke(m_callbackOwner, "EnableJoinGame", 0, 0, 0, 0, 0, 0);
 		m_x6BC |= 2;
 	}
 }
@@ -61,12 +61,12 @@ void AptLanLobby::rva004440F4(int flags)
 {
 	if ((flags & 1) && (m_x6BC & 1))
 	{
-		((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_callbackOwner, "DisableCreateGame", 0, 0, 0, 0, 0, 0);
+		g_bfmeAptWindowManager->invoke(m_callbackOwner, "DisableCreateGame", 0, 0, 0, 0, 0, 0);
 		m_x6BC &= ~1;
 	}
 	if ((flags & 2) && (m_x6BC & 2))
 	{
-		((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_callbackOwner, "DisableJoinGame", 0, 0, 0, 0, 0, 0);
+		g_bfmeAptWindowManager->invoke(m_callbackOwner, "DisableJoinGame", 0, 0, 0, 0, 0, 0);
 		m_x6BC &= ~2;
 	}
 }
@@ -123,7 +123,7 @@ void AptLanLobby::rva004442DB()
 {
 	m_setup.rva0044303D();
 	if (((AptWindowManagerFields *)g_bfmeAptWindowManager)->m_x31C != 1)
-		((Rva00222A8BTarget *)g_bfmeAptWindowManager)->rva002233A6(1);
+		g_bfmeAptWindowManager->showBackground(1);
 }
 
 // FUNCTION: BFME2 0x004442FD size=46 name=?rva004442FD@AptLanLobby@@QAEXXZ evidence=?:placeholder tier=A
@@ -231,7 +231,7 @@ void Rva00444525Init(void)
 	if (AptLanLobby::s_instance == 0)
 	{
 		TheShell->push(AsciiString("LanLobby.apt"), false);
-		((Rva00222A8BTarget *)g_bfmeAptWindowManager)->rva002233A6(1);
+		g_bfmeAptWindowManager->showBackground(1);
 	}
 }
 
@@ -327,7 +327,7 @@ void AptLanLobby::CancelMenu(void)
 	{
 		m_state = 0;
 		rva004443E7();
-		((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_callbackOwner, "CancelGame", 0, 0, 0, 0, 0, 0);
+		g_bfmeAptWindowManager->invoke(m_callbackOwner, "CancelGame", 0, 0, 0, 0, 0, 0);
 	}
 }
 
@@ -338,7 +338,7 @@ void AptLanLobby::rva00444EC8()
 	rva004443E7();
 	m_state = 0;
 	void *owner = m_callbackOwner;
-	((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(owner, "CancelGame", 0, 0, 0, 0, 0, 0);
+	g_bfmeAptWindowManager->invoke(owner, "CancelGame", 0, 0, 0, 0, 0, 0);
 	MessageBoxOk(TheGameText->fetch("GUI:HostLeftTitle"), TheGameText->fetch("GUI:HostLeft"), 0);
 }
 

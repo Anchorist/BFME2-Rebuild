@@ -12,6 +12,10 @@ extern Debug *theDebug;
 bool bfmeRva000387C0();
 void _bfme_debugRecordCallsite(int kind);
 // FUNCTION: BFME2 0x004C81E3 size=42 name=??0DevastateSpecialPower@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+DevastateSpecialPower::DevastateSpecialPower(Thing *thing, const ModuleData *moduleData)
+	: SpecialPowerModule(thing, moduleData)
+{
+}
 // FUNCTION: BFME2 0x004C820D size=6 name=?Rva004C820DGet@@YAHXZ evidence=?:placeholder
 const char *DevastateSpecialPower::GetSnapshotName() const
 {

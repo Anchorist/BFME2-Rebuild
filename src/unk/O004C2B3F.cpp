@@ -36,6 +36,10 @@ void LevelGrantSpecialPowerModuleData::buildFieldParse(MultiIniFieldParse &parse
 }
 
 // FUNCTION: BFME2 0x004C2B0E size=49 name=??0LevelGrantSpecialPower@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-contiguity-shared-data
+LevelGrantSpecialPower::LevelGrantSpecialPower(Thing *thing, const ModuleData *moduleData)
+	: SpecialAbilityUpdate(thing, moduleData)
+{
+}
 // FUNCTION: BFME2 0x004C2B3F size=6 name=?Rva004C2B3FGet@@YAHXZ evidence=?:placeholder
 const char *LevelGrantSpecialPower::GetSnapshotName() const
 {

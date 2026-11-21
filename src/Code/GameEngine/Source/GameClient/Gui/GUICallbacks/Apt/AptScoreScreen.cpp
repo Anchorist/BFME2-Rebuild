@@ -7,7 +7,7 @@
 #include "GameClient/Shell.h"
 #include "GameClient/GadgetTextEntry.h"
 #include "Common/AsciiString.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "GameClient/GameWindowManager.h"
 #include "GameLogic/LivingWorldLogic.h"
 #include "GameClient/GadgetListBox.h"
@@ -38,7 +38,7 @@ void AptScoreScreen::OnInitialized(const char *)
 // FUNCTION: BFME2 0x0051BF9B size=14 name=?Timeline@AptScoreScreen@@QAEXPBD@Z evidence=N:ledger tier=A
 void AptScoreScreen::Timeline(const char *)
 {
-	((Rva00222479ByteOneSetter *)g_bfmeAptWindowManager)->enable();
+	g_bfmeAptWindowManager->enable();
 }
 
 // FUNCTION: BFME2 0x0051BFA9 size=13 name=?RestartGame@AptScoreScreen@@QAEXPBD@Z evidence=N:ledger tier=A

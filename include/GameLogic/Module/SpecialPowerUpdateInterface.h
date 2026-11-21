@@ -24,7 +24,7 @@ public:
 	virtual void setSpecialPowerOverridableDestination(const Coord3D *loc) = 0;
 	virtual bool isPowerCurrentlyInUse(const CommandButton *command = 0) const = 0;
 	virtual bool vslot07(int) = 0;
-	virtual bool vslot08(int) = 0;
+	virtual bool vslot08(const Coord3D *location) = 0;
 };
 
 #endif

@@ -6,6 +6,7 @@
 #include "WW3D2/MeshGeometryClass.h"
 #include "WW3D2/RayCollisionTestClass.h"
 #include "WWMath/CollisionMath.h"
+#include "WWMath/TriClass.h"
 #include "WWMath/colmathline.h"
 #include "WW3D2/inttest.h"
 #include "WW3D2/w3d_file.h"
@@ -213,6 +214,36 @@ AABTreeClass::AABTreeClass(const AABTreeClass &that) :
 // FUNCTION: BFME2 0x001981F0 size=480 name=?Cast_Ray_To_Polys@AABTreeClass@@AAE_NPAUCullNodeStruct@1@AAVRayCollisionTestClass@@@Z evidence=N:ledger tier=B hypothesis:Z
 
 // FUNCTION: BFME2 0x001983D0 size=419 name=?Intersect_OBBox_With_Polys@AABTreeClass@@AAE_NPAUCullNodeStruct@1@AAVOBBoxIntersectionTestClass@@@Z evidence=N:ledger tier=B hypothesis:Z
+bool AABTreeClass::Intersect_OBBox_With_Polys(CullNodeStruct *node, OBBoxIntersectionTestClass &test)
+{
+	int poly0 = node->Get_Poly0();
+	int polycount = node->Get_Poly_Count();
+
+	if (polycount > 0) {
+		// Simply loop through the polys in this node, checking each for collision
+		TriClass tri;
+
+		const Vector3 *loc = Mesh->Get_Vertex_Array();
+		const TriIndex *polyverts = Mesh->Get_Polygon_Array();
+
+		for (int poly_counter = 0; poly_counter < polycount; poly_counter++) {
+			int poly_index = PolyIndices[poly0 + poly_counter];
+
+			tri.V[0] = &(loc[polyverts[poly_index][0]]);
+			tri.V[1] = &(loc[polyverts[poly_index][1]]);
+			tri.V[2] = &(loc[polyverts[poly_index][2]]);
+			Vector3 normal;
+			tri.N = &normal;
+			tri.Compute_Normal();
+
+			if (CollisionMath::Intersection_Test(test.Box, tri)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 
 // FUNCTION: BFME2 0x00198580 size=167 name=?Update_Min_Max@AABTreeClass@@AAEXHAAVVector3@@0@Z evidence=N:ledger tier=B hypothesis:Z
 void AABTreeClass::Update_Min_Max(int index, Vector3 &min, Vector3 &max)

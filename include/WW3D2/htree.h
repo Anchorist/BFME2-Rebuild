@@ -51,6 +51,8 @@ public:
 	bool Is_Bone_Captured(int boneindex) const;
 	int Get_First_Captured_Bone(void) const;			// 0x00162290 (role name: the first record of the sorted capture list, -1 when empty)
 	void Control_Bone(int boneindex, const Matrix3D &relative_tm, bool world_space_translation);
+	// Reads the transform a captured bone is currently controlled with.
+	void Get_Bone_Control(int boneindex, Matrix3D &out) const;
 	void Release_Bone(int boneindex);
 	void Capture_Bone(int boneindex);
 	void Slave_Update(const HTreeClass *src, const Matrix3D &root);	// (Animatable3DObjClass::Update_Sub_Object_Transforms follows another object's tree through it)

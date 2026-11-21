@@ -4,7 +4,7 @@
 #include "GameNetwork/GameInfo.h"
 #include "GameNetwork/GameSlot.h"
 #include "Common/MultiplayerSettings.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "GameClient/GameText.h"
 #include "Common/AsciiString.h"
 extern "C" unsigned char *__cdecl _mbscpy(unsigned char *, const unsigned char *);
@@ -46,7 +46,7 @@ void AptFileTransferPopup::ProcessProgress(int playerIndex, int completionPercen
 	char percentText[64];
 	sprintf(slotText, "%d", displaySlot);
 	sprintf(percentText, "%d", completionPercent);
-	((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke((void *)13, "SetBarTo", 2, slotText, percentText, 0, 0, 0);
+	g_bfmeAptWindowManager->invoke((void *)13, "SetBarTo", 2, slotText, percentText, 0, 0, 0);
 }
 
 // FUNCTION: BFME2 0x00583202 size=206 name=?rva00583202@AptFileTransferPopup@@QAEXH@Z evidence=?:placeholder tier=A

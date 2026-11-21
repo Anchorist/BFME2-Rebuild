@@ -742,7 +742,7 @@ void Team::transferUnitsTo(Team *newTeam)
 	}
 	Rva002A8AB1Record *record = TheSkirmishAIManager->rva002A8AB1(getControllingPlayer());
 	if (record)
-		record->rva002C6A76(this);
+		record->UnRegister(this);
 }
 
 // FUNCTION: BFME2 0x0039E76C size=134 name=?damageTeamMembers@Team@@QAE_NM@Z evidence=N:ledger tier=A
@@ -1571,6 +1571,13 @@ void TeamFactory::reset()
 // FUNCTION: BFME2 0x003A3B7E size=317 name=?createInactiveTeam@TeamFactory@@QAEPAVTeam@@ABVAsciiString@@0@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x003A3CBB size=30 name=?createInstance@Rva003A3CBBOwner@@QAEPAVTeam@@ABVAsciiString@@0@Z evidence=?:placeholder tier=A
+Team *TeamFactory::createTeam(const AsciiString &owner, const AsciiString &name)
+{
+	// The inactive team, switched on at once.
+	Team *team = createInactiveTeam(owner, name);
+	team->setActive();
+	return team;
+}
 
 // FUNCTION: BFME2 0x003A3CD9 size=229 name=?createEmptyTeam@TeamFactory@@QAEPAVTeam@@PAVPlayer@@@Z evidence=N:ledger tier=A
 Team *TeamFactory::createEmptyTeam(Player *owner)

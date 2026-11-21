@@ -34,8 +34,8 @@
 #include "Common/AudioEventRTS.h"
 #include "Common/OpaqueRefElement4.h"
 
-// Retail's command-option bit for a power fired from a script (old ledger
-// SpecialPowerModuleDo.cpp; the same value gates every doSpecialPower* entry).
+// Retail's command-option bit for a power fired from a script (the same value gates
+// every doSpecialPower* entry).
 enum { COMMAND_FIRED_BY_SCRIPT = 0x40000 };
 
 extern const FieldParse s_specialPowerFieldTable[];
@@ -742,7 +742,7 @@ bool SpecialPowerModule::rva0049466D(const Coord3D *location)
 	{
 		SpecialPowerUpdateInterface *update = (*module)->getSpecialPowerUpdateInterface();
 		if (update && update->vslot07((int)getSpecialPowerModuleData()->m_specialPowerTemplate))
-			return update->vslot08((int)location);
+			return update->vslot08(location);
 	}
 	return true;
 }

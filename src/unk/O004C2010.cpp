@@ -8,6 +8,10 @@
 #include "GameLogic/Module/PorcupineFormationBodyModule.h"
 #include "Common/NameKeyGenerator.h"
 // FUNCTION: BFME2 0x004C1FE6 size=42 name=??0PorcupineFormationBodyModule@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+PorcupineFormationBodyModule::PorcupineFormationBodyModule(Thing *thing, const ModuleData *moduleData)
+	: ActiveBody(thing, moduleData)
+{
+}
 // FUNCTION: BFME2 0x004C2010 size=6 name=?Rva004C2010Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
 const char *PorcupineFormationBodyModule::GetSnapshotName() const
 {

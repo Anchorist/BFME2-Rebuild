@@ -14,7 +14,7 @@
 void Rva004E400DEnable(void);
 void *Rva004E4179Get(void);
 void __stdcall Rva004E40A6Enable(int);
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "Common/UnicodeString.h"
 void Rva00327AEE(GameWindow *, bool);
 extern "C" unsigned char *__cdecl _mbscpy(unsigned char *, const unsigned char *);

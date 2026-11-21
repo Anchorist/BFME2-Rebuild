@@ -75,6 +75,8 @@ public:
 class GiantBirdAIUpdate : public AIUpdateInterface
 {
 public:
+	// The follow-through state's exit writes the +0x558 flag and the +0x55C word directly.
+	friend class AIGiantBirdFollowThruState;
 	GiantBirdAIUpdate(Thing *thing, const ModuleData *moduleData);	// 0x0036B717
 
 	// Primary table 0x00817A80 differs from AIUpdateInterface at these slots.

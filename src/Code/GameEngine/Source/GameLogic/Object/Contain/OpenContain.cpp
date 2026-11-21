@@ -714,6 +714,10 @@ ContainmentListView OpenContain::getList()
 }
 
 // FUNCTION: BFME2 0x004647F0 size=13 name=?Rva004647F0Adjust@@YIPAXPAX@Z evidence=?:placeholder tier=A
+ExitInterface *OpenContain::getContainExitInterface()
+{
+	return this;
+}
 
 // FUNCTION: BFME2 0x004647FD size=13 name=?set@Rva004647FDByteSlot@@QAEXE@Z evidence=?:placeholder tier=A
 void OpenContain::enableLoadSounds(Bool enable)

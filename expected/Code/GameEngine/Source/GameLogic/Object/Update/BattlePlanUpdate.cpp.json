@@ -49,7 +49,9 @@
         "?loadPostProcess@SlowDeathBehavior@@MAEXXZ",
         "?loadPostProcess@SupplyCenterProductionExitUpdate@@MAEXXZ",
         "?loadPostProcess@ObjectHelper@@MAEXXZ",
-        "?loadPostProcess@HordeTransportContainDamage@@MAEXXZ"
+        "?loadPostProcess@HordeTransportContainDamage@@MAEXXZ",
+        "?loadPostProcess@AssistedTargetingUpdate@@MAEXXZ",
+        "?loadPostProcess@FoundationAIUpdate@@MAEXXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"

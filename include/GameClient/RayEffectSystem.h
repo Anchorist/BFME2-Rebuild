@@ -29,6 +29,7 @@ public:
 	void addRayEffect(const Drawable *drawable, const Coord3D *start, const Coord3D *end);
 
 private:
+	RayEffectData *findEntry(const Drawable *draw);			// 0x002CED59: the record whose drawable matches, or NULL
 	enum { MAX_RAY_EFFECTS = 128 };
 	RayEffectData m_effectData[MAX_RAY_EFFECTS];				// +0x0C
 };

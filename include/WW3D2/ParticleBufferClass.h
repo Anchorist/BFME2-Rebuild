@@ -118,6 +118,8 @@ protected:
 	};
 
 	void Render_Particles(RenderInfoClass &rinfo);
+	// Builds the table of the particles to draw this frame (the active point table) and counts them.
+	void Generate_APT(ShareBufferClass<unsigned int> **apt, unsigned int &active_point_count);
 	void Render_Line(RenderInfoClass &rinfo);
 	void Render_Line_Group(RenderInfoClass &rinfo);
 	void Update_Kinematic_Particle_State();

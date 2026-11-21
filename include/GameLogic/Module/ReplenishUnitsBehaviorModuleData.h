@@ -18,6 +18,7 @@ class ReplenishUnitsBehaviorModuleData : public ModuleData
 public:
 	ReplenishUnitsBehaviorModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UpgradeMuxData m_upgradeMuxData;                       // +0x8; added by buildFieldParse at +0x8
 	Real m_replenishRadius;                                // +0x118 ReplenishRadius

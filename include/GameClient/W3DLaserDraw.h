@@ -31,6 +31,7 @@ class W3DLaserDraw : public DrawModule, public LaserDrawInterface
 {
 public:
 	W3DLaserDraw(Thing *thing, const ModuleData *moduleData);					// 0x000C9D38
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void doDrawModule(const Matrix3D *transformMtx);

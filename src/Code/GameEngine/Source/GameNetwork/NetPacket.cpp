@@ -26,6 +26,7 @@
 #include "GameNetwork/NetFileAnnounceCommandMsg.h"
 #include "GameNetwork/NetRequestGameSpyStatsAuthKeyCommandMsg.h"
 #include "GameNetwork/NetGameSpyStatsAuthKeyCommandMsg.h"
+#include "GameNetwork/NetSaveGameCommandMsg.h"
 #include "GameNetwork/NetCommandMsg.h"
 #include "GameNetwork/NetPacket.h"
 #include "GameNetwork/GameMessageParser.h"
@@ -2468,8 +2469,78 @@ Bool NetPacket::addGameCommand(NetCommandRef *ref)
 }
 
 // FUNCTION: BFME2 0x00590D19 size=506 name=?Rva00590D19Add@@YAXHPAVNetGameCommandMsg@@PBXPAHH@Z evidence=?:placeholder tier=B hypothesis:K
+void Rva00590D19Add(Int type, NetGameCommandMsg *msg, const void *base, Int *offset, Int /*msgType*/)
+{
+	GameMessageArgumentType arg;
+	if (type == ARGUMENTDATATYPE_INTEGER) {
+		Int val;
+		memcpy(&val, (const char *)base + *offset, sizeof(Int));
+		*offset += sizeof(Int);
+		arg.integer = val;
+		msg->addArgument(ARGUMENTDATATYPE_INTEGER, arg);
+	} else if (type == ARGUMENTDATATYPE_REAL) {
+		Real val;
+		memcpy(&val, (const char *)base + *offset, sizeof(Real));
+		*offset += sizeof(Real);
+		arg.real = val;
+		msg->addArgument(ARGUMENTDATATYPE_REAL, arg);
+	} else if (type == ARGUMENTDATATYPE_BOOLEAN) {
+		Bool val;
+		memcpy(&val, (const char *)base + *offset, sizeof(Bool));
+		*offset += sizeof(Bool);
+		arg.boolean = val;
+		msg->addArgument(ARGUMENTDATATYPE_BOOLEAN, arg);
+	} else if (type == ARGUMENTDATATYPE_OBJECTID) {
+		ObjectID val;
+		memcpy(&val, (const char *)base + *offset, sizeof(ObjectID));
+		*offset += sizeof(ObjectID);
+		arg.objectID = val;
+		msg->addArgument(ARGUMENTDATATYPE_OBJECTID, arg);
+	} else if (type == ARGUMENTDATATYPE_DRAWABLEID) {
+		DrawableID val;
+		memcpy(&val, (const char *)base + *offset, sizeof(DrawableID));
+		*offset += sizeof(DrawableID);
+		arg.drawableID = val;
+		msg->addArgument(ARGUMENTDATATYPE_DRAWABLEID, arg);
+	} else if (type == ARGUMENTDATATYPE_TEAMID) {
+		UnsignedInt val;
+		memcpy(&val, (const char *)base + *offset, sizeof(UnsignedInt));
+		*offset += sizeof(UnsignedInt);
+		arg.teamID = val;
+		msg->addArgument(ARGUMENTDATATYPE_TEAMID, arg);
+	} else if (type == ARGUMENTDATATYPE_LOCATION) {
+		Coord3DBase val;
+		memcpy(&val, (const char *)base + *offset, sizeof(Coord3DBase));
+		*offset += sizeof(Coord3DBase);
+		arg.location = val;
+		msg->addArgument(ARGUMENTDATATYPE_LOCATION, arg);
+	} else if (type == ARGUMENTDATATYPE_PIXEL) {
+		ICoord2D val;
+		memcpy(&val, (const char *)base + *offset, sizeof(ICoord2D));
+		*offset += sizeof(ICoord2D);
+		arg.pixel = val;
+		msg->addArgument(ARGUMENTDATATYPE_PIXEL, arg);
+	} else if (type == ARGUMENTDATATYPE_PIXELREGION) {
+		memcpy(&arg.pixelRegion, (const char *)base + *offset, sizeof(IRegion2D));
+		*offset += sizeof(IRegion2D);
+		msg->addArgument(ARGUMENTDATATYPE_PIXELREGION, arg);
+	} else if (type == ARGUMENTDATATYPE_TIMESTAMP) {
+		UnsignedInt val;
+		memcpy(&val, (const char *)base + *offset, sizeof(UnsignedInt));
+		*offset += sizeof(UnsignedInt);
+		arg.timestamp = val;
+		msg->addArgument(ARGUMENTDATATYPE_TIMESTAMP, arg);
+	} else if (type == ARGUMENTDATATYPE_WIDECHAR) {
+		WideChar val;
+		memcpy(&val, (const char *)base + *offset, sizeof(WideChar));
+		*offset += sizeof(WideChar);
+		arg.wChar = val;
+		msg->addArgument(ARGUMENTDATATYPE_WIDECHAR, arg);
+	}
+}
 
 class Rva004D6119;
+class Rva0023E928;
 class CDDrive;
 struct Rva00591062Host;
 
@@ -2492,6 +2563,12 @@ Int Rva00590F76Get(const Rva004D6119 *msg)
 }
 
 // FUNCTION: BFME2 0x00590FA5 size=47 name=?Rva00590FA5Get@@YAHPBVRva0023E928@@@Z evidence=?:placeholder tier=B hypothesis:K
+Int Rva00590FA5Get(const Rva0023E928 *msg)
+{
+	const Rva004D67D0 *saveMsg = (const Rva004D67D0 *)msg;
+	UnsignedByte textLength = saveMsg->getFilename().getLength();
+	return textLength * 2 + 0x1D;
+}
 
 // FUNCTION: BFME2 0x00590FD4 size=54 name=?Rva00590FD4Get@@YAHPAVCDDrive@@@Z evidence=?:placeholder tier=B hypothesis:K
 Int Rva00590FD4Get(CDDrive *msg)
@@ -2604,6 +2681,63 @@ void NetPacket::FillBufferWithChatCommand(UnsignedByte *buffer, NetCommandRef *m
 
 
 // FUNCTION: BFME2 0x0059129F size=300 name=?rva0059129F@NetPacket@@KAXPAEPAVNetCommandRef@@@Z evidence=?:placeholder tier=B hypothesis:K
+void NetPacket::rva0059129F(UnsignedByte *buffer, NetCommandRef *msg)
+{
+	Rva004D67D0 *cmdMsg = (Rva004D67D0 *)msg->getCommand();
+	UnsignedShort offset = 0;
+
+	buffer[offset] = 'T';
+	++offset;
+	buffer[offset] = cmdMsg->getNetCommandType();
+	offset += sizeof(UnsignedByte);
+
+	buffer[offset] = 'S';
+	++offset;
+	UnsignedInt newTimestamp = cmdMsg->getTimestamp();
+	memcpy(buffer + offset, &newTimestamp, sizeof(UnsignedInt));
+	offset += sizeof(UnsignedInt);
+
+	buffer[offset] = 'F';
+	++offset;
+	UnsignedInt newFrame = cmdMsg->getExecutionFrame();
+	memcpy(buffer + offset, &newFrame, sizeof(UnsignedInt));
+	offset += sizeof(UnsignedInt);
+
+	buffer[offset] = 'R';
+	++offset;
+	UnsignedByte newRelay = msg->getRelay();
+	memcpy(buffer + offset, &newRelay, sizeof(UnsignedByte));
+	offset += sizeof(UnsignedByte);
+
+	buffer[offset] = 'P';
+	++offset;
+	buffer[offset] = cmdMsg->getPlayerID();
+	offset += sizeof(UnsignedByte);
+
+	buffer[offset] = 'C';
+	++offset;
+	UnsignedShort newID = cmdMsg->getID();
+	memcpy(buffer + offset, &newID, sizeof(UnsignedShort));
+	offset += sizeof(UnsignedShort);
+
+	buffer[offset] = 'D';
+	++offset;
+	UnicodeString unitext = cmdMsg->getFilename();
+	UnsignedByte length = unitext.getLength();
+	Int action = cmdMsg->getAction();
+	memcpy(buffer + offset, &length, sizeof(UnsignedByte));
+	offset += sizeof(UnsignedByte);
+
+	memcpy(buffer + offset, unitext.str(), length * sizeof(WideChar));
+	offset += length * sizeof(WideChar);
+
+	memcpy(buffer + offset, &action, sizeof(Int));
+	offset += sizeof(Int);
+
+	Int reason = cmdMsg->getReason();
+	memcpy(buffer + offset, &reason, sizeof(Int));
+	offset += sizeof(Int);
+}
 
 // FUNCTION: BFME2 0x005913CB size=265 name=?FillBufferWithFileCommand@NetPacket@@KAXPAEPAVNetCommandRef@@@Z evidence=N:ledger tier=B hypothesis:K
 void NetPacket::FillBufferWithFileCommand(UnsignedByte *buffer, NetCommandRef *msg)
@@ -2862,6 +2996,43 @@ UnsignedByte NetPacket::rva005919AF(NetCommandRef *ref)
 }
 
 // FUNCTION: BFME2 0x00591A65 size=182 name=?rva00591A65@NetPacket@@QAEEPAVNetCommandRef@@@Z evidence=?:placeholder tier=B hypothesis:K
+UnsignedByte NetPacket::rva00591A65(NetCommandRef *msg)
+{
+	Int len = 0;
+	Bool needNewCommandID = false;
+	NetCommandMsg *cmdMsg = msg->getCommand();
+	if (m_lastCommandType != cmdMsg->m_commandType) {
+		len += sizeof(UnsignedByte) + sizeof(UnsignedByte);
+	}
+	if (m_lastTimestamp != cmdMsg->m_timestamp) {
+		len += sizeof(UnsignedInt) + sizeof(UnsignedByte);
+	}
+	if (m_lastFrame != cmdMsg->m_executionFrame) {
+		len += sizeof(UnsignedInt) + sizeof(UnsignedByte);
+	}
+	if (m_lastRelay != msg->getRelay()) {
+		++len;
+		++len;
+	}
+	if (m_lastPlayerID != cmdMsg->m_playerID) {
+		++len;
+		++len;
+		needNewCommandID = true;
+	}
+	if (((m_lastCommandID + 1) != cmdMsg->m_id) ||
+		(needNewCommandID == true)) {
+		len += sizeof(UnsignedByte) + sizeof(UnsignedShort);
+	}
+	++len;
+	++len;
+	UnsignedByte slen = ((Rva004D67D0 *)cmdMsg)->getFilename().getLength() & 0xFF;
+	len += slen * sizeof(WideChar);
+	len += sizeof(Int) + sizeof(Int);
+	if ((len + m_packetLen) > 0x1DC) {
+		return false;
+	}
+	return true;
+}
 
 // FUNCTION: BFME2 0x00591B1B size=498 name=?addAckCommand@NetPacket@@IAE_NPAVNetCommandRef@@GEII@Z evidence=N:ledger tier=B hypothesis:K
 Bool NetPacket::addAckCommand(NetCommandRef *ref, UnsignedShort commandID, UnsignedByte originalPlayerID, UnsignedInt originalTimestamp, UnsignedInt originalFrame)
@@ -3717,6 +3888,83 @@ Bool NetPacket::addChatCommand(NetCommandRef *msg)
 
 
 // FUNCTION: BFME2 0x005936DB size=787 name=?rva005936DB@NetPacket@@IAE_NPAVNetCommandRef@@@Z evidence=?:placeholder tier=B hypothesis:K
+Bool NetPacket::rva005936DB(NetCommandRef *msg)
+{
+	Bool needNewCommandID = false;
+	if (rva00591A65(msg)) {
+		Rva004D67D0 *cmdMsg = (Rva004D67D0 *)msg->getCommand();
+		if (m_lastCommandType != cmdMsg->getNetCommandType()) {
+			m_packet[m_packetLen] = 'T';
+			++m_packetLen;
+			m_packet[m_packetLen] = cmdMsg->getNetCommandType();
+			m_packetLen += sizeof(UnsignedByte);
+			m_lastCommandType = cmdMsg->getNetCommandType();
+		}
+		if (m_lastTimestamp != cmdMsg->getTimestamp()) {
+			m_packet[m_packetLen] = 'S';
+			++m_packetLen;
+			UnsignedInt newTimestamp = cmdMsg->getTimestamp();
+			memcpy(m_packet + m_packetLen, &newTimestamp, sizeof(UnsignedInt));
+			m_packetLen += sizeof(UnsignedInt);
+			m_lastTimestamp = newTimestamp;
+		}
+		if (m_lastFrame != cmdMsg->getExecutionFrame()) {
+			m_packet[m_packetLen] = 'F';
+			++m_packetLen;
+			UnsignedInt newFrame = cmdMsg->getExecutionFrame();
+			memcpy(m_packet + m_packetLen, &newFrame, sizeof(UnsignedInt));
+			m_packetLen += sizeof(UnsignedInt);
+			m_lastFrame = newFrame;
+		}
+		if (m_lastRelay != msg->getRelay()) {
+			m_packet[m_packetLen] = 'R';
+			++m_packetLen;
+			UnsignedByte newRelay = msg->getRelay();
+			memcpy(m_packet + m_packetLen, &newRelay, sizeof(UnsignedByte));
+			m_packetLen += sizeof(UnsignedByte);
+			m_lastRelay = newRelay;
+		}
+		if (m_lastPlayerID != cmdMsg->getPlayerID()) {
+			m_packet[m_packetLen] = 'P';
+			++m_packetLen;
+			m_packet[m_packetLen] = cmdMsg->getPlayerID();
+			m_packetLen += sizeof(UnsignedByte);
+			m_lastPlayerID = cmdMsg->getPlayerID();
+			needNewCommandID = true;
+		}
+		if (((m_lastCommandID + 1) != (UnsignedShort)(cmdMsg->getID())) || (needNewCommandID == true)) {
+			m_packet[m_packetLen] = 'C';
+			++m_packetLen;
+			UnsignedShort newID = cmdMsg->getID();
+			memcpy(m_packet + m_packetLen, &newID, sizeof(UnsignedShort));
+			m_packetLen += sizeof(UnsignedShort);
+		}
+		m_lastCommandID = cmdMsg->getID();
+		m_packet[m_packetLen] = 'D';
+		++m_packetLen;
+		UnicodeString unitext = cmdMsg->getFilename();
+		UnsignedByte length = unitext.getLength();
+		Int action = cmdMsg->getAction();
+		memcpy(m_packet + m_packetLen, &length, sizeof(UnsignedByte));
+		m_packetLen += sizeof(UnsignedByte);
+		memcpy(m_packet + m_packetLen, unitext.str(), length * sizeof(WideChar));
+		m_packetLen += length * sizeof(WideChar);
+		memcpy(m_packet + m_packetLen, &action, sizeof(Int));
+		m_packetLen += sizeof(Int);
+		Int reason = cmdMsg->getReason();
+		memcpy(m_packet + m_packetLen, &reason, sizeof(Int));
+		m_packetLen += sizeof(Int);
+		++m_numCommands;
+		if (m_lastCommand != 0) {
+			delete m_lastCommand;
+			m_lastCommand = 0;
+		}
+		m_lastCommand = new NetCommandRef(msg->getCommand());
+		m_lastCommand->setRelay(msg->getRelay());
+		return true;
+	}
+	return false;
+}
 
 // FUNCTION: BFME2 0x00593A1F size=590 name=?addRequestGameSpyStatsAuthKeyCommand@NetPacket@@IAE_NPAVNetCommandRef@@@Z evidence=N:ledger tier=B hypothesis:K
 Bool NetPacket::addRequestGameSpyStatsAuthKeyCommand(NetCommandRef *ref)

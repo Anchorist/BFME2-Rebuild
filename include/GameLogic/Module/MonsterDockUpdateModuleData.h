@@ -13,6 +13,7 @@ public:
 	MonsterDockUpdateModuleData();
 	virtual ~MonsterDockUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	ObjectFilter m_dockableObjectFilter;   // +0x10
 	UnsignedInt m_dockedAnimationTime;      // +0x14

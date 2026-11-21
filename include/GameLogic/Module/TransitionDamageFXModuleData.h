@@ -74,6 +74,7 @@ class TransitionDamageFXModuleData : public ModuleData
 public:
 	TransitionDamageFXModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	static void parseFXList(INI *ini, void *instance, void *store, const void *userData);
 	static void parseObjectCreationList(INI *ini, void *instance, void *store, const void *userData);
 	static void parseParticleSystem(INI *ini, void *instance, void *store, const void *userData);

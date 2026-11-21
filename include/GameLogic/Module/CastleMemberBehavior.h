@@ -39,11 +39,11 @@ protected:
 	virtual ~CastleMemberBehavior();
 
 	ObjectID m_14;					// 0x14
-	ObjectID m_18;					// 0x18
+	ObjectID m_castleID;			// Identifies the castle whose damage record this member updates.
 	UnsignedInt m_1C;				// 0x1C
 	AudioHandle m_audioHandle;		// 0x20
 	Bool m_24;						// 0x24
-	Bool m_25;						// 0x25
+	Bool m_rubbleReached;		// Set on rubble; repaired members clear it.
 protected:
 	virtual void loadPostProcess() { BehaviorModule::loadPostProcess(); }	// retail slot 0x0058B03E: a jmp to BehaviorModule's, ICF-folded across classes
 };

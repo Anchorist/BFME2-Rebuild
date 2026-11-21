@@ -6,6 +6,8 @@
 #include "GameNetwork/FirewallHelper.h"
 #include "Common/OptionPreferences.h"
 #include "Common/GlobalData.h"
+#include "GameNetwork/GameSpy/GameSpyConfig.h"
+#include <stdlib.h>
 #include "GameNetwork/udp.h"
 #include "WWLib/systimer.h"
 // psdk
@@ -229,8 +231,42 @@ Int FirewallHelperClass::getNATPortAllocationScheme(Int numPorts, UnsignedShort 
 
 
 // FUNCTION: BFME2 0x00595020 size=59 name=?rva00595020@Rva00595020@@QAEHE@Z evidence=?:placeholder tier=B hypothesis:K
+Int FirewallHelperClass::getFirewallHardness(UnsignedByte behavior)
+{
+	Int hardness = 0;
+	if (behavior & 1)
+		hardness += 1;
+	if (behavior & 2)
+		hardness += 2;
+	if (behavior & 4)
+		hardness += 3;
+	if (behavior & 8)
+		hardness += 10;
+	if (behavior & 16)
+		hardness += 1;
+	if (behavior & 32)
+		hardness += 2;
+	if (behavior & 64)
+		hardness += 20;
+	return hardness;
+}
 
 // FUNCTION: BFME2 0x0059505B size=46 name=?rva0059505B@Rva00595020@@QAEHE@Z evidence=?:placeholder tier=B hypothesis:K
+Int FirewallHelperClass::getFirewallRetries(UnsignedByte behavior)
+{
+	Int retries = 2;
+	if (behavior & 1)
+		retries = 3;
+	if (behavior & 2)
+		retries += 1;
+	if (behavior & 4)
+		retries += 1;
+	if (behavior & 32)
+		retries += 5;
+	if (behavior & 64)
+		retries += 5;
+	return retries;
+}
 
 // FUNCTION: BFME2 0x00595089 size=132 name=?openSpareSocket@FirewallHelperClass@@QAE_NG@Z evidence=N:ledger tier=B hypothesis:K
 Bool FirewallHelperClass::openSpareSocket(UnsignedShort port)
@@ -400,8 +436,102 @@ UnsignedShort FirewallHelperClass::getNextTemporarySourcePort(Int skip)
 }
 
 // FUNCTION: BFME2 0x005953F4 size=94 name=?getManglerName@FirewallHelperClass@@SAXHPAD@Z evidence=N:ledger tier=B hypothesis:K
+void FirewallHelperClass::getManglerName(Int manglerIndex, char *nameBuf)
+{
+	AsciiString host;
+	UnsignedShort port;
+	TheGameSpyConfig->getManglerLocation(manglerIndex, host, port);
+	strcpy(nameBuf, host.str());
+}
 
 // FUNCTION: BFME2 0x00595452 size=563 name=?detectionBeginUpdate@FirewallHelperClass@@QAE_NXZ evidence=N:ledger tier=B hypothesis:K
+Bool FirewallHelperClass::detectionBeginUpdate()
+{
+	m_packetID = 0x7F00;
+
+	UnsignedByte manglerAddresses[4][4] = {};
+
+	if (TheWritableGlobalData->m_firewallPortOverride != 0)
+	{
+		m_behavior = 1;
+		if (TheWritableGlobalData->m_firewallSendDelay)
+			m_behavior |= 8;
+		m_currentState = 9;
+		return true;
+	}
+
+	m_timeoutStart = timeGetTime();
+	m_timeoutLength = 5000;
+
+	Int nameNum = 0;
+	do
+	{
+		AsciiString host;
+		UnsignedShort port;
+		TheGameSpyConfig->getManglerLocation(nameNum, host, port);
+		const char *manglerNamePtr = host.str();
+		nameNum++;
+
+		if (strlen(manglerNamePtr) == 0)
+			break;
+
+		char tempName[256];
+		strcpy(tempName, manglerNamePtr);
+		struct hostent *hostInfo = gethostbyname(tempName);
+		if (!hostInfo)
+			break;
+
+		Bool found = false;
+		for (Int i = 0; i < (Int)m_numManglers; ++i)
+		{
+			if (memcmp(manglerAddresses[i], &hostInfo->h_addr_list[0][0], 4) == 0)
+			{
+				found = true;
+				break;
+			}
+		}
+
+		if (!found)
+		{
+			Int m = m_numManglers++;
+			memcpy(&manglerAddresses[m][0], &hostInfo->h_addr_list[0][0], 4);
+			ntohl((UnsignedInt)manglerAddresses[m]);
+		}
+	} while ((m_numManglers < 4) && ((timeGetTime() - m_timeoutStart) < m_timeoutLength));
+
+	if (m_numManglers < 3)
+	{
+		m_currentState = 9;
+		return true;
+	}
+
+	for (Int i = 0; i < (Int)m_numManglers; ++i)
+	{
+		UnsignedInt temp = 0;
+		temp = manglerAddresses[i][3];
+		temp += manglerAddresses[i][2] << 8;
+		temp += manglerAddresses[i][1] << 16;
+		temp += manglerAddresses[i][0] << 24;
+		m_manglers[i] = temp;
+	}
+
+	if (TheWritableGlobalData->m_firewallSendDelay)
+		m_behavior |= 8;
+
+	m_sparePorts[0] = getNextTemporarySourcePort(0);
+	if (!openSpareSocket(m_sparePorts[0]))
+	{
+		m_currentState = 9;
+		return true;
+	}
+
+	m_timeoutStart = timeGetTime();
+	m_timeoutLength = 6000;
+
+	sendToManglerFromPort(m_manglers[0], m_sparePorts[0], m_packetID, 0x10E1, false);
+	m_currentState = 2;
+	return false;
+}
 
 // FUNCTION: BFME2 0x00595685 size=183 name=?detectionTest1Update@FirewallHelperClass@@QAE_NXZ evidence=N:ledger tier=B hypothesis:K
 Bool FirewallHelperClass::detectionTest1Update()
@@ -712,6 +842,27 @@ Bool FirewallHelperClass::readFirewallBehavior()
 }
 
 // FUNCTION: BFME2 0x00595E46 size=314 name=?Rva00595E46Save@@YAXXZ evidence=?:placeholder tier=B hypothesis:Z
+void FirewallHelperClass::writeFirewallBehavior()
+{
+	OptionPreferences prefs;
+	char num[16];
+	num[0] = 0;
+	FirewallHelperClass *helper = TheFirewallHelper;
+	helper->m_currentState = 0;
+	TheWritableGlobalData->m_firewallBehavior = helper->m_behavior;
+	_itoa(TheWritableGlobalData->m_firewallBehavior, num, 10);
+	AsciiString numstr;
+	numstr.set(num);
+	prefs[AsciiString("FirewallBehavior")] = numstr;
+
+	TheWritableGlobalData->m_firewallPortAllocationDelta = (Short)TheFirewallHelper->m_sourcePortAllocationDelta;
+	num[0] = 0;
+	_itoa(TheWritableGlobalData->m_firewallPortAllocationDelta, num, 10);
+	numstr.set(num);
+	prefs[AsciiString("FirewallPortAllocationDelta")] = numstr;
+
+	prefs.write();
+}
 
 // FUNCTION: BFME2 0x00595F80 size=215 name=?flagNeedToRefresh@FirewallHelperClass@@QAEX_N@Z evidence=N:ledger tier=B hypothesis:Z
 void FirewallHelperClass::flagNeedToRefresh(Bool flag)

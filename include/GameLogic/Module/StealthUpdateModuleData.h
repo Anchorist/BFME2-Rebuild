@@ -29,6 +29,7 @@ class StealthUpdateModuleData : public ModuleData
 public:
 	StealthUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UnsignedInt m_stealthDelay;                            // +0x8 StealthDelay; duration, frames
 	UnsignedInt m_stealthForbiddenConditions;              // +0xC StealthForbiddenConditions; bit string

@@ -316,6 +316,13 @@ void Object::setModelConditionFlags(const ModelConditionFlags &flags)
 // FUNCTION: BFME2 0x001E434A size=19 name=?rva001E434A@Rva001E434A@@QAEPAXXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x001E435D size=46 name=?Get3DCenterDistanceSquared@Gen_000E5A50@@QBEMPBVBfmeVec3EJ@@@Z evidence=N:ledger tier=A
+Real Object::Get3DCenterDistanceSquared(const Coord3D *point) const
+{
+	Real dx = getPosition()->x - point->x;
+	Real dy = getPosition()->y - point->y;
+	Real dz = getPosition()->z - point->z;
+	return dz * dz + dy * dy + dx * dx;
+}
 
 // FUNCTION: BFME2 0x001E438B size=54 name=?rva001E438B@Rva001E438B@@QAEXPAMPBM@Z evidence=?:placeholder tier=A
 

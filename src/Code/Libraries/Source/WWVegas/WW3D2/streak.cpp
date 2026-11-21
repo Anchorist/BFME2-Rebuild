@@ -58,6 +58,12 @@ int StreakLineClass::Are_End_Caps_Enabled()
 }
 
 // FUNCTION: BFME2 0x00741880 size=37 name=?Set_Texture@StreakLineClass@@QAEXPAVTextureClass@@@Z evidence=N:ledger tier=B hypothesis:Z
+void StreakLineClass::Set_Texture(TextureClass *texture)
+{
+	LineRenderer.Set_Texture(texture);
+	StreakRenderer.Set_Texture(texture);
+}
+
 
 // FUNCTION: BFME2 0x007418B0 size=19 name=?Set_Shader@StreakLineClass@@QAEXVShaderClass@@@Z evidence=N:ledger tier=B hypothesis:Z
 void StreakLineClass::Set_Shader(ShaderClass shader)

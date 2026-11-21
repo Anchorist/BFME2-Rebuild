@@ -174,28 +174,27 @@ void WeaponFireSpecialAbilityUpdate::onExit(bool a, bool b)
 }
 
 // FUNCTION: BFME2 0x004929D1 size=161 name=?vslot08@WeaponFireSpecialAbilityUpdate@@UAE_NH@Z evidence=N:ledger tier=B hypothesis:cohesion
-bool WeaponFireSpecialAbilityUpdate::vslot08(int value)
+bool WeaponFireSpecialAbilityUpdate::vslot08(const Coord3D *location)
 {
 	Weapon *weapon = m_weapon;
 	if (weapon == 0)
 		return false;
-	if (value == 0)
-		return SpecialAbilityUpdate::vslot08(value);
+	if (location == 0)
+		return SpecialAbilityUpdate::vslot08(location);
 	Object *obj = m_object;
 	if (obj == 0)
 		return false;
-	const Coord3D *pos = (const Coord3D *)value;
 	Real minRange = weapon->rva002C957E();
-	if (obj->rva002C97E8(obj->getPosition(), pos) < minRange * minRange)
+	if (obj->rva002C97E8(obj->getPosition(), location) < minRange * minRange)
 		return false;
 	if (obj->getTemplate()->isKindOf(KINDOF_IMMOBILE))
 	{
 		Real range = m_weapon->getAttackRange(obj);
 		range -= 2.5f;
-		if (obj->rva002C97E8(obj->getPosition(), pos) > range * range)
+		if (obj->rva002C97E8(obj->getPosition(), location) > range * range)
 			return false;
 	}
-	return SpecialAbilityUpdate::vslot08(value);
+	return SpecialAbilityUpdate::vslot08(location);
 }
 
 

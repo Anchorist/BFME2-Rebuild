@@ -31,6 +31,7 @@ class W3DProjectileStreamDraw : public DrawModule
 {
 public:
 	W3DProjectileStreamDraw(Thing *thing, const ModuleData *moduleData);		// 0x000D1370
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void doDrawModule(const Matrix3D *transformMtx);

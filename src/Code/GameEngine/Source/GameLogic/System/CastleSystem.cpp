@@ -14,13 +14,17 @@
 #include "Common/GameAudio.h"
 #include "Common/Xfer.h"
 #include "Common/Player.h"
+#include "Common/PlayerList.h"
+#include "GameClient/Eva.h"
 #include "GameLogic/Module/CastleBehavior.h"
 #include "GameLogic/ObjectTypes.h"
 #include "GameLogic/GameLogic.h"
+#include "GameLogic/FPModeScope.h"
 #include "GameLogic/AI.h"
 #include "GameLogic/AIPathfind.h"
 #include "Common/ThingTemplate.h"
 #include "GameLogic/Object.h"
+#include "GameLogic/Damage.h"
 #include "GameLogic/Module/CastleMemberBehavior.h"
 #include "GameLogic/Module/CastleMemberBehaviorModuleData.h"
 #include "GameLogic/Module/CastleBehaviorModuleData.h"
@@ -28,6 +32,9 @@
 
 extern KindOfMaskType KINDOFMASK_NONE;
 extern const StaticNameKey TheKey_objectBaseName;
+
+Int __cdecl rva00395C80(Object *object, Int);
+
 
 void Rva001DEE74Parse(INI *ini, void *instance, void *store, const void *userData);
 
@@ -63,6 +70,13 @@ void *CastleBehavior::GetArmyIDFromClosestObject()
 	return NULL;
 }
 // FUNCTION: BFME2 0x003956E8 size=32 name=?loadPostProcess@Rva003956E8@@UAEXXZ evidence=?:placeholder
+void CastleBehavior::loadPostProcess()
+{
+	FoundationAIUpdate::loadPostProcess();
+	if (m_castleState != 0)
+		TheAI->pathfinder()->RemoveObjectFromPathfindMap(getObject());
+}
+
 
 // FUNCTION: BFME2 0x00395708 size=81 name=?rva000395708@CastleBehavior@@SAPAVModule@@PAVObject@@@Z evidence=?:placeholder
 
@@ -90,11 +104,11 @@ void CastleMemberBehavior::xfer(Xfer *xfer)
 	XferObjectID(xfer, &m_14);
 	*xfer == m_24;
 	*xfer == m_1C;
-	XferObjectID(xfer, &m_18);
+	XferObjectID(xfer, &m_castleID);
 	BehaviorModule::xfer(xfer);
-	XferObjectID(xfer, &m_18);
+	XferObjectID(xfer, &m_castleID);
 	*xfer == m_1C;
-	*xfer == m_25;
+	*xfer == m_rubbleReached;
 	TheAudio->xferAudioHandle(xfer, &m_audioHandle);
 }
 
@@ -306,6 +320,33 @@ void CastleBehavior::rva0039792B()
 // FUNCTION: BFME2 0x00397B89 size=80 name=?checkValid@BfmeItemE63@@QAE_NXZ evidence=N:ledger
 
 // FUNCTION: BFME2 0x00397BD9 size=187 name=?onStateChanged@Rva00397BD9@@UAEXHHH@Z evidence=?:placeholder
+void CastleMemberBehavior::onBodyDamageStateChange(const DamageInfo *, BodyDamageType, BodyDamageType newState)
+{
+	if (newState == BODY_RUBBLE)
+	{
+		const CastleMemberBehaviorModuleData *data = static_cast<const CastleMemberBehaviorModuleData *>(getModuleData());
+		if (data->m_countsForEvaCastleBreached && ThePlayerList->getLocalPlayer() == getObject()->getControllingPlayer())
+		{
+			ScopedGameFPModeRelease releaseFPMode;
+			Object *castleObject = TheGameLogic->findObjectByID(m_castleID);
+			if (castleObject)
+			{
+				CastleBehavior *castle = static_cast<CastleBehavior *>(castleObject->findUpdateModule(CastleBehavior::rva0003955DA()));
+				if (castle && castle->apply(rva00395C80, 0) == 1)
+				{
+					const EvaEventID castleBreached = static_cast<EvaEventID>(5);
+					TheEva->reportEvaEvent(castleBreached, getObject()->getPosition(), 0);
+				}
+			}
+		}
+		m_rubbleReached = true;
+	}
+	else if (newState < BODY_REALLYDAMAGED)
+	{
+		m_rubbleReached = false;
+	}
+}
+
 
 // FUNCTION: BFME2 0x00397C94 size=53 name=?rva00397C94@Rva00397C94@@QAEXPAURva00397C94Node@@@Z evidence=?:placeholder
 
@@ -413,6 +454,20 @@ void CastleMemberBehavior::mapLoadPostProcess(const Dict *properties)
 
 
 // FUNCTION: BFME2 0x0039922D size=70 name=?rva0039922D@CastleBehavior@@QAEXPAURva00398E4AArg@@@Z evidence=?:placeholder
+void CastleMemberBehavior::onDamage(DamageInfo *damageInfo)
+{
+	if (damageInfo->out.m_actualDamageDealt > 0.0f)
+	{
+		Object *castleObject = TheGameLogic->findObjectByID(m_castleID);
+		if (castleObject)
+		{
+			CastleBehavior *castle = static_cast<CastleBehavior *>(castleObject->findUpdateModule(CastleBehavior::rva0003955DA()));
+			if (castle)
+				castle->rva00398E4A(damageInfo);
+		}
+	}
+}
+
 
 // FUNCTION: BFME2 0x003992B0 size=134 name=?rva003992B0@Rva0039834C@@QAEPAURvaInsertOut@@PAU2@PBURva0039627D@@@Z evidence=?:placeholder
 

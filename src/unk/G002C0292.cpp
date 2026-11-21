@@ -1,6 +1,11 @@
 // cl: /O1
 #include "GameClient/GameWindow.h"
 #include "GameClient/Image.h"
+// Forwarders over the draw-state setters of GameWindow. Every window keeps nine draw records per state group
+// (enabled, disabled, hilite; GameWindow::m_instData.m_*DrawData[9]); each forwarder sets the image, colour or
+// border colour of one record. Retail has one per group, field and index. The role of indices 4 to 7 is not
+// recovered, so these keep the ledger spellings (Rva...) instead of invented names; the index is the first
+// argument of the setter they call.
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G002C0292 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.

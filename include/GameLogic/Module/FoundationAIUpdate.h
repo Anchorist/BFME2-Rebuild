@@ -46,6 +46,7 @@ class FoundationAIUpdate : public UpdateModule, public FoundationAIUpdateInterfa
 {
 public:
 	FoundationAIUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	// Behavior slot 38 returns the foundation interface at +0x20 for Foundation and Castle.
 	virtual FoundationAIUpdateInterface *slot38() { return this; }
@@ -87,7 +88,7 @@ private:
 	Bool rva00455C98(const ThingTemplate *tmpl, const Coord3D *position, Real angle, Player *owner);
 	void rva0045527A(ObjectID id);								// Sets m_28 and shows or hides the owner object
 protected:
-	virtual void loadPostProcess() { UpdateModule::loadPostProcess(); }	// retail slot 0x00497805: a jmp to UpdateModule's, ICF-folded across classes
+	virtual void loadPostProcess();
 };
 // SIZE 0x30
 typedef char FoundationAIUpdate_size[(sizeof(FoundationAIUpdate) == 0x30) ? 1 : -1];

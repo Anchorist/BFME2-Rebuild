@@ -1896,13 +1896,14 @@
       "role": "ehhandler",
       "parent_rva": "0x00397BD9",
       "fold_group": "",
-      "name": "__ehhandler$?onStateChanged@CastleMemberBehavior@@UAEXHHH@Z",
-      "name_evidence": "S:token",
+      "name": "__ehhandler$?onBodyDamageStateChange@CastleMemberBehavior@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z",
+      "name_evidence": "X:m02 request (m02 R6X12CastleDamageHeaderLive-0x00780ED2 (x12))",
       "confidence": "high",
       "evidence": "X:eh-stub FuncInfo=0x0092BC18;X:parent-by-prologue",
       "object_id": "retained:O003956E8",
       "object_evidence": "X:closure",
       "accepted_names": [
+        "__ehhandler$?onBodyDamageStateChange@CastleMemberBehavior@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z",
         "__ehhandler$?onStateChanged@CastleMemberBehavior@@UAEXHHH@Z",
         "__ehhandler$?onStateChanged@Rva00397BD9@@UAEXHHH@Z"
       ],

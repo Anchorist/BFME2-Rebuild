@@ -48,7 +48,9 @@
       "object": "O005CB9D1",
       "accepted_names": [
         "?_bfme_ro_v50@RenderObjClass@@UAE_NH@Z",
-        "?open@StreamingArchiveFile@@UAE_NPAVFile@@@Z"
+        "?open@StreamingArchiveFile@@UAE_NPAVFile@@@Z",
+        "?vslot08@BattlePlanUpdate@@UAE_NPBVCoord3D@@@Z",
+        "?vslot08@SpecialPowerUpdateModule@@UAE_NPBVCoord3D@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"

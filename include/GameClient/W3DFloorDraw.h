@@ -16,6 +16,7 @@ class W3DFloorDraw : public W3DPropDraw, public FloorDrawRecordMatchInterface
 {
 public:
 	W3DFloorDraw(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~W3DFloorDraw();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void doDrawModule(const Matrix3D *transform);

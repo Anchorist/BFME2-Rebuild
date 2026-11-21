@@ -36,6 +36,7 @@ class BridgeTowerBehavior : public BehaviorModule, public BridgeTowerBehaviorInt
 {
 public:
 	BridgeTowerBehavior(Thing *thing, const ModuleData *moduleData);					// 0x00458704
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 
 	virtual BridgeTowerBehaviorInterface *getBridgeTowerBehaviorInterface() { return this; }	// slot 13

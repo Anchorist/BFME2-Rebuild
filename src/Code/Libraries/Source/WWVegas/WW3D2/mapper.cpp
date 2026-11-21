@@ -578,6 +578,37 @@ void RandomTextureMapperClass::Reset(void)
 }
 
 // FUNCTION: BFME2 0x001838B0 size=393 name=?Calculate_Texture_Matrix@RandomTextureMapperClass@@UAEXAAVMatrix4@@@Z evidence=N:ledger tier=L hypothesis:name:L
+void RandomTextureMapperClass::Calculate_Texture_Matrix(Matrix4 &tex_matrix)
+{
+	unsigned int now = WW3D::Get_Sync_Time();
+	unsigned int delta = now - LastUsedSyncTime;
+	LastUsedSyncTime = now;
+	Remainder += delta;
+
+	if (FPMS != 0.0f) {
+		int num_frames = (int)(Remainder * FPMS);
+		if (num_frames != 0) {
+			randomize();
+			Remainder -= num_frames / FPMS;
+		}
+	}
+
+	float c = cosf(CurrentAngle);
+	float s = sinf(CurrentAngle);
+	tex_matrix.Make_Identity();
+	tex_matrix[0][0] = c * Scale.X;
+	tex_matrix[0][1] = -s * Scale.Y;
+	tex_matrix[1][0] = s * Scale.X;
+	tex_matrix[1][1] = c * Scale.Y;
+
+	float uoff = Center.X + Remainder * Speed.X;
+	float voff = Center.Y + Remainder * Speed.Y;
+	uoff = fmodf(uoff, 1.0f);
+	voff = fmodf(voff, 1.0f);
+	tex_matrix[0].Z = uoff;
+	tex_matrix[1].Z = voff;
+}
+
 
 // FUNCTION: BFME2 0x00183B00 size=1028 name=??D@YA?AVMatrix4x4@@ABV0@0@Z evidence=N:ledger tier=L hypothesis:name:L
 

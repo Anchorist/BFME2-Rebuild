@@ -407,7 +407,7 @@ Bool Transport::init(const TransportAddress *address)
 }
 
 // FUNCTION: BFME2 0x004D53B5 size=225 name=?rva004D53B5@Transport@@QAE_NPAX@Z evidence=?:placeholder
-Bool Transport::rva004D53B5(void *address)
+Bool Transport::rva004D53B5(UnsignedInt localIP)
 {
 	if (!m_unk0x40E08)
 	{
@@ -423,7 +423,7 @@ Bool Transport::rva004D53B5(void *address)
 		m_unk0x40E08 = true;
 	}
 	m_unk0x40E00 = false;
-	m_localIP = (UnsignedInt)address;
+	m_localIP = localIP;
 	for (Int slot = 0; slot < 8; slot++)
 		RemoveSocketForSlot(slot);
 	for (Int i = 0; i < 128; ++i)

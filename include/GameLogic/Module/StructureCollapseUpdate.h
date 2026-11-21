@@ -55,6 +55,7 @@ class StructureCollapseUpdate : public UpdateModule, public DieModuleInterface
 {
 public:
 	StructureCollapseUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~StructureCollapseUpdate();	// 0x004A4214: restores the four tables and jumps to ~UpdateModule (deleting thunk 0x004A436F)
 	virtual NameKeyType getModuleNameKey() const;	// slot 4, 0x004A429F (the map spells it as a static of the class: rva0004A429F)
 	virtual const char *GetSnapshotName() const;

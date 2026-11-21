@@ -49,6 +49,7 @@ public:
 	virtual DamageModuleInterface *getDamage() { return this; }
 	virtual UpgradeModuleInterface *getUpgrade() { return this; }
 	AutoHealBehavior(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	void stopHealing();
 	void rva004523CC();									// Clears m_stopped, gives the self upgrade, wakes the module now

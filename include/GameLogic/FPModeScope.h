@@ -21,4 +21,15 @@ public:
 	}
 };
 
+// Temporarily release the logic FP-mode nesting and restore it on scope exit.
+class ScopedGameFPModeRelease
+{
+public:
+	ScopedGameFPModeRelease();
+	~ScopedGameFPModeRelease();
+
+private:
+	Int m_releasedLocks;
+};
+
 #endif

@@ -67,6 +67,7 @@ class SlavedUpdate : public UpdateModule, public SlavedUpdateInterface
 {
 public:
 	SlavedUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004A265E)
 	virtual void onObjectCreated();	// Module slot 5, 0x004A1950 (the map names it Rva004A1950::rva004A1950)

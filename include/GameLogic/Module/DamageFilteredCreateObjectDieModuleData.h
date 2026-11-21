@@ -20,6 +20,7 @@ class DamageFilteredCreateObjectDieModuleData : public DestroyDieModuleData
 public:
 	DamageFilteredCreateObjectDieModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	const ObjectCreationList *m_creationList;             // +0x38 CreationList
 	Int m_damageTypeTriggersInstantly;                     // +0x3C DamageTypeTriggersInstantly; TheDamageSubTypeNames index, or the no-trigger default

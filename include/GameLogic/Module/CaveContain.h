@@ -33,6 +33,7 @@ class CaveContain : public OpenContain, public CaveInterface		// CaveInterface a
 {
 public:
 	CaveContain(Thing *thing, const ModuleData *moduleData);			// 0x00466630
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	const CaveContainModuleData *getCaveContainModuleData() const
 	{

@@ -31,6 +31,14 @@
 #include "GameLogic/WeaponSet.h"
 #include "Common/GameType.h"
 // FUNCTION: BFME2 0x00486E18 size=25 name=??1AssistedTargetingUpdate@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+AssistedTargetingUpdate::~AssistedTargetingUpdate()
+{
+}
+
+UpdateSleepTime AssistedTargetingUpdate::update()
+{
+	return UPDATE_SLEEP_FOREVER;
+}
 // FUNCTION: BFME2 0x00486E31 size=69 name=?getModuleNameKey@AssistedTargetingUpdate@@UBE?AW4NameKeyType@@XZ evidence=N:ledger
 NameKeyType AssistedTargetingUpdate::getModuleNameKey() const
 {

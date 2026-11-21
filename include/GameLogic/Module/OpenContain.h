@@ -76,6 +76,7 @@ class OpenContain : public UpdateModule,
 {
 public:
 	OpenContain(Thing *thing, const ModuleData *moduleData);			// 0x004649F8
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	const OpenContainModuleData *getOpenContainModuleData() const { return (const OpenContainModuleData *)getModuleData(); }
 	void privateRemoveFromContain(Object *obj, Bool exposeStealthUnits);	// 0x00462FB3
 	ContainmentListView getContainList() const

@@ -3,6 +3,7 @@
 #include "Common/GameType.h"
 #include "Common/Snapshot.h"
 #include "Common/SubsystemInterface.h"
+#include "GameLogic/SkirmishAI/SkirmishAI.h"
 
 class GateOpenBehaviorList;
 class Object;
@@ -10,18 +11,9 @@ class Player;
 class Team;
 class TeamPrototype;
 
-// FoundationAIUpdate passes ownership changes to the affected players' AI records.
-class Rva002A8AB1Record
-{
-public:
-    void rva002C6A3D(Object *object);
-    void rva002C6A4E(Object *object);
-    void rva002C6A76(Team *team);
-    void rva004EC072(TeamPrototype *team);
-    void rva004EC07D(TeamPrototype *team);
-    void rva004EC2D4(ObjectID objectID); // Dozer completion calls this on the returned record
-    void onUnitCreated(Object *factory, Object *unit);
-};
+// The map still spells this class Rva002A8AB1Record.
+class SkirmishAI;
+typedef SkirmishAI Rva002A8AB1Record;
 
 struct Rva002A8F24Record
 {

@@ -43,6 +43,7 @@ class SupplyWarehouseCripplingBehavior : public UpdateModule, public DamageModul
 {
 public:
 	SupplyWarehouseCripplingBehavior(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual DamageModuleInterface *getDamage() { return this; }	// +0xC slot 4: the shared getter 0x004543A9

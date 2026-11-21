@@ -33,6 +33,7 @@ class SlaveWatcherBehavior : public UpdateModule
 {
 public:
 	SlaveWatcherBehavior(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004847A9)
 	ObjectID getWatchedObjectID() const;	// 0x0030D377: the 4-byte getter of the first member at +0x20, folded with other classes' (the map spells it ?getDataLength@NetWrapperCommandMsg@@QAEIXZ); ObjectCreationUpgrade 0x004B463C reads the object it names

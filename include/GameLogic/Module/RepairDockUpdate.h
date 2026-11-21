@@ -31,6 +31,7 @@ class RepairDockUpdate : public DockUpdate
 public:
 	virtual DockUpdateInterface *getDockUpdateInterface() { return this; }
 	RepairDockUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual Bool action(Object *docker, Object *drone);	// override: action slot 12 at +0x20 (0x004A12B6)
 

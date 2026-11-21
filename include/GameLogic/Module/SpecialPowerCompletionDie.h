@@ -34,6 +34,7 @@ class SpecialPowerCompletionDie : public DieModule
 {
 public:
 	SpecialPowerCompletionDie(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual void onDie(const DamageInfo *);	// override: onDie slot 0 at +0x10 (0x00486B38)

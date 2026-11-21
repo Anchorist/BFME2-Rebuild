@@ -7,6 +7,11 @@
 // Hypothesis rules: hypothesis:K, hypothesis:init-votes, hypothesis:name:invented, hypothesis:padding
 // FUNCTION: BFME2 0x000071B0 size=6 name=?classic@locale@_STL@@SAABV12@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
 // FUNCTION: BFME2 0x00007450 size=6 name=?Rva00007450Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-contiguity-shared-data
+// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+int Rva00007450Get()
+{
+	return -2;
+}
 // FUNCTION: BFME2 0x00007820 size=8 name=?_M_acquire_lock@_STLP_mutex_base@_STL@@QAEXXZ evidence=N:ledger tier=B hypothesis:mm1-contiguity-shared-data
 // FUNCTION: BFME2 0x00007920 size=212 name=??0_Time_Info@_STL@@QAE@XZ evidence=N:ledger tier=B hypothesis:mm1-contiguity-shared-data
 // FUNCTION: BFME2 0x00007A00 size=243 name=??1_Time_Info@_STL@@QAE@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers

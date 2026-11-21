@@ -56,6 +56,7 @@ class SpawnBehavior : public UpdateModule, public SpawnBehaviorInterface, public
 {
 public:
 	SpawnBehavior(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	// BehaviorModuleInterface slot 42 returns the slave-walk interface at +0x2C.
 	virtual SpawnSlaveWalkInterface *slot42() { return this; }

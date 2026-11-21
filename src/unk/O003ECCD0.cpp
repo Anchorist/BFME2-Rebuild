@@ -1,4 +1,6 @@
 // cl: /O1
+// stlport46
+#include "Common/INI.h"
 #include "GameLogic/Module/ThreatFinderUpdate.h"
 #include <string.h>
 #include "Common/NameKeyGenerator.h"
@@ -18,7 +20,19 @@ extern NameKeyGenerator *TheNameKeyGenerator;
 // FUNCTION: BFME2 0x003ECB94 size=66 name=?rva003ECB94@Rva003ECA69Element@@QAEPAV1@PAURva003ECB52Arg@@@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x003ECBD6 size=34 name=?rva003ECBD6@Rva003ECA4BElement@@QAEPAV1@M@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x003ECBF8 size=136 name=?xfer@Rva003ECD60Object@@QAEXPAVXfer@@@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-encloses-unk-file
+// Field parse table for ThreatFinderUpdateModuleData (decoded from retail image).
+static const FieldParse s_threatFinderUpdateModuleDataFieldParse[] =
+{
+	{ "DefaultRadius", INI::parseReal, 0, 0x8 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x003ECC91 size=17 name=?buildFieldParse@ThreatFinderUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
+void ThreatFinderUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_threatFinderUpdateModuleDataFieldParse, 0);
+}
+
 // FUNCTION: BFME2 0x003ECCA2 size=46 name=??0ThreatFinderUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x003ECCD0 size=6 name=?GetSnapshotName@ThreatFinderUpdate@@MBEPBDXZ evidence=N:ledger
 const char *ThreatFinderUpdate::GetSnapshotName() const

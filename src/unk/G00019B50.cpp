@@ -2,6 +2,11 @@
 // object=G00019B50 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x00019B50 size=6 name=?Rva00019B50Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+int Rva00019B50Get()
+{
+	return 0x7FFFFFFE;
+}
 // FUNCTION: BFME2 0x00019EC0 size=7 name=?apply@Rva00019EC0DwordImmSetter@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0001A0C0 size=31 name=?setf@ios_base@_STL@@QAEHHH@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0001A2E0 size=52 name=?Rva00845640WriteUnsignedDigits@@YAPADPADII@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

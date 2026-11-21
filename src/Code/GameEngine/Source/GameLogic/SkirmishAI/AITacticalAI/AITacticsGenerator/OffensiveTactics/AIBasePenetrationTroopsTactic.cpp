@@ -12,8 +12,20 @@ AIBasePenetrationTroopsTactic::~AIBasePenetrationTroopsTactic()
 }
 
 // FUNCTION: BFME2 0x005A9916 size=13 name=?run@AIBasePenetrationTroopsTactic@@UAEXXZ evidence=N:ledger tier=A
+void AIBasePenetrationTroopsTactic::run()
+{
+	rva004ED372(&m_owner20->m_position);
+}
 
 // FUNCTION: BFME2 0x005A9923 size=40 name=?update@AIBasePenetrationTroopsTactic@@UAEXXZ evidence=N:ledger tier=A
+void AIBasePenetrationTroopsTactic::update()
+{
+	if (m_active)
+	{
+		if (m_owner20->m_flag18 || rva004ED169())
+			end(true, false);
+	}
+}
 
 // FUNCTION: BFME2 0x005A994B size=33 name=?cleanUp@AIBasePenetrationTroopsTactic@@UAEXXZ evidence=N:ledger tier=A
 

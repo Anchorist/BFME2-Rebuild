@@ -50,12 +50,6 @@ public:
 
 // The rules sub-panel at +0xD0 is still reached through the placeholder declarations below until its class is recovered; the map
 // preview at +0x60 is the real AptMapPreview.
-// The window manager's image-store entry (the map spells the owner of 0x002239E2 with this placeholder class).
-class Rva002239B2
-{
-public:
-	void rva002239E2(const AsciiString &, const Image *);				// 0x002239E2
-};
 // The chat sub-panel at +0x244: 0x0057FDB0 has no map name (a fragment of the chat rows), so it is named for its address here.
 // The clans sub-panel at +0x190 (0xB4 bytes; the map names its methods AptMpClans::).
 class ChatWindowsInGame;

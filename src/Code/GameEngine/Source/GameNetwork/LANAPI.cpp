@@ -265,6 +265,26 @@ void LANGameInfo::setName(UnicodeString name)
 }
 
 // FUNCTION: BFME2 0x00449AB8 size=193 name=??0LANAPI@@QAE@XZ evidence=N:ledger tier=A
+LANAPI::LANAPI()
+	: m_lobbyPlayers(0),
+	  m_games(0),
+	  m_gameStartTime(0),
+	  m_gameStartSeconds(0),
+	  m_pendingAction(ACT_NONE),
+	  m_expiration(0),
+	  m_actionTimeout(getenv("_EA_RTS_HEADLESS") ? 50000 : 5000),
+	  m_lastResendTime(0),
+	  m_isInLANMenu(true),
+	  m_inLobby(true),
+	  m_currentGame(0),
+	  m_transport(0),
+	  m_broadcastAddress(0xFFFFFFFF),
+	  m_unk0x58(0),
+	  m_isActive(true),
+	  m_unk0x5D(false)
+{
+	m_transport = new Transport;
+}
 
 // FUNCTION: BFME2 0x00449B79 size=22 name=?rva00449B79@LANAPI@@UAE_NXZ evidence=?:placeholder tier=A
 Bool LANAPI::rva00449B79()

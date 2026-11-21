@@ -12,7 +12,7 @@
 #include "stdlib.h"
 #include "Common/UnicodeString.h"
 #include "GameClient/GameWindow.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "Common/MultiplayerSettings.h"
 #include "Common/MultiplayerColorDefinition.h"
 #include "GameClient/GadgetListBox.h"
@@ -29,9 +29,9 @@
 void Rva00446A67Set(unsigned char); // 0x00446A67 (the map spells it with the Set suffix and a byte argument)
 void Rva00511730(int);
 AsciiString Rva00222834Get(int);
-int Rva0043F1A4(Rva00222A8BTarget *, void *, const char *, const int &, const char *const &);
+int Rva0043F1A4(AptPlayer *, void *, const char *, const int &, const char *const &);
 void MessageBoxOk(UnicodeString, UnicodeString, void (*)());
-int Rva0043DB23(Rva00222A8BTarget *, void *, const char *);
+int Rva0043DB23(AptPlayer *, void *, const char *);
 int Rva0043DDF8(int);
 extern "C" unsigned char *__cdecl _mbscpy(unsigned char *, const unsigned char *);
 void Rva0043E8F1Tooltip(GameWindow *, WinInstanceData *, unsigned int);
@@ -54,7 +54,7 @@ void AptMpGameSetup::rva0043DB6E()
 {
 	((Rva0057EE5C *)m_rulesHead)->rva0057EA0F();
 	if (m_modeFlags & 0x40)
-		Rva0043DB23((Rva00222A8BTarget *)g_bfmeAptWindowManager, m_owner->getOwnerId(), "OnClansFlagChange");
+		Rva0043DB23(g_bfmeAptWindowManager, m_owner->getOwnerId(), "OnClansFlagChange");
 }
 
 // FUNCTION: BFME2 0x0043DBA3 size=39 name=?rva0043DBA3@Rva0043DFE0@@QAEXXZ evidence=?:placeholder tier=A
@@ -503,7 +503,7 @@ void AptMpGameSetup::rva0043E5C1(int slot, int kind, int value)
 	}
 	char name[128];
 	sprintf(name, "ConnectionIcon~%d", slot);
-	((Rva002239B2 *)g_bfmeAptWindowManager)->rva002239E2(AsciiString(name), image);
+	g_bfmeAptWindowManager->rva002239E2(AsciiString(name), image);
 }
 
 // FUNCTION: BFME2 0x0043E6C9 size=135 name=?rva0043E6C9@Rva0043E0C5@@QAEXPAURva0043E6C9Arg@@@Z evidence=?:placeholder tier=A
@@ -701,7 +701,7 @@ void AptMpGameSetup::UpdateReadyIcon(int index)
 				state = "_disabledChecked";
 		}
 	}
-	Rva0043F1A4((Rva00222A8BTarget *)g_bfmeAptWindowManager, m_owner->getOwnerId(), "SetReadyState", index, state);
+	Rva0043F1A4(g_bfmeAptWindowManager, m_owner->getOwnerId(), "SetReadyState", index, state);
 }
 
 // FUNCTION: BFME2 0x0043FC1F size=482 name=?rva0043FC1F@AptMpGameSetup@@QAE_NH_N@Z evidence=?:placeholder tier=A

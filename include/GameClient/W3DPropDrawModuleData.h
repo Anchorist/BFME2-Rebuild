@@ -21,6 +21,7 @@ public:
 	W3DPropDrawModuleData();
 	virtual ~W3DPropDrawModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	virtual const W3DPropDrawModuleData *getAsW3DPropDrawModuleData() const { return this; }	// slot 19: retail's table holds the folded `mov eax,ecx; ret` 0x0047A6A9
 	virtual AsciiString getBestModelNameForWB(const ModelConditionFlags &) const { return ModelName; }	// slot 14: retail's table points at the body shared with W3DTreeDrawModuleData (0x000CED14: a copy of the string at +0x8)
 

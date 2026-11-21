@@ -11,18 +11,18 @@
 #include "GameClient/MapCache.h"
 #include "GameNetwork/GameSpy/GameSpyConfig.h"
 #include <string.h>
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "GameNetwork/GameSpy/GameSpyInfo.h"
 #include "GameNetwork/GameSpy/PeerThread.h"
 #include "GameClient/GameText.h"
 #include "Common/UnicodeString.h"
 #include "Common/AsciiString.h"
-int Rva00524EF4AptCall(Rva00222A8BTarget *, void *, const char *, const char *);
+int Rva00524EF4AptCall(AptPlayer *, void *, const char *, const char *);
 void Rva00433D07(GameWindow *, int);
 void Rva0032060D(GameWindow *, int);
 extern int g_currentAptOnlineCustomMatch;
 extern int g_009C0758;
-int Rva0043DB23(Rva00222A8BTarget *, void *, const char *);
+int Rva0043DB23(AptPlayer *, void *, const char *);
 void _bfme_closeAptScreen(const AsciiString &);
 extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
 enum GSOverlayType { GSOVERLAY_PLAYERINFO, GSOVERLAY_MAPSELECT, GSOVERLAY_BUDDY, GSOVERLAY_PAGE, GSOVERLAY_GAMEOPTIONS, GSOVERLAY_GAMEPASSWORD, GSOVERLAY_LADDERSELECT, GSOVERLAY_OPTIONS, GSOVERLAY_MAX };
@@ -76,7 +76,7 @@ void AptOnlineCustomMatch::CancelPopUpJoin(int)
 	if (m_state == 10)
 	{
 		void *level = m_screen->m_callbackOwner;
-		Rva00524EF4AptCall((Rva00222A8BTarget *)g_bfmeAptWindowManager, level, slot10(), "ClosePassword");
+		Rva00524EF4AptCall(g_bfmeAptWindowManager, level, slot10(), "ClosePassword");
 		m_state = 1;
 		m_x4A0 = false;
 	}
@@ -93,7 +93,7 @@ void AptOnlineCustomMatch::CancelPopUpCreate(const char *)
 void AptOnlineCustomMatch::CancelPopUpHost(const char *)
 {
 	void *level = m_screen->m_callbackOwner;
-	Rva00524EF4AptCall((Rva00222A8BTarget *)g_bfmeAptWindowManager, level, slot10(), "ClosePassword");
+	Rva00524EF4AptCall(g_bfmeAptWindowManager, level, slot10(), "ClosePassword");
 	m_state = 1;
 	m_x4A0 = false;
 }
@@ -136,12 +136,12 @@ void AptOnlineCustomMatch::setPlayButtonEnabled(unsigned char enabled, unsigned 
 		if (enabled)
 		{
 			void *level = m_screen->m_callbackOwner;
-			Rva00524EF4AptCall((Rva00222A8BTarget *)g_bfmeAptWindowManager, level, slot10(), "EnableButtonPlayGame");
+			Rva00524EF4AptCall(g_bfmeAptWindowManager, level, slot10(), "EnableButtonPlayGame");
 		}
 		else
 		{
 			void *level = m_screen->m_callbackOwner;
-			Rva00524EF4AptCall((Rva00222A8BTarget *)g_bfmeAptWindowManager, level, slot10(), "DisableButtonPlayGame");
+			Rva00524EF4AptCall(g_bfmeAptWindowManager, level, slot10(), "DisableButtonPlayGame");
 		}
 	}
 }
@@ -280,7 +280,7 @@ void AptOnlineCustomMatch::OpenConnectionScreen(bool open)
 				Rva0059F296Set(i, UnicodeString((const unsigned short *)L" "));
 			}
 			void *level = m_screen->m_callbackOwner;
-			Rva00524EF4AptCall((Rva00222A8BTarget *)g_bfmeAptWindowManager, level, slot10(), "PopUpConnectingOpen");
+			Rva00524EF4AptCall(g_bfmeAptWindowManager, level, slot10(), "PopUpConnectingOpen");
 		}
 		++m_connectingPopupCount;
 	}
@@ -289,7 +289,7 @@ void AptOnlineCustomMatch::OpenConnectionScreen(bool open)
 		if (--m_connectingPopupCount == 0)
 		{
 			void *level = m_screen->m_callbackOwner;
-			Rva00524EF4AptCall((Rva00222A8BTarget *)g_bfmeAptWindowManager, level, slot10(), "PopUpConnectingClose");
+			Rva00524EF4AptCall(g_bfmeAptWindowManager, level, slot10(), "PopUpConnectingClose");
 		}
 	}
 }
@@ -836,7 +836,7 @@ int AptOnlineCustomMatch::rva005A6582(int window, int msg, unsigned char key, in
 				case 3:
 				{
 					void *level = m_screen->m_callbackOwner;
-					Rva00524EF4AptCall((Rva00222A8BTarget *)g_bfmeAptWindowManager, level, slot10(), "EscapeKeyPressed");
+					Rva00524EF4AptCall(g_bfmeAptWindowManager, level, slot10(), "EscapeKeyPressed");
 					m_state = 1;
 					m_x4A0 = false;
 					return 1;
@@ -846,7 +846,7 @@ int AptOnlineCustomMatch::rva005A6582(int window, int msg, unsigned char key, in
 					if (!m_connectionsOpen)
 						OnBttnCancel(0);
 					else
-						Rva0043DB23((Rva00222A8BTarget *)g_bfmeAptWindowManager, m_screen->m_callbackOwner, "CloseConnectionsScreen");
+						Rva0043DB23(g_bfmeAptWindowManager, m_screen->m_callbackOwner, "CloseConnectionsScreen");
 					return 1;
 				case 10:
 					CancelPopUpJoin(0);

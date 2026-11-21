@@ -22,6 +22,7 @@ class GiantBirdSlowDeathBehaviorModuleData : public SlowDeathBehaviorModuleData
 public:
 	GiantBirdSlowDeathBehaviorModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	const FXList *m_fxHitGround;                          // +0x190 FXHitGround
 	const ObjectCreationList *m_oclHitGround;             // +0x194 OCLHitGround

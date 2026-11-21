@@ -12,6 +12,10 @@
 #include "GameLogic/Module/InheritUpgradeCreate.h"
 #include "Common/NameKeyGenerator.h"
 // FUNCTION: BFME2 0x004B9428 size=42 name=??0InheritUpgradeCreate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+InheritUpgradeCreate::InheritUpgradeCreate(Thing *thing, const ModuleData *moduleData)
+	: CreateModule(thing, moduleData)
+{
+}
 // FUNCTION: BFME2 0x004B9452 size=6 name=?Rva004B9452Get@@YAHXZ evidence=?:placeholder
 const char *InheritUpgradeCreate::GetSnapshotName() const
 {

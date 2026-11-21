@@ -3,7 +3,7 @@
 #include "GameNetwork/GameSpy/PeerThread.h"
 #include "GameClient/AptOnlineShell.h"
 #include "GameClient/AptOnlineQuickMatch.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "GameClient/GadgetComboBox.h"
 #include "GameClient/GameText.h"
 #include "GameNetwork/GameSpy/GameSpyConfig.h"
@@ -169,7 +169,7 @@ int AptOnline::OnlineQuickMatch::rva005A6582(int, int message, unsigned char key
 			{
 				if (m_state == 1)
 				{
-					((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(getShell()->m_callbackOwner, "CallChild", 1, "EscapeKeyPressed", 0, 0, 0, 0);
+					g_bfmeAptWindowManager->invoke(getShell()->m_callbackOwner, "CallChild", 1, "EscapeKeyPressed", 0, 0, 0, 0);
 					Cancel(0);
 					return 1;
 				}

@@ -4,7 +4,7 @@
 #include "GameClient/AptOptions.h"
 #include "GameClient/GadgetSlider.h"
 #include "GameClient/Shell.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "GameClient/GadgetComboBox.h"
 #include "GameClient/GadgetCheckBox.h"
 #include "stdlib.h"
@@ -138,7 +138,7 @@ int AptOptions::rva00518557(int message, unsigned char key, int state)
 				rva0051847B(0);
 				break;
 			case 2:
-				((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_callbackOwner, "CloseAdvancedSettings", 0, 0, 0, 0, 0, 0);
+				g_bfmeAptWindowManager->invoke(m_callbackOwner, "CloseAdvancedSettings", 0, 0, 0, 0, 0, 0);
 				rva0051847B(0);
 				break;
 			}
@@ -162,7 +162,7 @@ void AptOptions::OpenScreen(bool first, bool second, bool third, bool fourth)
 			((AptOptions *)g_Va00A04908)->m_flag281 = third;
 			((AptOptions *)g_Va00A04908)->m_flag282 = second;
 		}
-		((Rva00222A8BTarget *)g_bfmeAptWindowManager)->rva002233A6(1);
+		g_bfmeAptWindowManager->showBackground(1);
 	}
 }
 
@@ -217,12 +217,12 @@ void AptOptions::rva0051890E(int message)
 		m_detailLevel = m_pendingDetailLevel;
 		rva00518359();
 		if (m_x27C == 2)
-			((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_callbackOwner, "RefreshAdvOptions", 0, 0, 0, 0, 0, 0);
+			g_bfmeAptWindowManager->invoke(m_callbackOwner, "RefreshAdvOptions", 0, 0, 0, 0, 0, 0);
 	}
 	if (m_settingsText.compare(m_pendingSettings) != 0)
 	{
 		m_settingsText.set(m_pendingSettings);
-		((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_callbackOwner, "RefreshAdvOptions", 0, 0, 0, 0, 0, 0);
+		g_bfmeAptWindowManager->invoke(m_callbackOwner, "RefreshAdvOptions", 0, 0, 0, 0, 0, 0);
 	}
 	if (m_x30C != m_pendingX318)
 	{

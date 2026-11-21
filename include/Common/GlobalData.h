@@ -22,6 +22,7 @@
 #include <stddef.h>
 #include "Common/GameType.h"
 #include "Common/AsciiString.h"
+#include "Common/Version.h"
 #include "Common/UnicodeString.h"
 #include "Common/Coord2D.h"
 #include "Common/Coord3D.h"
@@ -305,8 +306,7 @@ public:
 	Bool m_incrementalAGPBuf;                              // +0xB01 (Zero Hour's member order: m_animateWindows, m_incrementalAGPBuf, m_iniCRC, m_exeCRC; position only)
 	unsigned char m_pad0xB02[2];
 	UnsignedInt m_iniCRC;                                  // +0xB04 CRC of the INI files (LANAPI::RequestGameJoin 0x00449E9A copies it)
-	UnsignedByte m_exeCRC[16];                             // +0xB08 digest of the executable, 16 bytes in BFME 2
-	unsigned char m_unk0xB18[0x20];                        // +0xB18..+0xB37
+	Version m_exeCRC;                                      // +0xB08 the executable version record (0x30 bytes), read by the LAN join request
 	UnsignedInt m_extraCRC;                                // +0xB38 the third CRC of the join request
 	Int m_movementPenaltyDamageState;                      // +0xB3C MovementPenaltyDamageState; index into a name table
 	Real m_damageRadiusMinimumForSplash;                   // +0xB40 DamageRadiusMinimumForSplash

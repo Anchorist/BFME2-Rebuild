@@ -12,6 +12,11 @@
 // FUNCTION: BFME2 0x0017FEF0 size=85 name=?Create@Rva0017FFCA@@UAEPAVRenderObjClass@@XZ evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x0017FFC4 size=6 name=?Rva0017FFC4Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
+// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+int Rva0017FFC4Get()
+{
+	return 0x484C4F44;	// the four bytes spell "HLOD"
+}
 
 // FUNCTION: BFME2 0x00180054 size=94 name=?Rva00180054_MakeOwner@@YA?AVRva00180023@@PBD@Z evidence=?:placeholder tier=B hypothesis:cohesion
 

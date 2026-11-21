@@ -10,6 +10,11 @@
 // FUNCTION: BFME2 0x0017FB0F size=50 name=??4HTreePrototypeOwner@@QAEAAV0@ABVHierarchyPrototypeRef@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x0017FB8E size=6 name=?Rva0017FB8EGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
+// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+int Rva0017FB8EGet()
+{
+	return 0x48494552;	// the four bytes spell "HIER"
+}
 
 // FUNCTION: BFME2 0x0017FBED size=49 name=??0HTreePrototypeOwner@@QAE@ABVHierarchyPrototypeRef@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 

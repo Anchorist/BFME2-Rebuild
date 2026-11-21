@@ -21,6 +21,7 @@ class PickupStuffUpdate : public UpdateModule
 {
 public:
 	PickupStuffUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();
 	// The ledger spells the parameter void *; the body casts it to Object * and starts a temporary state machine that

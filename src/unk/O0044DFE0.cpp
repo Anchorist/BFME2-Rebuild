@@ -1,4 +1,8 @@
 // cl: /O1
+// stlport46
+#include "Common/INI.h"
+void Rva003393DFParse(INI *ini, void *instance, void *store, const void *userData);
+void iniParseObjectFilter(INI *ini, void *instance, void *store, const void *userData);
 #include "GameLogic/Module/BloodthirstyUpdate.h"
 #include <list>
 #include "Common/Xfer.h"
@@ -42,7 +46,21 @@ NameKeyType BloodthirstyUpdate::getModuleNameKey() const
 	return TheBloodthirstyUpdatePoolKey;
 }
 
+// Field parse table for BloodthirstyUpdateModuleData (decoded from retail image).
+static const FieldParse s_bloodthirstyUpdateModuleDataFieldParse[] =
+{
+	{ "SacrificeFilter", iniParseObjectFilter, 0, 0x8 },
+	{ "ExperienceModifier", INI::parseReal, 0, 0xC },
+	{ "InitiateVoice", Rva003393DFParse, 0, 0x10 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x0044E099 size=17 name=?buildFieldParse@BloodthirstyUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:K
+void BloodthirstyUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_bloodthirstyUpdateModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x0044E0AA size=105 name=??0BloodthirstyUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:K
 

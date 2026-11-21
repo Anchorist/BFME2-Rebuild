@@ -7,6 +7,10 @@
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:name:invented
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/CommandPointsUpgrade.h"
+#include <stddef.h>
+#include "Common/INI.h"
+#include "GameLogic/Module/CommandPointsUpgradeModuleData.h"
+#include "GameLogic/Module/UpgradeMuxData.h"
 // FUNCTION: BFME2 0x004B85D4 size=32 name=??1CommandPointsUpgrade@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
 CommandPointsUpgrade::~CommandPointsUpgrade()
 {
@@ -26,6 +30,19 @@ NameKeyType CommandPointsUpgrade::getModuleNameKey() const
 }
 
 // FUNCTION: BFME2 0x004B863F size=34 name=?buildFieldParse@CommandPointsUpgradeModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:K
+static const FieldParse s_commandPointsUpgradeModuleDataFieldParse[] =
+{
+	{ "CommandPoints", INI::parseInt, 0, offsetof(CommandPointsUpgradeModuleData, m_commandPoints) },
+	{ "RequiredObject", iniParseObjectFilter, 0, offsetof(CommandPointsUpgradeModuleData, m_requiredObject) },
+	{ 0, 0, 0, 0 }
+};
+
+void CommandPointsUpgradeModuleData::buildFieldParse(MultiIniFieldParse &p)
+{
+	p.add(UpgradeMuxData::getFieldParse(), 0x8);
+	p.add(s_commandPointsUpgradeModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x004B8661 size=49 name=??0CommandPointsUpgrade@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:K
 CommandPointsUpgrade::CommandPointsUpgrade(Thing *thing, const ModuleData *moduleData) :

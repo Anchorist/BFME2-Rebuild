@@ -8,6 +8,8 @@
 // The SpecialPowerModuleInterface overrides of SpecialPowerUpdateModule (the class the binary names by its snapshot string
 // "SpecialPowerUpdateModule"; the map spells this file's rows with placeholder classes). Their `this` is the +0x24 subobject.
 #include "Common/Xfer.h"
+#include "Common/INI.h"
+void Rva003393DFParse(INI *ini, void *instance, void *store, const void *userData);
 #include "Common/SpecialPowerTemplate.h"
 #include "GameLogic/GameLogic.h"
 #include "GameLogic/Object.h"
@@ -46,6 +48,16 @@ void SpecialPowerUpdateModule::pauseCountdown(bool pause)
 }
 
 // FUNCTION: BFME2 0x005890ED size=17 name=?buildFieldParse@Rva005890EDBase@@SAXAAVMultiIniFieldParse@@@Z evidence=?:placeholder tier=B hypothesis:cohesion
+void SpecialPowerUpdateModuleData::buildFieldParse(MultiIniFieldParse &p)
+{
+	static const FieldParse dataFieldParse[] = {
+		{ "SpecialPowerTemplate", INI::parseSpecialPowerTemplate, 0, 0x08 },
+		{ "InitiateSound", Rva003393DFParse, 0, 0x0C },
+		{ "StartsPaused", INI::parseBool, 0, 0x14 },
+		{ 0, 0, 0, 0 }
+	};
+	p.add(dataFieldParse);
+}
 
 // FUNCTION: BFME2 0x0058911A size=20 name=?eq@Rva0026A910@@QBE_NH@Z evidence=?:placeholder tier=B hypothesis:cohesion
 bool SpecialPowerUpdateModule::isModuleForPower(const SpecialPowerTemplate *power) const

@@ -23,6 +23,7 @@ class QueueProductionExitUpdate : public UpdateModule, public ExitInterface
 public:
 	virtual ExitInterface *getUpdateExitInterface() { return this; }
 	QueueProductionExitUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	const char *name() const;   // Non-virtual name getter (QBE)

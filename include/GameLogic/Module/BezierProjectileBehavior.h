@@ -21,6 +21,7 @@ public:
  virtual void projectileFireAtObjectOrPosition(Object *,const Coord3D *);
  void rva0045C026();
 protected:
+ virtual const char *GetSnapshotName() const;
  virtual void xfer(Xfer *);
  unsigned char m_unk0x28[0x18];
  int m_40; // 0x40

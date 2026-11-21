@@ -33,6 +33,10 @@ extern const char *StaticGameLODNames[];	// VA 0x00DB95F4: VeryLow .. Custom (Ga
 extern const char g_volumePreferenceKeys[][20];
 
 // FUNCTION: BFME2 0x002E4272 size=11 name=??1OptionPreferences@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-class+shared-data
+OptionPreferences::~OptionPreferences()
+{
+}
+
 // FUNCTION: BFME2 0x002E427D size=30 name=?getStaticGameDetail@OptionPreferences@@QAEHXZ evidence=N:ledger
 Int OptionPreferences::getStaticGameDetail()
 {

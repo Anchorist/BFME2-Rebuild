@@ -1,7 +1,7 @@
 // cl: /O1
 #include <stdio.h>
 #include "GameClient/AptDisconnectScreen.h"
-#include "Apt/BfmeAptWindowManager.h"
+#include "GameClient/AptPlayer.h"
 #include "GameNetwork/Network.h"
 #include "stdlib.h"
 #include "string.h"
@@ -36,7 +36,7 @@ void AptDisconnectScreen::rva00512CE9(int player, bool show)
 {
 	char number[32];
 	sprintf(number, "%d", player);
-	((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(m_callbackOwner, show ? "ShowKickButton" : "HideKickButton", 1, number, 0, 0, 0, 0);
+	g_bfmeAptWindowManager->invoke(m_callbackOwner, show ? "ShowKickButton" : "HideKickButton", 1, number, 0, 0, 0, 0);
 	m_kickButton[player] = show;
 }
 
@@ -112,7 +112,7 @@ void AptDisconnectScreen::rva00513040(int first, int second)
 	const char *secondString = secondText.str();
 	const char *firstString = firstText.str();
 	void *owner = m_callbackOwner;
-	((Rva00222A8BTarget *)g_bfmeAptWindowManager)->invoke(owner, "SetBarPercent", 2, firstString, (void *)secondString, 0, 0, 0);
+	g_bfmeAptWindowManager->invoke(owner, "SetBarPercent", 2, firstString, (void *)secondString, 0, 0, 0);
 }
 
 // FUNCTION: BFME2 0x005130E2 size=86 name=?rva005130E2@AptDisconnectScreen@@QAEXVUnicodeString@@@Z evidence=?:placeholder tier=A

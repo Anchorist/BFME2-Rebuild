@@ -20,6 +20,7 @@ public:
 	virtual void garrisonSlot29(Object *obj);
 	virtual void garrisonSlot30(Object *obj);
 	ProductionQueueHordeContain(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual ~ProductionQueueHordeContain();

@@ -49,24 +49,23 @@ ArrowStormUpdateModuleData::ArrowStormUpdateModuleData()
 
 
 
-bool ArrowStormUpdate::vslot08(int value)
+bool ArrowStormUpdate::vslot08(const Coord3D *location)
 {
-	const Coord3D *pos = (const Coord3D *)value;
 	const ArrowStormUpdateModuleData *mod = (const ArrowStormUpdateModuleData *)m_moduleData;
 	if (!mod) return false;
-	if (!pos) return SpecialAbilityUpdate::vslot08(0);
+	if (!location) return SpecialAbilityUpdate::vslot08(0);
 	Object *obj = m_object;
 	if (!obj) return false;
 	const WeaponTemplate *wt = TheWeaponStore->findWeaponTemplate(mod->m_weaponTemplate);
 	if (!wt) return false;
 	float minR = wt->getMinimumAttackRange();
-	if (obj->rva002C97E8(&obj->m_cachedPos,pos) < minR * minR) return false;
+	if (obj->rva002C97E8(&obj->m_cachedPos,location) < minR * minR) return false;
 	if (obj->m_template->isKindOf(KINDOF_IMMOBILE)) {
 		WeaponBonus bonus;
 		float range = wt->getAttackRange(obj,bonus,&obj->m_cachedPos);
-		if (obj->rva002C97E8(&obj->m_cachedPos,pos) > range * range) return false;
+		if (obj->rva002C97E8(&obj->m_cachedPos,location) > range * range) return false;
 	}
-	return SpecialAbilityUpdate::vslot08((int)pos);
+	return SpecialAbilityUpdate::vslot08(location);
 }
 
 

@@ -39,6 +39,7 @@ class NotifyTargetsOfImminentProbableCrushingUpdate : public UpdateModule
 {
 public:
 	NotifyTargetsOfImminentProbableCrushingUpdate(Thing *thing, const ModuleData *data);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~NotifyTargetsOfImminentProbableCrushingUpdate();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();

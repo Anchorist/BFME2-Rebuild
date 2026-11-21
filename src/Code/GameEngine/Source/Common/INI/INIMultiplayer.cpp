@@ -1,3 +1,4 @@
+// Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE
 #include "Common/INI.h"
 #include "Common/MultiplayerSettings.h"
 extern MultiplayerSettings *TheMultiplayerSettings;
@@ -15,4 +16,24 @@ void INI::parseMultiplayerSettingsDefinition(INI *ini)
 }
 
 // FUNCTION: BFME2 0x001EF3BF size=178 name=?parseMultiplayerColorDefinition@INI@@SAXPAV1@@Z evidence=N:ledger
+void INI::parseMultiplayerColorDefinition(INI *ini)
+{
+	const char *c;
+	AsciiString name;
+	MultiplayerColorDefinition *colorDefinition;
+
+	// Read the name.
+	c = ini->getNextToken();
+	name.set(c);
+
+	// This block does not allow overrides, so an existing colour is simply overwritten.
+	colorDefinition = TheMultiplayerSettings->findMultiplayerColorDefinitionByName(name);
+	if (colorDefinition == NULL)
+		colorDefinition = TheMultiplayerSettings->newMultiplayerColorDefinition(name);
+
+	ini->initFromINI(colorDefinition, MultiplayerColorDefinition::m_fieldParseTable);
+
+	colorDefinition->setColor(colorDefinition->m_rgbColor);
+	colorDefinition->setNightColor(colorDefinition->m_rgbNightColor);
+}
 

@@ -89,5 +89,15 @@ void CriticalSectionClass::Unlock()
 
 
 // FUNCTION: BFME2 0x00613B60 size=30 name=??0LockClass@CriticalSectionClass@@QAE@AAV1@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+CriticalSectionClass::LockClass::LockClass(CriticalSectionClass &c) :
+	CriticalSection(c)
+{
+	CriticalSection.Lock();
+}
 
 // FUNCTION: BFME2 0x00613B80 size=16 name=??1LockClass@CriticalSectionClass@@QAE@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+CriticalSectionClass::LockClass::~LockClass()
+{
+	CriticalSection.Unlock();
+}
+

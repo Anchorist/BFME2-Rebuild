@@ -8,6 +8,10 @@
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/SplitHordeSpecialPower.h"
 // FUNCTION: BFME2 0x004C8574 size=42 name=??0SplitHordeSpecialPower@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+SplitHordeSpecialPower::SplitHordeSpecialPower(Thing *thing, const ModuleData *moduleData)
+	: SpecialPowerModule(thing, moduleData)
+{
+}
 // FUNCTION: BFME2 0x004C859E size=6 name=?Rva004C859EGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
 const char *SplitHordeSpecialPower::GetSnapshotName() const
 {

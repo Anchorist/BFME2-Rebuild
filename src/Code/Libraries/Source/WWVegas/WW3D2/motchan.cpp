@@ -10,6 +10,34 @@
 #include "WW3D2/motchan.h"
 #include "WW3D2/w3d_file.h"
 #include "WWLib/chunkio.h"
+#include "WWMath/wwmath.h"
+
+#define WWMATH_PI 3.141592654f
+#define DEG_TO_RADF(x) ((x) * (WWMATH_PI / 180.0f))
+
+#define FILTER_TABLE_SIZE (256)
+#define FILTER_TABLE_GEN_START (16)
+#define FILTER_TABLE_GEN_SIZE (FILTER_TABLE_SIZE - FILTER_TABLE_GEN_START)
+
+float filtertable[FILTER_TABLE_SIZE] = {
+	0.00000001f,
+	0.0000001f,
+	0.000001f,
+	0.00001f,
+	0.0001f,
+	0.001f,
+	0.01f,
+	0.1f,
+	1.0f,
+	10.0f,
+	100.0f,
+	1000.0f,
+	10000.0f,
+	100000.0f,
+	1000000.0f,
+	10000000.0f,
+};
+bool table_valid = false;
 
 // FUNCTION: BFME2 0x00195AB0 size=38 name=??0MotionChannelClass@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:Z
 MotionChannelClass::MotionChannelClass()
@@ -240,6 +268,23 @@ int TimeCodedBitChannelClass::Get_Bit(int frame)
 }
 
 // FUNCTION: BFME2 0x00195F60 size=133 name=??0AdaptiveDeltaMotionChannelClass@@QAE@XZ evidence=N:ledger tier=B hypothesis:Z
+AdaptiveDeltaMotionChannelClass::AdaptiveDeltaMotionChannelClass(void) :
+	PivotIdx(0),
+	Type(0),
+	VectorLen(0),
+	NumFrames(0),
+	DeltaBytes(0),
+	Scale(0.0f),
+	Data(NULL)
+{
+	if (false == table_valid) {
+		float ratio = 0.0f;
+		for (int i = 0; i < FILTER_TABLE_GEN_SIZE; i++, ratio += 1.0f) {
+			filtertable[i + FILTER_TABLE_GEN_START] = 1.0f - WWMath::Sin(DEG_TO_RADF(ratio * (90.0f / (float)FILTER_TABLE_GEN_SIZE)));
+		}
+		table_valid = true;
+	}
+}
 
 // FUNCTION: BFME2 0x00195FF0 size=183 name=?Load_W3D@AdaptiveDeltaMotionChannelClass@@QAE_NAAVChunkLoadClass@@@Z evidence=N:ledger tier=B hypothesis:Z
 bool AdaptiveDeltaMotionChannelClass::Load_W3D(ChunkLoadClass & cload)

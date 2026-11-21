@@ -11,6 +11,8 @@
 #include "Common/AsciiString.h"
 #include "Common/RGBColor.h"
 
+struct FieldParse;
+
 class MultiplayerColorDefinition
 {
 public:
@@ -22,6 +24,8 @@ public:
 	RGBColor getRGBValue() const;	// 0x001EF34E: +0x04 by value
 	RGBColor getRGBNightValue() const;	// 0x00098516: +0x14 by value
 	AsciiString getTooltipName() const;												// 0x002E4336: a copy of the tooltip name
+
+	static const FieldParse m_fieldParseTable[];	// 0x00C18F40: the INI block's keys
 
 	AsciiString m_tooltipName;					// +0x00
 	RGBColor m_rgbColor;						// +0x04

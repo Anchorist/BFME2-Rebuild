@@ -70,6 +70,7 @@ class AnnounceBirthAndDeathBehavior : public CreateModule, public DieModuleInter
 {
 public:
 	AnnounceBirthAndDeathBehavior(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void onCreate();	// override: onCreate slot 0 at +0x10 (0x004851AD)
 	virtual void onDie(const DamageInfo *);	// override: onDie slot 0 at +0x18 (0x004851C7)

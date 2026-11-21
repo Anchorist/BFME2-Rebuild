@@ -7,6 +7,10 @@
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:name:invented
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/AttributeModifierUpgrade.h"
+#include <stddef.h>
+#include "Common/INI.h"
+#include "GameLogic/Module/AttributeModifierUpgradeModuleData.h"
+#include "GameLogic/Module/UpgradeMuxData.h"
 // FUNCTION: BFME2 0x004B66B3 size=32 name=??1AttributeModifierUpgrade@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
 AttributeModifierUpgrade::~AttributeModifierUpgrade()
 {
@@ -26,6 +30,18 @@ NameKeyType AttributeModifierUpgrade::getModuleNameKey() const
 }
 
 // FUNCTION: BFME2 0x004B671E size=34 name=?buildFieldParse@AttributeModifierUpgradeModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:K
+static const FieldParse s_attributeModifierUpgradeModuleDataFieldParse[] =
+{
+	{ "AttributeModifier", INI::parseAsciiString, 0, offsetof(AttributeModifierUpgradeModuleData, m_attributeModifier) },
+	{ 0, 0, 0, 0 }
+};
+
+void AttributeModifierUpgradeModuleData::buildFieldParse(MultiIniFieldParse &p)
+{
+	p.add(UpgradeMuxData::getFieldParse(), 0x8);
+	p.add(s_attributeModifierUpgradeModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x004B6740 size=49 name=??0AttributeModifierUpgrade@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:K
 AttributeModifierUpgrade::AttributeModifierUpgrade(Thing *thing, const ModuleData *moduleData) :

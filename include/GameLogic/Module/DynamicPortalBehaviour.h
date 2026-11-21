@@ -22,6 +22,7 @@ class DynamicPortalBehaviour : public UpgradeModule,
 {
 public:
 	DynamicPortalBehaviour(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void upgradeImplementation();
 	virtual void mapLoadPostProcess(const Dict *properties);
@@ -37,6 +38,8 @@ public:
 
 	static Module *rva004608E0(Object *obj);			// looks up the portal module on obj
 	void rva0046094C();								// called by the siege deploy special power
+	// Creates the portal waypoints.
+	void createWaypoints();
 
 protected:
 	virtual const char *GetSnapshotName() const;
@@ -51,6 +54,10 @@ public:
 	Waypoint *m_waypoints[6];
 	Bool m_unk0x3C;
 	Bool m_wasDestroyed;							// onDie 0x00460A85 sets this; onBuildComplete clears it
+
+private:
+	// Creates the waypoints unless the portal was destroyed; onBuildComplete, loadPostProcess and mapLoadPostProcess call it.
+	void rva00461257();
 
 };
 

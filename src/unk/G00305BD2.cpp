@@ -1,5 +1,7 @@
 // cl: /O1
 #include "Common/Xfer.h"
+// Save-game transfer helpers for enumerated values. Each hands an int-sized enum to Xfer::XferEnum with the name of
+// its enum type (the string retail stores, used to tag the value in the save) and its size in bytes.
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G00305BD2 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.

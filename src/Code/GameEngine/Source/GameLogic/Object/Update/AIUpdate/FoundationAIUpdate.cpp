@@ -163,9 +163,9 @@ void FoundationAIUpdate::onCapture(Player *oldOwner, Player *newOwner)
 	Rva002A8AB1Record *oldRecord = TheSkirmishAIManager->rva002A8AB1(oldOwner);
 	Rva002A8AB1Record *newRecord = TheSkirmishAIManager->rva002A8AB1(newOwner);
 	if (oldRecord)
-		oldRecord->rva002C6A4E(builder);
+		oldRecord->unRegisterProducedObject(builder);
 	if (newRecord)
-		newRecord->rva002C6A3D(builder);
+		newRecord->registerProducedObject(builder);
 	builder->setTeam(newOwner->m_defaultTeam);
 }
 
@@ -194,3 +194,7 @@ Object *FoundationAIUpdate::rva00456134(void *context, const ThingTemplate *tmpl
 	return built;
 }
 
+void FoundationAIUpdate::loadPostProcess()
+{
+	UpdateModule::loadPostProcess();
+}

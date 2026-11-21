@@ -25,6 +25,7 @@ class ProductionUpdateModuleData : public ModuleData
 public:
 	ProductionUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Int m_numDoorAnimations;                               // +0x8 NumDoorAnimations
 	UnsignedInt m_doorOpeningTime;                         // +0xC DoorOpeningTime; duration, frames

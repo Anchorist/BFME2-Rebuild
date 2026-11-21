@@ -22,6 +22,7 @@ class OCLUpdate : public UpdateModule
 {
 public:
 	OCLUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	unsigned int getRemainingFrames() const;
 	float getCountdownPercent() const;
 	virtual NameKeyType getModuleNameKey() const;

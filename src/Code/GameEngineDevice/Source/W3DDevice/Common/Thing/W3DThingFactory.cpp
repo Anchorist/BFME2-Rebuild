@@ -4,7 +4,14 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=rests-on:name right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:Z, hypothesis:name:Z
+#include "GameClient/W3DThingFactory.h"
 // FUNCTION: BFME2 0x0004CA01 size=18 name=??0W3DThingFactory@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:Z
+W3DThingFactory::W3DThingFactory()
+{
+}
 
 // FUNCTION: BFME2 0x0004CA13 size=11 name=??1W3DThingFactory@@UAE@XZ evidence=N:ledger tier=B hypothesis:Z
+W3DThingFactory::~W3DThingFactory()
+{
+}
 

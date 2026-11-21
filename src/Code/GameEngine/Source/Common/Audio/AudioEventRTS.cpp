@@ -42,7 +42,7 @@ ObjectID AudioEventRTS::getObjectID()
 }
 
 // FUNCTION: BFME2 0x002D955A size=28 name=?rva002D955A@Rva002D955A@@QAEXH@Z evidence=?:placeholder
-// Identity: BFME1 setDrawableID; retail uses owner type 1/invalid 6.
+// Accepts a drawable as the owner when none is bound yet or one already is: owner type 1, or 6 for unbound (BFME 2 moved the unbound value from Zero Hour's 4 to 6).
 void AudioEventRTS::setDrawableID(DrawableID id)
 {
     if (m_ownerType == 1 || m_ownerType == 6) {
@@ -176,7 +176,7 @@ void AudioEventRTS::rva002D9ADC()
     m_delay = GetGameAudioRandomValueReal((float)minimumDelay, (float)maximumDelay, (char *)"C:\\projects\\bfme2patch103\\bfme2\\Code\\GameEngine\\Source\\Common\\Audio\\AudioEventRTS.cpp", 413);
     m_pitchShift2 = GetGameAudioRandomValueReal(m_eventInfo->m_perFilePitchShiftMin * 0.01f + 1.0f, m_eventInfo->m_perFilePitchShiftMax * 0.01f + 1.0f, (char *)"C:\\projects\\bfme2patch103\\bfme2\\Code\\GameEngine\\Source\\Common\\Audio\\AudioEventRTS.cpp", 415);
     m_volumeShift2 = GetGameAudioRandomValueReal(m_eventInfo->m_perFileVolumeShift + 1.0f, 1.0f, (char *)"C:\\projects\\bfme2patch103\\bfme2\\Code\\GameEngine\\Source\\Common\\Audio\\AudioEventRTS.cpp", 418);
-    // Native per-file regeneration flag is +0x50, currently named m_startedPlaying.
+    // Once playback has started, the next getFilename() picks a fresh variation.
     if (m_startedPlaying)
     {
         m_filenameDirty = true;

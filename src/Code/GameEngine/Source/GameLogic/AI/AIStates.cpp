@@ -6,6 +6,7 @@
 #include "GameLogic/Module/ContainModule.h"
 #include "GameLogic/Module/StancesBehavior.h"
 #include "GameLogic/Object.h"
+#include "GameLogic/Module/HordeContainInterface.h"
 #include "Common/ThingTemplate.h"
 #include "Common/Team.h"
 #include "GameLogic/AI.h"
@@ -796,6 +797,17 @@ void BackAwayAndCowerStateMachine::xfer(Xfer *xfer)
 // FUNCTION: BFME2 0x003402FC size=70 name=?onExit@AICowerState@@UAEXW4StateExitType@@@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x00340342 size=45 name=?onExit@AIQuarrelState@@UAEXW4StateExitType@@@Z evidence=N:ledger tier=A
+void AIQuarrelState::onExit(StateExitType status)
+{
+	State::onExit(status);
+	Object *obj = getMachineOwner();
+	if (obj != NULL)
+	{
+		HordeContainInterface *horde = obj->rva0029439D();
+		if (horde != NULL)
+			horde->rva0046D8AE();
+	}
+}
 
 // FUNCTION: BFME2 0x0034036F size=34 name=?update@AIQuarrelState@@UAE?AW4StateReturnType@@XZ evidence=N:ledger tier=A
 
@@ -1314,6 +1326,18 @@ void AIAttackSquadState::xfer(Xfer *xfer)
 }
 
 // FUNCTION: BFME2 0x00341557 size=67 name=?onExit@Rva00341557@@QAEXH@Z evidence=?:placeholder tier=A
+void AIAttackSquadState::onExit(StateExitType status)
+{
+	AIUpdateInterface *ai = getMachineOwner()->getAI();
+	if (ai != NULL)
+		ai->setCurrentVictim(NULL);
+	getMachineOwner()->m_playerOrderedRangedTargetID = (ObjectID)0;
+	if (m_attackSquadMachine != NULL)
+	{
+		::delete m_attackSquadMachine;
+		m_attackSquadMachine = NULL;
+	}
+}
 
 // FUNCTION: BFME2 0x0034159A size=91 name=??1AIDockState@@UAE@XZ evidence=N:ledger tier=A
 AIDockState::~AIDockState()
@@ -1786,6 +1810,15 @@ void AIFaceState::xfer(Xfer *xfer)
 }
 
 // FUNCTION: BFME2 0x003423A6 size=34 name=?onExit@AIFaceState@@UAEXW4StateExitType@@@Z evidence=N:ledger tier=A
+void AIFaceState::onExit(StateExitType status)
+{
+	if (m_unk0x28 == 2)
+	{
+		HordeContainInterface *horde = getMachineOwner()->rva0029439D();
+		if (horde != NULL)
+			horde->hordeSlot133();
+	}
+}
 
 // FUNCTION: BFME2 0x003423C8 size=161 name=?rva003423C8@Rva003423C8@@QAEPAVObject@@PAV2@@Z evidence=?:placeholder tier=A
 

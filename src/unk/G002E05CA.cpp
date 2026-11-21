@@ -1,7 +1,13 @@
+// cl: /O1
+#include "Common/Xfer.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G002E05CA name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x002E05CA size=24 name=?XferLivingWorldRegionBonusRuleID@@YAXPAVXfer@@PAH@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void XferLivingWorldRegionBonusRuleID(Xfer *xfer, int *value)
+{
+	xfer->XferEnum("LivingWorldRegionBonusRuleID", value, 4);
+}
 // FUNCTION: BFME2 0x002E05E2 size=12 name=?get@Rva002E05E2CmpBoolField@@QBE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x002E05EE size=7 name=?get@Rva002E05EELeaGetter@@QBEPAXXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x002E05F5 size=7 name=?get@Rva0002E05F5PtrChaseField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

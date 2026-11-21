@@ -201233,7 +201233,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "?getBestModelNameForWB@ModuleData@@UBE?AVAsciiString@@ABVModelConditionFlags@@@Z",
-      "name_evidence": "X:map request (W2 / coordinator)",
+      "name_evidence": "X:map request (W2 / maintainer review)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-among-EventParameter|BfmeStringRecord000B94D2",
       "object_id": "O000B2CBD",
@@ -201637,7 +201637,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "?getBestModelNameForWB@W3DModelDrawModuleData@@UBE?AVAsciiString@@ABVModelConditionFlags@@@Z",
-      "name_evidence": "X:map request (W2 / coordinator)",
+      "name_evidence": "X:map request (W2 / maintainer review)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O000B2CBD",
@@ -454238,7 +454238,8 @@
       "parent": null,
       "object": "unknown",
       "accepted_names": [
-        "?init@GameInfo@@QAEXXZ"
+        "?init@GameInfo@@QAEXXZ",
+        "??_9@$BCI@AE"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-membership"
@@ -479893,7 +479894,8 @@
       "parent": null,
       "object": "O002034C4",
       "accepted_names": [
-        "??M@YA_NABU?$pair@VAsciiString@@V1@@_STL@@0@Z"
+        "??M@YA_NABU?$pair@VAsciiString@@V1@@_STL@@0@Z",
+        "??$?MVAsciiString@@V0@@_STL@@YA_NABU?$pair@VAsciiString@@V1@@0@0@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -511176,7 +511178,8 @@
       "object": "O0022244D",
       "accepted_names": [
         "?rva00222F55@AptPlayer@@QAEX_N@Z",
-        "?rva00222F55@Rva00222A8BTarget@@QAEX_N@Z"
+        "?rva00222F55@Rva00222A8BTarget@@QAEX_N@Z",
+        "?hideBackground@AptPlayer@@QAEX_N@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -511538,8 +511541,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?rva002233A6@AptPlayer@@QAEXH@Z",
-      "name_evidence": "X:proven (wb-assert|wb-file)",
+      "name": "?showBackground@AptPlayer@@QAEXH@Z",
+      "name_evidence": "X:request (R6AptPlayer-0x002233A6)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O0022244D",
@@ -511551,6 +511554,7 @@
       "parent": null,
       "object": "O0022244D",
       "accepted_names": [
+        "?showBackground@AptPlayer@@QAEXH@Z",
         "?rva002233A6@AptPlayer@@QAEXH@Z",
         "?rva002233A6@Rva00222A8BTarget@@QAEXH@Z"
       ],
@@ -544782,8 +544786,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?rva00246F8E@GameLogic@@QAE_NABVAsciiString@@HPAPBVCommandButton@@@Z",
-      "name_evidence": "?:placeholder",
+      "name": "?getCommandButtonOverride@GameLogic@@QAE_NABVAsciiString@@HPAPBVCommandButton@@@Z",
+      "name_evidence": "X:request (GameLogic-CommandButtonOverride)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O0023D494",
@@ -544795,6 +544799,7 @@
       "parent": null,
       "object": "O0023D494",
       "accepted_names": [
+        "?getCommandButtonOverride@GameLogic@@QAE_NABVAsciiString@@HPAPBVCommandButton@@@Z",
         "?rva00246F8E@GameLogic@@QAE_NABVAsciiString@@HPAPBVCommandButton@@@Z"
       ],
       "seed_tier": "A",
@@ -576394,7 +576399,8 @@
       "object": "O00260E01",
       "accepted_names": [
         "?distSq@Object@@QAEMPBVRva000CBA20Point@@@Z",
-        "?distSq@Rva000CBA20@@QAEMPBVRva000CBA20Point@@@Z"
+        "?distSq@Rva000CBA20@@QAEMPBVRva000CBA20Point@@@Z",
+        "?rva002615E3@Object@@QAEMPBVCoord3D@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:Z"
@@ -577436,8 +577442,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?get@Rva002620F3DwordField@@QBEHXZ",
-      "name_evidence": "?:placeholder",
+      "name": "?dlink_next_TeamMemberList@Object@@QBEPAV1@XZ",
+      "name_evidence": "X:request (R7TeamMemberNextKey-0x002620F3)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "unknown",
@@ -577449,6 +577455,7 @@
       "parent": null,
       "object": "G00262045",
       "accepted_names": [
+        "?dlink_next_TeamMemberList@Object@@QBEPAV1@XZ",
         "?get@Rva002620F3DwordField@@QBEHXZ"
       ],
       "seed_tier": "B",
@@ -594353,8 +594360,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?rva002754E3@Drawable@@QAEXXZ",
-      "name_evidence": "?:placeholder",
+      "name": "?onSelected@Drawable@@QAEXXZ",
+      "name_evidence": "X:request (R6DrawableOnSelected-0x002754E3)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O00270098",
@@ -594366,6 +594373,7 @@
       "parent": null,
       "object": "O00270098",
       "accepted_names": [
+        "?onSelected@Drawable@@QAEXXZ",
         "?rva002754E3@Drawable@@QAEXXZ"
       ],
       "seed_tier": "A",
@@ -622017,8 +622025,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?clearModelConditionFlagsForHorde@Object@@QAEXPBH@Z",
-      "name_evidence": "N:ledger",
+      "name": "?clearModelConditionFlagsForHorde@Object@@QAEXABVModelConditionFlags@@@Z",
+      "name_evidence": "S:provisional (native same-argument forwarding to canonical typed method)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "O0028AB4E",
@@ -622030,6 +622038,7 @@
       "parent": null,
       "object": "O0028AB4E",
       "accepted_names": [
+        "?clearModelConditionFlagsForHorde@Object@@QAEXABVModelConditionFlags@@@Z",
         "?clearModelConditionFlagsForHorde@Object@@QAEXPBH@Z"
       ],
       "seed_tier": "A",
@@ -622042,8 +622051,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?setModelConditionFlagsForHorde@Object@@QAEXPBH@Z",
-      "name_evidence": "N:ledger",
+      "name": "?setModelConditionFlagsForHorde@Object@@QAEXABVModelConditionFlags@@@Z",
+      "name_evidence": "S:provisional (native same-argument forwarding to canonical typed method)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "O0028AB4E",
@@ -622055,6 +622064,7 @@
       "parent": null,
       "object": "O0028AB4E",
       "accepted_names": [
+        "?setModelConditionFlagsForHorde@Object@@QAEXABVModelConditionFlags@@@Z",
         "?setModelConditionFlagsForHorde@Object@@QAEXPBH@Z"
       ],
       "seed_tier": "A",
@@ -636150,7 +636160,8 @@
         "?rva002A8AB1@SkirmishAIManager@@QAEPAVRva002A8AB1Record@@PAVPlayer@@@Z",
         "?rva002A8AB1@SkirmishAIManager@@QAEPAURva002A8AB1Record@@PAX@Z",
         "?rva002A8AB1@Rva002A8F24@@QAEPAURva002A8AB1Record@@PAX@Z",
-        "?rva002A8AB1@Rva002A8F24@@QAEPAVRva002A8AB1Record@@PAX@Z"
+        "?rva002A8AB1@Rva002A8F24@@QAEPAVRva002A8AB1Record@@PAX@Z",
+        "?rva002A8AB1@SkirmishAIManager@@QAEPAVSkirmishAI@@PAVPlayer@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:mm1-neighbour-class",
@@ -639213,8 +639224,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?rva002AA0B8@Player@@QBEHXZ",
-      "name_evidence": "X:proven (caller-this+position)",
+      "name": "?getSpellRechargeModifierCount@Player@@QBEHXZ",
+      "name_evidence": "X:request (R7PlayerSpellRechargeKeys-0x002AA0B8)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O002A9994",
@@ -639226,6 +639237,7 @@
       "parent": null,
       "object": "O002A9994",
       "accepted_names": [
+        "?getSpellRechargeModifierCount@Player@@QBEHXZ",
         "?rva002AA0B8@Player@@QBEHXZ",
         "?get@Rva002AA0B8DwordField@@QBEHXZ"
       ],
@@ -639239,8 +639251,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?inc@Player@@QAEXXZ",
-      "name_evidence": "X:proven (caller-this+position)",
+      "name": "?incSpellRechargeModifierCount@Player@@QAEXXZ",
+      "name_evidence": "X:request (R7PlayerSpellRechargeKeys-0x002AA0BF)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O002A9994",
@@ -639252,6 +639264,7 @@
       "parent": null,
       "object": "O002A9994",
       "accepted_names": [
+        "?incSpellRechargeModifierCount@Player@@QAEXXZ",
         "?inc@Player@@QAEXXZ",
         "?inc@Rva002AA0BFDwordCounter@@QAEXXZ"
       ],
@@ -639265,8 +639278,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?dec@Player@@QAEXXZ",
-      "name_evidence": "X:proven (caller-this+position)",
+      "name": "?decSpellRechargeModifierCount@Player@@QAEXXZ",
+      "name_evidence": "X:request (R7PlayerSpellRechargeKeys-0x002AA0C6)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O002A9994",
@@ -639278,6 +639291,7 @@
       "parent": null,
       "object": "O002A9994",
       "accepted_names": [
+        "?decSpellRechargeModifierCount@Player@@QAEXXZ",
         "?dec@Player@@QAEXXZ",
         "?dec@Rva002AA0C6DwordCounter@@QAEXXZ"
       ],
@@ -639291,8 +639305,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?set@Player@@QAEXM@Z",
-      "name_evidence": "X:proven (caller-this+position)",
+      "name": "?setSpellRechargeModifier@Player@@QAEXM@Z",
+      "name_evidence": "X:request (R7PlayerSpellRechargeKeys-0x002AA0CD)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O002A9994",
@@ -639304,6 +639318,7 @@
       "parent": null,
       "object": "O002A9994",
       "accepted_names": [
+        "?setSpellRechargeModifier@Player@@QAEXM@Z",
         "?set@Player@@QAEXM@Z",
         "?set@Rva002AA0CDFloatField@@QAEXM@Z"
       ],
@@ -668622,7 +668637,8 @@
       "parent": null,
       "object": "O002C5EF0",
       "accepted_names": [
-        "?rva002C6A3D@Rva002A8AB1Record@@QAEXPAVObject@@@Z"
+        "?rva002C6A3D@Rva002A8AB1Record@@QAEXPAVObject@@@Z",
+        "?registerProducedObject@SkirmishAI@@QAEXPAVObject@@@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -668647,7 +668663,8 @@
       "parent": null,
       "object": "O002C5EF0",
       "accepted_names": [
-        "?rva002C6A4E@Rva002A8AB1Record@@QAEXPAVObject@@@Z"
+        "?rva002C6A4E@Rva002A8AB1Record@@QAEXPAVObject@@@Z",
+        "?unRegisterProducedObject@SkirmishAI@@QAEXPAVObject@@@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -676471,8 +676488,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?findEntry@RayEffectSystem@@QAEPAUElem002CED84@@PAX@Z",
-      "name_evidence": "X:proven (caller-this)",
+      "name": "?findEntry@RayEffectSystem@@AAEPAURayEffectData@@PBVDrawable@@@Z",
+      "name_evidence": "X:request (R7RayFindEntry-0x002CED59)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "unknown",
@@ -676484,6 +676501,7 @@
       "parent": null,
       "object": "O002CED84",
       "accepted_names": [
+        "?findEntry@RayEffectSystem@@AAEPAURayEffectData@@PBVDrawable@@@Z",
         "?findEntry@RayEffectSystem@@QAEPAUElem002CED84@@PAX@Z",
         "?findEntry@Rva002CEE1B@@QAEPAUElem002CED84@@PAX@Z"
       ],
@@ -682178,8 +682196,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?Rva002D2B9ADarken@@YAHHH@Z",
-      "name_evidence": "?:placeholder",
+      "name": "?GameDarkenColor@@YAHHH@Z",
+      "name_evidence": "X:request (R6GameDarkenColor-0x002D2B9A)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "unknown",
@@ -682191,6 +682209,7 @@
       "parent": null,
       "object": "G002D2A9F",
       "accepted_names": [
+        "?GameDarkenColor@@YAHHH@Z",
         "?Rva002D2B9ADarken@@YAHHH@Z"
       ],
       "seed_tier": "B",
@@ -683447,8 +683466,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?Rva002D3409Invoke@@YAHPAVRva00222A8BTarget@@PAXPBDABQBD@Z",
-      "name_evidence": "?:placeholder",
+      "name": "?Rva002D3409Invoke@@YAHPAVAptPlayer@@HPBDABQBD@Z",
+      "name_evidence": "X:request (R6AptPlayer-0x002D3409)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O002D2DD4",
@@ -683460,6 +683479,7 @@
       "parent": null,
       "object": "O002D2DD4",
       "accepted_names": [
+        "?Rva002D3409Invoke@@YAHPAVAptPlayer@@HPBDABQBD@Z",
         "?Rva002D3409Invoke@@YAHPAVRva00222A8BTarget@@PAXPBDABQBD@Z"
       ],
       "seed_tier": "A",
@@ -738883,8 +738903,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?parseScreenRect@@YA_NPAD0PAH111@Z",
-      "name_evidence": "N:ledger",
+      "name": "?parseScreenRect@@YA_NPAH000@Z",
+      "name_evidence": "X:request (R7ParseScreenRect-0x0031583E)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O00314EEE",
@@ -738896,7 +738916,7 @@
       "parent": null,
       "object": "retained:O00315ACC",
       "accepted_names": [
-        "?parseScreenRect@@YA_NPAD0PAH111@Z"
+        "?parseScreenRect@@YA_NPAH000@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:mm1-held-object-same-path",
@@ -756083,7 +756103,8 @@
       "parent": null,
       "object": "O003297FB",
       "accepted_names": [
-        "??$_M_find@U?$pair@VAsciiString@@V1@@_STL@@@?$_Rb_tree@U?$pair@VAsciiString@@V1@@_STL@@U?$pair@$$CBU?$pair@VAsciiString@@V1@@_STL@@H@2@U?$_Select1st@U?$pair@$$CBU?$pair@VAsciiString@@V1@@_STL@@H@_STL@@@2@UTeamLess0019B850@@V?$allocator@U?$pair@$$CBU?$pair@VAsciiString@@V1@@_STL@@H@_STL@@@2@@_STL@@ABEPAU?$_Rb_tree_node@U?$pair@$$CBU?$pair@VAsciiString@@V1@@_STL@@H@_STL@@@1@ABU?$pair@VAsciiString@@V1@@1@@Z"
+        "??$_M_find@U?$pair@VAsciiString@@V1@@_STL@@@?$_Rb_tree@U?$pair@VAsciiString@@V1@@_STL@@U?$pair@$$CBU?$pair@VAsciiString@@V1@@_STL@@H@2@U?$_Select1st@U?$pair@$$CBU?$pair@VAsciiString@@V1@@_STL@@H@_STL@@@2@UTeamLess0019B850@@V?$allocator@U?$pair@$$CBU?$pair@VAsciiString@@V1@@_STL@@H@_STL@@@2@@_STL@@ABEPAU?$_Rb_tree_node@U?$pair@$$CBU?$pair@VAsciiString@@V1@@_STL@@H@_STL@@@1@ABU?$pair@VAsciiString@@V1@@1@@Z",
+        "??$_M_find@U?$pair@VAsciiString@@V1@@_STL@@@?$_Rb_tree@U?$pair@VAsciiString@@V1@@_STL@@U?$pair@$$CBU?$pair@VAsciiString@@V1@@_STL@@H@2@U?$_Select1st@U?$pair@$$CBU?$pair@VAsciiString@@V1@@_STL@@H@_STL@@@2@UScopedNameLess@@V?$allocator@U?$pair@$$CBU?$pair@VAsciiString@@V1@@_STL@@H@_STL@@@2@@_STL@@ABEPAU?$_Rb_tree_node@U?$pair@$$CBU?$pair@VAsciiString@@V1@@_STL@@H@_STL@@@1@ABU?$pair@VAsciiString@@V1@@1@@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -843295,7 +843316,8 @@
       "parent": null,
       "object": "unknown",
       "accepted_names": [
-        "??0Rva00395561@@QAE@XZ"
+        "??0Rva00395561@@QAE@XZ",
+        "??0ScopedGameFPModeRelease@@QAE@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-membership"
@@ -843320,7 +843342,8 @@
       "parent": null,
       "object": "unknown",
       "accepted_names": [
-        "??1Rva00395561@@QAE@XZ"
+        "??1Rva00395561@@QAE@XZ",
+        "??1ScopedGameFPModeRelease@@QAE@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-membership"
@@ -844160,13 +844183,14 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?rva00395C80@@YAHPAVObject@@@Z",
-      "name_evidence": "?:placeholder",
+      "name": "?rva00395C80@@YAHPAVObject@@H@Z",
+      "name_evidence": "X:request (R6X12CastleDamageHeaderLive-0x00395C80)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "retained:O003956E8",
       "object_evidence": "X:closure",
       "accepted_names": [
+        "?rva00395C80@@YAHPAVObject@@H@Z",
         "?rva00395C80@@YAHPAVObject@@@Z"
       ],
       "parent": null,
@@ -845408,13 +845432,14 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?apply@CastleSystem@@QAEHP6AHPAVObject@@H@ZH@Z",
-      "name_evidence": "P:provisional (wb-file)",
+      "name": "?apply@CastleBehavior@@QAEHP6AHPAVObject@@H@ZH@Z",
+      "name_evidence": "X:request (R6X12CastleDamageHeaderLive-0x003974CE)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "retained:O003956E8",
       "object_evidence": "X:closure",
       "accepted_names": [
+        "?apply@CastleBehavior@@QAEHP6AHPAVObject@@H@ZH@Z",
         "?apply@CastleSystem@@QAEHP6AHPAVObject@@H@ZH@Z",
         "?apply@Rva003974CE@@QAEHP6AHPAVObject@@H@ZH@Z"
       ],
@@ -845620,13 +845645,14 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?onStateChanged@CastleMemberBehavior@@UAEXHHH@Z",
-      "name_evidence": "S:strong (vtable)",
+      "name": "?onBodyDamageStateChange@CastleMemberBehavior@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z",
+      "name_evidence": "X:request (R6X12CastleDamageHeaderLive-0x00397BD9)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "retained:O003956E8",
       "object_evidence": "X:closure",
       "accepted_names": [
+        "?onBodyDamageStateChange@CastleMemberBehavior@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z",
         "?onStateChanged@CastleMemberBehavior@@UAEXHHH@Z",
         "?onStateChanged@Rva00397BD9@@UAEXHHH@Z"
       ],
@@ -846161,13 +846187,14 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?rva00398E4A@CastleBehavior@@QAEXPAURva00398E4AArg@@@Z",
-      "name_evidence": "?:placeholder",
+      "name": "?rva00398E4A@CastleBehavior@@QAEXPAVDamageInfo@@@Z",
+      "name_evidence": "X:request (R6X12CastleDamageHeaderLive-0x00398E4A)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "retained:O003956E8",
       "object_evidence": "X:closure",
       "accepted_names": [
+        "?rva00398E4A@CastleBehavior@@QAEXPAVDamageInfo@@@Z",
         "?rva00398E4A@CastleBehavior@@QAEXPAURva00398E4AArg@@@Z"
       ],
       "parent": null,
@@ -846224,13 +846251,14 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?rva0039922D@CastleBehavior@@QAEXPAURva00398E4AArg@@@Z",
-      "name_evidence": "?:placeholder",
+      "name": "?onDamage@CastleMemberBehavior@@UAEXPAVDamageInfo@@@Z",
+      "name_evidence": "X:request (R6X12CastleDamageHeaderLive-0x0039922D)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "retained:O003956E8",
       "object_evidence": "X:closure",
       "accepted_names": [
+        "?onDamage@CastleMemberBehavior@@UAEXPAVDamageInfo@@@Z",
         "?rva0039922D@CastleBehavior@@QAEXPAURva00398E4AArg@@@Z"
       ],
       "parent": null,
@@ -855790,8 +855818,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?createInstance@TeamFactory@@QAEPAVTeam@@ABVAsciiString@@0@Z",
-      "name_evidence": "X:map request (15:3x)",
+      "name": "?createTeam@TeamFactory@@QAEPAVTeam@@ABVAsciiString@@0@Z",
+      "name_evidence": "X:request (R8TeamFactoryScopedLookupAfterScript-0x003A3CBB)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O0039D40F",
@@ -855803,6 +855831,7 @@
       "parent": null,
       "object": "O0039D40F",
       "accepted_names": [
+        "?createTeam@TeamFactory@@QAEPAVTeam@@ABVAsciiString@@0@Z",
         "?createInstance@TeamFactory@@QAEPAVTeam@@ABVAsciiString@@0@Z",
         "?createInstance@Team@@QAEPAVTeam@@ABVAsciiString@@0@Z",
         "?createInstance@Rva003A3CBBOwner@@QAEPAVTeam@@ABVAsciiString@@0@Z"
@@ -997955,8 +997984,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?usesSystemMapDir@LANPreferences@@QAE_NXZ",
-      "name_evidence": "N:ledger",
+      "name": "?usesSystemMapDir@SkirmishPreferences@@QAE_NXZ",
+      "name_evidence": "S:strong (native own buildProfileKey edge and string)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-among-SkirmishPreferences",
       "object_id": "O0043B9E8",
@@ -997968,7 +997997,7 @@
       "parent": null,
       "object": "O0043B9E8",
       "accepted_names": [
-        "?usesSystemMapDir@LANPreferences@@QAE_NXZ"
+        "?usesSystemMapDir@SkirmishPreferences@@QAE_NXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:Z"
@@ -1004969,7 +1004998,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "?getLANSlot@LANGameInfo@@QBEPBVLANGameSlot@@H@Z",
-      "name_evidence": "X:m02 request (m02 r6-x12-LAN-0x00447773 (x12))",
+      "name_evidence": "X:request (r6-LAN-0x00447773)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "unknown",
@@ -1011138,8 +1011167,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?rva0044E7A8@SpecialAbilityUpdate@@QAE_NH@Z",
-      "name_evidence": "S:strong (caller-this)",
+      "name": "?rva0044E7A8@SpecialAbilityUpdate@@QAE_NPBVCoord3D@@@Z",
+      "name_evidence": "S:provisional (native caller and location value flow)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O0044E5E7",
@@ -1011151,6 +1011180,7 @@
       "parent": null,
       "object": "retained:O0044E85E",
       "accepted_names": [
+        "?rva0044E7A8@SpecialAbilityUpdate@@QAE_NPBVCoord3D@@@Z",
         "?rva0044E7A8@SpecialAbilityUpdate@@QAE_NH@Z",
         "?rva0044E7A8@Rva0044E7A8@@QAE_NH@Z"
       ],
@@ -1011325,13 +1011355,14 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?vslot08@SpecialAbilityUpdate@@UAE_NH@Z",
-      "name_evidence": "N:ledger",
+      "name": "?vslot08@SpecialAbilityUpdate@@UAE_NPBVCoord3D@@@Z",
+      "name_evidence": "X:request (R7X12ArrowStormAfterUnit-0x0044EDA6-SpecialAbilityUpdate)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "retained:O0044E85E",
       "object_evidence": "Z",
       "accepted_names": [
+        "?vslot08@SpecialAbilityUpdate@@UAE_NPBVCoord3D@@@Z",
         "?vslot08@SpecialAbilityUpdate@@UAE_NH@Z"
       ],
       "parent": null,
@@ -1038410,8 +1038441,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?dlink_next_TeamMemberList@Object@@QBEPAV1@XZ",
-      "name_evidence": "N:ledger",
+      "name": "?get@Rva0046F7F8Field@@QBEPAXXZ",
+      "name_evidence": "?:placeholder",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-among-Player|HordeContain",
       "object_id": "O00468CB6",
@@ -1038423,7 +1038454,7 @@
       "parent": null,
       "object": "O00468CB6",
       "accepted_names": [
-        "?dlink_next_TeamMemberList@Object@@QBEPAV1@XZ"
+        "?get@Rva0046F7F8Field@@QBEPAXXZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1053275,7 +1053306,8 @@
         "?loadPostProcess@ObjectRecoveryHelper@@MAEXXZ",
         "?loadPostProcess@ObjectRepulsorHelper@@MAEXXZ",
         "?loadPostProcess@ObjectWeaponStatusHelper@@MAEXXZ",
-        "?loadPostProcess@ClearanceTestingSlowDeathBehavior@@MAEXXZ"
+        "?loadPostProcess@ClearanceTestingSlowDeathBehavior@@MAEXXZ",
+        "?loadPostProcess@ObjectSMCHelper@@MAEXXZ"
       ],
       "parent": "0x00497805",
       "object": "retained:O00483C63",
@@ -1066262,8 +1066294,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?vslot08@ArrowStormUpdate@@UAE_NH@Z",
-      "name_evidence": "N:ledger",
+      "name": "?vslot08@ArrowStormUpdate@@UAE_NPBVCoord3D@@@Z",
+      "name_evidence": "X:request (R7X12ArrowStormAfterUnit-0x004906CD-ArrowStormUpdate)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "O00490628",
@@ -1066275,6 +1066307,7 @@
       "parent": null,
       "object": "O00490628",
       "accepted_names": [
+        "?vslot08@ArrowStormUpdate@@UAE_NPBVCoord3D@@@Z",
         "?vslot08@ArrowStormUpdate@@UAE_NH@Z"
       ],
       "seed_tier": "A",
@@ -1068978,8 +1069011,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?vslot08@WeaponFireSpecialAbilityUpdate@@UAE_NH@Z",
-      "name_evidence": "N:ledger",
+      "name": "?vslot08@WeaponFireSpecialAbilityUpdate@@UAE_NPBVCoord3D@@@Z",
+      "name_evidence": "X:request (R7X12ArrowStormAfterUnit-0x004929D1-WeaponFireSpecialAbilityUpdate)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "O0049256B",
@@ -1068991,6 +1069024,7 @@
       "parent": null,
       "object": "O0049256B",
       "accepted_names": [
+        "?vslot08@WeaponFireSpecialAbilityUpdate@@UAE_NPBVCoord3D@@@Z",
         "?vslot08@WeaponFireSpecialAbilityUpdate@@UAE_NH@Z"
       ],
       "seed_tier": "B",
@@ -1070945,8 +1070979,8 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "??1Rva0058925DModuleData@@UAE@XZ",
-      "name_evidence": "X:map request (r12)",
+      "name": "??1SpecialPowerUpdateModuleData@@UAE@XZ",
+      "name_evidence": "X:request (power-update-data-dtor)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal;N:special-member(may be implicit);O:placed-among-WeaponModeSpecialPowerUpdate;N+O:special member placed in another class's object (implicit/inline)",
       "object_id": "unknown",
@@ -1070958,6 +1070992,7 @@
       "parent": null,
       "object": "unknown",
       "accepted_names": [
+        "??1SpecialPowerUpdateModuleData@@UAE@XZ",
         "??1Rva0058925DModuleData@@UAE@XZ"
       ],
       "seed_tier": "B",
@@ -1074148,7 +1074183,9 @@
         "?loadPostProcess@SlowDeathBehavior@@MAEXXZ",
         "?loadPostProcess@SupplyCenterProductionExitUpdate@@MAEXXZ",
         "?loadPostProcess@ObjectHelper@@MAEXXZ",
-        "?loadPostProcess@HordeTransportContainDamage@@MAEXXZ"
+        "?loadPostProcess@HordeTransportContainDamage@@MAEXXZ",
+        "?loadPostProcess@AssistedTargetingUpdate@@MAEXXZ",
+        "?loadPostProcess@FoundationAIUpdate@@MAEXXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1078859,8 +1078896,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?vslot08@GiveUpgradeUpdate@@UAE_NH@Z",
-      "name_evidence": "N:ledger",
+      "name": "?vslot08@GiveUpgradeUpdate@@UAE_NPBVCoord3D@@@Z",
+      "name_evidence": "X:request (R7X12ArrowStormAfterUnit-0x0049C553-GiveUpgradeUpdate)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "O0049C3F6",
@@ -1078872,6 +1078909,7 @@
       "parent": null,
       "object": "O0049C3F6",
       "accepted_names": [
+        "?vslot08@GiveUpgradeUpdate@@UAE_NPBVCoord3D@@@Z",
         "?vslot08@GiveUpgradeUpdate@@UAE_NH@Z"
       ],
       "seed_tier": "A",
@@ -1096068,13 +1096106,14 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?vslot08@ToggleDeploySpecialAbilityUpdate@@UAE_NH@Z",
-      "name_evidence": "N:ledger",
+      "name": "?vslot08@ToggleDeploySpecialAbilityUpdate@@UAE_NPBVCoord3D@@@Z",
+      "name_evidence": "X:request (R7X12ArrowStormAfterUnit-0x004AE583-ToggleDeploySpecialAbilityUpdate)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "retained:O004AE4DC",
       "object_evidence": "X:closure",
       "accepted_names": [
+        "?vslot08@ToggleDeploySpecialAbilityUpdate@@UAE_NPBVCoord3D@@@Z",
         "?vslot08@ToggleDeploySpecialAbilityUpdate@@UAE_NH@Z"
       ],
       "parent": null,
@@ -1117347,7 +1117386,8 @@
       "object": "O004BDB85",
       "accepted_names": [
         "?rva004BDC41@ActiveBody@@UBEMXZ",
-        "?get@Rva004BDC41FloatChaseField@@QBEMXZ"
+        "?get@Rva004BDC41FloatChaseField@@QBEMXZ",
+        "?getDodgePercent@ActiveBody@@UBEMXZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1117400,7 +1117440,8 @@
       "object": "O004BDB85",
       "accepted_names": [
         "?rva004BDC4F@ActiveBody@@UBEMXZ",
-        "?get@Rva004BDC4FFloatChaseField@@QBEMXZ"
+        "?get@Rva004BDC4FFloatChaseField@@QBEMXZ",
+        "?getGrabDamage@ActiveBody@@UBEMXZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1117914,7 +1117955,8 @@
       "object": "O004BDB85",
       "accepted_names": [
         "?Rva004BE67E@ActiveBody@@UBE?AVAsciiString@@XZ",
-        "?Rva004BE67E@DetachableRiderBody@@UBE?AVAsciiString@@XZ"
+        "?Rva004BE67E@DetachableRiderBody@@UBE?AVAsciiString@@XZ",
+        "?getGrabObjectName@ActiveBody@@UBE?AVAsciiString@@XZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1118399,7 +1118441,8 @@
       "object": "O004BDB85",
       "accepted_names": [
         "?rva004BF8AC@SymbioticStructuresBody@@QAEHXZ",
-        "?rva004BF8AC@Rva004BF8AC@@QAEHXZ"
+        "?rva004BF8AC@Rva004BF8AC@@QAEHXZ",
+        "?rva004BF8AC@ActiveBody@@UAEHXZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1118450,7 +1118493,8 @@
       "object": "O004BDB85",
       "accepted_names": [
         "?rva004BF8BE@ActiveBody@@UAEXE@Z",
-        "?set@Rva004BF8BEByteSlot@@QAEXE@Z"
+        "?set@Rva004BF8BEByteSlot@@QAEXE@Z",
+        "?setFrontCrushed@ActiveBody@@UAEXE@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1118476,7 +1118520,8 @@
       "object": "O004BDB85",
       "accepted_names": [
         "?rva004BF8CB@ActiveBody@@UAEXE@Z",
-        "?set@Rva004BF8CBByteSlot@@QAEXE@Z"
+        "?set@Rva004BF8CBByteSlot@@QAEXE@Z",
+        "?setBackCrushed@ActiveBody@@UAEXE@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1118502,7 +1118547,8 @@
       "object": "O004BDB85",
       "accepted_names": [
         "?rva004BF8D8@ActiveBody@@UBEEXZ",
-        "?get@Rva004BF8D8ByteField@@QBEEXZ"
+        "?get@Rva004BF8D8ByteField@@QBEEXZ",
+        "?isIndestructible@ActiveBody@@UBEEXZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1145084,7 +1145130,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "?setSlotSocket@Transport@@QAEXPAVUDP@@GPBUBfmeNetAddress@@@Z",
-      "name_evidence": "X:m02 request (m02 r6-x12-NATTransport-0x004D51A7 (x12))",
+      "name_evidence": "X:request (r6-NATTransport-0x004D51A7)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "O004D4A59",
@@ -1145110,7 +1145156,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "?setDestAddrToSocket@Transport@@QAEXHPBUBfmeNetAddress@@@Z",
-      "name_evidence": "X:m02 request (m02 r6-x12-NATTransport-0x004D51ED (x12))",
+      "name_evidence": "X:request (r6-NATTransport-0x004D51ED)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "O004D4A59",
@@ -1145160,8 +1145206,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?rva004D53B5@Transport@@QAE_NPAX@Z",
-      "name_evidence": "?:placeholder",
+      "name": "?rva004D53B5@Transport@@QAE_NI@Z",
+      "name_evidence": "?:placeholder (strong same-body typed key)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O004D4A59",
@@ -1145173,6 +1145219,7 @@
       "parent": null,
       "object": "O004D4A59",
       "accepted_names": [
+        "?rva004D53B5@Transport@@QAE_NI@Z",
         "?rva004D53B5@Transport@@QAE_NPAX@Z"
       ],
       "seed_tier": "B",
@@ -1172464,7 +1172511,8 @@
       "object": "O004EA046",
       "accepted_names": [
         "?rva004EC2D4@AIBuilder@@QAEXH@Z",
-        "?rva004EC2D4@Rva002A8AB1Record@@QAEXW4ObjectID@@@Z"
+        "?rva004EC2D4@Rva002A8AB1Record@@QAEXW4ObjectID@@@Z",
+        "?rva004EC2D4@AIBuilder@@QAEXW4ObjectID@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"
@@ -1189991,8 +1190039,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?rva004FDA42@GameSpyStagingRoom@@QAEXXZ",
-      "name_evidence": "S:strong (vtable-slot)",
+      "name": "?rva004FDA42@GameSpyStagingRoom@@UAEXXZ",
+      "name_evidence": "X:request (R6GameSpyStaging-0x004FDA42)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O004FDA17",
@@ -1190004,6 +1190052,7 @@
       "parent": null,
       "object": "O004FDA17",
       "accepted_names": [
+        "?rva004FDA42@GameSpyStagingRoom@@UAEXXZ",
         "?rva004FDA42@GameSpyStagingRoom@@QAEXXZ",
         "?rva004FDA42@Rva004FDA42Owner@@QAEXXZ"
       ],
@@ -1217344,7 +1217393,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "?OpenScreen@AptScoreScreen@@SA_NHPAUAptScoreObjectives@@@Z",
-      "name_evidence": "X:m02 request (m02 r6-x12-ScoreScreen-0x0051E262 (x12))",
+      "name_evidence": "X:request (r6-ScoreScreen-0x0051E262)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "O0051BF2D",
@@ -1313370,7 +1313419,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "?GetStartPositionInfoForSlot@AptMapPreview@@QAEPBUPlayerPosition@@H@Z",
-      "name_evidence": "X:m02 request (m02 r6-x12-AptMapPreview-0x0057C71F (x12))",
+      "name_evidence": "X:request (r6-AptMapPreview-0x0057C71F)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "O0057C549",
@@ -1313396,7 +1313445,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "?setMode@AptMapPreview@@QAEXH@Z",
-      "name_evidence": "X:m02 request (m02 r6-x12-AptMapPreview-0x0057C7BA (x12))",
+      "name_evidence": "X:request (r6-AptMapPreview-0x0057C7BA)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O0057C549",
@@ -1323014,7 +1323063,8 @@
       "parent": null,
       "object": "G00588BF3",
       "accepted_names": [
-        "?rva00588E20@Rva0047A040Base9E0@@QAEXPAVObject@@@Z"
+        "?rva00588E20@Rva0047A040Base9E0@@QAEXPAVObject@@@Z",
+        "?restoreFormerOccupant@ExitState@HordeGarrisonContain@@QAEXPAVObject@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:mm1-gap-unit",
@@ -1323261,8 +1323311,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?buildFieldParse@Rva005890EDBase@@SAXAAVMultiIniFieldParse@@@Z",
-      "name_evidence": "?:placeholder",
+      "name": "?buildFieldParse@SpecialPowerUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z",
+      "name_evidence": "X:request (power-update-data-fields)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O005890A0",
@@ -1323274,6 +1323324,7 @@
       "parent": null,
       "object": "O005890A0",
       "accepted_names": [
+        "?buildFieldParse@SpecialPowerUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z",
         "?buildFieldParse@Rva005890EDBase@@SAXAAVMultiIniFieldParse@@@Z"
       ],
       "seed_tier": "B",
@@ -1323496,8 +1323547,8 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "??0Rva0058925DModuleData@@QAE@XZ",
-      "name_evidence": "X:map request (r12)",
+      "name": "??0SpecialPowerUpdateModuleData@@QAE@XZ",
+      "name_evidence": "X:request (power-update-data-ctor)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal;N:special-member(may be implicit);O:placed-among-HordeMeleeAmoeba|WeaponModeSpecialPowerUpdateBase;N+O:special member placed in another class's object (implicit/inline)",
       "object_id": "unknown",
@@ -1323509,6 +1323560,7 @@
       "parent": null,
       "object": "unknown",
       "accepted_names": [
+        "??0SpecialPowerUpdateModuleData@@QAE@XZ",
         "??0Rva0058925DModuleData@@QAE@XZ"
       ],
       "seed_tier": "B",
@@ -1323680,8 +1323732,8 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "??_GRva0058925DModuleData@@UAEPAXI@Z",
-      "name_evidence": "X:map request (r12)",
+      "name": "??_GSpecialPowerUpdateModuleData@@UAEPAXI@Z",
+      "name_evidence": "X:request (power-update-data-deleting-dtor)",
       "confidence": "high",
       "evidence": "X:scalar-deleting-dtor shape",
       "object_id": "unknown",
@@ -1323693,6 +1323745,7 @@
       "parent": null,
       "object": "unknown",
       "accepted_names": [
+        "??_GSpecialPowerUpdateModuleData@@UAEPAXI@Z",
         "??_GRva0058925DModuleData@@UAEPAXI@Z"
       ],
       "seed_tier": "B",
@@ -1342961,7 +1343014,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "?SetUDPSocketForSlot@NAT@@QAE_NGGPBUBfmeNetAddress@@@Z",
-      "name_evidence": "X:m02 request (m02 r6-x12-NATTransport-0x005A6DAC (x12))",
+      "name_evidence": "X:request (r6-NATTransport-0x005A6DAC)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "O005A6732",
@@ -1372306,7 +1372359,9 @@
       "object": "O005CB9D1",
       "accepted_names": [
         "?_bfme_ro_v50@RenderObjClass@@UAE_NH@Z",
-        "?open@StreamingArchiveFile@@UAE_NPAVFile@@@Z"
+        "?open@StreamingArchiveFile@@UAE_NPAVFile@@@Z",
+        "?vslot08@BattlePlanUpdate@@UAE_NPBVCoord3D@@@Z",
+        "?vslot08@SpecialPowerUpdateModule@@UAE_NPBVCoord3D@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"
@@ -2177137,13 +2177192,14 @@
       "role": "ehhandler",
       "parent_rva": "0x00397BD9",
       "fold_group": "",
-      "name": "__ehhandler$?onStateChanged@CastleMemberBehavior@@UAEXHHH@Z",
-      "name_evidence": "S:token",
+      "name": "__ehhandler$?onBodyDamageStateChange@CastleMemberBehavior@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z",
+      "name_evidence": "X:request (R6X12CastleDamageHeaderLive-0x00780ED2)",
       "confidence": "high",
       "evidence": "X:eh-stub FuncInfo=0x0092BC18;X:parent-by-prologue",
       "object_id": "retained:O003956E8",
       "object_evidence": "X:closure",
       "accepted_names": [
+        "__ehhandler$?onBodyDamageStateChange@CastleMemberBehavior@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z",
         "__ehhandler$?onStateChanged@CastleMemberBehavior@@UAEXHHH@Z",
         "__ehhandler$?onStateChanged@Rva00397BD9@@UAEXHHH@Z"
       ],
@@ -2474751,7 +2474807,7 @@
       "parent_rva": "0x005A6DAC",
       "fold_group": "",
       "name": "__ehhandler$?SetUDPSocketForSlot@NAT@@QAE_NGGPBUBfmeNetAddress@@@Z",
-      "name_evidence": "X:m02 request (m02 r6-x12-NATTransport-0x0079E4A7 (x12))",
+      "name_evidence": "X:request (r6-NATTransport-0x0079E4A7)",
       "confidence": "high",
       "evidence": "X:eh-stub FuncInfo=0x0095482C;X:parent-by-prologue",
       "object_id": "O005A6732",

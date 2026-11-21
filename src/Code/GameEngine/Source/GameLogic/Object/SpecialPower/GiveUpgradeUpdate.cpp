@@ -51,9 +51,9 @@ void GiveUpgradeUpdate::initiateIntentToDoSpecialPower(const SpecialPowerTemplat
 }
 
 // FUNCTION: BFME2 0x0049C553 size=63 name=?vslot08@GiveUpgradeUpdate@@UAE_NH@Z evidence=N:ledger
-bool GiveUpgradeUpdate::vslot08(int power)
+bool GiveUpgradeUpdate::vslot08(const Coord3D *location)
 {
-	if (!SpecialAbilityUpdate::vslot08(power))
+	if (!SpecialAbilityUpdate::vslot08(location))
 		return false;
 	ObjectID id = m_targetID;
 	if (id == 0)

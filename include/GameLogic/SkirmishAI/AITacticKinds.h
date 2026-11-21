@@ -12,6 +12,8 @@ public:
 
     virtual AITactic *create() = 0;             // slot 9
     virtual Bool vslot10() const { return false; } // native 0x0047A699
+	// The target is the chooser's AITarget; the ledger spells the parameter void * and the result as a byte.
+	unsigned char checkTarget(void *target);
 };
 
 class Rva005DCC24 : public AITactic
@@ -41,6 +43,8 @@ public:
 
     virtual void xfer(Xfer *xfer);
     virtual Bool vslot10() const { return true; } // native 0x0050B5C6
+	// Whether the owning side has siege weapons that are not busy.
+    Bool sideHasIdleSiegeWeapons();
 
 protected:
     ObjectID m_unk0x58; // 0x005DC903 transfers this through XferObjectID

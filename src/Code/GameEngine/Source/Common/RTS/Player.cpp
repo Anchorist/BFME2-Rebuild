@@ -519,6 +519,11 @@ Bool UpgradeMaskType::hasAllBitsOf(const UpgradeMaskType *other) const
 // FUNCTION: BFME2 0x002AA2BB size=14 name=?rva002AA2BB@Rva002AA2BB@@QBEHXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002AA2C9 size=6 name=?Rva002AA2C9Get@@YAHXZ evidence=?:placeholder tier=A
+// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+int Rva002AA2C9Get()
+{
+	return 218;
+}
 
 // FUNCTION: BFME2 0x002AA2CF size=42 name=?rva002AA2CF@Rva002AA2CF@@QAEPAXI@Z evidence=?:placeholder tier=A
 template const char *BitFlags<218>::getBitNameIfSet(UnsignedInt bit) const;

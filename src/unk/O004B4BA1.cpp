@@ -7,6 +7,10 @@
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:name:invented
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/DoCommandUpgrade.h"
+#include <stddef.h>
+#include "Common/INI.h"
+#include "GameLogic/Module/DoCommandUpgradeModuleData.h"
+#include "GameLogic/Module/UpgradeMuxData.h"
 // FUNCTION: BFME2 0x004B4BA1 size=32 name=??1DoCommandUpgrade@@MAE@XZ evidence=N:ledger tier=B hypothesis:K
 DoCommandUpgrade::~DoCommandUpgrade()
 {
@@ -26,6 +30,19 @@ NameKeyType DoCommandUpgrade::getModuleNameKey() const
 }
 
 // FUNCTION: BFME2 0x004B4C0C size=34 name=?buildFieldParse@DoCommandUpgradeModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:K
+static const FieldParse s_doCommandUpgradeModuleDataFieldParse[] =
+{
+	{ "GetUpgradeCommandButtonName", INI::parseAsciiString, 0, offsetof(DoCommandUpgradeModuleData, m_getUpgradeCommandButtonName) },
+	{ "RemoveUpgradeCommandButtonName", INI::parseAsciiString, 0, offsetof(DoCommandUpgradeModuleData, m_removeUpgradeCommandButtonName) },
+	{ 0, 0, 0, 0 }
+};
+
+void DoCommandUpgradeModuleData::buildFieldParse(MultiIniFieldParse &p)
+{
+	p.add(UpgradeMuxData::getFieldParse(), 0x8);
+	p.add(s_doCommandUpgradeModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x004B4C2E size=49 name=??0DoCommandUpgrade@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:K
 DoCommandUpgrade::DoCommandUpgrade(Thing *thing, const ModuleData *moduleData) :

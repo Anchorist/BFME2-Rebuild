@@ -16,20 +16,43 @@
 // FUNCTION: BFME2 0x005CA58E size=384 name=?rva005CA58E@GameSpyLoginPreferences@@QAE?AVAsciiString@@V2@AAV2@11@Z evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x005CA70E size=114 name=?getPasswordForEmail@GameSpyLoginPreferences@@QAE?AVAsciiString@@V2@@Z evidence=N:ledger tier=B hypothesis:cohesion
+AsciiString GameSpyLoginPreferences::getPasswordForEmail(AsciiString email)
+{
+	if (m_passwordsByEmail.find(email) == m_passwordsByEmail.end())
+		return AsciiString::TheEmptyString;
+	return m_passwordsByEmail[email];
+}
 
 // FUNCTION: BFME2 0x005CAB59 size=98 name=??1GameSpyLoginPreferences@@UAE@XZ evidence=N:ledger tier=B hypothesis:cohesion
+GameSpyLoginPreferences::~GameSpyLoginPreferences()
+{
+}
 
 // FUNCTION: BFME2 0x005CABF9 size=80 name=?rva005CABF9@GameSpyLoginPreferences@@QAEXVAsciiString@@@Z evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x005CACDE size=245 name=?rva005CACDE@GameSpyLoginPreferences@@QAEXVAsciiString@@000@Z evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x005CADD3 size=49 name=?deleteNick@GameSpyLoginPreferences@@QAEXABVAsciiString@@0@Z evidence=N:ledger tier=B hypothesis:cohesion
+void GameSpyLoginPreferences::deleteNick(const AsciiString &email, const AsciiString &nickname)
+{
+	if (m_nicknamesByEmail.find(email) != m_nicknamesByEmail.end())
+		m_nicknamesByEmail[email].remove(nickname);
+}
 
 // FUNCTION: BFME2 0x005CAE04 size=110 name=?rva005CAE04@GameSpyLoginPreferences@@QAE_NABVAsciiString@@0@Z evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x005CAE72 size=49 name=?deleteClan@GameSpyLoginPreferences@@QAEXABVAsciiString@@0@Z evidence=N:ledger tier=B hypothesis:cohesion
+void GameSpyLoginPreferences::deleteClan(const AsciiString &email, const AsciiString &clan)
+{
+	if (m_clansByEmail.find(email) != m_clansByEmail.end())
+		m_clansByEmail[email].remove(clan);
+}
 
 // FUNCTION: BFME2 0x005CAF5F size=596 name=?load@GameSpyLoginPreferences@@UAE_NVAsciiString@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x005CB1B3 size=119 name=??0GameSpyLoginPreferences@@QAE@XZ evidence=N:ledger tier=B hypothesis:Z
+GameSpyLoginPreferences::GameSpyLoginPreferences()
+{
+	load(AsciiString("GameSpyLogin.ini"));
+}
 

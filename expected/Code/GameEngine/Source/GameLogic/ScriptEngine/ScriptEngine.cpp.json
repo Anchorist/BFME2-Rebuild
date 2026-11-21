@@ -2162,7 +2162,8 @@
       "parent": null,
       "object": "O002034C4",
       "accepted_names": [
-        "??M@YA_NABU?$pair@VAsciiString@@V1@@_STL@@0@Z"
+        "??M@YA_NABU?$pair@VAsciiString@@V1@@_STL@@0@Z",
+        "??$?MVAsciiString@@V0@@_STL@@YA_NABU?$pair@VAsciiString@@V1@@0@0@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null

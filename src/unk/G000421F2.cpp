@@ -1,4 +1,5 @@
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
+#include "GameLogic/GameLogic.h"
 // object=G000421F2 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x000421F2 size=4 name=?get@Rva000421F2ByteField@@QBEEXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
@@ -7,6 +8,10 @@
 // FUNCTION: BFME2 0x00042212 size=7 name=?dec@GameLogic@@QAEXXZ evidence=S:strong (position+fit) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00042219 size=28 name=?rva0042219@GameLogic@@QAE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00042235 size=23 name=?isInMultiplayerGame@GameLogic@@QAE_NXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Bool GameLogic::isInMultiplayerGame()
+{
+	return m_gameMode == 1 || m_gameMode == 5;
+}
 // FUNCTION: BFME2 0x0004224C size=22 name=??0FPModeScope@@QAE@XZ evidence=X:map request (link (from standalone link 0cf3e833)) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00042279 size=7 name=?get@Rva00042279DwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00042280 size=7 name=?get@Rva00042280LeaGetter@@QBEPAXXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

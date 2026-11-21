@@ -47,6 +47,7 @@ class InvisibilityUpdate : public UpdateModule
 {
 public:
 	InvisibilityUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004A3A20)
 	void rva004A39D0(Bool on);	// (map: placeholder; ToggleHiddenSpecialAbilityUpdate::turnOn 0x004AE394 passes true, turnOff 0x004AE2D0 false)

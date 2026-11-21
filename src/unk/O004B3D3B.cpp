@@ -7,6 +7,10 @@
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:name:invented
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/LevelUpUpgrade.h"
+#include <stddef.h>
+#include "Common/INI.h"
+#include "GameLogic/Module/LevelUpUpgradeModuleData.h"
+#include "GameLogic/Module/UpgradeMuxData.h"
 // FUNCTION: BFME2 0x004B3D3B size=32 name=??1LevelUpUpgrade@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
 LevelUpUpgrade::~LevelUpUpgrade()
 {
@@ -26,6 +30,19 @@ NameKeyType LevelUpUpgrade::getModuleNameKey() const
 }
 
 // FUNCTION: BFME2 0x004B3DA6 size=34 name=?buildFieldParse@LevelUpUpgradeModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:K
+static const FieldParse s_levelUpUpgradeModuleDataFieldParse[] =
+{
+	{ "LevelsToGain", INI::parseInt, 0, offsetof(LevelUpUpgradeModuleData, m_levelsToGain) },
+	{ "LevelCap", INI::parseInt, 0, offsetof(LevelUpUpgradeModuleData, m_levelCap) },
+	{ 0, 0, 0, 0 }
+};
+
+void LevelUpUpgradeModuleData::buildFieldParse(MultiIniFieldParse &p)
+{
+	p.add(UpgradeMuxData::getFieldParse(), 0x8);
+	p.add(s_levelUpUpgradeModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x004B3DC8 size=49 name=??0LevelUpUpgrade@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:K
 LevelUpUpgrade::LevelUpUpgrade(Thing *thing, const ModuleData *moduleData) :
