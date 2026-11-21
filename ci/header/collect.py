@@ -122,6 +122,7 @@ def read_h2(record):
     try:
         return header_h2_action.read_published({key: record[key] for key in ("number", "base", "head", "tree")})
     except Exception as exc:   # the reader refuses by exception; every refusal holds
+        print(f"H2 evidence read refused: {type(exc).__name__}: {exc}", file=sys.stderr)
         return {"error": f"no published declaration evidence for this commit ({type(exc).__name__})"}
 
 
@@ -141,6 +142,7 @@ def read_h5(record):
     try:
         return h5_reader.read_published({key: record[key] for key in ("number", "base", "head", "tree")})
     except Exception as exc:   # the reader refuses by exception; every refusal holds
+        print(f"H5 evidence read refused: {type(exc).__name__}: {exc}", file=sys.stderr)
         return {"error": f"no published layout evidence for this commit ({type(exc).__name__})"}
 
 

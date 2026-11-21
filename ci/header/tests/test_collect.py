@@ -1,4 +1,5 @@
 """Offline tests for ci/header/collect.py: what is written, and when nothing is."""
+import io
 import json
 import os
 from pathlib import Path
@@ -179,13 +180,15 @@ class DeclarationEvidence(unittest.TestCase):
                 "        raise ValueError('moved')\n"
                 "    return {'status': 'pass', 'findings': [], 'layout_only': []}\n")
             sys.modules.pop("header_h2_action", None)
-            with unittest.mock.patch.object(collect, "H2_READER", reader):
+            with (unittest.mock.patch.object(collect, "H2_READER", reader),
+                  unittest.mock.patch("sys.stderr", new_callable=io.StringIO) as log):
                 held = collect.read_h2(record())
                 passed = collect.read_h2(dict(record(), number=14))
             module = sys.modules.pop("header_h2_action")
             sys.path.remove(tmp)
         self.assertEqual(held, {"error": "no published declaration evidence for this commit (ValueError)"})
         self.assertEqual(passed["status"], "pass")
+        self.assertIn("H2 evidence read refused: ValueError: moved", log.getvalue())
         self.assertEqual(module.seen[0], {key: record()[key] for key in ("number", "base", "head", "tree")})
 
 
@@ -387,6 +390,15 @@ class HeaderPaths(unittest.TestCase):
             git_dir = Path(tmp, ".git")
             self.assertEqual(collect.header_paths(git_dir, base, tree), ["include/a.h", "include/new\nline.h"])
             self.assertEqual(collect.header_paths(git_dir, base, base), [])
+
+
+class Workflow(unittest.TestCase):
+    def test_the_publish_step_reads_evidence_with_the_job_token(self):
+        # The repository holds no Actions secret; a secrets.* read token arrives empty and every read refuses.
+        workflow = (Path(__file__).resolve().parents[3] / ".github/workflows/header-rules.yml").read_text()
+        self.assertIn("BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'", workflow)
+        self.assertNotIn("secrets.", workflow)
+        self.assertIn("actions: read", workflow.split("    steps:")[-2])
 
 
 if __name__ == "__main__":

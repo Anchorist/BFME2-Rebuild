@@ -99,6 +99,8 @@ jobs:
         shell: bash
         env:
           BFME_HEADER_TOKEN: '${{ github.token }}'
-          # Read-only token for the compiler check's published H2 evidence; used by ci/managed-check only.
-          BFME_RECOVERY_READ_TOKEN: '${{ secrets.BFME_RECOVERY_READ_TOKEN }}'
+          # The job's own token reads the compiler check's published H2 and H5 evidence (this job has actions: read,
+          # the same token already writes the status). No repository secret supplies it: an empty value made every
+          # read refuse.
+          BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
         run: python3 -I -B ci/header/collect.py publish "$RUNNER_TEMP/header-preview.json"
