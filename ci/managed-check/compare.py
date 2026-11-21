@@ -282,6 +282,16 @@ def main(admission, out):
                     stream.write("inline_matrix_sha=" + matrix_sha + "\n")
             except Exception:
                 print("Inline virtual advisory evidence is unavailable for this run.", file=sys.stderr)
+        if h5_root := os.environ.get("BFME_H5_EXPORT"):
+            # Header layout evidence (H5), behind the header switch. A failure here never changes the comparison.
+            try:
+                sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "header-witness"))
+                from h5_bridge import from_compare
+                if from_compare(plan, native, old, new, work, git, tip, roots, h5_root):
+                    with Path(os.environ["GITHUB_OUTPUT"]).open("a") as stream:
+                        stream.write("h5=yes\n")
+            except Exception:
+                print("Header layout evidence is unavailable for this run.", file=sys.stderr)
     out.mkdir(mode=0o700)
     write(out / "verdict.json", {key: plan[key] for key in ("version", "repo", "number", "base", "head", "tree")}
           | {"plan": plan_hash, "report": report, "counts": counts, "functions": functions})

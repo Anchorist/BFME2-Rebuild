@@ -267,6 +267,7 @@ jobs:
           set -Eeuo pipefail
           trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          (cd ci/header-witness && sha256sum -c --quiet bundle.sha256)
           (
             cd ci/managed-nt2
             sha256sum -c --quiet bundle.sha256
@@ -279,20 +280,39 @@ jobs:
       - name: Compile admitted source and compare exact pairs
         id: compile
         shell: bash
+        env:
+          # Header layout evidence runs under the same switch as the header declaration probe.
+          H5_ON: >-
+            ${{ vars.BFME_PR_COMPACT == 'yes' && (vars.BFME_AUTO_HEADERS == 'yes' ||
+                (github.event_name == 'pull_request_target' && github.actor_id == '1760627' &&
+                 github.event.action == 'labeled' && github.event.label.name == 'boat-ok')) }}
         run: |
           set -Eeuo pipefail
           trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
           test -z "${BFME_READ_TOKEN:-}${BFME_STATUS_TOKEN:-}${GITHUB_TOKEN:-}"
+          h5_export=""
+          if [ "$H5_ON" = true ]; then
+            h5_export="$RUNNER_TEMP/bfme-h5"
+          fi
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
-            BFME_INLINE_EXPORT="$RUNNER_TEMP/bfme-inline-narrow" \
+            BFME_INLINE_EXPORT="$RUNNER_TEMP/bfme-inline-narrow" BFME_H5_EXPORT="$h5_export" \
             python3 -B ci/managed-check/compare.py "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-verdict"
       - name: Save capped structured verdict
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: bfme-verdict-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-verdict/verdict.json'
+          if-no-files-found: error
+          retention-days: 1
+      - name: Save the bounded header layout receipt
+        if: steps.compile.outputs.h5 == 'yes'
+        continue-on-error: true
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-header-h5-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-h5/header-h5.json'
           if-no-files-found: error
           retention-days: 1
 
