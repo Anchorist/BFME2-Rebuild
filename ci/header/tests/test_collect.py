@@ -11,6 +11,9 @@ import unittest.mock
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import collect  # noqa: E402
 
+INSTALLED_READER = collect.H2_READER
+collect.H2_READER = Path("/nonexistent/ci/managed-check/header_h2_action.py")   # tests choose the reader themselves
+
 FIXTURE = json.loads((Path(__file__).parent / "fixtures/preview-13-15.json").read_text())
 BASE = FIXTURE["base"]
 PR13 = next(item for item in FIXTURE["results"] if item["pr"] == 13)
@@ -123,18 +126,80 @@ class Publish(unittest.TestCase):
             self.assertEqual(api.writes, [], change)
 
 
+def h2(status, *findings):
+    return {"status": status, "findings": list(findings), "layout_only": []}
+
+
+class DeclarationEvidence(unittest.TestCase):
+    """H2 comes only from the compiler check's verified receipt; anything else holds."""
+
+    def decide(self, receipt):
+        api = FakeApi()
+        with unittest.mock.patch.object(collect, "read_h2", return_value=receipt):
+            publish(record(checks=False), api)
+        return api.writes[0][2]["state"], api.writes[0][2]["description"]
+
+    def test_reader_not_on_main_is_not_built(self):
+        self.assertEqual(self.decide(None)[1], f"Held: rule not built: H2, H3, H4, H5, H6, H7, H8 (main {BASE[:12]})")
+
+    def test_a_refused_declaration_fails_h2(self):
+        state, text = self.decide(h2("refuse", {"status": "refuse", "declaration": "Foo::bar",
+                                                "reason": "compiles to a different name", "header": "include/f.h"}))
+        self.assertEqual(state, "failure")
+        self.assertTrue(text.startswith("H2: Foo::bar: compiles to a different name."), text)
+
+    def test_a_ledger_request_holds_and_never_fails(self):
+        state, text = self.decide(h2("held", {"status": "pass", "declaration": "A::a"},
+                                     {"status": "ledger_request", "declaration": "B::b", "reason": "placeholder"}))
+        self.assertEqual((state, text), ("pending", f"Held: ledger request B::b (main {BASE[:12]})"))
+
+    def test_missing_or_moved_evidence_holds_h2_and_passes_nothing(self):
+        for receipt in ({"error": "no published declaration evidence for this commit (ValueError)"},
+                        h2("held", {"status": "held", "reason": "probe budget"}), h2("weird"), {}):
+            api = FakeApi()
+            rows = collect.components_for(record(), None, receipt)
+            self.assertEqual(rows["H2"]["state"], "held", receipt)
+            self.assertNotIn("H9", rows)
+
+    def test_a_passing_receipt_passes_h2_only(self):
+        rows = collect.components_for(record(), None, h2("pass", {"status": "pass", "declaration": "A::a"}))
+        self.assertEqual(rows["H2"]["state"], "pass")
+        self.assertEqual(rows["H5"]["state"], "missing")
+
+    def test_the_reader_is_called_with_the_exact_binding_and_any_refusal_holds(self):
+        self.assertIsNone(collect.read_h2(record()))
+        with tempfile.TemporaryDirectory() as tmp:
+            reader = Path(tmp, "header_h2_action.py")
+            reader.write_text(
+                "seen = []\n"
+                "def read_published(binding):\n"
+                "    seen.append(binding)\n"
+                "    if binding['number'] == 13:\n"
+                "        raise ValueError('moved')\n"
+                "    return {'status': 'pass', 'findings': [], 'layout_only': []}\n")
+            sys.modules.pop("header_h2_action", None)
+            with unittest.mock.patch.object(collect, "H2_READER", reader):
+                held = collect.read_h2(record())
+                passed = collect.read_h2(dict(record(), number=14))
+            module = sys.modules.pop("header_h2_action")
+            sys.path.remove(tmp)
+        self.assertEqual(held, {"error": "no published declaration evidence for this commit (ValueError)"})
+        self.assertEqual(passed["status"], "pass")
+        self.assertEqual(module.seen[0], {key: record()[key] for key in ("number", "base", "head", "tree")})
+
+
 class LateMove(unittest.TestCase):
     """A move of main or the head while the rules are read (after the first check) writes nothing."""
 
     def run_with_move(self, move):
         api = FakeApi()
-        real = collect.latest_bot_status
+        real = collect.read_h2
 
         def moving(*args, **kwargs):
             move(api)
             return real(*args, **kwargs)
 
-        with unittest.mock.patch.object(collect, "latest_bot_status", side_effect=moving):
+        with unittest.mock.patch.object(collect, "read_h2", side_effect=moving):
             lines = publish(record(), api)
         return api, lines
 

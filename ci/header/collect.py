@@ -105,7 +105,27 @@ def preview(number, head, base, out):
     print(f"Header preview of #{number}: {len(paths)} header file(s) changed.")
 
 
-def components_for(record, boat):
+H2_READER = HERE.parents[1] / "ci" / "managed-check" / "header_h2_action.py"
+
+
+def read_h2(record):
+    """The compiler check's published H2 receipt for exactly this pull request, head, main and merge tree. Run only in
+    the publish step (the reader needs its own read token, BFME_RECOVERY_READ_TOKEN). None: the reader is not on
+    main yet. Any refusal (missing, moved, superseded) is returned as {"error": ...} and holds H2."""
+    if not H2_READER.exists():
+        return None
+    sys.path.insert(0, str(H2_READER.parent))
+    try:
+        import header_h2_action
+    except ImportError as exc:
+        return {"error": f"the declaration reader did not load ({type(exc).__name__})"}
+    try:
+        return header_h2_action.read_published({key: record[key] for key in ("number", "base", "head", "tree")})
+    except Exception as exc:   # the reader refuses by exception; every refusal holds
+        return {"error": f"no published declaration evidence for this commit ({type(exc).__name__})"}
+
+
+def components_for(record, boat, h2=None):
     base = record["base"]
     if record.get("checks") is None:
         rows = {rule: {"state": "missing"} for rule in SOURCE_RULES}
@@ -114,7 +134,14 @@ def components_for(record, boat):
         for rule in SOURCE_RULES:
             rows.setdefault(rule, {"state": "missing"})
     rows["H1"] = compose.from_wide_status(boat, base)
-    rows.setdefault("H2", {"state": "missing"})     # declaration producer: not on main yet
+    if h2 is None:
+        rows.setdefault("H2", {"state": "missing"})  # declaration reader: not on main yet
+    elif "error" in h2:
+        rows["H2"] = {"state": "held", "message": h2["error"]}
+    else:
+        rows["H2"], request = compose.from_h2(h2)
+        if request:
+            rows["H9"] = request
     rows.setdefault("H5", {"state": "missing"})     # layout producer: not on main yet
     return rows
 
@@ -181,8 +208,9 @@ def publish(path, api=None, out=print):
     code, statuses = api.send("GET", f"commits/{record['head']}/statuses?per_page=100")
     if code != 200:
         raise Stop(f"Expected the status list. Found HTTP {code}.")
-    rows = components_for(record, latest_bot_status(statuses, "BFME II / Boat"))
-    state, text, report = compose.compose(record["base"], rows)
+    rows = components_for(record, latest_bot_status(statuses, "BFME II / Boat"), read_h2(record))
+    request = rows.pop("H9", None)
+    state, text, report = compose.compose(record["base"], rows, ledger_request=request)
     prior = latest_bot_status(statuses, compose.CONTEXT) or {}
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:

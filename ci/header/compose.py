@@ -94,6 +94,31 @@ def from_preview(result):
     return components
 
 
+def from_h2(result):
+    """H2 from the compiler check's verified declaration receipt (status pass | held | refuse, findings).
+    Returns (H2 component, ledger request or None). A ledger request holds; it never fails."""
+    findings = [item for item in result.get("findings") or [] if isinstance(item, dict)]
+
+    def first(status):
+        return next((item for item in findings if item.get("status") == status), None)
+
+    refused = first("refuse")
+    if result.get("status") == "refuse" or refused:
+        item = refused or {}
+        return {"state": "fail", "message": f"{item.get('declaration', 'a declaration')}: "
+                f"{item.get('reason', 'does not compile to the name the ledger holds')}.",
+                "path": item.get("header", ""), "line": item.get("line") or 0}, None
+    request = first("ledger_request")
+    if request:
+        return {"state": "held", "message": request.get("reason", "")}, request.get("declaration") or "for a declaration"
+    held = first("held")
+    if result.get("status") == "held" or held:
+        return {"state": "held", "message": (held or {}).get("reason", "the declaration check is still collecting proof")}, None
+    if result.get("status") == "pass":
+        return {"state": "pass", "message": "every changed declaration compiles to its ledger name"}, None
+    return {"state": "held", "message": "the declaration check gave no verdict"}, None
+
+
 def from_wide_status(status, base):
     """H1 from the BFME II / Boat status on the exact head: the wide check's verdict for this main."""
     if not status:

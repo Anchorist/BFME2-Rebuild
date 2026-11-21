@@ -60,26 +60,32 @@ jobs:
       group: bfme-header-rules-${{ matrix.pull.number }}
       cancel-in-progress: true
     permissions:
+      actions: read
       contents: read
       pull-requests: read
       statuses: write
     steps:
-      - name: Read the header rules and source checks from main
+      - name: Read the header rules, the declaration reader and the source checks from main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: '${{ github.sha }}'
           persist-credentials: false
           sparse-checkout: |
-            ci/header
+            ci
             tools/gates
       - name: Verify the header rules tools
         shell: bash
         run: |
           set -euo pipefail
-          if ! (cd ci/header && sha256sum -c --quiet bundle.sha256); then
-            echo "Expected every file listed in ci/header/bundle.sha256 to match. Found a difference." >&2
-            exit 1
-          fi
+          for dir in ci/header ci/managed-check ci/managed-nt2; do
+            if [ "$dir" != ci/header ] && [ ! -f "$dir/bundle.sha256" ]; then
+              continue   # the declaration reader is not on this main yet: H2 shows as not built
+            fi
+            if ! (cd "$dir" && sha256sum -c --quiet bundle.sha256); then
+              echo "Expected every file listed in $dir/bundle.sha256 to match. Found a difference." >&2
+              exit 1
+            fi
+          done
       - name: Check the header source rules on the pull request's Git objects (no token in this step)
         shell: bash
         env:
@@ -93,4 +99,6 @@ jobs:
         shell: bash
         env:
           BFME_HEADER_TOKEN: '${{ github.token }}'
+          # Read-only token for the compiler check's published H2 evidence; used by ci/managed-check only.
+          BFME_RECOVERY_READ_TOKEN: '${{ secrets.BFME_RECOVERY_READ_TOKEN }}'
         run: python3 -I -B ci/header/collect.py publish "$RUNNER_TEMP/header-preview.json"
