@@ -1,0 +1,13 @@
+#!/bin/bash
+set -euo pipefail
+[[ $(id -u) == 0 && $# == 1 ]]
+sealed=/opt/boat-compiler
+cd "$sealed"
+case "$1" in
+    probe) args=(/usr/local/libexec/bfme2-compiler/managed_probe.py) ;;
+    compile) args=(guard/pool_worker.py worker.json) ;;
+    *) exit 2 ;;
+esac
+exec /usr/bin/env -i PATH=/usr/sbin:/usr/bin:/bin LANG=C PYTHONDONTWRITEBYTECODE=1 \
+    /usr/bin/setpriv --reuid=ci-compile --regid=ci-compile --clear-groups -- \
+    /usr/bin/python3 -E -s -B "${args[@]}"

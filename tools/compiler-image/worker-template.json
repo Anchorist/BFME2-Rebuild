@@ -1,0 +1,27 @@
+{
+  "launcher": "/opt/boat-compiler/guard/pool_launcher.py",
+  "wine": "/usr/bin/wine",
+  "compiler": "/opt/boat-compiler/tools/vc/Vc7/bin/cl.exe",
+  "compiler_sha256": "APPROVED_COMPILER_SHA256",
+  "scratch": "/var/lib/boat-compiler/jobs",
+  "timeout_s": 420,
+  "roots": {
+    "vc": "/opt/boat-compiler/tools/vc",
+    "vcruntime": "/opt/boat-compiler/tools/vcruntime",
+    "overlay": "/opt/boat-compiler/tools/overlay",
+    "stlport46": "/opt/boat-compiler/tools/stlport-4.6",
+    "stlport45": "/opt/boat-compiler/tools/stlport",
+    "allocator": "/opt/boat-compiler/tools/allocator",
+    "dx": "/opt/boat-compiler/tools/dx/Include"
+  },
+  "inventory_receipt": "/opt/boat-compiler/image-inventory.json",
+  "inventory_sha256": "OPERATOR_INVENTORY_SHA256",
+  "probe_mounts": [],
+  "read_only_mounts": [
+    "/",
+    "/ci/guard",
+    "/ci/job/src",
+    "/ci/job/include",
+    "/opt/boat-compiler/tools"
+  ]
+}
