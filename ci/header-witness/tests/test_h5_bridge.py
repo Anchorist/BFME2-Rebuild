@@ -24,9 +24,14 @@ def recorded(header, source):
     return bytes.fromhex(FIXTURE["objects"][hashlib.sha256(header + b"|" + source).hexdigest()])
 
 
+OTHER = "src/other.cpp"
+OTHER_SOURCE = b"int other;\n"
+
+
 class FakeGit:
     def __init__(self, head):
-        self.files = {"base": {H: BASE, TU: SOURCE}, "tip": {H: head, TU: SOURCE}}
+        self.files = {"base": {H: BASE, TU: SOURCE, OTHER: OTHER_SOURCE},
+                      "tip": {H: head, TU: SOURCE, OTHER: OTHER_SOURCE}}
 
     def run(self, *args, check=True):
         if args[0] == "show":
@@ -56,9 +61,20 @@ def worker(git, calls):
                 raise AssertionError("the compile row does not name the TU bytes sent")
         kind = "probe" if decode(sources[TU], 0) != SOURCE else "tu"
         calls.append((kind, tuple(row["tu"] for row in doc["plan"])))
-        return {"results": [{"tu": row["tu"], "status": "compiled",
-                             "artifact": encode(recorded(decode(sources[H], 0), decode(sources[row["tu"]], 0)))}
-                            for row in doc["plan"]]}
+        results = []
+        for row in doc["plan"]:
+            unit, header = decode(sources[row["tu"]], 0), decode(sources[H], 0)
+            if b'#include "Foo.h"' not in unit:
+                # Like the real compiler: a unit that never includes Foo.h cannot compile a probe of Foo.
+                results.append({"tu": row["tu"], "status": "error", "diagnostics": "C2065"})
+                continue
+            key = unit
+            if hashlib.sha256(header + b"|" + key).hexdigest() not in FIXTURE["objects"]:
+                head_part, _, rest = unit.partition(b"\n#include <stddef.h>")
+                key = head_part + b'\n#include "Foo.h"\n#include <stddef.h>' + rest   # probe sent without its include
+            results.append({"tu": row["tu"], "status": "compiled", "artifact": encode(recorded(header, key)),
+                            "includes": [["source", H, hashlib.sha256(header).hexdigest()]]})
+        return {"results": results}
 
     return SimpleNamespace(projection=projection, encode=encode, decode=decode, pack_sources=lambda files: files,
                            MAX_OBJECT=1 << 24, MAX_SOURCE=1 << 20, profile="p" * 64, roots={}), request
@@ -77,7 +93,7 @@ def measurement(head_obj, credited):
     return old, new
 
 
-def run(case, includes=True):
+def run(case, includes=True, receipts=True, paths=(TU,)):
     head = FIXTURE["cases"][case]["head"].encode()
     head_obj = recorded(head, SOURCE)
     git, calls = FakeGit(head), []
@@ -86,12 +102,15 @@ def run(case, includes=True):
     with tempfile.TemporaryDirectory() as tmp:
         for side in ("base", "head"):
             (Path(tmp) / side / "obj").mkdir(parents=True)
-            (Path(tmp) / side / "obj" / "src_t.cpp.obj.includes.json").write_text(
-                json.dumps(["/job/" + H] if includes else ["/job/include/Other.h"]))
+            if receipts:
+                (Path(tmp) / side / "obj" / "src_t.cpp.obj.includes.json").write_text(
+                    json.dumps(["/job/" + H] if includes else ["/job/include/Other.h"]))
         (Path(tmp) / "head/obj" / "src_t.cpp.obj").write_bytes(head_obj)
-        row = {"tu": TU, "source": hashlib.sha256(SOURCE).hexdigest(), "contract": "c", "flags": [], "env": {}}
-        native = {"profile_sha256": "p" * 64, "compile": {"head": [row], "base": [row]}}
-        plan = {"changed_paths": [H, TU], "base": "base", "request_paths": [TU]}
+        text = {TU: SOURCE, OTHER: OTHER_SOURCE}
+        rows = [{"tu": tu, "source": hashlib.sha256(text[tu]).hexdigest(), "contract": "c", "flags": [], "env": {}}
+                for tu in paths]
+        native = {"profile_sha256": "p" * 64, "compile": {"head": rows, "base": rows}}
+        plan = {"changed_paths": [H, TU], "base": "base", "request_paths": list(paths)}
         binding = {"repo": 1, "number": 9, "base": "b" * 40, "head": "h" * 40, "tree": "t" * 40,
                    "issuer": {"run": "5", "attempt": "1"}}
         result = bridge.narrow(plan, native, old, new, tmp, git, "tip", request, fake, Path(tmp) / "out", binding)
@@ -120,6 +139,14 @@ class Bridge(unittest.TestCase):
         self.assertFalse(evidence["layout"]["complete"])
         self.assertIn("No translation unit", evidence["held"][0])
         self.assertEqual([c for c in calls if c[0] == "probe"], [])
+
+    def test_without_receipts_the_host_must_include_the_header_itself(self):
+        result, _, calls = run("split (compatible)", receipts=False)
+        self.assertTrue(result["headers"][H]["layout"]["compatible_shape"])
+        self.assertEqual(len([c for c in calls if c[0] == "probe"]), 2)
+        result, _, _ = run("split (compatible)", receipts=False, paths=(OTHER,))
+        self.assertFalse(result["headers"][H]["layout"]["complete"])
+        self.assertIn("No translation unit", result["headers"][H]["held"][0])
 
     def test_only_newly_credited_rows_witness(self):
         result, _, _ = run("swap a/b, only a used")

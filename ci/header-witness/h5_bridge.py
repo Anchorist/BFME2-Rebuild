@@ -89,21 +89,34 @@ def narrow(plan, native, old, new, work, git, tip, request, worker, out_root, bi
         compiled in any other context could see another layout (a different STL, flags or SDK headers)."""
         rows = {row["tu"]: row for row in native["compile"][side]}
         includer = includer_of(side, header, rows)
-        if includer is None:
+        # Without a compile receipt naming an includer (the wide route), try a few planned TUs and accept one only
+        # when the probe compile's own include list shows it read this header.
+        receipts = any((Path(work) / side / "obj" / (path.replace("/", "_") + ".obj.includes.json")).is_file()
+                       for path in plan["request_paths"])
+        if includer is None and receipts:
             raise Held(f"No translation unit on the {side} side compiles {header}; its layout cannot be measured.")
-        sources = dict(projections[side][0])
-        unit = worker.decode(sources[includer], worker.MAX_SOURCE) + b"\n" + probe_source
-        sources[header] = worker.encode(header_bytes)
-        sources[includer] = worker.encode(unit)
-        row = dict(rows[includer], source=hashlib.sha256(unit).hexdigest())
-        wire = json.dumps({"version": 1, "profile": native["profile_sha256"],
-                           "source": worker.pack_sources(sources), "plan": [row]},
-                          sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("ascii")
-        reply = request("compile", wire)
-        found = (reply.get("results") or [{}])[0]
-        if found.get("tu") != includer or found.get("status") != "compiled":
-            raise Held(f"The layout probe of {header} did not compile on the {side} side.")
-        return worker.decode(found["artifact"], worker.MAX_OBJECT)
+        candidates = [includer] if includer else [path for path in plan["request_paths"] if path in rows][:4]
+        appended = probe_source
+        if includer is None and appended.startswith(b'#include "'):
+            # The probe must not pull the header in itself: only a unit that already includes it may host the probe.
+            appended = appended.split(b"\n", 1)[1]
+        for candidate in candidates:
+            sources = dict(projections[side][0])
+            unit = worker.decode(sources[candidate], worker.MAX_SOURCE) + b"\n" + appended
+            sources[header] = worker.encode(header_bytes)
+            sources[candidate] = worker.encode(unit)
+            row = dict(rows[candidate], source=hashlib.sha256(unit).hexdigest())
+            wire = json.dumps({"version": 1, "profile": native["profile_sha256"],
+                               "source": worker.pack_sources(sources), "plan": [row]},
+                              sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("ascii")
+            reply = request("compile", wire)
+            found = (reply.get("results") or [{}])[0]
+            if found.get("tu") != candidate or found.get("status") != "compiled":
+                continue
+            read = {tuple(item[:3]) for item in found.get("includes", []) if isinstance(item, (list, tuple))}
+            if includer or ("source", header, hashlib.sha256(header_bytes).hexdigest()) in read:
+                return worker.decode(found["artifact"], worker.MAX_OBJECT)
+        raise Held(f"No translation unit on the {side} side compiles {header}; its layout cannot be measured.")
 
     def tu_compile(header, header_bytes, paths):
         sources, hashes = (dict(item) for item in projections["head"])
