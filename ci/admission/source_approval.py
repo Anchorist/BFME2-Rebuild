@@ -26,36 +26,44 @@ class Refused(Unavailable):
     pass
 
 
-def statuses(api, head, base):
-    """Use the statuses only to select a protected run to authenticate."""
-    selected = {}
+MAX_CANDIDATES = 4
+
+
+def candidate_runs(api, head, base):
+    """Protected runs that published all nine passing source statuses for this head and main, newest first.
+
+    Only the Actions bot's statuses for this main count. The newest such status of each rule decides a refusal: a
+    failure there refuses. Otherwise every run that published a passing status for all nine is a candidate, so a
+    later run that re-published them and then died (a compiler run whose machine failed) does not hide an earlier
+    run's receipt. The caller authenticates each candidate run and its receipt."""
+    newest, passing = {}, {}
+    suffix = f"(main {base[:12]})"
     for page in range(1, 5):
         entries = api.call(f"commits/{head}/statuses?per_page=100&page={page}")
-        for item in sorted(entries, key=lambda row: row["id"], reverse=True):
-            if item["context"] in CONTEXTS:
-                selected.setdefault(item["context"], item)
-        if len(selected) == len(CONTEXTS) or len(entries) < 100:
+        for item in entries:
+            match = RUN_URL.fullmatch(item.get("target_url") or "")
+            if (item.get("context") not in CONTEXTS or (item.get("creator") or {}).get("id") != BOT_ID
+                    or not (item.get("description") or "").endswith(suffix) or match is None):
+                continue
+            if item["context"] not in newest or item["id"] > newest[item["context"]]["id"]:
+                newest[item["context"]] = item
+            if item.get("state") == "success":
+                seen = passing.setdefault(match[1], {})
+                seen[item["context"]] = max(seen.get(item["context"], 0), item["id"])
+        if len(entries) < 100:
             break
-    runs, ready = set(), set()
-    for context in CONTEXTS:
-        item = selected.get(context, {})
-        match = RUN_URL.fullmatch(item.get("target_url") or "")
-        if ((item.get("creator") or {}).get("id") != BOT_ID
-                or not (item.get("description") or "").endswith(f"(main {base[:12]})")
-                or match is None):
-            continue
+    for context, item in newest.items():
         if item.get("state") == "failure":
             raise Refused(f"Current source verdict {context} refused")
-        if item.get("state") == "success":
-            runs.add(match[1])
-        else:
-            continue
-        ready.add(context)
-    if ready != set(CONTEXTS):
+    complete = [run for run, seen in passing.items() if set(seen) == set(CONTEXTS)]
+    if not complete:
         raise Unavailable("The current protected source rules have not all passed")
-    if len(runs) != 1:
-        raise Unavailable("The source rules do not name one protected run")
-    return runs.pop()
+    return sorted(complete, key=lambda run: max(passing[run].values()), reverse=True)[:MAX_CANDIDATES]
+
+
+def statuses(api, head, base):
+    """The newest protected run that published all nine passing source statuses for this head and main."""
+    return candidate_runs(api, head, base)[0]
 
 
 def download(artifact, token):
@@ -96,8 +104,19 @@ def require_source(api, number, head, base, tree, policy_digest, load_receipt):
 
 
 def receipt_for(api, number, head, base, policy_digest, load_receipt):
-    """The exact all-rule receipt for this PR, head, main and current policy; its tree is the protected merge."""
-    run_id = statuses(api, head, base)
+    """The exact all-rule receipt for this PR, head, main and current policy; its tree is the protected merge.
+
+    Tries the candidate runs newest first and returns the first that authenticates completely."""
+    failure = Unavailable("The current protected source rules have not all passed")
+    for run_id in candidate_runs(api, head, base):
+        try:
+            return receipt_of_run(api, run_id, number, head, base, policy_digest, load_receipt)
+        except Unavailable as exc:
+            failure = exc
+    raise failure
+
+
+def receipt_of_run(api, run_id, number, head, base, policy_digest, load_receipt):
     run = api.call(f"actions/runs/{run_id}")
     event_head = {"pull_request_target": head, "repository_dispatch": base}.get(run.get("event"))
     attempt = str(run.get("run_attempt", ""))

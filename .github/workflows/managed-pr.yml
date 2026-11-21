@@ -1379,6 +1379,7 @@ jobs:
     outputs:
       stale: ${{ (steps.native.outputs.stale == 'yes' || steps.publish.outputs.stale == 'yes') && 'yes' || 'no' }}
       passed: ${{ steps.native.outcome == 'success' && steps.native.outputs.verdict == 'success' && 'yes' || 'no' }}
+      unmeasured: ${{ steps.native.outputs.verdict == 'unavailable' && 'yes' || 'no' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -1954,6 +1955,38 @@ jobs:
         run: |
           set -euo pipefail
           jq -n '{event_type: "bfme-land-next", client_payload: {}}' |
+            gh api --method POST "repos/$GITHUB_REPOSITORY/dispatches" --input - >/dev/null
+
+  # A check that claimed its automatic reservation and then measured nothing (a machine fault) leaves no verdict, and
+  # only an admission run can re-issue that reservation, after this run has completed and been quiet for 120 s
+  # (admit.unmeasured_claim). Hand the wait to admission-unmeasured.yml. Only for a claimed reservation, so the
+  # bound is the ledger's: at most two re-issues per commit per main, then a plain hold.
+  notify-unmeasured:
+    needs: [claim, report]
+    if: >-
+      always() && !cancelled() && needs.claim.outputs.allowed == 'yes' && needs.report.outputs.unmeasured == 'yes' &&
+      github.repository_id == '1464323350' && github.ref == 'refs/heads/main' &&
+      github.event_name == 'repository_dispatch' && github.actor_id == '41898282'
+    name: Ask admission to look again after this run
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    steps:
+      - name: Send bfme-unmeasured
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.client_payload.number }}
+          RUN: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$NUMBER" =~ ^[1-9][0-9]{0,8}$ || ! "$RUN" =~ ^[1-9][0-9]{0,19}$ ]]; then
+            echo "Expected one pull request number and this run id. Found something else." >&2
+            exit 1
+          fi
+          jq -n --argjson number "$NUMBER" --arg run "$RUN" \
+            '{event_type: "bfme-unmeasured", client_payload: {number: $number, run: $run}}' |
             gh api --method POST "repos/$GITHUB_REPOSITORY/dispatches" --input - >/dev/null
 
   notify-header-rules:

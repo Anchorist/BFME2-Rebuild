@@ -155,6 +155,11 @@ def publish(phase, admission=None, result=None):
         # run started with the Actions token, so the dispatch-started check wakes the landing workflow itself.
         with Path(os.environ["GITHUB_OUTPUT"]).open("a") as stream:
             stream.write("verdict=success\n")
+    if phase == "finish" and status == "error" and decision and os.environ.get("GITHUB_OUTPUT"):
+        # Measured nothing (a machine or receipt fault, not a verdict): the run asks admission to look again once it
+        # has completed; admission re-issues a claimed reservation at most twice (ledger.reissue_unmeasured).
+        with Path(os.environ["GITHUB_OUTPUT"]).open("a") as stream:
+            stream.write("verdict=unavailable\n")
     if status in {"failure", "error"}:
         raise SystemExit(1)
 
