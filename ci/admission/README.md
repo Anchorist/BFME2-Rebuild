@@ -40,4 +40,18 @@ twice for one commit on one main, counts each retry against the daily limits, an
 writes `Held: the compiler check failed to run three times; a maintainer will look`. A commit that has any
 verdict for that main is never measured again.
 
+## When main moves
+
+GitHub does not recompute an open pull request's merge preview, or its "mergeable" flag, when `main` moves. Admission
+therefore never waits for them after a landing. The hourly run and a landing request take the merged tree from the
+protected source-rules receipt for exactly this commit on the current `main` and the current rules. The compiler
+check composes the same merge again and refuses a different tree before any machine starts. When there is no
+receipt yet, admission asks the source rules workflow for one (`bfme-source-refresh`: source rules only, no compiler
+machine). It does this at most once an hour for one commit on one `main`, and the status reads
+`Held: checking the source rules on main …, retried automatically`. As soon as the source rules have published,
+that workflow asks admission to decide again for this pull request, so it is admitted within minutes, not at the
+next hourly run. If the source rules find that the commit conflicts with the new `main`, or shares no history with
+it, the status says so and nothing more is requested until you push. A receipt for another `main`, another commit,
+another pull request or other rules is never used.
+
 Tests: `python3 -m unittest discover -s ci/admission/tests -v` from the repository root.

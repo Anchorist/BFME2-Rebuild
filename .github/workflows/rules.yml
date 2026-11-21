@@ -5,7 +5,9 @@ on:
     branches: [main]
     types: [opened, reopened, synchronize, ready_for_review, edited]
   repository_dispatch:
-    types: [bfme-remeasure]
+    # bfme-source-refresh: admission asks for the source rules of a fork commit on a main that moved since its
+    # last event (ci/admission/admit.py); source rules only, then admission decides again.
+    types: [bfme-remeasure, bfme-source-refresh]
   merge_group:
     types: [checks_requested]
     branches: [main]
@@ -30,6 +32,8 @@ jobs:
     if: >-
       github.repository_id == '1464323350' &&
       (vars.BFME_PR_COMPACT != 'yes' || github.event_name == 'merge_group' ||
+       (vars.BFME_AUTO_ADMISSION == 'yes' && github.event_name == 'repository_dispatch' &&
+           github.event.action == 'bfme-source-refresh' && github.actor_id == '41898282') ||
        (vars.BFME_AUTO_ADMISSION == 'yes' && github.event_name == 'pull_request_target' &&
            github.event.action != 'labeled' &&
            github.event.pull_request.head.repo.id != 1464323350 &&
@@ -211,3 +215,32 @@ jobs:
         run: |
           echo "Source results were not published because protected main moved or its tools could not be loaded." \
             >> "$GITHUB_STEP_SUMMARY"
+
+  # After a source refresh that admission asked for, ask admission to decide again for that pull request now
+  # instead of at the next hourly run. Admission requests at most one refresh per commit per main per hour, so this
+  # cannot loop. No checkout and no pull request content here: only the validated number goes out.
+  notify-admission:
+    needs: [source-rules, publish-source-rules]
+    if: >-
+      always() && !cancelled() && needs.source-rules.result == 'success' &&
+      github.repository_id == '1464323350' && github.ref == 'refs/heads/main' &&
+      vars.BFME_AUTO_ADMISSION == 'yes' && github.event_name == 'repository_dispatch' &&
+      github.event.action == 'bfme-source-refresh' && github.actor_id == '41898282'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    steps:
+      - name: Ask admission to decide again for this pull request
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.client_payload.number }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$NUMBER" =~ ^[1-9][0-9]{0,8}$ ]]; then
+            echo "Expected one pull request number. Found something else." >&2
+            exit 1
+          fi
+          jq -n --argjson number "$NUMBER" '{event_type: "bfme-admit-request", client_payload: {number: $number}}' |
+            gh api --method POST "repos/$GITHUB_REPOSITORY/dispatches" --input - >/dev/null

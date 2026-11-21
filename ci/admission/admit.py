@@ -14,6 +14,10 @@ Every new push is judged again for its new commit. Over the daily limit, or when
 commit is held ("daily limit, retried automatically") and an hourly run retries the oldest first.
 When the compiler check that used a reservation finished without measuring anything (a machine fault, not a
 verdict), the hourly run frees that reservation for another check, at most twice for one commit on one main.
+After main moves, GitHub keeps the pull request's merge preview on the old main. The hourly run and a landing
+request then take the merged tree from the protected source-rules receipt for exactly this commit on the current
+main; when there is none yet, they ask the source rules workflow for one (bfme-source-refresh, at most once an hour
+for one commit on one main), and that workflow asks admission to decide again as soon as it has published.
 
   admit.py event     decide for the pull request in this pull_request_target event
   admit.py retry     decide again for open fork pull requests that are held or undecided (hourly)
@@ -58,6 +62,12 @@ SETTLE_SECONDS = 120                    # a finished run's last status is visibl
 STATUS_PAGES = 10                       # more statuses than this on one commit: treat it as measured
 UNMEASURED_ENDINGS = {"failure", "cancelled", "timed_out", "startup_failure"}
 REMEASURE_EVENT = "bfme-remeasure"
+REFRESH_EVENT = "bfme-source-refresh"     # .github/workflows/rules.yml: source rules only, no compiler machine
+REFRESH_SECONDS = 3600                    # at most one source refresh for one commit on one main per hour
+SOURCE_CONTEXT = "BFME II / source rules"
+# Written by tools/gates/workflow.py on the source rules status when only the author can fix this commit on that main.
+SOURCE_CONFLICT = "Conflicts with main: merge or rebase main into your branch and push"
+SOURCE_HISTORY = "No shared history with main: rebase your branch on main and push"
 NEVER_PATHS = (".github/",)
 MAINTAINER_PATHS = ("include/", "ci/", "tools/", "config/", "expected/", "baseline/")
 MEMBER_ROLES = {"OWNER", "MEMBER", "COLLABORATOR"}
@@ -244,13 +254,20 @@ def decide(pr, files, config, auto_headers=False):
 
 PREVIEW_WAIT = "Held: waiting for GitHub's merge preview on main, retried automatically"
 CONFLICT = "This conflicts with main: merge or rebase main into your branch and push"
+HISTORY = "This branch shares no history with main: rebase it on main and push"
+STALE = "stale"
+
+
+def refresh_text(base):
+    return f"Held: checking the source rules on main {base[:12]}, retried automatically"
 
 
 def merge_preview(api, number, head, base, sleep=time.sleep, tries=6):
-    """The tree of GitHub's merge of exactly `head` onto exactly `base`, or 'conflict', or None if not ready.
+    """The tree of GitHub's merge of exactly `head` onto exactly `base`, 'conflict', 'stale', or None if not ready.
 
     Reading the pull request asks GitHub to (re)compute its merge preview commit; its parents must be exactly
-    [base, head]. Nothing from the pull request is checked out or run.
+    [base, head]. 'stale' is a preview of this head on another main: GitHub does not recompute it when main moves,
+    so waiting for it would never end. Nothing from the pull request is checked out or run.
     """
     for attempt in range(tries):
         pr = api.call(f"pulls/{number}")
@@ -265,9 +282,51 @@ def merge_preview(api, number, head, base, sleep=time.sleep, tries=6):
             tree = (commit.get("tree") or {}).get("sha") or ""
             if parents == [base, head] and HEX40.fullmatch(tree):
                 return tree
+            if len(parents) == 2 and parents[1] == head and parents[0] != base and HEX40.fullmatch(parents[0] or ""):
+                return STALE
         if attempt + 1 < tries:
             sleep(5)
     return None
+
+
+def source_tree(api, number, head, base):
+    """The merged tree from the protected source-rules receipt for exactly this pull request, head, main and
+    current policy. The source rules composed it themselves (unique ancestor, three-way merge); the compiler check
+    composes it again and refuses a different tree before any machine starts."""
+    sys.path.append(str(source_approval.TOOLS))
+    from gate import policy_digest
+    policy = policy_digest(source_approval.TOOLS / "config.json")
+    value = source_approval.receipt_for(api, number, head, base, policy,
+                                        lambda artifact: source_approval.download(artifact, api._token))
+    return value["tree"]
+
+
+def source_conflict(api, head, base):
+    """'conflict' or 'history' when the protected source rules wrote, for this main, that only the author can fix
+    this commit (it conflicts with main, or shares no history with it); else None."""
+    named = {f"{SOURCE_CONFLICT} (main {base[:12]})": "conflict", f"{SOURCE_HISTORY} (main {base[:12]})": "history"}
+    for page in range(1, 5):
+        entries = api.call(f"commits/{head}/statuses?per_page=100&page={page}")
+        found = [item for item in entries if isinstance(item, dict) and item.get("context") == SOURCE_CONTEXT
+                 and (item.get("creator") or {}).get("id") == BOT_ID]
+        if found:
+            latest = max(found, key=lambda item: item["id"])
+            return named.get(latest.get("description")) if latest.get("state") == "error" else None
+        if len(entries) < 100:
+            return None
+    return None
+
+
+def recent(status, clock=None, seconds=REFRESH_SECONDS):
+    """True unless the status is certainly older than `seconds` (an unreadable time counts as recent)."""
+    try:
+        written = datetime.datetime.strptime(status.get("created_at") or "", "%Y-%m-%dT%H:%M:%SZ")
+    except ValueError:
+        return True
+    now = clock() if clock else datetime.datetime.now(datetime.timezone.utc)
+    if now.tzinfo is not None:
+        now = now.astimezone(datetime.timezone.utc).replace(tzinfo=None)
+    return (now - written).total_seconds() < seconds
 
 
 def post(api, head, state, description):
@@ -301,10 +360,50 @@ def still_current(api, number, pr, head, base):
                 or api.call("git/ref/heads/main")["object"]["sha"] != base)
 
 
+def on_moved_main(api, number, pr, head, base, prior, clock, find_tree, attempts=1, sleep=time.sleep):
+    """A stale preview: the tree from the exact source receipt, 'conflict', or a line saying why nothing was reserved.
+
+    With no receipt for this main yet, ask the source rules workflow for one, at most once an hour for this commit
+    on this main (the Admission status written here records when). That workflow publishes the source statuses and
+    the receipt with no compiler machine, then asks admission to decide again for this pull request.
+    """
+    for attempt in range(attempts):
+        named = source_conflict(api, head, base)
+        if named == "conflict":
+            return "conflict"
+        if named == "history":
+            if not (prior and prior.get("state") == "pending" and prior.get("description") == HISTORY):
+                post(api, head, "pending", HISTORY)
+            return f"#{number}: shares no history with main; nothing reserved"
+        try:
+            return find_tree(api, number, head, base)
+        except source_approval.Refused:
+            return f"#{number}: protected source rules refused this head; nothing reserved"
+        except (ApiError, OSError, ValueError, KeyError, TypeError, AttributeError, subprocess.SubprocessError,
+                zipfile.BadZipFile):
+            if attempt + 1 < attempts:
+                sleep(5)
+    text = refresh_text(base)
+    if prior and prior.get("state") == "pending" and prior.get("description") == text and recent(prior, clock):
+        return f"#{number}: waiting for the source rules on main {base[:12]}; nothing reserved, retried hourly"
+    if not still_current(api, number, pr, head, base):
+        return f"#{number}: protected main, head or admission type moved; nothing reserved"
+    post(api, head, "pending", text)
+    code, _ = api.write("POST", "dispatches", {"event_type": REFRESH_EVENT,
+                                               "client_payload": {"number": number, "head": head, "base": base}})
+    if code != 204:
+        return f"#{number}: the source rules could not be requested (HTTP {code}); retried hourly"
+    return f"#{number}: source rules requested on main {base[:12]}; admission decides again when they publish"
+
+
 def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
            auto_headers=False, wide_budget=None, *, source_proof=None,
-           source_attempts=1, owner_origin=False, expected_head=None):
-    """Decide for one pull request against main commit `base`. The ledger reservation is the authority."""
+           source_attempts=1, owner_origin=False, expected_head=None, refresh=False, find_tree=None,
+           refresh_attempts=1):
+    """Decide for one pull request against main commit `base`. The ledger reservation is the authority.
+
+    refresh: when GitHub's preview is of another main, use the protected source receipt (and request one) instead
+    of waiting for a preview GitHub never recomputes. The hourly run and the landing request use it."""
     pr = api.call(f"pulls/{number}")
     head = (pr.get("head") or {}).get("sha", "")
     if not HEX40.fullmatch(head):
@@ -335,6 +434,13 @@ def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
         post(api, head, "pending", DAILY_LIMIT)
         return f"#{number}: held, the daily limits are not configured"
     tree = merge_preview(api, number, head, base, sleep)
+    if tree in (STALE, "conflict") and refresh:
+        tree = on_moved_main(api, number, pr, head, base, prior, clock, find_tree or source_tree,
+                             attempts=refresh_attempts, sleep=sleep)
+        if not (tree == "conflict" or HEX40.fullmatch(tree)):
+            return tree
+    elif tree == STALE:
+        tree = None
     if tree == "conflict":
         if not (prior and prior.get("description") == CONFLICT):
             post(api, head, "pending", CONFLICT)
@@ -477,7 +583,8 @@ def run(argv, env, api=None, config=None, clock=None):
         and env.get("GITHUB_TRIGGERING_ACTOR") == "Ancalgonn"
     lines = [handle(api, number, config, main, budget, clock, auto_headers=auto_headers,
                     wide_budget=wide_budget, source_attempts=25 if mode == "event" else 1,
-                    owner_origin=owner_origin, expected_head=expected_head)
+                    owner_origin=owner_origin, expected_head=expected_head, refresh=mode != "event",
+                    refresh_attempts=12 if mode == "request" else 1)
              for number in numbers]
     text = f"Admission ({'live' if live else 'dry run'}): " + ("; ".join(lines) if lines else "no fork pull requests")
     print(f"::notice title=BFME II admission::{printable(text, 200).replace('::', ': ')}")

@@ -51,6 +51,15 @@ REASONS = {
 }
 
 
+# bfme-remeasure: the compiler check's own intake. bfme-source-refresh: admission asks for the source rules of a
+# fork commit on a main that moved since its last event (.github/workflows/rules.yml; no compiler machine).
+DISPATCH_ACTIONS = ("bfme-remeasure", "bfme-source-refresh")
+# Aggregate status texts for what only the author can fix on this main; ci/admission/admit.py reads them.
+CONFLICT_OUTCOME = "Conflicts with main: merge or rebase main into your branch and push"
+HISTORY_OUTCOME = "No shared history with main: rebase your branch on main and push"
+AUTHOR_OUTCOMES = {"merge-conflict": CONFLICT_OUTCOME, "merge-history": HISTORY_OUTCOME}
+
+
 class CheckUnavailable(Exception):
     """Carry only fixed reason identifiers across the trust boundary."""
 
@@ -128,7 +137,7 @@ def event(env):
         elif name == "repository_dispatch":
             event_data = read_json(env["GITHUB_EVENT_PATH"], 2 * 1024**2)
             payload = event_data["client_payload"]
-            if (event_data["action"] != "bfme-remeasure" or not isinstance(payload, dict)
+            if (event_data["action"] not in DISPATCH_ACTIONS or not isinstance(payload, dict)
                     or set(payload) != {"number", "head", "base"}
                     or not is_oid(payload["base"]) or not is_oid(payload["head"])):
                 raise ValueError
@@ -217,14 +226,14 @@ class GitHub:
             raise CheckUnavailable("fork-unavailable")
         return "private"
 
-    def status(self, name, state, run):
+    def status(self, name, state, run, outcome=None):
         if not re.fullmatch(r"[1-9][0-9]{0,20}", run):
             raise CheckUnavailable("status-unavailable")
         context = f"BFME II / {name}"
         binding = self.binding
         label = RULES.get(name, "Source rules")
-        outcome = {"success": f"{label} passed", "failure": f"Fix needed for {label.lower()}",
-                   "error": f"{label} could not finish"}[state]
+        outcome = outcome or {"success": f"{label} passed", "failure": f"Fix needed for {label.lower()}",
+                              "error": f"{label} could not finish"}[state]
         result = self.call(
             f"statuses/{binding.head}",
             {"state": state, "context": context, "description": f"{outcome} (main {binding.base[:12]})",
@@ -556,7 +565,8 @@ def publish(env):
                 publication_failed = True
         # Repeat the comparison job's freshness check before the aggregate.
         api.current()
-        api.status("source rules", "error" if publication_failed else receipt["overall"], env["GITHUB_RUN_ID"])
+        named = None if publication_failed else AUTHOR_OUTCOMES.get(receipt.get("reason"))
+        api.status("source rules", "error" if publication_failed else receipt["overall"], env["GITHUB_RUN_ID"], named)
         if publication_failed:
             raise CheckUnavailable("status-unavailable")
     except CheckUnavailable as exc:

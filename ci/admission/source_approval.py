@@ -89,6 +89,14 @@ def download(artifact, token):
 
 def require_source(api, number, head, base, tree, policy_digest, load_receipt):
     """Bind the all-rule outcome to exact PR, tree, current policy, run and attempt."""
+    value = receipt_for(api, number, head, base, policy_digest, load_receipt)
+    if value["tree"] != tree:
+        raise Unavailable("The protected source receipt has a different tree, policy or attempt")
+    return value
+
+
+def receipt_for(api, number, head, base, policy_digest, load_receipt):
+    """The exact all-rule receipt for this PR, head, main and current policy; its tree is the protected merge."""
     run_id = statuses(api, head, base)
     run = api.call(f"actions/runs/{run_id}")
     event_head = {"pull_request_target": head, "repository_dispatch": base}.get(run.get("event"))
@@ -109,9 +117,10 @@ def require_source(api, number, head, base, tree, policy_digest, load_receipt):
     if not RUN_ID.fullmatch(str(row.get("id", ""))):
         raise Unavailable("The source receipt does not have a valid artifact id")
     value = load_receipt(row["id"])
+    tree = value.get("tree") if isinstance(value, dict) else None
     expected = {"repo": REPO_ID, "number": number, "head": head, "base": base, "tree": tree,
                 "tools_commit": base, "policy_sha256": policy_digest,
                 "run": run_id, "attempt": attempt, "state": "pass"}
-    if value != expected:
+    if value != expected or not (isinstance(tree, str) and re.fullmatch(r"[0-9a-f]{40}", tree)):
         raise Unavailable("The protected source receipt has a different tree, policy or attempt")
     return value

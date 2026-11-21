@@ -308,6 +308,40 @@ class Delivery(unittest.TestCase):
         self.assertEqual(self.publish(env, result), 0)
         self.assert_statuses(self.head)
 
+    def test_source_refresh_dispatch_takes_the_same_anonymous_fork_route(self):
+        env = self.environment("repository_dispatch", action="bfme-source-refresh")
+        result, _ = self.evaluate(env)
+        self.assertEqual((result["base"], result["state"]), (self.base, "pass"))
+        self.assertIsNone(self.fetched[0][2])
+        self.assertEqual(self.publish(env, result), 0)
+        self.assert_statuses(self.head)
+
+    def test_an_unknown_dispatch_action_is_refused(self):
+        env = self.environment("repository_dispatch", action="bfme-something-else")
+        self.assertEqual(self.authorize(env)["reason"], "unexpected-event")
+        self.assertEqual(self.fetched, [])
+
+    def test_a_conflict_is_named_on_the_source_rules_status(self):
+        env = self.environment("repository_dispatch", action="bfme-source-refresh")
+        receipt = source.pending(source.event(env), "merge-conflict")
+        self.assertEqual(self.publish(env, receipt), 1)
+        rows = {row["context"]: row for _, row in self.api.posts}
+        self.assertEqual(rows["BFME II / source rules"]["state"], "error")
+        self.assertEqual(rows["BFME II / source rules"]["description"],
+                         f"{source.CONFLICT_OUTCOME} (main {self.base[:12]})")
+        self.assertTrue(rows["BFME II / G1"]["description"].startswith("Paths could not finish"))
+        self.api.posts.clear()
+        self.publish(env, source.pending(source.event(env), "merge-history"))
+        rows = {row["context"]: row for _, row in self.api.posts}
+        self.assertEqual(rows["BFME II / source rules"]["description"],
+                         f"{source.HISTORY_OUTCOME} (main {self.base[:12]})")
+        other = source.pending(source.event(env), "fetch-unavailable")
+        self.api.posts.clear()
+        self.publish(env, other)
+        rows = {row["context"]: row for _, row in self.api.posts}
+        self.assertEqual(rows["BFME II / source rules"]["description"],
+                         f"Source rules could not finish (main {self.base[:12]})")
+
     def test_old_manual_route_cannot_select_an_unprotected_base(self):
         env = self.environment() | {"GITHUB_EVENT_NAME": "workflow_dispatch"}
         self.assertEqual(self.authorize(env)["reason"], "unexpected-event")
