@@ -9,6 +9,7 @@ import copy
 import datetime
 import io
 import json
+import re
 from contextlib import redirect_stdout
 from pathlib import Path
 import sys
@@ -66,7 +67,15 @@ class LedgerApi(Api):
             if path.startswith("pulls/"):
                 return 200, copy.deepcopy(self.prs[int(path.split("/")[1])])
             if path.startswith("commits/"):
-                return 200, list(reversed(self.statuses.get(path.split("/")[1], [])))
+                if getattr(self, "status_failure", None):
+                    return self.status_failure, {"message": "boom"}
+                rows = list(reversed(self.statuses.get(path.split("/")[1], [])))
+                found = re.search(r"[?&]page=([0-9]+)", path)
+                page = int(found.group(1)) if found else 1
+                return 200, rows[(page - 1) * 100:page * 100]
+            if path.startswith("actions/runs/"):
+                run = getattr(self, "runs", {}).get(path[len("actions/runs/"):])
+                return (200, copy.deepcopy(run)) if run else (404, {})
             if path == "git/ref/heads/main":
                 return 200, {"object": {"sha": self.main}}
             if path.startswith("git/commits/"):
@@ -522,6 +531,157 @@ class SourceWaitFreshness(unittest.TestCase):
                          source_proof=lambda *args: (_ for _ in ()).throw(admit.source_approval.Unavailable("x")),
                          source_attempts=1)
         self.assertEqual(len(api.statuses[HEAD]), 1)
+
+
+def compiler_run(run_id="900", status="completed", updated="2026-11-20T19:30:00Z", path=None, repo=None,
+                 conclusion="failure", event="repository_dispatch", head_sha=None, attempt=1):
+    return {"id": int(run_id), "status": status, "updated_at": updated, "conclusion": conclusion, "event": event,
+            "head_sha": MAIN if head_sha is None else head_sha, "run_attempt": attempt,
+            "path": admit.COMPILER_WORKFLOW if path is None else path,
+            "repository": {"id": admit.REPO_ID if repo is None else repo}}
+
+
+class UnmeasuredRun(unittest.TestCase):
+    """A compiler check that used its reservation and then died on a machine fault is retried, within bounds."""
+
+    def used(self, **run):
+        api = LedgerApi(True, [fork_pr()], {21: ["src/a.cpp"]})
+        handle(api)
+        self.assertEqual(admit.ledger.claim(api, 21, HEAD, MAIN, "900", "1", CLOCK, tree=TREE), "claimed")
+        api.runs = {"900": compiler_run(**run)}
+        return api
+
+    def item(self, api):
+        return json.loads(api.store["ledger.json"][0])["reservations"][0]
+
+    def status(self, api, context, state, text, creator=None):
+        api.statuses.setdefault(HEAD, []).append({"context": context, "state": state, "description": text,
+                                                  "id": api.next_id,
+                                                  "creator": {"id": admit.BOT_ID if creator is None else creator}})
+        api.next_id += 1
+
+    def boat(self, api, state, text):
+        self.status(api, admit.BOAT_CONTEXT, state, text)
+
+    def stays_used(self, api, note=None):
+        self.assertIn("reservation was already used", handle(api), note)
+        self.assertEqual(len(dispatches(api)), 1, note)
+        self.assertEqual(self.item(api)["claimed_by"], {"run": "900", "attempt": "1"}, note)
+        self.assertNotIn("reissues", self.item(api), note)
+
+    def test_a_finished_run_without_a_verdict_is_given_another_run(self):
+        api = self.used()
+        self.boat(api, "pending", "Waiting for protected intake and Boat comparison")
+        self.boat(api, "error", f"Boat comparison unavailable. Re-run all jobs. (main {MAIN[:12]})")
+        self.assertIn("admitted by rule", handle(api))
+        self.assertEqual(len(dispatches(api)), 2)
+        item = self.item(api)
+        self.assertEqual((item["claimed_by"], item["admitted_by"], item["reissues"]),
+                         (None, {"run": "7", "attempt": "1"}, 1))
+        counts = json.loads(api.store["ledger.json"][0])["days"][DAY]
+        self.assertEqual((counts["total"], counts["authors"]), (2, {"424242": 2}))
+        # The compiler check can claim it again, once.
+        self.assertEqual(admit.ledger.claim(api, 21, HEAD, MAIN, "901", "1", CLOCK, tree=TREE), "claimed")
+        self.assertEqual(admit.ledger.claim(api, 21, HEAD, MAIN, "902", "1", CLOCK, tree=TREE), "claimed-by-other")
+
+    def test_a_measured_verdict_is_never_retried(self):
+        for state, text in (("success", "BFME II comparison passed"), ("failure", "BFME II check refused this patch")):
+            api = self.used()
+            self.boat(api, state, f"{text} (main {MAIN[:12]})")
+            self.stays_used(api, state)
+
+    def test_a_verdict_hidden_by_later_statuses_still_counts(self):
+        api = self.used()
+        self.boat(api, "failure", f"BFME II check refused this patch (main {MAIN[:12]})")
+        self.boat(api, "pending", "Waiting for protected intake and Boat comparison")
+        self.boat(api, "error", f"Boat comparison unavailable. Re-run all jobs. (main {MAIN[:12]})")
+        self.stays_used(api, "masked by a later error")
+
+    def test_a_verdict_pushed_off_the_first_page_still_counts(self):
+        api = self.used()
+        self.boat(api, "failure", f"BFME II check refused this patch (main {MAIN[:12]})")
+        for index in range(108):                            # twelve reopen events, nine rule statuses each
+            self.status(api, f"BFME II / G{index % 9}", "success", "passed")
+        self.stays_used(api, "verdict on page 2")
+
+    def test_more_statuses_than_can_be_read_counts_as_measured(self):
+        api = self.used()
+        for index in range(100 * admit.STATUS_PAGES):
+            self.status(api, "BFME II / G1", "success", "passed")
+        self.stays_used(api, "page cap reached")
+
+    def test_a_verdict_by_someone_else_or_for_another_main_is_not_a_verdict(self):
+        api = self.used()
+        self.status(api, admit.BOAT_CONTEXT, "success", f"BFME II comparison passed (main {MAIN[:12]})", creator=5)
+        self.boat(api, "success", f"BFME II comparison passed (main {'e' * 12})")
+        self.assertIn("admitted by rule", handle(api))
+        self.assertEqual(self.item(api)["reissues"], 1)
+
+    def test_any_doubt_about_the_claiming_run_leaves_the_reservation_used(self):
+        cases = [dict(status="in_progress"), dict(status="queued"), dict(path=".github/workflows/rules.yml"),
+                 dict(repo=1), dict(updated="2026-11-20T19:39:30Z"), dict(updated="not a time"),
+                 dict(conclusion="success"), dict(conclusion=None), dict(conclusion="skipped"),
+                 dict(attempt=2), dict(event="pull_request_target"), dict(event="workflow_dispatch"),
+                 dict(head_sha="e" * 40)]
+        for run in cases:
+            self.stays_used(self.used(**run), run)
+        api = self.used()
+        api.runs = {}                                   # the run cannot be read
+        self.stays_used(api, "unreadable run")
+
+    def test_an_aware_clock_in_another_zone_is_compared_in_utc(self):
+        api = self.used(updated="2026-11-20T19:39:30Z")
+        zone = datetime.timezone(datetime.timedelta(hours=-5))
+        early = lambda: datetime.datetime(2026, 11, 20, 14, 40, tzinfo=zone)  # noqa: E731
+        self.assertIsNone(admit.unmeasured_claim(api, 21, HEAD, MAIN, early))
+        later = lambda: datetime.datetime(2026, 11, 20, 14, 45, tzinfo=zone)  # noqa: E731
+        self.assertEqual(admit.unmeasured_claim(api, 21, HEAD, MAIN, later), {"run": "900", "attempt": "1"})
+
+    def test_an_unreadable_status_list_or_ledger_leaves_it_used(self):
+        api = self.used()
+        api.status_failure = 502
+        self.assertIsNone(admit.unmeasured_claim(api, 21, HEAD, MAIN, CLOCK))
+        api.status_failure = None
+        api.ledger_failure = 502
+        self.assertIsNone(admit.unmeasured_claim(api, 21, HEAD, MAIN, CLOCK))
+
+    def test_at_most_two_retries_then_a_plain_hold(self):
+        api = self.used()
+        api_budget = {"daily_total": 9, "daily_per_author": 9}
+        for number, run in enumerate(("901", "902"), start=1):
+            self.assertIn("admitted by rule", handle(api, budget=api_budget))
+            self.assertEqual(self.item(api)["reissues"], number)
+            self.assertEqual(admit.ledger.claim(api, 21, HEAD, MAIN, run, "1", CLOCK, tree=TREE), "claimed")
+            api.runs[run] = compiler_run(run)
+        self.assertIn("unmeasured three times", handle(api, budget=api_budget))
+        self.assertEqual(len(dispatches(api)), 3)
+        self.assertEqual((latest(api)["state"], latest(api)["description"]), ("pending", admit.UNMEASURED))
+        writes = len(api.writes)
+        self.assertIn("unmeasured three times", handle(api, budget=api_budget))
+        self.assertEqual(len(api.writes), writes)          # said once, written once
+
+    def test_a_retry_counts_against_the_daily_limits(self):
+        api = self.used()
+        self.assertIn("daily limit reached", handle(api, budget={"daily_total": 1, "daily_per_author": 1}))
+        self.assertEqual(len(dispatches(api)), 1)
+        self.assertEqual(latest(api)["description"], admit.DAILY_LIMIT)
+        self.assertEqual(self.item(api)["claimed_by"], {"run": "900", "attempt": "1"})
+
+    def test_only_the_inspected_claim_is_released(self):
+        api = self.used()
+        other = {"run": "555", "attempt": "1"}
+        self.assertEqual(admit.ledger.reissue_unmeasured(api, BUDGET, 21, HEAD, MAIN, other, "7", "1", CLOCK), "changed")
+        self.assertEqual(admit.ledger.reissue_unmeasured(api, BUDGET, 21, HEAD, MAIN, None, "7", "1", CLOCK), "changed")
+        self.assertEqual(admit.ledger.reissue_unmeasured(api, BUDGET, 22, HEAD, MAIN, other, "7", "1", CLOCK), "missing")
+        self.assertEqual(self.item(api)["claimed_by"], {"run": "900", "attempt": "1"})
+        self.assertNotIn("reissues", self.item(api))
+
+    def test_an_unclaimed_reservation_is_not_counted_as_a_retry(self):
+        api = LedgerApi(True, [fork_pr()], {21: ["src/a.cpp"]})
+        handle(api)
+        self.assertIn("admitted by rule", handle(api))      # stranded before its claim: re-dispatched, as before
+        self.assertNotIn("reissues", self.item(api))
+        self.assertEqual(json.loads(api.store["ledger.json"][0])["days"][DAY]["total"], 1)
 
 
 if __name__ == "__main__":

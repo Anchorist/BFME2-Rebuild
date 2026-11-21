@@ -16,6 +16,8 @@ claim()          marks it used by exactly one run attempt, once; another run or 
                  another composed tree gets "tree-mismatch", and both must allocate nothing.
 refresh_issuer() hands an unclaimed reservation to a newer admission run, when the first one stopped before its
                  dispatch, so the compiler check's issuer guard can accept the retry.
+reissue_unmeasured() frees a used reservation for one more run when the run that used it finished without
+                 measuring anything (a machine fault); at most MAX_REISSUES times, each counted against the day.
 
 "tree" is GitHub's merge of exactly that head onto exactly that base (the pull request's merge preview commit).
 Writes prune counters older than yesterday and reservations older than yesterday unless they are for the main
@@ -28,6 +30,7 @@ import json
 LEDGER_BRANCH = "admission-ledger"
 LEDGER_FILE = "ledger.json"
 ATTEMPTS = 4
+MAX_REISSUES = 2
 
 
 class LedgerError(Exception):
@@ -182,4 +185,46 @@ def refresh_issuer(api, number, head, base, run, attempt):
         item["admitted_by"] = mine
         if _write(api, data, sha, f"Re-issue #{number} {head[:12]} to run {run}/{attempt}"):
             return "refreshed"
+    raise LedgerError("Expected a ledger update within four attempts. Found repeated concurrent changes.")
+
+
+def reissue_unmeasured(api, limits, number, head, base, claimed_by, run, attempt, clock=None):
+    """Free a used reservation for one more run, when the run that used it ended without measuring anything.
+
+    The caller has established that the run named in `claimed_by` is finished and left no compiler verdict: a
+    machine fault, not a result. Only that exact claim is released (compare-and-set on `claimed_by`), at most
+    MAX_REISSUES times for one reservation, and each release counts against the day's limits like a new
+    measurement. Returns 'reissued', 'exhausted', 'over-budget', 'changed' (the claim is no longer the one the
+    caller inspected) or 'missing'.
+    """
+    mine = {"run": str(run), "attempt": str(attempt)}
+    today, _ = days(clock)
+    for _ in range(ATTEMPTS):
+        data, sha = _read(api)
+        item = _match(data, number, head, base)
+        if not item:
+            return "missing"
+        if not isinstance(claimed_by, dict) or not claimed_by or item.get("claimed_by") != claimed_by:
+            return "changed"
+        used = item.get("reissues", 0)
+        if type(used) is not int or not 0 <= used < MAX_REISSUES:
+            return "exhausted"
+        kind = item.get("kind")
+        if kind not in ("narrow", "wide", "trusted-narrow"):
+            raise LedgerError(f"Expected kind narrow, wide or trusted-narrow. Found {kind!r}.")
+        if kind != "trusted-narrow":
+            if not limits:
+                return "over-budget"
+            total_key, authors_key = ("total", "authors") if kind == "narrow" else ("wide_total", "wide_authors")
+            counts = data["days"].setdefault(today, {"total": 0, "authors": {}, "wide_total": 0, "wide_authors": {}})
+            key = str(item.get("author"))
+            if counts[total_key] >= limits["daily_total"] or counts[authors_key].get(key, 0) >= limits["daily_per_author"]:
+                return "over-budget"
+            counts[total_key] += 1
+            counts[authors_key][key] = counts[authors_key].get(key, 0) + 1
+        item["reissues"] = used + 1
+        item["claimed_by"] = None
+        item["admitted_by"] = mine
+        if _write(api, data, sha, f"Re-issue #{number} {head[:12]} after an unmeasured run ({used + 1} of {MAX_REISSUES})"):
+            return "reissued"
     raise LedgerError("Expected a ledger update within four attempts. Found repeated concurrent changes.")

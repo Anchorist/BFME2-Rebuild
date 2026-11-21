@@ -34,4 +34,10 @@ tree, kind or issuer gets nothing.
 `main`. That means all eight rules plus the total, from one protected run, written by GitHub Actions, with the
 same merged tree and policy.
 
+A reservation is used once. When the compiler check that used it finished without measuring anything (the machine
+failed, so there is no verdict), the hourly run frees that reservation for another check. It does this at most
+twice for one commit on one main, counts each retry against the daily limits, and after the third unmeasured run
+writes `Held: the compiler check failed to run three times; a maintainer will look`. A commit that has any
+verdict for that main is never measured again.
+
 Tests: `python3 -m unittest discover -s ci/admission/tests -v` from the repository root.

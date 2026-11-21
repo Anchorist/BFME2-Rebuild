@@ -12,6 +12,8 @@ For a fork pull request whose author is not an organisation member (members are 
                                         bfme-remeasure dispatch; the compiler check claims the reservation once
 Every new push is judged again for its new commit. Over the daily limit, or when the ledger cannot be used, the
 commit is held ("daily limit, retried automatically") and an hourly run retries the oldest first.
+When the compiler check that used a reservation finished without measuring anything (a machine fault, not a
+verdict), the hourly run frees that reservation for another check, at most twice for one commit on one main.
 
   admit.py event     decide for the pull request in this pull_request_target event
   admit.py retry     decide again for open fork pull requests that are held or undecided (hourly)
@@ -22,6 +24,7 @@ Switched on by the repository variable BFME_AUTO_ADMISSION=yes; otherwise it rep
 nothing. Limits come from BFME_ADMISSION_DAILY_TOTAL and BFME_ADMISSION_DAILY_PER_AUTHOR; when they are missing or
 invalid, nothing is admitted (held, retried automatically).
 """
+import datetime
 import re
 import json
 import os
@@ -48,6 +51,12 @@ ADMITTED_TRUSTED = "Admitted by rule: trusted source files only"
 ADMITTED_WIDE = "Admitted by rule: header change, wide check"
 DAILY_LIMIT = "Held: daily limit, retried automatically"
 SOURCE_HOLD = "Held: current source rules have not passed, retried automatically"
+UNMEASURED = "Held: the compiler check failed to run three times; a maintainer will look"
+COMPILER_WORKFLOW = ".github/workflows/managed-pr.yml"
+RUN_NUMBER = re.compile(r"[1-9][0-9]{0,19}")
+SETTLE_SECONDS = 120                    # a finished run's last status is visible well within this
+STATUS_PAGES = 10                       # more statuses than this on one commit: treat it as measured
+UNMEASURED_ENDINGS = {"failure", "cancelled", "timed_out", "startup_failure"}
 REMEASURE_EVENT = "bfme-remeasure"
 NEVER_PATHS = (".github/",)
 MAINTAINER_PATHS = ("include/", "ci/", "tools/", "config/", "expected/", "baseline/")
@@ -119,6 +128,70 @@ def measured_on(api, head, base):
     measured = {"success": "BFME II comparison passed", "failure": "BFME II check refused this patch"}
     prefix = measured.get(latest.get("state"))
     return prefix is not None and text.startswith(prefix) and text.endswith(f"(main {base[:12]})")
+
+
+def verdict_recorded(api, head, base):
+    """True unless it is certain that no compiler verdict for this main was ever written on this head.
+
+    Reads every status page, not the newest entries only: a later pending or error status, or a flood of other
+    statuses, must not hide an earlier verdict. Any measured status by the Actions bot for this main counts. If the
+    pages cannot all be read, the answer is True (treat as measured).
+    """
+    measured = {"success": "BFME II comparison passed", "failure": "BFME II check refused this patch"}
+    suffix = f"(main {base[:12]})"
+    for page in range(1, STATUS_PAGES + 1):
+        entries = api.call(f"commits/{head}/statuses?per_page=100&page={page}")
+        if not isinstance(entries, list):
+            return True
+        for item in entries:
+            if not isinstance(item, dict) or item.get("context") != BOAT_CONTEXT \
+                    or (item.get("creator") or {}).get("id") != BOT_ID:
+                continue
+            prefix = measured.get(item.get("state"))
+            text = item.get("description") or ""
+            if prefix is not None and text.startswith(prefix) and text.endswith(suffix):
+                return True
+        if len(entries) < 100:
+            return False
+    return True
+
+
+def unmeasured_claim(api, number, head, base, clock=None):
+    """The claim on this reservation when the run that made it is finished and measured nothing; else None.
+
+    A reservation is used once. If the compiler check that used it stopped on a machine fault, no verdict was
+    written and nothing else would ever measure this commit on this main. This reads the ledger, the claiming run
+    and every status page; any doubt (something unreadable, not this repository's compiler check started by the
+    admission dispatch on this main, another attempt, still running, not a failed ending, finished moments ago, a
+    verdict present) returns None and the reservation stays used.
+    """
+    try:
+        item = ledger.find(api, number, head, base)
+        claimed = (item or {}).get("claimed_by")
+        if not isinstance(claimed, dict) or set(claimed) != {"run", "attempt"}:
+            return None
+        run_id, attempt = claimed["run"], claimed["attempt"]
+        if not (isinstance(run_id, str) and RUN_NUMBER.fullmatch(run_id)
+                and isinstance(attempt, str) and RUN_NUMBER.fullmatch(attempt)):
+            return None
+        run = api.call(f"actions/runs/{run_id}")
+        if not isinstance(run, dict) or str(run.get("id")) != run_id or str(run.get("run_attempt")) != attempt \
+                or run.get("path") != COMPILER_WORKFLOW or (run.get("repository") or {}).get("id") != REPO_ID \
+                or run.get("event") != "repository_dispatch" or run.get("head_sha") != base \
+                or run.get("status") != "completed" or run.get("conclusion") not in UNMEASURED_ENDINGS:
+            return None
+        finished = datetime.datetime.strptime(run.get("updated_at") or "", "%Y-%m-%dT%H:%M:%SZ")
+        now = clock() if clock else datetime.datetime.now(datetime.timezone.utc)
+        if now.tzinfo is not None:
+            now = now.astimezone(datetime.timezone.utc).replace(tzinfo=None)
+        if (now - finished).total_seconds() < SETTLE_SECONDS:
+            return None
+        # The run's last status is written before the run completes, so read the verdict only now.
+        if verdict_recorded(api, head, base):
+            return None
+    except (ApiError, ledger.LedgerError, ValueError, TypeError, AttributeError):
+        return None
+    return claimed
 
 
 def latest_status(api, sha):
@@ -317,9 +390,27 @@ def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
             post(api, head, "pending", DAILY_LIMIT)
             return f"#{number}: held, the daily ledger could not be used ({printable(exc, 120)})"
         if issued == "claimed":
-            if not (prior and prior.get("state") == "success" and prior.get("description") == text):
-                post(api, head, "success", text)
-            return f"#{number}: exact reservation was already used on main {base[:12]}"
+            claimed = unmeasured_claim(api, number, head, base, clock)
+            if claimed is None:
+                if not (prior and prior.get("state") == "success" and prior.get("description") == text):
+                    post(api, head, "success", text)
+                return f"#{number}: exact reservation was already used on main {base[:12]}"
+            try:
+                again = ledger.reissue_unmeasured(api, budget, number, head, base, claimed, getattr(api, "run_id", ""),
+                                                  getattr(api, "run_attempt", ""), clock)
+            except (ledger.LedgerError, ApiError) as exc:
+                post(api, head, "pending", DAILY_LIMIT)
+                return f"#{number}: held, the daily ledger could not be used ({printable(exc, 120)})"
+            if again == "over-budget":
+                post(api, head, "pending", DAILY_LIMIT)
+                return f"#{number}: held, daily limit reached (retry after an unmeasured run)"
+            if again == "exhausted":
+                if not (prior and prior.get("state") == "pending" and prior.get("description") == UNMEASURED):
+                    post(api, head, "pending", UNMEASURED)
+                return f"#{number}: the compiler check ended unmeasured three times; nothing more is dispatched"
+            if again != "reissued":
+                return f"#{number}: the reservation changed while it was read; retried automatically"
+            issued = "refreshed"
         if issued != "refreshed":
             return f"#{number}: prior reservation no longer exists; retried automatically"
     # The reservation is committed before the status and the dispatch, so the compiler check can always find it;
