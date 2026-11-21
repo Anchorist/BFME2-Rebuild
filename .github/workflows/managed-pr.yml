@@ -16,6 +16,7 @@ env:
   BFME_ADMISSION_DAILY_TOTAL: '${{ vars.BFME_ADMISSION_DAILY_TOTAL }}'
   BFME_ADMISSION_DAILY_PER_AUTHOR: '${{ vars.BFME_ADMISSION_DAILY_PER_AUTHOR }}'
   BFME_TRIGGERING_ACTOR: '${{ github.triggering_actor }}'
+  BFME_INLINE_OWNER_SCOPE: '${{ vars.BFME_INLINE_OWNER_SCOPE }}'
 
 concurrency:
   group: >-
@@ -339,7 +340,7 @@ jobs:
           dir="$RUNNER_TEMP/bfme-inline-narrow"
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C TMPDIR="$RUNNER_TEMP" \
             GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
-            GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" \
+            GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" BFME_INLINE_OWNER_SCOPE="$BFME_INLINE_OWNER_SCOPE" \
             python3 -B ci/managed-check/managed_inline_action.py "$RUNNER_TEMP/bfme-plan/plan.json" \
               "$dir/matrix.json" "$dir" "$NARROW_SHA" "$RUNNER_TEMP/bfme-inline-report"
 
@@ -1106,7 +1107,7 @@ jobs:
           fi
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C TMPDIR="$RUNNER_TEMP" \
             GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
-            GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" \
+            GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" BFME_INLINE_OWNER_SCOPE="$BFME_INLINE_OWNER_SCOPE" \
             python3 -B ci/managed-check/managed_inline_action.py "$RUNNER_TEMP/bfme-plan/plan.json" \
               "$matrix" "$dir" "$sha" "$RUNNER_TEMP/bfme-inline-report"
       - name: Retain report-only state and summary
@@ -1512,7 +1513,7 @@ jobs:
           fi
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C TMPDIR="$RUNNER_TEMP" \
             GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
-            GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" \
+            GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" BFME_INLINE_OWNER_SCOPE="$BFME_INLINE_OWNER_SCOPE" \
             python3 -B ci/managed-check/managed_inline_action.py "$RUNNER_TEMP/bfme-plan/plan.json" \
               "$matrix" "$dir" "$sha" "$RUNNER_TEMP/bfme-inline-report"
       - name: Retain report-only state and summary

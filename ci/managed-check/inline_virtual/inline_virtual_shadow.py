@@ -22,6 +22,7 @@ PURE_NAMES = {"_purecall", "__purecall", "___purecall"}
 HASH = re.compile(r"[0-9a-f]{64}")
 PIN = re.compile(r"[0-9a-f]{40}")
 MAX_BODY = 32
+BODY_WITNESS_LIMIT = 1024**2
 
 
 @dataclass(frozen=True)
@@ -77,6 +78,12 @@ def decode(data, exact=True):
         kind, value, i = "eax", int.from_bytes(data[1:2], "little", signed=True) & 0xffffffff, 3
     elif data[:2] in (b"\xd9\xee", b"\xd9\xe8"):
         kind, value, i = "x87", int(data[1] == 0xe8), 2
+    elif len(data) >= 2 and data[0] in (0xd9, 0xdd) and data[1] in (0x01, 0x41, 0x81):
+        size = {0x01: 0, 0x41: 1, 0x81: 4}[data[1]]
+        if len(data) < 2 + size:
+            return None
+        width = 32 if data[0] == 0xd9 else 64
+        kind, value, i = "x87-read", (width, int.from_bytes(data[2:2 + size], "little", signed=True)), 2 + size
     elif data[:2] in (b"\x8b\xc1", b"\x89\xc8"):
         kind, value, i = "this", 0, 2
     elif data[:2] in (b"\x8d\x41", b"\x8d\x81"):
@@ -102,7 +109,7 @@ def decode(data, exact=True):
     return Effect(kind, value, pop, write)
 
 
-def return_width(name):
+def return_contract(name):
     # Public/protected/private ordinary virtual thiscall signatures only.
     # Adjustment thunks have different decoration; leave that inference open.
     match = re.search(r"@@[EMU][A-D]E([_A-Z])", name)
@@ -110,27 +117,56 @@ def return_width(name):
         return None
     code = match[1]
     if code == "_" and name[match.end():match.end() + 1] == "N":
-        return 8
+        return "integer", 8
+    if code in {"M", "N"}:
+        return "x87", 32 if code == "M" else 64
+    if code == "X":
+        return "void", 0
     if code == "W":
-        return {"0": 8, "1": 8, "2": 16, "3": 16, "4": 32, "5": 32}.get(
+        width = {"0": 8, "1": 8, "2": 16, "3": 16, "4": 32, "5": 32}.get(
             name[match.end():match.end() + 1])
-    return {"X": 0, "C": 8, "D": 8, "E": 8, "F": 16, "G": 16,
-            "H": 32, "I": 32, "J": 32, "K": 32,
-            "P": 32, "Q": 32, "R": 32, "S": 32}.get(code)
+    else:
+        width = {"C": 8, "D": 8, "E": 8, "F": 16, "G": 16,
+                 "H": 32, "I": 32, "J": 32, "K": 32,
+                 "P": 32, "Q": 32, "R": 32, "S": 32}.get(code)
+    return None if width is None else ("integer", width)
 
 
-def compare(ours, native, symbol):
+def return_width(name):
+    contract = return_contract(name)
+    return None if contract is None else contract[1]
+
+
+def compare(ours, native, symbol, *, protected_return=None):
+    declared = return_contract(symbol)
+    if protected_return is not None and declared is not None and declared != protected_return:
+        return "mismatch"
     if ours is None or native is None:
         return "review"
     if ours.kind == "pure" or native.kind == "pure":
         return "same" if ours.kind == native.kind else "mismatch"
     if ours.pop != native.pop or ours.write != native.write:
         return "mismatch"
-    width = return_width(symbol)
-    if width == 0:
-        # Integer register clobber is immaterial to a void virtual, but x87
-        # pushes a value onto the caller's floating-point stack.
-        return "mismatch" if (ours.kind == "x87") != (native.kind == "x87") else "same"
+    contract = protected_return or declared
+    if contract is None:
+        return "review"
+    channel, width = contract
+    ours_x87 = ours.kind in {"x87", "x87-read"}
+    native_x87 = native.kind in {"x87", "x87-read"}
+    if channel == "void":
+        if ours_x87 != native_x87:
+            return "mismatch"
+        if protected_return is None and ours.kind == "void" and native.kind not in {"void", "pure"}:
+            # A candidate's own spelling cannot tell whether the native register is a return value.
+            return "review"
+        return "same"
+    if channel == "x87":
+        if ours_x87 != native_x87:
+            return "mismatch"
+        if not ours_x87:
+            return "review"
+        if ours.kind != native.kind:
+            return "mismatch"
     if ours.kind == native.kind:
         if ours.kind == "eax" and width in (8, 16):
             mask = (1 << width) - 1
@@ -141,6 +177,8 @@ def compare(ours, native, symbol):
             return "mismatch"
         return "same" if width == 8 else "review"
     if {ours.kind, native.kind} == {"this", "eax"} and width == 32:
+        return "mismatch"
+    if ours_x87 != native_x87:
         return "mismatch"
     if "read" in (ours.kind, native.kind):
         other = native if ours.kind == "read" else ours
@@ -165,7 +203,7 @@ def adjusted(effect, delta):
     value = effect.value
     if effect.kind == "this":
         value += delta
-    if effect.kind == "read":
+    if effect.kind in {"read", "x87-read"}:
         value = value[0], value[1] + delta
     write = effect.write
     if write:
@@ -332,8 +370,8 @@ def table_cells(coff, index):
     return tuple(slots)
 
 
-def small_bodies(coff):
-    """Read complete bounded x86 bodies and unambiguous tail relocations."""
+def small_bodies(coff, witnesses=None):
+    """Read bounded virtual effects, optionally committing to complete emitted bodies."""
     starts = defaultdict(set)
     functions = []
     for index, symbol in enumerate(coff.symbols):
@@ -345,7 +383,7 @@ def small_bodies(coff):
         if name:
             starts[section].add(symbol["value"])
         if (symbol.get("storage") in (2, 3) and name.startswith("?")
-                and not name.startswith(("??_E", "??_G", "??_R"))):
+                and (witnesses is not None or not name.startswith(("??_E", "??_G", "??_R")))):
             functions.append((index, section, symbol["value"], name))
     sorted_starts = {sec: sorted(offsets) for sec, offsets in starts.items()}
     for index, section, offset, name in functions:
@@ -353,12 +391,28 @@ def small_bodies(coff):
         at = bisect_right(points, offset)
         end = points[at] if at < len(points) else coff.sections[section - 1]["raw_size"]
         size = end - offset
-        if not 0 < size <= MAX_BODY:
+        if witnesses is not None and 0 < size <= BODY_WITNESS_LIMIT:
+            loc = coff.loc(index)
+            binding = []
+            for relative, kind, symbol_index in coff.relocs(loc, size):
+                target = coff.symbols[symbol_index]
+                binding.append([relative, kind, *(target.get(field) for field in (
+                    "name", "storage", "type", "section", "value"))])
+            identity = hashlib.sha256(coff.bytes(loc, size))
+            identity.update(json.dumps([name, section, binding], ensure_ascii=True,
+                                       separators=(",", ":")).encode("ascii"))
+            witnesses.append((name, identity.hexdigest()))
+        if name.startswith(("??_E", "??_G", "??_R")) or not 0 < size <= MAX_BODY + 15:
             yield name, None
             continue
         loc = coff.loc(index)
-        code = coff.bytes(loc, size)
+        raw = coff.bytes(loc, size)
+        code = raw.rstrip(b"\xCC") if end % 16 == 0 else raw
         relocs = coff.relocs(loc, size)
+        if (not 0 < len(code) <= MAX_BODY or size - len(code) > 15
+                or any(reloc[0] >= len(code) for reloc in relocs)):
+            yield name, None
+            continue
         if not relocs:
             yield name, decode(code)
             continue
@@ -390,14 +444,14 @@ def resolve_effect(bodies, symbol, path=()):
     return effects
 
 
-def collect_one(coff, selected=None):
+def collect_one(coff, selected=None, *, witnesses=None):
     tables = []
     for index, symbol in enumerate(coff.symbols):
         name = symbol.get("name", "")
         match = TABLE.fullmatch(name)
         if match and symbol.get("section", 0) > 0 and (selected is None or match[1] in selected):
             tables.append((name, table_cells(coff, index)))
-    return tables, list(small_bodies(coff))
+    return tables, list(small_bodies(coff, witnesses))
 
 
 def collections():
@@ -423,7 +477,9 @@ def scan(pe, catalog, objects, owners, coff_reader, known=(), keep_comparable=Fa
     return scan_collected(pe, catalog, tables, bodies, selected, holes, known, keep_comparable)
 
 
-def scan_collected(pe, catalog, tables, bodies, selected, holes, known=(), keep_comparable=False):
+def scan_collected(pe, catalog, tables, bodies, selected, holes, known=(), keep_comparable=False,
+                   *, return_types=None, parent_slots=None, scanned_slots=None,
+                   required_tables=(), retained_slots=()):
     if catalog.get("format", 1) != 1 or catalog["retail_sha256"] != pe.sha256:
         raise ValueError("retail image fingerprint differs from anchor catalogue")
     known = set(known)
@@ -432,7 +488,10 @@ def scan_collected(pe, catalog, tables, bodies, selected, holes, known=(), keep_
     observed = {TABLE.fullmatch(table)[1] for table in tables}
     for owner in sorted((selected or set()) - observed):
         holes.append((owner, "no vftable emitted in supplied closure"))
+    for table in sorted(set(required_tables) - tables.keys()):
+        holes.append((table, "required table was not emitted in this closure"))
     for table, variants in sorted(tables.items()):
+        strict = table in required_tables or (selected is not None and TABLE.fullmatch(table)[1] in selected)
         anchor = catalog["tables"].get(table)
         if len(variants) != 1:
             holes.append((table, "multiple emitted vftable topologies"))
@@ -456,17 +515,35 @@ def scan_collected(pe, catalog, tables, bodies, selected, holes, known=(), keep_
         stats["bound_tables"] += 1
         stats["cells_in_bound_tables"] += len(targets)
         for ordinal, (symbol, target) in enumerate(zip(slots, targets)):
+            slot = (table, ordinal, target)
             if symbol is None:
+                if strict:
+                    holes.append((table, f"required slot {ordinal} has no unambiguous emitted symbol"))
                 stats["unresolved_cells"] += 1
                 continue
             opts = resolve_effect(bodies, symbol)
             if len(opts) != 1 or None in opts:
+                if scanned_slots is not None:
+                    scanned_slots[slot] = (symbol, None, None)
+                if strict and slot not in retained_slots:
+                    holes.append((table, f"required slot {ordinal} has no single retained body witness"))
                 stats["body_variants" if len(opts) > 1 else "unprofiled_source_cells"] += 1
                 continue
             ours, providers = next(iter(opts.items()))
             native = read_image_effect(pe, target, pure)
-            status = compare(ours, native, symbol)
+            prior = (parent_slots or {}).get(slot)
+            signature = (return_types or {}).get(target) or (prior[2] if prior else None)
+            status = compare(ours, native, symbol, protected_return=signature)
+            if scanned_slots is not None:
+                declared = return_contract(symbol)
+                # A matched non-void parent effect can corroborate the source return channel.
+                proved = (declared if status == "same" and declared and declared[0] != "void"
+                          and ours.kind != "pure" and native.kind == ours.kind else None)
+                scanned_slots[slot] = (symbol, ours, proved)
             if status == "review":
+                if (strict and slot not in retained_slots) or (
+                        prior is not None and prior[:2] != (symbol, ours)):
+                    holes.append((table, f"changed inline slot {ordinal} lacks comparable native return evidence"))
                 stats["unsupported_native_or_abi"] += 1
                 continue
             stats["compared_trivial_cells"] += 1
@@ -477,7 +554,7 @@ def scan_collected(pe, catalog, tables, bodies, selected, holes, known=(), keep_
             discrepancy = {
                 "table": table, "owner": TABLE.fullmatch(table)[1],
                 "table_rva": address, "slot": ordinal, "retail_target": target,
-                "symbol": symbol, "ours": asdict(ours), "reference": asdict(native),
+                "symbol": symbol, "ours": asdict(ours), "reference": asdict(native) if native is not None else None,
                 "emitters": sorted(source_tus), "providers": sorted(providers),
                 "anchor_evidence": anchor["evidence"],
             }
@@ -499,8 +576,7 @@ def mark_parent(candidate, prior):
     comparable = {tuple(cell) for cell in prior.get("comparable", ())}
     coverage_complete = (isinstance(prior.get("required_tus"), int)
                          and prior["required_tus"] == prior.get("authenticated_tus")
-                         and not any(len(hole) >= 1 and str(hole[0]).startswith("src/")
-                                     for hole in prior["coverage_holes"]))
+                         and not prior["coverage_holes"])
     counts = Counter()
     for finding in candidate["findings"]:
         identity = tuple(finding[field] for field in ("table", "table_rva", "slot", "retail_target"))

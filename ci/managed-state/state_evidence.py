@@ -126,7 +126,9 @@ def cached_pairs(snapshot, header_fields, commands):
                 raise ValueError("Cached compiler witness is invalid.")
         if set(compiler) != expected:
             raise ValueError("Cached compiler witness has unexpected fields.")
-        if set(inline) not in ({"side", "tu", "tables", "bodies"}, {"side", "tu", "unavailable"}):
+        if set(inline) not in ({"side", "tu", "tables", "bodies"},
+                               {"side", "tu", "tables", "bodies", "body_witnesses"},
+                               {"side", "tu", "unavailable"}):
             raise ValueError("Cached virtual effect record is invalid.")
         if (not isinstance(names, list) or len(names) > 250_000
                 or not all(isinstance(name, str) and HEX64.fullmatch(name) for name in names)

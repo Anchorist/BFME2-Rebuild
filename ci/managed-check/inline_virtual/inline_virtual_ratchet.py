@@ -13,9 +13,9 @@ def verified_report(report, pin):
         raise ValueError("invalid inline-virtual authentication counts")
     if any(row["fingerprint"] != fingerprint(row) for row in report["findings"]):
         raise ValueError("inline-virtual fingerprint differs from reported effect")
-    return required == taken and not any(
-        str(hole[0]).startswith("src/") for hole in report["coverage_holes"]
-    )
+    # Source, class-owner and native-table holes each leave the requested
+    # comparison incomplete, even when every expected object authenticated.
+    return required == taken and not report["coverage_holes"]
 
 
 def evaluate(head, parent, *, expected_head, expected_parent, scope_complete):
@@ -24,6 +24,9 @@ def evaluate(head, parent, *, expected_head, expected_parent, scope_complete):
     parent_complete = verified_report(parent, expected_parent)
     if head["requested_owners"] != parent["requested_owners"]:
         raise ValueError("candidate and parent inline-virtual scopes differ")
+    typed_scope = head.get("typed_scope")
+    if typed_scope != parent.get("typed_scope"):
+        raise ValueError("Candidate and parent carry different protected table selections.")
     if type(scope_complete) is not bool:
         raise ValueError("inline-virtual scope must be validated by the caller")
 
@@ -43,10 +46,12 @@ def evaluate(head, parent, *, expected_head, expected_parent, scope_complete):
         "status": status, "accepted": status == "pass",
         "complete_input_scope": complete,
         "requested_owners": head["requested_owners"],
+        **({"typed_scope": typed_scope} if typed_scope is not None else {}),
         "findings": candidate["findings"],
         "counts": dict(sorted(counts.items())),
         "coverage": {
             side: {key: report[key] for key in ("required_tus", "authenticated_tus", "coverage_holes")}
+                  | ({"context_table_holes": report["context_table_holes"]} if "context_table_holes" in report else {})
             for side, report in (("head", head), ("parent", parent))
         },
     }
