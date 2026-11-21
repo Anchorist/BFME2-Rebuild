@@ -188,6 +188,17 @@ class DeclarationEvidence(unittest.TestCase):
         self.assertEqual(module.seen[0], {key: record()[key] for key in ("number", "base", "head", "tree")})
 
 
+class AdmissionStatus(unittest.TestCase):
+    def test_only_the_bot_admission_status_counts_for_h10(self):
+        forged = {"id": 9, "context": "BFME II / Admission", "state": "success",
+                  "description": "Admitted by rule: header change, wide check", "creator": {"id": 1}}
+        rows = collect.components_for(record(), None, None, collect.latest_bot_status([forged], "BFME II / Admission"))
+        self.assertEqual(rows["H10"]["state"], "held")
+        real = dict(forged, creator={"id": collect.BOT_ID})
+        rows = collect.components_for(record(), None, None, collect.latest_bot_status([real], "BFME II / Admission"))
+        self.assertEqual(rows["H10"]["state"], "pass")
+
+
 class LateMove(unittest.TestCase):
     """A move of main or the head while the rules are read (after the first check) writes nothing."""
 

@@ -125,7 +125,7 @@ def read_h2(record):
         return {"error": f"no published declaration evidence for this commit ({type(exc).__name__})"}
 
 
-def components_for(record, boat, h2=None):
+def components_for(record, boat, h2=None, admission=None):
     base = record["base"]
     if record.get("checks") is None:
         rows = {rule: {"state": "missing"} for rule in SOURCE_RULES}
@@ -143,6 +143,7 @@ def components_for(record, boat, h2=None):
         if request:
             rows["H9"] = request
     rows.setdefault("H5", {"state": "missing"})     # layout producer: not on main yet
+    rows["H10"] = compose.from_admission(admission, rows["H1"])
     return rows
 
 
@@ -208,7 +209,8 @@ def publish(path, api=None, out=print):
     code, statuses = api.send("GET", f"commits/{record['head']}/statuses?per_page=100")
     if code != 200:
         raise Stop(f"Expected the status list. Found HTTP {code}.")
-    rows = components_for(record, latest_bot_status(statuses, "BFME II / Boat"), read_h2(record))
+    rows = components_for(record, latest_bot_status(statuses, "BFME II / Boat"), read_h2(record),
+                          latest_bot_status(statuses, "BFME II / Admission"))
     request = rows.pop("H9", None)
     state, text, report = compose.compose(record["base"], rows, ledger_request=request)
     prior = latest_bot_status(statuses, compose.CONTEXT) or {}

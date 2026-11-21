@@ -22,6 +22,7 @@ BOAT_NOW = {"state": "success", "description": f"BFME II comparison passed (main
 def components(pr, boat):
     rows = compose.from_preview(BY_PR[pr])
     rows["H1"] = compose.from_wide_status(boat, BASE)
+    rows["H10"] = compose.from_admission(None, rows["H1"])     # as collect.components_for does
     return rows
 
 
@@ -138,6 +139,39 @@ class LanderForms(unittest.TestCase):
         self.assertTrue(compose.compose(BASE, rows, "R-1")[1].startswith("Held: ledger request"))
         del rows["H5"]
         self.assertTrue(compose.compose(BASE, rows)[1].startswith("Held: rule not built"))
+
+
+
+class WideBudget(unittest.TestCase):
+    """H10 from the bot's admission status; it holds and never fails."""
+
+    def rows(self, admission, wide_state="held"):
+        rows = {rule: {"state": "pass"} for rule in compose.RULES}
+        rows["H1"] = {"state": wide_state, "message": "The wide comparison has not reported for this commit."}
+        rows["H10"] = compose.from_admission(admission, rows["H1"])
+        return rows
+
+    def test_over_budget_names_h10_not_h1(self):
+        state, text, _ = compose.compose(BASE, self.rows({"state": "pending", "description": compose.DAILY_LIMIT}))
+        self.assertEqual((state, text), ("pending", f"Held: H10 daily limit for wide checks reached; retried "
+                                                    f"automatically (main {BASE[:12]})"))
+
+    def test_admitted_wide_passes_h10_and_h1_still_waits(self):
+        state, text, _ = compose.compose(BASE, self.rows({"state": "success", "description": compose.WIDE_ADMITTED}))
+        self.assertTrue(text.startswith("Held: H1 "), text)
+
+    def test_a_wide_result_on_this_main_passes_h10_whoever_started_it(self):
+        for wide in ("pass", "fail"):
+            self.assertEqual(self.rows(None, wide)["H10"]["state"], "pass")
+
+    def test_no_admission_and_no_wide_result_holds_and_never_fails(self):
+        for status in (None, {"state": "pending", "description": "Waiting for a maintainer: this changes include/."},
+                       {"state": "failure", "description": "anything"}):
+            self.assertEqual(self.rows(status)["H10"]["state"], "held")
+
+    def test_all_ten_passing_is_success(self):
+        rows = {rule: {"state": "pass"} for rule in compose.RULES}
+        self.assertEqual(compose.compose(BASE, rows)[0], "success")
 
 
 if __name__ == "__main__":

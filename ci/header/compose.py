@@ -16,7 +16,9 @@ from html import escape
 
 
 CONTEXT = "BFME II / Header rules"
-RULES = ("H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8")
+RULES = ("H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H10")
+WIDE_ADMITTED = "Admitted by rule: header change, wide check"     # ci/admission/admit.py ADMITTED_WIDE
+DAILY_LIMIT = "Held: daily limit, retried automatically"          # ci/admission/admit.py DAILY_LIMIT
 STATES = ("pass", "held", "fail", "missing")
 LIMIT = 140
 
@@ -68,6 +70,7 @@ def compose(base, components, ledger_request=None):
     if missing:
         return "pending", _fit(f"Held: rule not built: {', '.join(missing)}", base), report
     held = [(rule, item) for rule, state, item in rows if state == "held"]
+    held.sort(key=lambda row: row[0] != "H10")     # a budget hold explains why the wide check (H1) waits
     if held:
         rule, item = held[0]
         return "pending", _fit(f"Held: {rule} {item.get('message', 'waiting for its proof')}", base), report
@@ -117,6 +120,24 @@ def from_h2(result):
     if result.get("status") == "pass":
         return {"state": "pass", "message": "every changed declaration compiles to its ledger name"}, None
     return {"state": "held", "message": "the declaration check gave no verdict"}, None
+
+
+def from_admission(status, wide):
+    """H10, the wide budget, from the bot's BFME II / Admission status on this head and the H1 row already composed.
+    It never fails: over budget, a header change waits and is retried automatically."""
+    if (wide or {}).get("state") in ("pass", "fail"):
+        return {"state": "pass", "message": "The wide check ran on this main."}
+    text = (status or {}).get("description") or ""
+    if (status or {}).get("state") == "success" and text.startswith(WIDE_ADMITTED):
+        return {"state": "pass", "message": "The wide check was admitted within the daily budget."}
+    if text.startswith(DAILY_LIMIT):
+        return {"state": "held", "message": "daily limit for wide checks reached; retried automatically",
+                "remedy": "Nothing to do: the wide check starts when the daily budget allows."}
+    if text.startswith("Waiting for a maintainer"):
+        return {"state": "held", "message": "a maintainer starts the wide check for header changes",
+                "remedy": "Nothing to do: header changes are started by a maintainer while automatic headers are off."}
+    return {"state": "held", "message": "no wide check admitted for this commit yet",
+            "remedy": "Nothing to do: admission runs on every push and hourly."}
 
 
 def from_wide_status(status, base):
