@@ -12,12 +12,12 @@
 
 #include "WWLib/vector.h"
 
-// One display mode the device offers (Zero Hour's rddesc.h).
+// One display mode the device offers (Zero Hour's rddesc.h). Zero Hour's constructors are left out: no body here calls
+// them, and a definition here is emitted as code in every unit that includes this header. The comparisons stay because
+// DynamicVectorClass<T>::ID instantiates them.
 class ResolutionDescClass
 {
 public:
-	ResolutionDescClass(void) : Width(0), Height(0), BitDepth(0) { }
-	ResolutionDescClass(int w, int h, int bits) : Width(w), Height(h), BitDepth(bits) { }
 	bool operator==(const ResolutionDescClass &src) { return ((Width == src.Width) && (Height == src.Height) && (BitDepth == src.BitDepth)); }
 	bool operator!=(const ResolutionDescClass &src) { return ((Width != src.Width) || (Height != src.Height) || (BitDepth != src.BitDepth)); }
 
@@ -36,10 +36,11 @@ public:
 	bool operator==(const RenderDeviceDescClass &src) { return false; }
 	bool operator!=(const RenderDeviceDescClass &src) { return true; }
 
-	const DynamicVectorClass<ResolutionDescClass> &Enumerate_Resolutions(void) const { return ResArray; }
-
 private:
 	unsigned char m_opaque[0x5A0];		// +0x000
+
+public:
+	// Zero Hour reaches this through Enumerate_Resolutions; the accessor is left out for the same reason as above.
 	DynamicVectorClass<ResolutionDescClass> ResArray;	// +0x5A0
 };
 

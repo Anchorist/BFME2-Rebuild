@@ -312,7 +312,7 @@ Object *ObjectIterator::next() throw()
 int Rva0045878Count()
 {
 	const RenderDeviceDescClass &devDesc = WW3D::Get_Render_Device_Desc(0);
-	const DynamicVectorClass<ResolutionDescClass> &resolutions = devDesc.Enumerate_Resolutions();
+	const DynamicVectorClass<ResolutionDescClass> &resolutions = devDesc.ResArray;
 
 	int numResolutions = 0;
 	for (int res = 0; res < resolutions.Count(); res++)
@@ -332,7 +332,7 @@ void __stdcall Rva00458E2Get(int modeIndex, int *xres, int *yres, int *bitDepth)
 {
 	int numResolutions = 0;
 	const RenderDeviceDescClass &devDesc = WW3D::Get_Render_Device_Desc(0);
-	const DynamicVectorClass<ResolutionDescClass> &resolutions = devDesc.Enumerate_Resolutions();
+	const DynamicVectorClass<ResolutionDescClass> &resolutions = devDesc.ResArray;
 
 	for (int res = 0; res < resolutions.Count(); res++)
 	{
