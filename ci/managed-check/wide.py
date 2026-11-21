@@ -28,13 +28,13 @@ BATCH = 8
 MAX_RECEIPT = 4 * 1024**2
 
 
-def admission(path):
+def admission(path, *, kinds=("wide",)):
     path = Path(path)
     saved = path / "plan.json"
     plan = validate_binding(read(saved))
     decision = read(path / "decision.json", 4096)
     plan_hash = digest(saved.read_bytes())
-    if (decision["kind"] != "wide" or decision["plan"] != plan_hash
+    if (decision["kind"] not in kinds or decision["plan"] != plan_hash
             or any(decision[key] != plan[key] for key in ("number", "repo", "base", "head", "tree"))
             or plan["base"] != os.environ["GITHUB_SHA"]):
         raise ValueError("The wide input differs from protected admission.")
