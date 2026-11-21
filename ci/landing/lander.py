@@ -257,11 +257,13 @@ def evaluate(api, number, main, config):
                     hold("header-approval", f"an approval of head {head[:12]} by a listed header approver",
                          "none yet. A maintainer listed in ci/landing/landing.json reviews every change under "
                          "include/; a new push needs a new approval")
-    if pr.get("mergeable") is False:
+    statuses = read_statuses(api, head)
+    # GitHub does not recompute "mergeable" when main moves. A compiler check that passed on this exact main composed
+    # this head onto it (unique ancestor, three-way merge), so an older "false" does not hold it; the merge itself is
+    # still GitHub's and refuses a real conflict.
+    if pr.get("mergeable") is False and classify(statuses.get(BOAT), main) != "fresh-success":
         hold("merge-conflict", "a pull request that merges cleanly into main",
              "a conflict; merge or rebase main into the branch", True)
-
-    statuses = read_statuses(api, head)
     decision["landing_status"] = statuses.get(LANDING_CONTEXT)
     stale = False
     required = REQUIRED + ((INLINE,) if INLINE_VIRTUAL_POLICY == "required" else ())

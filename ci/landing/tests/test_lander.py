@@ -115,6 +115,16 @@ class Select(unittest.TestCase):
         self.assertEqual(decision["checks"][lander.BOAT], "fresh-failure")
         self.assertEqual(decision["checks"][lander.INLINE], "pending")
 
+    def test_githubs_old_conflict_flag_does_not_hold_a_head_passed_on_this_main(self):
+        def conflicted(fx):
+            fx["pulls/2"]["mergeable"] = False
+        api = FakeApi(live=False, main=MEASURED, edit=conflicted)
+        decision = lander.evaluate(api, 2, MEASURED, CONFIG)
+        self.assertEqual((decision["stage"], decision["reasons"]), ("land", []))
+        api = FakeApi(live=False, main=LIVE_MAIN, edit=conflicted)          # measured on an older main only
+        decision = lander.evaluate(api, 2, LIVE_MAIN, CONFIG)
+        self.assertIn("merge-conflict", [item.code for item in decision["reasons"]])
+
     def test_rehearsal_branch_is_refused_without_its_exact_exception(self):
         api = FakeApi(live=False, main=MEASURED)
         decision = lander.evaluate(api, 2, MEASURED, CONFIG | {"exceptions": set()})
