@@ -1218,6 +1218,7 @@ jobs:
     name: Report on the pull request head
     outputs:
       stale: ${{ (steps.native.outputs.stale == 'yes' || steps.publish.outputs.stale == 'yes') && 'yes' || 'no' }}
+      passed: ${{ steps.native.outcome == 'success' && steps.native.outputs.verdict == 'success' && 'yes' || 'no' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -1623,6 +1624,7 @@ jobs:
     name: Report verified wide fallback on the pull request head
     outputs:
       stale: ${{ steps.native.outputs.stale }}
+      passed: ${{ steps.native.outcome == 'success' && steps.native.outputs.verdict == 'success' && 'yes' || 'no' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -1736,6 +1738,31 @@ jobs:
             '{event_type: "bfme-remeasure", client_payload: {number: $number, head: $head, base: $base}}' |
             gh api --method POST "repos/$repo/dispatches" --input -
           printf 'Requested a fresh comparison of the admitted head on main %s.\n' "${base:0:12}" >> "$GITHUB_STEP_SUMMARY"
+
+  # GitHub starts no workflow_run event for a run whose trigger was sent with the Actions token, so the landing
+  # workflow never hears that a dispatch-started check finished. After this run published a passing verdict for the
+  # current main, ask it to look now (it decides what lands). No checkout, no pull request content, no payload.
+  notify-landing:
+    needs: [report, fallback-report]
+    if: >-
+      always() && !cancelled() &&
+      (needs.report.outputs.passed == 'yes' || needs.fallback-report.outputs.passed == 'yes') &&
+      github.repository_id == '1464323350' && github.ref == 'refs/heads/main' &&
+      github.event_name == 'repository_dispatch' && github.actor_id == '41898282'
+    name: Ask the landing workflow to look now
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    steps:
+      - name: Send bfme-land-next
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          jq -n '{event_type: "bfme-land-next", client_payload: {}}' |
+            gh api --method POST "repos/$GITHUB_REPOSITORY/dispatches" --input - >/dev/null
 
   notify-header-rules:
     needs: [compare, wide-join, report]

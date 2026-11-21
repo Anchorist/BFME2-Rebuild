@@ -150,6 +150,11 @@ def publish(phase, admission=None, result=None):
         elif not authority(latest, binding, os.environ)["approved"]:
             raise Superseded()
     api.status(binding, status, f"{message} (main {binding['base'][:12]})")
+    if phase == "finish" and status == "success" and os.environ.get("GITHUB_OUTPUT"):
+        # Only a passing verdict, written for the current main, is announced. GitHub starts no workflow_run for a
+        # run started with the Actions token, so the dispatch-started check wakes the landing workflow itself.
+        with Path(os.environ["GITHUB_OUTPUT"]).open("a") as stream:
+            stream.write("verdict=success\n")
     if status in {"failure", "error"}:
         raise SystemExit(1)
 
