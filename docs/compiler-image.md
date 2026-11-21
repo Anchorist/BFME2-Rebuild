@@ -2,6 +2,8 @@
 
 This document describes the isolated compiler image used by the hosted **BFME II / Boat** pull-request checks and shows how to rebuild and verify an equivalent image yourself using the scripts in [`tools/compiler-image/`](../tools/compiler-image/).
 
+> **Warning (throwaway machine only):** `tools/compiler-image/build.sh` (via `fresh-install.sh` and `seal.sh`) is destructive to host state. It deletes `/root/.ssh/authorized_keys` (and removes `/root/.ssh`), deletes `/root/.config/gh` and `/root/.config/boat`, and stops and runtime-masks Docker (`docker.socket`, `docker.service`, `containerd.service`) while removing `/run/docker.sock`. Run it only on a fresh, disposable Ubuntu 24.04 machine, never on a workstation or shared server.
+
 ## What the image is
 
 The hosted compiler runner (`bfme2-compiler-v1`) is an Ubuntu 24.04 (`ubuntu-noble`) `x86_64` host containing a sealed, read-only compiler runtime under `/opt/boat-compiler` and a fixed local entry point at `/usr/local/libexec/bfme2-compiler/run`:
@@ -131,9 +133,9 @@ The 62 DirectX SDK header digests are listed file by file in [`ci/managed-check/
 
 1. **Dedicated unprivileged user:** Compilations never run as `root` or the CI runner user. `/usr/local/libexec/bfme2-compiler/run` clears the environment (`env -i PATH=/usr/sbin:/usr/bin:/bin LANG=C PYTHONDONTWRITEBYTECODE=1`) and switches via `setpriv --reuid=ci-compile --regid=ci-compile --clear-groups` into the locked-password account `ci-compile`.
 2. **Namespace and mount sandbox (`pool_launcher.py`):** Each translation unit runs inside `bwrap --unshare-all --die-with-parent --cap-drop ALL --clearenv` with a private network namespace, read-only `/` (`rootfs`), `/opt/boat-compiler/tools`, `/ci/guard`, `/ci/job/src`, `/ci/job/include`, and ephemeral writable `/ci/wine`, `/ci/job/out`, and `/tmp`.
-3. **Seccomp socket and syscall filter (`pool_network.py`):** Before running Wine or `cl.exe`, `pool_network.py` closes descriptors `>= 3`, sets `PR_SET_NO_NEW_PRIVS`, and installs a BPF seccomp filter for both `x86_64` and `i386` (denying `x32`) that blocks all sockets except `AF_UNIX` (needed by local `wineserver`), as well as `io_uring`, `ptrace`, `bpf`, and `process_vm_*`.
+3. **Seccomp socket and syscall filter (`pool_network.py`):** Before running Wine or `cl.exe`, `pool_network.py` closes descriptors `>= 3`, sets `PR_SET_NO_NEW_PRIVS`, and installs a BPF seccomp filter for both `x86_64` and `i386` (denying `x32`) that blocks all sockets except `AF_UNIX` (needed by local `wineserver`), as well as `io_uring` (`425`-`427`), `ptrace`, `bpf`, `pidfd_getfd` (`438`), and i386 `socketcall` (`102`).
 4. **Resource limits (`pool_worker.py` and `pool_compiler.py`):** The outer invocation applies `prlimit --fsize=67108864:67108864 --core=0:0 --cpu=420:430 --nofile=1024:1024` so Wine can initialize its ephemeral `/ci/wine` prefix (`wineboot -i`), removes every DOS drive symlink other than `c:` and `z:`, and then `pool_compiler.py` drops limits to `--fsize=16777216:16777216 --nofile=128:128` before executing `/usr/bin/wine /opt/boat-compiler/tools/vc/Vc7/bin/cl.exe`.
-5. **Host hygiene:** The host build disables Docker so `/var/run/docker.sock` is absent, removes `/root/.ssh/authorized_keys` if present, sets a traverse-only ACL (`u:ci-compile:--x`) on `/root` so the probe can confirm `ENOENT` on `/root/.ssh` without reading `/root`, and verifies `GITHUB_TOKEN` / `ACTIONS_RUNTIME_TOKEN` set in the supervisor never enter the compiler process or output.
+5. **Host hygiene:** The host build disables Docker so `/var/run/docker.sock` is absent, removes `/root/.ssh/authorized_keys` (and `/root/.ssh`), `/root/.config/gh`, and `/root/.config/boat` if present, sets a traverse-only ACL (`u:ci-compile:--x`) on `/root` so the probe can confirm `ENOENT` on `/root/.ssh` without reading `/root`, and verifies `GITHUB_TOKEN` / `ACTIONS_RUNTIME_TOKEN` set in the supervisor never enter the compiler process or output.
 
 ## Exact compile command and environment
 

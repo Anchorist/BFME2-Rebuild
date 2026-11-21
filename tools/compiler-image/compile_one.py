@@ -168,27 +168,19 @@ def collect_sources(repo, tu):
     if tu not in selected:
         selected.append(tu)
 
-    def load(paths):
-        encoded = {}
-        total = 0
-        for rel in paths:
-            data = (repo / rel).read_bytes()
-            if len(data) > MAX_FILE:
-                continue
-            total += len(data)
-            if total > MAX_SOURCE or len(encoded) >= MAX_FILES:
-                return None
-            encoded[rel] = encode(data)
-        return encoded
-
-    packed = load(selected)
-    if packed is None:
-        # Fallback for very large trees: all headers + the requested translation unit.
-        headers = [p for p in selected if p == tu or p.startswith("include/") or Path(p).suffix.lower() not in {".c", ".cpp"}]
-        packed = load(headers)
-        if packed is None:
-            raise ValueError("Source projection exceeds compiler limits.")
-    return packed
+    encoded = {}
+    total = 0
+    for rel in selected:
+        data = (repo / rel).read_bytes()
+        if len(data) > MAX_FILE:
+            raise ValueError(f"Source file exceeds compiler size limit ({MAX_FILE} bytes): {rel}")
+        total += len(data)
+        if total > MAX_SOURCE or len(encoded) >= MAX_FILES:
+            raise ValueError(
+                f"Source projection exceeds compiler limits (max {MAX_FILES} files, {MAX_SOURCE} bytes)."
+            )
+        encoded[rel] = encode(data)
+    return encoded
 
 
 def invoke_entry(operation, payload=b""):

@@ -9,6 +9,8 @@ See [docs/compiler-image.md](../../docs/compiler-image.md) for the complete spec
 required user-supplied inputs and SHA-256 digests, directory layout, exact compile
 contract, verification steps, and publication notes.
 
+> **Warning (run `build.sh` only on a throwaway machine):** `build.sh` (via `fresh-install.sh` and `seal.sh`) is destructive to host state. It deletes `/root/.ssh/authorized_keys` (and removes `/root/.ssh`), deletes `/root/.config/gh` and `/root/.config/boat`, and stops and runtime-masks Docker (`docker.socket`, `docker.service`, `containerd.service`) while removing `/run/docker.sock`. Never run `build.sh`, `fresh-install.sh`, or `seal.sh` on a workstation or shared server.
+
 ## Files
 
 - `build.sh` — end-to-end builder (`fresh-install.sh`, `outer-wine.sh`, `seal.sh seal`, `control.sh --install`) given `--inputs DIR`.
