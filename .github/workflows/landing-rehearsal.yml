@@ -23,6 +23,38 @@ jobs:
     env:
       BFME_PR: '${{ inputs.pr_number }}'
     steps:
+      - name: Wait for runner filesystem hydration
+        shell: bash
+        run: |
+          set -euo pipefail
+          deadline=$((SECONDS + 90))
+          waited=0
+          while true; do
+            pending=$(awk '
+              {
+                for (i = 7; i <= NF - 2; i++) {
+                  if ($i == "-") {
+                    if ($(i + 1) ~ /^fuse(\.|$)/ && ($(i + 1) ~ /^fuse\.ascii-lazyfs(-|$)/ || $(i + 2) ~ /^ascii-lazyfs(-|$)/) && $5 !~ /^\/var\/lib\/ascii-lazy\/retired(\/|$)/) {
+                      print $5
+                    }
+                    break
+                  }
+                }
+              }
+            ' /proc/self/mountinfo)
+            if [ -z "$pending" ]; then
+              if [ "$waited" -eq 1 ]; then
+                printf 'Runner filesystem hydration finished after %ss.\n' "$SECONDS"
+              fi
+              exit 0
+            fi
+            waited=1
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              printf 'Expected lazy runner mounts to retire within 90s; still mounted:\n%s\n' "$pending" >&2
+              exit 1
+            fi
+            sleep 0.5
+          done
       - name: Read exact protected landing tools
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
