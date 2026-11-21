@@ -519,7 +519,7 @@ Bool UpgradeMaskType::hasAllBitsOf(const UpgradeMaskType *other) const
 // FUNCTION: BFME2 0x002AA2BB size=14 name=?rva002AA2BB@Rva002AA2BB@@QBEHXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002AA2C9 size=6 name=?Rva002AA2C9Get@@YAHXZ evidence=?:placeholder tier=A
-// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+// No retail code or data refers to this function. What the constant 218 means to its caller is not evidenced, so the row keeps its ledger name.
 int Rva002AA2C9Get()
 {
 	return 218;
@@ -1956,6 +1956,11 @@ void Player::initPlayerUpgrades()
 // FUNCTION: BFME2 0x002B0F3C size=576 name=??0Player@@QAE@H@Z evidence=N:ledger tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x002B117C size=6 name=?Rva002B117CGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva002B117CGet()
+{
+	return (int)"Player";
+}
 
 // FUNCTION: BFME2 0x002B1192 size=21 name=?rva002B1192@Rva002B1192Interface@@QAEXPAVCreateAHeroData@@PA_N@Z evidence=?:placeholder tier=B hypothesis:cohesion
 

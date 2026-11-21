@@ -14,6 +14,7 @@ class UntamedAllegianceSpecialPowerModuleData : public SpecialPowerModuleData
 public:
 	UntamedAllegianceSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 };
 typedef char UntamedAllegianceSpecialPowerModuleData_size[(sizeof(UntamedAllegianceSpecialPowerModuleData) == 0x7C) ? 1 : -1];
 

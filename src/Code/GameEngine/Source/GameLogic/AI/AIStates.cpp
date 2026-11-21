@@ -810,6 +810,14 @@ void AIQuarrelState::onExit(StateExitType status)
 }
 
 // FUNCTION: BFME2 0x0034036F size=34 name=?update@AIQuarrelState@@UAE?AW4StateReturnType@@XZ evidence=N:ledger tier=A
+StateReturnType AIQuarrelState::update()
+{
+	Object *obj = getMachineOwner();
+	if (obj == NULL)
+		return STATE_FAILURE;
+	Int result;
+	return obj->rva0028C264(&result, 4) ? STATE_SUCCESS : STATE_CONTINUE;
+}
 
 // FUNCTION: BFME2 0x003403AD size=6 name=?Rva003403ADGet@@YAHXZ evidence=?:placeholder tier=A
 const char *AIUncontrollableCower::GetSnapshotName() const
@@ -2265,6 +2273,23 @@ Bool AIInternalMoveToState::computePath()
 // FUNCTION: BFME2 0x003450DB size=300 name=?update@AIAttackMeleeHordeWaitPathState@@UAE?AW4StateReturnType@@XZ evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x00345207 size=63 name=?onExit@AIAttackMeleeHordeWaitState@@UAEXW4StateExitType@@@Z evidence=N:ledger tier=A
+void AIAttackMeleeHordeWaitState::onExit(StateExitType status)
+{
+	Object *obj = getMachineOwner();
+	if (!obj->m_status.test((UnsignedInt)0))
+	{
+		ContainModuleInterface *contain = obj->getContain();
+		if (contain != NULL)
+		{
+			HordeContainInterface *horde = contain->getHordeContainInterface();
+			if (horde != NULL)
+			{
+				horde->rva00468FDC();
+				horde->rva003BA648(0);
+			}
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x00345246 size=333 name=?computePath@AIAttackPursueTargetState@@MAE_NXZ evidence=N:ledger tier=A
 

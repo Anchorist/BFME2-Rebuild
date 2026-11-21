@@ -94,7 +94,7 @@ public:
 	void closeSpareSocket(UnsignedShort port);
 	Int getFirewallHardness(UnsignedByte behavior);			// 0x00595020 (Zero Hour's getFirewallHardness by role)
 	Int getFirewallRetries(UnsignedByte behavior);			// 0x0059505B (Zero Hour's getFirewallRetries by role)
-	static void writeFirewallBehavior();					// 0x00595E46 (Zero Hour's writeFirewallBehavior; reads TheFirewallHelper)
+	static void writeFirewallBehavior();					// Zero Hour's writeFirewallBehavior; reads TheFirewallHelper
 
 private:
 	ManglerMessage *findEmptyMessage();

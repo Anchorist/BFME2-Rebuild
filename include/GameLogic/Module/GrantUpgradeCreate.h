@@ -15,6 +15,7 @@ class GrantUpgradeCreate : public CreateModule
 {
 public:
 	GrantUpgradeCreate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	virtual void onCreate();
 	virtual void onBuildComplete();

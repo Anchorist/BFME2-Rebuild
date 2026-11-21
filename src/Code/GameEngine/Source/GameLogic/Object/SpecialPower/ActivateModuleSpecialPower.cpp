@@ -1,6 +1,8 @@
 // cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_CRTIMP=
 // stlport46
 #include <list>
+#include <string.h>
+#include "Common/INI.h"
 #include "GameLogic/Module/ActivateModuleSpecialPower.h"
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/ActivateModuleSpecialPowerModuleData.h"
@@ -116,4 +118,31 @@ void ActivateModuleSpecialPower::onObjectCreated()
 }
 
 
+static const char *const s_triggerTargetNames[] = { "TARGETPOS", "OBJECTPOS" };
+
 // FUNCTION: BFME2 0x004CDF2B size=147 name=?parseTriggerSpecialPower@@YAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+void parseTriggerSpecialPower(INI *ini, void *instance, void *, const void *)
+{
+	ActivateModuleSpecialPowerModuleData *data = static_cast<ActivateModuleSpecialPowerModuleData *>(instance);
+	if (data->m_wakeList.size() >= 8)
+		return;
+	const char *token = ini->getNextTokenOrNull(0);
+	if (!token || !token[0])
+		return;
+	ActivateModuleWakeEntry entry;
+	entry.m_key = TheNameKeyGenerator->nameToKey(token);
+	entry.m_mode = 1;
+	const char *modeToken = ini->getNextTokenOrNull(0);
+	if (modeToken && modeToken[0])
+	{
+		for (Int i = 0; i < 2; ++i)
+		{
+			if (stricmp(modeToken, s_triggerTargetNames[i]) == 0)
+			{
+				entry.m_mode = i;
+				break;
+			}
+		}
+	}
+	data->m_wakeList.push_back(entry);
+}

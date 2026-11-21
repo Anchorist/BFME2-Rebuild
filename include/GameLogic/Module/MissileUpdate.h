@@ -6,6 +6,7 @@ class MissileUpdate : public BezierProjectileBehavior
 {
 public:
 	MissileUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual UpdateSleepTime update();
 	void copyPosition(const Coord3D &p) { m_prevPos = p; }
 	void state0() {}

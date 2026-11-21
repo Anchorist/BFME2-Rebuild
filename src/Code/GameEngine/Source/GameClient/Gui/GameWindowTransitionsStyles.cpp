@@ -374,7 +374,26 @@ void MainMenuMediumScaleUpTransition::draw()
 	((W3DDisplay *)TheDisplay)->rva0004D6B3((Image *)image, (float)x, (float)y, (float)x1, (float)y1, -1, 2);
 }
 
+static inline void zeroCoord(ICoord2D &c)
+{
+	c.x = 0;
+	c.y = 0;
+}
+
 // FUNCTION: BFME2 0x0035DE55 size=80 name=??0MainMenuMediumScaleUpTransition@@QAE@XZ evidence=N:ledger
+MainMenuMediumScaleUpTransition::MainMenuMediumScaleUpTransition() : m_startFrame(0), m_endFrame(3)
+{
+	zeroCoord(m_pos);
+	zeroCoord(m_size);
+	m_drawState = -1;
+	zeroCoord(m_growPos);
+	zeroCoord(m_growSize);
+	zeroCoord(m_incrementSize);
+	m_frameLength = m_endFrame;
+	m_growWin = 0;
+	m_win = 0;
+	m_isForward = true;
+}
 
 
 // FUNCTION: BFME2 0x0035DEC1 size=87 name=?s4parse0059E290@@YAXPAVINI@@PAUGen_00489270@@@Z evidence=N:ledger
@@ -611,6 +630,16 @@ void FullFadeTransition::update(int frame)
 }
 
 // FUNCTION: BFME2 0x0035F2B3 size=67 name=??0FullFadeTransition@@QAE@XZ evidence=N:ledger
+FullFadeTransition::FullFadeTransition() : m_startFrame(0), m_endFrame(30)
+{
+	zeroCoord(m_pos);
+	zeroCoord(m_size);
+	m_percent = 0.0f;
+	m_frameLength = m_endFrame;
+	m_win = 0;
+	m_drawState = -1;
+	m_isForward = true;
+}
 
 
 // FUNCTION: BFME2 0x0035F312 size=87 name=?s5parse0059D600@@YAXPAVINI@@PAUGen_00489270@@@Z evidence=N:ledger

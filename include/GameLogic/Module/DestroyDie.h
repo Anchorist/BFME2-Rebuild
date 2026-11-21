@@ -31,6 +31,7 @@ class DestroyDie : public DieModule
 public:
 	DestroyDie(Thing *thing, const ModuleData *moduleData);
 	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
+	static ModuleData *friend_newModuleData(INI *ini);
 	virtual ~DestroyDie();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;

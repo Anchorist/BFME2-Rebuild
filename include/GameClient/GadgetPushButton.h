@@ -36,7 +36,7 @@ struct _PushButtonData
 	unsigned char m_drawBorder;			// +0x0C
 	unsigned int m_borderColor;			// +0x10
 	void *m_userData;					// +0x14
-	int m_field18;						// +0x18
+	const Image *m_overlayImage;		// +0x18 the overlay drawn over the button (Rva003284ED sets it)
 	OpaqueRefElement4 m_field1C;		// +0x1C an owning handle: the destructor 0x00327E50 releases it
 	unsigned char m_field20;			// +0x20
 	int m_field24;						// +0x24
@@ -46,6 +46,9 @@ struct _PushButtonData
 	unsigned char m_disallowed;			// +0x34
 };
 // SIZE 0x38
+
+// The push button data a window carries as its user data (set by the gadget's own setters, so this is the typed way to read it).
+inline _PushButtonData *getPushButtonData(GameWindow *window) { return (_PushButtonData *)window->winGetUserData(); }
 
 void GadgetButtonSetEnabledImage_Rva002C0433(GameWindow *, const Image *);	// 0x002C0433 (placeholder spelling in the map)
 void GadgetButtonSetHiliteImage_Rva002C04DB(GameWindow *, const Image *);	// 0x002C04DB
@@ -57,7 +60,7 @@ bool GadgetCheckLikeButtonIsChecked(GameWindow *);	// 0x00327C9B
 void GadgetButtonEnableCheckLike(GameWindow *, bool, bool);	// 0x00327CB9
 void * GadgetButtonGetData(GameWindow *);	// 0x00327D56
 void Rva003284B9(GameWindow *, int, int);	// 0x003284B9 (the clock overlay: percent and colour; placeholder spelling in the map; ControlBar::updateContextMultiSelect 0x0053DF0A)
-void Rva003284ED(GameWindow *, int);	// 0x003284ED (sets the overlay image word at +0x18; ZH's GadgetButtonDrawOverlayImage)
+void Rva003284ED(GameWindow *, const Image *);	// the overlay image setter (placeholder spelling in the map; ZH's GadgetButtonDrawOverlayImage)
 void Rva00328518(GameWindow *, int);	// 0x00328518 (the data pointer's setter; placeholder spelling in the map)
 WindowMsgHandledType GadgetPushButtonInput(GameWindow *, unsigned int, unsigned int, unsigned int);	// 0x00327E5D
 void GadgetButtonSetText(GameWindow *, UnicodeString);	// 0x003283F7

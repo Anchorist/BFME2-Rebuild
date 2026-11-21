@@ -47,7 +47,14 @@ class ToppleUpdate : public UpdateModule, public CollideModuleInterface
 {
 public:
 	ToppleUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
+	virtual void onCollide(Object *other, const Coord3D *loc, const Coord3D *normal);	// CollideModuleInterface slot 0, retail word 0x004A82F5
+	virtual Bool wouldLikeToCollideWith(const Object *other) const { return false; }	// CollideModuleInterface slot 1, retail word 0x005CB9FF (the shared fold)
+	virtual Bool isHijackedVehicleCrateCollide() const { return false; }	// CollideModuleInterface slot 2, retail word 0x0047A699 (the shared fold)
+	virtual Bool isCarBombCrateCollide() const { return false; }	// CollideModuleInterface slot 3, retail word 0x0047A699 (the shared fold)
+	virtual Bool isRailroad() const { return false; }	// CollideModuleInterface slot 4, retail word 0x0047A699 (the shared fold)
+	virtual Bool isSalvageCrateCollide() const { return false; }	// CollideModuleInterface slot 5, retail word 0x0047A699 (the shared fold)
 	bool isAbleToBeToppled() const;
 	void applyTopplingForce(const Coord3D *toppleDirection, Real toppleSpeed, UnsignedInt options); // (Object::topple 0x0028CF37)
 	virtual UpdateSleepTime update();	// UpdateModuleInterface slot 0, 0x004A878F

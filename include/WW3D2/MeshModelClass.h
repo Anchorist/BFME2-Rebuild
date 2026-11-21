@@ -45,6 +45,7 @@ public:
 	virtual ~MeshModelClass(void);							// 1: 0x00172AB0
 
 	MeshModelClass &operator=(const MeshModelClass &that);				// 0x00171E60
+	void Reset(int polycount, int vertcount, int passcount, bool keep_skin = false);
 
 	void Unregister_For_Rendering(void);							// 0x001716E0
 

@@ -36,11 +36,51 @@
 // Hypothesis rules: hypothesis:padding
 // FUNCTION: BFME2 0x00468AEC size=56 name=?rva00468AEC@@YAXPAVObject@@PAX@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x00468B24 size=55 name=?rva00468B24@HordeContain@@QAEXM@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
+void HordeContain::rva00468B24(Real value)
+{
+	if (value > m_unk0x2EC)
+		m_unk0x2EC = value;
+	if (m_unk0x2EC > 90.0f)
+		m_unk0x2EC = 90.0f;
+}
 // FUNCTION: BFME2 0x00468B5B size=129 name=?rva00468B5B@HordeContain@@UAEMM@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-pointers-mixed
 // FUNCTION: BFME2 0x00468BDC size=91 name=?rva00468BDC@HordeContain@@UAEXH@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-pointers-mixed
+void HordeContain::rva00468BDC(Int value)
+{
+	Object *obj = m_object;
+	if (obj != NULL && obj->getAI() != NULL)
+	{
+		if (value != 0)
+		{
+			if (m_unk0x2F0 == 0)
+				obj->setModelConditionStateForHorde((ModelConditionFlagType)0x1BA);
+		}
+		else
+		{
+			obj->clearModelConditionStateForHorde((ModelConditionFlagType)0x1BA);
+			obj->clearModelConditionStateForHorde((ModelConditionFlagType)0x1BB);
+		}
+		m_unk0x2F0 = value;
+	}
+}
 // FUNCTION: BFME2 0x00468C37 size=41 name=?rva00468C37@HordeContain@@UAE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-neighbour-pointers-mixed
 // FUNCTION: BFME2 0x00468C60 size=27 name=?rva00468C60@HordeContain@@UAEXPBVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=B hypothesis:mm1-neighbour-pointers-mixed
+void HordeContain::rva00468C60(const Coord3D *position)
+{
+	m_unk0x2F8 = *position;
+	m_unk0x304 = true;
+}
 // FUNCTION: BFME2 0x00468C7B size=40 name=?rva00468C7B@HordeContain@@UAE_NPAVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=B hypothesis:mm1-neighbour-pointers-mixed
+Bool HordeContain::rva00468C7B(Coord3D *position)
+{
+	if (m_unk0x304)
+	{
+		m_unk0x304 = false;
+		*position = m_unk0x2F8;
+		return true;
+	}
+	return false;
+}
 // FUNCTION: BFME2 0x00468CA3 size=19 name=?rva00468CA3@HordeContain@@UAEXPBURva00468CA3Arg@@@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-pointers-mixed
 // FUNCTION: BFME2 0x00468CB6 size=91 name=?rva00468CB6@HordeContain@@QAE_NPAVRva00468CB6A@@PAVObject@@@Z evidence=?:placeholder tier=A
 
@@ -323,10 +363,23 @@ void HordeContain::rva00469886(Object *unit)
 }
 
 // FUNCTION: BFME2 0x004698BC size=26 name=?rva004698BC@HordeContain@@UAE_NXZ evidence=?:placeholder tier=A
+Bool HordeContain::rva004698BC()
+{
+	const HordeContainModuleData *data = (const HordeContainModuleData *)getModuleData();
+	return data->SplitHordes.size() > 0 ? true : false;
+}
 
 // FUNCTION: BFME2 0x004698D6 size=12 name=?rva004698D6@HordeContain@@UAEPBXXZ evidence=?:placeholder tier=A
+const void *HordeContain::rva004698D6()
+{
+	return &((const HordeContainModuleData *)getModuleData())->SplitHordes;
+}
 
 // FUNCTION: BFME2 0x004698E2 size=12 name=?rva004698E2@HordeContain@@UAEPBXXZ evidence=?:placeholder tier=A
+const void *HordeContain::rva004698E2()
+{
+	return &((const HordeContainModuleData *)getModuleData())->RankInfos;
+}
 
 // FUNCTION: BFME2 0x004698EE size=62 name=?rva004698EE@@YAXPAVObject@@PAX@Z evidence=?:placeholder tier=A
 void hordeTemplateScanVisitor(Object *unit, void *userData)
@@ -387,6 +440,18 @@ void HordeContain::notifyContainerOfUnit(Object *unit)
 // FUNCTION: BFME2 0x0046A024 size=142 name=?rva0046A024@Rva0046A024@@QAEXXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x0046A0B2 size=91 name=?endMove@HordeContain@@UAEXXZ evidence=N:ledger tier=A
+void HordeContain::endMove()
+{
+	AIUpdateInterface *ai = m_object->getAI();
+	if (ai->isMoving())
+	{
+		ContainmentListView view = getContainList();
+		const ContainedItemsList *items = view.m_items;
+		for (ContainedItemsList::const_iterator it = items->begin(); it != items->end(); ++it)
+			(*it)->getAI()->destroyPathAndIdle();
+		ai->destroyPathAndIdle();
+	}
+}
 
 // FUNCTION: BFME2 0x0046A10D size=410 name=?rva0046A10D@HordeContain@@QAEXXZ evidence=?:placeholder tier=A
 
@@ -456,6 +521,28 @@ Bool HordeContain::rva0046A4C8()
 }
 
 // FUNCTION: BFME2 0x0046A521 size=144 name=?getBannerCarrierIndexToUse@HordeContain@@QAEHPBVObject@@PAPBVThingTemplate@@@Z evidence=N:ledger tier=A
+Int HordeContain::getBannerCarrierIndexToUse(const Object *obj, const ThingTemplate **outTemplate)
+{
+	const ThingTemplate *thingTemplate = obj->getTemplate();
+	const _STL::vector<HordeBannerCarrier *> &indexVec = m_unk0x270;
+	if (indexVec.empty())
+		return -1;
+	if (thingTemplate->isKindOf(KINDOF_HORDE))
+	{
+		*outTemplate = indexVec[0]->m_template;
+		return indexVec[0]->m_index;
+	}
+	for (UnsignedInt i = 0; i < indexVec.size(); ++i)
+	{
+		if (indexVec[i]->m_template == thingTemplate)
+		{
+			*outTemplate = indexVec[i]->m_template;
+			return indexVec[i]->m_index;
+		}
+	}
+	*outTemplate = indexVec[0]->m_template;
+	return indexVec[0]->m_index;
+}
 
 // FUNCTION: BFME2 0x0046A5B1 size=53 name=?rva0046A5B1@HordeContain@@QAEPAVCoord2D@@PAV2@H@Z evidence=?:placeholder tier=A
 
@@ -1001,6 +1088,22 @@ void HordeContain::rva0046D7AF(const Coord3D *position)
 // FUNCTION: BFME2 0x0046DC92 size=213 name=?rva0046DC92@HordeContain@@UAEXABVAsciiString@@PAVRva2225E0Filter@@@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x0046DD67 size=94 name=?iterateContained@HordeContain@@UAEXP6AXPAVObject@@PAX@Z1H@Z evidence=N:ledger tier=A
+void HordeContain::iterateContained(ContainIterateFunc func, void *userData, UnsignedInt flags)
+{
+	if (flags & 0x10)
+	{
+		for (_STL::set<Int>::iterator it = m_memberIDs.begin(); it != m_memberIDs.end(); )
+		{
+			Object *obj = TheGameLogic->findObjectByID((ObjectID)*it);
+			++it;
+			func(obj, userData);
+		}
+	}
+	else
+	{
+		OpenContain::iterateContained(func, userData, flags);
+	}
+}
 
 // FUNCTION: BFME2 0x0046DDC5 size=104 name=?rva0046DDC5@HordeContain@@UAEXHH@Z evidence=?:placeholder tier=A
 void HordeContain::rva0046DDC5(const Coord3D *position, Int index)
@@ -1039,6 +1142,11 @@ void HordeContain::rva0046DE2D(const FXList *fx)
 // FUNCTION: BFME2 0x0046E253 size=105 name=?rva0046E253@HordeContain@@UAEXXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x0046E2BC size=18 name=?rva0046E2BC@HordeContain@@UAEXXZ evidence=?:placeholder tier=A
+void HordeContain::rva0046E2BC()
+{
+	m_unk0x2E8 = true;
+	m_unk0x2DC.clear();
+}
 
 // FUNCTION: BFME2 0x0046E31F size=310 name=?rva0046E31F@Rva004D1C81@@QAE?AURva004D1C81Iter@@U2@ABURva004D1C81Key@@@Z evidence=?:placeholder tier=A
 

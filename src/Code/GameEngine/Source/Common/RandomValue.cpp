@@ -1,4 +1,5 @@
 // cl: /O1
+// Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 #include "Common/RandomValue.h"
 #include "Common/GlobalData.h"
 
@@ -32,45 +33,48 @@ unsigned int ComputeCRC(const unsigned char *data, unsigned int length, unsigned
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=rests-on:name right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:Z
-// FUNCTION: BFME2 0x00233EC3 size=119 name=?randomValue@@YIIPAI@Z evidence=N:ledger tier=B hypothesis:Z
-UnsignedInt __fastcall randomValue(UnsignedInt *s)
-{
-	// s[0] is the most significant word, s[5] the call counter. Each call adds
-	// the lower words into the upper ones with carry, then advances the counter.
-	UnsignedInt t4 = s[4] + s[5];
-	UnsignedInt carry = (t4 < s[5] || t4 < s[4]) ? 1u : 0u;
-	s[4] = t4;
-	UnsignedInt o3 = s[3];
-	UnsignedInt t3 = t4 + (carry + o3);
-	carry = (t3 < o3) ? 1u : 0u;
-	s[3] = t3;
-	UnsignedInt o2 = s[2];
-	UnsignedInt t2 = t3 + (carry + o2);
-	carry = (t2 < o2) ? 1u : 0u;
-	s[2] = t2;
-	UnsignedInt o1 = s[1];
-	UnsignedInt t1 = t2 + (carry + o1);
-	carry = (t1 < o1) ? 1u : 0u;
-	s[1] = t1;
-	s[0] += t1 + carry;
+// Add with carry: SUM = A + B + C, C = carry out (Zero Hour Common/RandomValue.cpp).
+#define ADC(SUM, A, B, C) SUM = (A) + (B) + (C); C = ((SUM < (A)) || (SUM < (B)))
 
-	UnsignedInt count = s[5] + 1;
-	s[5] = count;
-	if (count == 0)
+// FUNCTION: BFME2 0x00233EC3 size=119 name=?randomValue@@YIIPAI@Z evidence=N:ledger tier=B hypothesis:Z
+UnsignedInt __fastcall randomValue(UnsignedInt *seed)
+{
+	UnsignedInt ax;
+	UnsignedInt c = 0;
+
+	ADC(ax, seed[5], seed[4], c);
+	seed[4] = ax;
+
+	ADC(ax, ax, seed[3], c);
+	seed[3] = ax;
+
+	ADC(ax, ax, seed[2], c);
+	seed[2] = ax;
+
+	ADC(ax, ax, seed[1], c);
+	seed[1] = ax;
+
+	ADC(ax, ax, seed[0], c);
+	seed[0] = ax;
+
+	if (!++seed[5])
 	{
-		if (++s[4] == 0)
+		if (!++seed[4])
 		{
-			if (++s[3] == 0)
+			if (!++seed[3])
 			{
-				if (++s[2] == 0)
+				if (!++seed[2])
 				{
-					if (++s[1] == 0)
-						++s[0];
+					if (!++seed[1])
+					{
+						++seed[0];
+						++ax;
+					}
 				}
 			}
 		}
 	}
-	return s[0];
+	return ax;
 }
 
 // FUNCTION: BFME2 0x00233F3A size=48 name=?seedRandom@@YAXIPAI@Z evidence=N:ledger tier=B hypothesis:Z

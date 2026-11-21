@@ -22,6 +22,7 @@ class ExperienceScalarUpgrade : public UpgradeModule
 {
 public:
 	ExperienceScalarUpgrade(Thing *thing, const ModuleData *moduleData);	// 0x004B61C6
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~ExperienceScalarUpgrade();
 	virtual NameKeyType getModuleNameKey() const;
 

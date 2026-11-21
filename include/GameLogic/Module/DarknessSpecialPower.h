@@ -53,6 +53,7 @@ class DarknessSpecialPower : public SpecialPowerModule
 {
 public:
 	DarknessSpecialPower(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void doSpecialPowerAtLocation(const Coord3D *location, unsigned int commandOptions);	// override: doSpecialPowerAtLocation slot 12 at +0x10 (0x004C4F1C)
 

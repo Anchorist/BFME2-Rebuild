@@ -1,11 +1,21 @@
-// cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB
+// cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_CRTIMP=
 // stlport46
+// bfmealloc_alloconly
+// Portions derived from Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 #define DEFINE_IMAGE_STATUS_NAMES
+#ifdef _CRTIMP
+#undef _CRTIMP
+#define _CRTIMP __declspec(dllimport)
+#endif
+#include <stdio.h>
+#include <string.h>
+#ifdef _CRTIMP
+#undef _CRTIMP
+#define _CRTIMP
+#endif
 #include <map>
 #include <new>
 #include <set>
-#include <stdio.h>
-#include <string.h>
 #include "Common/SubsystemInterface.h"
 #include "GameClient/Image.h"
 #include "Common/NameKeyGenerator.h"
@@ -22,7 +32,6 @@
 
 // The mapped image collection singleton (retail VA 0x00DFF078).
 ImageCollection *TheMappedImageCollection = NULL;
-// Portions derived from Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 
 // The INI field table of Image (retail .rdata 0x008036E8: five entries and the terminator, strings follow at 0x00803748).
 const FieldParse m_imageFieldParseTable[] =

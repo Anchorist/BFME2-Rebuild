@@ -36,6 +36,7 @@ public:
 	virtual ~LineGroupClass();
 
 	void Set_Line_Size(float size);
+	void Set_Arrays(ShareBufferClass<Vector3> *startlocs, ShareBufferClass<Vector3> *endlocs, ShareBufferClass<Vector4> *diffuse = 0, ShareBufferClass<Vector4> *taildiffuse = 0, ShareBufferClass<unsigned int> *alt = 0, ShareBufferClass<float> *sizes = 0, ShareBufferClass<float> *ucoords = 0, int active_line_count = -1);
 	float Get_Line_Size();
 	void Set_Line_Color(const Vector3 &color);
 	Vector3 Get_Line_Color();

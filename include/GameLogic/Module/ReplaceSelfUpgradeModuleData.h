@@ -13,24 +13,23 @@
 #include <stddef.h>
 #include "Common/GameType.h"
 #include "GameLogic/Module/ModuleData.h"
+#include "GameLogic/Module/UpgradeModule.h"
 #include "GameLogic/Module/UpgradeMuxData.h"
 
 class INI;
 class MultiIniFieldParse;
 
-class ReplaceSelfUpgradeModuleData : public ModuleData
+class ReplaceSelfUpgradeModuleData : public UpgradeModuleData
 {
 public:
 	ReplaceSelfUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
 	static ModuleData *friend_newModuleData(INI *ini);
 
-	UpgradeMuxData m_upgradeMuxData;                       // +0x8; added by buildFieldParse at +0x8
 	UnsignedByte m_replaceWith[0xC];                       // +0x118 ReplaceWith (also AndThenAddA); unresolved: INI::parseAsciiStringVectorAppend
 };
 // SIZE 0x124
 typedef char ReplaceSelfUpgradeModuleData_size[(sizeof(ReplaceSelfUpgradeModuleData) == 0x124) ? 1 : -1];
-typedef char ReplaceSelfUpgradeModuleData_off_m_upgradeMuxData[(offsetof(ReplaceSelfUpgradeModuleData, m_upgradeMuxData) == 0x8) ? 1 : -1];
 typedef char ReplaceSelfUpgradeModuleData_off_m_replaceWith[(offsetof(ReplaceSelfUpgradeModuleData, m_replaceWith) == 0x118) ? 1 : -1];
 
 #endif

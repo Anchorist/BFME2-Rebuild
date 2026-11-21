@@ -142,6 +142,18 @@ AsciiString GameSpyGameSlot::getLastString() const
 
 
 // FUNCTION: BFME2 0x004FDE4D size=178 name=??0GameSpyStagingRoom@@QAE@XZ evidence=N:ledger tier=B hypothesis:cohesion
+GameSpyStagingRoom::GameSpyStagingRoom()
+{
+	cleanUpSlotPointers();
+	m_transport = NULL;
+	m_localName.set("localhost");
+	m_unk0xFFC.clear();
+	m_unk0x1008 = 0;
+	m_unk0x1018 = 0;
+	m_hasStatsGame = false;
+	m_unk0xFF8 = 0;
+	m_statsGame = NULL;
+}
 
 // FUNCTION: BFME2 0x004FDEFF size=551 name=?rva004FDEFF@GameSpyStagingRoom@@QAEXPAVLivingWorldBattle@@@Z evidence=?:placeholder tier=B hypothesis:cohesion
 

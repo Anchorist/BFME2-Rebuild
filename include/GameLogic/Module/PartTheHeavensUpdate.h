@@ -28,6 +28,7 @@ class PartTheHeavensUpdate : public UpdateModule
 {
 public:
 	PartTheHeavensUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004ACBB3)
 

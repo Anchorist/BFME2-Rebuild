@@ -53,6 +53,7 @@ class ElvenWoodSpecialPower : public SpecialPowerModule
 {
 public:
 	ElvenWoodSpecialPower(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void doSpecialPower(unsigned int commandOptions);	// override: doSpecialPower slot 10 at +0x10 (0x004C4C4B)
 	virtual void doSpecialPowerAtObject(Object *object, unsigned int commandOptions);	// override: doSpecialPowerAtObject slot 11 at +0x10 (0x004C4E63)

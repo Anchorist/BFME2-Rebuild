@@ -1,4 +1,16 @@
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G004607F3 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+static const FieldParse s_rva004607F3FieldParse[] =
+{
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x004607F3 size=17 name=?rva004607F3@@YAXAAVMultiIniFieldParse@@@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+void rva004607F3(MultiIniFieldParse &parse)
+{
+	parse.add(s_rva004607F3FieldParse, 0);
+}
+

@@ -4,7 +4,13 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
+#include "Common/AsciiString.h"
 // FUNCTION: BFME2 0x00318B1E size=27 name=?rva00318B1E@Rva00318B1E@@QBEABVAsciiString@@XZ evidence=?:placeholder tier=B hypothesis:name:invented
 
 // FUNCTION: BFME2 0x00318B39 size=6 name=?Rva00318B39Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:K
+// Returns the address of the table or global the row is named for (the ledger types it as int).
+int Rva00318B39Get()
+{
+	return (int)&AsciiString::TheEmptyString;
+}
 

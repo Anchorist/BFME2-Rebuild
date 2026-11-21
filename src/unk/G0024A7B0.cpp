@@ -47,15 +47,70 @@
 #include "GameLogic/Module/WargBehavior.h"
 #include "GameLogic/Module/SpawnBehavior.h"
 #include "GameLogic/Module/StancesBehavior.h"
+#include "GameLogic/Module/RiderChangeContainModuleData.h"
+#include "GameLogic/Module/RiderChangeContain.h"
+#include "GameLogic/Module/TunnelContain.h"
+#include "GameLogic/Module/HordeSiegeEngineContainModuleData.h"
+#include "GameLogic/Module/HordeSiegeEngineContain.h"
+#include "GameLogic/Module/SiegeEngineContainModuleData.h"
+#include "GameLogic/Module/SiegeEngineContain.h"
+#include "GameLogic/Module/AODHordeContain.h"
+#include "GameLogic/Module/HordeGarrisonContain.h"
+#include "GameLogic/Module/SpecialAbilityUpdateModuleData.h"
+#include "GameLogic/Module/SpecialAbilityUpdate.h"
+#include "GameLogic/Module/BloodthirstyUpdate.h"
+#include "GameLogic/Module/FakePathfindPortalBehaviourModuleData.h"
+#include "GameLogic/Module/DynamicPortalBehaviourModuleData.h"
+#include "GameLogic/Module/StancesBehaviorModuleData.h"
+#include "GameLogic/Module/AutoAbilityBehaviorModuleData.h"
+#include "GameLogic/Module/SiegeDockingBehaviorModuleData.h"
+#include "GameLogic/Module/EnragedBehaviorModuleData.h"
+#include "GameLogic/Module/WallHubBehaviorModuleData.h"
+#include "GameLogic/Module/BridgeScaffoldBehavior.h"
+#include "GameLogic/Module/BridgeBehavior.h"
+#include "GameLogic/Module/HordeContainModuleData.h"
+#include "GameLogic/Module/AODHordeContainModuleData.h"
+#include "GameLogic/Module/BezierProjectileBehavior.h"
+#include "GameLogic/Module/BezierProjectileBehaviorModuleData.h"
+#include "GameLogic/Module/MineshaftPortalBehaviour.h"
+#include "GameLogic/Module/AimWeaponBehavior.h"
+#include "GameLogic/Module/DualWeaponBehavior.h"
+#include "GameLogic/Module/SiegeDockingBehavior.h"
+#include "GameLogic/Module/ClickReactionBehavior.h"
+#include "GameLogic/Module/EnragedBehavior.h"
+#include "GameLogic/Module/WallHubBehavior.h"
+#include "GameLogic/Module/InstantDeathBehaviorModuleData.h"
+// Module creators. Retail registers each module class with a static friend_newModuleInstance that allocates the
+// module for a thing and its module data, and each module data class with a static friend_newModuleData that
+// allocates the data and, when an INI block is open, fills it from the class's buildFieldParse table. The bodies
+// below are those two shapes. A class whose creator is not here yet has no real header, lacks the constructor or
+// buildFieldParse declaration, or did not compile with its current header (the usual cause is a pure virtual that
+// the header does not override yet); its row stays unwritten.
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0024A7B0 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x0024A7B0 size=56 name=?friend_newModuleInstance@BloodthirstyUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *BloodthirstyUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new BloodthirstyUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024A7E8 size=81 name=?friend_newModuleData@BloodthirstyUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024A847 size=59 name=?friend_newModuleInstance@SpecialAbilityUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *SpecialAbilityUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new SpecialAbilityUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024A882 size=84 name=?friend_newModuleData@SpecialAbilityUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *SpecialAbilityUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	SpecialAbilityUpdateModuleData *data = new SpecialAbilityUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, SpecialAbilityUpdateModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024A8D6 size=6 name=?Rva0024A8D6Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
-// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+// No retail code or data refers to this function. It follows the creators of SpecialAbilityUpdate and returns the bit set 0x84, which looks like a module interface mask;
+// nothing ties it to SpecialAbilityUpdate, so it keeps its ledger name.
 int Rva0024A8D6Get()
 {
 	return 132;
@@ -66,7 +121,18 @@ Module *AutoHealBehavior::friend_newModuleInstance(Thing *thing, const ModuleDat
 	return new AutoHealBehavior(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024A914 size=56 name=?friend_newModuleInstance@WallHubBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *WallHubBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new WallHubBehavior(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024A94C size=81 name=?friend_newModuleData@WallHubBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *WallHubBehaviorModuleData::friend_newModuleData(INI *ini)
+{
+	WallHubBehaviorModuleData *data = new WallHubBehaviorModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, WallHubBehaviorModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024A99D size=56 name=?friend_newModuleInstance@GettingBuiltBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024A9D5 size=81 name=?friend_newModuleData@GettingBuiltBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 ModuleData *GettingBuiltBehaviorModuleData::friend_newModuleData(INI *ini)
@@ -114,6 +180,10 @@ ModuleData *BuildingBehaviorModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024AC00 size=59 name=?friend_newModuleInstance@BridgeBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *BridgeBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new BridgeBehavior(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024AC3B size=81 name=?friend_newModuleData@BridgeBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 ModuleData *BridgeBehaviorModuleData::friend_newModuleData(INI *ini)
 {
@@ -124,6 +194,10 @@ ModuleData *BridgeBehaviorModuleData::friend_newModuleData(INI *ini)
 }
 // FUNCTION: BFME2 0x0024AC8C size=4 name=?get@Rva0024AC8CConst@@SAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024AC90 size=56 name=?friend_newModuleInstance@BridgeScaffoldBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *BridgeScaffoldBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new BridgeScaffoldBehavior(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024ACC8 size=56 name=?friend_newModuleInstance@BridgeTowerBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *BridgeTowerBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -143,7 +217,18 @@ ModuleData *RampageBehaviorModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024AD89 size=56 name=?friend_newModuleInstance@EnragedBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *EnragedBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new EnragedBehavior(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024ADC1 size=81 name=?friend_newModuleData@EnragedBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *EnragedBehaviorModuleData::friend_newModuleData(INI *ini)
+{
+	EnragedBehaviorModuleData *data = new EnragedBehaviorModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, EnragedBehaviorModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024AE12 size=56 name=?friend_newModuleInstance@HitReactionBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *HitReactionBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -158,6 +243,10 @@ ModuleData *HitReactionBehaviorModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024AE9B size=56 name=?friend_newModuleInstance@ClickReactionBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *ClickReactionBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new ClickReactionBehavior(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024AED3 size=81 name=?friend_newModuleData@ClickReactionBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 ModuleData *ClickReactionBehaviorModuleData::friend_newModuleData(INI *ini)
 {
@@ -167,14 +256,36 @@ ModuleData *ClickReactionBehaviorModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024AF24 size=56 name=?friend_newModuleInstance@SiegeDockingBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *SiegeDockingBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new SiegeDockingBehavior(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024AF5C size=81 name=?friend_newModuleData@SiegeDockingBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *SiegeDockingBehaviorModuleData::friend_newModuleData(INI *ini)
+{
+	SiegeDockingBehaviorModuleData *data = new SiegeDockingBehaviorModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, SiegeDockingBehaviorModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024AFAD size=56 name=?friend_newModuleInstance@AutoAbilityBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *AutoAbilityBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
 	return new AutoAbilityBehavior(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024AFE5 size=81 name=?friend_newModuleData@AutoAbilityBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *AutoAbilityBehaviorModuleData::friend_newModuleData(INI *ini)
+{
+	AutoAbilityBehaviorModuleData *data = new AutoAbilityBehaviorModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, AutoAbilityBehaviorModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024B036 size=56 name=?friend_newModuleInstance@DualWeaponBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *DualWeaponBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new DualWeaponBehavior(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024B06E size=81 name=?friend_newModuleData@DualWeaponBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 ModuleData *DualWeaponBehaviorModuleData::friend_newModuleData(INI *ini)
 {
@@ -184,6 +295,10 @@ ModuleData *DualWeaponBehaviorModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024B0BF size=56 name=?friend_newModuleInstance@AimWeaponBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *AimWeaponBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new AimWeaponBehavior(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024B0F7 size=81 name=?friend_newModuleData@AimWeaponBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 ModuleData *AimWeaponBehaviorModuleData::friend_newModuleData(INI *ini)
 {
@@ -194,6 +309,13 @@ ModuleData *AimWeaponBehaviorModuleData::friend_newModuleData(INI *ini)
 }
 // FUNCTION: BFME2 0x0024B148 size=59 name=?friend_newModuleInstance@BezierProjectileBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024B183 size=84 name=?friend_newModuleData@BezierProjectileBehavior@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *BezierProjectileBehavior::friend_newModuleData(INI *ini)
+{
+	BezierProjectileBehaviorModuleData *data = new BezierProjectileBehaviorModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, BezierProjectileBehaviorModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024B1D7 size=4 name=?get@Rva0024B1D7Const@@SAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024B1DB size=56 name=?friend_newModuleInstance@InstantDeathBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *InstantDeathBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
@@ -201,6 +323,14 @@ Module *InstantDeathBehavior::friend_newModuleInstance(Thing *thing, const Modul
 	return new InstantDeathBehavior(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024B213 size=81 name=?friend_newModuleData@InstantDeathBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *InstantDeathBehaviorModuleData::friend_newModuleData(INI *ini)
+{
+	InstantDeathBehaviorModuleData *data = new InstantDeathBehaviorModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, InstantDeathBehaviorModuleData::buildFieldParse);
+	return data;
+}
+
 // FUNCTION: BFME2 0x0024B264 size=56 name=?friend_newModuleInstance@SlowDeathBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *SlowDeathBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -233,13 +363,21 @@ Module *StancesBehavior::friend_newModuleInstance(Thing *thing, const ModuleData
 	return new StancesBehavior(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024B3B4 size=81 name=?friend_newModuleData@StancesBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *StancesBehaviorModuleData::friend_newModuleData(INI *ini)
+{
+	StancesBehaviorModuleData *data = new StancesBehaviorModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, StancesBehaviorModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024B405 size=56 name=?friend_newModuleInstance@SpawnBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *SpawnBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
 	return new SpawnBehavior(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024B43D size=6 name=?Rva0024B43DGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
-// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+// No retail code or data refers to this function. It follows the creators of SpawnBehavior and returns the bit set 0x87, which looks like a module interface mask;
+// nothing ties it to SpawnBehavior, so it keeps its ledger name.
 int Rva0024B43DGet()
 {
 	return 135;
@@ -255,8 +393,16 @@ Module *DynamicPortalBehaviour::friend_newModuleInstance(Thing *thing, const Mod
 	return new DynamicPortalBehaviour(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024B4B3 size=84 name=?friend_newModuleData@DynamicPortalBehaviourModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *DynamicPortalBehaviourModuleData::friend_newModuleData(INI *ini)
+{
+	DynamicPortalBehaviourModuleData *data = new DynamicPortalBehaviourModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, DynamicPortalBehaviourModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024B507 size=6 name=?Rva0024B507Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
-// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+// No retail code or data refers to this function. It follows the creators of DynamicPortalBehaviour and returns the bit set 0x8E, which looks like a module interface mask;
+// nothing ties it to DynamicPortalBehaviour, so it keeps its ledger name.
 int Rva0024B507Get()
 {
 	return 142;
@@ -267,6 +413,13 @@ Module *FakePathfindPortalBehaviour::friend_newModuleInstance(Thing *thing, cons
 	return new FakePathfindPortalBehaviour(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024B545 size=84 name=?friend_newModuleData@FakePathfindPortalBehaviourModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *FakePathfindPortalBehaviourModuleData::friend_newModuleData(INI *ini)
+{
+	FakePathfindPortalBehaviourModuleData *data = new FakePathfindPortalBehaviourModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, FakePathfindPortalBehaviourModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024B599 size=56 name=?friend_newModuleInstance@GiantBirdSlowDeathBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *GiantBirdSlowDeathBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -281,6 +434,10 @@ ModuleData *GiantBirdSlowDeathBehaviorModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024B625 size=56 name=?friend_newModuleInstance@MineshaftPortalBehaviour@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *MineshaftPortalBehaviour::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new MineshaftPortalBehaviour(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024B65D size=84 name=?friend_newModuleData@MineshaftPortalBehaviourModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 ModuleData *MineshaftPortalBehaviourModuleData::friend_newModuleData(INI *ini)
 {
@@ -300,6 +457,13 @@ Module *OpenContain::friend_newModuleInstance(Thing *thing, const ModuleData *mo
 	return new OpenContain(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024B724 size=84 name=?friend_newModuleData@OpenContain@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *OpenContain::friend_newModuleData(INI *ini)
+{
+	OpenContainModuleData *data = new OpenContainModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, OpenContainModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024B778 size=4 name=?get@Rva0024B778Const@@SAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // Field parse table for CaveContainModuleData (decoded from retail image).
 static const FieldParse s_caveContainModuleDataFieldParse[] =
@@ -352,6 +516,13 @@ Module *HordeContain::friend_newModuleInstance(Thing *thing, const ModuleData *m
 	return new HordeContain(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024B92B size=84 name=?friend_newModuleData@HordeContainModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *HordeContainModuleData::friend_newModuleData(INI *ini)
+{
+	HordeContainModuleData *data = new HordeContainModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, HordeContainModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024B97F size=59 name=?friend_newModuleInstance@HorseHordeContain@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *HorseHordeContain::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -376,13 +547,57 @@ Module *GarrisonContain::friend_newModuleInstance(Thing *thing, const ModuleData
 	return new GarrisonContain(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024BA96 size=59 name=?friend_newModuleInstance@HordeGarrisonContain@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *HordeGarrisonContain::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new HordeGarrisonContain(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024BAD1 size=84 name=?friend_newModuleData@HordeGarrisonContainModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *HordeGarrisonContainModuleData::friend_newModuleData(INI *ini)
+{
+	HordeGarrisonContainModuleData *data = new HordeGarrisonContainModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, HordeGarrisonContainModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024BB25 size=59 name=?friend_newModuleInstance@AODHordeContain@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *AODHordeContain::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new AODHordeContain(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024BB60 size=84 name=?friend_newModuleData@AODHordeContainModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *AODHordeContainModuleData::friend_newModuleData(INI *ini)
+{
+	AODHordeContainModuleData *data = new AODHordeContainModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, AODHordeContainModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024BBB4 size=59 name=?friend_newModuleInstance@SiegeEngineContain@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *SiegeEngineContain::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new SiegeEngineContain(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024BBEF size=84 name=?friend_newModuleData@SiegeEngineContainModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *SiegeEngineContainModuleData::friend_newModuleData(INI *ini)
+{
+	SiegeEngineContainModuleData *data = new SiegeEngineContainModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, SiegeEngineContainModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024BC43 size=59 name=?friend_newModuleInstance@HordeSiegeEngineContain@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *HordeSiegeEngineContain::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new HordeSiegeEngineContain(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024BC7E size=84 name=?friend_newModuleData@HordeSiegeEngineContainModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *HordeSiegeEngineContainModuleData::friend_newModuleData(INI *ini)
+{
+	HordeSiegeEngineContainModuleData *data = new HordeSiegeEngineContainModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, HordeSiegeEngineContainModuleData::buildFieldParse);
+	return data;
+}
 // Field parse table for TunnelContainModuleData (decoded from retail image).
 static const FieldParse s_tunnelContainModuleDataFieldParse[] =
 {
@@ -398,7 +613,22 @@ void TunnelContainModuleData::buildFieldParse(MultiIniFieldParse &parse)
 }
 
 // FUNCTION: BFME2 0x0024BCED size=59 name=?friend_newModuleInstance@TunnelContain@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *TunnelContain::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new TunnelContain(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024BD28 size=59 name=?friend_newModuleInstance@RiderChangeContain@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *RiderChangeContain::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new RiderChangeContain(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024BD63 size=84 name=?friend_newModuleData@RiderChangeContainModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *RiderChangeContainModuleData::friend_newModuleData(INI *ini)
+{
+	RiderChangeContainModuleData *data = new RiderChangeContainModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, RiderChangeContainModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024BDB7 size=59 name=?friend_newModuleInstance@AIUpdateInterface@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024BDF2 size=81 name=?friend_newModuleData@TransportAIUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit

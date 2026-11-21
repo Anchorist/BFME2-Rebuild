@@ -6,7 +6,8 @@
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:cohesion, hypothesis:name:invented
 // FUNCTION: BFME2 0x00180AA0 size=6 name=?Rva00180AA0Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
-// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+// No retail code or data refers to this function. It returns four characters (below), probably a W3D asset type name; its owner is not known, so it keeps its
+// ledger name.
 int Rva00180AA0Get()
 {
 	return 0x41474752;	// the four bytes spell "AGGR"

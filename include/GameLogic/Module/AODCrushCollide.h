@@ -44,6 +44,7 @@ class AODCrushCollide : public UpdateModule, public CollideModuleInterface
 public:
 	virtual CollideModuleInterface *getCollide() { return this; }
 	AODCrushCollide(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	const char *name() const;						// (non-virtual, the literal)

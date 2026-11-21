@@ -115,6 +115,7 @@ class WanderAIUpdate : public AIUpdateInterface
 {
 public:
 	WanderAIUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~WanderAIUpdate();
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004A9424)

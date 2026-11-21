@@ -28,6 +28,7 @@ class InheritUpgradeCreate : public CreateModule
 {
 public:
 	InheritUpgradeCreate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~InheritUpgradeCreate();
 	virtual void onBuildComplete();	// override: onBuildComplete slot 1 at +0x10 (0x004B96A9)

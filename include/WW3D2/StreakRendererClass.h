@@ -67,6 +67,7 @@ public:
 	void Set_Texture(TextureClass *texture);				// 0x001911E0 (retail's body is shared with SegLineRendererClass::Set_Texture)
 	void Set_Shader(ShaderClass shader) { Shader = shader; }
 	void Set_Width(float width) { Width = width; }
+	void Set_Texture_Tile_Factor(float factor);			// 0x00743056
 	void Set_Color(const Vector3 &color) { Color = color; }
 	void Set_Opacity(float opacity) { Opacity = opacity; }
 	void Set_Texture_Mapping_Mode(TextureMapMode mode)

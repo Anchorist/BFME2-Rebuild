@@ -1,5 +1,8 @@
 // cl: /O1
+// stlport46
+#include <list>
 #include "Common/Xfer.h"
+#include "GameLogic/Module/OpenContain.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G003F3F83 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
@@ -11,6 +14,10 @@ void XferLivingWorldBattleResolutionType(Xfer *xfer, void *value)
 	xfer->XferEnum("LivingWorldBattle::ResolutionType", value, 4);
 }
 // FUNCTION: BFME2 0x003F3FCE size=4 name=?get@Pathfinder@@QBEHXZ evidence=S:strong (caller-field) tier=B hypothesis:mm1-gap-unit
+UnsignedInt OpenContain::getPlayerWhoEntered() const
+{
+	return m_playerEnteredMask;
+}
 // FUNCTION: BFME2 0x003F3FD2 size=7 name=?get@Rva003F3FD2DwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x003F3FD9 size=11 name=?rva003F3FD9@LivingWorldArmy@@QBE_NXZ evidence=P:provisional (wb-file) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x003F3FE4 size=4 name=?get@Rva003F3FE4LeaField@@QBEPAXXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

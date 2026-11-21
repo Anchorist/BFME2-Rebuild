@@ -50,7 +50,15 @@
         "?IsLightCRC@XferSaveAsText@@UBE_NXZ",
         "?isContactWeapon@WeaponTemplate@@QBE_NXZ",
         "?slot09@ModuleData@@UBE_NXZ",
-        "?slot08@ModuleData@@UBE_NXZ"
+        "?slot08@ModuleData@@UBE_NXZ",
+        "?isHijackedVehicleCrateCollide@AIUpdateInterface@@UBE_NXZ",
+        "?isCarBombCrateCollide@AIUpdateInterface@@UBE_NXZ",
+        "?isRailroad@AIUpdateInterface@@UBE_NXZ",
+        "?isSalvageCrateCollide@AIUpdateInterface@@UBE_NXZ",
+        "?isHijackedVehicleCrateCollide@CritterEmitterUpdate@@UBE_NXZ",
+        "?isCarBombCrateCollide@CritterEmitterUpdate@@UBE_NXZ",
+        "?isRailroad@CritterEmitterUpdate@@UBE_NXZ",
+        "?isSalvageCrateCollide@CritterEmitterUpdate@@UBE_NXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"
@@ -106,7 +114,9 @@
         "?onHealing@HordeTransportContainDamage@@UAEXPAVDamageInfo@@@Z",
         "?slot43@BehaviorModule@@UAEXM@Z",
         "?mapLoadPostProcess@BehaviorModule@@UAEXPBVDict@@@Z",
-        "?slot46@BehaviorModule@@UAEXH@Z"
+        "?slot46@BehaviorModule@@UAEXH@Z",
+        "?onDamage@UpgradeModule@@UAEXPAVDamageInfo@@@Z",
+        "?onHealing@UpgradeModule@@UAEXPAVDamageInfo@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"

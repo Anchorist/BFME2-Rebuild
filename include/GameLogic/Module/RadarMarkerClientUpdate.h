@@ -26,6 +26,7 @@ class RadarMarkerClientUpdate : public Rva00362EC7
 {
 public:
 	RadarMarkerClientUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~RadarMarkerClientUpdate();
 

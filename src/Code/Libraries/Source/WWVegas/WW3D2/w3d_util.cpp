@@ -90,6 +90,10 @@ void W3d_Shader_Set_Post_Detail_Alpha_Func(W3dShaderStruct *shader, int val)
 }
 
 // FUNCTION: BFME2 0x001A44D0 size=8 name=?Rva001A44D0ReadByte@@YAIPBE@Z evidence=?:placeholder tier=B hypothesis:K
+unsigned int Rva001A44D0ReadByte(const unsigned char *shader)
+{
+	return *shader;
+}
 
 // FUNCTION: BFME2 0x001A44D8 size=9 name=?W3d_Shader_Get_Depth_Mask@@YAHPBUW3dShaderStruct@@@Z evidence=N:ledger tier=B hypothesis:K
 int W3d_Shader_Get_Depth_Mask(const W3dShaderStruct *shader)

@@ -28,6 +28,7 @@ class TransportAIUpdate : public AIUpdateInterface
 {
 public:
 	TransportAIUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~TransportAIUpdate();
 

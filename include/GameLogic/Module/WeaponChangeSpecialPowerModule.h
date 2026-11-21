@@ -53,6 +53,7 @@ class WeaponChangeSpecialPowerModule : public SpecialPowerModule
 {
 public:
 	WeaponChangeSpecialPowerModule(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void doSpecialPower(unsigned int commandOptions);	// override: doSpecialPower slot 10 at +0x10 (0x004C40BA)
 	virtual void doSpecialPowerAtObject(Object *object, unsigned int commandOptions);	// override: slot 11 at +0x10 (0x004C405D: forwards to doSpecialPower; PlayerUpgrade, SplitHorde and CombineHorde tables share the body)

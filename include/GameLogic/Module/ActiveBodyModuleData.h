@@ -47,6 +47,7 @@ class ActiveBodyModuleData : public ModuleData
 public:
 	ActiveBodyModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	virtual Bool slot07() const { return true; }
 
 	Real m_maxHealth;                                      // +0x8 MaxHealth

@@ -3,6 +3,7 @@
 // Tier B; object=O0045314E evidence=invented flags=align=U;ehform=EH_prolog
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
+#include "GameNetwork/NetAckBothCommandMsg.h"
 #include <stddef.h>
 #include "Common/INI.h"
 #include "GameLogic/Module/GettingBuiltBehaviorModuleData.h"
@@ -102,6 +103,11 @@ void GettingBuiltBehaviorModuleData::buildFieldParse(MultiIniFieldParse &parse)
 // FUNCTION: BFME2 0x004542FA size=169 name=??0GettingBuiltBehavior@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger
 
 // FUNCTION: BFME2 0x004543A3 size=6 name=?Rva004543A3Get@@YAHXZ evidence=?:placeholder
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva004543A3Get()
+{
+	return (int)"GettingBuiltBehavior";
+}
 
 // FUNCTION: BFME2 0x004543B6 size=4 name=?get@Rva004543B6ByteField@@QBEEXZ evidence=?:placeholder
 
@@ -112,6 +118,10 @@ void GettingBuiltBehaviorModuleData::buildFieldParse(MultiIniFieldParse &parse)
 // FUNCTION: BFME2 0x004543C2 size=4 name=?get@Rva004543C2ByteField@@QBEEXZ evidence=?:placeholder
 
 // FUNCTION: BFME2 0x004543C6 size=4 name=?get@Rva004543C6ByteField@@QBEEXZ evidence=?:placeholder
+UnsignedByte NetAckBothCommandMsg::getOriginalPlayerID() const
+{
+	return m_originalPlayerID;
+}
 
 // FUNCTION: BFME2 0x004543CA size=11 name=?mapLoadPostProcess@GettingBuiltBehavior@@UAEXPBVDict@@@Z evidence=N:ledger
 

@@ -7,6 +7,10 @@
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:name:invented
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/AllowBannerSpawnUpgrade.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/AllowBannerSpawnUpgradeModuleData.h"
+#include "GameLogic/Module/UpgradeMuxData.h"
 // FUNCTION: BFME2 0x004B84EA size=32 name=??1AllowBannerSpawnUpgrade@@MAE@XZ evidence=N:ledger tier=B hypothesis:K
 AllowBannerSpawnUpgrade::~AllowBannerSpawnUpgrade()
 {
@@ -25,7 +29,18 @@ NameKeyType AllowBannerSpawnUpgrade::getModuleNameKey() const
 	return TheAllowBannerSpawnUpgradeNameKey;
 }
 
+static const FieldParse s_allowBannerSpawnUpgradeModuleDataFieldParse[] =
+{
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x004B8565 size=34 name=?buildFieldParse@AllowBannerSpawnUpgradeModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:K
+void AllowBannerSpawnUpgradeModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(UpgradeMuxData::getFieldParse(), 0x8);
+	parse.add(s_allowBannerSpawnUpgradeModuleDataFieldParse, 0);
+}
+
 
 
 // Retail's two upgrade overrides 0x004B8510 / 0x004B8518 only forward to the UpgradeModule helpers (no row of their own).

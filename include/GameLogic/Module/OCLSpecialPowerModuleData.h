@@ -46,6 +46,7 @@ class OCLSpecialPowerModuleData : public SpecialPowerModuleData
 public:
 	OCLSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	virtual ~OCLSpecialPowerModuleData();
 	static void parseUpgradeName(INI *ini, void *instance, void *store, const void *userData);	// 0x004C3859 (map: placeholder INI::Rva004C3859_ParseUpgradeName)
 

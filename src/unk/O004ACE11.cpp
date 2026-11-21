@@ -8,7 +8,31 @@
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
 #include "GameLogic/Module/RousingSpeechUpdate.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/RousingSpeechUpdateModuleData.h"
+static const FieldParse s_rousingSpeechUpdateModuleDataFieldParse[] =
+{
+	{ "BonusRadius", INI::parseReal, 0, 0xC8 },
+	{ "SpeechDuration", INI::parseDurationUnsignedInt, 0, 0xCC },
+	{ "UpdateInterval", INI::parseDurationUnsignedInt, 0, 0xD0 },
+	{ "LeaderFX", INI::parseFXList, 0, 0xD4 },
+	{ "FollowerFX", INI::parseFXList, 0, 0xD8 },
+	{ "CreateWave", INI::parseBool, 0, 0xDC },
+	{ "WaveWidth", INI::parseReal, 0, 0xE0 },
+	{ "ModifierName", INI::parseAsciiStringVectorAppend, 0, 0xE4 },
+	{ "LevelUp", INI::parseBool, 0, 0xF0 },
+	{ "ObjectFilter", iniParseObjectFilter, 0, 0xF4 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x004ACD73 size=27 name=?buildFieldParse@RousingSpeechUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
+void RousingSpeechUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	SpecialAbilityUpdateModuleData::buildFieldParse(parse);
+	parse.add(s_rousingSpeechUpdateModuleDataFieldParse, 0);
+}
+
 // FUNCTION: BFME2 0x004ACD8E size=30 name=?rva004ACD8E@@YAXPAVObject@@@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x004ACDAC size=101 name=?allow@Rva004ACDACFilter@@UAE_NPAVObject@@@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x004ACE11 size=133 name=?startPreparation@RousingSpeechUpdate@@UAEXXZ evidence=N:ledger

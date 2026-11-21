@@ -25,6 +25,7 @@ class SiegeDeploySpecialPower : public SpecialPowerUpdateModule
 {
 public:
 	SiegeDeploySpecialPower(Thing *thing, const ModuleData *moduleData);	// 0x004C56BA
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~SiegeDeploySpecialPower();
 
 	virtual NameKeyType getModuleNameKey() const;

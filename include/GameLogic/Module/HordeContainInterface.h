@@ -154,7 +154,7 @@ public:
 	virtual Bool rva0046A4C8() = 0;	// 87 0x0046A4C8
 	virtual Bool hordeSlot88(Object *obj) = 0;	// 88 0x0046CE9D
 	virtual void rva00468D7D(Object *) = 0;	// 89 0x00468D7D
-	virtual void hordeSlot90() = 0;	// 90 0x003BA648
+	virtual void rva003BA648(Int value) = 0;	// 90 0x003BA648
 	virtual void hordeSlot91() = 0;	// 91 0x005BF27A
 	virtual void rva0046D384(Team *) = 0;	// 92 0x0046D384
 	virtual void hordeSlot93(Int value) = 0;	// 93 0x0046F7D7
@@ -192,8 +192,8 @@ public:
 	virtual Bool rva0046992C() = 0;	// 125 0x0046992C
 	virtual void hordeSlot126() = 0;	// 126 0x00475F61
 	virtual Bool rva004698BC() = 0;	// 127 0x004698BC
-	virtual void hordeSlot128() = 0;	// 128 0x004698D6
-	virtual void hordeSlot129() = 0;	// 129 0x004698E2
+	virtual const void *rva004698D6() = 0;	// 128 0x004698D6
+	virtual const void *rva004698E2() = 0;	// 129 0x004698E2
 	virtual void rva00469967() = 0;	// 130 0x00469967
 	virtual void hordeSlot131(Real angle) = 0;	// 131 0x00469075
 	virtual void rva004690A9(const Coord3D *) = 0;	// 132 0x004690A9

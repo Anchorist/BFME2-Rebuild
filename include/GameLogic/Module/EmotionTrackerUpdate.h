@@ -98,6 +98,7 @@ public:
 		Bool m_unk0x20;								// +0x20
 	};
 	EmotionTrackerUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	const char *name() const;				// 0x004B138D (QBE: public, non-virtual)

@@ -8861,6 +8861,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 32
+        },
+        {
+          "rva": "0x007FD7C0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "2 entries, extent 32 bytes, NO closing zero row (data follows directly); first keys Side,Unit; 2 exact .text readers: Rva002A88C1Get; parseAIDozerAssignmentDefinition; the words of the spelling (dozer, assignment) occur in its readers' names or its keys; existing role spelling kept",
+          "size": 32
         }
       ]
     },
@@ -8968,6 +8978,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A08CF4",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 12 exact .text readers in 4 functions: Init_AMD_Processor_Type::CPUDetectClass; Init_Processor_Family::CPUDetectClass; Rva000752C9Get; testMinimumRequirements::W3DShaderManager; readers include methods of its class CPUDetectClass (Init_AMD_Processor_Type::CPUDetectClass, Init_Processor_Family::CPUDetectClass); Zero Hour declares it too (cp",
           "size": 4
         }
       ]
@@ -9145,6 +9165,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009DE024",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 42 exact .text readers in 26 functions: ?1IMEManager; ResetResolution::AptMainMenu; Rva0023C85EDisable; TestWaterUpdate; WndProc; attach::IMEManager; clipCursorToClient; detatch::IMEManager; disable::IMEManager; draw::W3DDisplay; draw::W3DM; words wnd of the spelling occur in the readers' names; Zero Hour declares it too (WinMain.cpp,WinMa",
+          "size": 4
         }
       ]
     },
@@ -9241,6 +9271,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 1
+        },
+        {
+          "rva": "0x009EC3D9",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 22 exact .text readers in 14 functions: Render::Line3DClass; Render::MeshClass; Render::ParticleBufferClass; Render::Rva001684D6; Render::SegmentedLineClass; Render::StreakLineClass; Render::WW3D; Render_And_Clear_Static_Sort_Lists::WW3D; R; readers include methods of its class WW3D (Render::WW3D, Render_And_Clear_Static_Sort_Lists::WW3D);",
+          "size": 1
         }
       ]
     },
@@ -9252,6 +9292,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 64
+        },
+        {
+          "rva": "0x0083B000",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "4 entries, extent 64 bytes, NO closing zero row (data follows directly); first keys Unit,PercentageOfArmyPhase1,PercentageOfArmyPhase2,PercentageOfArmyPhase3; 2 exact .text readers: Rva0041F286Get; Rva0041F524_ParseArmyMember::INI; the words of the spelling (army, member) occur in its readers' names or its keys; existing role spelling kept",
           "size": 64
         }
       ]
@@ -12225,6 +12275,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 32
+        },
+        {
+          "rva": "0x007FD85C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "2 entries, extent 32 bytes, NO closing zero row (data follows directly); first keys BuildCostReduction,BuildTimeReduction; 2 exact .text readers: Rva002A893FGet; Rva002A898A_ParseBrutalDifficultyCheats::INI; the words of the spelling (brutal, difficulty, cheats) occur in its readers' names or its keys; existing role spelling kept",
+          "size": 32
         }
       ]
     },
@@ -12453,6 +12513,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 48
+        },
+        {
+          "rva": "0x007FD804",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "3 entries, extent 48 bytes, NO closing zero row (data follows directly); first keys Unit,TargetTypes,TargetPriorityModifiers; 2 exact .text readers: Rva002A8922Get; Rva002A8945_ParseCombatChainDefinition::INI; the words of the spelling (combat, chain, definition) occur in its readers' names or its keys; existing role spelling kept",
+          "size": 48
         }
       ]
     },
@@ -12573,6 +12643,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 1056
+        },
+        {
+          "rva": "0x009EC5E8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind zero_init_unknown; 4 exact .text readers in 3 functions: Create_Device::DX8Wrapper; Rva0011C460Get; Rva001207B0Init; readers include methods of its class DX8Wrapper (Create_Device::DX8Wrapper); Zero Hour declares it too (dx8wrapper.cpp,dx8wrapper.h); existing spelling kept",
+          "size": 1056
         }
       ]
     },
@@ -12605,6 +12685,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 8
+        },
+        {
+          "rva": "0x009ED5F0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail readers (1): 0x0011C470+71 in ?Set_DX8_Light@DX8Wrapper@@SAXHPAU_D3DLIGHT8@@@Z (O0011C470.cpp); 0x0011C470+84 in ?Set_DX8_Light@DX8Wrapper@@SAXHPAU_D3DLIGHT8@@@Z (O0011C470.cpp); 0x0011C470+112 in ?Set_DX8_Light@DX8Wrapper@@SAXHPAU_D3DLIGHT8@@@Z (O0011C470.cpp); the readers include methods of the owning class DX8Wrapper; Zero Hour declares the same static in dx8wrapper.c",
           "size": 8
         }
       ]
@@ -12709,6 +12799,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009EDA30",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 35 exact .text readers in 12 functions: Create_Device::DX8Wrapper; Enumerate_Devices::DX8Wrapper; Find_Color_And_Z_Mode::DX8Wrapper; Find_Color_Mode::DX8Wrapper; Find_Z_Mode::DX8Wrapper; Init::DX8Wrapper; Rva000752F2Get; Rva001207B0Init; Se; readers include methods of its class DX8Wrapper (Create_Device::DX8Wrapper, Enumerate_Devices::DX8W",
           "size": 4
         }
       ]
@@ -13243,6 +13343,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 80
+        },
+        {
+          "rva": "0x007FD768",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "5 entries, extent 80 bytes, NO closing zero row (data follows directly); first keys Difficulty,EconomyUpgradeProbability,EconomyMaxFarms,SpecialPowerActivationProbability; 2 exact .text readers: Rva002A88BBGet; Rva002A89D2_ParseDifficultyTuning::INI; the words of the spelling (difficulty, tuning) occur in its readers' names or its keys; existing role spelling kept",
+          "size": 80
         }
       ]
     },
@@ -13589,6 +13699,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 144
+        },
+        {
+          "rva": "0x007DCA18",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "8 entries, extent 144 bytes, closed by a zero row; first keys ObjectFilter,SourceObjectFilter,RequiredSecondaryModelConditions,ExcludedSecondaryModelConditions; 16 exact .text readers: Rva001DFAB9Get; buildFieldParse::AttachedModelFXNugget; buildFieldParse::BuffNuggetFXNugget; buildFieldParse::CameraShakerVolumeFXNugget; buildFieldParse::CursorParticleSystemFXNugget; buildField",
+          "size": 144
         }
       ]
     },
@@ -13772,6 +13892,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 16
+        },
+        {
+          "rva": "0x009EC3E0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 11 exact .text readers in 11 functions: End_Render::WW3D; Get_New_Particles::ParticleBufferClass; Log_Statistics_String::DX8MeshRendererClass; Render_Line::ParticleBufferClass; Render_Line_Group::ParticleBufferClass; Render_Particles::Parti; readers include methods of its class WW3D (End_Render::WW3D); Zero Hour declares it too (hmorphanim",
           "size": 16
         }
       ]
@@ -14067,6 +14197,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 116
+        },
+        {
+          "rva": "0x009B9198",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_initialised; 19 exact .text readers in 14 functions: MpOwnerPrintMessage::AptOnlineCustomMatch; PopulateMyClans::AptMpClans; PopulatePlayerList::ChatWindowsOnlineBuddy; PopulatePlayerList::ChatWindowsOnlineRoom; ProcessGameSpyResponse::AptMessengerOnlin; words game,spy,color of the spelling occur in the readers' names; Zero Hour declares it too (Peer",
+          "size": 116
         }
       ]
     },
@@ -14139,6 +14279,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 20
+        },
+        {
+          "rva": "0x009BA444",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "4 strings (PRISTINE ... RUBBLE) closed by a zero word, extent 20 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BE93C8 (the userData slots of MovementPenaltyDamageState(1)); passed through parseIndexList; Zero Hour twin TheBodyDamageTypeNames (BodyModule.h) holds exactly PRISTINE, DAMAGED, REALLYDAMAGE",
+          "size": 20
         }
       ]
     },
@@ -14150,6 +14300,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 44
+        },
+        {
+          "rva": "0x009BA470",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "10 strings (NONE ... DISABLE) closed by a zero word, extent 44 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BE8718 (the userData slots of TerrainLOD(1)); passed through parseIndexList; Zero Hour twin TerrainLODNames (TerrainVisual.h) holds the same first entries NONE, MIN, STRETCH_NO_CLOUDS...; INI k",
           "size": 44
         }
       ]
@@ -14252,6 +14412,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 1
+        },
+        {
+          "rva": "0x00A08D2C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 13 exact .text readers in 11 functions: Clamp_Color::DX8Wrapper; Convert_Color_Clamp::DX8Wrapper; Has_CMOV_Instruction::CPUDetectClass; Init_Processor_Features::CPUDetectClass; Init_Processor_Log::CPUDetectClass; Render::Rva00177860; Render; readers include methods of its class CPUDetectClass (Has_CMOV_Instruction::CPUDetectClass, Init_Pro",
           "size": 1
         }
       ]
@@ -14433,6 +14603,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 8
+        },
+        {
+          "rva": "0x00A08CA8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 31 exact .text readers in 5 functions: Init_Intel_Processor_Type::CPUDetectClass; Init_Processor_Family::CPUDetectClass; Init_Processor_String::CPUDetectClass; Rva000752C3Get; testMinimumRequirements::W3DShaderManager; readers include methods of its class CPUDetectClass (Init_Intel_Processor_Type::CPUDetectClass, Init_Processor_Family::CPU",
+          "size": 8
         }
       ]
     },
@@ -14517,6 +14697,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 1
+        },
+        {
+          "rva": "0x009EDA04",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 6 exact .text readers in 6 functions: Do_Mappers_Need_Normals::MeshMatDescClass; Init::DX8Wrapper; Load_Texture; Reset_Device::DX8Wrapper; Rva00131068GetByte; Shutdown::DX8Wrapper; readers include methods of its class DX8Wrapper (Init::DX8Wrapper, Reset_Device::DX8Wrapper, Shutdown::DX8Wrapper); Zero Hour declares it too (ww3d.h,dx8wrapper",
+          "size": 1
         }
       ]
     },
@@ -14528,6 +14718,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 1
+        },
+        {
+          "rva": "0x009EC3D4",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 13 exact .text readers in 12 functions: Begin_Render::WW3D; End_Render::WW3D; Init::WW3D; Render::WW3D; Reset_D3D_Device; Rva001182A0; Rva00118660Call; Set_Texture_Reduction::WW3D; Shutdown::WW3D; rva000422F3::Rva000422F3; readers include methods of its class WW3D (Begin_Render::WW3D, End_Render::WW3D, Init::WW3D, Render::WW3D, Set_Texture",
           "size": 1
         }
       ]
@@ -14598,6 +14798,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 1
+        },
+        {
+          "rva": "0x009B5F7C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_initialised; 15 exact .text readers in 15 functions: Add_Rigid_Mesh_To_Container; Define_FVF::DX8FVFCategoryContainer; Enable_Sorting::WW3D; Insert::BfmeSortingDispatchAt0012FE00; Insert_VolumeParticle::SortingRendererClass; Is_Sorting_Enabled::WW3D; Re; readers include methods of its class WW3D (Enable_Sorting::WW3D, Is_Sorting_Enabled::WW3D); Zero ",
+          "size": 1
         }
       ]
     },
@@ -14629,6 +14839,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 2
+        },
+        {
+          "rva": "0x009EDA06",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 10 exact .text readers in 7 functions: Flip_To_Primary::DX8Wrapper; Get_Device_Resolution::DX8Wrapper; Get_Render_Target_Resolution::DX8Wrapper; Init::DX8Wrapper; Registry_Save_Render_Device::DX8Wrapper; Rva00116F70GetByte; Set_Render_Devi; readers include methods of its class DX8Wrapper (Flip_To_Primary::DX8Wrapper, Get_Device_Resolution:",
           "size": 2
         }
       ]
@@ -15702,6 +15922,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 8
+        },
+        {
+          "rva": "0x009EDA14",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 16 exact .text readers in 14 functions: End_Scene::DX8Wrapper; Invalidate_Cached_Render_States::DX8Wrapper; Rva0014D241Get; Rva0014D595NumAmbientLights; Rva0014D64CNumDirectionalLights; Rva0014D7B1NumPointLights; SetPosition::Rva0014D887Thi; readers include methods of its class DX8Wrapper (End_Scene::DX8Wrapper, Invalidate_Cached_Render_St",
+          "size": 8
         }
       ]
     },
@@ -15737,6 +15967,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 24
+        },
+        {
+          "rva": "0x008042F8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "5 strings (NONE ... BARRACKS) closed by a zero word, extent 24 bytes, const char *[] in retail .rdata; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00C043B8, 0x00C36EE8 (the userData slots of Type(1)); passed through parseIndexList; role spelling kept: the five names are the LivingWorld building kinds and the INI key using it is Type",
           "size": 24
         }
       ]
@@ -15833,6 +16073,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 1424
+        },
+        {
+          "rva": "0x007DE2F8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "88 entries, extent 1424 bytes, closed by a zero row; first keys Surfaces,Speed,LookAheadMult,NonDirtyTransform; 2 exact .text readers: Rva001E392EGet; parseLocomotorTemplateDefinition::LocomotorStore; Zero Hour twin TheFieldParse holds 50 of its 60 keys (83%) here; the words of the spelling (locomotor, template) occur in its readers' names or its keys; existing role spelling ke",
           "size": 1424
         }
       ]
@@ -15990,6 +16240,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 80
+        },
+        {
+          "rva": "0x009D5E90",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "All 20 dwords at 0x009D5E90 (80B in retail .data) match Zero Hour WWLib/random.cpp Random3Class::Mix1 (psdes table) byte-for-byte; sole .text reader is Random3Class::operator() at 0x0061934A.",
+          "size": 80
         }
       ]
     },
@@ -16001,6 +16261,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 80
+        },
+        {
+          "rva": "0x009D5EE0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "All 20 dwords at 0x009D5EE0 (80B in retail .data) match Zero Hour WWLib/random.cpp Random3Class::Mix2 (psdes table) byte-for-byte; sole .text reader is Random3Class::operator() at 0x0061937D.",
           "size": 80
         }
       ]
@@ -16821,6 +17091,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009B5F90",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_initialised; 5 exact .text readers in 3 functions: Register_For_Rendering::MeshModelClass; Rva00171660Get; Set_NPatches_Gap_Filling_Mode::WW3D; readers include methods of its class WW3D (Set_NPatches_Gap_Filling_Mode::WW3D); Zero Hour declares it too (ww3d.h,ww3d.cpp); existing spelling kept",
+          "size": 4
         }
       ]
     },
@@ -16832,6 +17112,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009B5F94",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "Retail .data 0x009B5F94 (4B, init=1) matches Zero Hour WW3D::NPatchesLevel = 1; written by WW3D::Set_NPatches_Level 0x00116E70 and read by 0x00129450, ShaderClass::Apply, DX8Renderer, MeshMatDescClass, and MeshModelClass.",
           "size": 4
         }
       ]
@@ -17262,6 +17552,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 128
+        },
+        {
+          "rva": "0x009EDF10",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail readers (1): 0x00075399+20 in ?Set_Pixel_Shader_Constant@DX8Wrapper@@SAXHPBXH@Z (O00075343.cpp); the readers include methods of the owning class DX8Wrapper; Zero Hour declares the same static in dx8wrapper.cpp,dx8wrapper.h",
+          "size": 128
         }
       ]
     },
@@ -17297,6 +17597,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 8
+        },
+        {
+          "rva": "0x009F3040",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail readers (1): 0x0013D200+2 in ?Shutdown@VertexMaterialClass@@SAXXZ (vertmaterial.cpp); 0x0013D200+33 in ?Shutdown@VertexMaterialClass@@SAXXZ (vertmaterial.cpp); 0x0013D230+7 in ?Get_Preset@VertexMaterialClass@@SAPAV1@W4PresetType@1@@Z (vertmaterial.cpp); the readers include methods of the owning class VertexMaterialClass; Zero Hour declares the same static in vertmaterial",
           "size": 8
         }
       ]
@@ -17346,6 +17656,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A08D30",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 20 exact .text readers in 9 functions: Get_Processor_Manufacturer_Name::CPUDetectClass; Init_Compact_Log::CPUDetectClass; Init_Processor_Family::CPUDetectClass; Init_Processor_Features::CPUDetectClass; Init_Processor_Manufacturer::CPUDetec; readers include methods of its class CPUDetectClass (Get_Processor_Manufacturer_Name::CPUDetectClass",
+          "size": 4
         }
       ]
     },
@@ -17381,6 +17701,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A08D20",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 7 exact .text readers in 5 functions: Init_Compact_Log::CPUDetectClass; Init_Processor_Log::CPUDetectClass; Init_Processor_Speed::CPUDetectClass; Rva000752CFGet; testMinimumRequirements::W3DShaderManager; readers include methods of its class CPUDetectClass (Init_Compact_Log::CPUDetectClass, Init_Processor_Log::CPUDetectClass, Init_Processo",
           "size": 4
         }
       ]
@@ -17840,6 +18170,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009B5FD8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_scalar; 22 exact .text readers in 15 functions: Draw_Sentence::Render2DSentenceClass; Get_Device_Resolution::DX8Wrapper; Get_Device_Resolution_Width::DX8Wrapper; Get_Render_Target_Resolution::DX8Wrapper; Init::DX8Wrapper; Normalize_Coordinates::WW3; readers include methods of its class DX8Wrapper (Get_Device_Resolution::DX8Wrapper, Get_Device_Resolut",
+          "size": 4
         }
       ]
     },
@@ -17851,6 +18191,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009B5FD4",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "Retail .data 0x009B5FD4 (4B, init=640) matches Zero Hour DX8Wrapper::ResolutionWidth = 640; read/written by DX8Wrapper::Init, Set_Render_Device, Set_Device_Resolution, Get_Device_Resolution, WW3D::Normalize_Coordinates, and 0x00116E20.",
           "size": 4
         }
       ]
@@ -18579,6 +18929,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 304
+        },
+        {
+          "rva": "0x007FDA50",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "19 entries, extent 304 bytes, NO closing zero row (data follows directly); first keys CombatChainDefinition,BrutalDifficultyCheats,DifficultyTuning,DisableBaseBuilding; 2 exact .text readers: Rva002A8A0FGet; parseSkirmishAIDataDefinition; the words of the spelling (skirmish, data) occur in its readers' names or its keys; existing role spelling kept",
+          "size": 304
         }
       ]
     },
@@ -18590,6 +18950,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 1
+        },
+        {
+          "rva": "0x009EC3FD",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 318 exact .text readers in 39 functions: Activate_Snapshot::WW3D; Apply_Default_State::DX8Wrapper; CustomizedRender::Rva007406E1; Customized_Render::Rva0009AA0F; Draw::DX8Wrapper; End_Render::WW3D; Flush::RTS3DScene; Install_Materials::BfmeB; readers include methods of its class WW3D (Activate_Snapshot::WW3D, End_Render::WW3D, Is_Snapshot_",
           "size": 1
         }
       ]
@@ -18935,6 +19305,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009B5FE0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "Retail .data 0x009B5FE0 (4B, init=16) matches Zero Hour DX8Wrapper::TextureBitDepth = 16; read/written by DX8Wrapper::Registry_Load_Render_Device, Registry_Save_Render_Device, 0x00116E40, and 0x00117C30.",
+          "size": 4
         }
       ]
     },
@@ -18946,6 +19326,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009B5F9C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_initialised; 4 exact .text readers in 3 functions: Do_Onetime_Device_Dependent_Inits::DX8Wrapper; Set_Texture_Filter::WW3D; getTextureFilter; readers include methods of its class WW3D (Set_Texture_Filter::WW3D); Zero Hour declares it too (ww3d.h,ww3d.cpp); existing spelling kept",
           "size": 4
         }
       ]
@@ -19142,6 +19532,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A01E18",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 47 exact .text readers in 26 functions: changeToFormation::HordeContain; checkForPatrol::ObjectOrderQueue; clearAiOrdersOfObject; createCommandHint::InGameUI; forwardObjectToAiOrders; init::GameEngine; init::GameState; logicMessageDispatche; words orders,manager of the spelling occur in the readers' names; existing spelling kept; GameState",
+          "size": 4
         }
       ]
     },
@@ -19271,6 +19671,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A032D0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 17 exact .text readers in 13 functions: ?0AnimationSoundClientBehavior; ?0AnimationSoundModuleManager; ?1AnimationSoundClientBehavior; ?1GameClient; ?4U4Assign006057C0; init::GameClient; reset::GameClient; rva004C9E1F::AnimationSoundClientB; words animation,sound,module,manager of the spelling occur in the readers' names; existing spelling",
+          "size": 4
         }
       ]
     },
@@ -19306,6 +19716,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A06E5C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 31 exact .text readers in 15 functions: ?1Rva0060061A; Rva00600695Get; Rva006007DAOpen; addArchiveFile::Win32BIGFileSystem; doesFileExist::FileSystem; doesWideFileExist::BFME2FileSystemFacade; getFileInfo::FileSystem; getFileListInDirectory; words archive,file,system of the spelling occur in the readers' names; Zero Hour declares it too (W",
           "size": 4
         }
       ]
@@ -19351,6 +19771,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 736
+        },
+        {
+          "rva": "0x0083B5E8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "46 entries, extent 736 bytes, NO closing zero row (data follows directly); first keys Side,MustUseCommandPointPercentage_Phase1,MustUseCommandPointPercentage_Phase2,MustUseCommandPointPercentage_Phase3; 2 exact .text readers: Rva0041F71AGet; parseArmyDefinition::ArmyDefinitionManager; the words of the spelling (army, definition) occur in its readers' names or its keys; existing",
           "size": 736
         }
       ]
@@ -19435,6 +19865,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009FE1D4",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 41 exact .text readers in 15 functions: Rva00404648Parse; addModifierToPool::AttributeModifierPoolUpdate; init::GameEngine; initObject::Object; parseModifierListDefinition::AttributeModifierStore; rva0023054C::GameEngine; rva00403170::Attri; words attribute,modifier,store of the spelling occur in the readers' names; existing spelling kept;",
           "size": 4
         }
       ]
@@ -19620,6 +20060,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009FE32C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 17 exact .text readers in 12 functions: ?0PlayerPanelMovieClip::Impl::DynamicAutoResolveDialog::; ?1InGameUI; HideControlBar; ParseBannerTypeInfo::BannerUI; Rva0052A2B7; ShowControlBar; Update::Impl::AptInGameSpellBookInterface; init::Banne; words banner of the spelling occur in the readers' names; existing spelling kept; written by init::",
           "size": 4
         }
       ]
@@ -20315,6 +20765,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009FE754",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 14 exact .text readers in 9 functions: ?1GameLogic; getCRC::GameLogic; init::GameLogic; init::GameState; reset::GameLogic; rva0028BAC0::Object; rva0028DCC4::Object; update::CritterEmitterUpdate; update::GameLogic; 14 reader functions with real names; existing spelling kept; written by 1GameLogic at 0x00243C86; init::GameLogic at 0x00243FBF",
+          "size": 4
         }
       ]
     },
@@ -20484,6 +20944,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 112
+        },
+        {
+          "rva": "0x008162A0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "6 entries, extent 112 bytes, closed by a zero row; first keys CreationChance,VeterancyLevel,KilledByType,CrateObject; 2 exact .text readers: Rva0035C959Get; parseCrateTemplateDefinition::CrateSystem; Zero Hour twin CrateTemplate::TheCrateTemplateFieldParseTable holds 6 of its 6 keys (100%) here; the words of the spelling (crate, template, crate, template) occur in its readers' ",
           "size": 112
         }
       ]
@@ -20810,6 +21280,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A03144",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail names it itself: GameEngine::init (?init@GameEngine@@UAEXHQAPAD@Z) pushes the string 'TheDelayedExperienceLevelGrantSystem' (VA 0xbe7d0c, push at 0x22f191) and then the address of this cell (push at 0x22f19f) for the subsystem registration call; the registration passes each subsystem's global together with its own name, and 82 of the 85 registered globals already carry e",
           "size": 4
         }
       ]
@@ -21221,6 +21701,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 8
+        },
+        {
+          "rva": "0x00A0C898",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 188 exact .text readers in 160 functions: ?0AptDisconnectScreen; ?0AptMyHero; ?0CreateAHeroManager; ?0GameSlot; ?0GameSpyGroupRoom; ?0Impl::ArmyDetailsMovieClip::StrategicHUD; ?0Impl::ArmyMemberIconMovieClip::StrategicHUD; ?0Impl::ArmyUnitSwa; readers include methods of its class UnicodeString (?__E?TheEmptyString::UnicodeString, ?__F?TheE",
+          "size": 8
         }
       ]
     },
@@ -21370,6 +21860,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 304
+        },
+        {
+          "rva": "0x007DC720",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "18 entries, extent 304 bytes, closed by a zero row; first keys Sound,EvaEvent,RayEffect,LightPulse; 2 exact .text readers: Rva001DFAA0Get; parseFXListDefinition::FXListStore; Zero Hour twin TheFXListFieldParse holds 7 of its 8 keys (88%) here; the words of the spelling (list) occur in its readers' names or its keys; existing role spelling kept",
           "size": 304
         }
       ]
@@ -21636,6 +22136,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009FE33C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 57 exact .text readers in 40 functions: ?0Impl::PlaceTerrainResourceClaimantFeedback; ?0Rva005D40A6; ?0W3DAptDisplayString; ?1GameClient; InitTextEntry::AptPlayerTribute; LoadAssets::FadeInTextRender; ParseFontDefaultSettings::FontLibrary; ; words font,library of the spelling occur in the readers' names; Zero Hour declares it too (GameFont",
+          "size": 4
         }
       ]
     },
@@ -21750,6 +22260,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009FE710",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 84 exact .text readers in 64 functions: ?0W3DVegetationBufferBase; ?1AptSaveLoad; Credits::AptMainMenu; CreditsExit::AptMainMenu; ExitGame::AptMainMenu; GameMain; Render::W3DStatusCircle; Rva0044C205Reset; Rva0050CF3CStartHeadless; WndProc;; words game,engine of the spelling occur in the readers' names; Zero Hour declares it too (WinMain.c",
+          "size": 4
         }
       ]
     },
@@ -21762,6 +22282,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A02EEC",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 177 exact .text readers in 93 functions: ?0GameSpyInfo; ?0Rva0050F909; ?1AptOnlineShell; ?1AptSkirmish; ?1GameSpyInfo; ?1Recorder; BindHeroToObjectAndUpdate::CreateAHeroManager; CreateMPPlayers::GameLogic; CreatePlayers::LivingWorldCampaign;; words game,info of the spelling occur in the readers' names; Zero Hour declares it too (GameInfo.h",
+          "size": 4
         }
       ]
     },
@@ -21773,6 +22303,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009FE144",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 73 exact .text readers in 56 functions: ?0AptOptions; ?0Drawable; AllocateAndFillBuffers::RenderableStandingWaterArea; EnterAdvancedSettings::AptOptions; Externs::AptOptions; ExternsLODTemplate::AptOptions; GetLODIndex; InitGadgets::AptOpti; words game,manager of the spelling occur in the readers' names; Zero Hour declares it too (GameLOD.",
           "size": 4
         }
       ]
@@ -21820,6 +22360,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A05FBC",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 45 exact .text readers in 27 functions: GameSpyOpenOverlay; HandleBuddyResponses; Rva0041647ASend; Rva004166DB; Rva004177D5; Rva004178C1; SetUpGameSpy; TearDownGameSpy; Thread_Function::BuddyThreadClass; callbackWrapper; connectCallback::Bu; words game,spy,buddy,message of the spelling occur in the readers' names; Zero Hour declares it too",
+          "size": 4
         }
       ]
     },
@@ -21832,6 +22382,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A05FB4",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 35 exact .text readers in 23 functions: ?0LadderList; CheckLogin::AptOnlineLogin; DoRefresh::AptOnlineCustomMatch; GetPingImageEnum::AptConnectionScreen; OnMatched::AptOnlineQuickMatch; PopulateLobbyComboBox::AptOnlineCustomMatch; Rva005DB3; words game,spy of the spelling occur in the readers' names; Zero Hour declares it too (GSConfig.h,P",
+          "size": 4
         }
       ]
     },
@@ -21843,6 +22403,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A02324",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 119 exact .text readers in 40 functions: ?0AptLoadScreen; ?0AptOnlineCustomMatch; ?0GameSpyInfo; ?0OnlineQuickMatch::AptOnline; ?1GameSpyInfo; HandlePersistentStorageResponses; MpOwnerSelectMap::AptOnlineCustomMatch; MpOwnerSelectStrategicSc; words game,spy,game of the spelling occur in the readers' names; Zero Hour declares it too (Stagin",
           "size": 4
         }
       ]
@@ -21868,6 +22438,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A05FC8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 75 exact .text readers in 26 functions: HandlePersistentStorageResponses; ProcessGameSpyResponses::AptOnlineCustomMatch; ProcessOnlineGameResults::StatsReporter; Rva005BD5F3Add; Rva005BD64DAdd; Rva005BD910Submit; SendStatsToOtherPlayers; Se; words game,spy of the spelling occur in the readers' names; Zero Hour declares it too (PersistentSt",
+          "size": 4
         }
       ]
     },
@@ -21879,6 +22459,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 8
+        },
+        {
+          "rva": "0x00A02340",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 136 exact .text readers in 79 functions: ?0OnlineHome::AptOnline; Cancel::OnlineQuickMatch::AptOnline; DoRefresh::AptOnlineCustomMatch; GameWindowSystem::AptOnlineCustomMatch; HandleBuddyResponses; HandlePersistentStorageResponses; MpOwnerOn; words game,spy,peer,message of the spelling occur in the readers' names; Zero Hour declares it too",
           "size": 8
         }
       ]
@@ -22017,6 +22607,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009FF188",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 20 exact .text readers in 16 functions: ?1GameLogic; Rva0030596CIntersects; ShroudCreateGhost::Object; detach::W3DGhostObject; doLoadGame::GameState; freeAllSnapShots::W3DGhostObject; freeSnapShot::W3DGhostObject; handleBuildPlacements::InG; words ghost,object,manager of the spelling occur in the readers' names; Zero Hour declares it too (",
           "size": 4
         }
       ]
@@ -22404,6 +23004,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A01E28",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 33 exact .text readers in 14 functions: ?0Impl::InGameToggleStanceCommandButton; ?0InGameHeroSelectInterface; ?1GameClient; ?1Impl::InGameToggleStanceCommandButton; ?1Rva0052634F; ShowSelectAllHeroesBttn::Impl::InGameHeroSelectInterface; in; words hot,key of the spelling occur in the readers' names; Zero Hour declares it too (HotKey.h,HotK",
           "size": 4
         }
       ]
@@ -24348,6 +24958,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009FE958",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 115 exact .text readers in 52 functions: ?0LANGameInfo; ?1AptLanLobby; GenerateGameOptionsString; GetLobbyPlayers::ChatWindowsLan; GetValidSelectedGameInfo::AptLanLobby; InitTheLan::AptLanLobby; MPOwnerValidatGameInfo::AptLanLobby; MpOwnerGe; Zero Hour declares it too (LANAPI.h,LANAPICallbacks.h); a pointer to LANAPI, read by 52 functions;",
+          "size": 4
         }
       ]
     },
@@ -24392,6 +25012,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A0233C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 17 exact .text readers in 14 functions: ?1GameClient; ControlBarSystem; ExternFunc::Appearance::AptCreateAHero; InitTheLan::AptLanLobby; OnChat::LANAPI; Rva0038169D; Send::AptInGameChat; SendChatLine::AptDisconnectScreen; addChat::GameSpyIn; Zero Hour declares it too (LanguageFilter.h,LANAPICallbacks.cpp); a pointer to LanguageFilter, read",
+          "size": 4
         }
       ]
     },
@@ -24403,6 +25033,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009FE1A8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 30 exact .text readers in 17 functions: ?1GameLogic; DoXfer::GameLogicSnapshot; init::GameLogic; parseLargeGroupAudioMapDefinition::LargeGroupAudio; parseLargeGroupAudioUnusedKnownKeysDefinition::LargeGrou; reset::GameLogic; rva002469A5::Ga; words large,group,audio of the spelling occur in the readers' names; existing spelling kept; writte",
           "size": 4
         }
       ]
@@ -24512,6 +25152,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009FDC8C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 38 exact .text readers in 26 functions: ?0AptCampaignMenu; CollectPlayerData::AptTimeLine; DoExitMap::GameLogic; DoXfer::GameLogicSnapshot; DoXfer::GameStateMap; LinearCampaignStart::AptMainMenu; OnBttnLastMission::AptCampaignMenu; OpenScre; words linear,campaign,manager of the spelling occur in the readers' names; existing spelling kept; ",
+          "size": 4
         }
       ]
     },
@@ -24544,6 +25194,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009FEF18",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 149 exact .text readers in 99 functions: ?0Helper005C4D4B; ?0LivingWorldArmyIconSubObject; ?0LivingWorldBuildPlotIcon; ?0LivingWorldBuildPlotIconSubObject; ?0Rva0052B278; ?0Rva0053947D; ?0Rva0056D915; ?0Rva005C4230; ?0Rva005C4B56; ?0Rva005D1; words living,world of the spelling occur in the readers' names; existing spelling kept; written by",
+          "size": 4
         }
       ]
     },
@@ -24567,6 +25227,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A031F0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail names it itself: GameEngine::init (?init@GameEngine@@UAEXHQAPAD@Z) pushes the string 'TheLivingWorldAutoResolveArmorStore' (VA 0xbe7eac, push at 0x22edc0) and then the address of this cell (push at 0x22edce) for the subsystem registration call; the registration passes each subsystem's global together with its own name, and 82 of the 85 registered globals already carry ex",
           "size": 4
         }
       ]
@@ -24688,6 +25358,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009FEF10",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 674 exact .text readers in 427 functions: ?0AptStrategicPlayerStatus; ?0Impl::DynamicAutoResolveDialog::StrategicInGameUI; ?0Impl::PlanningPhaseBehavior::StrategicInGameUI; ?0Impl::RegionDetailsArmiesPage::StrategicInGameUI; ?0Impl::ResolveBa; words living,world,logic of the spelling occur in the readers' names; existing spelling kept; Gam",
+          "size": 4
         }
       ]
     },
@@ -24768,6 +25448,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 72
+        },
+        {
+          "rva": "0x009BB4F0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "17 strings (SET_NORMAL ... SET_BURNINGDEATH) closed by a zero word, extent 72 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BF9470, 0x00C178E0, 0x00C178F0 (the userData slots of AttackLocomotorType(1), ReturnForAmmoLocomotorType(1), ForcedLocomotorSet(1)); passed through parseIndexList; SET_* locomoto",
           "size": 72
         }
       ]
@@ -24870,6 +25560,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009FF12C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 106 exact .text readers in 62 functions: ?0GameSpyConfig; ?0Impl::RegionDetailsTerritoryPage::StrategicInGameUI; ?0OnlineQuickMatch::AptOnline; CreateMPPlayers::GameLogic; GetMaxNumPlayers::AptMapPreview; GetStartPositionInfoForSlot::AptMapP; words map,cache of the spelling occur in the readers' names; Zero Hour declares it too (MapUtil.h,",
           "size": 4
         }
       ]
@@ -25183,6 +25883,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009FDCA0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 196 exact .text readers in 120 functions: ?0AptMainMenu; ?0InGameUI; ?1AptQuitMenu; ?1GameClient; AreBothButtonsStillDown; AreBothButtonsUp; DoUpdate::ArmyHeroIcon::StrategicInGameUI; DoUpdate::ArmyUnitIcon::StrategicInGameUI; GamesListToolti; words mouse of the spelling occur in the readers' names; Zero Hour declares it too (WinMain.cpp,W",
+          "size": 4
         }
       ]
     },
@@ -25215,6 +25925,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A063F8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 53 exact .text readers in 19 functions: ?0AptConnectionScreen; ?0OnlineQuickMatch::AptOnline; ?1AptConnectionScreen; ?1AptOnlineCustomMatch; MpOwnerSelectPlayer::AptOnlineCustomMatch; MpOwnerUpdatePlayerTooltip::AptOnlineCustomMatch; OnMatc; Zero Hour declares it too (NAT.h,GameSpyGameInfo.cpp); existing spelling kept; written by launchWOT",
           "size": 4
         }
       ]
@@ -25328,6 +26048,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009FEA28",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 143 exact .text readers in 56 functions: ?0Rva0050F909; ?1AptQuitMenu; CreateTheNetwork; DoAnyHeroTransfer; Kick::AptDisconnectScreen; OnGameStart::LANAPI; OnWOTRGameStart::LANAPI; ProcessCRC::GameLogic; ProcessSaveGameCommand::GameLogic; Qu; words network of the spelling occur in the readers' names; Zero Hour declares it too (W3DDisplay.c",
+          "size": 4
         }
       ]
     },
@@ -25351,6 +26081,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 40
+        },
+        {
+          "rva": "0x009CDFD0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "9 strings (CREATE_AT_EDGE_NEAR_SOURCE ... USE_SECONDARY_OBJECT_LOCATION) closed by a zero word, extent 40 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00C5CDE8 (the userData slots of CreateLocation(1)); passed through parseIndexList; Zero Hour has TheOCLCreateLocTypeNames (OCLSpecialPower.cpp) with the",
           "size": 40
         }
       ]
@@ -25758,6 +26498,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A05FB8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 15 exact .text readers in 7 functions: CheckLogin::AptOnlineLogin; SetUpGameSpy; TearDownGameSpy; Thread_Function::PingThreadClass; rva00570C64::AptOnlineLogin; rva00571C9D::AptOnlineLogin; update::DisconnectManager; Zero Hour declares it too (PingThread.h,PeerDefs.cpp); a pointer to PingerInterface, read by 7 functions; existing spelling ",
+          "size": 4
         }
       ]
     },
@@ -25928,6 +26678,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009EC2D4",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 13 exact .text readers in 13 functions: ?0FormationPreviewDecal::InGameUI; ?0W3DShadowManager; ?1Rva009A500; createDeathDecal::RadiusDecalTemplate; createPotentialClaimDecal::Impl::PlaceTerrainResourceCla; createRadiusDecal::RadiusDecalTemp; words shadow,manager of the spelling occur in the readers' names; Zero Hour declares it too (W3DPro",
           "size": 4
         }
       ]
@@ -26533,6 +27293,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A02D98",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 13 exact .text readers in 9 functions: ?1GameLogic; ExecuteAction; clearGameData::GameLogic; executeActions::ScriptEngine; init::ScriptEngine; reset::ScriptEngine; rva0020530E::ScriptEngine; rva002401DD::GameLogic; update::ScriptEngine; words script,actions of the spelling occur in the readers' names; Zero Hour declares it too (ScriptActio",
+          "size": 4
         }
       ]
     },
@@ -26625,6 +27395,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A01E48",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 144 exact .text readers in 96 functions: ?1AptCampaignReview; ?1AptOptions; ?1AptPlayerStatus; ?1AptPlayerTribute; ?1AptQuitMenu; ?1AptSaveLoad; ?1AptScoreScreen; ?1AptSpellStore; ?1AptStrategicPlayerStatus; ?1AptTimeLine; ?1GameClient; ?1Rv; words shell of the spelling occur in the readers' names; Zero Hour declares it too (W3DMainMenu.cp",
           "size": 4
         }
       ]
@@ -26804,6 +27584,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A02EF0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 89 exact .text readers in 31 functions: ?0AptLoadScreen; ?1AptSkirmish; CreatePlayers::LivingWorldCampaign; DoXfer::GameLogicSnapshot; DoXfer::GameStateMap; GetResolutionOptions::LivingWorldBattle; InitCreateAHeroOnStartGame::AptSkirmish; I; words skirmish,game,info of the spelling occur in the readers' names; Zero Hour declares it too (Ga",
+          "size": 4
         }
       ]
     },
@@ -26863,6 +27653,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009FE114",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 12 exact .text readers in 10 functions: ?1GameClient; ReAcquireResources::BaseHeightMapRenderObjClass; ReleaseResources::BaseHeightMapRenderObjClass; init::GameClient; parseWeatherDefinition::INI; reset::GameClient; rva0004CF9A::Rva0004CA4C; Zero Hour declares it too (Snow.h,Snow.cpp); a pointer to SnowManager, read by 10 functions; existi",
           "size": 4
         }
       ]
@@ -27302,6 +28102,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009FD940",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 111 exact .text readers in 102 functions: ?$initSubsystem::VAI; ?$initSubsystem::VActionManager; ?$initSubsystem::VAerialPathfinder; ?$initSubsystem::VAiOrdersManager; ?$initSubsystem::VArmorStore; ?$initSubsystem::VAudioManager; ?$initSubsys; words subsystem,list of the spelling occur in the readers' names; Zero Hour declares it too (Subs",
+          "size": 4
         }
       ]
     },
@@ -27581,6 +28391,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009E1EAC",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 160 exact .text readers in 106 functions: ?0BaseHeightMapRenderObjClass; ?1W3DFloorDraw; ?1W3DScriptedModelDraw; ?1W3DTerrainVisual; Flush::RTS3DScene; Install_Materials::BfmeB1137; Install_Materials::W3DShroudMaterialPassClass; ParseEnvironm; words terrain,render,object of the spelling occur in the readers' names; Zero Hour declares it to",
+          "size": 4
         }
       ]
     },
@@ -27637,6 +28457,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009E2014",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 17 exact .text readers in 13 functions: ?1W3DScriptedModelDraw; ?1W3DTerrainVisual; ReAcquireResources::BaseHeightMapRenderObjClass; ReleaseResources::BaseHeightMapRenderObjClass; Render::Rva000E3B41; addCapEdgeToTrack::Rva00084206Track; ad; words terrain,render,obj,class of the spelling occur in the readers' names; Zero Hour declares it t",
           "size": 4
         }
       ]
@@ -27703,6 +28533,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A02E48",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail names it itself: GameEngine::init (?init@GameEngine@@UAEXHQAPAD@Z) pushes the string 'TheThreatFinderManager' (VA 0xbe7a3c, push at 0x22f9f0) and then the address of this cell (push at 0x22f9fe) for the subsystem registration call; the registration passes each subsystem's global together with its own name, and 82 of the 85 registered globals already carry exactly that sp",
           "size": 4
         }
       ]
@@ -27982,6 +28822,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 12
+        },
+        {
+          "rva": "0x009BB588",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "2 strings (PLAYER ... OBJECT) closed by a zero word, extent 12 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BFA710 (the userData slots of Type(1)); passed through parseIndexList; ZH TheUpgradeTypeNames (Upgrade.cpp) content overlap 1.00 (2 of 2)",
+          "size": 12
         }
       ]
     },
@@ -27993,6 +28843,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009FE770",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "the Version singleton pointer: _WinMain 0x00002C39 stores it (0x00002F91 mov [0x00DFE770], ebx) and reads it eight more times; GlobalData::GlobalData 0x0023631C, RecorderClass::startRecording 0x0037C57E, Recorder 0x0037D0EF, AptSaveLoad 0x0043684C, AptLanLobby 0x004457BC, AptOptions 0x0051A78E, AptOnlineCustomMatch 0x0059F496 and parseFullVersion 0x003B9647 read it (20 sites in",
           "size": 4
         }
       ]
@@ -28115,6 +28975,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009EC3C0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 21 exact .text readers in 9 functions: ?0Rva000F1A32; ?1W3DVolumetricShadow; ?1W3DVolumetricShadowManager; ReAcquireResources::W3DVolumetricShadowManager; ReleaseResources::W3DVolumetricShadowManager; Update::W3DVolumetricShadow; construct; words manager of the spelling occur in the readers' names; Zero Hour declares it too (W3DBufferManag",
           "size": 4
         }
       ]
@@ -28256,6 +29126,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009EC2CC",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 23 exact .text readers in 14 functions: ?0W3DShadowManager; ?1Rva009A500; ReAcquireResources::W3DShadowManager; Rva0009A2CDRun; Rva0009A3DECleanup; UpdateAndRender::W3DVolumetricShadowV2; UpdateAndRenderZfail::W3DVolumetricShadowV2; addShad; words shadow,manager of the spelling occur in the readers' names; Zero Hour declares it too (W3DPro",
+          "size": 4
         }
       ]
     },
@@ -28340,6 +29220,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009E5DFC",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 64 exact .text readers in 42 functions: ?1W3DDebrisDraw; ?1W3DTerrainVisual; Customized_Render::RTS3DScene; Customized_Render::Rva0009AA0F; Flush::RTS3DScene; ReAcquireResources::BaseHeightMapRenderObjClass; ReleaseResources::BaseHeightMapR; words shadow,manager of the spelling occur in the readers' names; Zero Hour declares it too (W3DSha",
+          "size": 4
         }
       ]
     },
@@ -28411,6 +29301,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009EBCD8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 17 exact .text readers in 15 functions: ?0W3DShadowManager; ?1Rva009A500; ReAcquireResources::W3DShadowManager; Rva0009A2CDRun; Rva0009A3DECleanup; addShadow::W3DShadowManager; invalidateCachedLightPositions::W3DShadowManager; removeAllShad; words volumetric,shadow,manager of the spelling occur in the readers' names; Zero Hour declares it ",
           "size": 4
         }
       ]
@@ -28496,6 +29396,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009FF488",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 19 exact .text readers in 11 functions: ?0BaseHeightMapRenderObjClass; ?0Rva0030C1FCOwner; ?1WaterRenderObjClass; IsReflectionVisible::WaterRenderObjClass; Rva00080168ReflectionTexture; parseWaterTransparencyDefinition::INI; reset::GameLogi; words water,transparency of the spelling occur in the readers' names; existing spelling kept; writt",
+          "size": 4
         }
       ]
     },
@@ -28507,6 +29417,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 44
+        },
+        {
+          "rva": "0x009BC660",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "10 strings (SELF ... MINES) closed by a zero word, extent 44 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00C01060 (the userData slots of RadiusDamageAffects(1)); passed through parseBitString32; Zero Hour twin of the same name (Weapon.h); retail adds MINES; Weapon.h in this tree already spells it so",
           "size": 44
         }
       ]
@@ -28544,6 +29464,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 48
+        },
+        {
+          "rva": "0x009BC68C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "11 strings (ALLIES ... MONSTERS) closed by a zero word, extent 48 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00C01070 (the userData slots of ProjectileCollidesWith(1)); passed through parseBitString32; ZH TheWeaponCollideMaskNames (Weapon.h) content overlap 0.82 (9 of 11)",
+          "size": 48
         }
       ]
     },
@@ -28580,6 +29510,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 20
+        },
+        {
+          "rva": "0x009BC64C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "4 strings (PER_SHOT ... PER_POSITION) closed by a zero word, extent 20 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00C01040 (the userData slots of PreAttackType(1)); passed through parseIndexList; Zero Hour twin of the same name (Weapon.h); retail adds PER_POSITION; Weapon.h in this tree already spell",
+          "size": 20
         }
       ]
     },
@@ -28591,6 +29531,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 16
+        },
+        {
+          "rva": "0x009BC63C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "3 strings (YES ... RETURN_TO_BASE) closed by a zero word, extent 16 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00C01050 (the userData slots of AutoReloadsClip(1)); passed through parseIndexList; ZH TheWeaponReloadNames (Weapon.h) content overlap 1.00 (3 of 3)",
           "size": 16
         }
       ]
@@ -28708,6 +29658,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009FE118",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 51 exact .text readers in 16 functions: ?1SnowManager; ReAcquireResources::W3DSnowManager; Render::RTS3DScene; Rva000E2BEEScaleUVOffsetPerSecondUV; parseWeatherDefinition::INI; render::W3DSnowManager; reset::SnowManager; rva000932E1::W3DSno; words weather,setting of the spelling occur in the readers' names; existing spelling kept; written ",
           "size": 4
         }
       ]
@@ -29003,6 +29963,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 28
+        },
+        {
+          "rva": "0x009BE958",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "6 strings (NONE ... INTERPOLATE) closed by a zero word, extent 28 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BE8A28 (the userData slots of TimeOfDay(1)); passed through parseIndexList; Zero Hour has the same array and spelling (TimeOfDayNames, GameType.cpp: NONE, MORNING, AFTERNOON, EVENING, NIGHT)",
           "size": 28
         }
       ]
@@ -29472,6 +30442,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 1536
+        },
+        {
+          "rva": "0x009EDFA8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail readers (1): 0x00075343+20 in ?Set_Vertex_Shader_Constant@DX8Wrapper@@SAXHPBXH@Z (O00075343.cpp); the readers include methods of the owning class DX8Wrapper; Zero Hour declares the same static in dx8wrapper.cpp,dx8wrapper.h",
+          "size": 1536
         }
       ]
     },
@@ -29615,6 +30595,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 12
+        },
+        {
+          "rva": "0x009BE974",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "2 strings (NORMAL ... SNOWY) closed by a zero word, extent 12 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BDCA90, 0x00BE8A38 (the userData slots of Weather(2)); passed through parseIndexList; Zero Hour has the same array and spelling (WeatherNames, GameType.cpp: NORMAL, SNOWY); INI key Weather",
           "size": 12
         }
       ]
@@ -29817,6 +30807,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 3
+        },
+        {
+          "rva": "0x009B5FCD",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_initialised; 10 exact .text readers in 8 functions: Draw::DX8Wrapper; Flush::SortingRendererClass; RenderDynamicMeshVolume::W3DVolumetricShadow; RenderMeshVolume::W3DVolumetricShadow; Rva0006E19BGetByte; _Enable_Triangle_Draw::DX8Wrapper; renderStencil; readers include methods of its class DX8Wrapper (Draw::DX8Wrapper, _Enable_Triangle_Draw::DX8Wrapp",
+          "size": 3
         }
       ]
     },
@@ -29840,6 +30840,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x007BDA30",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind float_constant; 6 exact .text readers in 5 functions: Rva00050EA7Get; addAudioEventSound::MilesAudioManager; recalculateMicrophone::MilesAudioManager; rva00053854::MilesAudioManager; rva0005AA72::MilesAudioManager; readers include methods of its class _N (addAudioEventSound::MilesAudioManager); existing spelling kept",
           "size": 4
         }
       ]
@@ -29936,6 +30946,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 512
+        },
+        {
+          "rva": "0x009A6CC8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_initialised; 11 exact .text readers in 8 functions: ?0_Filebuf_base::_STL; _M_allocate_buffers::?$basic_filebuf::DV?$char_traits::D; _M_allocate_buffers::?$basic_filebuf::GV?$char_traits::G; _M_doit::?$_Underflow::DV?$char_traits::D::_STL; _M_switch_to; readers include methods of its class _Filebuf_base (?0_Filebuf_base::_STL); existing spelling kept",
           "size": 512
         }
       ]
@@ -30176,6 +31196,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009B6228",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_initialised; 15 exact .text readers in 15 functions: Get_Shader::ParticleBufferClass; RenderDynamicMeshVolume::W3DVolumetricShadow; RenderMeshVolume::W3DVolumetricShadow; renderShadows::W3DVolumetricShadowManager; rva000FDD1CFirst::Rva000FDD1C; set::Rva; readers include methods of its class ShaderClass (Get_Shader::ParticleBufferClass); Zero Hour dec",
           "size": 4
         }
       ]
@@ -33673,6 +34703,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A0C61C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail readers (1): 0x006C5EC0+13 in ?GetFrameValue@ProfileId@@QBE_NIAAN@Z (profile_highlevel.cpp); 0x006C6220+80 in ?FrameEnd@ProfileId@@SAXHH@Z (profile_highlevel.cpp); 0x006C6220+131 in ?FrameEnd@ProfileId@@SAXHH@Z (profile_highlevel.cpp); the readers include methods of the owning class ProfileId; Zero Hour declares the same static in internal_highlevel.h,profile_highlevel.c",
+          "size": 4
         }
       ]
     },
@@ -35512,6 +36552,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A0C620",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail readers (2): 0x006C5410+1 in ?ClearTotals@Profile@@SAXXZ (profile.cpp); 0x006C5E70+1 in ?GetFirst@ProfileId@@SAPAV1@XZ (profile_highlevel.cpp); 0x006C61B0+54 in ?FrameStart@ProfileId@@SAHXZ (profile_highlevel.cpp); the readers include methods of the owning class ProfileId; Zero Hour declares the same static in internal_highlevel.h,profile.cpp,profile_highlevel.cpp",
+          "size": 4
         }
       ]
     },
@@ -35623,6 +36673,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A0C618",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail readers (1): 0x006C5DA0+41 in ?Increment@ProfileId@@QAEXN@Z (profile_highlevel.cpp); 0x006C5E00+52 in ?Maximum@ProfileId@@QAEXN@Z (profile_highlevel.cpp); 0x006C61B0+11 in ?FrameStart@ProfileId@@SAHXZ (profile_highlevel.cpp); the readers include methods of the owning class ProfileId; Zero Hour declares the same static in internal_highlevel.h,profile_highlevel.cpp",
           "size": 4
         }
       ]
@@ -55037,6 +56097,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009A5E40",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_initialised; 13 exact .text readers in 10 functions: ?0?$CA2WEX::$0IA; ?0?$CW2AEX::$0IA; CharLowerWFake::ATL; CharUpperWFake::ATL; CompareStringWFake::ATL; GetEnvironmentVariableWFake::ATL; GetStringTypeExWFake::ATL; _AtlGetConversionACP::ATL; _AtlGetTh; readers include methods of its class ATL (?0?$CA2WEX::$0IA, ?0?$CW2AEX::$0IA, CharLowerWFake::ATL",
+          "size": 4
         }
       ]
     },
@@ -57457,6 +58527,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 32
+        },
+        {
+          "rva": "0x0081EE54",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "1 entries, extent 32 bytes, closed by a zero row; first keys Texture; 2 exact .text readers: getWaterTextureFieldParseTable; iniParseWaterTexturesDefinition; the words of the spelling (water, texture) occur in its readers' names or its keys; existing role spelling kept",
           "size": 32
         }
       ]
@@ -61741,6 +62821,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 8
+        },
+        {
+          "rva": "0x00A0C200",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail readers (1): 0x006C53E0+1 in ?GetClockCyclesPerSecond@Profile@@SA_JXZ (profile.cpp); 0x006C53E0+7 in ?GetClockCyclesPerSecond@Profile@@SA_JXZ (profile.cpp); the readers include methods of the owning class Profile; Zero Hour declares the same static in profile.cpp,profile.h",
+          "size": 8
         }
       ]
     },
@@ -61752,6 +62842,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 112
+        },
+        {
+          "rva": "0x00818F40",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "6 entries, extent 112 bytes, closed by a zero row; first keys TooltipName,RGBColor,RGBNightColor,LivingWorldColor; 2 exact .text readers: Rva001EF348Get; parseMultiplayerColorDefinition::INI; Zero Hour twin MultiplayerColorDefinition::m_colorFieldParseTable holds 3 of its 3 keys (100%) here; the words of the spelling (color, multiplayer, color, definition) occur in its readers'",
           "size": 112
         }
       ]
@@ -61765,6 +62865,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 544
+        },
+        {
+          "rva": "0x00838DD0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "33 entries, extent 544 bytes, closed by a zero row; first keys 1,2,3,4; 2 exact .text readers: getCommandSetFieldParseTable; parseCommandSetDefinition::ControlBar; Zero Hour twin CommandSet::m_commandSetFieldParseTable holds 18 of its 18 keys (100%) here; the words of the spelling (command, set, command, set) occur in its readers' names or its keys; existing role spelling kept",
+          "size": 544
         }
       ]
     },
@@ -61776,6 +62886,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 1104
+        },
+        {
+          "rva": "0x0080CD88",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "68 entries, extent 1104 bytes, closed by a zero row; first keys ImagePart,AnimatingPart,ScreenCreationRes,Side; 2 exact .text readers: Rva001DB686Get; parseControlBarSchemeDefinition::INI; Zero Hour twin ControlBarSchemeManager::m_controlBarSchemeFieldParseTable holds 67 of its 68 keys (99%) here; the words of the spelling (control, bar, scheme, control, bar, scheme) occur in i",
           "size": 1104
         }
       ]
@@ -61789,6 +62909,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 272
+        },
+        {
+          "rva": "0x008737E8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "9 entries, extent 160 bytes, closed by a zero row; first keys ScrollRate,ScrollRateEveryFrames,ScrollDown,TitleColor; 2 exact .text readers: Rva005B729FGet; parseCredits::INI; Zero Hour twin CreditsManager::m_creditsFieldParseTable holds 9 of its 9 keys (100%) here; the words of the spelling (credits, credits) occur in its readers' names or its keys; existing role spelling kept",
+          "size": 272
         }
       ]
     },
@@ -61801,6 +62931,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009EC1AC",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_scalar; 18 exact .text readers in 6 functions: init::ScreenBWFilter; init::ScreenBWFilterDOT3; rva0008557F; set::Rva000FC34FFilter; set::ScreenBWFilter; setFadeParameters::W3DView; readers include methods of its class ScreenBWFilter (init::ScreenBWFilter, init::ScreenBWFilterDOT3, set::ScreenBWFilter); Zero Hour declares it too (W3DShaderManager.h,W3",
+          "size": 4
         }
       ]
     },
@@ -61812,6 +62952,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009EC000",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_scalar; 10 exact .text readers in 4 functions: init::ScreenCrossFadeFilter; rva00085599; setFadeParameters::W3DView; updateFadeLevel::ScreenCrossFadeFilter; readers include methods of its class ScreenCrossFadeFilter (init::ScreenCrossFadeFilter, updateFadeLevel::ScreenCrossFadeFilter); Zero Hour declares it too (W3DShaderManager.h,W3DShaderManager.cp",
           "size": 4
         }
       ]
@@ -61848,6 +62998,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009E1F5C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 6 exact .text readers in 5 functions: ?0W3DShaderManager; Rva000756BFSelect; Rva000756F1Dispatch; shutdown::W3DShaderManager; startRenderToTexture::W3DShaderManager; readers include methods of its class W3DShaderManager (?0W3DShaderManager, shutdown::W3DShaderManager, startRenderToTexture::W3DShaderManager); Zero Hour declares it too (W3DS",
           "size": 4
         }
       ]
@@ -62173,6 +63333,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 160
+        },
+        {
+          "rva": "0x008084C0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "9 entries, extent 160 bytes, closed by a zero row; first keys Scale,Blend,BaseSaturation,EffectSaturation; 2 exact .text readers: getFireEffectFieldParseTable; parseFireEffect; the words of the spelling (fire, effect) occur in its readers' names or its keys; existing role spelling kept",
+          "size": 160
         }
       ]
     },
@@ -62184,6 +63354,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 176
+        },
+        {
+          "rva": "0x00808350",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "10 entries, extent 176 bytes, closed by a zero row; first keys GlowEnabled,GlowDiameter,GlowIntensity,GlowTextureWidth; 2 exact .text readers: Rva00309E1EGet; parseGlowEffect; the words of the spelling (glow, effect) occur in its readers' names or its keys; existing role spelling kept",
           "size": 176
         }
       ]
@@ -62208,6 +63388,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 192
+        },
+        {
+          "rva": "0x00808400",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "11 entries, extent 192 bytes, closed by a zero row; first keys Scale,Blend,BaseSaturation,EffectSaturation; 2 exact .text readers: Rva00309E24Get; parseRingEffect; the words of the spelling (ring, effect) occur in its readers' names or its keys; existing role spelling kept",
           "size": 192
         }
       ]
@@ -62313,6 +63503,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 68
+        },
+        {
+          "rva": "0x007DBBCC",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "2 entries, extent 48 bytes, closed by a zero row; first keys Window,FireOnce; 2 exact .text readers: Rva001DBA71Get; parseWindowTransitions::INI; Zero Hour twin GameWindowTransitionsHandler::m_gameWindowTransitionsFieldParseTable holds 2 of its 2 keys (100%) here; the words of the spelling (window, transitions, window, transitions) occur in its readers' names or its keys; exist",
+          "size": 68
         }
       ]
     },
@@ -62336,6 +63536,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 64
+        },
+        {
+          "rva": "0x007E3098",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "3 entries, extent 64 bytes, closed by a zero row; first keys Font,Point,Bold; 2 exact .text readers: Rva00201992Get; parseHeaderTemplateDefinition::INI; Zero Hour twin HeaderTemplateManager::m_headerFieldParseTable holds 3 of its 3 keys (100%) here; the words of the spelling (header, header, template) occur in its readers' names or its keys; existing role spelling kept",
           "size": 64
         }
       ]
@@ -62469,6 +63679,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009E1F64",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 10 exact .text readers in 5 functions: ?0W3DShaderManager; Rva000754DEInit; canRenderToTexture::W3DShaderManager; endRenderToTexture::W3DShaderManager; releaseDependentResources::BfmeShaderShutdown; readers include methods of its class W3DShaderManager (?0W3DShaderManager, canRenderToTexture::W3DShaderManager, endRenderToTexture::W3DShader",
+          "size": 4
         }
       ]
     },
@@ -62593,6 +63813,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009E1F68",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 11 exact .text readers in 5 functions: ?0W3DShaderManager; Rva000754DEInit; endRenderToTexture::W3DShaderManager; getRenderTexture::W3DShaderManager; releaseDependentResources::BfmeShaderShutdown; readers include methods of its class W3DShaderManager (?0W3DShaderManager, endRenderToTexture::W3DShaderManager, getRenderTexture::W3DShaderMana",
+          "size": 4
         }
       ]
     },
@@ -62604,6 +63834,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009E1F60",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 8 exact .text readers in 6 functions: ?0W3DShaderManager; endRenderToTexture::W3DShaderManager; isRenderingToTexture::W3DShaderManager; render::W3DSmudgeManager; startRenderToTexture::W3DShaderManager; testHardwareSupport::W3DSmudgeManage; readers include methods of its class W3DShaderManager (?0W3DShaderManager, endRenderToTexture::W3DSha",
           "size": 4
         }
       ]
@@ -62665,6 +63905,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 368
+        },
+        {
+          "rva": "0x009C0E78",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "22 entries, extent 368 bytes, closed by a zero row; first keys Flags,ReloadTime,RequiredSciences,LightPointCost; 2 exact .text readers: Rva003B0FA0Get; parseSpecialPowerDefinition::SpecialPowerStore; Zero Hour twin SpecialPowerTemplate::m_specialPowerFieldParse holds 10 of its 13 keys (77%) here; the words of the spelling (special, power, special, power) occur in its readers' n",
+          "size": 368
         }
       ]
     },
@@ -62676,6 +63926,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 368
+        },
+        {
+          "rva": "0x00803A28",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "22 entries, extent 368 bytes, closed by a zero row; first keys BridgeScale,ScaffoldObjectName,ScaffoldSupportObjectName,RadarColor; 2 exact .text readers: Rva001DAEB2Get; parseTerrainBridgeDefinition::INI; Zero Hour twin TerrainRoadType::m_terrainBridgeFieldParseTable holds 22 of its 22 keys (100%) here; the words of the spelling (terrain, bridge, terrain, type) occur in its re",
           "size": 368
         }
       ]
@@ -62709,6 +63969,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 96
+        },
+        {
+          "rva": "0x0080C3A8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "5 entries, extent 96 bytes, closed by a zero row; first keys Texture,BlendEdges,Class,RestrictConstruction; 2 exact .text readers: Rva002009F5Get; parseTerrainDefinition::INI; Zero Hour twin TerrainType::m_terrainTypeFieldParseTable holds 4 of its 4 keys (100%) here; the words of the spelling (terrain, terrain) occur in its readers' names or its keys; existing role spelling kep",
+          "size": 96
         }
       ]
     },
@@ -62732,6 +64002,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 208
+        },
+        {
+          "rva": "0x00807FE0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "12 entries, extent 208 bytes, closed by a zero row; first keys SkyTexture,WaterTexture,Vertex00Color,Vertex10Color; 2 exact .text readers: Rva00200BB4Get; parseWaterSettingDefinition::INI; Zero Hour twin WaterSetting::m_waterSettingFieldParseTable holds 12 of its 12 keys (100%) here; the words of the spelling (water, setting, water, setting) occur in its readers' names or its k",
           "size": 208
         }
       ]
@@ -64270,6 +65550,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 7022
+        },
+        {
+          "rva": "0x009D6350",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_initialised; 4 exact .text readers in 4 functions: _XMP_Fermat_Test; _XMP_Fetch_Prime_Table; _XMP_Is_Small_Prime; _XMP_Small_Divisors_Test; words prime,table of the spelling occur in the readers' names; Zero Hour declares it too (mpmath.cpp,mpmath.cpp); existing spelling kept",
+          "size": 7022
         }
       ]
     },
@@ -64718,6 +66008,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x009EDA64",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 164 exact .text readers in 35 functions: Apply_Default_State::DX8Wrapper; Begin_Statistics::DX8Wrapper; CustomizedRender::Rva007406E1; Customized_Render::Rva0009AA0F; End_Statistics::DX8Wrapper; Flush::RTS3DScene; Init::DX8Wrapper; Install_M; readers include methods of its class DX8Wrapper (Apply_Default_State::DX8Wrapper, Begin_Statistics",
+          "size": 4
         }
       ]
     },
@@ -65062,6 +66362,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 7328
+        },
+        {
+          "rva": "0x007E8520",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "457 entries, extent 7328 bytes, closed by a zero row; first keys Windowed,XResolution,YResolution,MapName; 3 exact .text readers: parseGameDataDefinition::GlobalData; vslot06::GlobalData; Zero Hour twin GlobalData::s_GlobalDataFieldParseTable holds 259 of its 380 keys (68%) here; the words of the spelling (global, data, global, data) occur in its readers' names or its keys; exi",
+          "size": 7328
         }
       ]
     },
@@ -65357,6 +66667,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009BD0F0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_initialised; 9 exact .text readers in 6 functions: ?0PolygonTrigger; Rva002E373CClear; Rva00328A65Get; Rva00328A6B; parse::Rva00329663; rva002E41EC::Rva002E41EC; readers include methods of its class PolygonTrigger (?0PolygonTrigger); Zero Hour declares it too (PolygonTrigger.h,PolygonTrigger.cpp); existing spelling kept",
           "size": 4
         }
       ]
@@ -66243,6 +67563,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 32
+        },
+        {
+          "rva": "0x00A09E30",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind zero_init_unknown; 8 exact .text readers in 7 functions: ?0CImage::ATL; ?1CImage::ATL; InitGDIPlus::CImage::ATL; Load::CImage::ATL; _WinMain::16; rva007B5542; rva007B9AEA; readers include methods of its class CImage (?0CImage::ATL, ?1CImage::ATL, InitGDIPlus::CImage::ATL, Load::CImage::ATL); existing spelling kept; 4 unwritten rows reference this address",
+          "size": 32
         }
       ]
     },
@@ -66507,6 +67837,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A03354",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 22 exact .text readers in 19 functions: ?0AptLanLobby; ?1AptLanLobby; OnAccept::LANAPI; OnGameCreate::LANAPI; OnGameJoin::LANAPI; OnGameList::LANAPI; OnGameOptionsPacked::LANAPI; OnHostLeave::LANAPI; OnPlayerLeave::LANAPI; Rva00248D66Get; R; readers include methods of its class AptLanLobby (?0AptLanLobby, ?1AptLanLobby); existing spelling ",
+          "size": 4
         }
       ]
     },
@@ -66530,6 +67870,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A032E0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 23 exact .text readers in 12 functions: ?0AptSaveLoad; ?1AptSaveLoad; AddFriendConfirmationHandler::AptSaveLoad; OpenScreen::AptSaveLoad; ProcessSaveGameCommand::GameLogic; PromptAddFriend::AptSaveLoad; Rva0023C54CGet; Rva00433D27Enable; Rv; readers include methods of its class AptSaveLoad (?0AptSaveLoad, ?1AptSaveLoad, AddFriendConfirmati",
           "size": 4
         }
       ]
@@ -66891,6 +68241,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 3072
+        },
+        {
+          "rva": "0x009BECD8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "191 entries, extent 3072 bytes, closed by a zero row; first keys Hotkey,ReviveText,RecruitText,DisplayName; 5 exact .text readers: Rva0033A43EGet; buildFieldParse::Rva0033A8FC; parseAddModule::ThingTemplate; parseInheritableModule::ThingTemplate; parseReplaceModule::ThingTemplate; the words of the spelling (thing, template) occur in its readers' names or its keys; existing role",
+          "size": 3072
         }
       ]
     },
@@ -66902,6 +68262,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 240
+        },
+        {
+          "rva": "0x009C14C8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "5 entries, extent 96 bytes, closed by a zero row; first keys RegionObject,NeutralRegionColor,RegionBorderColor,ShellStartPositionColor; 2 exact .text readers: Rva003EE72EGet; parseLivingWorldRegionEffectsDefinition; the words of the spelling (living, world, region, effects) occur in its readers' names or its keys; existing role spelling kept",
           "size": 240
         }
       ]
@@ -67700,6 +69070,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 288
+        },
+        {
+          "rva": "0x00864810",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "17 entries, extent 288 bytes, closed by a zero row; first keys ShockWaveAmount,ShockWaveRadius,ShockWaveArc,ShockWaveArcInverted; 3 exact .text readers: ?$__write_integer_backward::_K::_STL; Rva00509DA5Get; parseFromINI::MetaImpactNugget; the words of the spelling (shock, wave) occur in its readers' names or its keys; existing role spelling kept",
+          "size": 288
         }
       ]
     },
@@ -68361,6 +69741,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 1024
+        },
+        {
+          "rva": "0x00A0C218",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail readers (1): 0x006C60A0+224 in ?AsString@ProfileId@@QBEPBDN@Z (profile_highlevel.cpp); the readers include methods of the owning class ProfileId; Zero Hour declares the same static in internal_highlevel.h,profile_highlevel.cpp",
+          "size": 1024
         }
       ]
     },
@@ -68372,6 +69762,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 8
+        },
+        {
+          "rva": "0x00A0C210",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail readers (1): 0x006C60A0+199 in ?AsString@ProfileId@@QBEPBDN@Z (profile_highlevel.cpp); 0x006C60A0+250 in ?AsString@ProfileId@@QBEPBDN@Z (profile_highlevel.cpp); the readers include methods of the owning class ProfileId; Zero Hour declares the same static in internal_highlevel.h,profile_highlevel.cpp",
           "size": 8
         }
       ]
@@ -68788,6 +70188,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009EDA68",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 230 exact .text readers in 31 functions: Apply::TextureFilterClass; Apply_Default_State::DX8Wrapper; Begin_Statistics::DX8Wrapper; End_Statistics::DX8Wrapper; Init::DX8Wrapper; Install_Materials::BfmeB1137; Install_Materials::W3DGlowOutlineM; readers include methods of its class DX8Wrapper (Apply_Default_State::DX8Wrapper, Begin_Statistics",
           "size": 4
         }
       ]
@@ -77803,6 +79213,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 368
+        },
+        {
+          "rva": "0x009BEB20",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "4 strings (Yes ... Only_By_AI) closed by a zero word, extent 20 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00DBEF00 (the userData slots of Buildable(1)); passed through parseByteSizedIndexList; ZH BuildableStatusNames (ThingTemplate.h) content overlap 1.00 (4 of 4)",
+          "size": 368
         }
       ]
     },
@@ -81462,6 +82882,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 96
+        },
+        {
+          "rva": "0x00838760",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "5 entries, extent 96 bytes, closed by a zero row; first keys AllyDeathScaleFactor,EnemyKillScaleFactor,VictoryThreshold,MapToCellVictoryRatio; 2 exact .text readers: Rva00215C4EGet; iniParseFactionVictoryDefinition; the words of the spelling (faction, victory) occur in its readers' names or its keys; existing role spelling kept",
           "size": 96
         }
       ]
@@ -86622,6 +88052,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 80
+        },
+        {
+          "rva": "0x008387C0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "4 entries, extent 80 bytes, closed by a zero row; first keys CellSize,ScalePerLogicFrame,SubtractPerLogicFrame,CellBonusRadius; 2 exact .text readers: Rva00215C48Get; iniParseVictorySystemDefinition; the words of the spelling (victory, system) occur in its readers' names or its keys; existing role spelling kept",
+          "size": 80
         }
       ]
     },
@@ -88991,6 +90431,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009D7F10",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_initialised; 225 exact .text readers in 223 functions: ::__security_check_cookie::4; ?0CAtlBaseModule::ATL; ?0Rva007F0CB0BlobRecord; ?0Rva007FBC60Game; ?0Rva00808920LanGame; AddSubInternalFPF; Assignment; DivideInternalFPF; DoHuffIteration; DoIDEA; Multip; words security,cookie of the spelling occur in the readers' names; existing spelling kept; writ",
           "size": 4
         }
       ]
@@ -99101,6 +100551,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 3
+        },
+        {
+          "rva": "0x00A06569",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 6 exact .text readers in 5 functions: StartPatchCheck; configCallback; gamePatchCheckCallback; noPatchBeforeOnlineCallback; startOnline; words before,online of the spelling occur in the readers' names; Zero Hour declares it too (MainMenuUtils.cpp,MainMenuUtils.cpp); existing spelling kept; 5 unwritten rows reference this address",
+          "size": 3
         }
       ]
     },
@@ -99161,6 +100621,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A0655C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 5 exact .text readers in 5 functions: CancelPatchCheckCallback; StartPatchCheck; configCallback; gamePatchCheckCallback; startOnline; words patch,game of the spelling occur in the readers' names; Zero Hour declares it too (MainMenuUtils.cpp,MainMenuUtils.cpp); existing spelling kept; 5 unwritten rows reference this address",
+          "size": 4
         }
       ]
     },
@@ -99172,6 +100642,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A06560",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 18 exact .text readers in 7 functions: CancelPatchCheckCallback; StartPatchCheck; configCallback; configHeadCallback; gamePatchCheckCallback; motdCallback; rva005BD6A7; Zero Hour declares it too (MainMenuUtils.cpp,MainMenuUtils.cpp); existing spelling kept; written by CancelPatchCheckCallback at 0x005BD017; rva005BD6A7 at 0x005BD6BB (imm 0",
           "size": 4
         }
       ]
@@ -104529,6 +106009,16 @@
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
           "size": 4
+        },
+        {
+          "rva": "0x00A05F84",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 3 exact .text readers in 2 functions: CheckReOpenPlayerInfo; ReOpenPlayerInfo; words open,player,info of the spelling occur in the readers' names; Zero Hour declares it too (GameSpyOverlay.cpp,GameSpyOverlay.cpp); existing spelling kept",
+          "size": 4
         }
       ]
     },
@@ -109677,6 +111167,16 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x00A06564",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 9 exact .text readers in 6 functions: StartPatchCheck; configCallback; configHeadCallback; gamePatchCheckCallback; motdCallback; rva005BD6A7; Zero Hour declares it too (MainMenuUtils.cpp,MainMenuUtils.cpp); existing spelling kept; 5 unwritten rows reference this address",
           "size": 4
         }
       ]
@@ -121281,6 +122781,194 @@
           "evidence_class": "H",
           "proven": false,
           "why": "old data ledger name; no independently checked reference identity",
+          "size": 4
+        },
+        {
+          "rva": "0x009FE4CC",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail data row kind global_zero_init; 1060 exact .text readers in 616 functions: ?0Appearance::AptCreateAHero; ?0AptCampaignMenu; ?0AptCampaignReview; ?0AptCreateAHero; ?0AptDisconnectScreen; ?0AptFileTransferPopup; ?0AptLanLobby; ?0AptLoadScreen; ?0AptMainMenu; ?0AptMapPreview; ?; words apt,window,manager of the spelling occur in the readers' names; existing spelling kept; wr",
+          "size": 4
+        }
+      ]
+    },
+    "?TheLocomotorAppearanceNames@@3PAPBDA": {
+      "candidates": [
+        {
+          "rva": "0x009B8E3C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "11 strings (TWO_LEGS ... OTHER) closed by a zero word, extent 48 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BDE480 (the userData slots of Appearance(1)); passed through parseIndexList; Zero Hour holds the same list as TheLocomotorAppearanceNames (TWO_LEGS, FOUR_WHEELS, TREADS, HOVER, Locomotor.h); "
+        }
+      ]
+    },
+    "?TheLocomotorBehaviorZNames@@3PAPBDA": {
+      "candidates": [
+        {
+          "rva": "0x009B8E6C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "10 strings (NO_Z_MOTIVE_FORCE ... SCALING_WALLS) closed by a zero word, extent 44 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BDE470 (the userData slots of ZAxisBehavior(1)); passed through parseIndexList; ZH TheLocomotorBehaviorZNames (Locomotor.h) content overlap 0.80 (8 of 10)"
+        }
+      ]
+    },
+    "?RadarPriorityNames@@3PAPBDA": {
+      "candidates": [
+        {
+          "rva": "0x009BEA0C",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "5 strings (INVALID ... LOCAL_UNIT_ONLY) closed by a zero word, extent 24 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00DBED60 (the userData slots of RadarPriority(1)); passed through parseByteSizedIndexList; ZH RadarPriorityNames (Radar.h) content overlap 1.00 (5 of 5)"
+        }
+      ]
+    },
+    "?BuildCompletionNames@@3PAPBDA": {
+      "candidates": [
+        {
+          "rva": "0x009BEB10",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "3 strings (INVALID ... PLACED_BY_PLAYER) closed by a zero word, extent 16 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00DBEF70 (the userData slots of BuildCompletion(1)); passed through parseByteSizedIndexList; ZH BuildCompletionNames (ThingTemplate.h) content overlap 1.00 (3 of 3)"
+        }
+      ]
+    },
+    "?m_weatherSettingFieldParseTable@WeatherSetting@@2QBUFieldParse@@B": {
+      "candidates": [
+        {
+          "rva": "0x007E2C10",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "31 entries, extent 512 bytes, closed by a zero row; first keys SnowTexture,SnowFrequencyScaleX,SnowFrequencyScaleY,SnowAmplitude; 2 exact .text readers: getFieldParse::WeatherSetting; parseWeatherDefinition::INI; Zero Hour twin WeatherSetting::m_weatherSettingFieldParseTable holds 10 of its 13 keys (77%) here; its getter is WeatherSetting::getFieldParse (map name) and its parse",
+          "size": 512
+        }
+      ]
+    },
+    "?m_upgradeFieldParseTable@UpgradeTemplate@@1QBUFieldParse@@B": {
+      "candidates": [
+        {
+          "rva": "0x007FA6E8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "26 entries, extent 432 bytes, closed by a zero row; first keys DisplayName,Tooltip,Type,BuildTime; 3 exact .text readers: Rva0026EDB1Get; parseUpgradeDefinition::UpgradeCenter; Zero Hour twin UpgradeTemplate::m_upgradeFieldParseTable holds 7 of its 8 keys (88%) here; read by UpgradeCenter::parseUpgradeDefinition (the INI block that fills UpgradeTemplates); the access digit 1 (p",
+          "size": 432
+        }
+      ]
+    },
+    "?s_fieldParseTable@InGameUI@@2QBUFieldParse@@B": {
+      "candidates": [
+        {
+          "rva": "0x007FC338",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "81 entries, extent 1312 bytes, closed by a zero row; first keys MaxSelectionSize,MessageColor1,MessageColor2,MessagePosition; 1 exact .text readers: vfunc_0x180::Rva0008EF3FProduct; read only by a virtual of the InGameUI-shaped placeholder class Rva0008EF3FProduct (slot 0x180); tokens MaxSelectionSize, MessageColor1, MessageColor2 ... are InGameUI's INI keys; the name and role ",
+          "size": 1312
+        }
+      ]
+    },
+    "?TheWeaponTemplateFieldParseTable@WeaponTemplate@@0QBUFieldParse@@B": {
+      "candidates": [
+        {
+          "rva": "0x00800B48",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "124 entries, extent 2000 bytes, closed by a zero row; first keys AttackRange,MinimumAttackRange,RangeBonusMinHeight,RangeBonus; 2 exact .text readers: Rva002C8E5AGet; parseWeaponTemplateDefinition::WeaponStore; Zero Hour twin WeaponTemplate::TheWeaponTemplateFieldParseTable holds 53 of its 76 keys (70%) here; read by WeaponStore::parseWeaponTemplateDefinition (the INI block tha",
+          "size": 2000
+        }
+      ]
+    },
+    "?m_mapFieldParseTable@MapMetaDataReader@@2QBUFieldParse@@B": {
+      "candidates": [
+        {
+          "rva": "0x00868AE8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "24 entries, extent 400 bytes, closed by a zero row; first keys isOfficial,isMultiplayer,isScenarioMP,extentMin; 2 exact .text readers: Rva00534B22Get; parseMapCacheDefinition::INI; Zero Hour twin MapMetaDataReader::m_mapFieldParseTable holds 21 of its 22 keys (95%) here; read by INI::parseMapCacheDefinition (the map cache reader); keys isOfficial, isMultiplayer, isScenarioMP ..",
+          "size": 400
+        }
+      ]
+    },
+    "?TheFireLogicSystem@@3PAVFireLogicSystem@@A": {
+      "candidates": [
+        {
+          "rva": "0x009FEC68",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail names this global TheFireLogicSystem: GameEngine::init (?init@GameEngine@@UAEXHQAPAD@Z) pushes that string (VA 0xbe7ac4, push at 0x22f89b) and then the address of this cell (push at 0x22f8a9) for the subsystem registration call; the map's spelling (?TheTriggerManager@@3PAVRva002872BA@@A) is an old-ledger invention that no source file uses, and the class FireLogicSystem e",
+          "size": 4
+        }
+      ]
+    },
+    "?TheMineshaftPortalNetworkManager@@3PAVMineshaftPortalNetworkManager@@A": {
+      "candidates": [
+        {
+          "rva": "0x00A01EDC",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail names this global TheMineshaftPortalNetworkManager itself: GameEngine::init (?init@GameEngine@@UAEXHQAPAD@Z) pushes that string (VA 0xbe7aa0, push at 0x22f8df) and then the address of this cell (push at 0x22f8ed); the registration call is the typed template instance ??$initSubsystem@VMineshaftPortalNetworkManager@@@@YAXAAPAVM whose map name carries the real class Minesha",
+          "size": 4
+        }
+      ]
+    },
+    "?TheMissionObjectiveTracker@@3PAVMissionObjectiveTracker@@A": {
+      "candidates": [
+        {
+          "rva": "0x00A031E8",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "retail names this global TheMissionObjectiveTracker itself: GameEngine::init (?init@GameEngine@@UAEXHQAPAD@Z) pushes that string (VA 0xbe7dc4, push at 0x22ef65) and then the address of this cell (push at 0x22ef73); the registration call is the typed template instance ??$initSubsystem@VMissionObjectiveTracker@@@@YAXAAPAVMission whose map name carries the real class MissionObject",
+          "size": 4
+        }
+      ]
+    },
+    "?TheFirewallHelper@@3PAVFirewallHelperClass@@A": {
+      "candidates": [
+        {
+          "rva": "0x00A063B0",
+          "kind": "named-data",
+          "evidence_class": "D",
+          "proven": true,
+          "confidence": "strong",
+          "source": "review",
+          "why": "The cell is created and destroyed only through FirewallHelperClass: at 0x005182CB, 0x00519C70, 0x00572500 and 0x005A7335 it receives the return of createFirewallHelper 0x00595143 (?createFirewallHelper@@YAPAVFirewallHelperClass@@XZ) when null; at 0x00518301, 0x0051834F, 0x00519D21, 0x005700FF and 0x00572529 the object is deleted through its vtable slot 0 and the cell is cleared",
           "size": 4
         }
       ]
@@ -145199,21 +146887,12 @@
     ],
     "??_7StructureBody@@6B@": [
       {
-        "rva": "0x0085B660",
-        "slots": "23",
-        "slot_rvas": "0x004C09FA|0x004C202F|0x004C0982|0x004C0A16|0x004C09B5|0x000B3FD0|0x000B3FD0|0x000B3FD0|0x004BDCAC|0x0050B238|0x000D43D0|0x000D43D0|0x0050B5C6|0x004BE69C|0x004BF8AC|0x004BF8DF|0x004BF8ED|0x004BE1AE|0x004BED62|0x004BE24A|0x004BE3EF|0x004BE8BD|0x004BF9ED",
-        "owner_class": "StructureBody",
-        "owner_ctor_rvas": "0x004C0951|0x004C0988",
-        "evidence": "X:vptr-store by 2 fn at offset(s) 0x0;X:own-vptr-store by StructureBodyx1;Rva004C0988x1;X:ends at non-code dword;N:slot0 ??_G names Rva004C0988 (disagrees)",
-        "confidence": "medium"
-      },
-      {
         "rva": "0x0085B5B0",
         "slots": "43",
         "slot_rvas": "0x004BFE07|0x004BEE21|0x004BDB01|0x004BDB25|0x004F5F92|0x004BDC25|0x005D870D|0x00094A94|0x0030D377|0x004BDAA9|0x004BDCE2|0x004BE47D|0x004BF911|0x004BF930|0x004BF8F5|0x00314046|0x0023CAD2|0x005BE1A7|0x004BF897|0x0052BAAB|0x004BF8B7|0x004C0642|0x004BDB85|0x004BDB37|0x004BF8BE|0x004BF8CB|0x004BD77C|0x00452D82|0x004BE67E|0x004BDC48|0x004BDC4F|0x004BDC56|0x004BF005|0x004BF186|0x004BF8D8|0x004BDC41|0x004BDC03|0x0047A69C|0x005CB9FA|0x0047A69C|0x0050B238|0x004BF893|0x00101CBE",
         "owner_class": "StructureBody",
-        "owner_ctor_rvas": "",
-        "evidence": "X:binding: StructureBody's ctor/dtor store 0x0085B5B0 at +0x10 (the interface table ActiveBody and StructureBody share, folded); HighlanderBody already lists both its tables",
+        "owner_ctor_rvas": "0x004C0951",
+        "evidence": "X:binding (R9StructureBodyQualifiedTableKeys-3): Exact 49B StructureBody constructor 0x004C0951 selected ??_7StructureBody@@6B@, 43 slots, at native 0x0085B5B0.",
         "confidence": "high"
       }
     ],
@@ -161964,6 +163643,138 @@
         "owner_class": "AssistedTargetingUpdate",
         "owner_ctor_rvas": "0x00486E18|0x00486E8D",
         "evidence": "X:binding (R7AssistedTargetingTablePair-0x0084AF64): Exact own 25B destructor 0x486E18 stores 0x84AF64. The corresponding fresh COFF relocation selects the ObjectModule-qualified 13-slot table. Native cells retained.",
+        "confidence": "high"
+      }
+    ],
+    "??_7DynamicPortalBehaviour@@6BObjectModule@@@": [
+      {
+        "rva": "0x008428C4",
+        "slots": "12",
+        "slot_rvas": "0x00460DDA|0x00461274|0x00460BCD|0x004609BC|0x00460BD3|0x000B3FD0|0x000B3FD0|0x000B3FD0|0x000B3FD0|0x0050B238|0x000D43D0|0x000D43D0",
+        "owner_class": "DynamicPortalBehaviour",
+        "owner_ctor_rvas": "0x00460B6C|0x00460C18",
+        "evidence": "X:binding (R9PortalAndCritterOwnTableKeys-1): DynamicPortalBehaviour own lifetime store(s) [{'anchor': '0x00460B6C', 'offset': 41}, {'anchor': '0x00460C18', 'offset': 19}] and compiled 12-slot ??_7DynamicPortalBehaviour@@6BObjectModule@@@ target ",
+        "confidence": "high"
+      }
+    ],
+    "??_7DynamicPortalBehaviour@@6BBehaviorModuleInterface@@@": [
+      {
+        "rva": "0x00842808",
+        "slots": "47",
+        "slot_rvas": "0x000D43D0|0x000D43D0|0x000D43D0|0x004543A9|0x0045875F|0x000D43D0|0x000D43D0|0x004B4A8C|0x000D43D0|0x000D43D0|0x002533D3|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x0047A69C|0x000B3FD0|0x00461284|0x0047A69C",
+        "owner_class": "DynamicPortalBehaviour",
+        "owner_ctor_rvas": "0x00460B6C|0x00460C18",
+        "evidence": "X:binding (R9PortalAndCritterOwnTableKeys-2): DynamicPortalBehaviour own lifetime store(s) [{'anchor': '0x00460B6C', 'offset': 48}, {'anchor': '0x00460C18', 'offset': 26}] and compiled 47-slot ??_7DynamicPortalBehaviour@@6BBehaviorModuleInterface",
+        "confidence": "high"
+      }
+    ],
+    "??_7DynamicPortalBehaviour@@6BUpgradeMux@@@": [
+      {
+        "rva": "0x008427C0",
+        "slots": "18",
+        "slot_rvas": "0x00098CBC|0x004CE27C|0x004CE2B0|0x004CE4B0|0x0047A699|0x004CE270|0x000B3FD0|0x00460AE2|0x00460C7D|0x00452354|0x0046129A|0x00460AAC|0x00460AD3|0x00460A98|0x00460AA2|0x00460AD3|0x004CE397|0x000B3FD0",
+        "owner_class": "DynamicPortalBehaviour",
+        "owner_ctor_rvas": "0x00460B6C|0x00460C18",
+        "evidence": "X:binding (R9PortalAndCritterOwnTableKeys-6): DynamicPortalBehaviour own lifetime store(s) [{'anchor': '0x00460B6C', 'offset': 55}, {'anchor': '0x00460C18', 'offset': 33}] and compiled 18-slot ??_7DynamicPortalBehaviour@@6BUpgradeMux@@@ target 0x",
+        "confidence": "high"
+      }
+    ],
+    "??_7DynamicPortalBehaviour@@6BDamageModuleInterface@@@": [
+      {
+        "rva": "0x00858790",
+        "slots": "3",
+        "slot_rvas": "0x0047A69C|0x0047A69C|0x000D1407",
+        "owner_class": "DynamicPortalBehaviour",
+        "owner_ctor_rvas": "0x00460B6C|0x00460C18",
+        "evidence": "X:binding (R9PortalAndCritterOwnTableKeys-7): DynamicPortalBehaviour own lifetime store(s) [{'anchor': '0x00460B6C', 'offset': 62}, {'anchor': '0x00460C18', 'offset': 40}] and compiled 3-slot ??_7DynamicPortalBehaviour@@6BDamageModuleInterface@@@",
+        "confidence": "high"
+      }
+    ],
+    "??_7DynamicPortalBehaviour@@6BDieModuleInterface@@@": [
+      {
+        "rva": "0x008427B8",
+        "slots": "1",
+        "slot_rvas": "0x00460A85",
+        "owner_class": "DynamicPortalBehaviour",
+        "owner_ctor_rvas": "0x00460B6C|0x00460C18",
+        "evidence": "X:binding (R9PortalAndCritterOwnTableKeys-11): DynamicPortalBehaviour own lifetime store(s) [{'anchor': '0x00460B6C', 'offset': 69}, {'anchor': '0x00460C18', 'offset': 47}] and compiled 1-slot ??_7DynamicPortalBehaviour@@6BDieModuleInterface@@@ ta",
+        "confidence": "high"
+      }
+    ],
+    "??_7DynamicPortalBehaviour@@6BCreateModuleInterface@@@": [
+      {
+        "rva": "0x008427A8",
+        "slots": "4",
+        "slot_rvas": "0x000B3FD0|0x0046132F|0x000B3FD0|0x0050B5C6",
+        "owner_class": "DynamicPortalBehaviour",
+        "owner_ctor_rvas": "0x00460B6C|0x00460C18",
+        "evidence": "X:binding (R9PortalAndCritterOwnTableKeys-12): DynamicPortalBehaviour own lifetime store(s) [{'anchor': '0x00460B6C', 'offset': 76}, {'anchor': '0x00460C18', 'offset': 54}] and compiled 4-slot ??_7DynamicPortalBehaviour@@6BCreateModuleInterface@@@",
+        "confidence": "high"
+      }
+    ],
+    "??_7CritterEmitterUpdate@@6BObjectModule@@@": [
+      {
+        "rva": "0x0085E8E8",
+        "slots": "13",
+        "slot_rvas": "0x004C8DC6|0x00497805|0x004C8D3B|0x004C8E42|0x004C8D41|0x000B3FD0|0x000B3FD0|0x000B3FD0|0x000B3FD0|0x0050B238|0x000D43D0|0x000D43D0|0x0022C4CB",
+        "owner_class": "CritterEmitterUpdate",
+        "owner_ctor_rvas": "0x004C8D1B",
+        "evidence": "X:binding (R9PortalAndCritterOwnTableKeys-15): CritterEmitterUpdate own lifetime store(s) [{'anchor': '0x004C8D1B', 'offset': 2}] and compiled 13-slot ??_7CritterEmitterUpdate@@6BObjectModule@@@ target 0x0085E8E8.",
+        "confidence": "high"
+      }
+    ],
+    "??_7CritterEmitterUpdate@@6BBehaviorModuleInterface@@@": [
+      {
+        "rva": "0x0085A260",
+        "slots": "47",
+        "slot_rvas": "0x000D43D0|0x004543A9|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x002533D3|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x0047A69C|0x000B3FD0|0x0047A69C|0x0047A69C",
+        "owner_class": "CritterEmitterUpdate",
+        "owner_ctor_rvas": "0x004C8D1B",
+        "evidence": "X:binding (R9PortalAndCritterOwnTableKeys-16): CritterEmitterUpdate own lifetime store(s) [{'anchor': '0x004C8D1B', 'offset': 9}] and compiled 47-slot ??_7CritterEmitterUpdate@@6BBehaviorModuleInterface@@@ target 0x0085A260.",
+        "confidence": "high"
+      }
+    ],
+    "??_7CritterEmitterUpdate@@6BUpdateModule@@@": [
+      {
+        "rva": "0x0085E8DC",
+        "slots": "3",
+        "slot_rvas": "0x004C8DE2|0x00253376|0x0044DF8D",
+        "owner_class": "CritterEmitterUpdate",
+        "owner_ctor_rvas": "0x004C8D1B",
+        "evidence": "X:binding (R9PortalAndCritterOwnTableKeys-18): CritterEmitterUpdate own lifetime store(s) [{'anchor': '0x004C8D1B', 'offset': 16}] and compiled 3-slot ??_7CritterEmitterUpdate@@6BUpdateModule@@@ target 0x0085E8DC.",
+        "confidence": "high"
+      }
+    ],
+    "??_7CritterEmitterUpdate@@6BCollideModuleInterface@@@": [
+      {
+        "rva": "0x0085E8C4",
+        "slots": "6",
+        "slot_rvas": "0x004C8E83|0x005CB9FF|0x0047A699|0x0047A699|0x0047A699|0x0047A699",
+        "owner_class": "CritterEmitterUpdate",
+        "owner_ctor_rvas": "0x004C8D1B",
+        "evidence": "X:binding (R9PortalAndCritterOwnTableKeys-19): CritterEmitterUpdate own lifetime store(s) [{'anchor': '0x004C8D1B', 'offset': 23}] and compiled 6-slot ??_7CritterEmitterUpdate@@6BCollideModuleInterface@@@ target 0x0085E8C4.",
+        "confidence": "high"
+      }
+    ],
+    "??_7StructureBody@@6BObjectModule@@@": [
+      {
+        "rva": "0x0085B660",
+        "slots": "23",
+        "slot_rvas": "0x004C09FA|0x004C202F|0x004C0982|0x004C0A16|0x004C09B5|0x000B3FD0|0x000B3FD0|0x000B3FD0|0x004BDCAC|0x0050B238|0x000D43D0|0x000D43D0|0x0050B5C6|0x004BE69C|0x004BF8AC|0x004BF8DF|0x004BF8ED|0x004BE1AE|0x004BED62|0x004BE24A|0x004BE3EF|0x004BE8BD|0x004BF9ED",
+        "owner_class": "StructureBody",
+        "owner_ctor_rvas": "0x004C0951",
+        "evidence": "X:binding (R9StructureBodyQualifiedTableKeys-1): Exact 49B StructureBody constructor 0x004C0951 selected ??_7StructureBody@@6BObjectModule@@@, 23 slots, at native 0x0085B660.",
+        "confidence": "high"
+      }
+    ],
+    "??_7StructureBody@@6BBehaviorModuleInterface@@@": [
+      {
+        "rva": "0x0085AD78",
+        "slots": "47",
+        "slot_rvas": "0x002533D3|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x000D43D0|0x0047A69C|0x000B3FD0|0x0047A69C|0x0047A69C",
+        "owner_class": "StructureBody",
+        "owner_ctor_rvas": "0x004C0951",
+        "evidence": "X:binding (R9StructureBodyQualifiedTableKeys-2): Exact 49B StructureBody constructor 0x004C0951 selected ??_7StructureBody@@6BBehaviorModuleInterface@@@, 47 slots, at native 0x0085AD78.",
         "confidence": "high"
       }
     ]

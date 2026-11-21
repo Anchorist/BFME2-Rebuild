@@ -14,6 +14,7 @@ class EvacuateGarrisonSpecialPowerModuleData : public SpecialAbilityUpdateModule
 public:
 	EvacuateGarrisonSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 };
 typedef char EvacuateGarrisonSpecialPowerModuleData_size[(sizeof(EvacuateGarrisonSpecialPowerModuleData) == 0xC8) ? 1 : -1];
 

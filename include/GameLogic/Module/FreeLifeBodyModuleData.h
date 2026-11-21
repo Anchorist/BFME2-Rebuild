@@ -21,6 +21,7 @@ class FreeLifeBodyModuleData : public RespawnBodyModuleData
 public:
 	FreeLifeBodyModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_freeLifeHealthPercent;                          // +0x6C FreeLifeHealthPercent; percent
 	UnsignedInt m_freeLifeTime;                            // +0x70 FreeLifeTime; duration, frames

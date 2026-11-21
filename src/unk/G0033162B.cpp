@@ -1,3 +1,5 @@
+// cl: /O1
+#include "Common/BitFlags.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0033162B name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
@@ -6,6 +8,17 @@
 // FUNCTION: BFME2 0x00331651 size=17 name=?set@Rva0020DD50FieldSetter@@QAEXH@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0033167B size=7 name=?get@Rva0033167BSubDwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00331682 size=37 name=?test@?$BitFlags@$0GF@W4ObjectStatusType@@@@QBE_NPBX@Z evidence=X:map request tier=B hypothesis:mm1-gap-unit
+template<>
+Bool BitFlags<101>::test(const void *other) const
+{
+	const UnsignedInt *p = (const UnsignedInt *)other;
+	for (UnsignedInt i = 0; i < NUMWORDS; ++i)
+	{
+		if (m_bits[i] & p[i])
+			return true;
+	}
+	return false;
+}
 // FUNCTION: BFME2 0x003316A7 size=19 name=?rva002DF980@@YAHPAPAE0@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x003316BA size=24 name=?setKeyFromName@EventFlagEntry@@QAEXPBD@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x003316D2 size=68 name=?xfer@DelayedLuaEventList@@UAEXPAVXfer@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit

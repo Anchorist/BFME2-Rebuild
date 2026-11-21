@@ -52,6 +52,7 @@ class SplitHordeSpecialPower : public SpecialPowerModule
 {
 public:
 	SplitHordeSpecialPower(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void doSpecialPower(unsigned int commandOptions);	// override: doSpecialPower slot 10 at +0x10 (0x004C861E)
 	virtual void doSpecialPowerAtObject(Object *object, unsigned int commandOptions) { doSpecialPower(commandOptions); }	// slot 11 at +0x10: retail 0x004C405D (WeaponChangeSpecialPowerModule's body; this table holds it at slots 11 and 12)

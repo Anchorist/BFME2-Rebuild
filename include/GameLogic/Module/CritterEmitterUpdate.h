@@ -23,6 +23,7 @@ class CritterEmitterUpdate : public UpdateModule, public CollideModuleInterface
 public:
 	virtual CollideModuleInterface *getCollide() { return this; }
 	CritterEmitterUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10
 	virtual void onCollide(Object *other, const Coord3D *loc, const Coord3D *normal);	// override: onCollide slot 0 at +0x20

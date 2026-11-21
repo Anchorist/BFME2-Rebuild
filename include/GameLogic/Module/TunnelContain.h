@@ -107,6 +107,7 @@ public:
 	virtual Object *tunnelSlot32(Int arg);									// 32: 0x0047DEE1, the first contained object whose horde interface accepts arg
 	virtual ContainmentListView tunnelSlot33();								// 33: 0x0047DD0F
 	TunnelContain(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual Bool containSlot52() { return false; }

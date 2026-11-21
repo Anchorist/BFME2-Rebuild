@@ -28,6 +28,7 @@ class ObjectCreationUpgradeModuleData : public ModuleData
 public:
 	ObjectCreationUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	const ObjectCreationList * m_upgradeObject;            // +0x8 UpgradeObject
 	UnsignedInt m_delay;                                   // +0xC Delay; duration, frames

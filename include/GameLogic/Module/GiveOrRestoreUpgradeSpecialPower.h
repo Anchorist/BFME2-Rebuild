@@ -27,6 +27,7 @@ class GiveOrRestoreUpgradeSpecialPower : public SpecialAbilityUpdate
 {
 public:
 	GiveOrRestoreUpgradeSpecialPower(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~GiveOrRestoreUpgradeSpecialPower();
 	virtual void triggerAbilityEffect();	// override: triggerAbilityEffect slot 17 at +0x0 (0x004CD1B9)

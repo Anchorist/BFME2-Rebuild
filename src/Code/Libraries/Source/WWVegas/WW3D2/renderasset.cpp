@@ -1,5 +1,6 @@
 // cl: /O1 /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_CRTIMP=
 // stlport46
+// bfmealloc_alloconly
 #include <map>
 #include "Common/AsciiString.h"
 #include "WW3D2/MaterialInfoClass.h"

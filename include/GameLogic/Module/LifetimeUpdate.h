@@ -6,6 +6,7 @@ class LifetimeUpdate : public UpdateModule
 {
 public:
     LifetimeUpdate(Thing *thing, const ModuleData *moduleData);
+	static ModuleData *friend_newModuleData(INI *ini);
     virtual NameKeyType getModuleNameKey() const;
     virtual UpdateSleepTime update();
     virtual void rva0044DF8D(UpdateSleepTime wakeDelay);

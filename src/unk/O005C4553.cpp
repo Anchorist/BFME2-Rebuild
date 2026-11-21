@@ -10,6 +10,11 @@
 // FUNCTION: BFME2 0x005C456F size=41 name=?rva005C456F@Rva005C456F@@QAEXPAVRva003F7B59@@@Z evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x005C4598 size=6 name=?Rva005C4598Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva005C4598Get()
+{
+	return (int)"LivingWorldBuildingNuggetStrengthenArmy";
+}
 
 // FUNCTION: BFME2 0x005C45D2 size=44 name=?rva005C45D2@Rva005C45D2@@QAEXPAVXfer@@@Z evidence=?:placeholder tier=B hypothesis:cohesion
 

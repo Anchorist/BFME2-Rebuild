@@ -20,6 +20,7 @@ class RespawnBodyModuleData : public ActiveBodyModuleData
 public:
 	RespawnBodyModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	ObjectFilter m_permanentlyKilledByFilter;              // +0x64 PermanentlyKilledByFilter
 	Bool m_canRespawn;                                     // +0x68 CanRespawn

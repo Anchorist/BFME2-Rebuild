@@ -25,6 +25,7 @@ class SlavedUpdateModuleData : public ModuleData
 public:
 	SlavedUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Int m_leashRange;                                      // +0x8 LeashRange
 	Int m_guardMaxRange;                                   // +0xC GuardMaxRange

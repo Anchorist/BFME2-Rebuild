@@ -1,5 +1,6 @@
-// cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS
+// cl: /O1 /arch:SSE /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS /D_CRTIMP=
 // stlport46
+// bfmealloc_alloconly
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 #include <float.h>
 #include <map>
@@ -101,6 +102,19 @@ void StateMachine::xfer(Xfer *xfer)
 }
 
 // FUNCTION: BFME2 0x004D79E1 size=120 name=??0StateMachine@@QAE@PAVObject@@I_N@Z evidence=N:ledger tier=B hypothesis:name:invented
+StateMachine::StateMachine(Object *owner, UnsignedInt name, Bool flag)
+	: m_currentState(NULL)
+{
+	m_owner = owner;
+	m_goalObjectID = INVALID_ID;
+	m_defaultStateID = INVALID_STATE_ID;
+	m_goalPosition.zero();
+	m_flag = flag;
+	m_secondGoalObjectID = INVALID_ID;
+	m_locked = false;
+	m_defaultStateInited = false;
+	m_goalRange = FLT_MAX;
+}
 
 // FUNCTION: BFME2 0x004D7A75 size=88 name=?resetToDefaultState@StateMachine@@UAE?AW4StateReturnType@@XZ evidence=N:ledger tier=B hypothesis:Z
 StateReturnType StateMachine::resetToDefaultState()

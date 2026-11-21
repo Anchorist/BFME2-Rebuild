@@ -7,6 +7,10 @@
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:name:invented
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/BuildableHeroListUpgrade.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/BuildableHeroListUpgradeModuleData.h"
+#include "GameLogic/Module/UpgradeMuxData.h"
 // FUNCTION: BFME2 0x004B82C5 size=6 name=?name@Rva004B82C5Named@@QBEPBDXZ evidence=?:placeholder tier=B hypothesis:cohesion
 const char *BuildableHeroListUpgrade::GetSnapshotName() const
 {
@@ -20,7 +24,18 @@ NameKeyType BuildableHeroListUpgrade::getModuleNameKey() const
 	return TheBuildableHeroListUpgradeNameKey;
 }
 
+static const FieldParse s_buildableHeroListUpgradeModuleDataFieldParse[] =
+{
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x004B8310 size=34 name=?buildFieldParse@BuildableHeroListUpgradeModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:K
+void BuildableHeroListUpgradeModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(UpgradeMuxData::getFieldParse(), 0x8);
+	parse.add(s_buildableHeroListUpgradeModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x004B8332 size=49 name=??0BuildableHeroListUpgrade@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:K
 BuildableHeroListUpgrade::BuildableHeroListUpgrade(Thing *thing, const ModuleData *moduleData) :

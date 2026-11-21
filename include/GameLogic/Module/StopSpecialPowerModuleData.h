@@ -20,6 +20,7 @@ class StopSpecialPowerModuleData : public SpecialPowerModuleData
 public:
 	StopSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	const SpecialPowerTemplate * m_stopPowerTemplate;      // +0x7C StopPowerTemplate
 };

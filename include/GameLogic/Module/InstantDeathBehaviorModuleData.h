@@ -16,6 +16,8 @@
 #include "GameLogic/Module/DestroyDieModuleData.h"
 
 class FXList;
+class INI;
+class MultiIniFieldParse;
 class ObjectCreationList;
 class WeaponTemplate;
 
@@ -27,6 +29,10 @@ class InstantDeathBehaviorModuleData : public DestroyDieModuleData
 public:
 	InstantDeathBehaviorModuleData();
 	virtual ~InstantDeathBehaviorModuleData();
+	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
+	static void parseOCL(INI *ini, void *instance, void *store, const void *userData);	// 0x0045D1BD, the OCL table entry's parser
+	static void parseWeapon(INI *ini, void *instance, void *store, const void *userData);	// 0x0045D200, the Weapon table entry's parser
 
 	_STL::vector<const FXList *> m_fx;									// +0x38 FX
 	_STL::vector<ObjectCreationList *> m_ocls;      					// +0x44 OCL

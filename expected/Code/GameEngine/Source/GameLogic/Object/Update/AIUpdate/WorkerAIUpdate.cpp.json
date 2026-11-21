@@ -101,7 +101,8 @@
       "accepted_names": [
         "?vslot094@SupplyTruckAIUpdate@@UBEPAXXZ",
         "?getSupplyTruckAIInterface@SupplyTruckAIUpdate@@UAEPAVSupplyTruckAIInterface@@XZ",
-        "?getSupplyTruckAIInterface@SupplyTruckAIUpdate@@UBEPBVSupplyTruckAIInterface@@XZ"
+        "?getSupplyTruckAIInterface@SupplyTruckAIUpdate@@UBEPBVSupplyTruckAIInterface@@XZ",
+        "?getAnimalAIInterface@AnimalAIUpdate@@UAEPAVAnimalAIInterface@@XZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null

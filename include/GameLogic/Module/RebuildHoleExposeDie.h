@@ -13,6 +13,7 @@ class RebuildHoleExposeDie : public DieModule
 {
 public:
 	RebuildHoleExposeDie(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	virtual void onDie(const DamageInfo *damageInfo);
 	virtual NameKeyType getModuleNameKey() const;

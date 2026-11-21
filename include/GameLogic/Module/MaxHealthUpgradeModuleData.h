@@ -18,6 +18,7 @@ class MaxHealthUpgradeModuleData : public UpgradeModuleData
 public:
 	MaxHealthUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_addMaxHealth;												// +0x118 AddMaxHealth
 	Int m_changeType;													// +0x11C ChangeType (MaxHealthChangeType)

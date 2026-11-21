@@ -58,6 +58,7 @@ public:
     // 0x0070B2C0: removes the key.
     AptValue *Lookup(const EAStringC &key);
     void Unset(const EAStringC *const key);
+    static void UnsetAt(void *pHashItem);
 
     int mnTotalSize;             // 0x0
     AptHashItem *mpData;         // 0x4

@@ -57,6 +57,23 @@
 #include "GameLogic/Module/OilSpillUpdate.h"
 #include "GameLogic/Module/FireWeaponUpdate.h"
 #include "GameLogic/Module/FireSpreadUpdateModuleData.h"
+#include "GameLogic/Module/PoisonedBehavior.h"
+#include "GameLogic/Module/FlammableUpdateModuleData.h"
+#include "GameLogic/Module/FlammableUpdate.h"
+#include "GameLogic/Module/DynamicShroudClearingRangeUpdateModuleData.h"
+#include "GameLogic/Module/DynamicShroudClearingRangeUpdate.h"
+#include "GameLogic/Module/UpgradeDie.h"
+#include "GameLogic/Module/RebuildHoleExposeDie.h"
+#include "GameLogic/Module/CreateObjectDieIfEldestKindof.h"
+#include "GameLogic/Module/OilSpillUpdateModuleData.h"
+#include "GameLogic/Module/SlaveWatcherBehaviorModuleData.h"
+#include "GameLogic/Module/DelayedWeaponSetUpgradeUpdate.h"
+// Module creators. Retail registers each module class with a static friend_newModuleInstance that allocates the
+// module for a thing and its module data, and each module data class with a static friend_newModuleData that
+// allocates the data and, when an INI block is open, fills it from the class's buildFieldParse table. The bodies
+// below are those two shapes. A class whose creator is not here yet has no real header, lacks the constructor or
+// buildFieldParse declaration, or did not compile with its current header (the usual cause is a pure virtual that
+// the header does not override yet); its row stays unwritten.
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0024BF24 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
@@ -153,7 +170,8 @@ Module *FireWeaponWhenDamagedBehavior::friend_newModuleInstance(Thing *thing, co
 	return new FireWeaponWhenDamagedBehavior(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024C32D size=6 name=?Rva0024C32DGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
-// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+// No retail code or data refers to this function. It follows the creators of FireWeaponWhenDamagedBehavior and returns the bit set 0x85, which looks like a module interface mask;
+// nothing ties it to FireWeaponWhenDamagedBehavior, so it keeps its ledger name.
 int Rva0024C32DGet()
 {
 	return 133;
@@ -164,6 +182,10 @@ Module *FireWeaponWhenDeadBehavior::friend_newModuleInstance(Thing *thing, const
 	return new FireWeaponWhenDeadBehavior(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024C36E size=56 name=?friend_newModuleInstance@PoisonedBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *PoisonedBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new PoisonedBehavior(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024C3A6 size=81 name=?friend_newModuleData@PoisonedBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 ModuleData *PoisonedBehaviorModuleData::friend_newModuleData(INI *ini)
 {
@@ -231,6 +253,13 @@ Module *SlaveWatcherBehavior::friend_newModuleInstance(Thing *thing, const Modul
 	return new SlaveWatcherBehavior(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024C660 size=81 name=?friend_newModuleData@SlaveWatcherBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *SlaveWatcherBehaviorModuleData::friend_newModuleData(INI *ini)
+{
+	SlaveWatcherBehaviorModuleData *data = new SlaveWatcherBehaviorModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, SlaveWatcherBehaviorModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024C6B1 size=59 name=?friend_newModuleInstance@AttributeModifierPoolUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *AttributeModifierPoolUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -250,7 +279,8 @@ ModuleData *PassiveAreaEffectBehaviorModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024C775 size=6 name=?Rva0024C775Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
-// Returns a fixed constant (a flag mask or size); its role in the original is not recovered, so the ledger name stays.
+// No retail code or data refers to this function. It follows the creators of PassiveAreaEffectBehavior and returns the bit set 0x2000, which looks like a module interface mask;
+// nothing ties it to PassiveAreaEffectBehavior, so it keeps its ledger name.
 int Rva0024C775Get()
 {
 	return 8192;
@@ -283,6 +313,10 @@ ModuleData *CreateObjectDieModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024C912 size=56 name=?friend_newModuleInstance@CreateObjectDieIfEldestKindof@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *CreateObjectDieIfEldestKindof::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new CreateObjectDieIfEldestKindof(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024C94A size=81 name=?friend_newModuleData@CreateObjectDieIfEldestKindofModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 ModuleData *CreateObjectDieIfEldestKindofModuleData::friend_newModuleData(INI *ini)
 {
@@ -320,6 +354,10 @@ Module *FXListDie::friend_newModuleInstance(Thing *thing, const ModuleData *modu
 	return new FXListDie(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024CAE0 size=56 name=?friend_newModuleInstance@RebuildHoleExposeDie@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *RebuildHoleExposeDie::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new RebuildHoleExposeDie(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024CB18 size=81 name=?friend_newModuleData@RebuildHoleExposeDieModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 ModuleData *RebuildHoleExposeDieModuleData::friend_newModuleData(INI *ini)
 {
@@ -334,6 +372,10 @@ Module *SpecialPowerCompletionDie::friend_newModuleInstance(Thing *thing, const 
 	return new SpecialPowerCompletionDie(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024CBA1 size=56 name=?friend_newModuleInstance@UpgradeDie@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *UpgradeDie::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new UpgradeDie(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024CBD9 size=56 name=?friend_newModuleInstance@KeepObjectDie@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *KeepObjectDie::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -351,6 +393,10 @@ Module *DefaultProductionExitUpdate::friend_newModuleInstance(Thing *thing, cons
 	return new DefaultProductionExitUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024CCBC size=56 name=?friend_newModuleInstance@DelayedWeaponSetUpgradeUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *DelayedWeaponSetUpgradeUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new DelayedWeaponSetUpgradeUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024CCF4 size=81 name=?friend_newModuleData@DelayedWeaponSetUpgradeUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 ModuleData *DelayedWeaponSetUpgradeUpdateModuleData::friend_newModuleData(INI *ini)
 {
@@ -378,7 +424,18 @@ ModuleData *DozerAIUpdateModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024CE09 size=59 name=?friend_newModuleInstance@DynamicShroudClearingRangeUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *DynamicShroudClearingRangeUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new DynamicShroudClearingRangeUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024CE44 size=81 name=?friend_newModuleData@DynamicShroudClearingRangeUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *DynamicShroudClearingRangeUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	DynamicShroudClearingRangeUpdateModuleData *data = new DynamicShroudClearingRangeUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, DynamicShroudClearingRangeUpdateModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024CE95 size=56 name=?friend_newModuleInstance@FireSpreadUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *FireSpreadUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -404,8 +461,26 @@ Module *OilSpillUpdate::friend_newModuleInstance(Thing *thing, const ModuleData 
 	return new OilSpillUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024CFDF size=81 name=?friend_newModuleData@OilSpillUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *OilSpillUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	OilSpillUpdateModuleData *data = new OilSpillUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, OilSpillUpdateModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024D030 size=56 name=?friend_newModuleInstance@FlammableUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *FlammableUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new FlammableUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024D068 size=81 name=?friend_newModuleData@FlammableUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *FlammableUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	FlammableUpdateModuleData *data = new FlammableUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, FlammableUpdateModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024D0B9 size=56 name=?friend_newModuleInstance@FloatUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *FloatUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {

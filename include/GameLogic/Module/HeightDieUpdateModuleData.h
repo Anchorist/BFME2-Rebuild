@@ -13,6 +13,7 @@ public:
 	HeightDieUpdateModuleData();
 
 	static void buildFieldParse(MultiIniFieldParse &p);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_targetHeight;				// +0x08
 	Bool m_targetHeightIncludesStructures;		// +0x0C

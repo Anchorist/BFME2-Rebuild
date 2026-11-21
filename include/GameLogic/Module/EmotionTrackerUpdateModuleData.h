@@ -26,6 +26,7 @@ class EmotionTrackerUpdateModuleData : public ModuleData
 public:
 	EmotionTrackerUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	static void IniParseAddEmotion(INI *ini, void *instance, void *store, const void *userData);
 
 	Real m_tauntAndPointDistance;                          // +0x8 TauntAndPointDistance

@@ -20,6 +20,7 @@ class CrushDieModuleData : public DestroyDieModuleData
 public:
 	CrushDieModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	// CrushDie::onDie 0x00486327 indexes both arrays by CrushEnum (total, back end, front end) and reads the
 	// handle's pointer (`cmp [data+0x38+4*type],0`) before building the sound; the table's tokens are

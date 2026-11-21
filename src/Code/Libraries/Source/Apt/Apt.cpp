@@ -928,7 +928,7 @@ AptCharacterAnimationInst *AptCIH::rva006CD650() const
 }
 
 // FUNCTION: BFME2 0x006CD6F0 size=171 name=?Rva006CD6F0Get@@YAXPAPAX0@Z evidence=?:placeholder tier=A
-void aptGetRootAnimationInfo(void **pOut1, void **pOut2)
+void aptGetRootAnimationInfo(int *width, int *height)
 {
     if (!g_bAptInitialized) {
         g_bfmeAptAssertAtE17734("bInitialized", "C:\\projects\\bfme2patch103\\bfme2\\Code\\Libraries\\Source\\Apt\\Apt.cpp", 0x2FC);
@@ -939,16 +939,16 @@ void aptGetRootAnimationInfo(void **pOut1, void **pOut2)
         AptCIH *pRoot = g_pAptAnimationPoolData->mDisplayList.state->pHead->mpNext;
         if (pRoot && pRoot->getVtblIndex() == 0x12 && !pRoot->isUndefined()) {
             AptCharacterInst *pInst = g_pAptAnimationPoolData->mDisplayList.state->pHead->mpNext->rva006CD650();
-            if (pOut1)
-                *pOut1 = (void *)pInst->pCharacter->animation.reserved14;
-            if (pOut2)
-                *pOut2 = (void *)pInst->pCharacter->animation.reserved18;
+            if (width)
+                *width = pInst->pCharacter->animation.reserved14;
+            if (height)
+                *height = pInst->pCharacter->animation.reserved18;
             return;
         }
-        if (pOut1)
-            *pOut1 = 0;
-        if (pOut2)
-            *pOut2 = 0;
+        if (width)
+            *width = 0;
+        if (height)
+            *height = 0;
     }
 }
 

@@ -10,6 +10,7 @@ class SiegeDeploySpecialPowerModuleData : public SpecialPowerUpdateModuleData
 public:
 	SiegeDeploySpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UnsignedInt m_lowerDelay;
 	UnsignedInt m_raiseDelay;

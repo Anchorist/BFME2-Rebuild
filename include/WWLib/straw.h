@@ -38,7 +38,6 @@ class BufferStraw : public Straw
 {
 public:
 	BufferStraw(const void *buffer, int length);		// 0x0013C880
-	virtual ~BufferStraw();					// 0x0013C8E0
 	virtual int Get(void *buffer, int slen);		// 0x00615590
 
 private:

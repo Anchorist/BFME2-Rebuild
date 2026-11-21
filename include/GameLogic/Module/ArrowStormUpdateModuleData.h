@@ -1,8 +1,12 @@
 #pragma once
 #include "GameLogic/Module/SpecialAbilityUpdateModuleData.h"
+class MultiIniFieldParse;
+class INI;
 class ArrowStormUpdateModuleData : public SpecialAbilityUpdateModuleData
 {
 public:
+    static void buildFieldParse(MultiIniFieldParse &parse);
+    static ModuleData *friend_newModuleData(INI *ini);
     ArrowStormUpdateModuleData();
     AsciiString m_weaponTemplate; // 0xC8
     float m_targetRadius; // 0xCC

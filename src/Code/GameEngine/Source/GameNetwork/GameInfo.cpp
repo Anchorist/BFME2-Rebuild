@@ -338,7 +338,7 @@ Bool GameInfo::rva003FF457() const
 	for (Int pos = 0; pos < MAX_SLOTS; pos++)
 	{
 		GameSlot *entry = m_slot[pos];
-		if (entry->isOccupied() && entry->m_heroKind != 0 && !(entry->m_unk0x60 ? (void *)entry->m_heroData : 0))
+		if (entry->isOccupied() && entry->m_heroKind != 0 && !(entry->m_unk0x60 ? (void *)&entry->m_heroData : 0))
 			return false;
 	}
 	return true;
@@ -350,7 +350,7 @@ Bool GameInfo::isHeroDataReadyForSlot(UnsignedShort slotNum) const
 	if (m_slot != 0 && slotNum < MAX_SLOTS)
 	{
 		GameSlot *entry = m_slot[slotNum];
-		if (entry->isOccupied() && entry->m_heroKind != 0 && !(entry->m_unk0x60 ? (void *)entry->m_heroData : 0))
+		if (entry->isOccupied() && entry->m_heroKind != 0 && !(entry->m_unk0x60 ? (void *)&entry->m_heroData : 0))
 			return false;
 	}
 	return true;
@@ -359,6 +359,38 @@ Bool GameInfo::isHeroDataReadyForSlot(UnsignedShort slotNum) const
 // FUNCTION: BFME2 0x003FF4D4 size=56 name=?grabHexInt3@@YAHPBD@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x003FF50C size=230 name=?reset@GameSlot@@UAEXXZ evidence=N:ledger tier=A
+void GameSlot::reset()
+{
+	m_state = SLOT_CLOSED;
+	m_isAccepted = false;
+	m_hasMap = true;
+	m_isMuted = false;
+	m_color = -1;
+	m_startPos = -1;
+	m_unk0x14 = -1;
+	m_playerTemplate = -2;
+	m_teamNumber = -1;
+	m_unk0x20 = 0;
+	m_origColor = -1;
+	m_origStartPos = -1;
+	m_origPlayerTemplate = -1;
+	m_name.clear();
+	m_unk0x34.clear();
+	m_address = BfmeNetAddress();
+	m_unk0x40 = 1;
+	m_unk0x44 = 0;
+	m_unk0x48 = false;
+	m_livingWorldPlayerID = -1;
+	m_heroKind = 0;
+	m_unk0x54 = 0;
+	m_unk0x58 = 0;
+	m_unk0x5C = -1;
+	m_unk0x60 = false;
+	CreateAHeroData heroData;
+	m_heroData = heroData;
+	m_unk0x1A4 = true;
+	m_unk0x1A8 = AsciiString::TheEmptyString;
+}
 
 // FUNCTION: BFME2 0x003FF5F2 size=36 name=?rva003FF5F2@GameSlot@@QAEXABVAsciiString@@@Z evidence=?:placeholder tier=A
 void GameSlot::setSerial(const AsciiString &serial)
@@ -409,7 +441,7 @@ void GameSlot::xfer(Xfer *xfer)
 		*xfer == heroKind;
 		m_heroKind = heroKind;
 	}
-	((HeroSnapshotView *)m_heroData)->xfer(xfer);
+	((HeroSnapshotView *)&m_heroData)->xfer(xfer);
 	*xfer == m_unk0x1A4;
 	*xfer == m_unk0x1A8;
 }
@@ -535,6 +567,10 @@ Bool GameInfo::isSkirmish()
 // FUNCTION: BFME2 0x003FFA3C size=272 name=?xfer@SkirmishGameInfo@@UAEXPAVXfer@@@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x003FFB4C size=104 name=??0GameSlot@@QAE@XZ evidence=N:ledger tier=A
+GameSlot::GameSlot()
+{
+	reset();
+}
 
 // FUNCTION: BFME2 0x003FFBB4 size=116 name=?getApparentPlayerTemplateDisplayName@GameSlot@@QBE?AVUnicodeString@@XZ evidence=N:ledger tier=A
 UnicodeString GameSlot::getApparentPlayerTemplateDisplayName() const

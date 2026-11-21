@@ -12,6 +12,7 @@ class HordeDispatchSpecialPowerModuleData : public SpecialPowerModuleData
 public:
 	HordeDispatchSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 };
 
 typedef char HordeDispatchSpecialPowerModuleDataSizeCheck[sizeof(HordeDispatchSpecialPowerModuleData) == 0x7C ? 1 : -1];

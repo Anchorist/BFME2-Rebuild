@@ -163,10 +163,6 @@ unsigned short *MeshGeometryClass::get_buffer54(int count)
 }
 
 // FUNCTION: BFME2 0x0016A220 size=16 name=?Get_Poly_Surface_Type@MeshGeometryClass@@QBEEH@Z evidence=N:ledger tier=B hypothesis:Z
-unsigned char MeshGeometryClass::Get_Poly_Surface_Type(int poly_index) const
-{
-	return PolySurfaceType->Get_Array()[poly_index];
-}
 
 // FUNCTION: BFME2 0x0016A230 size=235 name=??0MeshGeometryClass@@QAE@ABV0@@Z evidence=N:ledger tier=B hypothesis:Z
 
@@ -509,6 +505,10 @@ bool MeshGeometryClass::read_vertex_shade_indices(ChunkLoadClass &cload)
 // FUNCTION: BFME2 0x0016BF40 size=2960 name=?get_deformed_vertices@MeshModelClass@@QAEXPAVVector3@@0PBVHTreeClass@@@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x0016CB40 size=8 name=?Rva0016CB40@@YAPAXPAD@Z evidence=?:placeholder tier=A
+void *Rva0016CB40(char *p)
+{
+	return p + 0x10;
+}
 
 // FUNCTION: BFME2 0x0016CB90 size=31 name=?assign@Rva0016CB90IntView@@QAEPAV1@PBURva0016CB90FloatView@@@Z evidence=?:placeholder tier=A
 

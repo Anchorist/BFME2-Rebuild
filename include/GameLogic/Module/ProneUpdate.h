@@ -15,6 +15,7 @@ class ProneUpdate : public UpdateModule
 {
 public:
 	ProneUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	virtual UpdateSleepTime update();
 	virtual NameKeyType getModuleNameKey() const;

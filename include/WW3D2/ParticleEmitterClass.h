@@ -50,6 +50,7 @@ public:
 	virtual void Get_Obj_Space_Bounding_Sphere(SphereClass &sphere) const;	// slot 67: 0x001A1400
 	virtual void Set_Hidden(int onoff);									// slot 101: 0x001A1450
 	// slot 99 (0x001A1480) overrides RenderObjClass's Set_Visible(int, int), which RenderObjClass.h spells SetVisible(SceneClass *, int): left for the owner
+	virtual void SetVisible(SceneClass *scene, int visCheckId);				// slot 99: 0x001A1480
 	virtual void Set_Animation_Hidden(int onoff);						// slot 103: 0x001A14B0
 	virtual void Set_Force_Visible(int onoff);							// slot 105: 0x001A14E0
 	virtual bool Is_Complete() { return IsComplete; }					// slot 122: 0x001A1520

@@ -9,6 +9,7 @@ class AODHordeContainModuleData : public HordeContainModuleData
 public:
   AODHordeContainModuleData();
   static void buildFieldParse(MultiIniFieldParse &parse);
+  static ModuleData *friend_newModuleData(INI *ini);
 
   float FrequencyScale;
   float FrequencyRandomness;

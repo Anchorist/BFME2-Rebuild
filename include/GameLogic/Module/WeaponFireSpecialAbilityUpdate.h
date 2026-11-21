@@ -16,9 +16,11 @@
 
 class Weapon;
 
+class MultiIniFieldParse;
 class WeaponFireSpecialAbilityUpdateModuleData : public SpecialAbilityUpdateModuleData
 {
 public:
+	static void buildFieldParse(MultiIniFieldParse &parse);
 	AsciiString m_specialWeaponName;		// 0xC8
 	Int m_whichSpecialWeapon;				// 0xCC
 	Bool m_skipContinue;					// 0xD0

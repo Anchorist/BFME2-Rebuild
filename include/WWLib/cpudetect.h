@@ -26,8 +26,6 @@ struct OSInfoStruct
 };
 typedef char OSInfoStructSize[(sizeof(OSInfoStruct) == 0x14) ? 1 : -1];
 
-void Get_OS_Info(OSInfoStruct &os_info, unsigned platform_id, unsigned major_ver, unsigned minor_ver, unsigned build_num);
-
 class CPUDetectClass
 {
 public:

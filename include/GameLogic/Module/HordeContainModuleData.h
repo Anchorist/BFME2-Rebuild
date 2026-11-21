@@ -23,6 +23,7 @@ public:
 
   virtual const HordeContainModuleData *getHordeModuleData() const { return this; }
   static void buildFieldParse(MultiIniFieldParse &parse);
+  static ModuleData *friend_newModuleData(INI *ini);
   HordeRankInfo *rva00469294(Int rank) const;
 
   _STL::vector<HordeRankInfo *> RankInfos; // offset=0x18C: the RankInfo lines; 0x00469294 finds the entry whose rank matches, 0x0046AF12 hands its unit type to ThingFactory::findTemplate

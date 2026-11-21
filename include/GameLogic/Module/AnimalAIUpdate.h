@@ -20,6 +20,7 @@ class AnimalAIUpdate : public AIUpdateInterface, public AnimalAIInterface
 {
 public:
 	AnimalAIUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~AnimalAIUpdate();
 
 	virtual NameKeyType getModuleNameKey() const;

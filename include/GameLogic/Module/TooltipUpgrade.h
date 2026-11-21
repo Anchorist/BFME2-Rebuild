@@ -43,6 +43,7 @@ class TooltipUpgrade : public UpgradeModule
 {
 public:
 	TooltipUpgrade(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~TooltipUpgrade();
 

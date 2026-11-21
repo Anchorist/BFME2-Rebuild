@@ -13,6 +13,7 @@ class DelayedLuaEventUpdateModuleData : public ModuleData
 public:
 	DelayedLuaEventUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 };
 typedef char DelayedLuaEventUpdateModuleData_size[(sizeof(DelayedLuaEventUpdateModuleData) == 0x8) ? 1 : -1];
 

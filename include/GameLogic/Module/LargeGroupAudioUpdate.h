@@ -22,6 +22,7 @@ class LargeGroupAudioUpdate : public UpdateModule
 {
 public:
 	LargeGroupAudioUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~LargeGroupAudioUpdate();
 	virtual void onObjectCreated();	// override: onObjectCreated slot 5 at +0x0 (0x004ABB37)

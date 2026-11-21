@@ -90,7 +90,7 @@
       "evidence": 1
     }
   },
-  "step_changes": 4,
+  "step_changes": 21,
   "changes": [
     {
       "rva": "0x0009FD78",
@@ -124281,6 +124281,2430 @@
       "confidence": "strong",
       "basis": "class-key",
       "evidence": "Exact same bytes in the native and compiled protected caller, direct operands 0x00488CC4 at 0x00488CEA select 0x004EC2D4. The post-g38 COFF emits ?rva004EC2D4@AIBuilder@@QAEXW4ObjectID@@@Z."
+    },
+    {
+      "rva": "0x00346FA5",
+      "kind": "rename",
+      "old": "?rva00346FA5@AIStates@@QBEPAXH@Z",
+      "name": "?getGoalPathPosition@AIStateMachine@@QBEPBVCoord3D@@H@Z",
+      "source": "exact own AIStateMachine body plus native and Zero Hour witnesses",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native own 43B AIStateMachine getter checks signed index and member vector length, uses 12B Coord3D stride and returns nullptr on invalid index. Own const Coord3D* source matches all 43 bytes. Native 0xDFCCD loads state machine and tail-calls exact row. Corresponding Zero Hour AIStates.cpp method su"
+    },
+    {
+      "rva": "0x0085B660",
+      "kind": "vtable-binding",
+      "old": "??_7StructureBody@@6BObjectModule@@@",
+      "name": "??_7StructureBody@@6BObjectModule@@@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Exact 49B StructureBody constructor 0x004C0951 selected ??_7StructureBody@@6BObjectModule@@@, 23 slots, at native 0x0085B660."
+    },
+    {
+      "rva": "0x0085AD78",
+      "kind": "vtable-binding",
+      "old": "??_7StructureBody@@6BBehaviorModuleInterface@@@",
+      "name": "??_7StructureBody@@6BBehaviorModuleInterface@@@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Exact 49B StructureBody constructor 0x004C0951 selected ??_7StructureBody@@6BBehaviorModuleInterface@@@, 47 slots, at native 0x0085AD78."
+    },
+    {
+      "rva": "0x0085B5B0",
+      "kind": "vtable-binding",
+      "old": "??_7StructureBody@@6B@",
+      "name": "??_7StructureBody@@6B@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "Exact 49B StructureBody constructor 0x004C0951 selected ??_7StructureBody@@6B@, 43 slots, at native 0x0085B5B0."
+    },
+    {
+      "rva": "0x008428C4",
+      "kind": "vtable-binding",
+      "old": "??_7DynamicPortalBehaviour@@6BObjectModule@@@",
+      "name": "??_7DynamicPortalBehaviour@@6BObjectModule@@@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "DynamicPortalBehaviour own lifetime store(s) [{'anchor': '0x00460B6C', 'offset': 41}, {'anchor': '0x00460C18', 'offset': 19}] and compiled 12-slot ??_7DynamicPortalBehaviour@@6BObjectModule@@@ target 0x008428C4."
+    },
+    {
+      "rva": "0x00842808",
+      "kind": "vtable-binding",
+      "old": "??_7DynamicPortalBehaviour@@6BBehaviorModuleInterface@@@",
+      "name": "??_7DynamicPortalBehaviour@@6BBehaviorModuleInterface@@@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "DynamicPortalBehaviour own lifetime store(s) [{'anchor': '0x00460B6C', 'offset': 48}, {'anchor': '0x00460C18', 'offset': 26}] and compiled 47-slot ??_7DynamicPortalBehaviour@@6BBehaviorModuleInterface@@@ target 0x00842808."
+    },
+    {
+      "rva": "0x008427C0",
+      "kind": "vtable-binding",
+      "old": "??_7DynamicPortalBehaviour@@6BUpgradeMux@@@",
+      "name": "??_7DynamicPortalBehaviour@@6BUpgradeMux@@@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "DynamicPortalBehaviour own lifetime store(s) [{'anchor': '0x00460B6C', 'offset': 55}, {'anchor': '0x00460C18', 'offset': 33}] and compiled 18-slot ??_7DynamicPortalBehaviour@@6BUpgradeMux@@@ target 0x008427C0."
+    },
+    {
+      "rva": "0x00858790",
+      "kind": "vtable-binding",
+      "old": "??_7DynamicPortalBehaviour@@6BDamageModuleInterface@@@",
+      "name": "??_7DynamicPortalBehaviour@@6BDamageModuleInterface@@@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "DynamicPortalBehaviour own lifetime store(s) [{'anchor': '0x00460B6C', 'offset': 62}, {'anchor': '0x00460C18', 'offset': 40}] and compiled 3-slot ??_7DynamicPortalBehaviour@@6BDamageModuleInterface@@@ target 0x00858790."
+    },
+    {
+      "rva": "0x008427B8",
+      "kind": "vtable-binding",
+      "old": "??_7DynamicPortalBehaviour@@6BDieModuleInterface@@@",
+      "name": "??_7DynamicPortalBehaviour@@6BDieModuleInterface@@@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "DynamicPortalBehaviour own lifetime store(s) [{'anchor': '0x00460B6C', 'offset': 69}, {'anchor': '0x00460C18', 'offset': 47}] and compiled 1-slot ??_7DynamicPortalBehaviour@@6BDieModuleInterface@@@ target 0x008427B8."
+    },
+    {
+      "rva": "0x008427A8",
+      "kind": "vtable-binding",
+      "old": "??_7DynamicPortalBehaviour@@6BCreateModuleInterface@@@",
+      "name": "??_7DynamicPortalBehaviour@@6BCreateModuleInterface@@@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "DynamicPortalBehaviour own lifetime store(s) [{'anchor': '0x00460B6C', 'offset': 76}, {'anchor': '0x00460C18', 'offset': 54}] and compiled 4-slot ??_7DynamicPortalBehaviour@@6BCreateModuleInterface@@@ target 0x008427A8."
+    },
+    {
+      "rva": "0x0085E8E8",
+      "kind": "vtable-binding",
+      "old": "??_7CritterEmitterUpdate@@6BObjectModule@@@",
+      "name": "??_7CritterEmitterUpdate@@6BObjectModule@@@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "CritterEmitterUpdate own lifetime store(s) [{'anchor': '0x004C8D1B', 'offset': 2}] and compiled 13-slot ??_7CritterEmitterUpdate@@6BObjectModule@@@ target 0x0085E8E8."
+    },
+    {
+      "rva": "0x0085A260",
+      "kind": "vtable-binding",
+      "old": "??_7CritterEmitterUpdate@@6BBehaviorModuleInterface@@@",
+      "name": "??_7CritterEmitterUpdate@@6BBehaviorModuleInterface@@@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "CritterEmitterUpdate own lifetime store(s) [{'anchor': '0x004C8D1B', 'offset': 9}] and compiled 47-slot ??_7CritterEmitterUpdate@@6BBehaviorModuleInterface@@@ target 0x0085A260."
+    },
+    {
+      "rva": "0x0085E8DC",
+      "kind": "vtable-binding",
+      "old": "??_7CritterEmitterUpdate@@6BUpdateModule@@@",
+      "name": "??_7CritterEmitterUpdate@@6BUpdateModule@@@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "CritterEmitterUpdate own lifetime store(s) [{'anchor': '0x004C8D1B', 'offset': 16}] and compiled 3-slot ??_7CritterEmitterUpdate@@6BUpdateModule@@@ target 0x0085E8DC."
+    },
+    {
+      "rva": "0x0085E8C4",
+      "kind": "vtable-binding",
+      "old": "??_7CritterEmitterUpdate@@6BCollideModuleInterface@@@",
+      "name": "??_7CritterEmitterUpdate@@6BCollideModuleInterface@@@",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "vptr store",
+      "evidence": "CritterEmitterUpdate own lifetime store(s) [{'anchor': '0x004C8D1B', 'offset': 23}] and compiled 6-slot ??_7CritterEmitterUpdate@@6BCollideModuleInterface@@@ target 0x0085E8C4."
+    },
+    {
+      "rva": "0x004543A9",
+      "kind": "alias",
+      "old": "",
+      "name": "?getCreate@DynamicPortalBehaviour@@UAEPAVCreateModuleInterface@@XZ",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7DynamicPortalBehaviour@@6BBehaviorModuleInterface@@@ slot 3 at 0x00842808 selects native 0x004543A9. The full 13B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x004B4A8C",
+      "kind": "alias",
+      "old": "",
+      "name": "?getDie@DynamicPortalBehaviour@@UAEPAVDieModuleInterface@@XZ",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7DynamicPortalBehaviour@@6BBehaviorModuleInterface@@@ slot 7 at 0x00842808 selects native 0x004B4A8C. The full 13B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x002533D3",
+      "kind": "alias",
+      "old": "",
+      "name": "?getUpgrade@UpgradeModule@@UAEPAVUpgradeModuleInterface@@XZ",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7DynamicPortalBehaviour@@6BBehaviorModuleInterface@@@ slot 10 at 0x00842808 selects native 0x002533D3. The full 13B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x0047A69C",
+      "kind": "alias",
+      "old": "",
+      "name": "?onDamage@UpgradeModule@@UAEXPAVDamageInfo@@@Z",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7DynamicPortalBehaviour@@6BDamageModuleInterface@@@ slot 0 at 0x00858790 selects native 0x0047A69C. The full 3B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x0047A69C",
+      "kind": "alias",
+      "old": "",
+      "name": "?onHealing@UpgradeModule@@UAEXPAVDamageInfo@@@Z",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7DynamicPortalBehaviour@@6BDamageModuleInterface@@@ slot 1 at 0x00858790 selects native 0x0047A69C. The full 3B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x000D1407",
+      "kind": "alias",
+      "old": "",
+      "name": "?onBodyDamageStateChange@UpgradeModule@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7DynamicPortalBehaviour@@6BDamageModuleInterface@@@ slot 2 at 0x00858790 selects native 0x000D1407. The full 3B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x000B3FD0",
+      "kind": "alias",
+      "old": "",
+      "name": "?onCreate@DynamicPortalBehaviour@@UAEXXZ",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7DynamicPortalBehaviour@@6BCreateModuleInterface@@@ slot 0 at 0x008427A8 selects native 0x000B3FD0. The full 1B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x0050B5C6",
+      "kind": "alias",
+      "old": "",
+      "name": "?shouldDoOnBuildComplete@DynamicPortalBehaviour@@UBE_NXZ",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7DynamicPortalBehaviour@@6BCreateModuleInterface@@@ slot 3 at 0x008427A8 selects native 0x0050B5C6. The full 3B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x004543A9",
+      "kind": "alias",
+      "old": "",
+      "name": "?getCollide@CritterEmitterUpdate@@UAEPAVCollideModuleInterface@@XZ",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7CritterEmitterUpdate@@6BBehaviorModuleInterface@@@ slot 1 at 0x0085A260 selects native 0x004543A9. The full 13B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x005CB9FF",
+      "kind": "alias",
+      "old": "",
+      "name": "?wouldLikeToCollideWith@CritterEmitterUpdate@@UBE_NPBVObject@@@Z",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7CritterEmitterUpdate@@6BCollideModuleInterface@@@ slot 1 at 0x0085E8C4 selects native 0x005CB9FF. The full 5B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x0047A699",
+      "kind": "alias",
+      "old": "",
+      "name": "?isHijackedVehicleCrateCollide@CritterEmitterUpdate@@UBE_NXZ",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7CritterEmitterUpdate@@6BCollideModuleInterface@@@ slot 2 at 0x0085E8C4 selects native 0x0047A699. The full 3B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x0047A699",
+      "kind": "alias",
+      "old": "",
+      "name": "?isCarBombCrateCollide@CritterEmitterUpdate@@UBE_NXZ",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7CritterEmitterUpdate@@6BCollideModuleInterface@@@ slot 3 at 0x0085E8C4 selects native 0x0047A699. The full 3B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x0047A699",
+      "kind": "alias",
+      "old": "",
+      "name": "?isRailroad@CritterEmitterUpdate@@UBE_NXZ",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7CritterEmitterUpdate@@6BCollideModuleInterface@@@ slot 4 at 0x0085E8C4 selects native 0x0047A699. The full 3B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x0047A699",
+      "kind": "alias",
+      "old": "",
+      "name": "?isSalvageCrateCollide@CritterEmitterUpdate@@UBE_NXZ",
+      "source": "exact own native/compiled lifetime and table evidence",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Exact own ??_7CritterEmitterUpdate@@6BCollideModuleInterface@@@ slot 5 at 0x0085E8C4 selects native 0x0047A699. The full 3B emitted callable and every relocated target match."
+    },
+    {
+      "rva": "0x0049A7EE",
+      "kind": "alias",
+      "old": "",
+      "name": "?loadPostProcess@AnimalAIUpdate@@MAEXXZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00847B98, physical slot 1. The native cell selects 0x0049A7EE; full emitted 5B and all native target edges agree. Bound edges: [{\"at\":1,\"key\":\"?loadPostProcess@AIUpdateInterface@@MAEXXZ\",\"rva\":\"0x002686A4\",\"binds\":true}]"
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?getUpdatePhase@AIUpdateInterface@@MBE?AW4SleepyUpdatePhase@@XZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00847B98, physical slot 12. The native cell selects 0x000D43D0; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?getDozerAIInterface@AIUpdateInterface@@UBEPBVDozerAIInterface@@XZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00847B98, physical slot 92. The native cell selects 0x000D43D0; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?getDozerAIInterface@AIUpdateInterface@@UAEPAVDozerAIInterface@@XZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00847B98, physical slot 93. The native cell selects 0x000D43D0; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?getSupplyTruckAIInterface@AIUpdateInterface@@UBEPBVSupplyTruckAIInterface@@XZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00847B98, physical slot 94. The native cell selects 0x000D43D0; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?getSupplyTruckAIInterface@AIUpdateInterface@@UAEPAVSupplyTruckAIInterface@@XZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00847B98, physical slot 95. The native cell selects 0x000D43D0; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x004A9B51",
+      "kind": "alias",
+      "old": "",
+      "name": "?getAnimalAIInterface@AnimalAIUpdate@@UAEPAVAnimalAIInterface@@XZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00847B98, physical slot 96. The native cell selects 0x004A9B51; full emitted 15B and all native target edges agree."
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?getWorkerAIInterface@AIUpdateInterface@@UBEPBVWorkerAIInterface@@XZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00847B98, physical slot 99. The native cell selects 0x000D43D0; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?getWorkerAIInterface@AIUpdateInterface@@UAEPAVWorkerAIInterface@@XZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00847B98, physical slot 100. The native cell selects 0x000D43D0; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?getAssaultTransportAIInterface@AIUpdateInterface@@UBEPBVAssaultTransportAIInterface@@XZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00847B98, physical slot 101. The native cell selects 0x000D43D0; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x000D43D0",
+      "kind": "alias",
+      "old": "",
+      "name": "?getAssaultTransportAIInterface@AIUpdateInterface@@UAEPAVAssaultTransportAIInterface@@XZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00847B98, physical slot 102. The native cell selects 0x000D43D0; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x005CB9FF",
+      "kind": "alias",
+      "old": "",
+      "name": "?wouldLikeToCollideWith@AIUpdateInterface@@UBE_NPBVObject@@@Z",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00852F88, physical slot 1. The native cell selects 0x005CB9FF; full emitted 5B and all native target edges agree."
+    },
+    {
+      "rva": "0x0047A699",
+      "kind": "alias",
+      "old": "",
+      "name": "?isHijackedVehicleCrateCollide@AIUpdateInterface@@UBE_NXZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00852F88, physical slot 2. The native cell selects 0x0047A699; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x0047A699",
+      "kind": "alias",
+      "old": "",
+      "name": "?isCarBombCrateCollide@AIUpdateInterface@@UBE_NXZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00852F88, physical slot 3. The native cell selects 0x0047A699; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x0047A699",
+      "kind": "alias",
+      "old": "",
+      "name": "?isRailroad@AIUpdateInterface@@UBE_NXZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00852F88, physical slot 4. The native cell selects 0x0047A699; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x0047A699",
+      "kind": "alias",
+      "old": "",
+      "name": "?isSalvageCrateCollide@AIUpdateInterface@@UBE_NXZ",
+      "source": "exact R8AnimalAIUpdateNamedTableKeysOnLiveHeader source+ledger",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "AnimalAI ctor 0x0047ECA8 and dtor 0x0047EB78 own the emitted and native table 0x00852F88, physical slot 5. The native cell selects 0x0047A699; full emitted 3B and all native target edges agree."
+    },
+    {
+      "rva": "0x000C3D00",
+      "kind": "rename",
+      "old": "?parseModel@AttachModelStruct@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "name": "?parseModel@AttachModelStruct@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "source": "own FieldParse binder, native callback table and exact EH prologue",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "The exact AttachModel native body 0xC8748 passes nested FieldParse table 0x7CA790; its Model callback cell 0x7CA7B4 selects this exact 218-byte entry. Both declaration qualifiers name the retained base type."
+    },
+    {
+      "rva": "0x000C8748",
+      "kind": "rename",
+      "old": "?parseAttachModel@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "name": "?parseAttachModel@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "source": "own FieldParse binder, native callback table and exact EH prologue",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Own W3DModelDrawModuleData builder 0xC9240 points to table 0x7CB3C8 and its AttachModel cell 0x7CB54C selects the exact 378-byte parser. Scripted factory 0x648D6 allocates 0x188 and invokes that same base ctor and builder."
+    },
+    {
+      "rva": "0x00761C54",
+      "kind": "rename",
+      "old": "__ehhandler$?parseModel@AttachModelStruct@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "name": "__ehhandler$?parseModel@AttachModelStruct@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "source": "own FieldParse binder, native callback table and exact EH prologue",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native parser 0x000C3D00 selects this exact EH prologue immediate. Preserve its parent address, extent, owner and original key."
+    },
+    {
+      "rva": "0x00762041",
+      "kind": "rename",
+      "old": "__ehhandler$?parseAttachModel@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "name": "__ehhandler$?parseAttachModel@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "source": "own FieldParse binder, native callback table and exact EH prologue",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native parser 0x000C8748 selects this exact EH prologue immediate. Preserve its parent address, extent, owner and original key."
+    },
+    {
+      "rva": "0x004CF0CD",
+      "kind": "alias",
+      "old": "",
+      "name": "?isPlayerSlotActive@ConnectionManager@@QAE_NH@Z",
+      "source": "exact ConnectionManager source and callable binding",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native 0x004CF0CD returns the Boolean in AL. Its 46-byte body, AL consumer 0x004CFBF9 and native Network tail 0x0025DEBB agree. Exact authored scope a8c7453932 updates the own declaration, body, low-byte caller and existing typed Network forwarder."
+    },
+    {
+      "kind": "regrade",
+      "id": "R9AuditedSyntheticNameProvenance-0x000266F0",
+      "rva": "0x000266F0",
+      "old": "?bfmeGoPQ@BfmeThingPQ@@QAEXPBU1@@Z",
+      "new": "?bfmeGoPQ@BfmeThingPQ@@QAEXPBU1@@Z",
+      "field": "name_evidence",
+      "before": "N:ledger",
+      "after": "?:placeholder",
+      "grade": "strong",
+      "evidence": "BFME1 byte-identical donor b1 0x82DA90; target name unsupported",
+      "source": "exact audit 4.2 on public ed43426ce3 and import 1ec6e4190a"
+    },
+    {
+      "kind": "regrade",
+      "id": "R9AuditedSyntheticNameProvenance-0x00029490",
+      "rva": "0x00029490",
+      "old": "?bfmeAssignV16@BfmeStrV16@@QAEPAV1@ID@Z",
+      "new": "?bfmeAssignV16@BfmeStrV16@@QAEPAV1@ID@Z",
+      "field": "name_evidence",
+      "before": "N:ledger",
+      "after": "?:placeholder",
+      "grade": "strong",
+      "evidence": "STLport assign role and 153-byte match; original ledger explicitly retains a neutral entry key",
+      "source": "exact audit 4.2 on public ed43426ce3 and import 1ec6e4190a"
+    },
+    {
+      "kind": "regrade",
+      "id": "R9AuditedSyntheticNameProvenance-0x0009525E",
+      "rva": "0x0009525E",
+      "old": "??0Gen006E2310@@QAE@XZ",
+      "new": "??0Gen006E2310@@QAE@XZ",
+      "field": "name_evidence",
+      "before": "N:ledger",
+      "after": "?:placeholder",
+      "grade": "strong",
+      "evidence": "BFME1 donor and target ctor stores own table 0xBC8208; class spelling inherited from destructor placeholder",
+      "source": "exact audit 4.2 on public ed43426ce3 and import 1ec6e4190a"
+    },
+    {
+      "kind": "regrade",
+      "id": "R9AuditedSyntheticNameProvenance-0x00095360",
+      "rva": "0x00095360",
+      "old": "??1Gen006E2310@@UAE@XZ",
+      "new": "??1Gen006E2310@@UAE@XZ",
+      "field": "name_evidence",
+      "before": "N:ledger",
+      "after": "?:placeholder",
+      "grade": "strong",
+      "evidence": "single masked whole-text hit for compiled destructor establishes placement",
+      "source": "exact audit 4.2 on public ed43426ce3 and import 1ec6e4190a"
+    },
+    {
+      "kind": "regrade",
+      "id": "R9AuditedSyntheticNameProvenance-0x00747540",
+      "rva": "0x00747540",
+      "old": "_bfmeGo1039E",
+      "new": "_bfmeGo1039E",
+      "field": "name_evidence",
+      "before": "N:ledger",
+      "after": "?:placeholder",
+      "grade": "strong",
+      "evidence": "Own vendored lapi.c line explicitly says this BFME Boolean-push name is unrecovered; native tag 6 and payload store confirm body but do not supply original spelling",
+      "source": "exact audit 4.2 on public ed43426ce3 and import 1ec6e4190a"
+    },
+    {
+      "kind": "regrade",
+      "id": "R9AuditedSyntheticNameProvenance-0x000982DD",
+      "rva": "0x000982DD",
+      "old": "??_GGen006E2310@@UAEPAXI@Z",
+      "new": "??_GGen006E2310@@UAEPAXI@Z",
+      "field": "name_evidence",
+      "before": "N:ledger",
+      "after": "?:placeholder",
+      "grade": "strong",
+      "evidence": "flag, own destructor 0x95360 and operator delete establish emitted wrapper role",
+      "source": "exact audit 4.2 on public ed43426ce3 and import 1ec6e4190a"
+    },
+    {
+      "rva": "0x004D05D7",
+      "kind": "alias",
+      "old": "",
+      "name": "?setFilename@Rva004D67D0@@QAEXVUnicodeString@@@Z",
+      "source": "Exact native operand and typed declaration pair",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "The type-30 reader 0x00592208 selects its own Rva004D67D0 object and passes the parsed UnicodeString to this 52-byte by-value setter. Its body copies into the UnicodeString at receiver +0x24. This names the member of the existing address-named class and retains the active original key."
+    },
+    {
+      "rva": "0x006CD6F0",
+      "kind": "alias",
+      "old": "",
+      "name": "?aptGetRootAnimationInfo@@YAXPAH0@Z",
+      "source": "Exact native operand and typed declaration pair",
+      "confidence": "provisional",
+      "basis": "class-key",
+      "evidence": "Native 171-byte root animation routine selects the same AptCIH animation object and writes or clears the two 32-bit outputs. Its named AptCharacter animation words and authored typed declaration pass through the same width and order. Keep the old key."
+    },
+    {
+      "rva": "0x003284ED",
+      "kind": "alias",
+      "old": "",
+      "name": "?Rva003284ED@@YAXPAVGameWindow@@PBVImage@@@Z",
+      "source": "Exact native operand and typed declaration pair",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "Native 43-byte setter stores its second argument unchanged at push-button data +0x18 after the own user-data retrieval or allocation. The inventory caller selects a const Image from calculateVeterancyOverlayForObject. Zero Hour names this own overlay role. Preserve the placeholder method and current"
+    },
+    {
+      "rva": "0x00A063B0",
+      "kind": "data-identity",
+      "name": "?TheFirewallHelper@@3PAVFirewallHelperClass@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-rename",
+      "evidence": "The cell is created and destroyed only through FirewallHelperClass: at 0x005182CB, 0x00519C70, 0x00572500 and 0x005A7335 it receives the return of createFirewallHelper 0x00595143 (?createFirewallHelper@@YAPAVFirewallHelperClass@@XZ) when null; at 0x00518301, 0x0051834F, 0x00519D21, 0x005700FF and 0x"
+    },
+    {
+      "rva": "0x008042F8",
+      "kind": "data-identity",
+      "name": "?LivingWorldBuildingTypeNames@@3QBQBDB",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "5 strings (NONE ... BARRACKS) closed by a zero word, extent 24 bytes, const char *[] in retail .rdata; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00C043B8, 0x00C36EE8 (the userData slots of Type(1)); passed through parseIndexList; role spelling kept: the five"
+    },
+    {
+      "rva": "0x009B8E3C",
+      "kind": "data-identity",
+      "name": "?TheLocomotorAppearanceNames@@3PAPBDA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "11 strings (TWO_LEGS ... OTHER) closed by a zero word, extent 48 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BDE480 (the userData slots of Appearance(1)); passed through parseIndexList; Zero Hour holds the same list as T"
+    },
+    {
+      "rva": "0x009B8E6C",
+      "kind": "data-identity",
+      "name": "?TheLocomotorBehaviorZNames@@3PAPBDA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "10 strings (NO_Z_MOTIVE_FORCE ... SCALING_WALLS) closed by a zero word, extent 44 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BDE470 (the userData slots of ZAxisBehavior(1)); passed through parseIndexList; ZH TheLocomoto"
+    },
+    {
+      "rva": "0x009BA444",
+      "kind": "data-identity",
+      "name": "?GlobalDataBodyDamageTypeNames@@3PAPADA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "4 strings (PRISTINE ... RUBBLE) closed by a zero word, extent 20 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BE93C8 (the userData slots of MovementPenaltyDamageState(1)); passed through parseIndexList; Zero Hour twin The"
+    },
+    {
+      "rva": "0x009BA470",
+      "kind": "data-identity",
+      "name": "?GlobalDataTerrainLODNames@@3PAPADA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "10 strings (NONE ... DISABLE) closed by a zero word, extent 44 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BE8718 (the userData slots of TerrainLOD(1)); passed through parseIndexList; Zero Hour twin TerrainLODNames (Terr"
+    },
+    {
+      "rva": "0x009BB4F0",
+      "kind": "data-identity",
+      "name": "?TheLocomotorSetNames@@3PAPBDA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "17 strings (SET_NORMAL ... SET_BURNINGDEATH) closed by a zero word, extent 72 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BF9470, 0x00C178E0, 0x00C178F0 (the userData slots of AttackLocomotorType(1), ReturnForAmmoLocomot"
+    },
+    {
+      "rva": "0x009BB588",
+      "kind": "data-identity",
+      "name": "?TheUpgradeTypeNames@@3PAPBDA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "2 strings (PLAYER ... OBJECT) closed by a zero word, extent 12 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BFA710 (the userData slots of Type(1)); passed through parseIndexList; ZH TheUpgradeTypeNames (Upgrade.cpp) conte"
+    },
+    {
+      "rva": "0x009BC63C",
+      "kind": "data-identity",
+      "name": "?TheWeaponReloadNames@@3QBQBDB",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "3 strings (YES ... RETURN_TO_BASE) closed by a zero word, extent 16 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00C01050 (the userData slots of AutoReloadsClip(1)); passed through parseIndexList; ZH TheWeaponReloadNames (W"
+    },
+    {
+      "rva": "0x009BC64C",
+      "kind": "data-identity",
+      "name": "?TheWeaponPrefireNames@@3QBQBDB",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "4 strings (PER_SHOT ... PER_POSITION) closed by a zero word, extent 20 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00C01040 (the userData slots of PreAttackType(1)); passed through parseIndexList; Zero Hour twin of the sam"
+    },
+    {
+      "rva": "0x009BC660",
+      "kind": "data-identity",
+      "name": "?TheWeaponAffectsMaskNames@@3QBQBDB",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "10 strings (SELF ... MINES) closed by a zero word, extent 44 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00C01060 (the userData slots of RadiusDamageAffects(1)); passed through parseBitString32; Zero Hour twin of the same"
+    },
+    {
+      "rva": "0x009BC68C",
+      "kind": "data-identity",
+      "name": "?TheWeaponCollideMaskNames@@3QBQBDB",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "11 strings (ALLIES ... MONSTERS) closed by a zero word, extent 48 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00C01070 (the userData slots of ProjectileCollidesWith(1)); passed through parseBitString32; ZH TheWeaponCollide"
+    },
+    {
+      "rva": "0x009BE958",
+      "kind": "data-identity",
+      "name": "?TimeOfDayNames@@3PAPADA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "6 strings (NONE ... INTERPOLATE) closed by a zero word, extent 28 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BE8A28 (the userData slots of TimeOfDay(1)); passed through parseIndexList; Zero Hour has the same array and s"
+    },
+    {
+      "rva": "0x009BE974",
+      "kind": "data-identity",
+      "name": "?WeatherNames@@3PAPADA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "2 strings (NORMAL ... SNOWY) closed by a zero word, extent 12 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00BDCA90, 0x00BE8A38 (the userData slots of Weather(2)); passed through parseIndexList; Zero Hour has the same array"
+    },
+    {
+      "rva": "0x009BEA0C",
+      "kind": "data-identity",
+      "name": "?RadarPriorityNames@@3PAPBDA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "5 strings (INVALID ... LOCAL_UNIT_ONLY) closed by a zero word, extent 24 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00DBED60 (the userData slots of RadarPriority(1)); passed through parseByteSizedIndexList; ZH RadarPriori"
+    },
+    {
+      "rva": "0x009BEB10",
+      "kind": "data-identity",
+      "name": "?BuildCompletionNames@@3PAPBDA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "3 strings (INVALID ... PLACED_BY_PLAYER) closed by a zero word, extent 16 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00DBEF70 (the userData slots of BuildCompletion(1)); passed through parseByteSizedIndexList; ZH BuildCom"
+    },
+    {
+      "rva": "0x009BEB20",
+      "kind": "data-identity",
+      "name": "_BuildableStatusNames",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "4 strings (Yes ... Only_By_AI) closed by a zero word, extent 20 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00DBEF00 (the userData slots of Buildable(1)); passed through parseByteSizedIndexList; ZH BuildableStatusNames (Th"
+    },
+    {
+      "rva": "0x009CDFD0",
+      "kind": "data-identity",
+      "name": "?TheOCLCreateLocTypeNames@@3PAPBDA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "9 strings (CREATE_AT_EDGE_NEAR_SOURCE ... USE_SECONDARY_OBJECT_LOCATION) closed by a zero word, extent 40 bytes, const char *[] in retail .data; no code operand reads it (0 exact .text readers); referenced by data words at VA 0x00C5CDE8 (the userData slots of CreateLocation(1)); passed through parse"
+    },
+    {
+      "rva": "0x007DBBCC",
+      "kind": "data-identity",
+      "name": "?m_gameWindowTransitionsFieldParseTable@GameWindowTransitionsHandler@@0QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "2 entries, extent 48 bytes, closed by a zero row; first keys Window,FireOnce; 2 exact .text readers: Rva001DBA71Get; parseWindowTransitions::INI; Zero Hour twin GameWindowTransitionsHandler::m_gameWindowTransitionsFieldParseTable holds 2 of its 2 keys (100%) here; the words of the spelling (window,"
+    },
+    {
+      "rva": "0x007DC720",
+      "kind": "data-identity",
+      "name": "?TheFXListFieldParse@@3QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "18 entries, extent 304 bytes, closed by a zero row; first keys Sound,EvaEvent,RayEffect,LightPulse; 2 exact .text readers: Rva001DFAA0Get; parseFXListDefinition::FXListStore; Zero Hour twin TheFXListFieldParse holds 7 of its 8 keys (88%) here; the words of the spelling (list) occur in its readers' n"
+    },
+    {
+      "rva": "0x007DCA18",
+      "kind": "data-identity",
+      "name": "?FXNuggetFieldParse@@3QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "8 entries, extent 144 bytes, closed by a zero row; first keys ObjectFilter,SourceObjectFilter,RequiredSecondaryModelConditions,ExcludedSecondaryModelConditions; 16 exact .text readers: Rva001DFAB9Get; buildFieldParse::AttachedModelFXNugget; buildFieldParse::BuffNuggetFXNugget; buildFieldParse::Camer"
+    },
+    {
+      "rva": "0x007DE2F8",
+      "kind": "data-identity",
+      "name": "?LocomotorTemplateFields@@3QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "88 entries, extent 1424 bytes, closed by a zero row; first keys Surfaces,Speed,LookAheadMult,NonDirtyTransform; 2 exact .text readers: Rva001E392EGet; parseLocomotorTemplateDefinition::LocomotorStore; Zero Hour twin TheFieldParse holds 50 of its 60 keys (83%) here; the words of the spelling (locomot"
+    },
+    {
+      "rva": "0x007E2C10",
+      "kind": "data-identity",
+      "name": "?m_weatherSettingFieldParseTable@WeatherSetting@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-rename",
+      "evidence": "31 entries, extent 512 bytes, closed by a zero row; first keys SnowTexture,SnowFrequencyScaleX,SnowFrequencyScaleY,SnowAmplitude; 2 exact .text readers: getFieldParse::WeatherSetting; parseWeatherDefinition::INI; Zero Hour twin WeatherSetting::m_weatherSettingFieldParseTable holds 10 of its 13 keys"
+    },
+    {
+      "rva": "0x007E3098",
+      "kind": "data-identity",
+      "name": "?m_headerFieldParseTable@HeaderTemplateManager@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "3 entries, extent 64 bytes, closed by a zero row; first keys Font,Point,Bold; 2 exact .text readers: Rva00201992Get; parseHeaderTemplateDefinition::INI; Zero Hour twin HeaderTemplateManager::m_headerFieldParseTable holds 3 of its 3 keys (100%) here; the words of the spelling (header, header, templat"
+    },
+    {
+      "rva": "0x007E8520",
+      "kind": "data-identity",
+      "name": "?s_GlobalDataFieldParseTable@GlobalData@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "457 entries, extent 7328 bytes, closed by a zero row; first keys Windowed,XResolution,YResolution,MapName; 3 exact .text readers: parseGameDataDefinition::GlobalData; vslot06::GlobalData; Zero Hour twin GlobalData::s_GlobalDataFieldParseTable holds 259 of its 380 keys (68%) here; the words of the sp"
+    },
+    {
+      "rva": "0x007FA6E8",
+      "kind": "data-identity",
+      "name": "?m_upgradeFieldParseTable@UpgradeTemplate@@1QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-rename",
+      "evidence": "26 entries, extent 432 bytes, closed by a zero row; first keys DisplayName,Tooltip,Type,BuildTime; 3 exact .text readers: Rva0026EDB1Get; parseUpgradeDefinition::UpgradeCenter; Zero Hour twin UpgradeTemplate::m_upgradeFieldParseTable holds 7 of its 8 keys (88%) here; read by UpgradeCenter::parseUpgr"
+    },
+    {
+      "rva": "0x007FC338",
+      "kind": "data-identity",
+      "name": "?s_fieldParseTable@InGameUI@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-rename",
+      "evidence": "81 entries, extent 1312 bytes, closed by a zero row; first keys MaxSelectionSize,MessageColor1,MessageColor2,MessagePosition; 1 exact .text readers: vfunc_0x180::Rva0008EF3FProduct; read only by a virtual of the InGameUI-shaped placeholder class Rva0008EF3FProduct (slot 0x180); tokens MaxSelectionSi"
+    },
+    {
+      "rva": "0x007FD768",
+      "kind": "data-identity",
+      "name": "?DifficultyTuningFieldParse@@3QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "5 entries, extent 80 bytes, NO closing zero row (data follows directly); first keys Difficulty,EconomyUpgradeProbability,EconomyMaxFarms,SpecialPowerActivationProbability; 2 exact .text readers: Rva002A88BBGet; Rva002A89D2_ParseDifficultyTuning::INI; the words of the spelling (difficulty, tuning) oc"
+    },
+    {
+      "rva": "0x007FD7C0",
+      "kind": "data-identity",
+      "name": "?AIDozerAssignmentFields@@3QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "2 entries, extent 32 bytes, NO closing zero row (data follows directly); first keys Side,Unit; 2 exact .text readers: Rva002A88C1Get; parseAIDozerAssignmentDefinition; the words of the spelling (dozer, assignment) occur in its readers' names or its keys; existing role spelling kept"
+    },
+    {
+      "rva": "0x007FD804",
+      "kind": "data-identity",
+      "name": "?CombatChainDefinitionFieldParse@@3QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "3 entries, extent 48 bytes, NO closing zero row (data follows directly); first keys Unit,TargetTypes,TargetPriorityModifiers; 2 exact .text readers: Rva002A8922Get; Rva002A8945_ParseCombatChainDefinition::INI; the words of the spelling (combat, chain, definition) occur in its readers' names or its k"
+    },
+    {
+      "rva": "0x007FD85C",
+      "kind": "data-identity",
+      "name": "?BrutalDifficultyCheatsFieldParse@@3QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "2 entries, extent 32 bytes, NO closing zero row (data follows directly); first keys BuildCostReduction,BuildTimeReduction; 2 exact .text readers: Rva002A893FGet; Rva002A898A_ParseBrutalDifficultyCheats::INI; the words of the spelling (brutal, difficulty, cheats) occur in its readers' names or its ke"
+    },
+    {
+      "rva": "0x007FDA50",
+      "kind": "data-identity",
+      "name": "?SkirmishAIDataFields@@3QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "19 entries, extent 304 bytes, NO closing zero row (data follows directly); first keys CombatChainDefinition,BrutalDifficultyCheats,DifficultyTuning,DisableBaseBuilding; 2 exact .text readers: Rva002A8A0FGet; parseSkirmishAIDataDefinition; the words of the spelling (skirmish, data) occur in its reade"
+    },
+    {
+      "rva": "0x00800B48",
+      "kind": "data-identity",
+      "name": "?TheWeaponTemplateFieldParseTable@WeaponTemplate@@0QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-rename",
+      "evidence": "124 entries, extent 2000 bytes, closed by a zero row; first keys AttackRange,MinimumAttackRange,RangeBonusMinHeight,RangeBonus; 2 exact .text readers: Rva002C8E5AGet; parseWeaponTemplateDefinition::WeaponStore; Zero Hour twin WeaponTemplate::TheWeaponTemplateFieldParseTable holds 53 of its 76 keys ("
+    },
+    {
+      "rva": "0x00803A28",
+      "kind": "data-identity",
+      "name": "?m_terrainBridgeFieldParseTable@TerrainRoadType@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "22 entries, extent 368 bytes, closed by a zero row; first keys BridgeScale,ScaffoldObjectName,ScaffoldSupportObjectName,RadarColor; 2 exact .text readers: Rva001DAEB2Get; parseTerrainBridgeDefinition::INI; Zero Hour twin TerrainRoadType::m_terrainBridgeFieldParseTable holds 22 of its 22 keys (100%)"
+    },
+    {
+      "rva": "0x00807FE0",
+      "kind": "data-identity",
+      "name": "?m_waterSettingFieldParseTable@WaterSetting@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "12 entries, extent 208 bytes, closed by a zero row; first keys SkyTexture,WaterTexture,Vertex00Color,Vertex10Color; 2 exact .text readers: Rva00200BB4Get; parseWaterSettingDefinition::INI; Zero Hour twin WaterSetting::m_waterSettingFieldParseTable holds 12 of its 12 keys (100%) here; the words of th"
+    },
+    {
+      "rva": "0x00808350",
+      "kind": "data-identity",
+      "name": "?m_fieldParseTable@GlowEffect@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "10 entries, extent 176 bytes, closed by a zero row; first keys GlowEnabled,GlowDiameter,GlowIntensity,GlowTextureWidth; 2 exact .text readers: Rva00309E1EGet; parseGlowEffect; the words of the spelling (glow, effect) occur in its readers' names or its keys; existing role spelling kept"
+    },
+    {
+      "rva": "0x00808400",
+      "kind": "data-identity",
+      "name": "?m_fieldParseTable@RingEffect@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "11 entries, extent 192 bytes, closed by a zero row; first keys Scale,Blend,BaseSaturation,EffectSaturation; 2 exact .text readers: Rva00309E24Get; parseRingEffect; the words of the spelling (ring, effect) occur in its readers' names or its keys; existing role spelling kept"
+    },
+    {
+      "rva": "0x008084C0",
+      "kind": "data-identity",
+      "name": "?m_fieldParseTable@FireEffect@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "9 entries, extent 160 bytes, closed by a zero row; first keys Scale,Blend,BaseSaturation,EffectSaturation; 2 exact .text readers: getFireEffectFieldParseTable; parseFireEffect; the words of the spelling (fire, effect) occur in its readers' names or its keys; existing role spelling kept"
+    },
+    {
+      "rva": "0x0080C3A8",
+      "kind": "data-identity",
+      "name": "?m_terrainTypeFieldParseTable@TerrainType@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "5 entries, extent 96 bytes, closed by a zero row; first keys Texture,BlendEdges,Class,RestrictConstruction; 2 exact .text readers: Rva002009F5Get; parseTerrainDefinition::INI; Zero Hour twin TerrainType::m_terrainTypeFieldParseTable holds 4 of its 4 keys (100%) here; the words of the spelling (terra"
+    },
+    {
+      "rva": "0x0080CD88",
+      "kind": "data-identity",
+      "name": "?m_controlBarSchemeFieldParseTable@ControlBarSchemeManager@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "68 entries, extent 1104 bytes, closed by a zero row; first keys ImagePart,AnimatingPart,ScreenCreationRes,Side; 2 exact .text readers: Rva001DB686Get; parseControlBarSchemeDefinition::INI; Zero Hour twin ControlBarSchemeManager::m_controlBarSchemeFieldParseTable holds 67 of its 68 keys (99%) here; t"
+    },
+    {
+      "rva": "0x008162A0",
+      "kind": "data-identity",
+      "name": "?TheCrateTemplateFieldParseTable@CrateTemplate@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "6 entries, extent 112 bytes, closed by a zero row; first keys CreationChance,VeterancyLevel,KilledByType,CrateObject; 2 exact .text readers: Rva0035C959Get; parseCrateTemplateDefinition::CrateSystem; Zero Hour twin CrateTemplate::TheCrateTemplateFieldParseTable holds 6 of its 6 keys (100%) here; the"
+    },
+    {
+      "rva": "0x00818F40",
+      "kind": "data-identity",
+      "name": "?m_colorFieldParseTable@MultiplayerColorDefinition@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "6 entries, extent 112 bytes, closed by a zero row; first keys TooltipName,RGBColor,RGBNightColor,LivingWorldColor; 2 exact .text readers: Rva001EF348Get; parseMultiplayerColorDefinition::INI; Zero Hour twin MultiplayerColorDefinition::m_colorFieldParseTable holds 3 of its 3 keys (100%) here; the wor"
+    },
+    {
+      "rva": "0x0081EE54",
+      "kind": "data-identity",
+      "name": "?g_waterTextureFieldParseTable@@3QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "1 entries, extent 32 bytes, closed by a zero row; first keys Texture; 2 exact .text readers: getWaterTextureFieldParseTable; iniParseWaterTexturesDefinition; the words of the spelling (water, texture) occur in its readers' names or its keys; existing role spelling kept"
+    },
+    {
+      "rva": "0x00838760",
+      "kind": "data-identity",
+      "name": "_FactionVictoryFieldParse",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "5 entries, extent 96 bytes, closed by a zero row; first keys AllyDeathScaleFactor,EnemyKillScaleFactor,VictoryThreshold,MapToCellVictoryRatio; 2 exact .text readers: Rva00215C4EGet; iniParseFactionVictoryDefinition; the words of the spelling (faction, victory) occur in its readers' names or its keys"
+    },
+    {
+      "rva": "0x008387C0",
+      "kind": "data-identity",
+      "name": "_VictorySystemFieldParse",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "4 entries, extent 80 bytes, closed by a zero row; first keys CellSize,ScalePerLogicFrame,SubtractPerLogicFrame,CellBonusRadius; 2 exact .text readers: Rva00215C48Get; iniParseVictorySystemDefinition; the words of the spelling (victory, system) occur in its readers' names or its keys; existing role s"
+    },
+    {
+      "rva": "0x00838DD0",
+      "kind": "data-identity",
+      "name": "?m_commandSetFieldParseTable@CommandSet@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "33 entries, extent 544 bytes, closed by a zero row; first keys 1,2,3,4; 2 exact .text readers: getCommandSetFieldParseTable; parseCommandSetDefinition::ControlBar; Zero Hour twin CommandSet::m_commandSetFieldParseTable holds 18 of its 18 keys (100%) here; the words of the spelling (command, set, com"
+    },
+    {
+      "rva": "0x0083B000",
+      "kind": "data-identity",
+      "name": "?ArmyMemberDefinitionFieldParse@@3QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "4 entries, extent 64 bytes, NO closing zero row (data follows directly); first keys Unit,PercentageOfArmyPhase1,PercentageOfArmyPhase2,PercentageOfArmyPhase3; 2 exact .text readers: Rva0041F286Get; Rva0041F524_ParseArmyMember::INI; the words of the spelling (army, member) occur in its readers' names"
+    },
+    {
+      "rva": "0x0083B5E8",
+      "kind": "data-identity",
+      "name": "?TheArmyDefinitionFields@@3QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "46 entries, extent 736 bytes, NO closing zero row (data follows directly); first keys Side,MustUseCommandPointPercentage_Phase1,MustUseCommandPointPercentage_Phase2,MustUseCommandPointPercentage_Phase3; 2 exact .text readers: Rva0041F71AGet; parseArmyDefinition::ArmyDefinitionManager; the words of t"
+    },
+    {
+      "rva": "0x00864810",
+      "kind": "data-identity",
+      "name": "?shockWaveFieldParse@@3QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "17 entries, extent 288 bytes, closed by a zero row; first keys ShockWaveAmount,ShockWaveRadius,ShockWaveArc,ShockWaveArcInverted; 3 exact .text readers: ?$__write_integer_backward::_K::_STL; Rva00509DA5Get; parseFromINI::MetaImpactNugget; the words of the spelling (shock, wave) occur in its readers'"
+    },
+    {
+      "rva": "0x00868AE8",
+      "kind": "data-identity",
+      "name": "?m_mapFieldParseTable@MapMetaDataReader@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-rename",
+      "evidence": "24 entries, extent 400 bytes, closed by a zero row; first keys isOfficial,isMultiplayer,isScenarioMP,extentMin; 2 exact .text readers: Rva00534B22Get; parseMapCacheDefinition::INI; Zero Hour twin MapMetaDataReader::m_mapFieldParseTable holds 21 of its 22 keys (95%) here; read by INI::parseMapCacheDe"
+    },
+    {
+      "rva": "0x008737E8",
+      "kind": "data-identity",
+      "name": "?m_creditsFieldParseTable@CreditsManager@@2QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "9 entries, extent 160 bytes, closed by a zero row; first keys ScrollRate,ScrollRateEveryFrames,ScrollDown,TitleColor; 2 exact .text readers: Rva005B729FGet; parseCredits::INI; Zero Hour twin CreditsManager::m_creditsFieldParseTable holds 9 of its 9 keys (100%) here; the words of the spelling (credit"
+    },
+    {
+      "rva": "0x009BECD8",
+      "kind": "data-identity",
+      "name": "?s_objectFieldParseTable@ThingTemplate@@0QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "191 entries, extent 3072 bytes, closed by a zero row; first keys Hotkey,ReviveText,RecruitText,DisplayName; 5 exact .text readers: Rva0033A43EGet; buildFieldParse::Rva0033A8FC; parseAddModule::ThingTemplate; parseInheritableModule::ThingTemplate; parseReplaceModule::ThingTemplate; the words of the s"
+    },
+    {
+      "rva": "0x009C0E78",
+      "kind": "data-identity",
+      "name": "?m_specialPowerFieldParse@SpecialPowerTemplate@@0QBUFieldParse@@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "22 entries, extent 368 bytes, closed by a zero row; first keys Flags,ReloadTime,RequiredSciences,LightPointCost; 2 exact .text readers: Rva003B0FA0Get; parseSpecialPowerDefinition::SpecialPowerStore; Zero Hour twin SpecialPowerTemplate::m_specialPowerFieldParse holds 10 of its 13 keys (77%) here; th"
+    },
+    {
+      "rva": "0x009C14C8",
+      "kind": "data-identity",
+      "name": "?s_parseTable@LivingWorldRegionEffectsManager@@2PAUFieldParse@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "5 entries, extent 96 bytes, closed by a zero row; first keys RegionObject,NeutralRegionColor,RegionBorderColor,ShellStartPositionColor; 2 exact .text readers: Rva003EE72EGet; parseLivingWorldRegionEffectsDefinition; the words of the spelling (living, world, region, effects) occur in its readers' nam"
+    },
+    {
+      "rva": "0x009A6CC8",
+      "kind": "data-identity",
+      "name": "?_M_page_size@_Filebuf_base@_STL@@1IA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_initialised; 11 exact .text readers in 8 functions: ?0_Filebuf_base::_STL; _M_allocate_buffers::?$basic_filebuf::DV?$char_traits::D; _M_allocate_buffers::?$basic_filebuf::GV?$char_traits::G; _M_doit::?$_Underflow::DV?$char_traits::D::_STL; _M_switch_to; readers include me"
+    },
+    {
+      "rva": "0x009B5F90",
+      "kind": "data-identity",
+      "name": "?NPatchesGapFillingMode@WW3D@@0W4NPatchesGapFillingModeEnum@1@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_initialised; 5 exact .text readers in 3 functions: Register_For_Rendering::MeshModelClass; Rva00171660Get; Set_NPatches_Gap_Filling_Mode::WW3D; readers include methods of its class WW3D (Set_NPatches_Gap_Filling_Mode::WW3D); Zero Hour declares it too (ww3d.h,ww3d.cpp); ex"
+    },
+    {
+      "rva": "0x009B5F9C",
+      "kind": "data-identity",
+      "name": "?TextureFilter@WW3D@@0HA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_initialised; 4 exact .text readers in 3 functions: Do_Onetime_Device_Dependent_Inits::DX8Wrapper; Set_Texture_Filter::WW3D; getTextureFilter; readers include methods of its class WW3D (Set_Texture_Filter::WW3D); Zero Hour declares it too (ww3d.h,ww3d.cpp); existing spelli"
+    },
+    {
+      "rva": "0x009B5FD8",
+      "kind": "data-identity",
+      "name": "?ResolutionHeight@DX8Wrapper@@1HA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_scalar; 22 exact .text readers in 15 functions: Draw_Sentence::Render2DSentenceClass; Get_Device_Resolution::DX8Wrapper; Get_Device_Resolution_Width::DX8Wrapper; Get_Render_Target_Resolution::DX8Wrapper; Init::DX8Wrapper; Normalize_Coordinates::WW3; readers include method"
+    },
+    {
+      "rva": "0x009BD0F0",
+      "kind": "data-identity",
+      "name": "?s_currentID@PolygonTrigger@@0HA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_initialised; 9 exact .text readers in 6 functions: ?0PolygonTrigger; Rva002E373CClear; Rva00328A65Get; Rva00328A6B; parse::Rva00329663; rva002E41EC::Rva002E41EC; readers include methods of its class PolygonTrigger (?0PolygonTrigger); Zero Hour declares it too (PolygonTrig"
+    },
+    {
+      "rva": "0x009D6350",
+      "kind": "data-identity",
+      "name": "?primeTable@@3PAGA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_initialised; 4 exact .text readers in 4 functions: _XMP_Fermat_Test; _XMP_Fetch_Prime_Table; _XMP_Is_Small_Prime; _XMP_Small_Divisors_Test; words prime,table of the spelling occur in the readers' names; Zero Hour declares it too (mpmath.cpp,mpmath.cpp); existing spelling"
+    },
+    {
+      "rva": "0x009EC3E0",
+      "kind": "data-identity",
+      "name": "?FrameCount@WW3D@@0HA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 11 exact .text readers in 11 functions: End_Render::WW3D; Get_New_Particles::ParticleBufferClass; Log_Statistics_String::DX8MeshRendererClass; Render_Line::ParticleBufferClass; Render_Line_Group::ParticleBufferClass; Render_Particles::Parti; readers include met"
+    },
+    {
+      "rva": "0x009EC5E8",
+      "kind": "data-identity",
+      "name": "?CurrentAdapterIdentifier@DX8Wrapper@@1U_D3DADAPTER_IDENTIFIER8@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind zero_init_unknown; 4 exact .text readers in 3 functions: Create_Device::DX8Wrapper; Rva0011C460Get; Rva001207B0Init; readers include methods of its class DX8Wrapper (Create_Device::DX8Wrapper); Zero Hour declares it too (dx8wrapper.cpp,dx8wrapper.h); existing spelling kept"
+    },
+    {
+      "rva": "0x009EDA14",
+      "kind": "data-identity",
+      "name": "?Light_Environment@DX8Wrapper@@1PAVLightEnvironmentClass@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 16 exact .text readers in 14 functions: End_Scene::DX8Wrapper; Invalidate_Cached_Render_States::DX8Wrapper; Rva0014D241Get; Rva0014D595NumAmbientLights; Rva0014D64CNumDirectionalLights; Rva0014D7B1NumPointLights; SetPosition::Rva0014D887Thi; readers include met"
+    },
+    {
+      "rva": "0x009EDA30",
+      "kind": "data-identity",
+      "name": "?D3DInterface@DX8Wrapper@@1PAUIDirect3D8@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 35 exact .text readers in 12 functions: Create_Device::DX8Wrapper; Enumerate_Devices::DX8Wrapper; Find_Color_And_Z_Mode::DX8Wrapper; Find_Color_Mode::DX8Wrapper; Find_Z_Mode::DX8Wrapper; Init::DX8Wrapper; Rva000752F2Get; Rva001207B0Init; Se; readers include met"
+    },
+    {
+      "rva": "0x00A032E0",
+      "kind": "data-identity",
+      "name": "?s_instance@AptSaveLoad@@2PAV1@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 23 exact .text readers in 12 functions: ?0AptSaveLoad; ?1AptSaveLoad; AddFriendConfirmationHandler::AptSaveLoad; OpenScreen::AptSaveLoad; ProcessSaveGameCommand::GameLogic; PromptAddFriend::AptSaveLoad; Rva0023C54CGet; Rva00433D27Enable; Rv; readers include met"
+    },
+    {
+      "rva": "0x00A03354",
+      "kind": "data-identity",
+      "name": "?s_instance@AptLanLobby@@0PAV1@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 22 exact .text readers in 19 functions: ?0AptLanLobby; ?1AptLanLobby; OnAccept::LANAPI; OnGameCreate::LANAPI; OnGameJoin::LANAPI; OnGameList::LANAPI; OnGameOptionsPacked::LANAPI; OnHostLeave::LANAPI; OnPlayerLeave::LANAPI; Rva00248D66Get; R; readers include met"
+    },
+    {
+      "rva": "0x00A08CA8",
+      "kind": "data-identity",
+      "name": "?IntelProcessor@CPUDetectClass@@0W4IntelProcessorType@1@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 31 exact .text readers in 5 functions: Init_Intel_Processor_Type::CPUDetectClass; Init_Processor_Family::CPUDetectClass; Init_Processor_String::CPUDetectClass; Rva000752C3Get; testMinimumRequirements::W3DShaderManager; readers include methods of its class CPUDe"
+    },
+    {
+      "rva": "0x00A08CF4",
+      "kind": "data-identity",
+      "name": "?AMDProcessor@CPUDetectClass@@0W4AMDProcessorType@1@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 12 exact .text readers in 4 functions: Init_AMD_Processor_Type::CPUDetectClass; Init_Processor_Family::CPUDetectClass; Rva000752C9Get; testMinimumRequirements::W3DShaderManager; readers include methods of its class CPUDetectClass (Init_AMD_Processor_Type::CPUDe"
+    },
+    {
+      "rva": "0x00A08D20",
+      "kind": "data-identity",
+      "name": "?ProcessorSpeed@CPUDetectClass@@0HA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 7 exact .text readers in 5 functions: Init_Compact_Log::CPUDetectClass; Init_Processor_Log::CPUDetectClass; Init_Processor_Speed::CPUDetectClass; Rva000752CFGet; testMinimumRequirements::W3DShaderManager; readers include methods of its class CPUDetectClass (Ini"
+    },
+    {
+      "rva": "0x00A08D30",
+      "kind": "data-identity",
+      "name": "?ProcessorManufacturer@CPUDetectClass@@0W4ProcessorManufacturerType@1@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 20 exact .text readers in 9 functions: Get_Processor_Manufacturer_Name::CPUDetectClass; Init_Compact_Log::CPUDetectClass; Init_Processor_Family::CPUDetectClass; Init_Processor_Features::CPUDetectClass; Init_Processor_Manufacturer::CPUDetec; readers include meth"
+    },
+    {
+      "rva": "0x009ED5F0",
+      "kind": "data-identity",
+      "name": "?CurrentDX8LightEnables@DX8Wrapper@@1PA_NA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail readers (1): 0x0011C470+71 in ?Set_DX8_Light@DX8Wrapper@@SAXHPAU_D3DLIGHT8@@@Z (O0011C470.cpp); 0x0011C470+84 in ?Set_DX8_Light@DX8Wrapper@@SAXHPAU_D3DLIGHT8@@@Z (O0011C470.cpp); 0x0011C470+112 in ?Set_DX8_Light@DX8Wrapper@@SAXHPAU_D3DLIGHT8@@@Z (O0011C470.cpp); the readers include methods of"
+    },
+    {
+      "rva": "0x009EDF10",
+      "kind": "data-identity",
+      "name": "?Pixel_Shader_Constants@DX8Wrapper@@1PAVVector4@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail readers (1): 0x00075399+20 in ?Set_Pixel_Shader_Constant@DX8Wrapper@@SAXHPBXH@Z (O00075343.cpp); the readers include methods of the owning class DX8Wrapper; Zero Hour declares the same static in dx8wrapper.cpp,dx8wrapper.h"
+    },
+    {
+      "rva": "0x009EDFA8",
+      "kind": "data-identity",
+      "name": "?Vertex_Shader_Constants@DX8Wrapper@@1PAVVector4@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail readers (1): 0x00075343+20 in ?Set_Vertex_Shader_Constant@DX8Wrapper@@SAXHPBXH@Z (O00075343.cpp); the readers include methods of the owning class DX8Wrapper; Zero Hour declares the same static in dx8wrapper.cpp,dx8wrapper.h"
+    },
+    {
+      "rva": "0x009F3040",
+      "kind": "data-identity",
+      "name": "?Presets@VertexMaterialClass@@0PAPAV1@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail readers (1): 0x0013D200+2 in ?Shutdown@VertexMaterialClass@@SAXXZ (vertmaterial.cpp); 0x0013D200+33 in ?Shutdown@VertexMaterialClass@@SAXXZ (vertmaterial.cpp); 0x0013D230+7 in ?Get_Preset@VertexMaterialClass@@SAPAV1@W4PresetType@1@@Z (vertmaterial.cpp); the readers include methods of the owni"
+    },
+    {
+      "rva": "0x009FE770",
+      "kind": "data-identity",
+      "name": "?TheVersion@@3PAVVersion@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "the Version singleton pointer: _WinMain 0x00002C39 stores it (0x00002F91 mov [0x00DFE770], ebx) and reads it eight more times; GlobalData::GlobalData 0x0023631C, RecorderClass::startRecording 0x0037C57E, Recorder 0x0037D0EF, AptSaveLoad 0x0043684C, AptLanLobby 0x004457BC, AptOptions 0x0051A78E, AptO"
+    },
+    {
+      "rva": "0x00A0C200",
+      "kind": "data-identity",
+      "name": "?m_clockCycles@Profile@@0_JA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail readers (1): 0x006C53E0+1 in ?GetClockCyclesPerSecond@Profile@@SA_JXZ (profile.cpp); 0x006C53E0+7 in ?GetClockCyclesPerSecond@Profile@@SA_JXZ (profile.cpp); the readers include methods of the owning class Profile; Zero Hour declares the same static in profile.cpp,profile.h"
+    },
+    {
+      "rva": "0x00A0C210",
+      "kind": "data-identity",
+      "name": "?stringBufUnused@ProfileId@@0IA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail readers (1): 0x006C60A0+199 in ?AsString@ProfileId@@QBEPBDN@Z (profile_highlevel.cpp); 0x006C60A0+250 in ?AsString@ProfileId@@QBEPBDN@Z (profile_highlevel.cpp); the readers include methods of the owning class ProfileId; Zero Hour declares the same static in internal_highlevel.h,profile_highle"
+    },
+    {
+      "rva": "0x00A0C218",
+      "kind": "data-identity",
+      "name": "?stringBuf@ProfileId@@0PADA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail readers (1): 0x006C60A0+224 in ?AsString@ProfileId@@QBEPBDN@Z (profile_highlevel.cpp); the readers include methods of the owning class ProfileId; Zero Hour declares the same static in internal_highlevel.h,profile_highlevel.cpp"
+    },
+    {
+      "rva": "0x00A0C618",
+      "kind": "data-identity",
+      "name": "?frameRecordMask@ProfileId@@0IA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail readers (1): 0x006C5DA0+41 in ?Increment@ProfileId@@QAEXN@Z (profile_highlevel.cpp); 0x006C5E00+52 in ?Maximum@ProfileId@@QAEXN@Z (profile_highlevel.cpp); 0x006C61B0+11 in ?FrameStart@ProfileId@@SAHXZ (profile_highlevel.cpp); the readers include methods of the owning class ProfileId; Zero Hou"
+    },
+    {
+      "rva": "0x00A0C61C",
+      "kind": "data-identity",
+      "name": "?curFrame@ProfileId@@0HA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail readers (1): 0x006C5EC0+13 in ?GetFrameValue@ProfileId@@QBE_NIAAN@Z (profile_highlevel.cpp); 0x006C6220+80 in ?FrameEnd@ProfileId@@SAXHH@Z (profile_highlevel.cpp); 0x006C6220+131 in ?FrameEnd@ProfileId@@SAXHH@Z (profile_highlevel.cpp); the readers include methods of the owning class ProfileId"
+    },
+    {
+      "rva": "0x00A0C620",
+      "kind": "data-identity",
+      "name": "?first@ProfileId@@0PAV1@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail readers (2): 0x006C5410+1 in ?ClearTotals@Profile@@SAXXZ (profile.cpp); 0x006C5E70+1 in ?GetFirst@ProfileId@@SAPAV1@XZ (profile_highlevel.cpp); 0x006C61B0+54 in ?FrameStart@ProfileId@@SAHXZ (profile_highlevel.cpp); the readers include methods of the owning class ProfileId; Zero Hour declares"
+    },
+    {
+      "rva": "0x007BDA30",
+      "kind": "data-identity",
+      "name": "?_F_inf@?$_LimG@_N@_STL@@2T_F_rep@2@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind float_constant; 6 exact .text readers in 5 functions: Rva00050EA7Get; addAudioEventSound::MilesAudioManager; recalculateMicrophone::MilesAudioManager; rva00053854::MilesAudioManager; rva0005AA72::MilesAudioManager; readers include methods of its class _N (addAudioEventSound::Mil"
+    },
+    {
+      "rva": "0x009B5F7C",
+      "kind": "data-identity",
+      "name": "?IsSortingEnabled@WW3D@@0_NA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_initialised; 15 exact .text readers in 15 functions: Add_Rigid_Mesh_To_Container; Define_FVF::DX8FVFCategoryContainer; Enable_Sorting::WW3D; Insert::BfmeSortingDispatchAt0012FE00; Insert_VolumeParticle::SortingRendererClass; Is_Sorting_Enabled::WW3D; Re; readers include m"
+    },
+    {
+      "rva": "0x009B5FCD",
+      "kind": "data-identity",
+      "name": "?_EnableTriangleDraw@DX8Wrapper@@1_NA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_initialised; 10 exact .text readers in 8 functions: Draw::DX8Wrapper; Flush::SortingRendererClass; RenderDynamicMeshVolume::W3DVolumetricShadow; RenderMeshVolume::W3DVolumetricShadow; Rva0006E19BGetByte; _Enable_Triangle_Draw::DX8Wrapper; renderStencil; readers include me"
+    },
+    {
+      "rva": "0x009E1F60",
+      "kind": "data-identity",
+      "name": "?m_renderingToTexture@W3DShaderManager@@1_NA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 8 exact .text readers in 6 functions: ?0W3DShaderManager; endRenderToTexture::W3DShaderManager; isRenderingToTexture::W3DShaderManager; render::W3DSmudgeManager; startRenderToTexture::W3DShaderManager; testHardwareSupport::W3DSmudgeManage; readers include metho"
+    },
+    {
+      "rva": "0x009EC3D9",
+      "kind": "data-identity",
+      "name": "?AreStaticSortListsEnabled@WW3D@@0_NA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 22 exact .text readers in 14 functions: Render::Line3DClass; Render::MeshClass; Render::ParticleBufferClass; Render::Rva001684D6; Render::SegmentedLineClass; Render::StreakLineClass; Render::WW3D; Render_And_Clear_Static_Sort_Lists::WW3D; R; readers include met"
+    },
+    {
+      "rva": "0x009EC3FD",
+      "kind": "data-identity",
+      "name": "?SnapshotActivated@WW3D@@0_NA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 318 exact .text readers in 39 functions: Activate_Snapshot::WW3D; Apply_Default_State::DX8Wrapper; CustomizedRender::Rva007406E1; Customized_Render::Rva0009AA0F; Draw::DX8Wrapper; End_Render::WW3D; Flush::RTS3DScene; Install_Materials::BfmeB; readers include me"
+    },
+    {
+      "rva": "0x009EDA04",
+      "kind": "data-identity",
+      "name": "?IsInitted@DX8Wrapper@@1_NA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 6 exact .text readers in 6 functions: Do_Mappers_Need_Normals::MeshMatDescClass; Init::DX8Wrapper; Load_Texture; Reset_Device::DX8Wrapper; Rva00131068GetByte; Shutdown::DX8Wrapper; readers include methods of its class DX8Wrapper (Init::DX8Wrapper, Reset_Device:"
+    },
+    {
+      "rva": "0x009EDA06",
+      "kind": "data-identity",
+      "name": "?IsWindowed@DX8Wrapper@@1_NA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 10 exact .text readers in 7 functions: Flip_To_Primary::DX8Wrapper; Get_Device_Resolution::DX8Wrapper; Get_Render_Target_Resolution::DX8Wrapper; Init::DX8Wrapper; Registry_Save_Render_Device::DX8Wrapper; Rva00116F70GetByte; Set_Render_Devi; readers include meth"
+    },
+    {
+      "rva": "0x00A05F84",
+      "kind": "data-identity",
+      "name": "_reOpenPlayerInfoFlag",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 3 exact .text readers in 2 functions: CheckReOpenPlayerInfo; ReOpenPlayerInfo; words open,player,info of the spelling occur in the readers' names; Zero Hour declares it too (GameSpyOverlay.cpp,GameSpyOverlay.cpp); existing spelling kept"
+    },
+    {
+      "rva": "0x00A08D2C",
+      "kind": "data-identity",
+      "name": "?HasCMOVSupport@CPUDetectClass@@0_NA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 13 exact .text readers in 11 functions: Clamp_Color::DX8Wrapper; Convert_Color_Clamp::DX8Wrapper; Has_CMOV_Instruction::CPUDetectClass; Init_Processor_Features::CPUDetectClass; Init_Processor_Log::CPUDetectClass; Render::Rva00177860; Render; readers include met"
+    },
+    {
+      "rva": "0x009FE4CC",
+      "kind": "data-identity",
+      "name": "?g_bfmeAptWindowManager@@3PAVAptPlayer@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 1060 exact .text readers in 616 functions: ?0Appearance::AptCreateAHero; ?0AptCampaignMenu; ?0AptCampaignReview; ?0AptCreateAHero; ?0AptDisconnectScreen; ?0AptFileTransferPopup; ?0AptLanLobby; ?0AptLoadScreen; ?0AptMainMenu; ?0AptMapPreview; ?; words apt,window"
+    },
+    {
+      "rva": "0x009FEF10",
+      "kind": "data-identity",
+      "name": "?TheLivingWorldLogic@@3PAVLivingWorldLogic@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 674 exact .text readers in 427 functions: ?0AptStrategicPlayerStatus; ?0Impl::DynamicAutoResolveDialog::StrategicInGameUI; ?0Impl::PlanningPhaseBehavior::StrategicInGameUI; ?0Impl::RegionDetailsArmiesPage::StrategicInGameUI; ?0Impl::ResolveBa; words living,worl"
+    },
+    {
+      "rva": "0x009D7F10",
+      "kind": "data-identity",
+      "name": "___security_cookie",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_initialised; 225 exact .text readers in 223 functions: ::__security_check_cookie::4; ?0CAtlBaseModule::ATL; ?0Rva007F0CB0BlobRecord; ?0Rva007FBC60Game; ?0Rva00808920LanGame; AddSubInternalFPF; Assignment; DivideInternalFPF; DoHuffIteration; DoIDEA; Multip; words security,"
+    },
+    {
+      "rva": "0x009FDCA0",
+      "kind": "data-identity",
+      "name": "?TheMouse@@3PAVMouse@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 196 exact .text readers in 120 functions: ?0AptMainMenu; ?0InGameUI; ?1AptQuitMenu; ?1GameClient; AreBothButtonsStillDown; AreBothButtonsUp; DoUpdate::ArmyHeroIcon::StrategicInGameUI; DoUpdate::ArmyUnitIcon::StrategicInGameUI; GamesListToolti; words mouse of th"
+    },
+    {
+      "rva": "0x00A0C898",
+      "kind": "data-identity",
+      "name": "?TheEmptyString@UnicodeString@@2V1@B",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 188 exact .text readers in 160 functions: ?0AptDisconnectScreen; ?0AptMyHero; ?0CreateAHeroManager; ?0GameSlot; ?0GameSpyGroupRoom; ?0Impl::ArmyDetailsMovieClip::StrategicHUD; ?0Impl::ArmyMemberIconMovieClip::StrategicHUD; ?0Impl::ArmyUnitSwa; readers include m"
+    },
+    {
+      "rva": "0x009E1EAC",
+      "kind": "data-identity",
+      "name": "?TheTerrainRenderObject@@3PAVBaseHeightMapRenderObjClass@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 160 exact .text readers in 106 functions: ?0BaseHeightMapRenderObjClass; ?1W3DFloorDraw; ?1W3DScriptedModelDraw; ?1W3DTerrainVisual; Flush::RTS3DScene; Install_Materials::BfmeB1137; Install_Materials::W3DShroudMaterialPassClass; ParseEnvironm; words terrain,ren"
+    },
+    {
+      "rva": "0x009FEF18",
+      "kind": "data-identity",
+      "name": "?TheLivingWorld@@3PAVLivingWorld@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 149 exact .text readers in 99 functions: ?0Helper005C4D4B; ?0LivingWorldArmyIconSubObject; ?0LivingWorldBuildPlotIcon; ?0LivingWorldBuildPlotIconSubObject; ?0Rva0052B278; ?0Rva0053947D; ?0Rva0056D915; ?0Rva005C4230; ?0Rva005C4B56; ?0Rva005D1; words living,world"
+    },
+    {
+      "rva": "0x00A01E48",
+      "kind": "data-identity",
+      "name": "?TheShell@@3PAVShell@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 144 exact .text readers in 96 functions: ?1AptCampaignReview; ?1AptOptions; ?1AptPlayerStatus; ?1AptPlayerTribute; ?1AptQuitMenu; ?1AptSaveLoad; ?1AptScoreScreen; ?1AptSpellStore; ?1AptStrategicPlayerStatus; ?1AptTimeLine; ?1GameClient; ?1Rv; words shell of the"
+    },
+    {
+      "rva": "0x00A02EEC",
+      "kind": "data-identity",
+      "name": "?TheGameInfo@@3PAVGameInfo@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 177 exact .text readers in 93 functions: ?0GameSpyInfo; ?0Rva0050F909; ?1AptOnlineShell; ?1AptSkirmish; ?1GameSpyInfo; ?1Recorder; BindHeroToObjectAndUpdate::CreateAHeroManager; CreateMPPlayers::GameLogic; CreatePlayers::LivingWorldCampaign;; words game,info of"
+    },
+    {
+      "rva": "0x009FE958",
+      "kind": "data-identity",
+      "name": "?TheLAN@@3PAVLANAPI@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 115 exact .text readers in 52 functions: ?0LANGameInfo; ?1AptLanLobby; GenerateGameOptionsString; GetLobbyPlayers::ChatWindowsLan; GetValidSelectedGameInfo::AptLanLobby; InitTheLan::AptLanLobby; MPOwnerValidatGameInfo::AptLanLobby; MpOwnerGe; Zero Hour declares"
+    },
+    {
+      "rva": "0x009FE144",
+      "kind": "data-identity",
+      "name": "?TheGameLODManager@@3PAVGameLODManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 73 exact .text readers in 56 functions: ?0AptOptions; ?0Drawable; AllocateAndFillBuffers::RenderableStandingWaterArea; EnterAdvancedSettings::AptOptions; Externs::AptOptions; ExternsLODTemplate::AptOptions; GetLODIndex; InitGadgets::AptOpti; words game,manager"
+    },
+    {
+      "rva": "0x009FE710",
+      "kind": "data-identity",
+      "name": "?TheGameEngine@@3PAVGameEngine@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 84 exact .text readers in 64 functions: ?0W3DVegetationBufferBase; ?1AptSaveLoad; Credits::AptMainMenu; CreditsExit::AptMainMenu; ExitGame::AptMainMenu; GameMain; Render::W3DStatusCircle; Rva0044C205Reset; Rva0050CF3CStartHeadless; WndProc;; words game,engine o"
+    },
+    {
+      "rva": "0x009E5DFC",
+      "kind": "data-identity",
+      "name": "?TheW3DShadowManager@@3PAVW3DShadowManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 64 exact .text readers in 42 functions: ?1W3DDebrisDraw; ?1W3DTerrainVisual; Customized_Render::RTS3DScene; Customized_Render::Rva0009AA0F; Flush::RTS3DScene; ReAcquireResources::BaseHeightMapRenderObjClass; ReleaseResources::BaseHeightMapR; words shadow,manage"
+    },
+    {
+      "rva": "0x00A02340",
+      "kind": "data-identity",
+      "name": "?TheGameSpyPeerMessageQueue@@3PAVGameSpyPeerMessageQueueInterface@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 136 exact .text readers in 79 functions: ?0OnlineHome::AptOnline; Cancel::OnlineQuickMatch::AptOnline; DoRefresh::AptOnlineCustomMatch; GameWindowSystem::AptOnlineCustomMatch; HandleBuddyResponses; HandlePersistentStorageResponses; MpOwnerOn; words game,spy,pee"
+    },
+    {
+      "rva": "0x009FEA28",
+      "kind": "data-identity",
+      "name": "?TheNetwork@@3PAVNetworkInterface@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 143 exact .text readers in 56 functions: ?0Rva0050F909; ?1AptQuitMenu; CreateTheNetwork; DoAnyHeroTransfer; Kick::AptDisconnectScreen; OnGameStart::LANAPI; OnWOTRGameStart::LANAPI; ProcessCRC::GameLogic; ProcessSaveGameCommand::GameLogic; Qu; words network of t"
+    },
+    {
+      "rva": "0x009FF12C",
+      "kind": "data-identity",
+      "name": "?TheMapCache@@3PAVMapCache@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 106 exact .text readers in 62 functions: ?0GameSpyConfig; ?0Impl::RegionDetailsTerritoryPage::StrategicInGameUI; ?0OnlineQuickMatch::AptOnline; CreateMPPlayers::GameLogic; GetMaxNumPlayers::AptMapPreview; GetStartPositionInfoForSlot::AptMapP; words map,cache of"
+    },
+    {
+      "rva": "0x009FDC8C",
+      "kind": "data-identity",
+      "name": "?TheLinearCampaignManager@@3PAVLinearCampaignManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 38 exact .text readers in 26 functions: ?0AptCampaignMenu; CollectPlayerData::AptTimeLine; DoExitMap::GameLogic; DoXfer::GameLogicSnapshot; DoXfer::GameStateMap; LinearCampaignStart::AptMainMenu; OnBttnLastMission::AptCampaignMenu; OpenScre; words linear,campai"
+    },
+    {
+      "rva": "0x00A05FBC",
+      "kind": "data-identity",
+      "name": "?TheGameSpyBuddyMessageQueue@@3PAVGameSpyBuddyMessageQueueInterface@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 45 exact .text readers in 27 functions: GameSpyOpenOverlay; HandleBuddyResponses; Rva0041647ASend; Rva004166DB; Rva004177D5; Rva004178C1; SetUpGameSpy; TearDownGameSpy; Thread_Function::BuddyThreadClass; callbackWrapper; connectCallback::Bu; words game,spy,budd"
+    },
+    {
+      "rva": "0x009FE33C",
+      "kind": "data-identity",
+      "name": "?TheFontLibrary@@3PAVFontLibrary@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 57 exact .text readers in 40 functions: ?0Impl::PlaceTerrainResourceClaimantFeedback; ?0Rva005D40A6; ?0W3DAptDisplayString; ?1GameClient; InitTextEntry::AptPlayerTribute; LoadAssets::FadeInTextRender; ParseFontDefaultSettings::FontLibrary; ; words font,library"
+    },
+    {
+      "rva": "0x00A05FC8",
+      "kind": "data-identity",
+      "name": "?TheGameSpyPSMessageQueue@@3PAVGameSpyPSMessageQueueInterface@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 75 exact .text readers in 26 functions: HandlePersistentStorageResponses; ProcessGameSpyResponses::AptOnlineCustomMatch; ProcessOnlineGameResults::StatsReporter; Rva005BD5F3Add; Rva005BD64DAdd; Rva005BD910Submit; SendStatsToOtherPlayers; Se; words game,spy of t"
+    },
+    {
+      "rva": "0x009EBCD8",
+      "kind": "data-identity",
+      "name": "?TheW3DVolumetricShadowManager@@3PAVW3DVolumetricShadowManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 17 exact .text readers in 15 functions: ?0W3DShadowManager; ?1Rva009A500; ReAcquireResources::W3DShadowManager; Rva0009A2CDRun; Rva0009A3DECleanup; addShadow::W3DShadowManager; invalidateCachedLightPositions::W3DShadowManager; removeAllShad; words volumetric,sh"
+    },
+    {
+      "rva": "0x009FE1A8",
+      "kind": "data-identity",
+      "name": "?TheLargeGroupAudio@@3PAVLargeGroupAudio@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 30 exact .text readers in 17 functions: ?1GameLogic; DoXfer::GameLogicSnapshot; init::GameLogic; parseLargeGroupAudioMapDefinition::LargeGroupAudio; parseLargeGroupAudioUnusedKnownKeysDefinition::LargeGrou; reset::GameLogic; rva002469A5::Ga; words large,group,a"
+    },
+    {
+      "rva": "0x009FE118",
+      "kind": "data-identity",
+      "name": "?TheWeatherSetting@@3V?$OVERRIDE@VWeatherSetting@@@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 51 exact .text readers in 16 functions: ?1SnowManager; ReAcquireResources::W3DSnowManager; Render::RTS3DScene; Rva000E2BEEScaleUVOffsetPerSecondUV; parseWeatherDefinition::INI; render::W3DSnowManager; reset::SnowManager; rva000932E1::W3DSno; words weather,setti"
+    },
+    {
+      "rva": "0x009EC2CC",
+      "kind": "data-identity",
+      "name": "?TheW3DProjectedShadowManager@@3PAVW3DProjectedShadowManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 23 exact .text readers in 14 functions: ?0W3DShadowManager; ?1Rva009A500; ReAcquireResources::W3DShadowManager; Rva0009A2CDRun; Rva0009A3DECleanup; UpdateAndRender::W3DVolumetricShadowV2; UpdateAndRenderZfail::W3DVolumetricShadowV2; addShad; words shadow,manage"
+    },
+    {
+      "rva": "0x00A05FB4",
+      "kind": "data-identity",
+      "name": "?TheGameSpyConfig@@3PAVGameSpyConfigInterface@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 35 exact .text readers in 23 functions: ?0LadderList; CheckLogin::AptOnlineLogin; DoRefresh::AptOnlineCustomMatch; GetPingImageEnum::AptConnectionScreen; OnMatched::AptOnlineQuickMatch; PopulateLobbyComboBox::AptOnlineCustomMatch; Rva005DB3; words game,spy of t"
+    },
+    {
+      "rva": "0x00A02324",
+      "kind": "data-identity",
+      "name": "?TheGameSpyGame@@3PAVGameSpyStagingRoom@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 119 exact .text readers in 40 functions: ?0AptLoadScreen; ?0AptOnlineCustomMatch; ?0GameSpyInfo; ?0OnlineQuickMatch::AptOnline; ?1GameSpyInfo; HandlePersistentStorageResponses; MpOwnerSelectMap::AptOnlineCustomMatch; MpOwnerSelectStrategicSc; words game,spy,gam"
+    },
+    {
+      "rva": "0x00A01E18",
+      "kind": "data-identity",
+      "name": "?TheAiOrdersManager@@3PAVAiOrdersManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 47 exact .text readers in 26 functions: changeToFormation::HordeContain; checkForPatrol::ObjectOrderQueue; clearAiOrdersOfObject; createCommandHint::InGameUI; forwardObjectToAiOrders; init::GameEngine; init::GameState; logicMessageDispatche; words orders,manage"
+    },
+    {
+      "rva": "0x00A02EF0",
+      "kind": "data-identity",
+      "name": "?TheSkirmishGameInfo@@3PAVSkirmishGameInfo@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 89 exact .text readers in 31 functions: ?0AptLoadScreen; ?1AptSkirmish; CreatePlayers::LivingWorldCampaign; DoXfer::GameLogicSnapshot; DoXfer::GameStateMap; GetResolutionOptions::LivingWorldBattle; InitCreateAHeroOnStartGame::AptSkirmish; I; words skirmish,game"
+    },
+    {
+      "rva": "0x009FE1D4",
+      "kind": "data-identity",
+      "name": "?TheAttributeModifierStore@@3PAVAttributeModifierStore@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 41 exact .text readers in 15 functions: Rva00404648Parse; addModifierToPool::AttributeModifierPoolUpdate; init::GameEngine; initObject::Object; parseModifierListDefinition::AttributeModifierStore; rva0023054C::GameEngine; rva00403170::Attri; words attribute,mod"
+    },
+    {
+      "rva": "0x009EC3D4",
+      "kind": "data-identity",
+      "name": "?IsInitted@WW3D@@0_NA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 13 exact .text readers in 12 functions: Begin_Render::WW3D; End_Render::WW3D; Init::WW3D; Render::WW3D; Reset_D3D_Device; Rva001182A0; Rva00118660Call; Set_Texture_Reduction::WW3D; Shutdown::WW3D; rva000422F3::Rva000422F3; readers include methods of its class W"
+    },
+    {
+      "rva": "0x00A063F8",
+      "kind": "data-identity",
+      "name": "?TheNAT@@3PAUNAT@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 53 exact .text readers in 19 functions: ?0AptConnectionScreen; ?0OnlineQuickMatch::AptOnline; ?1AptConnectionScreen; ?1AptOnlineCustomMatch; MpOwnerSelectPlayer::AptOnlineCustomMatch; MpOwnerUpdatePlayerTooltip::AptOnlineCustomMatch; OnMatc; Zero Hour declares"
+    },
+    {
+      "rva": "0x009FD940",
+      "kind": "data-identity",
+      "name": "?TheSubsystemList@@3PAVSubsystemInterfaceList@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 111 exact .text readers in 102 functions: ?$initSubsystem::VAI; ?$initSubsystem::VActionManager; ?$initSubsystem::VAerialPathfinder; ?$initSubsystem::VAiOrdersManager; ?$initSubsystem::VArmorStore; ?$initSubsystem::VAudioManager; ?$initSubsys; words subsystem,l"
+    },
+    {
+      "rva": "0x009EDA64",
+      "kind": "data-identity",
+      "name": "?render_state_changes@DX8Wrapper@@1IA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 164 exact .text readers in 35 functions: Apply_Default_State::DX8Wrapper; Begin_Statistics::DX8Wrapper; CustomizedRender::Rva007406E1; Customized_Render::Rva0009AA0F; End_Statistics::DX8Wrapper; Flush::RTS3DScene; Init::DX8Wrapper; Install_M; readers include me"
+    },
+    {
+      "rva": "0x009EC2D4",
+      "kind": "data-identity",
+      "name": "?TheProjectedShadowManager@@3PAVProjectedShadowManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 13 exact .text readers in 13 functions: ?0FormationPreviewDecal::InGameUI; ?0W3DShadowManager; ?1Rva009A500; createDeathDecal::RadiusDecalTemplate; createPotentialClaimDecal::Impl::PlaceTerrainResourceCla; createRadiusDecal::RadiusDecalTemp; words shadow,manage"
+    },
+    {
+      "rva": "0x009DE024",
+      "kind": "data-identity",
+      "name": "?ApplicationHWnd@@3PAXA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 42 exact .text readers in 26 functions: ?1IMEManager; ResetResolution::AptMainMenu; Rva0023C85EDisable; TestWaterUpdate; WndProc; attach::IMEManager; clipCursorToClient; detatch::IMEManager; disable::IMEManager; draw::W3DDisplay; draw::W3DM; words wnd of the sp"
+    },
+    {
+      "rva": "0x009B6228",
+      "kind": "data-identity",
+      "name": "?_PresetOpaqueShader@ShaderClass@@2V1@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_initialised; 15 exact .text readers in 15 functions: Get_Shader::ParticleBufferClass; RenderDynamicMeshVolume::W3DVolumetricShadow; RenderMeshVolume::W3DVolumetricShadow; renderShadows::W3DVolumetricShadowManager; rva000FDD1CFirst::Rva000FDD1C; set::Rva; readers include m"
+    },
+    {
+      "rva": "0x009FF188",
+      "kind": "data-identity",
+      "name": "?TheGhostObjectManager@@3PAVGhostObjectManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 20 exact .text readers in 16 functions: ?1GameLogic; Rva0030596CIntersects; ShroudCreateGhost::Object; detach::W3DGhostObject; doLoadGame::GameState; freeAllSnapShots::W3DGhostObject; freeSnapShot::W3DGhostObject; handleBuildPlacements::InG; words ghost,object,"
+    },
+    {
+      "rva": "0x009A5E40",
+      "kind": "data-identity",
+      "name": "?g_pfnGetThreadACP@ATL@@3P6GIXZA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_initialised; 13 exact .text readers in 10 functions: ?0?$CA2WEX::$0IA; ?0?$CW2AEX::$0IA; CharLowerWFake::ATL; CharUpperWFake::ATL; CompareStringWFake::ATL; GetEnvironmentVariableWFake::ATL; GetStringTypeExWFake::ATL; _AtlGetConversionACP::ATL; _AtlGetTh; readers include m"
+    },
+    {
+      "rva": "0x00A06E5C",
+      "kind": "data-identity",
+      "name": "?TheArchiveFileSystem@@3PAVArchiveFileSystem@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 31 exact .text readers in 15 functions: ?1Rva0060061A; Rva00600695Get; Rva006007DAOpen; addArchiveFile::Win32BIGFileSystem; doesFileExist::FileSystem; doesWideFileExist::BFME2FileSystemFacade; getFileInfo::FileSystem; getFileListInDirectory; words archive,file,"
+    },
+    {
+      "rva": "0x00A032D0",
+      "kind": "data-identity",
+      "name": "?TheAnimationSoundModuleManager@@3PAVAnimationSoundModuleManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 17 exact .text readers in 13 functions: ?0AnimationSoundClientBehavior; ?0AnimationSoundModuleManager; ?1AnimationSoundClientBehavior; ?1GameClient; ?4U4Assign006057C0; init::GameClient; reset::GameClient; rva004C9E1F::AnimationSoundClientB; words animation,sou"
+    },
+    {
+      "rva": "0x00A01E28",
+      "kind": "data-identity",
+      "name": "?TheHotKeyManager@@3PAVHotKeyManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 33 exact .text readers in 14 functions: ?0Impl::InGameToggleStanceCommandButton; ?0InGameHeroSelectInterface; ?1GameClient; ?1Impl::InGameToggleStanceCommandButton; ?1Rva0052634F; ShowSelectAllHeroesBttn::Impl::InGameHeroSelectInterface; in; words hot,key of th"
+    },
+    {
+      "rva": "0x009FE32C",
+      "kind": "data-identity",
+      "name": "?TheBannerUI@@3PAVBannerUI@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 17 exact .text readers in 12 functions: ?0PlayerPanelMovieClip::Impl::DynamicAutoResolveDialog::; ?1InGameUI; HideControlBar; ParseBannerTypeInfo::BannerUI; Rva0052A2B7; ShowControlBar; Update::Impl::AptInGameSpellBookInterface; init::Banne; words banner of the"
+    },
+    {
+      "rva": "0x009EDA68",
+      "kind": "data-identity",
+      "name": "?texture_stage_state_changes@DX8Wrapper@@1IA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 230 exact .text readers in 31 functions: Apply::TextureFilterClass; Apply_Default_State::DX8Wrapper; Begin_Statistics::DX8Wrapper; End_Statistics::DX8Wrapper; Init::DX8Wrapper; Install_Materials::BfmeB1137; Install_Materials::W3DGlowOutlineM; readers include me"
+    },
+    {
+      "rva": "0x00A06560",
+      "kind": "data-identity",
+      "name": "_checksLeftBeforeOnline",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 18 exact .text readers in 7 functions: CancelPatchCheckCallback; StartPatchCheck; configCallback; configHeadCallback; gamePatchCheckCallback; motdCallback; rva005BD6A7; Zero Hour declares it too (MainMenuUtils.cpp,MainMenuUtils.cpp); existing spelling kept; wri"
+    },
+    {
+      "rva": "0x009FF488",
+      "kind": "data-identity",
+      "name": "?TheWaterTransparency@@3V?$OVERRIDE@VWaterTransparencySetting@@@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 19 exact .text readers in 11 functions: ?0BaseHeightMapRenderObjClass; ?0Rva0030C1FCOwner; ?1WaterRenderObjClass; IsReflectionVisible::WaterRenderObjClass; Rva00080168ReflectionTexture; parseWaterTransparencyDefinition::INI; reset::GameLogi; words water,transpa"
+    },
+    {
+      "rva": "0x009FE114",
+      "kind": "data-identity",
+      "name": "?TheSnowManager@@3PAVSnowManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 12 exact .text readers in 10 functions: ?1GameClient; ReAcquireResources::BaseHeightMapRenderObjClass; ReleaseResources::BaseHeightMapRenderObjClass; init::GameClient; parseWeatherDefinition::INI; reset::GameClient; rva0004CF9A::Rva0004CA4C; Zero Hour declares"
+    },
+    {
+      "rva": "0x009E2014",
+      "kind": "data-identity",
+      "name": "?TheTerrainTracksRenderObjClassSystem@@3PAVTerrainTracksRenderObjClassSystem@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 17 exact .text readers in 13 functions: ?1W3DScriptedModelDraw; ?1W3DTerrainVisual; ReAcquireResources::BaseHeightMapRenderObjClass; ReleaseResources::BaseHeightMapRenderObjClass; Render::Rva000E3B41; addCapEdgeToTrack::Rva00084206Track; ad; words terrain,rende"
+    },
+    {
+      "rva": "0x00A06569",
+      "kind": "data-identity",
+      "name": "_cantConnectBeforeOnline",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 6 exact .text readers in 5 functions: StartPatchCheck; configCallback; gamePatchCheckCallback; noPatchBeforeOnlineCallback; startOnline; words before,online of the spelling occur in the readers' names; Zero Hour declares it too (MainMenuUtils.cpp,MainMenuUtils."
+    },
+    {
+      "rva": "0x00A06564",
+      "kind": "data-identity",
+      "name": "_timeThroughOnline",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 9 exact .text readers in 6 functions: StartPatchCheck; configCallback; configHeadCallback; gamePatchCheckCallback; motdCallback; rva005BD6A7; Zero Hour declares it too (MainMenuUtils.cpp,MainMenuUtils.cpp); existing spelling kept; 5 unwritten rows reference thi"
+    },
+    {
+      "rva": "0x00A0655C",
+      "kind": "data-identity",
+      "name": "_checkingForPatchBeforeGameSpy",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 5 exact .text readers in 5 functions: CancelPatchCheckCallback; StartPatchCheck; configCallback; gamePatchCheckCallback; startOnline; words patch,game of the spelling occur in the readers' names; Zero Hour declares it too (MainMenuUtils.cpp,MainMenuUtils.cpp);"
+    },
+    {
+      "rva": "0x00A0233C",
+      "kind": "data-identity",
+      "name": "?TheLanguageFilter@@3PAVLanguageFilter@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 17 exact .text readers in 14 functions: ?1GameClient; ControlBarSystem; ExternFunc::Appearance::AptCreateAHero; InitTheLan::AptLanLobby; OnChat::LANAPI; Rva0038169D; Send::AptInGameChat; SendChatLine::AptDisconnectScreen; addChat::GameSpyIn; Zero Hour declares"
+    },
+    {
+      "rva": "0x009FE754",
+      "kind": "data-identity",
+      "name": "?TheCollisionManager@@3PAVCollisionManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 14 exact .text readers in 9 functions: ?1GameLogic; getCRC::GameLogic; init::GameLogic; init::GameState; reset::GameLogic; rva0028BAC0::Object; rva0028DCC4::Object; update::CritterEmitterUpdate; update::GameLogic; 14 reader functions with real names; existing s"
+    },
+    {
+      "rva": "0x009EC1AC",
+      "kind": "data-identity",
+      "name": "?m_curFadeFrame@ScreenBWFilter@@2HA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_scalar; 18 exact .text readers in 6 functions: init::ScreenBWFilter; init::ScreenBWFilterDOT3; rva0008557F; set::Rva000FC34FFilter; set::ScreenBWFilter; setFadeParameters::W3DView; readers include methods of its class ScreenBWFilter (init::ScreenBWFilter, init::ScreenBWFi"
+    },
+    {
+      "rva": "0x009E1F64",
+      "kind": "data-identity",
+      "name": "?m_oldRenderSurface@W3DShaderManager@@2PAUIDirect3DSurface8@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 10 exact .text readers in 5 functions: ?0W3DShaderManager; Rva000754DEInit; canRenderToTexture::W3DShaderManager; endRenderToTexture::W3DShaderManager; releaseDependentResources::BfmeShaderShutdown; readers include methods of its class W3DShaderManager (?0W3DSh"
+    },
+    {
+      "rva": "0x009E1F5C",
+      "kind": "data-identity",
+      "name": "?m_currentFilter@W3DShaderManager@@1HA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 6 exact .text readers in 5 functions: ?0W3DShaderManager; Rva000756BFSelect; Rva000756F1Dispatch; shutdown::W3DShaderManager; startRenderToTexture::W3DShaderManager; readers include methods of its class W3DShaderManager (?0W3DShaderManager, shutdown::W3DShaderM"
+    },
+    {
+      "rva": "0x009B9198",
+      "kind": "data-identity",
+      "name": "?GameSpyColor@@3PAHA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_initialised; 19 exact .text readers in 14 functions: MpOwnerPrintMessage::AptOnlineCustomMatch; PopulateMyClans::AptMpClans; PopulatePlayerList::ChatWindowsOnlineBuddy; PopulatePlayerList::ChatWindowsOnlineRoom; ProcessGameSpyResponse::AptMessengerOnlin; words game,spy,co"
+    },
+    {
+      "rva": "0x00A09E30",
+      "kind": "data-identity",
+      "name": "?s_initGDIPlus@CImage@ATL@@0VCInitGDIPlus@12@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind zero_init_unknown; 8 exact .text readers in 7 functions: ?0CImage::ATL; ?1CImage::ATL; InitGDIPlus::CImage::ATL; Load::CImage::ATL; _WinMain::16; rva007B5542; rva007B9AEA; readers include methods of its class CImage (?0CImage::ATL, ?1CImage::ATL, InitGDIPlus::CImage::ATL, Load::"
+    },
+    {
+      "rva": "0x00A05FB8",
+      "kind": "data-identity",
+      "name": "?ThePinger@@3PAVPingerInterface@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 15 exact .text readers in 7 functions: CheckLogin::AptOnlineLogin; SetUpGameSpy; TearDownGameSpy; Thread_Function::PingThreadClass; rva00570C64::AptOnlineLogin; rva00571C9D::AptOnlineLogin; update::DisconnectManager; Zero Hour declares it too (PingThread.h,Peer"
+    },
+    {
+      "rva": "0x00A02D98",
+      "kind": "data-identity",
+      "name": "?TheScriptActions@@3PAVScriptActions@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 13 exact .text readers in 9 functions: ?1GameLogic; ExecuteAction; clearGameData::GameLogic; executeActions::ScriptEngine; init::ScriptEngine; reset::ScriptEngine; rva0020530E::ScriptEngine; rva002401DD::GameLogic; update::ScriptEngine; words script,actions of"
+    },
+    {
+      "rva": "0x009EC3C0",
+      "kind": "data-identity",
+      "name": "?TheW3DBufferManager@@3PAVW3DBufferManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 21 exact .text readers in 9 functions: ?0Rva000F1A32; ?1W3DVolumetricShadow; ?1W3DVolumetricShadowManager; ReAcquireResources::W3DVolumetricShadowManager; ReleaseResources::W3DVolumetricShadowManager; Update::W3DVolumetricShadow; construct; words manager of the"
+    },
+    {
+      "rva": "0x009EC000",
+      "kind": "data-identity",
+      "name": "?m_curFadeFrame@ScreenCrossFadeFilter@@2HA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_scalar; 10 exact .text readers in 4 functions: init::ScreenCrossFadeFilter; rva00085599; setFadeParameters::W3DView; updateFadeLevel::ScreenCrossFadeFilter; readers include methods of its class ScreenCrossFadeFilter (init::ScreenCrossFadeFilter, updateFadeLevel::ScreenCro"
+    },
+    {
+      "rva": "0x009E1F68",
+      "kind": "data-identity",
+      "name": "?m_renderTexture@W3DShaderManager@@2PAUIDirect3DTexture8@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail data row kind global_zero_init; 11 exact .text readers in 5 functions: ?0W3DShaderManager; Rva000754DEInit; endRenderToTexture::W3DShaderManager; getRenderTexture::W3DShaderManager; releaseDependentResources::BfmeShaderShutdown; readers include methods of its class W3DShaderManager (?0W3DShad"
+    },
+    {
+      "rva": "0x009FEC68",
+      "kind": "data-identity",
+      "name": "?TheFireLogicSystem@@3PAVFireLogicSystem@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-rename",
+      "evidence": "retail names this global TheFireLogicSystem: GameEngine::init (?init@GameEngine@@UAEXHQAPAD@Z) pushes that string (VA 0xbe7ac4, push at 0x22f89b) and then the address of this cell (push at 0x22f8a9) for the subsystem registration call; the map's spelling (?TheTriggerManager@@3PAVRva002872BA@@A) is a"
+    },
+    {
+      "rva": "0x00A02E48",
+      "kind": "data-identity",
+      "name": "?TheThreatFinderManager@@3PAVThreatFinderManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail names it itself: GameEngine::init (?init@GameEngine@@UAEXHQAPAD@Z) pushes the string 'TheThreatFinderManager' (VA 0xbe7a3c, push at 0x22f9f0) and then the address of this cell (push at 0x22f9fe) for the subsystem registration call; the registration passes each subsystem's global together with"
+    },
+    {
+      "rva": "0x00A03144",
+      "kind": "data-identity",
+      "name": "?TheDelayedExperienceLevelGrantSystem@@3PAVDelayedExperienceLevelGrantSystem@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail names it itself: GameEngine::init (?init@GameEngine@@UAEXHQAPAD@Z) pushes the string 'TheDelayedExperienceLevelGrantSystem' (VA 0xbe7d0c, push at 0x22f191) and then the address of this cell (push at 0x22f19f) for the subsystem registration call; the registration passes each subsystem's global"
+    },
+    {
+      "rva": "0x00A031F0",
+      "kind": "data-identity",
+      "name": "?TheLivingWorldAutoResolveArmorStore@@3PAVLivingWorldAutoResolveArmorStore@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "retail names it itself: GameEngine::init (?init@GameEngine@@UAEXHQAPAD@Z) pushes the string 'TheLivingWorldAutoResolveArmorStore' (VA 0xbe7eac, push at 0x22edc0) and then the address of this cell (push at 0x22edce) for the subsystem registration call; the registration passes each subsystem's global"
+    },
+    {
+      "rva": "0x00A01EDC",
+      "kind": "data-identity",
+      "name": "?TheMineshaftPortalNetworkManager@@3PAVMineshaftPortalNetworkManager@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-rename",
+      "evidence": "retail names this global TheMineshaftPortalNetworkManager itself: GameEngine::init (?init@GameEngine@@UAEXHQAPAD@Z) pushes that string (VA 0xbe7aa0, push at 0x22f8df) and then the address of this cell (push at 0x22f8ed); the registration call is the typed template instance ??$initSubsystem@VMineshaf"
+    },
+    {
+      "rva": "0x00A031E8",
+      "kind": "data-identity",
+      "name": "?TheMissionObjectiveTracker@@3PAVMissionObjectiveTracker@@A",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-rename",
+      "evidence": "retail names this global TheMissionObjectiveTracker itself: GameEngine::init (?init@GameEngine@@UAEXHQAPAD@Z) pushes that string (VA 0xbe7dc4, push at 0x22ef65) and then the address of this cell (push at 0x22ef73); the registration call is the typed template instance ??$initSubsystem@VMissionObjecti"
+    },
+    {
+      "rva": "0x00129680",
+      "kind": "rename",
+      "old": "?Get_Draw_Call_Batch_Count@Debug_Statistics@@YAHXZ",
+      "name": "?Get_Shader_Changes@Debug_Statistics@@YAHXZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Retail 0x00129680 (6B) reads 0x009EE8A0 (LastFrameShaderChanges), matching statistics.cpp:243 Debug_Statistics::Get_Shader_Changes; release mis-placed Get_Draw_Call_Batch_Count key."
+    },
+    {
+      "rva": "0x00129660",
+      "kind": "rename",
+      "old": "?Get_NPatches_Level@WW3D@@SAIXZ",
+      "name": "?Get_Draw_Call_Batch_Count@Debug_Statistics@@YAHXZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Retail 0x00129660 (6B) reads 0x009EE894 (DrawCallBatchCount), matching statistics.cpp:229 Debug_Statistics::Get_Draw_Call_Batch_Count; release mis-placed Get_NPatches_Level key."
+    },
+    {
+      "rva": "0x00116E30",
+      "kind": "rename",
+      "old": "?Get_Device_Resolution_Width@DX8Wrapper@@KAHXZ",
+      "name": "?Get_Device_Resolution_Height@DX8Wrapper@@KAHXZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Retail 0x00116E30 (6B) reads 0x009B5FD8 (DX8Wrapper::ResolutionHeight, init=480), matching DX8Wrapper::Get_Device_Resolution_Height; release mis-placed ResolutionWidth getter key."
+    },
+    {
+      "rva": "0x00116E20",
+      "kind": "rename",
+      "old": "?Get_Texture_Bit_Depth@DX8Wrapper@@SAHXZ",
+      "name": "?Get_Device_Resolution_Width@DX8Wrapper@@KAHXZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Retail 0x00116E20 (6B) reads 0x009B5FD4 (DX8Wrapper::ResolutionWidth, init=640), matching DX8Wrapper::Get_Device_Resolution_Width; release mis-placed Get_Texture_Bit_Depth key."
+    },
+    {
+      "rva": "0x00129450",
+      "kind": "alias",
+      "old": "",
+      "name": "?Get_NPatches_Level@WW3D@@SAIXZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Retail 0x00129450 (6B) reads 0x009B5F94 (WW3D::NPatchesLevel, init=1). Add WW3D::Get_NPatches_Level fold-alias while preserving getNPatchesLevel."
+    },
+    {
+      "rva": "0x00117C30",
+      "kind": "alias",
+      "old": "",
+      "name": "?Get_Texture_Bit_Depth@DX8Wrapper@@SAHXZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Retail 0x00117C30 (6B) reads 0x009B5FE0 (DX8Wrapper::TextureBitDepth, init=16), matching ww3d.cpp:305 getTextureBitDepth -> DX8Wrapper::Get_Texture_Bit_Depth. Keep getTextureBitDepth."
+    },
+    {
+      "rva": "0x009B5F94",
+      "kind": "data-identity",
+      "name": "?NPatchesLevel@WW3D@@0IA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "Retail .data 0x009B5F94 (4B, init=1) matches Zero Hour WW3D::NPatchesLevel = 1; written by WW3D::Set_NPatches_Level 0x00116E70 and read by 0x00129450, ShaderClass::Apply, DX8Renderer, MeshMatDescClass, and MeshModelClass."
+    },
+    {
+      "rva": "0x009B5FD4",
+      "kind": "data-identity",
+      "name": "?ResolutionWidth@DX8Wrapper@@1HA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "Retail .data 0x009B5FD4 (4B, init=640) matches Zero Hour DX8Wrapper::ResolutionWidth = 640; read/written by DX8Wrapper::Init, Set_Render_Device, Set_Device_Resolution, Get_Device_Resolution, WW3D::Normalize_Coordinates, and 0x00116E20."
+    },
+    {
+      "rva": "0x009B5FE0",
+      "kind": "data-identity",
+      "name": "?TextureBitDepth@DX8Wrapper@@1HA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "Retail .data 0x009B5FE0 (4B, init=16) matches Zero Hour DX8Wrapper::TextureBitDepth = 16; read/written by DX8Wrapper::Registry_Load_Render_Device, Registry_Save_Render_Device, 0x00116E40, and 0x00117C30."
+    },
+    {
+      "rva": "0x00200BBA",
+      "kind": "alias",
+      "old": "",
+      "name": "?getEditableFieldParse@WaterTransparencySetting@@UAEPBUFieldParse@@XZ",
+      "source": "review",
+      "confidence": "provisional",
+      "basis": "class-key",
+      "evidence": "Provisional role-inferred key already live in Water.h:64. Native 0x00200BBA (6B) returns 0x00C080B0 (m_waterTransparencySettingFieldParseTable) from INIFieldEditRegistration slot 2 of vtable 0x7E2B98. Old key retained."
+    },
+    {
+      "rva": "0x00200BD9",
+      "kind": "alias",
+      "old": "",
+      "name": "?getEditableInstance@WaterTransparencySetting@@UAEPAXXZ",
+      "source": "review",
+      "confidence": "provisional",
+      "basis": "class-key",
+      "evidence": "Provisional role-inferred key already live in Water.h:62. Native 0x00200BD9 (18B) loads TheWaterTransparency 0x00DFF488 and tail-calls Overridable::friend_getFinalOverride 0x001E35DF from INIFieldEditRegistration slot 0 of vtable 0x7E2B98. Old key retained."
+    },
+    {
+      "rva": "0x0016CC80",
+      "kind": "rename",
+      "old": "??$_Construct@USegInfo@W3DRopeDraw@@U12@@_STL@@YAXPAUSegInfo@W3DRopeDraw@@ABU12@@Z",
+      "name": "??$_Construct@URva0016CC80Pod16@@U1@@_STL@@YAXPAURva0016CC80Pod16@@ABU1@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "0x0016CC80 (35B /O2 in meshgeometry.cpp) has 0 mentions of SegInfo/W3DRopeDraw and all 3 retail callers are in meshgeometry.cpp; release mis-attributed SegInfo _Construct key."
+    },
+    {
+      "rva": "0x0059CE9E",
+      "kind": "alias",
+      "old": "",
+      "name": "??$_Construct@USegInfo@W3DRopeDraw@@U12@@_STL@@YAXPAUSegInfo@W3DRopeDraw@@ABU12@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Retail W3DRopeDraw::buildSegments 0x000CA9F1 calls push_back<BfmeE16> 0x0059D2A3 -> 0x0059CE9E (21B /O1 movsd x4 16B POD copy). Add SegInfo _Construct fold alias on 0x0059CE9E."
+    },
+    {
+      "rva": "0x001E6F5F",
+      "kind": "alias",
+      "old": "",
+      "name": "?insert_unique@?$_Rb_tree@W4ObjectID@@U?$pair@$$CBW4ObjectID@@I@_STL@@U?$_Select1st@U?$pair@$$CBW4ObjectID@@I@_STL@@@3@U?$less@W4ObjectID@@@3@V?$allocator@U?$pair@$$CBW4ObjectID@@I@_STL@@@3@@_STL@@QAE?AU?$pair@U?$_Rb_tree_iterator@U?$pair@$$CBW4ObjectID@@I@_STL@@U?$_Nonconst_traits@U?$pair@$$CBW4ObjectID@@I@_STL@@@2@@_STL@@_N@2@ABU?$pair@$$CBW4ObjectID@@I@2@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "OpenContain::addToContain 0x00464830 inserts pair<ObjectID, UnsignedInt> into m_map0xF0 via 0x001E6F5F (insert_unique<int,int>) -> 0x0038341E (_M_insert<int,int>) -> 0x00382B7F (_M_create_node<int,int>). All 3 are icf_fold."
+    },
+    {
+      "rva": "0x0038341E",
+      "kind": "alias",
+      "old": "",
+      "name": "?_M_insert@?$_Rb_tree@W4ObjectID@@U?$pair@$$CBW4ObjectID@@I@_STL@@U?$_Select1st@U?$pair@$$CBW4ObjectID@@I@_STL@@@3@U?$less@W4ObjectID@@@3@V?$allocator@U?$pair@$$CBW4ObjectID@@I@_STL@@@3@@_STL@@AAE?AU?$_Rb_tree_iterator@U?$pair@$$CBW4ObjectID@@I@_STL@@U?$_Nonconst_traits@U?$pair@$$CBW4ObjectID@@I@_STL@@@2@@2@PAU_Rb_tree_node_base@2@0ABU?$pair@$$CBW4ObjectID@@I@2@0@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "OpenContain::addToContain 0x00464830 inserts pair<ObjectID, UnsignedInt> into m_map0xF0 via 0x001E6F5F (insert_unique<int,int>) -> 0x0038341E (_M_insert<int,int>) -> 0x00382B7F (_M_create_node<int,int>). All 3 are icf_fold."
+    },
+    {
+      "rva": "0x00382B7F",
+      "kind": "alias",
+      "old": "",
+      "name": "?_M_create_node@?$_Rb_tree@W4ObjectID@@U?$pair@$$CBW4ObjectID@@I@_STL@@U?$_Select1st@U?$pair@$$CBW4ObjectID@@I@_STL@@@3@U?$less@W4ObjectID@@@3@V?$allocator@U?$pair@$$CBW4ObjectID@@I@_STL@@@3@@_STL@@IAEPAU?$_Rb_tree_node@U?$pair@$$CBW4ObjectID@@I@_STL@@@2@ABU?$pair@$$CBW4ObjectID@@I@2@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "OpenContain::addToContain 0x00464830 inserts pair<ObjectID, UnsignedInt> into m_map0xF0 via 0x001E6F5F (insert_unique<int,int>) -> 0x0038341E (_M_insert<int,int>) -> 0x00382B7F (_M_create_node<int,int>). All 3 are icf_fold."
+    },
+    {
+      "rva": "0x00179010",
+      "kind": "alias",
+      "old": "",
+      "name": "?Set_Line_UCoord@LineGroupClass@@QAEXM@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native 0x00179010 (14B icf_fold: movss xmm0,[esp+4]; movss [ecx+0x44],xmm0; ret 4) is called by ParticleBufferClass::Render_Line_Group 0x001AF060 at 0x001AF101 on LineGroup with UCoord float; LineGroupClass::Get_Line_UCoord 0x001B36B0 reads float [ecx+0x44]."
+    },
+    {
+      "rva": "0x009D5E90",
+      "kind": "data-identity",
+      "name": "?Mix1@Random3Class@@1PAHA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "All 20 dwords at 0x009D5E90 (80B in retail .data) match Zero Hour WWLib/random.cpp Random3Class::Mix1 (psdes table) byte-for-byte; sole .text reader is Random3Class::operator() at 0x0061934A."
+    },
+    {
+      "rva": "0x009D5EE0",
+      "kind": "data-identity",
+      "name": "?Mix2@Random3Class@@1PAHA",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "data-name",
+      "evidence": "All 20 dwords at 0x009D5EE0 (80B in retail .data) match Zero Hour WWLib/random.cpp Random3Class::Mix2 (psdes table) byte-for-byte; sole .text reader is Random3Class::operator() at 0x0061937D."
+    },
+    {
+      "rva": "0x0073C8C0",
+      "kind": "rename",
+      "old": "??1?$_Deque_base@HV?$allocator@H@_STL@@@_STL@@QAE@XZ",
+      "name": "??1?$_Deque_base@URva0073C8C0Pod4@@V?$allocator@URva0073C8C0Pod4@@@_STL@@@_STL@@QAE@XZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "0x0073C8C0 (46B /O2 in shroudmanager_impl.cpp) has 0 deque uses in shroudmanager_impl.cpp; release /O1 _Deque_base<int> dtor key for 0x0054FAAC."
+    },
+    {
+      "rva": "0x0009990D",
+      "kind": "alias",
+      "old": "",
+      "name": "??1?$OwnedLockPtr@VLockClass@MutexClass@@@@QAE@XZ",
+      "source": "review",
+      "confidence": "provisional",
+      "basis": "fold-alias",
+      "evidence": "Native 0x0009990D (26B) zeroes [ecx], calls MutexClass::LockClass::~LockClass 0x00613AC0 and operator delete 0x0002FD60, matching OwnedLockPtr<MutexClass::LockClass>::~OwnedLockPtr live in BuddyThread.h:135. Provisional role-inferred wrapper name; old key kept."
+    },
+    {
+      "rva": "0x0054FEF1",
+      "kind": "alias",
+      "old": "",
+      "name": "??0PingRequest@@QAE@ABV0@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "Zero Hour PingThread.h:36 and live PingThread.h declare class PingRequest (V), matching Pinger virtuals; add class-V copy ctor key on 0x0054FEF1."
+    },
+    {
+      "rva": "0x0054FEF1",
+      "kind": "alias",
+      "old": "",
+      "name": "??0PingResponse@@QAE@ABV0@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Zero Hour PingThread.h:47 PingResponse has identical layout to PingRequest (_STL::string + 2 ints); retail folds PingResponse copy ctor onto 0x0054FEF1."
+    },
+    {
+      "rva": "0x005501D3",
+      "kind": "alias",
+      "old": "",
+      "name": "??4PingRequest@@QAEAAV0@ABV0@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "Zero Hour PingThread.h:36 class PingRequest (V) copy assignment on 0x005501D3."
+    },
+    {
+      "rva": "0x005501D3",
+      "kind": "alias",
+      "old": "",
+      "name": "??4PingResponse@@QAEAAV0@ABV0@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Zero Hour PingThread.h:47 class PingResponse (V) identical layout; retail folds copy assignment onto 0x005501D3."
+    },
+    {
+      "rva": "0x0054FF6E",
+      "kind": "alias",
+      "old": "",
+      "name": "??$_Construct@VPingRequest@@V1@@_STL@@YAXPAVPingRequest@@ABV1@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "class PingRequest (V) _Construct key on 0x0054FF6E."
+    },
+    {
+      "rva": "0x0054FF6E",
+      "kind": "alias",
+      "old": "",
+      "name": "??$_Construct@VPingResponse@@V1@@_STL@@YAXPAVPingResponse@@ABV1@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "class PingResponse (V) _Construct fold on 0x0054FF6E."
+    },
+    {
+      "rva": "0x00550098",
+      "kind": "alias",
+      "old": "",
+      "name": "?_M_push_back_aux_v@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@IAEXABVPingRequest@@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "class PingRequest (V) deque::_M_push_back_aux_v on 0x00550098."
+    },
+    {
+      "rva": "0x00550098",
+      "kind": "alias",
+      "old": "",
+      "name": "?_M_push_back_aux_v@?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@IAEXABVPingResponse@@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "class PingResponse (V) deque::_M_push_back_aux_v fold on 0x00550098."
+    },
+    {
+      "rva": "0x00550384",
+      "kind": "alias",
+      "old": "",
+      "name": "?push_back@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@QAEXABVPingRequest@@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "class PingRequest (V) deque::push_back on 0x00550384."
+    },
+    {
+      "rva": "0x00550384",
+      "kind": "alias",
+      "old": "",
+      "name": "?push_back@?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@QAEXABVPingResponse@@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "class PingResponse (V) deque::push_back fold on 0x00550384."
+    },
+    {
+      "rva": "0x0054FEA7",
+      "kind": "alias",
+      "old": "",
+      "name": "?pop_front@?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@QAEXXZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "class PingResponse (V) deque::pop_front fold on 0x0054FEA7."
+    },
+    {
+      "rva": "0x005504AA",
+      "kind": "alias",
+      "old": "",
+      "name": "?push@?$queue@VPingResponse@@V?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@@_STL@@QAEXABVPingResponse@@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "class PingResponse (V) queue::push fold on 0x005504AA."
+    },
+    {
+      "rva": "0x005504F9",
+      "kind": "alias",
+      "old": "",
+      "name": "?addResponse@Pinger@@UAEXABVPingResponse@@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "Zero Hour PingThread.h:69 Pinger::addResponse(const PingResponse &) virtual at 0x005504F9."
+    },
+    {
+      "rva": "0x007987FC",
+      "kind": "alias",
+      "old": "",
+      "name": "__ehhandler$??$_Construct@VPingRequest@@V1@@_STL@@YAXPAVPingRequest@@ABV1@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "EH handler for class PingRequest _Construct at 0x0054FF6E."
+    },
+    {
+      "rva": "0x007987FC",
+      "kind": "alias",
+      "old": "",
+      "name": "__ehhandler$??$_Construct@VPingResponse@@V1@@_STL@@YAXPAVPingResponse@@ABV1@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "EH handler for class PingResponse _Construct fold at 0x0054FF6E."
+    },
+    {
+      "rva": "0x0079887E",
+      "kind": "alias",
+      "old": "",
+      "name": "__ehhandler$?_M_push_back_aux_v@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@IAEXABVPingRequest@@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "EH handler for class PingRequest deque::_M_push_back_aux_v at 0x00550098."
+    },
+    {
+      "rva": "0x0079887E",
+      "kind": "alias",
+      "old": "",
+      "name": "__ehhandler$?_M_push_back_aux_v@?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@IAEXABVPingResponse@@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "EH handler for class PingResponse deque::_M_push_back_aux_v fold at 0x00550098."
+    },
+    {
+      "rva": "0x0079893C",
+      "kind": "alias",
+      "old": "",
+      "name": "__ehhandler$?addResponse@Pinger@@UAEXABVPingResponse@@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "EH handler for Pinger::addResponse(const PingResponse &) at 0x005504F9."
+    },
+    {
+      "rva": "0x0054FAAC",
+      "kind": "alias",
+      "old": "",
+      "name": "??1?$_Deque_base@HV?$allocator@H@_STL@@@_STL@@QAE@XZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Retail 0x0054FAAC (40B /O1 icf_fold) is the /O1 _Deque_base destructor called by PeerThreadClass::removeServerFromMap 0x0038A6DF for _STL::queue<Int>."
     }
   ],
   "refused": [
@@ -129967,5 +132391,5 @@
     "proven-name;type-unverified": 9,
     "excluded": 6
   },
-  "expected_rewritten": 0
+  "expected_rewritten": 15
 }

@@ -10,6 +10,7 @@
 #include "WW3D2/CameraClass.h"
 #include "WW3D2/WW3D.h"
 #include "WWMath/CollisionMath.h"
+#include "WWMath/colmathplane.h"
 
 #define DEG_TO_RADF(x) ((float)((x) * 3.14159265358979 / 180.0))
 
@@ -392,6 +393,22 @@ bool CameraClass::Cull_Sphere(const SphereClass &sphere) const
 }
 
 // FUNCTION: BFME2 0x00135990 size=214 name=?Cull_Box@CameraClass@@UBE_NABVAABoxClass@@@Z evidence=N:ledger tier=B hypothesis:cohesion
+bool CameraClass::Cull_Box(const AABoxClass &box) const
+{
+	Update_Frustum();
+	for (int i = 0; i < 6; i++)
+	{
+		const PlaneClass &plane = Frustum.Planes[i];
+		Vector3 farpt;
+		get_far_extent(plane.N, box.Extent, &farpt);
+		Vector3 negfarpt(box.Center.X - farpt.X, box.Center.Y - farpt.Y, box.Center.Z - farpt.Z);
+		if (CollisionMath::Overlap_Test(plane, negfarpt) == CollisionMath::POS)
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 // FUNCTION: BFME2 0x00135A70 size=866 name=?Apply@CameraClass@@QAEXXZ evidence=N:ledger tier=B hypothesis:Z
 

@@ -1,12 +1,12 @@
 // cl: /O1
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
+#include <stdlib.h>
 #include "Common/GlobalData.h"
 // Command-line option handlers. Each takes the argument vector and its length and returns how many arguments it
 // consumed: 1 for a flag, 2 for an option that carries a value. They set members of the writable GlobalData
 // (TheWritableGlobalData, absent before the data is built, hence the null test) or the BFME2 debug globals. A
 // member the header knows only by its offset is reached through its m_unk array, and a handler whose ledger name
 // is still a placeholder (Rva...) keeps that spelling because the option it parses is not named in the original.
-extern "C" __declspec(dllimport) int __cdecl atoi(const char *);
 extern bool BFME2WatchdogEnabled;
 extern bool BFME2ScriptDebugLiteMode;
 extern bool BFME2UseDebugWindowLite;

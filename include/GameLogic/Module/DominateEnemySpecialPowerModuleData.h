@@ -21,6 +21,7 @@ class DominateEnemySpecialPowerModuleData : public SpecialAbilityUpdateModuleDat
 public:
 	DominateEnemySpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_dominateRadius;                                 // +0xC8 DominateRadius
 	const FXList *m_triggerFX;                            // +0xCC TriggerFX

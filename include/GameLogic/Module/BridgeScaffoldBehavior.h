@@ -20,6 +20,7 @@ public:
 class BridgeScaffoldBehavior : public UpdateModule, public BridgeScaffoldBehaviorInterface {
 public:
     BridgeScaffoldBehavior(Thing *, const ModuleData *);
+    static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
     virtual ~BridgeScaffoldBehavior();
     virtual UpdateSleepTime update();
     virtual NameKeyType getModuleNameKey() const;     // 0x004583BD (written in BridgeScaffoldBehavior.cpp)

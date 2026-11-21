@@ -110,6 +110,7 @@ class RiderChangeContain : public SiegeEngineContain
 {
 public:
 	RiderChangeContain(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual Bool containSlot09() { return true; }
 	virtual NameKeyType getModuleNameKey() const;
 	virtual Object *containSlot10();

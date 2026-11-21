@@ -212,6 +212,44 @@ AABTreeClass::AABTreeClass(const AABTreeClass &that) :
 }
 
 // FUNCTION: BFME2 0x001981F0 size=480 name=?Cast_Ray_To_Polys@AABTreeClass@@AAE_NPAUCullNodeStruct@1@AAVRayCollisionTestClass@@@Z evidence=N:ledger tier=B hypothesis:Z
+bool AABTreeClass::Cast_Ray_To_Polys(CullNodeStruct *node, RayCollisionTestClass &raytest)
+{
+	if (node->Get_Poly_Count() > 0) {
+		TriClass tri;
+
+		const Vector3 *loc = Mesh->Get_Vertex_Array();
+		const TriIndex *polyverts = Mesh->Get_Polygon_Array();
+
+		int polyhit = -1;
+		int poly0 = node->Get_Poly0();
+		int polycount = node->Get_Poly_Count();
+
+		for (int poly_counter = 0; poly_counter < polycount; poly_counter++) {
+			int poly_index = PolyIndices[poly0 + poly_counter];
+
+			tri.V[0] = &(loc[polyverts[poly_index][0]]);
+			tri.V[1] = &(loc[polyverts[poly_index][1]]);
+			tri.V[2] = &(loc[polyverts[poly_index][2]]);
+			Vector3 normal;
+			tri.N = &normal;
+			tri.Compute_Normal();
+
+			if (CollisionMath::Collide(raytest.Ray, tri, raytest.Result)) {
+				polyhit = poly_index;
+			}
+
+			if (raytest.Result->StartBad) {
+				return true;
+			}
+		}
+
+		if (polyhit != -1) {
+			raytest.Result->SurfaceType = Mesh->Get_Poly_Surface_Type(polyhit);
+			return true;
+		}
+	}
+	return false;
+}
 
 // FUNCTION: BFME2 0x001983D0 size=419 name=?Intersect_OBBox_With_Polys@AABTreeClass@@AAE_NPAUCullNodeStruct@1@AAVOBBoxIntersectionTestClass@@@Z evidence=N:ledger tier=B hypothesis:Z
 bool AABTreeClass::Intersect_OBBox_With_Polys(CullNodeStruct *node, OBBoxIntersectionTestClass &test)

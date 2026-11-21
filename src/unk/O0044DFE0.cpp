@@ -63,4 +63,13 @@ void BloodthirstyUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
 
 
 // FUNCTION: BFME2 0x0044E0AA size=105 name=??0BloodthirstyUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:K
+BloodthirstyUpdate::BloodthirstyUpdate(Thing *thing, const ModuleData *moduleData)
+	: UpdateModule(thing, moduleData)
+	, m_sacrificeID(INVALID_ID)
+	, m_sacrificeOwnerID(INVALID_ID)
+	, m_kills(0)
+{
+	setWakeFrame(getObject(), UPDATE_SLEEP_NONE);
+}
+
 

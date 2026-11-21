@@ -19,6 +19,7 @@ class StructureBody : public ActiveBody
 {
 public:
 	StructureBody(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	void setConstructorObject(Object *obj);					// 0x004C09A1 (Zero Hour's name)
 	ObjectID getConstructorObjectID() { return m_constructorObjectID; }
 	virtual NameKeyType getModuleNameKey() const;

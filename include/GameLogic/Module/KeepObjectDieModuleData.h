@@ -19,6 +19,7 @@ class KeepObjectDieModuleData : public DestroyDieModuleData
 public:
 	KeepObjectDieModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UnsignedInt m_collapsingTime;                          // +0x38 CollapsingTime; duration, frames
 	Bool m_stayOnRadar;                                    // +0x3C StayOnRadar

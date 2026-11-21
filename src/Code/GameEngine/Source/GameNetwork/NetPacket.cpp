@@ -3199,6 +3199,30 @@ NetCommandMsg *NetPacket::readChatMessage(UnsignedByte *data, Int &offset)
 
 
 // FUNCTION: BFME2 0x00592208 size=243 name=?rva00592208@NetPacket@@SAPAVNetCommandMsg@@PAEAAH@Z evidence=?:placeholder tier=B hypothesis:K
+NetCommandMsg *NetPacket::rva00592208(UnsignedByte *data, Int &offset)
+{
+	Rva004D67D0 *msg = new Rva004D67D0();
+	UnsignedShort text[256];
+	UnsignedByte length;
+	Int action;
+	Int reason;
+	memcpy(&length, data + offset, sizeof(UnsignedByte));
+	++offset;
+	memcpy(text, data + offset, length * sizeof(UnsignedShort));
+	offset += length * sizeof(UnsignedShort);
+	text[length] = 0;
+	memcpy(&action, data + offset, sizeof(Int));
+	offset += sizeof(Int);
+	memcpy(&reason, data + offset, sizeof(Int));
+	offset += sizeof(Int);
+
+	UnicodeString filename;
+	filename.set(text);
+	msg->setFilename(filename);
+	msg->setAction(action);
+	msg->setReason(reason);
+	return msg;
+}
 
 // FUNCTION: BFME2 0x005922FB size=202 name=?Rva005922FBRead@@YAPAVRva004D6208@@HPAI@Z evidence=?:placeholder tier=B hypothesis:K
 NetCommandMsg *NetPacket::readFileMessage(UnsignedByte *data, Int &offset)

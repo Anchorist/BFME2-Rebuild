@@ -9,6 +9,7 @@
 #include "GameLogic/Module/SpecialPowerModule.h"
 #include "Common/Vector.h"
 enum ScienceType;
+class INI;
 class CashHackSpecialPowerModuleData : public SpecialPowerModuleData
 {
 public:
@@ -23,6 +24,7 @@ public:
     };
     CashHackSpecialPowerModuleData();
     static void buildFieldParse(MultiIniFieldParse &);
+    static ModuleData *friend_newModuleData(INI *ini);
     _STL::vector<Upgrades> m_upgrades; //7C
     int m_defaultAmountToSteal; //88
 };

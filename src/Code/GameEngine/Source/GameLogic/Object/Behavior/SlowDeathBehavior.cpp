@@ -21,6 +21,8 @@
 #include "Common/INIException.h"
 #include "Common/BitFlags.h"
 #include "Common/ModelConditionFlags.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/InstantDeathBehaviorModuleData.h"
 
 extern DisabledMaskType DISABLEDMASK_ALL;
 // Retail slot 0x004DF396 of the update interface: a dying object keeps its slow death going whatever disables it.
@@ -33,7 +35,24 @@ DisabledMaskType SlowDeathBehavior::getDisabledTypesToProcess() const
 // FUNCTION: BFME2 0x0045D200 size=113 name=?parseWeapon@InstantDeathBehaviorModuleData@@SAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0045D28D size=105 name=??1InstantDeathBehaviorModuleData@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0045D2F6 size=105 name=?Rva0045D2F6Parse@@YAXPAVINI@@PAX1PBX@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
+void iniParseFXListVec(INI *ini, void *instance, void *store, const void *userData);
+void Rva0045D2F6Parse(INI *ini, void *instance, void *store, const void *userData);
+static const FieldParse s_instantDeathBehaviorModuleDataFieldParse[] =
+{
+	{ "FX", iniParseFXListVec, 0, 0x38 },
+	{ "OCL", InstantDeathBehaviorModuleData::parseOCL, 0, 0x0 },
+	{ "Weapon", InstantDeathBehaviorModuleData::parseWeapon, 0, 0x0 },
+	{ "Sound", Rva0045D2F6Parse, 0, 0x0 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x0045D35F size=34 name=?buildFieldParse@InstantDeathBehaviorModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+void InstantDeathBehaviorModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(DieMuxData::getFieldParse(), 0x8);
+	parse.add(s_instantDeathBehaviorModuleDataFieldParse, 0);
+}
+
 // FUNCTION: BFME2 0x0045D381 size=7 name=?get@Rva0045D381FloatField@@QBEMXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0045D388 size=15 name=?rva0045D388@Rva0045D388@@QBE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0045D397 size=7 name=?get@Rva0045D397MaskedDwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path

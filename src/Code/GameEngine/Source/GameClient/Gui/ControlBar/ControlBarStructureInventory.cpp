@@ -31,7 +31,7 @@ void ControlBar::populateButtonProc(Object *obj, void *userData)
 	image = getButtonImage((ThingTemplate *)obj->getTemplate(), obj);
 	GadgetButtonSetEnabledImage_Rva002C0433(info->inventoryButtons[info->buttonIndex], image);
 	image = calculateVeterancyOverlayForObject(obj);
-	Rva003284ED(info->inventoryButtons[info->buttonIndex], (int)image);
+	Rva003284ED(info->inventoryButtons[info->buttonIndex], image);
 	info->inventoryButtons[info->buttonIndex]->winEnable(true);
 	info->buttonIndex++;
 }

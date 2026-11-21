@@ -32,6 +32,7 @@ class BridgeBehavior : public UpdateModule, public BridgeBehaviorInterface,
     public DamageModuleInterface, public DieModuleInterface {
 public:
     BridgeBehavior(Thing *, const ModuleData *);
+    static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
     virtual ~BridgeBehavior();
     virtual NameKeyType getModuleNameKey() const;
     virtual UpdateSleepTime update();

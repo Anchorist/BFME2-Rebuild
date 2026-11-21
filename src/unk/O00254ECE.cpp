@@ -8,6 +8,14 @@
 #include "GameLogic/Module/RunOffMapBehaviorModuleData.h"
 #include "Common/INI.h"
 // FUNCTION: BFME2 0x00254ECE size=86 name=??0RunOffMapBehaviorModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:invented
+RunOffMapBehaviorModuleData::RunOffMapBehaviorModuleData()
+{
+	m_dieOnMap = false;
+	m_runToLocation.x = 10.0f;
+	m_runToLocation.y = 10.0f;
+	m_requiresSpecificTrigger = false;
+	m_runOffMapWaypointName = AsciiString::TheEmptyString;
+}
 
 // FUNCTION: BFME2 0x00254F24 size=81 name=?friend_newModuleData@RunOffMapBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:K
 ModuleData *RunOffMapBehaviorModuleData::friend_newModuleData(INI *ini)

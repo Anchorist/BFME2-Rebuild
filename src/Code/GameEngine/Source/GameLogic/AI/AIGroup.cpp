@@ -1243,6 +1243,18 @@ void AIGroup::groupGetRepaired(Object *target, CommandSourceType cmdSource)
 }
 
 // FUNCTION: BFME2 0x00370198 size=127 name=?groupEnter@AIGroup@@QAEXPAVObject@@W4CommandSourceType@@@Z evidence=N:ledger tier=A
+void AIGroup::groupEnter(Object *target, CommandSourceType cmdSource)
+{
+	_STL::list<Object *> members;
+	for (_STL::list<Object *>::const_iterator it = m_memberList.begin(); it != m_memberList.end(); ++it)
+		members.push_back(*it);
+	for (_STL::list<Object *>::const_iterator it = members.begin(); it != members.end(); ++it)
+	{
+		AIUpdateInterface *ai = (*it)->getAI();
+		if (ai != 0)
+			ai->rva0026C347(target, cmdSource);
+	}
+}
 
 // FUNCTION: BFME2 0x00370217 size=54 name=?groupDock@AIGroup@@QAEXPAVObject@@W4CommandSourceType@@@Z evidence=N:ledger tier=A
 void AIGroup::groupDock(Object *target, CommandSourceType cmdSource)

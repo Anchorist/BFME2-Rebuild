@@ -7,6 +7,10 @@
 // FUNCTION: BFME2 0x000421FD size=21 name=?rva000421FD@GameLogic@@QAEXXZ evidence=S:strong (caller-this) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00042212 size=7 name=?dec@GameLogic@@QAEXXZ evidence=S:strong (position+fit) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00042219 size=28 name=?rva0042219@GameLogic@@QAE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+Bool GameLogic::rva0042219()
+{
+	return m_gameMode != 9 && m_gameMode != 4 && m_gameMode != 7;
+}
 // FUNCTION: BFME2 0x00042235 size=23 name=?isInMultiplayerGame@GameLogic@@QAE_NXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Bool GameLogic::isInMultiplayerGame()
 {

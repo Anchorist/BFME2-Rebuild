@@ -20,6 +20,7 @@ public:
 
 	const RadiusDecalTemplate &getGridDecalTemplate() const { return m_gridDecalTemplate; }
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UnsignedInt m_shrinkDelay;			// 0x08
 	UnsignedInt m_shrinkTime;			// 0x0C

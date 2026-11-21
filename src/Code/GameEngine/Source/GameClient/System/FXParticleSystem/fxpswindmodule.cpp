@@ -21,4 +21,9 @@
 // FUNCTION: BFME2 0x003A57E7 size=20 name=??1DefaultModuleHeadBase@@UAE@XZ evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x003A59AD size=6 name=?Rva003A59ADGet@@YAHXZ evidence=?:placeholder tier=A
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva003A59ADGet()
+{
+	return (int)"DefaultModule<CAT_WIND>";
+}
 

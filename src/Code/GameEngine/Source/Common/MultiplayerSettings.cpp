@@ -145,4 +145,12 @@ MultiplayerColorDefinition *MultiplayerSettings::getColor(Int which)
 }
 
 // FUNCTION: BFME2 0x003813B7 size=137 name=?newMultiplayerColorDefinition@MultiplayerSettings@@QAEPAVMultiplayerColorDefinition@@VAsciiString@@@Z evidence=N:ledger tier=B hypothesis:K
+MultiplayerColorDefinition *MultiplayerSettings::newMultiplayerColorDefinition(AsciiString name)
+{
+	MultiplayerColorDefinition def;
+	Int num = getNumColors();
+	m_colorList[num] = def;
+	m_numColors = (Int)m_colorList.size();
+	return &m_colorList[num];
+}
 

@@ -278,7 +278,8 @@
         "?getDie@DieModule@@UAEPAVDieModuleInterface@@XZ",
         "?getUpdate@UpdateModule@@UAEPAVUpdateModuleInterface@@XZ",
         "?getDamage@DamageModule@@UAEPAVDamageModuleInterface@@XZ",
-        "?getSpecialPower@SpecialPowerModule@@UAEPAVSpecialPowerModuleInterface@@XZ"
+        "?getSpecialPower@SpecialPowerModule@@UAEPAVSpecialPowerModuleInterface@@XZ",
+        "?getUpgrade@UpgradeModule@@UAEPAVUpgradeModuleInterface@@XZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null

@@ -15,6 +15,7 @@ class MoneyCrateCollide : public CrateCollide
 {
 public:
 	MoneyCrateCollide(Thing *thing, const ModuleData *moduleData);	// 0x004BC93F
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~MoneyCrateCollide();
 	virtual NameKeyType getModuleNameKey() const;
 

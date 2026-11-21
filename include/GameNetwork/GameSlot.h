@@ -38,6 +38,7 @@
 #include "Common/GameType.h"
 #include "Common/AsciiString.h"
 #include "Common/UnicodeString.h"
+#include "GameLogic/CreateAHeroData.h"
 #include "Common/Snapshot.h"
 #include "GameNetwork/BfmeNetAddress.h"
 
@@ -147,7 +148,7 @@ public:
 	Int m_unk0x5C;								// +0x5C (-1 after reset)
 	Bool m_unk0x60;								// +0x60
 	unsigned char m_pad0x61[3];					// +0x61
-	unsigned char m_heroData[0x140];			// +0x64 a CreateAHeroData (Draft/CreateAHeroData.h has no members yet)
+	CreateAHeroData m_heroData;				// +0x64 (constructed by 0x00409C3D in GameSlot::GameSlot 0x003FFB4C, assigned via 0x00409359 in reset 0x003FF50C)
 	Bool m_unk0x1A4;							// +0x1A4 (1 after reset; isOccupied needs it)
 	unsigned char m_pad0x1A5[3];				// +0x1A5
 	AsciiString m_unk0x1A8;						// +0x1A8

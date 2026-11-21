@@ -20,6 +20,7 @@ class DarknessSpecialPowerModuleData : public SpecialPowerModuleData
 public:
 	DarknessSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_darknessRadius;                                 // +0x7C DarknessRadius
 	const FXList *m_darknessFX;                           // +0x80 DarknessFX

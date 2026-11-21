@@ -1,6 +1,7 @@
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0023C3E9 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
+#include "GameClient/AptSaveLoad.h"
 // FUNCTION: BFME2 0x0023C3E9 size=17 name=?set@Rva003826C0@@QAEXHH@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0023C3FA size=10 name=?set@Rva0023C3FAFlag@@QAEX_N@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0023C404 size=13 name=?set@Rva0023C404ByteSlot@@QAEXE@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
@@ -37,6 +38,10 @@
 // FUNCTION: BFME2 0x0023C53E size=7 name=?get@Rva0023C53EByteField@@QBEEXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0023C545 size=7 name=?get@Rva0023C545ByteField@@QBEEXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0023C54C size=6 name=?Rva0023C54CGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+int Rva0023C54CGet()
+{
+	return (int)AptSaveLoad::s_instance;
+}
 // FUNCTION: BFME2 0x0023C552 size=15 name=?rva0023C552@@YAXABVUnicodeString@@@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0023C561 size=4 name=?get@Rva0023C561ByteField@@QBEEXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0023C5C4 size=12 name=?get@Rva0023C5C4CmpBoolField@@QBE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

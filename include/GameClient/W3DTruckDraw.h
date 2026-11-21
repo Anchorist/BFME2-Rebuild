@@ -15,6 +15,7 @@ class W3DTruckDraw : public W3DScriptedModelDraw
 {
 public:
 	W3DTruckDraw(Thing *thing, const ModuleData *moduleData);
+	static ModuleData *friend_newModuleData(INI *ini);
 	virtual NameKeyType getModuleNameKey() const;							// 4: 0x000CB578
 	virtual void doDrawModule(const Matrix3D *transformMtx);				// 11: 0x000CC80E
 	virtual void setHidden(Bool hidden);									// 16: 0x000CC781

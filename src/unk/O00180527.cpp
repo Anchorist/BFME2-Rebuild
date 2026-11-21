@@ -6,7 +6,8 @@
 // Edges: left=no-edge-evidence right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
 // FUNCTION: BFME2 0x00180581 size=6 name=?Rva00180581Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:K
-// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+// No retail code or data refers to this function. It returns four characters (below), probably a W3D asset type name; its owner is not known, so it keeps its
+// ledger name.
 int Rva00180581Get()
 {
 	return 0x50415254;	// the four bytes spell "PART"

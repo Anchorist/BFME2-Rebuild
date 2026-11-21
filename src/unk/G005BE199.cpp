@@ -1,9 +1,15 @@
+// cl: /O1
+#include "GameLogic/Module/ActiveBody.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G005BE199 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x005BE199 size=7 name=?get@Rva005BE199DwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x005BE1A0 size=7 name=?get@Rva005BE1A0DwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x005BE1A7 size=7 name=?get@Rva005BE1A7DwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+unsigned int ActiveBody::getLastHealingTimestamp() const
+{
+	return m_lastHealingTimestamp;
+}
 // FUNCTION: BFME2 0x005BE1AE size=7 name=?get@Rva005BE1AEDwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x005BE1B5 size=7 name=?get@Rva005BE1B5DwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x005BE1BC size=7 name=?Get_Num_Polys@DynamicMeshClass@@UBEHXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit

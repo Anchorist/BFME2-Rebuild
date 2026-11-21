@@ -32,7 +32,11 @@ class EvacuateDamage : public DamageModule
 {
 public:
 	EvacuateDamage(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
+	virtual void onDamage(DamageInfo *damageInfo);		// slot 0, 0x004BAFE5
+	virtual void onHealing(DamageInfo *damageInfo) {}		// slot 1, retail target 0x0047A69C (the shared empty body)
+	virtual void onBodyDamageStateChange(const DamageInfo *damageInfo, BodyDamageType oldState, BodyDamageType newState) {}		// slot 2, retail target 0x000D1407 (the shared empty body)
 
 protected:
 	virtual const char *GetSnapshotName() const;

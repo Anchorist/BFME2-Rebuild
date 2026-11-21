@@ -27,6 +27,7 @@ class BeaconClientUpdate : public Rva00362EC7
 {
 public:
 	BeaconClientUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void clientUpdate();	// override: Rva00362EC7 slot 12 (0x004C98AF)
 	virtual Bool vslot11() { return false; }	// slot 11: retail table 0x00C5EB30 has 0x0047A699 (`xor al,al`), not the base's 0x0050B5C6

@@ -30,9 +30,39 @@
 #include "GameLogic/Module/OCLUpdate.h"
 #include "GameLogic/Module/AutoDepositUpdate.h"
 #include "GameLogic/Module/SpecialEnemySenseUpdate.h"
+#include "GameLogic/Module/OneRingPenaltyUpdate.h"
+#include "GameLogic/Module/StealthDetectorUpdate.h"
+#include "GameLogic/Module/SupplyCenterDockUpdateModuleData.h"
+#include "GameLogic/Module/ProneUpdate.h"
+#include "GameLogic/Module/PhysicsBehaviorModuleData.h"
+#include "GameLogic/Module/PhysicsBehavior.h"
+#include "GameLogic/Module/HordeAIUpdate.h"
+#include "GameLogic/Module/RadiusDecalUpdate.h"
+#include "GameLogic/Module/LifetimeUpdate.h"
+#include "GameLogic/Module/LifetimeUpdateModuleData.h"
+#include "GameLogic/Module/FadeAndDieOrnamentUpdate.h"
+#include "GameLogic/Module/ProductionUpdate.h"
+#include "GameLogic/Module/SpawnPointProductionExitUpdate.h"
+// Module creators. Retail registers each module class with a static friend_newModuleInstance that allocates the
+// module for a thing and its module data, and each module data class with a static friend_newModuleData that
+// allocates the data and, when an INI block is open, fills it from the class's buildFieldParse table. The bodies
+// below are those two shapes. A class whose creator is not here yet has no real header, lacks the constructor or
+// buildFieldParse declaration, or did not compile with its current header (the usual cause is a pure virtual that
+// the header does not override yet); its row stays unwritten.
 // FUNCTION: BFME2 0x0024E36B size=56 name=?friend_newModuleInstance@LifetimeUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024E3A3 size=81 name=?friend_newModuleData@LifetimeUpdate@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *LifetimeUpdate::friend_newModuleData(INI *ini)
+{
+	LifetimeUpdateModuleData *data = new LifetimeUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, LifetimeUpdateModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024E3F4 size=56 name=?friend_newModuleInstance@OneRingPenaltyUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *OneRingPenaltyUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new OneRingPenaltyUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024E42C size=81 name=?friend_newModuleData@OneRingPenaltyUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024E47D size=56 name=?friend_newModuleInstance@SpecialEnemySenseUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *SpecialEnemySenseUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
@@ -40,12 +70,20 @@ Module *SpecialEnemySenseUpdate::friend_newModuleInstance(Thing *thing, const Mo
 	return new SpecialEnemySenseUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024E4B5 size=56 name=?friend_newModuleInstance@RadiusDecalUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *RadiusDecalUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new RadiusDecalUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024E4ED size=56 name=?friend_newModuleInstance@AutoDepositUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *AutoDepositUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
 	return new AutoDepositUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024E525 size=59 name=?friend_newModuleInstance@HordeAIUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *HordeAIUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new HordeAIUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024E560 size=59 name=?friend_newModuleInstance@HordeWorkerAIUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024E59B size=56 name=?friend_newModuleInstance@OCLUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *OCLUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
@@ -87,7 +125,18 @@ ModuleData *RadiateFearUpdateModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024E73C size=56 name=?friend_newModuleInstance@PhysicsBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *PhysicsBehavior::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new PhysicsBehavior(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024E774 size=81 name=?friend_newModuleData@PhysicsBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *PhysicsBehaviorModuleData::friend_newModuleData(INI *ini)
+{
+	PhysicsBehaviorModuleData *data = new PhysicsBehaviorModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, PhysicsBehaviorModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024E7C5 size=59 name=?friend_newModuleInstance@GiveUpgradeUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *GiveUpgradeUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -102,6 +151,10 @@ ModuleData *GiveUpgradeUpdateModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024E854 size=59 name=?friend_newModuleInstance@ProductionUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *ProductionUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new ProductionUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024E88F size=81 name=?friend_newModuleData@ProductionUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 ModuleData *ProductionUpdateModuleData::friend_newModuleData(INI *ini)
 {
@@ -111,6 +164,10 @@ ModuleData *ProductionUpdateModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024E8E0 size=56 name=?friend_newModuleInstance@ProneUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *ProneUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new ProneUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024E918 size=81 name=?friend_newModuleData@ProneUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 ModuleData *ProneUpdateModuleData::friend_newModuleData(INI *ini)
 {
@@ -135,6 +192,13 @@ Module *SupplyCenterDockUpdate::friend_newModuleInstance(Thing *thing, const Mod
 	return new SupplyCenterDockUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024EA14 size=81 name=?friend_newModuleData@SupplyCenterDockUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *SupplyCenterDockUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	SupplyCenterDockUpdateModuleData *data = new SupplyCenterDockUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, SupplyCenterDockUpdateModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024EA65 size=59 name=?friend_newModuleInstance@RepairDockUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *RepairDockUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -160,6 +224,10 @@ Module *SlavedUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *m
 	return new SlavedUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024EBB5 size=56 name=?friend_newModuleInstance@StealthDetectorUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *StealthDetectorUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new StealthDetectorUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024EBED size=56 name=?friend_newModuleInstance@BroadcastStealthUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *BroadcastStealthUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -184,12 +252,20 @@ Module *InvisibilityUpdate::friend_newModuleInstance(Thing *thing, const ModuleD
 	return new InvisibilityUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024ECEC size=59 name=?friend_newModuleInstance@SpawnPointProductionExitUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *SpawnPointProductionExitUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new SpawnPointProductionExitUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024ED27 size=56 name=?friend_newModuleInstance@HijackerUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *HijackerUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
 	return new HijackerUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024ED5F size=56 name=?friend_newModuleInstance@FadeAndDieOrnamentUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *FadeAndDieOrnamentUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new FadeAndDieOrnamentUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024ED97 size=56 name=?friend_newModuleInstance@StructureCollapseUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *StructureCollapseUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {

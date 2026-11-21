@@ -155,6 +155,7 @@ public:
 	};
 
 	ProductionUpdate(Thing *thing, const ModuleData *moduleData);		// 0x0049E03A
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	// Death interface slot 0 adjusts from +0x24 to the production interface at +0x20.
 	virtual void onDie(const DamageInfo *damageInfo);
@@ -162,6 +163,17 @@ public:
 	// BehaviorModuleInterface slot 28 returns the production interface at +0x20.
 	virtual ProductionUpdateInterface *getProductionUpdateInterface() { return this; }
 	virtual NameKeyType getModuleNameKey() const;						// 0x0049E15E
+	virtual Bool queueUpgrade(const UpgradeTemplate *upgrade);	// ProductionUpdateInterface slot 3, retail word 0x0049D867
+	virtual Bool queueCreateUnit(const ThingTemplate *unitType, Int, ProductionID productionID, Int, Bool, const AsciiString &, const AsciiString &);	// ProductionUpdateInterface slot 8, retail word 0x0049DA34
+	virtual void pslot12(Int);	// ProductionUpdateInterface slot 12, retail word 0x0049CCF0
+	virtual void pslot17();	// ProductionUpdateInterface slot 17, retail word 0x0057E556
+	virtual void pslot24(UnsignedByte);	// ProductionUpdateInterface slot 24, retail word 0x003BA5D0
+	virtual UnsignedByte pslot25() const;	// ProductionUpdateInterface slot 25, retail word 0x002C8E83
+	virtual Real pslot26(const ThingTemplate *);	// ProductionUpdateInterface slot 26, retail word 0x0049D1CA
+	virtual Real pslot27(const ThingTemplate *);	// ProductionUpdateInterface slot 27, retail word 0x0049D244
+	virtual Real pslot28(UnsignedByte);	// ProductionUpdateInterface slot 28, retail word 0x0049D2BE
+	virtual Real pslot29(UnsignedByte);	// ProductionUpdateInterface slot 29, retail word 0x0049D33D
+	virtual Bool pslot30() const;	// ProductionUpdateInterface slot 30, retail word 0x0049CF9E
 	virtual UpdateSleepTime update();	// 0x0049E3B5
 
 	// UpdateModuleInterface slot 1 reads the data mask (0x0049E1A3).

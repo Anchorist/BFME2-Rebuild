@@ -18,6 +18,7 @@ class OathbreakerBody : public ActiveBody
 {
 public:
 	OathbreakerBody(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~OathbreakerBody();
 	virtual void attemptDamage(DamageInfo *);	// override: attemptDamage slot 0 at +0x10 (0x004C1F71)

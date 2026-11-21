@@ -19,6 +19,7 @@ class CurseSpecialPowerModuleData : public SpecialAbilityUpdateModuleData
 public:
 	CurseSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	const FXList *m_triggerFX;                            // +0xC8 TriggerFX
 	const FXList *m_cursedFX;                             // +0xCC CursedFX

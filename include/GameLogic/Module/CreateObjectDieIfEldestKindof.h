@@ -42,6 +42,7 @@ class CreateObjectDieIfEldestKindof : public CreateObjectDie
 {
 public:
 	CreateObjectDieIfEldestKindof(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void onDie(const DamageInfo *damageInfo);

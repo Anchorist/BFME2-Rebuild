@@ -14,6 +14,9 @@
 #include "GameClient/W3DDisplay.h"
 #include "GameClient/W3DScene.h"
 #include "WW3D2/Line3DClass.h"
+#include "GameClient/Drawable.h"
+
+Real Sin(Real x);
 
 // FUNCTION: BFME2 0x000CA72E size=36 name=?setRopeSpeed@W3DRopeDraw@@UAEXMMM@Z evidence=N:ledger tier=B hypothesis:cohesion
 void W3DRopeDraw::setRopeSpeed(Real curSpeed, Real maxSpeed, Real accel)
@@ -131,4 +134,37 @@ void W3DRopeDraw::initRopeParms(Real length, Real width, const RGBColor &color, 
 }
 
 // FUNCTION: BFME2 0x000CACA8 size=384 name=?doDrawModule@W3DRopeDraw@@UAEXPBVMatrix3D@@@Z evidence=N:ledger tier=B hypothesis:cohesion
+void W3DRopeDraw::doDrawModule(const Matrix3D *transformMtx)
+{
+	if (m_segments.empty())
+		buildSegments();
+
+	if (!m_segments.empty())
+	{
+		Real deflection = Sin(m_curWobblePhase) * m_wobbleAmp;
+		const Coord3D *pos = getDrawable()->getPosition();
+		Vector3 start(pos->x, pos->y, pos->z + m_curZOffset);
+		Real eachLen = m_curLen / m_segments.size();
+		for (std::vector<SegInfo>::iterator it = m_segments.begin(); it != m_segments.end(); ++it)
+		{
+			Vector3 end(pos->x + deflection * it->wobbleAxisX, pos->y + deflection * it->wobbleAxisY, start.Z - eachLen);
+			if (it->line)
+				it->line->Reset(start, end);
+			if (it->softLine)
+				it->softLine->Reset(start, end);
+			start = end;
+		}
+	}
+
+	m_curWobblePhase += m_wobbleRate;
+	if (m_curWobblePhase > 6.283185307179586f)
+		m_curWobblePhase -= 6.283185307179586f;
+
+	m_curZOffset += m_curSpeed;
+	m_curSpeed += m_accel;
+	if (m_curSpeed > m_maxSpeed)
+		m_curSpeed = m_maxSpeed;
+	else if (m_curSpeed < -m_maxSpeed)
+		m_curSpeed = -m_maxSpeed;
+}
 

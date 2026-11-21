@@ -20,6 +20,7 @@ class InvisibilitySpecialPowerModuleData : public SpecialPowerModuleData
 public:
 	InvisibilitySpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UnsignedByte m_invisibilityNugget[0xB8];               // +0x7C InvisibilityNugget; unresolved: Rva00438176Parse
 	Real m_broadcastRadius;                                // +0x134 BroadcastRadius

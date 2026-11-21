@@ -19,6 +19,7 @@ class VeterancyCrateCollide : public CrateCollide
 {
 public:
 	VeterancyCrateCollide(Thing *thing, const ModuleData *moduleData);	// 0x004BCE32
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~VeterancyCrateCollide();
 	virtual NameKeyType getModuleNameKey() const;
 

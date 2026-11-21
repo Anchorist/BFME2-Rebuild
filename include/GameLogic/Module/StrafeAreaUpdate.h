@@ -32,6 +32,7 @@ class StrafeAreaUpdate : public UpdateModule
 {
 public:
 	StrafeAreaUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~StrafeAreaUpdate();
 
 	virtual NameKeyType getModuleNameKey() const;

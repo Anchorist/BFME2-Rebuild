@@ -64,6 +64,7 @@ class ReplaceSelfUpgrade : public UpgradeModule, public CreateModuleInterface
 {
 public:
 	ReplaceSelfUpgrade(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual CreateModuleInterface *getCreate();	// override: getCreate slot 3 at +0xC (0x004B4A8C)
 	virtual Bool wouldUpgrade(const BitFlags<128> &keyMask) const;	// override: wouldUpgrade slot 2 at +0x10 (0x004B7110)

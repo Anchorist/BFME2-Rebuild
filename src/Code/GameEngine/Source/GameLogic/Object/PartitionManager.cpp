@@ -5,6 +5,8 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:Z, hypothesis:cohesion, hypothesis:name:Z, hypothesis:padding
+#include "GameLogic/PartitionManager.h"
+
 // FUNCTION: BFME2 0x006252F0 size=8 name=?rva006252F0@Rva006252F0@@QAEXXZ evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x00625300 size=8 name=?rva00625300@PartitionManager@@QAEXPBURegion3D@@@Z evidence=?:placeholder tier=B hypothesis:name:Z
@@ -24,6 +26,10 @@
 // FUNCTION: BFME2 0x006253C0 size=36 name=?bfmeGo1050C@BfmeC1050@@QAEXHHHHH@Z evidence=N:ledger tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x006254A0 size=6 name=?name@Rva006254A0Named@@QBEPBDXZ evidence=?:placeholder tier=B hypothesis:cohesion
+const char *PartitionManager::GetSnapshotName() const
+{
+	return "PartitionManager";
+}
 
 // FUNCTION: BFME2 0x00625530 size=46 name=?bfmeDescribe@Gen_00881040@@QAEXPAVBfmeFlagTarget@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 

@@ -1,5 +1,6 @@
 // cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_CRTIMP= /EHs /EHc-
 // stlport46
+// bfmealloc_alloconly
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 #include <vector>
 #include "Common/Coord3D.h"
@@ -702,6 +703,40 @@ void AIUpdateInterface::rva00262EFF(void *, void *, void *)
 	ContainModuleInterface *contain = m_object->m_contain;
 	if (contain)
 		contain->removeAllContained(false);
+}
+
+void AIUpdateInterface::doQuickExit(const _STL::vector<Coord3D> *path)
+{
+	Bool locked = m_stateMachine->isLocked();
+	m_stateMachine->unlock();
+	m_stateMachine->rva0033FCC8();
+	m_stateMachine->setGoalPath(path);
+	m_stateMachine->setTemporaryState(7, BfmeLogicFramesPerSecond * 10);
+	if (locked)
+		m_stateMachine->lock("AIUpdateInterface::doQuickExit");
+}
+
+ModelConditionFlags::ModelConditionFlags(InitType, UnsignedInt a, UnsignedInt b, UnsignedInt c)
+{
+	clear();
+	set(a); set(b); set(c);
+}
+
+ModelConditionFlags::ModelConditionFlags(InitType,
+	UnsignedInt a, UnsignedInt b, UnsignedInt c, UnsignedInt d,
+	UnsignedInt e, UnsignedInt f, UnsignedInt g, UnsignedInt h)
+{
+	clear();
+	set(a); set(b); set(c); set(d); set(e); set(f); set(g); set(h);
+}
+
+ModelConditionFlags::ModelConditionFlags(InitType,
+	UnsignedInt a, UnsignedInt b, UnsignedInt c, UnsignedInt d,
+	UnsignedInt e, UnsignedInt f, UnsignedInt g, UnsignedInt h,
+	UnsignedInt i, UnsignedInt j, UnsignedInt k)
+{
+	clear();
+	set(a); set(b); set(c); set(d); set(e); set(f); set(g); set(h); set(i); set(j); set(k);
 }
 
 // FUNCTION: BFME2 0x00262F5E size=101 name=?privateGoProne@AIUpdateInterface@@MAEXPBVDamageInfo@@W4CommandSourceType@@@Z evidence=N:ledger tier=B hypothesis:name:invented
@@ -1643,6 +1678,21 @@ const Coord3D *AIUpdateInterface::getCurrentVictimPos() const
 }
 
 // FUNCTION: BFME2 0x00264EB6 size=60 name=?getAttitude@AIUpdateInterface@@QBE?AW4AttitudeType@@XZ evidence=N:ledger tier=B hypothesis:name:invented
+AttitudeType AIUpdateInterface::getAttitude() const
+{
+	const AIUpdateInterface *ai = this;
+	for (;;)
+	{
+		const Object *obj = ai->getObject();
+		if (!obj || !obj->testStatus((ObjectStatusTypes)0x26))
+			break;
+		const Object *other = const_cast<Object *>(obj)->rva002931F5(false);
+		if (!other || !other->getAI())
+			break;
+		ai = other->getAI();
+	}
+	return (AttitudeType)ai->m_attitude;
+}
 
 // FUNCTION: BFME2 0x00264EF2 size=75 name=?getEnterTarget@AIUpdateInterface@@UAEPAVObject@@XZ evidence=N:ledger tier=B hypothesis:name:invented
 Object *AIUpdateInterface::getEnterTarget()

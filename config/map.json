@@ -63645,7 +63645,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "?bfmeGoPQ@BfmeThingPQ@@QAEXPBU1@@Z",
-      "name_evidence": "N:ledger",
+      "name_evidence": "?:placeholder",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-among-BfmeThingQG|BfmeS1152",
       "object_id": "O00025140",
@@ -66965,7 +66965,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "?bfmeAssignV16@BfmeStrV16@@QAEPAV1@ID@Z",
-      "name_evidence": "N:ledger",
+      "name_evidence": "?:placeholder",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-among-BfmeS1154|BfmeStrV14",
       "object_id": "O00025140",
@@ -174035,7 +174035,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "??0Gen006E2310@@QAE@XZ",
-      "name_evidence": "N:ledger",
+      "name_evidence": "?:placeholder",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;N:special-member(may be implicit);O:placed-with-own-class",
       "object_id": "O00094C58",
@@ -174110,7 +174110,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "??1Gen006E2310@@UAE@XZ",
-      "name_evidence": "N:ledger",
+      "name_evidence": "?:placeholder",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;N:special-member(may be implicit);O:placed-with-own-class",
       "object_id": "O00094C58",
@@ -174185,7 +174185,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "??_GGen006E2310@@UAEPAXI@Z",
-      "name_evidence": "N:ledger",
+      "name_evidence": "?:placeholder",
       "confidence": "high",
       "evidence": "X:scalar-deleting-dtor shape",
       "object_id": "O00094C58",
@@ -175580,7 +175580,8 @@
       "object": "O00098D8A",
       "accepted_names": [
         "?clear@W3DMouse@@QAEXXZ",
-        "?clear@Rva0009990D@@QAEXXZ"
+        "?clear@Rva0009990D@@QAEXXZ",
+        "??1?$OwnedLockPtr@VLockClass@MutexClass@@@@QAE@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -198129,7 +198130,8 @@
         "?PreUnload@Factory@FXShaderAsset@@UAEXXZ",
         "?Unload@Factory@FXShaderAsset@@UAEXXZ",
         "?slot44@BehaviorModule@@UAEXXZ",
-        "?Release_Device_Resources@Impl@TextureAsset@@UAEXXZ"
+        "?Release_Device_Resources@Impl@TextureAsset@@UAEXXZ",
+        "?onCreate@DynamicPortalBehaviour@@UAEXXZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -210242,8 +210244,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?parseModel@AttachModelStruct@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
-      "name_evidence": "N:ledger",
+      "name": "?parseModel@AttachModelStruct@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "name_evidence": "X:request (R8W3DModelDrawOwnAttachCallbacks-0x000C3D00)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-among-W3DModelDrawModuleData|W3DScriptedModelDraw",
       "object_id": "O000B2CBD",
@@ -210255,6 +210257,7 @@
       "parent": null,
       "object": "O000B2CBD",
       "accepted_names": [
+        "?parseModel@AttachModelStruct@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
         "?parseModel@AttachModelStruct@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z"
       ],
       "seed_tier": "A",
@@ -212018,8 +212021,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?parseAttachModel@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
-      "name_evidence": "N:ledger",
+      "name": "?parseAttachModel@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "name_evidence": "X:request (R8W3DModelDrawOwnAttachCallbacks-0x000C8748)",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal;O:placed-with-own-class",
       "object_id": "O000B2CBD",
@@ -212031,6 +212034,7 @@
       "parent": null,
       "object": "O000B2CBD",
       "accepted_names": [
+        "?parseAttachModel@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
         "?parseAttachModel@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z"
       ],
       "seed_tier": "A",
@@ -218589,7 +218593,8 @@
       "accepted_names": [
         "?Set_Animation@RenderObjClass@@UAEXPAVHAnimClass@@MH@Z",
         "?XferData@XferSaveAsText@@MAEXIPAXI@Z",
-        "?onBodyDamageStateChange@HordeTransportContainDamage@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z"
+        "?onBodyDamageStateChange@HordeTransportContainDamage@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z",
+        "?onBodyDamageStateChange@UpgradeModule@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -221097,7 +221102,16 @@
         "?slot25@ModuleData@@UBEPBVQueueProductionExitUpdateModuleData@@XZ",
         "?slot26@ModuleData@@UBEPBVLevelUpUpgradeModuleData@@XZ",
         "?slot28@ModuleData@@UBEPBVRespawnUpdateModuleData@@XZ",
-        "?slot24@BehaviorModule@@UAEPAVClearanceTestGeometryInterface@@XZ"
+        "?slot24@BehaviorModule@@UAEPAVClearanceTestGeometryInterface@@XZ",
+        "?getUpdatePhase@AIUpdateInterface@@MBE?AW4SleepyUpdatePhase@@XZ",
+        "?getDozerAIInterface@AIUpdateInterface@@UBEPBVDozerAIInterface@@XZ",
+        "?getDozerAIInterface@AIUpdateInterface@@UAEPAVDozerAIInterface@@XZ",
+        "?getSupplyTruckAIInterface@AIUpdateInterface@@UBEPBVSupplyTruckAIInterface@@XZ",
+        "?getSupplyTruckAIInterface@AIUpdateInterface@@UAEPAVSupplyTruckAIInterface@@XZ",
+        "?getWorkerAIInterface@AIUpdateInterface@@UBEPBVWorkerAIInterface@@XZ",
+        "?getWorkerAIInterface@AIUpdateInterface@@UAEPAVWorkerAIInterface@@XZ",
+        "?getAssaultTransportAIInterface@AIUpdateInterface@@UBEPBVAssaultTransportAIInterface@@XZ",
+        "?getAssaultTransportAIInterface@AIUpdateInterface@@UAEPAVAssaultTransportAIInterface@@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-membership"
@@ -251615,8 +251629,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?Get_Texture_Bit_Depth@DX8Wrapper@@SAHXZ",
-      "name_evidence": "H:harvest (credited body in src/Code/Libraries/Source/WWVegas/WW3D2/ww3d.cpp)",
+      "name": "?Get_Device_Resolution_Width@DX8Wrapper@@KAHXZ",
+      "name_evidence": "X:review",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O00116E10",
@@ -251628,7 +251642,7 @@
       "parent": null,
       "object": "O00116E10",
       "accepted_names": [
-        "?Get_Texture_Bit_Depth@DX8Wrapper@@SAHXZ",
+        "?Get_Device_Resolution_Width@DX8Wrapper@@KAHXZ",
         "?Rva00116E20Get@@YAHXZ"
       ],
       "seed_tier": "B",
@@ -251664,8 +251678,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?Get_Device_Resolution_Width@DX8Wrapper@@KAHXZ",
-      "name_evidence": "H:harvest (credited body in src/Code/Libraries/Source/WWVegas/WW3D2/ww3d.cpp)",
+      "name": "?Get_Device_Resolution_Height@DX8Wrapper@@KAHXZ",
+      "name_evidence": "X:review",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O00116E10",
@@ -251677,7 +251691,7 @@
       "parent": null,
       "object": "O00116E10",
       "accepted_names": [
-        "?Get_Device_Resolution_Width@DX8Wrapper@@KAHXZ",
+        "?Get_Device_Resolution_Height@DX8Wrapper@@KAHXZ",
         "?Rva00116E30Get@@YAHXZ"
       ],
       "seed_tier": "B",
@@ -254009,7 +254023,8 @@
       "parent": null,
       "object": "O00116E10",
       "accepted_names": [
-        "?getTextureBitDepth@@YAHXZ"
+        "?getTextureBitDepth@@YAHXZ",
+        "?Get_Texture_Bit_Depth@DX8Wrapper@@SAHXZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -269139,7 +269154,8 @@
       "parent": null,
       "object": "G00129440",
       "accepted_names": [
-        "?getNPatchesLevel@@YAHXZ"
+        "?getNPatchesLevel@@YAHXZ",
+        "?Get_NPatches_Level@WW3D@@SAIXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:mm1-gap-unit",
@@ -270187,14 +270203,14 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?Get_NPatches_Level@WW3D@@SAIXZ",
-      "name_evidence": "H:harvest (credited body in src/Code/Libraries/Source/WWVegas/WW3D2/statistics.cpp)",
+      "name": "?Get_Draw_Call_Batch_Count@Debug_Statistics@@YAHXZ",
+      "name_evidence": "X:review",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "retained:O00129470",
       "object_evidence": "X:closure",
       "accepted_names": [
-        "?Get_NPatches_Level@WW3D@@SAIXZ",
+        "?Get_Draw_Call_Batch_Count@Debug_Statistics@@YAHXZ",
         "?Rva00129660Get@@YAHXZ"
       ],
       "parent": null,
@@ -270269,14 +270285,14 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?Get_Draw_Call_Batch_Count@Debug_Statistics@@YAHXZ",
-      "name_evidence": "H:harvest (credited body in src/Code/Libraries/Source/WWVegas/WW3D2/statistics.cpp)",
+      "name": "?Get_Shader_Changes@Debug_Statistics@@YAHXZ",
+      "name_evidence": "X:review",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "retained:O00129470",
       "object_evidence": "X:closure",
       "accepted_names": [
-        "?Get_Draw_Call_Batch_Count@Debug_Statistics@@YAHXZ",
+        "?Get_Shader_Changes@Debug_Statistics@@YAHXZ",
         "?Rva00129680Get@@YAHXZ"
       ],
       "parent": null,
@@ -343013,8 +343029,8 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "??$_Construct@USegInfo@W3DRopeDraw@@U12@@_STL@@YAXPAUSegInfo@W3DRopeDraw@@ABU12@@Z",
-      "name_evidence": "N:ledger",
+      "name": "??$_Construct@URva0016CC80Pod16@@U1@@_STL@@YAXPAURva0016CC80Pod16@@ABU1@@Z",
+      "name_evidence": "X:review",
       "confidence": "high",
       "evidence": "N:template-instantiation",
       "object_id": "O00168F30",
@@ -343026,7 +343042,7 @@
       "parent": null,
       "object": "O00168F30",
       "accepted_names": [
-        "??$_Construct@USegInfo@W3DRopeDraw@@U12@@_STL@@YAXPAUSegInfo@W3DRopeDraw@@ABU12@@Z"
+        "??$_Construct@URva0016CC80Pod16@@U1@@_STL@@YAXPAURva0016CC80Pod16@@ABU1@@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -358223,7 +358239,8 @@
       "parent": null,
       "object": "O00178E50",
       "accepted_names": [
-        "?Set_Point_Alpha@PointGroupClass@@QAEXM@Z"
+        "?Set_Point_Alpha@PointGroupClass@@QAEXM@Z",
+        "?Set_Line_UCoord@LineGroupClass@@QAEXM@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"
@@ -444643,7 +444660,8 @@
       "parent": null,
       "object": "O001E3647",
       "accepted_names": [
-        "?insert_unique@?$_Rb_tree@HU?$pair@$$CBHH@_STL@@U?$_Select1st@U?$pair@$$CBHH@_STL@@@2@U?$less@H@2@V?$allocator@U?$pair@$$CBHH@_STL@@@2@@_STL@@QAE?AU?$pair@U?$_Rb_tree_iterator@U?$pair@$$CBHH@_STL@@U?$_Nonconst_traits@U?$pair@$$CBHH@_STL@@@2@@_STL@@_N@2@ABU?$pair@$$CBHH@2@@Z"
+        "?insert_unique@?$_Rb_tree@HU?$pair@$$CBHH@_STL@@U?$_Select1st@U?$pair@$$CBHH@_STL@@@2@U?$less@H@2@V?$allocator@U?$pair@$$CBHH@_STL@@@2@@_STL@@QAE?AU?$pair@U?$_Rb_tree_iterator@U?$pair@$$CBHH@_STL@@U?$_Nonconst_traits@U?$pair@$$CBHH@_STL@@@2@@_STL@@_N@2@ABU?$pair@$$CBHH@2@@Z",
+        "?insert_unique@?$_Rb_tree@W4ObjectID@@U?$pair@$$CBW4ObjectID@@I@_STL@@U?$_Select1st@U?$pair@$$CBW4ObjectID@@I@_STL@@@3@U?$less@W4ObjectID@@@3@V?$allocator@U?$pair@$$CBW4ObjectID@@I@_STL@@@3@@_STL@@QAE?AU?$pair@U?$_Rb_tree_iterator@U?$pair@$$CBW4ObjectID@@I@_STL@@U?$_Nonconst_traits@U?$pair@$$CBW4ObjectID@@I@_STL@@@2@@_STL@@_N@2@ABU?$pair@$$CBW4ObjectID@@I@2@@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -471993,7 +472011,8 @@
       "parent": null,
       "object": "O00200BBA",
       "accepted_names": [
-        "?Rva00200BBAGet@WaterTransparencySetting@@UAEHXZ"
+        "?Rva00200BBAGet@WaterTransparencySetting@@UAEHXZ",
+        "?getEditableFieldParse@WaterTransparencySetting@@UAEPBUFieldParse@@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:name:invented"
@@ -472043,7 +472062,8 @@
       "parent": null,
       "object": "O00200BBA",
       "accepted_names": [
-        "?rva00200BD9@WaterTransparencySetting@@UAEXXZ"
+        "?rva00200BD9@WaterTransparencySetting@@UAEXXZ",
+        "?getEditableInstance@WaterTransparencySetting@@UAEPAXXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -561284,7 +561304,8 @@
         "?getDie@DieModule@@UAEPAVDieModuleInterface@@XZ",
         "?getUpdate@UpdateModule@@UAEPAVUpdateModuleInterface@@XZ",
         "?getDamage@DamageModule@@UAEPAVDamageModuleInterface@@XZ",
-        "?getSpecialPower@SpecialPowerModule@@UAEPAVSpecialPowerModuleInterface@@XZ"
+        "?getSpecialPower@SpecialPowerModule@@UAEPAVSpecialPowerModuleInterface@@XZ",
+        "?getUpgrade@UpgradeModule@@UAEPAVUpgradeModuleInterface@@XZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -751812,7 +751833,8 @@
       "parent": null,
       "object": "O00327C39",
       "accepted_names": [
-        "?Rva003284ED@@YAXPAVGameWindow@@H@Z"
+        "?Rva003284ED@@YAXPAVGameWindow@@H@Z",
+        "?Rva003284ED@@YAXPAVGameWindow@@PBVImage@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"
@@ -786974,8 +786996,8 @@
       "role": "owned",
       "parent_rva": "",
       "fold_group": "",
-      "name": "?rva00346FA5@AIStates@@QBEPAXH@Z",
-      "name_evidence": "P:provisional (wb-file)",
+      "name": "?getGoalPathPosition@AIStateMachine@@QBEPBVCoord3D@@H@Z",
+      "name_evidence": "X:request (R8AIStateMachineGoalPathKey-0x00346FA5)",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O0033F35E",
@@ -786987,6 +787009,7 @@
       "parent": null,
       "object": "O0033F35E",
       "accepted_names": [
+        "?getGoalPathPosition@AIStateMachine@@QBEPBVCoord3D@@H@Z",
         "?rva00346FA5@AIStates@@QBEPAXH@Z",
         "?rva00346FA5@Rva00346FA5@@QBEPAXH@Z"
       ],
@@ -829964,7 +829987,8 @@
       "parent": null,
       "object": "O00381D9E",
       "accepted_names": [
-        "?_M_create_node@?$_Rb_tree@HU?$pair@$$CBHH@_STL@@U?$_Select1st@U?$pair@$$CBHH@_STL@@@2@U?$less@H@2@V?$allocator@U?$pair@$$CBHH@_STL@@@2@@_STL@@IAEPAU?$_Rb_tree_node@U?$pair@$$CBHH@_STL@@@2@ABU?$pair@$$CBHH@2@@Z"
+        "?_M_create_node@?$_Rb_tree@HU?$pair@$$CBHH@_STL@@U?$_Select1st@U?$pair@$$CBHH@_STL@@@2@U?$less@H@2@V?$allocator@U?$pair@$$CBHH@_STL@@@2@@_STL@@IAEPAU?$_Rb_tree_node@U?$pair@$$CBHH@_STL@@@2@ABU?$pair@$$CBHH@2@@Z",
+        "?_M_create_node@?$_Rb_tree@W4ObjectID@@U?$pair@$$CBW4ObjectID@@I@_STL@@U?$_Select1st@U?$pair@$$CBW4ObjectID@@I@_STL@@@3@U?$less@W4ObjectID@@@3@V?$allocator@U?$pair@$$CBW4ObjectID@@I@_STL@@@3@@_STL@@IAEPAU?$_Rb_tree_node@U?$pair@$$CBW4ObjectID@@I@_STL@@@2@ABU?$pair@$$CBW4ObjectID@@I@2@@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -830641,7 +830665,8 @@
       "parent": null,
       "object": "O00381D9E",
       "accepted_names": [
-        "?_M_insert@?$_Rb_tree@HU?$pair@$$CBHH@_STL@@U?$_Select1st@U?$pair@$$CBHH@_STL@@@2@U?$less@H@2@V?$allocator@U?$pair@$$CBHH@_STL@@@2@@_STL@@AAE?AU?$_Rb_tree_iterator@U?$pair@$$CBHH@_STL@@U?$_Nonconst_traits@U?$pair@$$CBHH@_STL@@@2@@2@PAU_Rb_tree_node_base@2@0ABU?$pair@$$CBHH@2@0@Z"
+        "?_M_insert@?$_Rb_tree@HU?$pair@$$CBHH@_STL@@U?$_Select1st@U?$pair@$$CBHH@_STL@@@2@U?$less@H@2@V?$allocator@U?$pair@$$CBHH@_STL@@@2@@_STL@@AAE?AU?$_Rb_tree_iterator@U?$pair@$$CBHH@_STL@@U?$_Nonconst_traits@U?$pair@$$CBHH@_STL@@@2@@2@PAU_Rb_tree_node_base@2@0ABU?$pair@$$CBHH@2@0@Z",
+        "?_M_insert@?$_Rb_tree@W4ObjectID@@U?$pair@$$CBW4ObjectID@@I@_STL@@U?$_Select1st@U?$pair@$$CBW4ObjectID@@I@_STL@@@3@U?$less@W4ObjectID@@@3@V?$allocator@U?$pair@$$CBW4ObjectID@@I@_STL@@@3@@_STL@@AAE?AU?$_Rb_tree_iterator@U?$pair@$$CBW4ObjectID@@I@_STL@@U?$_Nonconst_traits@U?$pair@$$CBW4ObjectID@@I@_STL@@@2@@2@PAU_Rb_tree_node_base@2@0ABU?$pair@$$CBW4ObjectID@@I@2@0@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1014333,7 +1014358,9 @@
         "?getDamage@FlammableUpdate@@UAEPAVDamageModuleInterface@@XZ",
         "?getDie@RubbleRiseUpdate@@UAEPAVDieModuleInterface@@XZ",
         "?getBridgeBehaviorInterface@BridgeBehavior@@UAEPAVBridgeBehaviorInterface@@XZ",
-        "?slot37@BloodthirstyUpdate@@UAEPAVBloodthirstyUpdateInterface@@XZ"
+        "?slot37@BloodthirstyUpdate@@UAEPAVBloodthirstyUpdateInterface@@XZ",
+        "?getCreate@DynamicPortalBehaviour@@UAEPAVCreateModuleInterface@@XZ",
+        "?getCollide@CritterEmitterUpdate@@UAEPAVCollideModuleInterface@@XZ"
       ],
       "parent": null,
       "object": "retained:O0045314E",
@@ -1044275,7 +1044302,15 @@
         "?IsLightCRC@XferSaveAsText@@UBE_NXZ",
         "?isContactWeapon@WeaponTemplate@@QBE_NXZ",
         "?slot09@ModuleData@@UBE_NXZ",
-        "?slot08@ModuleData@@UBE_NXZ"
+        "?slot08@ModuleData@@UBE_NXZ",
+        "?isHijackedVehicleCrateCollide@AIUpdateInterface@@UBE_NXZ",
+        "?isCarBombCrateCollide@AIUpdateInterface@@UBE_NXZ",
+        "?isRailroad@AIUpdateInterface@@UBE_NXZ",
+        "?isSalvageCrateCollide@AIUpdateInterface@@UBE_NXZ",
+        "?isHijackedVehicleCrateCollide@CritterEmitterUpdate@@UBE_NXZ",
+        "?isCarBombCrateCollide@CritterEmitterUpdate@@UBE_NXZ",
+        "?isRailroad@CritterEmitterUpdate@@UBE_NXZ",
+        "?isSalvageCrateCollide@CritterEmitterUpdate@@UBE_NXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"
@@ -1044331,7 +1044366,9 @@
         "?onHealing@HordeTransportContainDamage@@UAEXPAVDamageInfo@@@Z",
         "?slot43@BehaviorModule@@UAEXM@Z",
         "?mapLoadPostProcess@BehaviorModule@@UAEXPBVDict@@@Z",
-        "?slot46@BehaviorModule@@UAEXH@Z"
+        "?slot46@BehaviorModule@@UAEXH@Z",
+        "?onDamage@UpgradeModule@@UAEXPAVDamageInfo@@@Z",
+        "?onHealing@UpgradeModule@@UAEXPAVDamageInfo@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"
@@ -1076682,7 +1076719,8 @@
         "?loadPostProcess@SiegeAIUpdate@@MAEXXZ",
         "?LoadPostProcess@SiegeAIUpdate@@MAEXXZ",
         "?loadPostProcess@TransportAIUpdate@@MAEXXZ",
-        "?LoadPostProcess@TransportAIUpdate@@MAEXXZ"
+        "?LoadPostProcess@TransportAIUpdate@@MAEXXZ",
+        "?loadPostProcess@AnimalAIUpdate@@MAEXXZ"
       ],
       "parent": "0x002686A4",
       "object": "retained:O0049A67C",
@@ -1091181,7 +1091219,8 @@
       "accepted_names": [
         "?vslot094@SupplyTruckAIUpdate@@UBEPAXXZ",
         "?getSupplyTruckAIInterface@SupplyTruckAIUpdate@@UAEPAVSupplyTruckAIInterface@@XZ",
-        "?getSupplyTruckAIInterface@SupplyTruckAIUpdate@@UBEPBVSupplyTruckAIInterface@@XZ"
+        "?getSupplyTruckAIInterface@SupplyTruckAIUpdate@@UBEPBVSupplyTruckAIInterface@@XZ",
+        "?getAnimalAIInterface@AnimalAIUpdate@@UAEPAVAnimalAIInterface@@XZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1103096,7 +1103135,8 @@
       "parent": null,
       "object": "O004B4A86",
       "accepted_names": [
-        "?getCreate@ReplaceSelfUpgrade@@UAEPAVCreateModuleInterface@@XZ"
+        "?getCreate@ReplaceSelfUpgrade@@UAEPAVCreateModuleInterface@@XZ",
+        "?getDie@DynamicPortalBehaviour@@UAEPAVDieModuleInterface@@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1140577,7 +1140617,8 @@
       "object_evidence": "X:closure",
       "accepted_names": [
         "?isPlayerSlotActive@ConnectionManager@@QAEHH@Z",
-        "?isPlayerSlotActive@BFMEConnectionManager@@QAEHH@Z"
+        "?isPlayerSlotActive@BFMEConnectionManager@@QAEHH@Z",
+        "?isPlayerSlotActive@ConnectionManager@@QAE_NH@Z"
       ],
       "parent": null,
       "object": "retained:O004CF032",
@@ -1141962,7 +1142003,8 @@
       "object_id": "retained:O004CF032",
       "object_evidence": "X:closure",
       "accepted_names": [
-        "?rva004D05D7@Rva004D05D7@@QAEXVUnicodeString@@@Z"
+        "?rva004D05D7@Rva004D05D7@@QAEXVUnicodeString@@@Z",
+        "?setFilename@Rva004D67D0@@QAEXVUnicodeString@@@Z"
       ],
       "parent": null,
       "object": "retained:O004CF032",
@@ -1203551,7 +1203593,8 @@
         "?isAvailableForSupplying@SupplyTruckAIUpdate@@UBE_NXZ",
         "?isAttack@AIIdleState@@UBE_NXZ",
         "?unknownQuery14@AIAttackAreaState@@UBE_NXZ",
-        "?unknownQuery14@AIHuntState@@UBE_NXZ"
+        "?unknownQuery14@AIHuntState@@UBE_NXZ",
+        "?shouldDoOnBuildComplete@DynamicPortalBehaviour@@UBE_NXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-membership"
@@ -1265845,7 +1265888,8 @@
       "parent": null,
       "object": "O0054F93F",
       "accepted_names": [
-        "??1?$_Deque_base@VBuddyResponse@@V?$allocator@VBuddyResponse@@@_STL@@@_STL@@QAE@XZ"
+        "??1?$_Deque_base@VBuddyResponse@@V?$allocator@VBuddyResponse@@@_STL@@@_STL@@QAE@XZ",
+        "??1?$_Deque_base@HV?$allocator@H@_STL@@@_STL@@QAE@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1266145,7 +1266189,8 @@
       "parent": null,
       "object": "O0054F93F",
       "accepted_names": [
-        "?pop_front@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@QAEXXZ"
+        "?pop_front@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@QAEXXZ",
+        "?pop_front@?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@QAEXXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1266196,7 +1266241,9 @@
       "object": "O0054F93F",
       "accepted_names": [
         "??0BfmeNarrowRecord0054FEF1@@QAE@ABU0@@Z",
-        "??0PingRequest@@QAE@ABU0@@Z"
+        "??0PingRequest@@QAE@ABU0@@Z",
+        "??0PingRequest@@QAE@ABV0@@Z",
+        "??0PingResponse@@QAE@ABV0@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1266272,7 +1266319,9 @@
       "object": "O0054F93F",
       "accepted_names": [
         "??$_Construct@UBfmeNarrowRecord0054FEF1@@U1@@_STL@@YAXPAUBfmeNarrowRecord0054FEF1@@ABU1@@Z",
-        "??$_Construct@UPingRequest@@U1@@_STL@@YAXPAUPingRequest@@ABU1@@Z"
+        "??$_Construct@UPingRequest@@U1@@_STL@@YAXPAUPingRequest@@ABU1@@Z",
+        "??$_Construct@VPingRequest@@V1@@_STL@@YAXPAVPingRequest@@ABV1@@Z",
+        "??$_Construct@VPingResponse@@V1@@_STL@@YAXPAVPingResponse@@ABV1@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1266423,7 +1266472,9 @@
       "object": "O0054F93F",
       "accepted_names": [
         "?_M_push_back_aux_v@?$deque@UBfmeNarrowRecord0054FEF1@@V?$allocator@UBfmeNarrowRecord0054FEF1@@@_STL@@@_STL@@IAEXABUBfmeNarrowRecord0054FEF1@@@Z",
-        "?_M_push_back_aux_v@?$deque@UPingRequest@@V?$allocator@UPingRequest@@@_STL@@@_STL@@IAEXABUPingRequest@@@Z"
+        "?_M_push_back_aux_v@?$deque@UPingRequest@@V?$allocator@UPingRequest@@@_STL@@@_STL@@IAEXABUPingRequest@@@Z",
+        "?_M_push_back_aux_v@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@IAEXABVPingRequest@@@Z",
+        "?_M_push_back_aux_v@?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@IAEXABVPingResponse@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1266499,7 +1266550,9 @@
       "object": "O0054F93F",
       "accepted_names": [
         "??4BfmeNarrowRecord0054FEF1@@QAEAAU0@ABU0@@Z",
-        "??4PingRequest@@QAEAAU0@ABU0@@Z"
+        "??4PingRequest@@QAEAAU0@ABU0@@Z",
+        "??4PingRequest@@QAEAAV0@ABV0@@Z",
+        "??4PingResponse@@QAEAAV0@ABV0@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1266550,7 +1266603,9 @@
       "object": "O0054F93F",
       "accepted_names": [
         "?push_back@?$deque@UBfmeNarrowRecord0054FEF1@@V?$allocator@UBfmeNarrowRecord0054FEF1@@@_STL@@@_STL@@QAEXABUBfmeNarrowRecord0054FEF1@@@Z",
-        "?push_back@?$deque@UPingRequest@@V?$allocator@UPingRequest@@@_STL@@@_STL@@QAEXABUPingRequest@@@Z"
+        "?push_back@?$deque@UPingRequest@@V?$allocator@UPingRequest@@@_STL@@@_STL@@QAEXABUPingRequest@@@Z",
+        "?push_back@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@QAEXABVPingRequest@@@Z",
+        "?push_back@?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@QAEXABVPingResponse@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1266650,7 +1266705,8 @@
       "parent": "0x00550384",
       "object": "O0054F93F",
       "accepted_names": [
-        "?push@?$queue@VPingRequest@@V?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@@_STL@@QAEXABVPingRequest@@@Z"
+        "?push@?$queue@VPingRequest@@V?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@@_STL@@QAEXABVPingRequest@@@Z",
+        "?push@?$queue@VPingResponse@@V?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@@_STL@@QAEXABVPingResponse@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1266701,7 +1266757,8 @@
       "object": "O0054F93F",
       "accepted_names": [
         "?rva005504F9@Rva0055011A@@UAEXABUBfmeNarrowRecord0054FEF1@@@Z",
-        "?rva005504F9@Rva0055011A@@UAEXABUPingRequest@@@Z"
+        "?rva005504F9@Rva0055011A@@UAEXABUPingRequest@@@Z",
+        "?addResponse@Pinger@@UAEXABVPingResponse@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1337991,7 +1338048,8 @@
       "parent": null,
       "object": "unknown",
       "accepted_names": [
-        "??$_Construct@UBfmeE16@@U1@@_STL@@YAXPAUBfmeE16@@ABU1@@Z"
+        "??$_Construct@UBfmeE16@@U1@@_STL@@YAXPAUBfmeE16@@ABU1@@Z",
+        "??$_Construct@USegInfo@W3DRopeDraw@@U12@@_STL@@YAXPAUSegInfo@W3DRopeDraw@@ABU12@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-membership"
@@ -1372396,7 +1372454,9 @@
         "?scanReal@StreamingArchiveFile@@UAE_NAAM@Z",
         "?scanString@StreamingArchiveFile@@UAE_NAAVAsciiString@@@Z",
         "?getSneakyTargetingOffset@AIUpdateInterface@@UBE_NPAUCoord3D@@@Z",
-        "?getSneakyTargetingOffset@AIUpdateInterface@@UBE_NPAVCoord3D@@@Z"
+        "?getSneakyTargetingOffset@AIUpdateInterface@@UBE_NPAVCoord3D@@@Z",
+        "?wouldLikeToCollideWith@AIUpdateInterface@@UBE_NPBVObject@@@Z",
+        "?wouldLikeToCollideWith@CritterEmitterUpdate@@UBE_NPBVObject@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"
@@ -1682765,7 +1682825,8 @@
       "object": "O006CBC40",
       "accepted_names": [
         "?aptGetRootAnimationInfo@@YAXPAPAX0@Z",
-        "?Rva006CD6F0Get@@YAXPAPAX0@Z"
+        "?Rva006CD6F0Get@@YAXPAPAX0@Z",
+        "?aptGetRootAnimationInfo@@YAXPAH0@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1774565,8 +1774626,8 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "??1?$_Deque_base@HV?$allocator@H@_STL@@@_STL@@QAE@XZ",
-      "name_evidence": "N:ledger",
+      "name": "??1?$_Deque_base@URva0073C8C0Pod4@@V?$allocator@URva0073C8C0Pod4@@@_STL@@@_STL@@QAE@XZ",
+      "name_evidence": "X:review",
       "confidence": "high",
       "evidence": "N:template-instantiation",
       "object_id": "O0073B600",
@@ -1774578,7 +1774639,7 @@
       "parent": null,
       "object": "O0073B600",
       "accepted_names": [
-        "??1?$_Deque_base@HV?$allocator@H@_STL@@@_STL@@QAE@XZ"
+        "??1?$_Deque_base@URva0073C8C0Pod4@@V?$allocator@URva0073C8C0Pod4@@@_STL@@@_STL@@QAE@XZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -1784096,7 +1784157,7 @@
       "parent_rva": "",
       "fold_group": "",
       "name": "_bfmeGo1039E",
-      "name_evidence": "N:ledger",
+      "name_evidence": "?:placeholder",
       "confidence": "medium",
       "evidence": "?:no-compiler-generated-signal",
       "object_id": "O00746EA0",
@@ -1874317,8 +1874378,8 @@
       "role": "ehhandler",
       "parent_rva": "0x000C3D00",
       "fold_group": "",
-      "name": "__ehhandler$?parseModel@AttachModelStruct@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
-      "name_evidence": "X:parent-name",
+      "name": "__ehhandler$?parseModel@AttachModelStruct@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "name_evidence": "X:request (R8W3DModelDrawOwnAttachCallbacks-0x00761C54)",
       "confidence": "high",
       "evidence": "X:eh-stub FuncInfo=0x009051D8;X:parent-by-prologue",
       "object_id": "O000B2CBD",
@@ -1874330,6 +1874391,7 @@
       "parent": "0x000C3D00",
       "object": "O000B2CBD",
       "accepted_names": [
+        "__ehhandler$?parseModel@AttachModelStruct@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
         "__ehhandler$?parseModel@AttachModelStruct@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z"
       ],
       "seed_tier": "A",
@@ -1876854,8 +1876916,8 @@
       "role": "ehhandler",
       "parent_rva": "0x000C8748",
       "fold_group": "",
-      "name": "__ehhandler$?parseAttachModel@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
-      "name_evidence": "X:parent-name",
+      "name": "__ehhandler$?parseAttachModel@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "name_evidence": "X:request (R8W3DModelDrawOwnAttachCallbacks-0x00762041)",
       "confidence": "high",
       "evidence": "X:eh-stub FuncInfo=0x0090562C;X:parent-by-prologue",
       "object_id": "O000B2CBD",
@@ -1876867,6 +1876929,7 @@
       "parent": "0x000C8748",
       "object": "O000B2CBD",
       "accepted_names": [
+        "__ehhandler$?parseAttachModel@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
         "__ehhandler$?parseAttachModel@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z"
       ],
       "seed_tier": "A",
@@ -2415145,7 +2415208,9 @@
       "object": "O0054F93F",
       "accepted_names": [
         "__ehhandler$??$_Construct@UBfmeNarrowRecord0054FEF1@@U1@@_STL@@YAXPAUBfmeNarrowRecord0054FEF1@@ABU1@@Z",
-        "__ehhandler$??$_Construct@UPingRequest@@U1@@_STL@@YAXPAUPingRequest@@ABU1@@Z"
+        "__ehhandler$??$_Construct@UPingRequest@@U1@@_STL@@YAXPAUPingRequest@@ABU1@@Z",
+        "__ehhandler$??$_Construct@VPingRequest@@V1@@_STL@@YAXPAVPingRequest@@ABV1@@Z",
+        "__ehhandler$??$_Construct@VPingResponse@@V1@@_STL@@YAXPAVPingResponse@@ABV1@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -2415446,7 +2415511,9 @@
       "object": "O0054F93F",
       "accepted_names": [
         "__ehhandler$?_M_push_back_aux_v@?$deque@UBfmeNarrowRecord0054FEF1@@V?$allocator@UBfmeNarrowRecord0054FEF1@@@_STL@@@_STL@@IAEXABUBfmeNarrowRecord0054FEF1@@@Z",
-        "__ehhandler$?_M_push_back_aux_v@?$deque@UPingRequest@@V?$allocator@UPingRequest@@@_STL@@@_STL@@IAEXABUPingRequest@@@Z"
+        "__ehhandler$?_M_push_back_aux_v@?$deque@UPingRequest@@V?$allocator@UPingRequest@@@_STL@@@_STL@@IAEXABUPingRequest@@@Z",
+        "__ehhandler$?_M_push_back_aux_v@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@IAEXABVPingRequest@@@Z",
+        "__ehhandler$?_M_push_back_aux_v@?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@IAEXABVPingResponse@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -2415947,7 +2416014,8 @@
       "object": "O0054F93F",
       "accepted_names": [
         "__ehhandler$?rva005504F9@Rva0055011A@@UAEXABUBfmeNarrowRecord0054FEF1@@@Z",
-        "__ehhandler$?rva005504F9@Rva0055011A@@UAEXABUPingRequest@@@Z"
+        "__ehhandler$?rva005504F9@Rva0055011A@@UAEXABUPingRequest@@@Z",
+        "__ehhandler$?addResponse@Pinger@@UAEXABVPingResponse@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"

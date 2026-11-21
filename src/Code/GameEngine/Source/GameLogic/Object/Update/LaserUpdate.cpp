@@ -37,6 +37,11 @@
 
 // Retail 0x00362F5E (6 bytes): LaserUpdate's table 0x008170E0 carries it in
 // slot 2, so it is GetSnapshotName (the class-name literal at 0x00BCB950).
+Rva00362EC7::Rva00362EC7(Thing *thing, const ModuleData *moduleData)
+	: DrawableModule(thing, moduleData)
+{
+}
+
 const char *LaserUpdate::GetSnapshotName() const
 {
 	return "LaserUpdate";

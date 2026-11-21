@@ -10,6 +10,12 @@
 #include "GameLogic/Object.h"
 #include "Common/Player.h"
 // FUNCTION: BFME2 0x004C4353 size=46 name=??0ScavengerSpecialPower@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+ScavengerSpecialPower::ScavengerSpecialPower(Thing *thing, const ModuleData *moduleData)
+	: SpecialPowerModule(thing, moduleData)
+	, m_unk0x34(false)
+{
+}
+
 // FUNCTION: BFME2 0x004C4381 size=6 name=?Rva004C4381Get@@YAHXZ evidence=?:placeholder
 const char *ScavengerSpecialPower::GetSnapshotName() const
 {

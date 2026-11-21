@@ -20,6 +20,7 @@ class WorkerAIUpdateModuleData : public AIUpdateModuleData
 public:
 	WorkerAIUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Int m_maxBoxes;                                        // +0x64 MaxBoxes
 	Real m_repairHealthPercentPerSecond;                   // +0x68 RepairHealthPercentPerSecond; percent

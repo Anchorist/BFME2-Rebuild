@@ -1,7 +1,17 @@
+// cl: /O1
+// Portions derived from Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
+#include <float.h>
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G00040EA9 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x00040EA9 size=37 name=?setFPMode@@YAXXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void setFPMode()
+{
+	_fpreset();
+	unsigned int fp = _statusfp();
+	fp = (fp & ~(_MCW_PC | _MCW_RC)) | _PC_24 | _RC_NEAR;
+	_controlfp(fp, _MCW_PC | _MCW_RC);
+}
 // FUNCTION: BFME2 0x00040EF8 size=38 name=?Lock@SyncObject@@UAE_NH@Z evidence=X:map request tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00040F4C size=24 name=?Unlock@Mutex@@UAE_NXZ evidence=X:map request (re-based) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00040F9D size=24 name=?set@Synchronization@@QAE_NXZ evidence=P:provisional (wb-file) tier=B hypothesis:mm1-gap-unit

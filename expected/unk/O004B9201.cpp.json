@@ -37,7 +37,8 @@
         "?isAvailableForSupplying@SupplyTruckAIUpdate@@UBE_NXZ",
         "?isAttack@AIIdleState@@UBE_NXZ",
         "?unknownQuery14@AIAttackAreaState@@UBE_NXZ",
-        "?unknownQuery14@AIHuntState@@UBE_NXZ"
+        "?unknownQuery14@AIHuntState@@UBE_NXZ",
+        "?shouldDoOnBuildComplete@DynamicPortalBehaviour@@UBE_NXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-membership"

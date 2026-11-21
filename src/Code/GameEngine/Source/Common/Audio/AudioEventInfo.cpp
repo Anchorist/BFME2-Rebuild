@@ -1,10 +1,19 @@
+// cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS /D_CRTIMP=
+// stlport46
+// bfmealloc_alloconly
 class INI;
 void Rva001DABB6Parse(INI *, void *, int *, void *);
 
 #include "Common/AudioEventInfo.h"
 #include "Common/INI.h"
 #include "Common/INIException.h"
+#ifdef _CRTIMP
+#undef _CRTIMP
+#endif
+#define _CRTIMP __declspec(dllimport)
 #include <string.h>
+#undef _CRTIMP
+#define _CRTIMP
 
 // VolumeSliderMultiplier's slider names (retail's table at 0x00DB8AEC).
 static const char *VolumeSliderNames[] = { "SOUNDFX", "VOICE", "MUSIC", "AMBIENT", "MOVIE", "NONE", 0 };

@@ -63,6 +63,7 @@ public:
 	virtual ~FlammableUpdateModuleData();
 
 	static void buildFieldParse(MultiIniFieldParse &p);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UnsignedInt m_burnedDelay;					// 0x08
 	UnsignedInt m_aflameDuration;				// 0x0C

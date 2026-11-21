@@ -9,3 +9,8 @@ const char *AptOnlineOpenPlay::slot10()
 }
 
 // FUNCTION: BFME2 0x005BA2C5 size=6 name=?Rva005BA2C5Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva005BA2C5Get()
+{
+	return (int)"OnlineStrategic";
+}

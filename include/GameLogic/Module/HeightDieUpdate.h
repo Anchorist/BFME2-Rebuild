@@ -17,6 +17,7 @@ class HeightDieUpdate : public UpdateModule
 {
 public:
 	HeightDieUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~HeightDieUpdate();
 
 	virtual void loadPostProcess(void);

@@ -22,7 +22,8 @@
       "parent": null,
       "object": "O004B4A86",
       "accepted_names": [
-        "?getCreate@ReplaceSelfUpgrade@@UAEPAVCreateModuleInterface@@XZ"
+        "?getCreate@ReplaceSelfUpgrade@@UAEPAVCreateModuleInterface@@XZ",
+        "?getDie@DynamicPortalBehaviour@@UAEPAVDieModuleInterface@@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"

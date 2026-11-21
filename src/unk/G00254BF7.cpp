@@ -2,6 +2,9 @@
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G00254BF7 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
+#include "GameLogic/Module/DestroyDie.h"
+#include "GameLogic/Module/DestroyDieModuleData.h"
+#include "Common/INI.h"
 // FUNCTION: BFME2 0x00254BF7 size=56 name=?friend_newModuleInstance@UpgradeSoundSelectorClientBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00254C56 size=56 name=?friend_newModuleInstance@TerrainResourceClientBehavior@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00254C9B size=52 name=?friend_newModuleData@TemporarilyDefectUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
@@ -10,3 +13,10 @@
 // FUNCTION: BFME2 0x00254D38 size=45 name=?rva00254D38@Rva00254D38@@QAEXPAURva00254D38Node@@@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00254DB3 size=52 name=?ModuleFactoryDataAt00254DB3@@YAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00254E7D size=81 name=?friend_newModuleData@DestroyDie@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *DestroyDie::friend_newModuleData(INI *ini)
+{
+	DestroyDieModuleData *data = new DestroyDieModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, DestroyDieModuleData::buildFieldParse);
+	return data;
+}

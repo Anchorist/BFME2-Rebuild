@@ -28,11 +28,16 @@ class Image;
 // UpdateModule ends at 0x20; this class's members follow it.
 typedef char RespawnUpdate_base_size[(sizeof(UpdateModule) == 0x20) ? 1 : -1];
 
+class INI;
+
 class RespawnUpdate : public UpdateModule
 {
 public:
 	virtual DisabledMaskType getDisabledTypesToProcess() const;	// override: update slot 1 at +0x10 (retail 0x004DF396, DISABLEDMASK_ALL)
 	RespawnUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
+	static void iniParseDefaultRule(INI *ini, void *instance, void *store, const void *userData);	// 0x004AFC5F, the RespawnRules table entry's parser
+	static void iniParseNewRuleForLevel(INI *ini, void *instance, void *store, const void *userData);	// 0x004AFE6C, the RespawnEntry table entry's parser
 	virtual NameKeyType getModuleNameKey() const;
 	virtual Real getPercentReady(Int *remaining);				// (primary slot 13)
 	virtual const Image *getDeadImage();						// (primary slot 14)

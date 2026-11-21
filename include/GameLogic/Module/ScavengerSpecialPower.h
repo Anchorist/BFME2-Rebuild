@@ -54,6 +54,7 @@ class ScavengerSpecialPower : public SpecialPowerModule
 {
 public:
 	ScavengerSpecialPower(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void doSpecialPower(unsigned int commandOptions);	// override: doSpecialPower slot 10 at +0x10 (0x004C4401)
 	virtual void pauseCountdown(bool pause);	// override: slot 9 at +0x10 (0x004C4430, map: placeholder)

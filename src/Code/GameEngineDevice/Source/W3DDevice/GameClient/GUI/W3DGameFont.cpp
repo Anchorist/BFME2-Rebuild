@@ -44,6 +44,12 @@ void *Rva0009017D(const char *name, float point_size, bool is_bold, int grid)
 }
 
 // FUNCTION: BFME2 0x0009023C size=106 name=??1W3DFontLibrary@@UAE@XZ evidence=N:ledger tier=B hypothesis:cohesion
+W3DFontLibrary::~W3DFontLibrary()
+{
+	for (int i = 0; i < FontCharsCache.Count(); i++)
+		FontCharsCache[i]->Release_Ref();
+	FontCharsCache.Clear();
+}
 
 // FUNCTION: BFME2 0x000902A6 size=186 name=?loadFontData@W3DFontLibrary@@MAE_NPAVGameFont@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 bool W3DFontLibrary::loadFontData(GameFont *font)

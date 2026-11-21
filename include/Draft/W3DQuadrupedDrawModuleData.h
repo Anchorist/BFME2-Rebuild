@@ -6,8 +6,10 @@
 enum ObjectID;
 class Xfer;
 #pragma pack(push,1) // DRAFT layout policy; all known offsets asserted below
+class MultiIniFieldParse;
 class W3DQuadrupedDrawModuleData : public ::W3DModelDrawModuleData {
 public:
+  static void buildFieldParse(MultiIniFieldParse &parse);
   virtual ~W3DQuadrupedDrawModuleData(); // slot=0x0 target=0x0006526C mangled=??_GW3DQuadrupedDrawModuleData@@UAEPAXI@Z
   virtual void vfunc_0x04(); // slot=0x4 target=0x000B3FD0 mangled=??1Region2D@@QAE@XZ
   virtual char const * GetSnapshotName(void) const; // slot=0x8 target=0x00065212 mangled=?GetSnapshotName@ModuleData@@UBEPBDXZ

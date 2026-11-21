@@ -2,3 +2,8 @@
 // object=G003ACA16 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x003ACA16 size=6 name=?Rva003ACA16Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva003ACA16Get()
+{
+	return (int)"DefaultParticleModule<CAT_UPDATE>";
+}

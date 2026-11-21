@@ -20,6 +20,7 @@ public:
 
 
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	AsciiString m_muzzleParticleSystemName;			// 0x08
 	AsciiString m_parentFireBoneName;				// 0x0C

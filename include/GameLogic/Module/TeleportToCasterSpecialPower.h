@@ -19,6 +19,7 @@ class TeleportToCasterSpecialPower : public SpecialAbilityUpdate
 {
 public:
 	TeleportToCasterSpecialPower(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~TeleportToCasterSpecialPower();
 
 	virtual NameKeyType getModuleNameKey() const;

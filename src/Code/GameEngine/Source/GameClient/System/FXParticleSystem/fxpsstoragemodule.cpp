@@ -17,8 +17,18 @@
 // FUNCTION: BFME2 0x003AFF06 size=28 name=?rva003AFF06@Rva003AFF06@@UAEXPAX0@Z evidence=?:placeholder tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x003B00D0 size=6 name=?Rva003B00D0Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:K
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva003B00D0Get()
+{
+	return (int)"ParticleSystemStorageModule";
+}
 
 // FUNCTION: BFME2 0x003B014C size=6 name=?Rva003B014CGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:K
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva003B014CGet()
+{
+	return (int)"CPUParticleSystemStorageModule";
+}
 
 // FUNCTION: BFME2 0x003B015D size=25 name=?rva003B015D@@YAXHHH@Z evidence=?:placeholder tier=B hypothesis:K
 

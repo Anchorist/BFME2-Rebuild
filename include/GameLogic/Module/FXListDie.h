@@ -31,6 +31,7 @@ class FXListDie : public DieModule
 public:
 	FXListDie(Thing *thing, const ModuleData *moduleData);
 	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
+	static ModuleData *friend_newModuleData(INI *ini);
 	virtual ~FXListDie();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;

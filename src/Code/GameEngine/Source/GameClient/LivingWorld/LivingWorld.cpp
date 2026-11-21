@@ -19,6 +19,11 @@ LivingWorld *TheLivingWorld = 0;
 // FUNCTION: BFME2 0x002BE833 size=155 name=?rva002BE833@Rva002BE833@@QAEXPAVXfer@@@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002BE8CE size=6 name=?Rva002BE8CEGet@@YAHXZ evidence=?:placeholder tier=A
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva002BE8CEGet()
+{
+	return (int)"LivingWorld (client)";
+}
 
 // FUNCTION: BFME2 0x002BE8D4 size=25 name=?rva002BE8D4@Rva002BE8D4@@QAE_NXZ evidence=?:placeholder tier=A
 

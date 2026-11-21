@@ -37,4 +37,13 @@ NameKeyType WallUpgradeUpdate::getModuleNameKey() const
 }
 
 // FUNCTION: BFME2 0x004AB317 size=123 name=??0WallUpgradeUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:K
+WallUpgradeUpdate::WallUpgradeUpdate(Thing *thing, const ModuleData *moduleData)
+	: UpdateModule(thing, moduleData)
+	, m_28(INVALID_ID)
+	, m_2C(0)
+	, m_30(true)
+	, m_31(false)
+{
+	setWakeFrame(getObject(), UPDATE_SLEEP_NONE);
+}
 

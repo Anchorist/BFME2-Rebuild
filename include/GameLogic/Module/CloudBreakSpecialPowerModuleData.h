@@ -12,9 +12,13 @@
 
 class FXList;
 
+class MultiIniFieldParse;
+class INI;
 class CloudBreakSpecialPowerModuleData : public SpecialPowerModuleData
 {
 public:
+	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	CloudBreakSpecialPowerModuleData();
 
 	Real m_cloudBreakRadius;										// +0x7C CloudBreakRadius

@@ -20,6 +20,7 @@ class LockWeaponCreateModuleData : public ModuleData
 public:
 	LockWeaponCreateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Int m_slotToLock;                                      // +0x8 SlotToLock; lookup-list value (enum)
 };

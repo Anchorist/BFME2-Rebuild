@@ -14,19 +14,19 @@
 #include <stddef.h>
 #include "Common/GameType.h"
 #include "GameLogic/Module/ModuleData.h"
+#include "GameLogic/Module/UpgradeModule.h"
 #include "GameLogic/Module/UpgradeMuxData.h"
 
 class INI;
 class MultiIniFieldParse;
 
-class RemoveUpgradeUpgradeModuleData : public ModuleData
+class RemoveUpgradeUpgradeModuleData : public UpgradeModuleData
 {
 public:
 	RemoveUpgradeUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
 	static ModuleData *friend_newModuleData(INI *ini);
 
-	UpgradeMuxData m_upgradeMuxData;                       // +0x8; added by buildFieldParse at +0x8
 	UnsignedByte m_upgradeToRemove[0xC];                   // +0x118 UpgradeToRemove; unresolved: INI::parseAsciiStringVectorAppend
 	UnsignedByte m_upgradeGroupsToRemove[0xC];             // +0x124 UpgradeGroupsToRemove; unresolved: INI::parseAsciiStringVectorAppend
 	Bool m_suppressEvaEventForRemoval;                     // +0x130 SuppressEvaEventForRemoval
@@ -34,7 +34,6 @@ public:
 };
 // SIZE 0x134
 typedef char RemoveUpgradeUpgradeModuleData_size[(sizeof(RemoveUpgradeUpgradeModuleData) == 0x134) ? 1 : -1];
-typedef char RemoveUpgradeUpgradeModuleData_off_m_upgradeMuxData[(offsetof(RemoveUpgradeUpgradeModuleData, m_upgradeMuxData) == 0x8) ? 1 : -1];
 typedef char RemoveUpgradeUpgradeModuleData_off_m_upgradeToRemove[(offsetof(RemoveUpgradeUpgradeModuleData, m_upgradeToRemove) == 0x118) ? 1 : -1];
 typedef char RemoveUpgradeUpgradeModuleData_off_m_upgradeGroupsToRemove[(offsetof(RemoveUpgradeUpgradeModuleData, m_upgradeGroupsToRemove) == 0x124) ? 1 : -1];
 typedef char RemoveUpgradeUpgradeModuleData_off_m_suppressEvaEventForRemoval[(offsetof(RemoveUpgradeUpgradeModuleData, m_suppressEvaEventForRemoval) == 0x130) ? 1 : -1];

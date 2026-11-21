@@ -27,7 +27,9 @@ class ExperienceLevelCreate : public CreateModule
 {
 public:
 	ExperienceLevelCreate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
+	virtual void onCreate() {}		// CreateModuleInterface slot 0 at +0x10, retail target 0x000B3FD0 (the shared empty body)
 	virtual void onBuildComplete();	// override: onBuildComplete slot 1 at +0x10 (0x004B9231)
 
 protected:

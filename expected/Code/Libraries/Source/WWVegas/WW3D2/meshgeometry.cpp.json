@@ -1259,8 +1259,8 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "??$_Construct@USegInfo@W3DRopeDraw@@U12@@_STL@@YAXPAUSegInfo@W3DRopeDraw@@ABU12@@Z",
-      "name_evidence": "N:ledger",
+      "name": "??$_Construct@URva0016CC80Pod16@@U1@@_STL@@YAXPAURva0016CC80Pod16@@ABU1@@Z",
+      "name_evidence": "X:review",
       "confidence": "high",
       "evidence": "N:template-instantiation",
       "object_id": "O00168F30",
@@ -1272,7 +1272,7 @@
       "parent": null,
       "object": "O00168F30",
       "accepted_names": [
-        "??$_Construct@USegInfo@W3DRopeDraw@@U12@@_STL@@YAXPAUSegInfo@W3DRopeDraw@@ABU12@@Z"
+        "??$_Construct@URva0016CC80Pod16@@U1@@_STL@@YAXPAURva0016CC80Pod16@@ABU1@@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null

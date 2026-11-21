@@ -7,6 +7,10 @@
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/BaseUpgrade.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/BaseUpgradeModuleData.h"
+#include "GameLogic/Module/UpgradeMuxData.h"
 // FUNCTION: BFME2 0x004B362D size=32 name=??1BaseUpgrade@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
 BaseUpgrade::~BaseUpgrade()
 {
@@ -27,5 +31,19 @@ NameKeyType BaseUpgrade::getModuleNameKey() const
 
 // FUNCTION: BFME2 0x004B3698 size=98 name=??0BaseUpgradeModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:invented
 
+static const FieldParse s_baseUpgradeModuleDataFieldParse[] =
+{
+	{ "BuildingTemplateName", INI::parseAsciiString, 0, 0x118 },
+	{ "PlacementPrefix", INI::parseAsciiString, 0, 0x11C },
+	{ "PlacementIndex", INI::parseInt, 0, 0x120 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x004B36FA size=34 name=?buildFieldParse@BaseUpgradeModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:K
+void BaseUpgradeModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(UpgradeMuxData::getFieldParse(), 0x8);
+	parse.add(s_baseUpgradeModuleDataFieldParse, 0);
+}
+
 

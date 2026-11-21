@@ -17,6 +17,7 @@ public:
 	PhysicsBehaviorModuleData();
 
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_firstHeight;						// 0x08
 	Real m_secondHeight;					// 0x0C

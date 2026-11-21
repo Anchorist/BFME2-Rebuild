@@ -2,7 +2,7 @@
 // object=G00019B50 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x00019B50 size=6 name=?Rva00019B50Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
-// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+// No retail code or data refers to this function. What the constant 0x7FFFFFFE means to its caller is not evidenced, so the row keeps its ledger name.
 int Rva00019B50Get()
 {
 	return 0x7FFFFFFE;

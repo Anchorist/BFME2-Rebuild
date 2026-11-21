@@ -20,6 +20,7 @@ class LevelGrantSpecialPowerModuleData : public SpecialAbilityUpdateModuleData
 public:
 	LevelGrantSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Int m_experience;                                      // +0xC8 Experience
 	Real m_radiusEffect;                                   // +0xCC RadiusEffect

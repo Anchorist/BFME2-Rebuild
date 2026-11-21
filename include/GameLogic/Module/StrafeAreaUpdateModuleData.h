@@ -22,6 +22,7 @@ public:
 	virtual ~StrafeAreaUpdateModuleData();
 
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	AsciiString m_weaponName;							// 0x08
 	Real m_strafeAreaRadius;							// 0x0C

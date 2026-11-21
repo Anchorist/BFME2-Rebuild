@@ -53,6 +53,7 @@ class PlayerHealSpecialPower : public SpecialPowerModule
 {
 public:
 	PlayerHealSpecialPower(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void doSpecialPower(unsigned int commandOptions);	// override: doSpecialPower slot 10 at +0x10 (0x004C8198)
 	virtual void doSpecialPowerAtObject(Object *object, unsigned int commandOptions);	// override: doSpecialPowerAtObject slot 11 at +0x10 (0x004C8175)

@@ -29,6 +29,7 @@ class LaserUpdate : public Rva00362EC7
 {
 public:
 	LaserUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~LaserUpdate();
 
 	virtual void clientUpdate();

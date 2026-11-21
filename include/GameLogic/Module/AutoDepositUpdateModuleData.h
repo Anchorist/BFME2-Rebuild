@@ -17,6 +17,7 @@ class AutoDepositUpdateModuleData : public ModuleData
 public:
 	AutoDepositUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UnsignedInt m_depositTiming;                           // +0x8 DepositTiming; duration, frames
 	Int m_depositAmount;                                   // +0xC DepositAmount

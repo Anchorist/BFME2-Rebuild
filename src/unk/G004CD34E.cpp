@@ -7,6 +7,15 @@
 // object=G004CD34E name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x004CD34E size=59 name=??0TeleportToCasterSpecialPowerModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+TeleportToCasterSpecialPowerModuleData::TeleportToCasterSpecialPowerModuleData()
+	: m_radius(0.0f)
+	, m_minDestinationRadius(0.0f)
+	, m_maxDestinationRadius(0.0f)
+	, m_triggerFX(0)
+	, m_targetFX(0)
+{
+}
+
 // Field parse table for TeleportToCasterSpecialPowerModuleData (decoded from retail image).
 static const FieldParse s_teleportToCasterSpecialPowerModuleDataFieldParse[] =
 {

@@ -6,6 +6,7 @@
 #include <list>
 #include <new>
 #include "GameClient/MapUtil.h"
+#include "GameClient/GameText.h"
 #include "GameClient/MapCache.h"
 #include "Common/GlobalData.h"
 MapCache *TheMapCache;	// VA 0x00DFF12C
@@ -57,8 +58,76 @@ bool FileSystem::createDirectory(const AsciiString &path)
 // FUNCTION: BFME2 0x00300998 size=53 name=?writeList@Rva00300998Holder@@QAEXPAVDataChunkOutput@@@Z evidence=?:placeholder
 
 // FUNCTION: BFME2 0x003009CD size=285 name=?getDescription@MapMetaData@@QAE?AVUnicodeString@@XZ evidence=N:ledger
+UnicodeString MapMetaData::getDescription()
+{
+	if (m_cachedDescription.getLength() == 0)
+	{
+		// The map's own string file sits next to the map.
+		const char *slash = m_fileName.reverseFind('\\');
+		if (slash)
+		{
+			AsciiString stringFileName(m_fileName, 0, slash - m_fileName.str() + 1);
+			stringFileName.concat("map.str");
+			TheGameText->initMapStringFile(stringFileName);
+		}
+
+		AsciiString label;
+		label.translate(m_description);
+
+		Bool exists = false;
+		m_cachedDescription.set(TheGameText->fetch(label, &exists));
+		if (!exists)
+			m_cachedDescription.set(m_description);
+
+		TheGameText->reset();
+	}
+
+	return m_cachedDescription;
+}
 
 // FUNCTION: BFME2 0x00300AEA size=404 name=?bfme_getBaseDisplayName@MapMetaData@@QAE?AVUnicodeString@@XZ evidence=N:ledger
+UnicodeString MapMetaData::bfme_getBaseDisplayName()
+{
+	if (m_cachedDisplayName.getLength() == 0)
+	{
+		const char *slash = m_fileName.reverseFind('\\');
+		if (slash)
+		{
+			AsciiString stringFileName(m_fileName, 0, slash - m_fileName.str() + 1);
+			stringFileName.concat("map.str");
+			TheGameText->initMapStringFile(stringFileName);
+		}
+
+		// A display name that starts with a dollar sign is the label, without it, of a localized string.
+		AsciiString label;
+		if (*m_displayName.str() == '$')
+			label.translate(m_displayName.str() + 1);
+		else
+			label.translate(m_displayName);
+
+		Bool exists = false;
+		m_cachedDisplayName.set(TheGameText->fetch(label, &exists));
+		if (!exists)
+		{
+			if (slash && *m_displayName.str() == '$')
+			{
+				// Fall back on the file name without its extension.
+				m_cachedDisplayName.translate(slash + 1);
+				if (m_cachedDisplayName.endsWith(L".map"))
+				{
+					for (int i = 4; i != 0; --i)
+						m_cachedDisplayName.removeLastChar();
+				}
+			}
+			else
+				m_cachedDisplayName.set(m_displayName);
+		}
+
+		TheGameText->reset();
+	}
+
+	return m_cachedDisplayName;
+}
 
 // FUNCTION: BFME2 0x00300C7E size=144 name=?bfme_getDisplayName@MapMetaData@@QAE?AVUnicodeString@@_N@Z evidence=N:ledger
 UnicodeString MapMetaData::bfme_getDisplayName(bool includePlayerCount)

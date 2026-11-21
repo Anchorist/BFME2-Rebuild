@@ -13,6 +13,7 @@ class UpgradeDie : public DieModule
 {
 public:
 	UpgradeDie(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~UpgradeDie();
 
 	virtual NameKeyType getModuleNameKey() const;

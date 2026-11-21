@@ -11,6 +11,9 @@
 // Edges: left=unknown-rows right=unknown-rows
 #include "GameLogic/Module/InheritUpgradeCreate.h"
 #include "Common/NameKeyGenerator.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/InheritUpgradeCreateModuleData.h"
 // FUNCTION: BFME2 0x004B9428 size=42 name=??0InheritUpgradeCreate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
 InheritUpgradeCreate::InheritUpgradeCreate(Thing *thing, const ModuleData *moduleData)
 	: CreateModule(thing, moduleData)
@@ -34,7 +37,21 @@ NameKeyType InheritUpgradeCreate::getModuleNameKey() const
 	return TheInheritUpgradeCreateNameKey;
 }
 
+void Rva0026F28BParse(INI *ini, void *instance, void *store, const void *userData);
+static const FieldParse s_inheritUpgradeCreateModuleDataFieldParse[] =
+{
+	{ "Radius", INI::parseReal, 0, 0x8 },
+	{ "Upgrade", Rva0026F28BParse, 0, 0xC },
+	{ "ObjectFilter", iniParseObjectFilter, 0, 0x8C },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x004B94B6 size=17 name=?buildFieldParse@InheritUpgradeCreateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger
+void InheritUpgradeCreateModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_inheritUpgradeCreateModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x004B94E3 size=37 name=?xfer@InheritUpgradeCreate@@MAEXPAVXfer@@@Z evidence=N:ledger
 void InheritUpgradeCreate::xfer(Xfer *xfer)

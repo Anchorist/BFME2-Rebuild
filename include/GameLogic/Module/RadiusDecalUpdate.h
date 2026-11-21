@@ -21,6 +21,7 @@ class RadiusDecalUpdate : public UpdateModule
 {
 public:
 	RadiusDecalUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~RadiusDecalUpdate();
 
 	const char *name(void) const;

@@ -46,6 +46,7 @@ class AutoPickUpUpdate : public UpdateModule, public AutoPickUpUpdateInterface
 {
 public:
 	AutoPickUpUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~AutoPickUpUpdate();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void rva00495C6E();

@@ -25,6 +25,7 @@ class FireWeaponCollide : public CollideModule
 {
 public:
 	FireWeaponCollide(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void onCollide(Object *other, const Coord3D *loc, const Coord3D *normal);
 

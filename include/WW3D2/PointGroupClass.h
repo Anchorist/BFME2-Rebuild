@@ -37,6 +37,9 @@ public:
 
 	void Set_Point_Size(float size);
 	void Set_Point_Color(Vector3 color);
+	void Set_Arrays(ShareBufferClass<Vector3> *locs, ShareBufferClass<Vector4> *diffuse = 0, ShareBufferClass<unsigned int> *apt = 0, ShareBufferClass<float> *sizes = 0, ShareBufferClass<unsigned char> *orientations = 0, ShareBufferClass<unsigned char> *frames = 0, int active_point_count = -1, float vpxmin = 0.0f, float vpymin = 0.0f, float vpxmax = 0.0f, float vpymax = 0.0f);
+	void Set_Point_Alpha(float alpha);
+	void Render(RenderInfoClass &rinfo, int unk = 0);
 	Vector3 Get_Point_Color();
 	void Set_Point_Orientation(unsigned char orientation);
 	void Set_Point_Frame(unsigned char frame);

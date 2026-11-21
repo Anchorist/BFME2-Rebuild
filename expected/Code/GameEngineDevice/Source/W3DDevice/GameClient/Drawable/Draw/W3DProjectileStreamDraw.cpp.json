@@ -49,7 +49,8 @@
       "accepted_names": [
         "?Set_Animation@RenderObjClass@@UAEXPAVHAnimClass@@MH@Z",
         "?XferData@XferSaveAsText@@MAEXIPAXI@Z",
-        "?onBodyDamageStateChange@HordeTransportContainDamage@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z"
+        "?onBodyDamageStateChange@HordeTransportContainDamage@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z",
+        "?onBodyDamageStateChange@UpgradeModule@@UAEXPBVDamageInfo@@W4BodyDamageType@@1@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"

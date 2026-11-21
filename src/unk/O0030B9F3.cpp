@@ -4,9 +4,15 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=no-edge-evidence right=no-edge-evidence; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
+#include "Common/AreaPolygon.h"
 // FUNCTION: BFME2 0x0030BA8C size=20 name=?rva0030BA8C@Rva0030BA8C@@QAEXABUBfmeE8@@@Z evidence=?:placeholder tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x0030BAA0 size=56 name=?setPoint@AreaPolygonBase@@QAEXHABUBfmeE8@@@Z evidence=N:ledger tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x0030BAD8 size=32 name=?insertPoint@AreaPolygonBase@@QAEXHABUBfmeE8@@@Z evidence=N:ledger tier=B hypothesis:K
+void AreaPolygonBase::insertPoint(Int index, const BfmeE8 &point)
+{
+	m_points.insert(m_points.begin() + index, point);
+	m_boundsDirty = true;
+}
 

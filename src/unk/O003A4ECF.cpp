@@ -7,6 +7,16 @@
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
 #include "GameLogic/Module/StrafeAreaUpdateModuleData.h"
 // FUNCTION: BFME2 0x003A4E5A size=117 name=??0StrafeAreaUpdateModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+StrafeAreaUpdateModuleData::StrafeAreaUpdateModuleData()
+{
+	m_strafeAreaRadius = 150.0f;
+	m_sweepFrequency = 0.4f;
+	m_sweepAmplitude = 100.0f;
+	m_slope = 50.0f;
+	m_initialSweepPhase = 0.0f;
+	m_weaponName.clear();
+}
+
 // FUNCTION: BFME2 0x003A4ECF size=54 name=??1StrafeAreaUpdateModuleData@@UAE@XZ evidence=N:ledger tier=B hypothesis:name:invented
 StrafeAreaUpdateModuleData::~StrafeAreaUpdateModuleData()
 {

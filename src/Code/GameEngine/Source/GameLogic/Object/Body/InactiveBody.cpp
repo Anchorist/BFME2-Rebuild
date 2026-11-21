@@ -156,3 +156,7 @@ void InactiveBody::internalChangeHealth(Real amount, DamageInfo *damageInfo)
 }
 
 // FUNCTION: BFME2 0x004BD9CB size=28 name=?rva004BD9CB@Rva004BD9CB@@UBE?AVAsciiString@@XZ evidence=?:placeholder tier=B hypothesis:mm1-neighbour-pointers-mixed
+AsciiString InactiveBody::getGrabObjectName() const
+{
+	return "";
+}

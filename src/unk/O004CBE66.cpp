@@ -10,6 +10,11 @@
 // FUNCTION: BFME2 0x004CBECA size=67 name=??0ModelConditionAudioLoopClientBehavior@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x004CBF0D size=6 name=?Rva004CBF0DGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:K
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva004CBF0DGet()
+{
+	return (int)"ModelConditionAudioLoopClientBehavior";
+}
 
 // FUNCTION: BFME2 0x004CBF13 size=69 name=?getModuleNameKey@ModelConditionAudioLoopClientBehavior@@UBE?AW4NameKeyType@@XZ evidence=N:ledger tier=B hypothesis:K
 

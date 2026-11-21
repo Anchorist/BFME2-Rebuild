@@ -97,7 +97,8 @@
       "parent": null,
       "object": "O0054F93F",
       "accepted_names": [
-        "??1?$_Deque_base@VBuddyResponse@@V?$allocator@VBuddyResponse@@@_STL@@@_STL@@QAE@XZ"
+        "??1?$_Deque_base@VBuddyResponse@@V?$allocator@VBuddyResponse@@@_STL@@@_STL@@QAE@XZ",
+        "??1?$_Deque_base@HV?$allocator@H@_STL@@@_STL@@QAE@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -297,7 +298,8 @@
       "parent": null,
       "object": "O0054F93F",
       "accepted_names": [
-        "?pop_front@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@QAEXXZ"
+        "?pop_front@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@QAEXXZ",
+        "?pop_front@?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@QAEXXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -398,7 +400,9 @@
       "object": "O0054F93F",
       "accepted_names": [
         "??$_Construct@UBfmeNarrowRecord0054FEF1@@U1@@_STL@@YAXPAUBfmeNarrowRecord0054FEF1@@ABU1@@Z",
-        "??$_Construct@UPingRequest@@U1@@_STL@@YAXPAUPingRequest@@ABU1@@Z"
+        "??$_Construct@UPingRequest@@U1@@_STL@@YAXPAUPingRequest@@ABU1@@Z",
+        "??$_Construct@VPingRequest@@V1@@_STL@@YAXPAVPingRequest@@ABV1@@Z",
+        "??$_Construct@VPingResponse@@V1@@_STL@@YAXPAVPingResponse@@ABV1@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -524,7 +528,9 @@
       "object": "O0054F93F",
       "accepted_names": [
         "?_M_push_back_aux_v@?$deque@UBfmeNarrowRecord0054FEF1@@V?$allocator@UBfmeNarrowRecord0054FEF1@@@_STL@@@_STL@@IAEXABUBfmeNarrowRecord0054FEF1@@@Z",
-        "?_M_push_back_aux_v@?$deque@UPingRequest@@V?$allocator@UPingRequest@@@_STL@@@_STL@@IAEXABUPingRequest@@@Z"
+        "?_M_push_back_aux_v@?$deque@UPingRequest@@V?$allocator@UPingRequest@@@_STL@@@_STL@@IAEXABUPingRequest@@@Z",
+        "?_M_push_back_aux_v@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@IAEXABVPingRequest@@@Z",
+        "?_M_push_back_aux_v@?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@IAEXABVPingResponse@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -600,7 +606,9 @@
       "object": "O0054F93F",
       "accepted_names": [
         "?push_back@?$deque@UBfmeNarrowRecord0054FEF1@@V?$allocator@UBfmeNarrowRecord0054FEF1@@@_STL@@@_STL@@QAEXABUBfmeNarrowRecord0054FEF1@@@Z",
-        "?push_back@?$deque@UPingRequest@@V?$allocator@UPingRequest@@@_STL@@@_STL@@QAEXABUPingRequest@@@Z"
+        "?push_back@?$deque@UPingRequest@@V?$allocator@UPingRequest@@@_STL@@@_STL@@QAEXABUPingRequest@@@Z",
+        "?push_back@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@QAEXABVPingRequest@@@Z",
+        "?push_back@?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@QAEXABVPingResponse@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -625,7 +633,8 @@
       "parent": "0x00550384",
       "object": "O0054F93F",
       "accepted_names": [
-        "?push@?$queue@VPingRequest@@V?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@@_STL@@QAEXABVPingRequest@@@Z"
+        "?push@?$queue@VPingRequest@@V?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@@_STL@@QAEXABVPingRequest@@@Z",
+        "?push@?$queue@VPingResponse@@V?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@@_STL@@QAEXABVPingResponse@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1001,7 +1010,9 @@
       "object": "O0054F93F",
       "accepted_names": [
         "__ehhandler$??$_Construct@UBfmeNarrowRecord0054FEF1@@U1@@_STL@@YAXPAUBfmeNarrowRecord0054FEF1@@ABU1@@Z",
-        "__ehhandler$??$_Construct@UPingRequest@@U1@@_STL@@YAXPAUPingRequest@@ABU1@@Z"
+        "__ehhandler$??$_Construct@UPingRequest@@U1@@_STL@@YAXPAUPingRequest@@ABU1@@Z",
+        "__ehhandler$??$_Construct@VPingRequest@@V1@@_STL@@YAXPAVPingRequest@@ABV1@@Z",
+        "__ehhandler$??$_Construct@VPingResponse@@V1@@_STL@@YAXPAVPingResponse@@ABV1@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1302,7 +1313,9 @@
       "object": "O0054F93F",
       "accepted_names": [
         "__ehhandler$?_M_push_back_aux_v@?$deque@UBfmeNarrowRecord0054FEF1@@V?$allocator@UBfmeNarrowRecord0054FEF1@@@_STL@@@_STL@@IAEXABUBfmeNarrowRecord0054FEF1@@@Z",
-        "__ehhandler$?_M_push_back_aux_v@?$deque@UPingRequest@@V?$allocator@UPingRequest@@@_STL@@@_STL@@IAEXABUPingRequest@@@Z"
+        "__ehhandler$?_M_push_back_aux_v@?$deque@UPingRequest@@V?$allocator@UPingRequest@@@_STL@@@_STL@@IAEXABUPingRequest@@@Z",
+        "__ehhandler$?_M_push_back_aux_v@?$deque@VPingRequest@@V?$allocator@VPingRequest@@@_STL@@@_STL@@IAEXABVPingRequest@@@Z",
+        "__ehhandler$?_M_push_back_aux_v@?$deque@VPingResponse@@V?$allocator@VPingResponse@@@_STL@@@_STL@@IAEXABVPingResponse@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -1803,7 +1816,8 @@
       "object": "O0054F93F",
       "accepted_names": [
         "__ehhandler$?rva005504F9@Rva0055011A@@UAEXABUBfmeNarrowRecord0054FEF1@@@Z",
-        "__ehhandler$?rva005504F9@Rva0055011A@@UAEXABUPingRequest@@@Z"
+        "__ehhandler$?rva005504F9@Rva0055011A@@UAEXABUPingRequest@@@Z",
+        "__ehhandler$?addResponse@Pinger@@UAEXABVPingResponse@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"

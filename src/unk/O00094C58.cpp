@@ -37,13 +37,13 @@
 
 // FUNCTION: BFME2 0x00095224 size=30 name=?get@Rva00095224AsciiField@@QBE?AVAsciiString@@XZ evidence=?:placeholder tier=B hypothesis:cohesion
 
-// FUNCTION: BFME2 0x0009525E size=222 name=??0Gen006E2310@@QAE@XZ evidence=N:ledger tier=B hypothesis:cohesion
+// FUNCTION: BFME2 0x0009525E size=222 name=??0Gen006E2310@@QAE@XZ evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x0009533C size=7 name=?get@Rva0009533CFloatField@@QBEMXZ evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x00095343 size=29 name=?rva00095343@Rva00095343@@QAE?AURva00SlotFloat3Copy@@XZ evidence=?:placeholder tier=B hypothesis:cohesion
 
-// FUNCTION: BFME2 0x00095360 size=83 name=??1Gen006E2310@@UAE@XZ evidence=N:ledger tier=B hypothesis:cohesion
+// FUNCTION: BFME2 0x00095360 size=83 name=??1Gen006E2310@@UAE@XZ evidence=?:placeholder tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x000953B3 size=1134 name=?rva000953B3@Gen006E2310@@QAEXXZ evidence=?:placeholder tier=B hypothesis:cohesion
 

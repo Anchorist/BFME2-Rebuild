@@ -53,6 +53,20 @@ static const int aSpriteGperfToActionFlag[19] = { 0x100, 0x10000, 0x8000, 0x2, 0
 // FUNCTION: BFME2 0x0070A610 size=104 name=?rva0070A610@AptNativeHash@@QAEXHPAVAptValue@@@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0070A680 size=68 name=?rva0070A680@AptNativeHash@@QAEXHPAVAptValue@@@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x0070A6D0 size=101 name=?UnsetAt@AptNativeHash@@SAXPAX@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+void AptNativeHash::UnsetAt(void *pHashItem)
+{
+    if (!(pHashItem != 0)) {
+        g_bfmeAptAssertAtE17734("pHashItem != NULL", "c:\\projects\\bfme2patch103\\bfme2\\code\\libraries\\source\\apt\\AptNativeHash.h", 0xcd);
+        if (g_bfmeAptBreakOnAssertAtDDC01C) APT_ASSERT_BREAK();
+    }
+    AptHashItem *item = (AptHashItem *)pHashItem;
+    if (!(item->mValue != 0)) {
+        g_bfmeAptAssertAtE17734("pHashItem->mValue != NULL", "c:\\projects\\bfme2patch103\\bfme2\\code\\libraries\\source\\apt\\AptNativeHash.h", 0xce);
+        if (g_bfmeAptBreakOnAssertAtDDC01C) APT_ASSERT_BREAK();
+    }
+    item->mValue->Release();
+    item->mValue = 0;
+}
 // FUNCTION: BFME2 0x0070A740 size=243 name=??0AptNativeHash@@QAE@H@Z evidence=N:ledger
 AptNativeHash::AptNativeHash(int size)
 {
@@ -416,8 +430,71 @@ void AptNativeHash::UpdateEventHandlers(AptValue *value, const EAStringC *name, 
 
 
 // FUNCTION: BFME2 0x0070B220 size=145 name=?RegisterReferences@AptNativeHash@@QBEXPAX@Z evidence=X:map request (link (from standalone link 0cf3e833)) tier=B hypothesis:mm1-held-object-same-path
+void AptNativeHash::RegisterReferences(void *owner) const
+{
+    if (mp__proto__ && !mp__proto__->getGCMark())
+    {
+        mp__proto__->setGCMark(true);
+        mp__proto__->RegisterReferences();
+    }
+    if (mpPrototype && !mpPrototype->getGCMark())
+    {
+        mpPrototype->setGCMark(true);
+        mpPrototype->RegisterReferences();
+    }
+    if (mpData)
+    {
+        for (int i = 0; i < mnTotalSize; ++i)
+        {
+            if (mpData[i].mValue && !mpData[i].mValue->getGCMark())
+            {
+                mpData[i].mValue->setGCMark(true);
+                mpData[i].mValue->RegisterReferences();
+            }
+        }
+    }
+}
 
 // FUNCTION: BFME2 0x0070B2C0 size=191 name=?Unset@AptNativeHash@@QAEXQBVEAStringC@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+void AptNativeHash::Unset(const EAStringC *const key)
+{
+    if (!key->IsEmpty())
+    {
+        const unsigned int hash = key->UpdateHashValue();
+        if (mpData)
+        {
+            AptHashItem *item = HashFindKey(key);
+            if (item)
+            {
+                item->mKey.rva006D3470();
+                UnsetAt(item);
+                return;
+            }
+        }
+        if (hash == PrototypeHash)
+        {
+            if (key->Equals(StringPool::GetString(PrototypeConstant)))
+            {
+                if (mpPrototype)
+                {
+                    mpPrototype->Release();
+                    mpPrototype = 0;
+                }
+            }
+        }
+        else if (hash == ProtoHash)
+        {
+            if (key->Equals(StringPool::GetString(ProtoConstant)))
+            {
+                if (mp__proto__)
+                {
+                    mp__proto__->Release();
+                    mp__proto__ = 0;
+                }
+            }
+        }
+    }
+}
 
 // FUNCTION: BFME2 0x0070B380 size=133 name=?lookup@AptNativeHash@@QAEPAXABVEAStringC@@@Z evidence=P:provisional (wb-file) tier=B hypothesis:mm1-held-object-same-path
 AptValue *AptNativeHash::Lookup(const EAStringC &key)

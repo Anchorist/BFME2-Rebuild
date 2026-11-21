@@ -18,6 +18,7 @@ class RespawnBody : public ActiveBody
 {
 public:
 	RespawnBody(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~RespawnBody();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void internalChangeHealth(Real, DamageInfo *);	// override: internalChangeHealth slot 32 at +0x10 (0x004C1395)

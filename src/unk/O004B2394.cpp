@@ -6,6 +6,9 @@
 #include "GameLogic/Module/EntEnragedUpdate.h"
 #include "Common/NameKeyGenerator.h"
 #include "Common/Xfer.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/EntEnragedUpdateModuleData.h"
 // FUNCTION: BFME2 0x004B237B size=25 name=??1EntEnragedUpdate@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x004B2394 size=6 name=?name@Rva004B2394Named@@QBEPBDXZ evidence=?:placeholder
 const char *EntEnragedUpdate::GetSnapshotName() const
@@ -43,7 +46,27 @@ NameKeyType EntEnragedUpdate::getModuleNameKey() const
 
 // FUNCTION: BFME2 0x004B249D size=104 name=??0EntEnragedUpdateModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
 
+static const FieldParse s_entEnragedUpdateModuleDataFieldParse[] =
+{
+	{ "ScanDelayTime", INI::parseDurationUnsignedInt, 0, 0x8 },
+	{ "EnragedTime", INI::parseDurationUnsignedInt, 0, 0xC },
+	{ "TimeUntilCanRageAgain", INI::parseDurationUnsignedInt, 0, 0x10 },
+	{ "ScanDistance", INI::parseReal, 0, 0x14 },
+	{ "HatedObjectFilter", iniParseObjectFilter, 0, 0x1C },
+	{ "FriendlyDeadFilter", iniParseObjectFilter, 0, 0x18 },
+	{ "EnragedTransitionTime", INI::parseDurationUnsignedInt, 0, 0x20 },
+	{ "EnragedTransitionFX", INI::parseFXList, 0, 0x24 },
+	{ "EnragedOnBuffFX", INI::parseFXList, 0, 0x28 },
+	{ "EnragedOffBuffFX", INI::parseFXList, 0, 0x2C },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x004B2505 size=17 name=?buildFieldParse@EntEnragedUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
+void EntEnragedUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_entEnragedUpdateModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x004B25AF size=26 name=?bfmeTick@Gen_00291BB0@@QAEEXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
 

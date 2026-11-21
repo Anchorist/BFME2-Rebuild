@@ -1,5 +1,6 @@
 // cl: /O1
 // stlport46
+#include <math.h>
 #include "GameClient/GameWindow.h"
 #include "GameClient/GameWindowManager.h"
 #include "Common/PlayerList.h"
@@ -31,6 +32,12 @@ const Image *GameWindow::winGetEnabledImage(int index)
 // FUNCTION: BFME2 0x0009DDE6 size=27 name=?W3DRightHUDDraw@@YAXPAVGameWindow@@PAVWinInstanceData@@@Z evidence=N:ledger tier=B hypothesis:Z
 
 // FUNCTION: BFME2 0x0009DE01 size=37 name=?logN@@YAMMM@Z evidence=N:ledger tier=B hypothesis:Z
+float logN(float a, float base)
+{
+	float lb = (float)log10((double)base);
+	float la = (float)log10((double)a);
+	return la / lb;
+}
 
 // FUNCTION: BFME2 0x0009DE26 size=372 name=?W3DCommandBarGridDraw@@YAXPAVGameWindow@@PAVWinInstanceData@@@Z evidence=N:ledger tier=B hypothesis:Z
 

@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include "Common/INI.h"
 #include "GameLogic/Module/AnimalAIUpdateModuleData.h"
+#include "GameLogic/Module/AnimalAIUpdate.h"
 
 // The table retail passes to MultiIniFieldParse::add (VA 0x00BEEB88), read back
 // entry by entry from the image.
@@ -47,6 +48,10 @@ void AnimalAIUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
 }
 
 // FUNCTION: BFME2 0x0024BE95 size=59 name=?friend_newModuleInstance@AnimalAIUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:K
+Module *AnimalAIUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new AnimalAIUpdate(thing, moduleData);
+}
 
 // FUNCTION: BFME2 0x0024BED0 size=84 name=?friend_newModuleData@AnimalAIUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:K
 ModuleData *AnimalAIUpdateModuleData::friend_newModuleData(INI *ini)

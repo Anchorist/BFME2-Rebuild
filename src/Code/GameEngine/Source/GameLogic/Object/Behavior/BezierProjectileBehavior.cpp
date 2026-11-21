@@ -30,6 +30,11 @@
 // FUNCTION: BFME2 0x0045BF6E size=101 name=??1BezierProjectileBehavior@@UAE@XZ evidence=N:ledger
 
 #include "GameLogic/Module/BezierProjectileBehavior.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/BezierProjectileBehaviorModuleData.h"
+#include "GameLogic/Module/EmotionNugget.h"
+#include "Common/BitFlags.h"
 // FUNCTION: BFME2 0x0045BFD3 size=6 name=?GetSnapshotName@BezierProjectileBehavior@@MBEPBDXZ evidence=N:ledger
 const char *BezierProjectileBehavior::GetSnapshotName() const
 {
@@ -54,3 +59,50 @@ const char *BezierProjectileBehavior::GetSnapshotName() const
 
 // FUNCTION: BFME2 0x0045CD6E size=222 name=?rva0045CD6E@BezierProjectileBehavior@@UAE_NPAVObject@@@Z evidence=?:placeholder
 
+static const FieldParse s_bezierProjectileBehaviorModuleDataFieldParse[] =
+{
+	{ "TumbleRandomly", INI::parseBool, 0, 0x48 },
+	{ "DetonateCallsKill", INI::parseBool, 0, 0x4A },
+	{ "OrientToFlightPath", INI::parseBool, 0, 0x49 },
+	{ "FirstHeight", INI::parseReal, 0, 0x8 },
+	{ "SecondHeight", INI::parseReal, 0, 0xC },
+	{ "FirstPercentIndent", INI::parsePercentToReal, 0, 0x10 },
+	{ "SecondPercentIndent", INI::parsePercentToReal, 0, 0x14 },
+	{ "CrushStyle", INI::parseBool, 0, 0x18 },
+	{ "DieOnImpact", INI::parseBool, 0, 0x19 },
+	{ "FinalStuckTime", INI::parseDurationUnsignedInt, 0, 0x38 },
+	{ "PreLandingStateTime", INI::parseDurationUnsignedInt, 0, 0x3C },
+	{ "BounceCount", INI::parseInt, 0, 0x1C },
+	{ "BounceDistance", INI::parseReal, 0, 0x20 },
+	{ "BounceFirstHeight", INI::parseReal, 0, 0x24 },
+	{ "BounceSecondHeight", INI::parseReal, 0, 0x28 },
+	{ "BounceFirstPercentIndent", INI::parsePercentToReal, 0, 0x2C },
+	{ "BounceSecondPercentIndent", INI::parsePercentToReal, 0, 0x30 },
+	{ "GarrisonHitKillRequiredKindOf", BitFlags<218>::parseFromINI, 0, 0x50 },
+	{ "GarrisonHitKillForbiddenKindOf", BitFlags<218>::parseFromINI, 0, 0x6C },
+	{ "GarrisonHitKillCount", INI::parseUnsignedInt, 0, 0x4C },
+	{ "GarrisonHitKillFX", INI::parseFXList, 0, 0x88 },
+	{ "GroundHitFX", INI::parseFXList, 0, 0x9C },
+	{ "GroundBounceFX", INI::parseFXList, 0, 0xA0 },
+	{ "GroundHitWeapon", INI::parseWeaponTemplate, 0, 0xA4 },
+	{ "GroundBounceWeapon", INI::parseWeaponTemplate, 0, 0xA8 },
+	{ "FlightPathAdjustDistPerSecond", INI::parseVelocityReal, 0, 0x8C },
+	{ "IgnoreTerrainHeight", INI::parseBool, 0, 0x90 },
+	{ "FirstPercentHeight", INI::parsePercentToReal, 0, 0x94 },
+	{ "SecondPercentHeight", INI::parsePercentToReal, 0, 0x98 },
+	{ "CurveFlattenMinDist", INI::parseReal, 0, 0x34 },
+	{ "PreLandingEmotion", EmotionNuggetTemplate::IniParseEmotionType, 0, 0xAC },
+	{ "PreLandingEmotionRadius", INI::parseReal, 0, 0xB0 },
+	{ "PreLandingEmotionAffectsAllies", INI::parseBool, 0, 0xB4 },
+	{ "InvisibleFrames", INI::parseUnsignedInt, 0, 0x40 },
+	{ "FadeInTime", INI::parseUnsignedInt, 0, 0x44 },
+	{ "PostLandingStateTime", INI::parseDurationUnsignedInt, 0, 0xB8 },
+	{ "PostLandingEmotion", EmotionNuggetTemplate::IniParseEmotionType, 0, 0xBC },
+	{ "PostLandingEmotionRadius", INI::parseReal, 0, 0xC0 },
+	{ 0, 0, 0, 0 }
+};
+
+void BezierProjectileBehaviorModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_bezierProjectileBehaviorModuleDataFieldParse, 0);
+}

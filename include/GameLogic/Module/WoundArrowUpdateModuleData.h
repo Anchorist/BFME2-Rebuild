@@ -19,6 +19,7 @@ class WoundArrowUpdateModuleData : public SpecialAbilityUpdateModuleData
 public:
 	WoundArrowUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_fleeDistance;                                   // +0xC8 FleeDistance
 	UnsignedInt m_forbiddenConditions;                     // +0xCC ForbiddenConditions; bit string

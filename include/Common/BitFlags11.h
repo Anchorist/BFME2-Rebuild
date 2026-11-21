@@ -48,6 +48,8 @@ public:
     // Ordinary inlining still loses DynamicAudioEventInfo 0x004331C6 with /Ob2.
     __forceinline bool test(unsigned int bit) const { return (m_words[bit>>5] & (1u<<(bit&31))) != 0; }
     void set(int bit,int value);
+    // Retail expands the single-bit clear inline (Object::checkDisabledStatus: an and of the object's word with the complemented bit).
+    void clear(int bit) { m_words[(unsigned int)bit >> 5] &= ~(1u << (bit & 31)); }
     bool test(const void *other) const;       // 0x0023C59F (PropagandaTowerBehavior::update 0x00481C0C)
     void flip() { m_words[0] = ~m_words[0]; } // retail inlines the complement (0x00481C0C)
 

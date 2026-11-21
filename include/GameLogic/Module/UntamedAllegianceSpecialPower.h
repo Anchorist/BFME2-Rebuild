@@ -53,6 +53,7 @@ class UntamedAllegianceSpecialPower : public SpecialPowerModule
 {
 public:
 	UntamedAllegianceSpecialPower(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void ApplyPowerToObject(Object *object, Int arg, const BitFlags<11> *flags);	// override: ApplyPowerToObject slot 13 at +0x0 (0x004C7BB0)
 

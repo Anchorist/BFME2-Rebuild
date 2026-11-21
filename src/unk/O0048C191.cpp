@@ -5,7 +5,25 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/OilSpillUpdateModuleData.h"
+static const FieldParse s_oilSpillUpdateModuleDataFieldParse[] =
+{
+	{ "BreadcrumbName", INI::parseAsciiString, 0, 0x10 },
+	{ "IgnitionWeaponName", INI::parseAsciiString, 0, 0x14 },
+	{ "IgnitionWeaponSpacing", INI::parseReal, 0, 0x18 },
+	{ "OilSpillFX", INI::parseFXList, 0, 0x1C },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x0048C151 size=27 name=?buildFieldParse@OilSpillUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+void OilSpillUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	FireWeaponUpdateModuleData::buildFieldParse(parse);
+	parse.add(s_oilSpillUpdateModuleDataFieldParse, 0);
+}
+
 // FUNCTION: BFME2 0x0048C16C size=37 name=??0OilSpillUpdateModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-class+shared-data
 // FUNCTION: BFME2 0x0048C191 size=74 name=??1OilSpillUpdateModuleData@@UAE@XZ evidence=N:ledger tier=B hypothesis:name:invented
 

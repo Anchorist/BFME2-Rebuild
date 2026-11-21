@@ -20,6 +20,7 @@ public:
 	ExperienceScalarUpgradeModuleData();
 	virtual ~ExperienceScalarUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_addXPScalar;													// +0x118 AddXPScalar
 };

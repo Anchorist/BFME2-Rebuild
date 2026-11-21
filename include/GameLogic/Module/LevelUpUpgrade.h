@@ -41,6 +41,7 @@ class LevelUpUpgrade : public UpgradeModule
 {
 public:
 	LevelUpUpgrade(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~LevelUpUpgrade();
 	virtual Bool wouldUpgrade(const BitFlags<128> &keyMask) const;	// override: UpgradeMux slot 2 at +0x10 (0x004B3E7F): no upgrade at the level cap

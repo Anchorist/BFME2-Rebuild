@@ -39,6 +39,8 @@ public:
 	virtual Vector3Randomizer *Clone() const = 0;					// slot 5
 
 protected:
+	float Get_Random_Float_Minus1_To_1(void);						// 0x007230C0
+
 	static Random3Class Randomizer;							// VA 0x00E1D070
 };
 // SIZE 0x04

@@ -30,6 +30,7 @@ extern ScriptEngine *TheScriptEngine;
 #include <string.h>
 #include "GameLogic/ScriptEngine.h"
 #include "GameLogic/ScriptTemplate.h"
+#include "Common/BitFlags.h"
 // cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS
 // stlport46
 // bfmealloc_alloconly
@@ -508,6 +509,11 @@ bool equalPhaseMasks(const void *a, const void *b)
 // FUNCTION: BFME2 0x003B3204 size=23 name=?clear@Rva003B3204@@QAEXXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x003B321B size=6 name=?Rva003B321BGet@@YAHXZ evidence=?:placeholder tier=A
+// Returns the address of the bit name table of BitFlags<12> (the ledger types the row as int).
+int Rva003B321BGet()
+{
+	return (int)BitFlags<12>::s_bitNameList;
+}
 
 // FUNCTION: BFME2 0x003B32CD size=17 name=?rva003504e0@@YAPAURva003504E0Node@@PAU1@@Z evidence=?:placeholder tier=A
 

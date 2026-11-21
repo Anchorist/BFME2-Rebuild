@@ -4,7 +4,7 @@
 // InitialDelay, AttackTime, DecayTime, SustainTime, ReleaseTime into +0x10/+0x14/+0x18/+0x1C/+0x20
 // (milliseconds scaled to logic frames and rounded up, the shape of parseDurationUnsignedInt 0x00338B30).
 // FadeAndDieOrnamentUpdateModuleData keeps one at +0x0C ("Envelope") and the FollowTarget field reuses
-// the same parser at +0x34 (Draft/FadeAndDieOrnamentUpdateModuleData.h); W3DLaserDrawModuleData keeps one at +0x4C.
+// the same parser at +0x34 (GameLogic/Module/FadeAndDieOrnamentUpdateModuleData.h); W3DLaserDrawModuleData keeps one at +0x4C.
 #pragma once
 #ifndef BFME2_OPACITYENVELOPE_H
 #define BFME2_OPACITYENVELOPE_H

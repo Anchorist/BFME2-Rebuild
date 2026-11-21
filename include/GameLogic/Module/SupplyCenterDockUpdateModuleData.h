@@ -16,6 +16,7 @@ class SupplyCenterDockUpdateModuleData : public DockUpdateModuleData
 public:
 	SupplyCenterDockUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_valueMultiplier;				// 0x10
 	ScienceType m_bonusScience;			// 0x14

@@ -30,7 +30,9 @@ class AimWeaponBehavior : public UpdateModule
 public:
 	char const * name() const;
 	AimWeaponBehavior(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
+	virtual UpdateSleepTime update();		// UpdateModuleInterface slot 0 (pure in UpdateModule)
 	virtual const char *GetSnapshotName() const;
 	virtual ~AimWeaponBehavior();
 

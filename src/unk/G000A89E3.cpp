@@ -1,3 +1,5 @@
+// cl: /O1
+#include "Common/OpaqueRefElement4.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G000A89E3 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
@@ -21,6 +23,14 @@
 // FUNCTION: BFME2 0x000A8C2B size=67 name=?rva000A8C2B@Rva000A8C2B@@QAEXPAVRva000A8C2BObj@@PAH@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x000A8C6E size=14 name=?rva000A8C6E@Rva000A8C6E@@QAEXPBURva0010FFA2Packet@@@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x000A8C9B size=19 name=?clear@OpaqueRefElement4@@QAEXXZ evidence=X:map request (standalone ca6e45a3dd) tier=B hypothesis:mm1-gap-unit
+void OpaqueRefElement4::clear()
+{
+	if (referent)
+	{
+		referent->Release_Ref();
+		referent = 0;
+	}
+}
 // FUNCTION: BFME2 0x000A8CC9 size=28 name=?rva000A8CC9@Rva000A8CC9@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x000A8CE5 size=38 name=?rva000A8CE5@Rva000A8C9B@@QAEXPAVAtomicRefCounted@@@Z evidence=X:placeholder class OpaqueRefCounted is AtomicRefCounted: ctor 0x00050F19 stores vtable 0x007C5128 and count +4=0; Release_Ref 0x00050ED3 decrements +4 and calls slot 0 (include/Common/AtomicRefCounted.h) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x000A8D0B size=84 name=?rva000A8D0B@Rva000A8C9B@@QAEXHHH@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

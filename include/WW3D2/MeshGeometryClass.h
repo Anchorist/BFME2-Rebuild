@@ -79,7 +79,7 @@ public:
 	void Get_Bounding_Sphere(SphereClass *set_sphere);					// 0x00169370
 
 	unsigned char *Get_Poly_Surface_Type_Array(void);					// 0x0016A000
-	unsigned char Get_Poly_Surface_Type(int poly_index) const;				// 0x0016A220
+	unsigned char Get_Poly_Surface_Type(int poly_index) const { return PolySurfaceType->Get_Array()[poly_index]; }	// 0x0016A220
 
 	void Compute_Plane(int poly_index, PlaneClass *set_plane) const;			// 0x0016ACC0
 	const Vector3 *Get_Vertex_Normal_Array(bool unk);					// 0x0016AB90

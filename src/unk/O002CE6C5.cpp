@@ -13,6 +13,10 @@ extern GameLogic *TheGameLogic;
 // Edges: left=rests-on:veto right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:Z, hypothesis:name:invented
 // FUNCTION: BFME2 0x002CE6C5 size=35 name=?rva002CE6C5@Weapon@@QAE_NPBVObject@@H0PAH@Z evidence=?:placeholder tier=B hypothesis:name:invented
+Bool Weapon::fireWeapon(const Object *source, ObjectID victimID, const Object *victim, Int *projectileID)
+{
+	return privateFireWeapon(source, &source->m_cachedPos, victim, victimID, 0, 0, 0, 0, projectileID);
+}
 
 // FUNCTION: BFME2 0x002CE6E8 size=32 name=?fireWeapon@Weapon@@QAE_NPBVObject@@PBVCoord3D@@PAH@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=B hypothesis:Z
 bool Weapon::fireWeapon(const Object *source, const Coord3D *pos, int *projectileID)

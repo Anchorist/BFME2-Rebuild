@@ -65,6 +65,7 @@ class CostModifierUpgrade : public UpgradeModule, public CreateModuleInterface
 {
 public:
 	CostModifierUpgrade(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void onDelete();											// +0x0 slot 8: 0x004B59AF (shared with SpellRechargeModifierUpgrade), forwards to the +0x10 slot 8
 	virtual void onCapture(Player *oldOwner, Player *newOwner);			// +0x0 slot 9: 0x004B5AC0

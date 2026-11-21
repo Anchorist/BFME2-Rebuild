@@ -13,6 +13,8 @@
 #include "Common/ScoreKeeper.h"
 #include "GameClient/GameText.h"
 #include "GameClient/InGameUI.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
 
 int CashHackSpecialPower::findAmountToSteal() const
 {
@@ -84,5 +86,18 @@ CashHackSpecialPowerModuleData::CashHackSpecialPowerModuleData()
 
 // FUNCTION: BFME2 0x004C2918 size=61 name=?Rva004C2918_ParseUpgradeMoneyAmount@INI@@SAXPAV1@PAX1PBX@Z evidence=?:placeholder
 
+static const FieldParse s_cashHackSpecialPowerModuleDataFieldParse[] =
+{
+	{ "UpgradeMoneyAmount", INI::Rva004C2918_ParseUpgradeMoneyAmount, 0, 0x7C },
+	{ "MoneyAmount", INI::parseInt, 0, 0x88 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x004C2955 size=27 name=?buildFieldParse@CashHackSpecialPowerModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger
+void CashHackSpecialPowerModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	SpecialPowerModuleData::buildFieldParse(parse);
+	parse.add(s_cashHackSpecialPowerModuleDataFieldParse, 0);
+}
+
 

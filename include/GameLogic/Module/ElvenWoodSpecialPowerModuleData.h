@@ -30,6 +30,7 @@ class ElvenWoodSpecialPowerModuleData : public SpecialPowerModuleData
 public:
 	ElvenWoodSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	// +0x7C, 12 bytes: the vector's three words (begin, end, end of storage). The constructor
 	// 0x004C3DA9 and the destructor 0x004C3EC2 both reach it through the vector's own code.

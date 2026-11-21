@@ -5,6 +5,9 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:Z
+#include "GameLogic/Map/PolygonTrigger.h"
+#include "Common/Coord3D.h"
+#include "GameLogic/TerrainLogic.h"
 // FUNCTION: BFME2 0x002E36B7 size=30 name=?rva002E36B7@PolygonTrigger@@QAEXH@Z evidence=?:placeholder tier=B hypothesis:Z
 
 // FUNCTION: BFME2 0x002E36D5 size=26 name=?Rva002E36D5Find@@YAPAXH@Z evidence=?:placeholder tier=B hypothesis:Z
@@ -16,38 +19,90 @@
 // FUNCTION: BFME2 0x002E373C size=42 name=?Rva002E373CClear@@YAXXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002E3766 size=17 name=?set@Rva002E3766Holder@@QAEXHH@Z evidence=?:placeholder tier=A
+void PolygonTrigger::set(Int callback, Int userData)
+{
+	m_enterExitCallback = callback;
+	m_enterExitUserData = userData;
+}
 
 // FUNCTION: BFME2 0x002E3777 size=29 name=?notifyObjectEntered@Rva002E3766Holder@@QAEXH@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002E3794 size=29 name=?notifyObjectExited@Rva002E3766Holder@@QAEXH@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002E37B1 size=18 name=?rva002E37B1@Rva002E37B1@@QAE_NPBURva0030B7C2Point@@@Z evidence=?:placeholder tier=A
+Bool PolygonTrigger::rva002E37B1(const Rva0030B7C2Point *point)
+{
+	return rva0030B7C2(point, &m_polygon);
+}
 
 // FUNCTION: BFME2 0x002E37CB size=26 name=?rva002E37CB@Rva002E37CB@@QAEXPAX@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002E37E5 size=145 name=?Rva002E37E5Write@@YAXPAUTriggerArea002E37E5@@PAVDataChunkOutput@@PAVTriggerFilter002E37E5@@@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002E3876 size=19 name=?getCenterPoint2D@PolygonTrigger@@QBE?AURva0030B72CPoint@@XZ evidence=N:ledger tier=A
+Rva0030B72CPoint PolygonTrigger::getCenterPoint2D() const
+{
+	return m_polygon.rva0030B72C();
+}
 
 // FUNCTION: BFME2 0x002E3889 size=22 name=?Rva002E3889@@YA_NPBURva002E3889Vector@@@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002E38AF size=68 name=?rva002E38AF@PolygonTrigger@@QAEXPBVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 
 // FUNCTION: BFME2 0x002E38F3 size=97 name=?getCenterPoint@PolygonTrigger@@QBEXPAVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
+void PolygonTrigger::getCenterPoint(Coord3D *center) const
+{
+	if (center != NULL)
+	{
+		Rva0030B72CPoint point = getCenterPoint2D();
+		center->x = point.x;
+		center->y = point.y;
+		if (TheTerrainLogic != NULL)
+			center->z = TheTerrainLogic->getGroundHeight(point.x, point.y);
+		else
+			center->z = (Real)m_polygon.m_elevation;
+	}
+}
 
 // FUNCTION: BFME2 0x002E3954 size=36 name=?getBounds@PolygonTrigger@@QAEXPAUFloatRect0073CE30@@@Z evidence=N:ledger tier=A
+void PolygonTrigger::getBounds(Region2D *bounds)
+{
+	if (bounds != NULL)
+		*bounds = rva0007E03A();
+}
 
 // FUNCTION: BFME2 0x002E3978 size=155 name=?getBounds@PolygonTrigger@@QAEXPAUIRegion2D@@@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x002E3A13 size=38 name=?pointInTrigger@PolygonTrigger@@QAE_NABUICoord3D@@@Z evidence=N:ledger tier=A
+Bool PolygonTrigger::pointInTrigger(const ICoord3D &position)
+{
+	ICoord2D point;
+	point.x = position.x;
+	point.y = position.y;
+	return rva00285B66(&point, &m_polygon);
+}
 
 // FUNCTION: BFME2 0x002E3A39 size=46 name=?rva002E3A39@PolygonTrigger@@QAE_NABVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
+Bool PolygonTrigger::rva002E3A39(const Coord3D &position)
+{
+	Rva0030B7C2Point point;
+	point.x = position.x;
+	point.y = position.y;
+	return rva0030B7C2(&point, &m_polygon);
+}
 
 // FUNCTION: BFME2 0x002E3A67 size=19 name=?rva002E3A67@Rva002E3889Vector@@QBE_NXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002E3A7A size=6 name=?take@Rva002E3A7AFields@@QAEIXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002E3A8D size=27 name=?get@Rva002E3A8DHolder@@QAEPAURva002E3A8DPair@@PAU2@H@Z evidence=?:placeholder tier=A
+Rva002E3A8DPair *PolygonTrigger::get(Rva002E3A8DPair *out, Int index)
+{
+	const BfmeE8 *vertex = &m_polygon.m_points[index];
+	out->first = vertex->x;
+	out->second = vertex->y;
+	return out;
+}
 
 // FUNCTION: BFME2 0x002E3AA8 size=723 name=?rva002E3AA8@PolygonTrigger@@QAE_NPBVCoord3D@@0PAU2@_N@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 

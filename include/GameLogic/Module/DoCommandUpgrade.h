@@ -42,6 +42,7 @@ class DoCommandUpgrade : public UpgradeModule
 {
 public:
 	DoCommandUpgrade(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void upgradeRemovalImplementation();	// override: upgradeRemovalImplementation slot 8 at +0x10 (0x004B4C7B)
 	virtual void upgradeImplementation();	// override: upgradeImplementation slot 10 at +0x10 (0x004B4CAD)

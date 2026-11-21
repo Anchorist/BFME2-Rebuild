@@ -83,10 +83,11 @@ public:
 	AsciiString rva0059F322() const;						// 0x0059F322: the string at +0xFFC (the map holds it as get@Rva0059F322AsciiField)
 	GameSpyGameSlot *getGameSpySlot(Int slotNum);			// 0x004FDA3D: a five-byte `jmp` to GameInfo::getSlot
 	virtual void reset();									// slot 10, 0x004FDC73: a five-byte `jmp` to GameInfo::reset
+	virtual void startGame(Int gameID);						// slot 11, 0x004FF09F (overrides GameInfo::startGame)
 	virtual void rva004FDA42();
 
 	GameSpyGameSlot m_gameSpySlot[MAX_SLOTS];				// +0x0DC
-	UnicodeString m_roomName;								// +0xFDC (cleared by the constructor)
+	AsciiString m_roomName;								// +0xFDC (cleared by the constructor)
 	Int m_id;												// +0xFE0 (the staging room map's key: removeStagingRoom 0x003837D3 and addStagingRoom 0x003857EB read it from the room they are given)
 	Transport *m_transport;									// +0xFE4 (the constructor clears it)
 	AsciiString m_localName;								// +0xFE8 (set to the empty string by the constructor)

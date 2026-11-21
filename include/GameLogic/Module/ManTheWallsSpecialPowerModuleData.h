@@ -9,6 +9,7 @@ class ManTheWallsSpecialPowerModuleData : public SpecialPowerModuleData
 public:
 	ManTheWallsSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);  // 0x4C856F
+	static ModuleData *friend_newModuleData(INI *ini);
 };
 
 typedef char ManTheWallsSpecialPowerModuleDataSizeCheck[sizeof(ManTheWallsSpecialPowerModuleData) == 0x7C ? 1 : -1];

@@ -1,5 +1,11 @@
+// cl: /O1
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G005739F6 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
+#include "GameNetwork/NetDisconnectPlayerCommandMsg.h"
 // FUNCTION: BFME2 0x005739F6 size=10 name=?setDisconnectFrame@NetDisconnectPlayerCommandMsg@@QAEXI@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void NetDisconnectPlayerCommandMsg::setDisconnectFrame(UnsignedInt frame)
+{
+	m_disconnectFrame = frame;
+}
 // FUNCTION: BFME2 0x00573A00 size=53 name=?rva00573A00@Rva00573A00@@QAEXPBVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=B hypothesis:mm1-gap-unit

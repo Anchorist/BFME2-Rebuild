@@ -40,6 +40,7 @@ class ActiveBody : public BodyModule
 {
 public:
 	ActiveBody(Thing *thing, const ModuleData *moduleData);		// 0x004BF6A1
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~ActiveBody();										// slot 0, 0x004BF951
 	virtual NameKeyType getModuleNameKey() const;				// slot 4, 0x004BF848
 	virtual void onDelete();									// slot 8, 0x004BDCAC

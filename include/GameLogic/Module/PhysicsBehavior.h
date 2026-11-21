@@ -29,6 +29,7 @@ class PhysicsBehavior : public UpdateModule
 {
 public:
 	PhysicsBehavior(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~PhysicsBehavior();
 
 	virtual UpdateSleepTime update();					// 0x0039114B

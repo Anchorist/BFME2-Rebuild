@@ -26,6 +26,7 @@ class HordeSiegeEngineContainModuleData : public HordeTransportContainModuleData
 public:
 	HordeSiegeEngineContainModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	ObjectFilter m_crewFilter;                             // +0x18C CrewFilter
 	Int m_crewMax;                                         // +0x190 CrewMax

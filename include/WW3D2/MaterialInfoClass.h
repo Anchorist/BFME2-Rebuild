@@ -42,6 +42,7 @@ public:
 	bool Has_Time_Variant_Texture_Mappers(void);
 	void Make_Vertex_Materials_Unique(void);
 	int Get_Texture_Index(const char *name);					// 0x0016FC10
+	void Reset(void) { Free(); }
 
 protected:
 	DynamicVectorClass<VertexMaterialClass *> VertexMaterials;	// +0x08

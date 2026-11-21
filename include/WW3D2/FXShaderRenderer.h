@@ -8,6 +8,7 @@
 
 class MeshClass;
 class MeshModelClass;
+class MeshMatDescClass;
 namespace FXShader { class RenderingMethodDelegate; }
 
 class FXShaderRenderer
@@ -48,5 +49,6 @@ private:
 typedef char FXShaderRendererSize[(sizeof(FXShaderRenderer) == 0x30) ? 1 : -1];
 
 extern FXShaderRenderer *TheFXShaderRenderer;
+bool Restore_FXShader_Pass0(MeshMatDescClass *material);
 
 #endif

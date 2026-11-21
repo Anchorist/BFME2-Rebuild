@@ -14,6 +14,7 @@ public:
 	RiderChangeContainModuleData();
 
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	static void parseRiderInfo(INI *ini, void *instance, void *store, const void *userData);
 
 	struct RiderSlot

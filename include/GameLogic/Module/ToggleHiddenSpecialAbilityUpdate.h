@@ -20,6 +20,7 @@ class ToggleHiddenSpecialAbilityUpdate : public SpecialAbilityUpdate
 {
 public:
 	ToggleHiddenSpecialAbilityUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void triggerAbilityEffect();	// override: triggerAbilityEffect slot 17 at +0x0 (0x004AE22D)
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004AE286)

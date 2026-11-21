@@ -33,6 +33,7 @@ class FlammableUpdate : public UpdateModule, public DamageModuleInterface
 {
 public:
 	FlammableUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~FlammableUpdate();											// slot 0
 
 	virtual NameKeyType getModuleNameKey() const;						// Module slot 4

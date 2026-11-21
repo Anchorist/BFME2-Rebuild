@@ -33,6 +33,7 @@ class PorcupineFormationBodyModule : public ActiveBody
 {
 public:
 	PorcupineFormationBodyModule(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual Bool rva004C2127(Object *object);
 	virtual ~PorcupineFormationBodyModule();

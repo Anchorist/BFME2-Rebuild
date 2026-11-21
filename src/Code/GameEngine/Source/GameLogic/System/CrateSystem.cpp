@@ -9,6 +9,10 @@
 // Edges: left=unknown-rows right=unknown-rows
 #include "GameLogic/CrateSystem.h"
 // FUNCTION: BFME2 0x0035C959 size=6 name=?Rva0035C959Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-neighbour-shared-data
+int Rva0035C959Get()
+{
+	return (int)CrateTemplate::TheCrateTemplateFieldParseTable;
+}
 // FUNCTION: BFME2 0x0035C972 size=52 name=?setName@CrateTemplate@@QAEXVAsciiString@@@Z evidence=N:ledger
 void CrateTemplate::setName(AsciiString name)
 {

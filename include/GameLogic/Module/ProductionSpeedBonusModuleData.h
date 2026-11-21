@@ -22,6 +22,7 @@ public:
 	ProductionSpeedBonusModuleData();
 	virtual ~ProductionSpeedBonusModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Int m_numberOfFrames;                                  // +0x7C NumberOfFrames
 	Real m_speedMultiplier;                                // +0x80 SpeedMulitplier

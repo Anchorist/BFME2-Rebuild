@@ -20,6 +20,7 @@ class ToggleDeploySpecialAbilityUpdateModuleData : public SpecialAbilityUpdateMo
 public:
 	ToggleDeploySpecialAbilityUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	OpaqueRefElement4 m_soundDeploy;                      // +0xC8 SoundDeploy (turnOn 0x004AE6D7 builds an AudioEventRTS from it)
 	OpaqueRefElement4 m_soundUndeploy;                    // +0xCC SoundUndeploy (turnOff 0x004AE5B8 builds an AudioEventRTS from it)

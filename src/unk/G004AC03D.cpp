@@ -1,4 +1,4 @@
-// cl: /O1
+// cl: /O1 /arch:SSE
 // stlport46
 #include "Common/INI.h"
 #include "GameLogic/Module/RainOfFireUpdate.h"
@@ -6,6 +6,20 @@
 // object=G004AC03D name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x004AC03D size=90 name=??0RainOfFireUpdateModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+RainOfFireUpdateModuleData::RainOfFireUpdateModuleData()
+{
+	m_height = 100.0f;
+	m_darkness = 0.25f;
+	m_startRainTime = 150;
+	m_darknessFadeTime = 120;
+	m_jitter = 0.0f;
+	m_dpsMin = 1.0f;
+	m_dpsMax = 1.0f;
+	m_rampup = 0.0f;
+	m_offset.x = 0.0f;
+	m_offset.y = 0.0f;
+}
+
 // Field parse table for RainOfFireUpdateModuleData (decoded from retail image).
 static const FieldParse s_rainOfFireUpdateModuleDataFieldParse[] =
 {

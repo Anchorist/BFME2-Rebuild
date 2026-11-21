@@ -22,7 +22,8 @@
       "parent": null,
       "object": "O00178E50",
       "accepted_names": [
-        "?Set_Point_Alpha@PointGroupClass@@QAEXM@Z"
+        "?Set_Point_Alpha@PointGroupClass@@QAEXM@Z",
+        "?Set_Line_UCoord@LineGroupClass@@QAEXM@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"

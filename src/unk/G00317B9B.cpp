@@ -1,4 +1,11 @@
+// cl: /O1
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G00317B9B name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
+#include "GameNetwork/NetInformPlayerLeaveFrameCommandMsg.h"
+
 // FUNCTION: BFME2 0x00317B9B size=10 name=?setLeavingPlayerID@NetInformPlayerLeaveFrameCommandMsg@@QAEXH@Z evidence=X:map request tier=B hypothesis:mm1-gap-unit
+void NetInformPlayerLeaveFrameCommandMsg::setLeavingPlayerID(Int leavingPlayerID)
+{
+	m_leavingPlayerID = leavingPlayerID;
+}

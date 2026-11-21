@@ -10,6 +10,11 @@
 // FUNCTION: BFME2 0x0041430D size=18 name=?rva0041430D@Rva0041430D@@QAEXPAVINI@@@Z evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x0041431F size=6 name=?Rva0041431FGet@@YAHXZ evidence=?:placeholder tier=A
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva0041431FGet()
+{
+	return (int)"ScoredKillEvaAnnouncerController";
+}
 
 // FUNCTION: BFME2 0x00414325 size=7 name=?get@Rva00414325SubDwordField@@QBEHXZ evidence=?:placeholder tier=A
 

@@ -66,6 +66,7 @@ class SiegeEngineContain : public TransportContain
 public:
 	char const * name() const;
 	SiegeEngineContain(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual Bool containSlot46()
 	{
 		const SiegeEngineContainModuleData *data =

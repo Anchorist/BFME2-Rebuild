@@ -41,6 +41,7 @@ class CastleUpgrade : public UpgradeModule
 {
 public:
 	CastleUpgrade(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~CastleUpgrade();
 

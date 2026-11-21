@@ -1,9 +1,11 @@
 // cl: /O1 /EHs /EHc- /D_CRTIMP= /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS
 // stlport46
+// bfmealloc_alloconly
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 #include "GameLogic/Module/AttributeModifierPoolUpdate.h"
 #include "GameLogic/Module/CollideModule.h"
 #include "GameLogic/Object.h"
+#include "GameClient/DrawModule.h"
 #include "GameLogic/Module/StealthUpdate.h"
 #include "Common/DisabledTypes.h"
 // stlport46
@@ -843,8 +845,18 @@ SpecialPowerModuleInterface *Object::getSpecialPowerModule(const SpecialPowerTem
 }
 
 // FUNCTION: BFME2 0x0028BBE1 size=18 name=?rva0028BBE1@Rva0028BBE1@@QAEXPAX@Z evidence=?:placeholder tier=A
+void Object::rva0028BBE1(void *guarded)
+{
+	if (m_guardingHelper)
+		m_guardingHelper->setGuardedObject((Object *)guarded);
+}
 
 // FUNCTION: BFME2 0x0028BBF3 size=18 name=?rva0028BBF3@Object@@QAEXPAV1@@Z evidence=?:placeholder tier=A
+void Object::rva0028BBF3(Object *guarded)
+{
+	if (m_guardingHelper)
+		m_guardingHelper->stopGuarding(guarded);
+}
 
 // FUNCTION: BFME2 0x0028BC05 size=18 name=?rva0028BC05@Rva0028BC05@@QAEXPAX@Z evidence=?:placeholder tier=A
 void Object::addGuarder(Object *guarder)
@@ -1882,6 +1894,21 @@ Int Object::rva0028F4EF()
 	return testModelConditionState((ModelConditionFlagType)0x223) ? 1 : 2;
 }
 
+ModelConditionFlags::ModelConditionFlags(InitType, UnsignedInt a)
+{
+	clear();
+	set(a);
+}
+
+ModelConditionFlags::ModelConditionFlags(InitType, UnsignedInt a, UnsignedInt b, UnsignedInt c, UnsignedInt d)
+{
+	clear();
+	set(a);
+	set(b);
+	set(c);
+	set(d);
+}
+
 // FUNCTION: BFME2 0x0028F518 size=16 name=?rva0028F518@Object@@QAE_NXZ evidence=?:placeholder tier=A
 bool Object::rva0028F518()
 {
@@ -2070,6 +2097,20 @@ void Object::setBusyUntilFrame(Int frame)
 // FUNCTION: BFME2 0x00290114 size=579 name=?setDisabledUntil@Object@@QAEXW4DisabledType@@I@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x00290357 size=108 name=?checkDisabledStatus@Object@@QAEXXZ evidence=N:ledger tier=A
+void Object::checkDisabledStatus()
+{
+	UnsignedInt now = TheGameLogic->getFrame();
+	for (Int i = 0; i < 11; ++i)
+	{
+		if (rva001E4A4E(i) && now >= m_disabledTillFrame[i])
+		{
+			clearDisabled((DisabledType)i);
+			m_disabledMask.clear(i);
+			if (i == 1)
+				clearModelConditionState((ModelConditionFlagType)529);
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x002903C3 size=44 name=?rva002903C3@Object@@QAEXXZ evidence=?:placeholder tier=A
 
@@ -2448,6 +2489,22 @@ Bool Object::isMassSelectable() const
 // FUNCTION: BFME2 0x00293105 size=181 name=?rva00293105@Object@@QAEXXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002931BA size=59 name=?rva002931BA@Object@@QAE_NXZ evidence=?:placeholder tier=A
+Bool Object::isProducedByHorde()
+{
+	ObjectID producerID = m_producerID;
+	if (testStatus(OBJECT_STATUS_HORDE_MEMBER))
+	{
+		if (producerID != INVALID_ID)
+			return true;
+	}
+	else if (producerID != INVALID_ID)
+	{
+		Object *producer = TheGameLogic->findObjectByID(producerID);
+		if (producer != NULL && producer->getTemplate()->isKindOf(KINDOF_HORDE))
+			return true;
+	}
+	return false;
+}
 
 // FUNCTION: BFME2 0x002931F5 size=84 name=?rva002931F5@Object@@QAEPAV1@_N@Z evidence=?:placeholder tier=A
 Object *Object::rva002931F5(Bool checkProducer)
@@ -2644,6 +2701,34 @@ HordeContainInterface *Object::rva0029439D()
 }
 
 // FUNCTION: BFME2 0x002943B2 size=191 name=?rva002943B2@Object@@QAE_NPBVPlayer@@@Z evidence=?:placeholder tier=A
+Bool Object::rva002943B2(const Player *player)
+{
+	if (m_drawable)
+	{
+		for (DrawModule **dm = m_drawable->getDrawModules(); *dm; ++dm)
+		{
+			if (!(*dm)->vslot60())
+				return false;
+		}
+	}
+	if (!(UnsignedByte)rva002933CD() && !testStatus((ObjectStatusTypes)0x11)
+		&& (rva0028F518() || testStatus((ObjectStatusTypes)0x0F))
+		&& (!player || player->m_playerType != 1 || !rva0028C1CC()))
+	{
+		if (getTemplate()->isKindOf((KindOfType)88))
+		{
+			StealthUpdate *stealth = (StealthUpdate *)rva0028F4BC();
+			if (stealth && stealth->m_disguiseTemplate)
+			{
+				Player *disguisePlayer = ThePlayerList->getNthPlayer(stealth->m_unk0x38);
+				if (disguisePlayer && disguisePlayer->getRelationship(player) == ENEMIES)
+					return false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
 
 // FUNCTION: BFME2 0x00294471 size=570 name=?rva00294471@Object@@QAE_NPAXH@Z evidence=?:placeholder tier=A
 

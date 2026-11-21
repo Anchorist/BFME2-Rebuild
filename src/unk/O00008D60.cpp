@@ -7,7 +7,7 @@
 // Hypothesis rules: hypothesis:K, hypothesis:init-votes, hypothesis:name:invented, hypothesis:padding
 // FUNCTION: BFME2 0x000071B0 size=6 name=?classic@locale@_STL@@SAABV12@XZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
 // FUNCTION: BFME2 0x00007450 size=6 name=?Rva00007450Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-contiguity-shared-data
-// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+// No retail code or data refers to this function. What the constant -2 means to its caller is not evidenced, so the row keeps its ledger name.
 int Rva00007450Get()
 {
 	return -2;

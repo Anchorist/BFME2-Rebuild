@@ -85,7 +85,9 @@
         "?scanReal@StreamingArchiveFile@@UAE_NAAM@Z",
         "?scanString@StreamingArchiveFile@@UAE_NAAVAsciiString@@@Z",
         "?getSneakyTargetingOffset@AIUpdateInterface@@UBE_NPAUCoord3D@@@Z",
-        "?getSneakyTargetingOffset@AIUpdateInterface@@UBE_NPAVCoord3D@@@Z"
+        "?getSneakyTargetingOffset@AIUpdateInterface@@UBE_NPAVCoord3D@@@Z",
+        "?wouldLikeToCollideWith@AIUpdateInterface@@UBE_NPBVObject@@@Z",
+        "?wouldLikeToCollideWith@CritterEmitterUpdate@@UBE_NPBVObject@@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"

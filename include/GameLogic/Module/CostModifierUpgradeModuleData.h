@@ -29,6 +29,7 @@ class CostModifierUpgradeModuleData : public UpgradeModuleData
 public:
 	CostModifierUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	ObjectFilter m_objectFilter;                           // +0x118 ObjectFilter
 	_STL::vector<Real> m_percentage;                       // +0x11C Percentage; INI::Rva004B60D5_ParsePercentage

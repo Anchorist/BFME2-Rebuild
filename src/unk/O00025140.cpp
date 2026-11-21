@@ -19,7 +19,7 @@
 
 // FUNCTION: BFME2 0x00026640 size=21 name=?rva0082D9D0Add@@YAXPAHH@Z evidence=?:placeholder tier=B hypothesis:K
 
-// FUNCTION: BFME2 0x000266F0 size=49 name=?bfmeGoPQ@BfmeThingPQ@@QAEXPBU1@@Z evidence=N:ledger tier=B hypothesis:K
+// FUNCTION: BFME2 0x000266F0 size=49 name=?bfmeGoPQ@BfmeThingPQ@@QAEXPBU1@@Z evidence=?:placeholder tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x00026730 size=128 name=?bfmeReplace1152@BfmeS1152@@QAEXIIPAVBfmeR1152@@@Z evidence=N:ledger tier=B hypothesis:K
 
@@ -53,7 +53,7 @@
 
 // FUNCTION: BFME2 0x00028DC0 size=44 name=?Rva00028DC0FreeSized@@YAXPAXI@Z evidence=?:placeholder tier=B hypothesis:K
 
-// FUNCTION: BFME2 0x00029490 size=153 name=?bfmeAssignV16@BfmeStrV16@@QAEPAV1@ID@Z evidence=N:ledger tier=B hypothesis:K
+// FUNCTION: BFME2 0x00029490 size=153 name=?bfmeAssignV16@BfmeStrV16@@QAEPAV1@ID@Z evidence=?:placeholder tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x000297D0 size=119 name=?bfmeAssignV14@BfmeStrV14@@QAEPAV1@PAD0ID@Z evidence=N:ledger tier=B hypothesis:K
 

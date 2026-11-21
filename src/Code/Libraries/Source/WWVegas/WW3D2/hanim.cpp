@@ -34,6 +34,10 @@ PivotMapClass *HAnimComboDataClass::Get_Pivot_Map() const
 
 // FUNCTION: BFME2 0x00196140 size=4 name=?get@Rva00196140ByteField@@QBEEXZ evidence=?:placeholder tier=B hypothesis:Z
 
+HAnimClass::~HAnimClass(void)
+{
+}
+
 // FUNCTION: BFME2 0x001961B0 size=46 name=??0HAnimComboDataClass@@QAE@_N@Z evidence=N:ledger tier=B hypothesis:Z
 HAnimComboDataClass::HAnimComboDataClass(bool shared) : HAnim(0), Frame(0.0f), Weight(1.0f), PivotMap(0), Shared(shared)
 {

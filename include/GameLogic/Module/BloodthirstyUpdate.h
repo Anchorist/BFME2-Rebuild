@@ -50,6 +50,7 @@ class BloodthirstyUpdate : public UpdateModule, public BloodthirstyUpdateInterfa
 {
 public:
 	BloodthirstyUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();
 

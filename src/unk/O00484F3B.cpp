@@ -7,6 +7,11 @@
 // Hypothesis rules: hypothesis:cohesion, hypothesis:name:invented
 // FUNCTION: BFME2 0x00484F0D size=46 name=??0PillageModule@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-class+shared-data
 // FUNCTION: BFME2 0x00484F3B size=6 name=?Rva00484F3BGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva00484F3BGet()
+{
+	return (int)"PillageModule";
+}
 
 // FUNCTION: BFME2 0x00484F76 size=69 name=?getModuleNameKey@PillageModule@@UBE?AW4NameKeyType@@XZ evidence=N:ledger tier=B hypothesis:name:invented
 

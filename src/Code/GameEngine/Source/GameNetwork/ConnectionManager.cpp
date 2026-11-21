@@ -160,15 +160,9 @@ Bool ConnectionManager::isPlayerInGame(Int seat)
 }
 
 // FUNCTION: BFME2 0x004CF0CD size=46 name=?isPlayerSlotActive@BFMEConnectionManager@@QAEHH@Z evidence=N:ledger
-Int ConnectionManager::isPlayerSlotActive(Int seat)
+Bool ConnectionManager::isPlayerSlotActive(Int seat)
 {
-	if ((UnsignedInt)seat < 8)
-	{
-		Int state = m_slotState[seat];
-		if (state >= 1 && state <= 3 && isPlayerConnected(seat))
-			return 1;
-	}
-	return 0;
+	return (UnsignedInt)seat < 8 && m_slotState[seat] >= 1 && m_slotState[seat] <= 3 && isPlayerConnected(seat);
 }
 
 // FUNCTION: BFME2 0x004CF0FB size=24 name=?rva004CF0FB@Rva004CF0FB@@QAEHH@Z evidence=?:placeholder
@@ -508,7 +502,7 @@ Bool ConnectionManager::hasPacketRouterFrameStall()
 	for (Int seat = 0; seat < 8; seat++)
 	{
 		if (m_connections[seat] != 0 && m_connections[seat]->m_quitValue == (UnsignedInt)-1
-			&& !(UnsignedByte)isPlayerSlotActive(seat)
+			&& !isPlayerSlotActive(seat)
 			&& m_ackedFrame[seat] + slack <= frame)
 		{
 			if (m_ackedFrame[seat] != g_00E043F4)

@@ -9,6 +9,9 @@
 #include "WW3D2/DX8Wrapper.h"
 #include "WW3D2/WW3D.h"
 #include "WW3D2/RenderObjClass.h"
+#include "WW3D2/RenderInfoClass.h"
+#include "WW3D2/CameraClass.h"
+#include "WW3D2/RayCollisionTestClass.h"
 #include "WWLib/chunkio.h"
 
 void bfmeSetProjectionDepthBias(float bias);
@@ -321,6 +324,24 @@ void SimpleSceneClass::Remove_Render_Object(RenderObjClass *obj)
 }
 
 // FUNCTION: BFME2 0x001418F0 size=309 name=?Compute_Point_Visibility@SimpleSceneClass@@UAEMAAVRenderInfoClass@@ABVVector3@@@Z evidence=N:ledger
+float SimpleSceneClass::Compute_Point_Visibility(RenderInfoClass &rinfo, const Vector3 &point)
+{
+	CastResultStruct res;
+	LineSegClass ray(rinfo.Camera.Get_Position(), point);
+	RayCollisionTestClass raytest(ray, &res, COLL_TYPE_PROJECTILE);
+
+	RefMultiListIterator<RenderObjClass> it(&RenderList);
+	for (it.First(); !it.Is_Done(); it.Next()) {
+		RenderObjClass *robj = it.Peek_Obj();
+		robj->Cast_Ray(raytest);
+	}
+
+	if (res.Fraction == 1.0f) {
+		return 1.0f;
+	} else {
+		return 0.0f;
+	}
+}
 
 // FUNCTION: BFME2 0x00141A30 size=384 name=?Customized_Render@SimpleSceneClass@@MAEXAAVRenderInfoClass@@@Z evidence=N:ledger
 

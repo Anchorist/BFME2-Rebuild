@@ -4,6 +4,7 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=no-edge-evidence; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
+#include "Common/INI.h"
 #include "GameLogic/Module/SlavedUpdateModuleData.h"
 // FUNCTION: BFME2 0x002552D7 size=105 name=??0SlavedUpdateModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:invented
 // Retail leaves GuardWanderRange (+0x10) and RepairRange (+0x28) out of its initializers.
@@ -34,4 +35,12 @@ SlavedUpdateModuleData::SlavedUpdateModuleData() :
 }
 
 // FUNCTION: BFME2 0x00255340 size=49 name=?friend_newModuleData@SlavedUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:K
+ModuleData *SlavedUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	SlavedUpdateModuleData *data = new SlavedUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, SlavedUpdateModuleData::buildFieldParse);
+	return data;
+}
+
 

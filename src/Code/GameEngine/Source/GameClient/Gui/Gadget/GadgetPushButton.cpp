@@ -21,7 +21,7 @@ _PushButtonData::_PushButtonData()
 	m_drawBorder = 0;
 	m_borderColor = 0;
 	m_userData = 0;
-	m_field18 = 0;
+	m_overlayImage = 0;
 	m_field20 = 0;
 	m_field24 = 0;
 	m_showDisplayString = 0;
@@ -207,13 +207,13 @@ void Rva003284B9(GameWindow *window, int percent, int color)
 }
 
 // FUNCTION: BFME2 0x003284ED size=43 name=?Rva003284ED@@YAXPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:K
-void Rva003284ED(GameWindow *window, int value)
+void Rva003284ED(GameWindow *window, const Image *value)
 {
 	if (window) {
 		_PushButtonData *data = (_PushButtonData *)window->winGetUserData();
 		if (!data)
 			data = getNewPushButtonData();
-		data->m_field18 = value;
+		data->m_overlayImage = value;
 		window->winSetUserData(data);
 	}
 }

@@ -78,8 +78,10 @@ class AudioLoopUpgrade : public UpdateModule
 {
 public:
 	AudioLoopUpgrade(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 const char *name() const;
 	virtual NameKeyType getModuleNameKey() const;
+	virtual UpdateSleepTime update();		// UpdateModuleInterface slot 0 (pure in UpdateModule)
 	virtual const char *GetSnapshotName() const;
 
 protected:

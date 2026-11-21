@@ -10,7 +10,7 @@ below.
 ## Counts
 
 The maintainers recorded these progress counts at
-**2026-11-21**, revision `f1b99d538b` of their
+**2026-11-21**, revision `d0e3098e44` of their
 working repository (the tree of this snapshot's `src/`, `include/`,
 `config/` and `expected/` is that revision or a later one).
 
@@ -23,23 +23,23 @@ for an unknown real name ([naming](naming.md)).
 
 | Measure | At that snapshot |
 | --- | ---: |
-| Owned functions credited MATCH | 16,149 / 41,565 |
-| Credited functions with proven references | 12,740 |
-| Whole objects VERIFIED | 183 / 2,151 |
-| Headers outside `include/Draft/` | 1,695 |
-| Owned function names classified as real / placeholder | 23,568 / 17,997 |
+| Owned functions credited MATCH | 16,552 / 41,565 |
+| Credited functions with proven references | 13,119 |
+| Whole objects VERIFIED | 210 / 2,151 |
+| Headers outside `include/Draft/` | 1,744 |
+| Owned function names classified as real / placeholder | 23,569 / 17,996 |
 
-39% of the owned functions had match credit at that snapshot.
+40% of the owned functions had match credit at that snapshot.
 
-Source files with code: **846 named** and **389 still named by
+Source files with code: **855 named** and **486 still named by
 address** (under `src/unk/`, waiting for evidence of their real name and
-place). Another 2,016 files hold only generated
-annotations and no code yet (1,776 address-named, 240
+place). Another 1,910 files hold only generated
+annotations and no code yet (1,679 address-named, 231
 named); they are scaffolds, counted apart.
 
-In this snapshot's tree, **7 Draft headers are in use** (included by
-some file; these are the ones to retire). Another 2,111 Drafts are
-unused generated layout guesses: 2,101 are kept as leads for classes not
+In this snapshot's tree, **12 Draft headers are in use** (included by
+some file; these are the ones to retire). Another 2,058 Drafts are
+unused generated layout guesses: 2,048 are kept as leads for classes not
 written yet and 10 are dead copies of headers that now exist outside
 `include/Draft/`. See the [worklist](../worklist/README.md).
 

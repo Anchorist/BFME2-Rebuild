@@ -73,6 +73,20 @@ static const FieldParse s_battlePlanUpdateModuleDataFieldParse[] =
 };
 
 // FUNCTION: BFME2 0x004976DB size=67 name=?bfmeTransition@Gen_002854E0@@QAEXHHHIH@Z evidence=N:ledger tier=B hypothesis:cohesion
+void BattlePlanUpdate::initiateIntentToDoSpecialPower(
+	const SpecialPowerTemplate *specialPowerTemplate, const Object *targetObj,
+	const Coord3D *targetPos, UnsignedInt commandOptions, const Waypoint *way)
+{
+	if (m_specialPowerModule->getSpecialPowerTemplate() == specialPowerTemplate)
+	{
+		if (commandOptions & 0x2000)
+			m_desiredPlan = 1;
+		else if (commandOptions & 0x4000)
+			m_desiredPlan = 2;
+		else if (commandOptions & 0x8000)
+			m_desiredPlan = 3;
+	}
+}
 
 // FUNCTION: BFME2 0x0049771E size=33 name=?getCommandOption@BattlePlanUpdate@@UBE?AW4CommandOption@@XZ evidence=N:ledger tier=B hypothesis:cohesion
 CommandOption BattlePlanUpdate::getCommandOption() const

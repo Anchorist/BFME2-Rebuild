@@ -8,6 +8,11 @@
 // FUNCTION: BFME2 0x004CBC2B size=124 name=??0RandomSoundSelectorClientBehavior@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x004CBCA7 size=6 name=?Rva004CBCA7Get@@YAHXZ evidence=?:placeholder tier=A
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva004CBCA7Get()
+{
+	return (int)"RandomSoundSelectorClientBehavior";
+}
 
 // FUNCTION: BFME2 0x004CBCAD size=69 name=?getModuleNameKey@RandomSoundSelectorClientBehavior@@UBE?AW4NameKeyType@@XZ evidence=N:ledger tier=A
 

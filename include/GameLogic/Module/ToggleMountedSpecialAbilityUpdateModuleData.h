@@ -21,6 +21,7 @@ class ToggleMountedSpecialAbilityUpdateModuleData : public SpecialAbilityUpdateM
 public:
 	ToggleMountedSpecialAbilityUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_opacityTarget;                                  // +0xC8 OpacityTarget
 	Bool m_triggerInstantlyOnCreate;                       // +0xCC TriggerInstantlyOnCreate

@@ -5,8 +5,10 @@
 class AsciiString;
 class Xfer;
 #pragma pack(push,1) // DRAFT layout policy; all known offsets asserted below
+class MultiIniFieldParse;
 class W3DLightDrawModuleData {
 public:
+  static void buildFieldParse(MultiIniFieldParse &parse);
   virtual ~W3DLightDrawModuleData(); // slot=0x0 target=0x000CFDDF mangled=??_GW3DLightDrawModuleData@@UAEPAXI@Z
   virtual void vfunc_0x04(); // slot=0x4 target=0x000B3FD0 mangled=??1Region2D@@QAE@XZ
   virtual char const * GetSnapshotName(void) const; // slot=0x8 target=0x00065212 mangled=?GetSnapshotName@ModuleData@@UBEPBDXZ

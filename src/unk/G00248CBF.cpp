@@ -1,7 +1,13 @@
+// cl: /O1
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G00248CBF name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
+#include "GameNetwork/BfmeNetAddress.h"
 // FUNCTION: BFME2 0x00248CBF size=30 name=?Rva00248CBF@BfmeNetAddress@@QBE_NPBU1@@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+Bool BfmeNetAddress::Rva00248CBF(const BfmeNetAddress *other) const
+{
+	return m_ip == other->m_ip && m_port == other->m_port;
+}
 // FUNCTION: BFME2 0x00248CDD size=30 name=?rva00248CDD@Rva00248CDD@@QBE_NABV1@@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00248CFB size=13 name=?set@Rva00248CFBByteSlot@@QAEXE@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00248D08 size=5 name=?markAsOverride@Overridable@@QAEXXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit

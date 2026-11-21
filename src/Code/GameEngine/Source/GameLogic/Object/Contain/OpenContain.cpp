@@ -669,6 +669,34 @@ void OpenContain::onDelete()
 }
 
 // FUNCTION: BFME2 0x004641B1 size=213 name=?onDie@OpenContain@@UAEXPBVDamageInfo@@@Z evidence=N:ledger tier=A
+void OpenContain::onDie(const DamageInfo *damageInfo)
+{
+	m_unk0xE0 = true;
+	Object *object = m_object;
+	if (!getOpenContainModuleData()->m_dieMuxData.isDieApplicable(object, damageInfo))
+		return;
+	if (getOpenContainModuleData()->m_ejectPassengersOnDeath)
+	{
+		if (getOpenContainModuleData()->m_damagePercentToUnits > 0.0f)
+			containSlot82();
+		vslot25();
+		removeAllContained(false);
+	}
+	else
+	{
+		ContainedItemsList items(m_containList);
+		for (ContainedItemsList::iterator it = items.begin(); it != items.end(); ++it)
+		{
+			Object *obj = *it;
+			if (obj != NULL)
+			{
+				if (obj->getDrawable() != NULL)
+					obj->getDrawable()->setDrawableHidden(true);
+				TheGameLogic->destroyObject(obj);
+			}
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x00464286 size=77 name=?redeployOccupants@OpenContain@@MAEXXZ evidence=N:ledger tier=A
 void OpenContain::redeployOccupants()

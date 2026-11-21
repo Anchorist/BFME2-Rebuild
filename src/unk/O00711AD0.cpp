@@ -1,5 +1,13 @@
+// cl: /O2 /MD
+// cl-arch: x87
+#include <stdlib.h>
+#include "WWMath/Vector3.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=O00711AD0 name-evidence=L
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x00711AD0 size=180 name=?Init@WWMath@@SAXXZ evidence=N:ledger tier=B hypothesis:mm1-fragment-path-elsewhere
 // FUNCTION: BFME2 0x00711B90 size=26 name=?Random_Float@WWMath@@SAMXZ evidence=N:ledger tier=B hypothesis:mm1-fragment-path-elsewhere
+Real WWMath::Random_Float(void)
+{
+	return (Real)(rand() & 0xFFF) / 4095.0f;
+}

@@ -34,6 +34,7 @@ class DestroyEnvironmentUpdate : public UpdateModule
 {
 public:
 	DestroyEnvironmentUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~DestroyEnvironmentUpdate();
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004AC84B)

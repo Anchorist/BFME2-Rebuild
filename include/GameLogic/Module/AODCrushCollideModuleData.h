@@ -20,6 +20,7 @@ class AODCrushCollideModuleData : public ModuleData
 public:
 	AODCrushCollideModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	const FXList *m_smallFXList;                          // +0x8 SmallFXList
 	const ObjectCreationList *m_smallObjectCreationList;  // +0xC SmallObjectCreationList

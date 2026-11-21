@@ -7,6 +7,11 @@ extern MultiplayerSettings *TheMultiplayerSettings;
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=proven:name
 // FUNCTION: BFME2 0x001EF361 size=6 name=?Rva001EF361Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:mm1-neighbour-shared-data
+// Returns the address of the table or global the row is named for (the ledger types it as int).
+int Rva001EF361Get()
+{
+	return (int)MultiplayerSettings::m_multiplayerSettingsFieldParseTable;
+}
 // FUNCTION: BFME2 0x001EF367 size=88 name=?parseMultiplayerSettingsDefinition@INI@@SAXPAV1@@Z evidence=N:ledger
 void INI::parseMultiplayerSettingsDefinition(INI *ini)
 {

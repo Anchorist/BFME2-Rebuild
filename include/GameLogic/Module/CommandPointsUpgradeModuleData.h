@@ -16,6 +16,7 @@ class CommandPointsUpgradeModuleData : public UpgradeModuleData
 public:
 	CommandPointsUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Int m_commandPoints;                                   // +0x118 CommandPoints
 	ObjectFilter m_requiredObject;                         // +0x11C RequiredObject

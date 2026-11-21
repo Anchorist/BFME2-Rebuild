@@ -6,6 +6,9 @@
 #include "GameLogic/Module/AutoAbilityBehavior.h"
 #include "Common/NameKeyGenerator.h"
 #include "Common/Xfer.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/AutoAbilityBehaviorModuleData.h"
 // FUNCTION: BFME2 0x0045A1D9 size=18 name=?init@AutoAbilityQueryEntry@@QAEPAV1@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x0045A1EB size=12 name=?hasLowFlags@Rva0045A1EB@@QBE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x0045A1F7 size=12 name=?isBit3Clear@Rva0045A1EB@@QBE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-encloses-unk-file
@@ -31,7 +34,28 @@ void AutoAbilityBehavior::xfer(Xfer *xfer)
 
 // FUNCTION: BFME2 0x0045A2E7 size=135 name=??0AutoAbilityBehaviorModuleData@@QAE@XZ evidence=N:ledger
 
+static const FieldParse s_autoAbilityBehaviorModuleDataFieldParse[] =
+{
+	{ "SpecialAbility", INI::parseAsciiString, 0, 0x18 },
+	{ "MaxScanRange", INI::parseReal, 0, 0x8 },
+	{ "MinScanRange", INI::parseReal, 0, 0xC },
+	{ "WorkingRadius", INI::parseReal, 0, 0x10 },
+	{ "StartsActive", INI::parseBool, 0, 0x5C },
+	{ "BaseMaxRangeFromStartPos", INI::parseBool, 0, 0x5D },
+	{ "AdjustAttackMeleePosition", INI::parseBool, 0, 0x5E },
+	{ "Query", INI::Rva0045A22E_ParseQuery, 0, 0x2C },
+	{ "AllowSelf", INI::parseBool, 0, 0x5F },
+	{ "IdleTimeSeconds", INI::parseReal, 0, 0x14 },
+	{ "ForbiddenStatus", BitFlags<101>::parseFromINI, 0, 0x1C },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x0045A36E size=17 name=?buildFieldParse@AutoAbilityBehaviorModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger
+void AutoAbilityBehaviorModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_autoAbilityBehaviorModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x0045A37F size=73 name=??1AutoAbilityBehavior@@UAE@XZ evidence=N:ledger
 AutoAbilityBehavior::~AutoAbilityBehavior()

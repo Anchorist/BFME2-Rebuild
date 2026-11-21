@@ -7,6 +7,10 @@
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:name:invented
 #include "GameLogic/Module/AttachUpdate.h"
 #include "Common/NameKeyGenerator.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/AttachUpdateModuleData.h"
+#include "GameClient/Eva.h"
 // FUNCTION: BFME2 0x004918A6 size=6 name=?name@Rva004918A6Named@@QBEPBDXZ evidence=?:placeholder tier=B hypothesis:cohesion
 const char *AttachUpdate::GetSnapshotName() const
 {
@@ -22,7 +26,29 @@ NameKeyType AttachUpdate::getModuleNameKey() const
 	return TheAttachUpdateNameKey;
 }
 
+static const FieldParse s_attachUpdateModuleDataFieldParse[] =
+{
+	{ "ObjectFilter", iniParseObjectFilter, 0, 0x8 },
+	{ "ScanRange", INI::parseReal, 0, 0x1C },
+	{ "ParentStatus", BitFlags<101>::parseFromINI, 0, 0xC },
+	{ "AlwaysTeleport", INI::parseBool, 0, 0x20 },
+	{ "AnchorToTopOfGeometry", INI::parseBool, 0, 0x21 },
+	{ "ParentOwnerAttachmentEvaEvent", Eva::parseEvaEventID, 0, 0x24 },
+	{ "ParentAllyAttachmentEvaEvent", Eva::parseEvaEventID, 0, 0x28 },
+	{ "ParentEnemyAttachmentEvaEvent", Eva::parseEvaEventID, 0, 0x2C },
+	{ "AttachFX", INI::parseFXList, 0, 0x30 },
+	{ "ParentOwnerDiedEvaEvent", Eva::parseEvaEventID, 0, 0x34 },
+	{ "ParentAllyDiedEvaEvent", Eva::parseEvaEventID, 0, 0x38 },
+	{ "ParentEnemyDiedtEvaEvent", Eva::parseEvaEventID, 0, 0x3C },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x00491957 size=17 name=?buildFieldParse@AttachUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:K
+void AttachUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_attachUpdateModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x00491968 size=167 name=??0AttachUpdateModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:invented
 

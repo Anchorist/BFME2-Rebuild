@@ -5,12 +5,29 @@
 // Edges: left=unknown-rows right=unknown-rows
 #include "GameLogic/Module/FakePathfindPortalBehaviour.h"
 #include "Common/NameKeyGenerator.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/FakePathfindPortalBehaviourModuleData.h"
+#include "GameLogic/Module/UpgradeMuxData.h"
 // FUNCTION: BFME2 0x0046183B size=112 name=?rva0046183B@FakePathfindPortalBehaviour@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x004618AB size=41 name=?regWaypointsWithPathfinder@FakePathfindPortalBehaviour@@AAEXXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x004618D4 size=54 name=?rva004618D4@FakePathfindPortalBehaviour@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x0046190A size=19 name=?rva0046190A@FakePathfindPortalBehaviour@@UAEXPAX@Z evidence=?:placeholder tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x0046191D size=5 name=?disable@FakePathfindPortalBehaviour@@UAEXXZ evidence=X:proven (vtable) tier=B hypothesis:mm1-held-object-encloses-unk-file
+static const FieldParse s_fakePathfindPortalBehaviourModuleDataFieldParse[] =
+{
+	{ "AllowEnemies", INI::parseBool, 0, 0x118 },
+	{ "AllowNonSkirmishAIUnits", INI::parseBool, 0, 0x119 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x00461922 size=34 name=?buildFieldParse@FakePathfindPortalBehaviourModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
+void FakePathfindPortalBehaviourModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(UpgradeMuxData::getFieldParse(), 0x8);
+	parse.add(s_fakePathfindPortalBehaviourModuleDataFieldParse, 0);
+}
+
 // FUNCTION: BFME2 0x00461944 size=99 name=??0FakePathfindPortalBehaviour@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x004619A7 size=6 name=?GetSnapshotName@FakePathfindPortalBehaviour@@MBEPBDXZ evidence=N:ledger
 const char *FakePathfindPortalBehaviour::GetSnapshotName() const

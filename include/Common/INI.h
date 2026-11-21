@@ -135,6 +135,11 @@ public:
 	static void dup_002F082(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F082: a real, stored, refused if positive
 	static void dup_002F0F7(INI *ini, void *instance, void *store, const void *userData);	// 0x0002F0F7: (Int)(real * 1000.0f)
 	static void parsePositiveNonZeroReal(INI *ini, void *instance, void *store, const void *userData);
+	static void Rva004C2918_ParseUpgradeMoneyAmount(INI *ini, void *instance, void *store, const void *userData);	// 0x004C2918: UpgradeMoneyAmount of CashHackSpecialPowerModuleData (placeholder name)
+	static void Rva004C3F48_ParseNamedReal(INI *ini, void *instance, void *store, const void *userData);	// 0x004C3F48: ElvenWoodObject of ElvenWoodSpecialPowerModuleData (placeholder name)
+	static void Rva004B2B64_ParseReplaceObject(INI *ini, void *instance, void *store, const void *userData);	// 0x004B2B64: ReplaceObject of ReplaceObjectUpdateModuleData (placeholder name)
+	static void Rva0045A22E_ParseQuery(INI *ini, void *instance, void *store, const void *userData);	// 0x0045A22E: Query of AutoAbilityBehaviorModuleData (placeholder name)
+	static void Rva004C8F94_ParseSpawnObject(INI *ini, void *instance, void *store, const void *userData);	// 0x004C8F94: SpawnObject of CritterEmitterUpdateModuleData (placeholder name)
 	static void parsePercentToReal(INI *ini, void *instance, void *store, const void *userData);
 	static void Rva004B60D5_ParsePercentage(INI *ini, void *instance, void *store, const void *userData);	// 0x004B60D5: parsePercentToReal into a Real, push_back into the vector<Real> at store (CostModifierUpgrade's Percentage)
 	static void parseAngleReal(INI *ini, void *instance, void *store, const void *userData);

@@ -113,6 +113,11 @@ void StreakLineClass::Set_Texture_Mapping_Mode(SegLineRendererClass::TextureMapM
 }
 
 // FUNCTION: BFME2 0x007419D0 size=37 name=?Set_Texture_Tile_Factor@StreakLineClass@@QAEXM@Z evidence=N:ledger tier=B hypothesis:Z
+void StreakLineClass::Set_Texture_Tile_Factor(float factor)
+{
+	LineRenderer.Set_Texture_Tile_Factor(factor);
+	StreakRenderer.Set_Texture_Tile_Factor(factor);
+}
 
 // FUNCTION: BFME2 0x00741A00 size=27 name=?Set_Merge_Intersections@StreakLineClass@@QAEXH@Z evidence=N:ledger tier=B hypothesis:Z
 void StreakLineClass::Set_Merge_Intersections(int onoff)
@@ -244,6 +249,7 @@ int StreakLineClass::Get_Num_Polys() const
 }
 
 // FUNCTION: BFME2 0x00741D10 size=1653 name=?Get_Obj_Space_Bounding_Box@StreakLineClass@@UBEXAAVAABoxClass@@@Z evidence=N:ledger tier=B hypothesis:cohesion
+
 // FUNCTION: BFME2 0x00742390 size=78 name=?Render_Seg_Line@StreakLineClass@@IAEXAAVRenderInfoClass@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 void StreakLineClass::Render_Seg_Line(RenderInfoClass &rinfo)
 {

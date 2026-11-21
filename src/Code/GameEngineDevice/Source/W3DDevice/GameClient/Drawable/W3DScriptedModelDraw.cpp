@@ -612,7 +612,7 @@ Int W3DScriptedModelDraw::slot66()
 
 // FUNCTION: BFME2 0x000C3C59 size=167 name=?Rva000C3C59Parse@INI@@SAXPAV1@PAX1PBX@Z evidence=?:placeholder tier=A
 
-// FUNCTION: BFME2 0x000C3D00 size=218 name=?parseModel@AttachModelStruct@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=A
+// FUNCTION: BFME2 0x000C3D00 size=218 name=?parseModel@AttachModelStruct@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z evidence=X:map request tier=A
 
 // FUNCTION: BFME2 0x000C3DDA size=655 name=?getProjectileLaunchOffset@W3DScriptedModelDraw@@UBE_NABVModelConditionFlags@@W4WeaponSlotType@@HPAVMatrix3D@@W4WhichTurretType@@PAVCoord3D@@4@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 
@@ -673,7 +673,7 @@ void parseFXEvent(INI *ini, void *instance, void *store, const void *userData)
 
 // FUNCTION: BFME2 0x000C855C size=187 name=?Rva000C855CParseRecord@@YAXPAVINI@@PAVRva000C8492RecordOwner@@@Z evidence=?:placeholder tier=A
 
-// FUNCTION: BFME2 0x000C8748 size=378 name=?parseAttachModel@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=A
+// FUNCTION: BFME2 0x000C8748 size=378 name=?parseAttachModel@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z evidence=X:map request tier=A
 
 // FUNCTION: BFME2 0x000C8914 size=623 name=?parseConditionState@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=A
 

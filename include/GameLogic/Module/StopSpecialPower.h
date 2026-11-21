@@ -53,6 +53,7 @@ class StopSpecialPower : public SpecialPowerModule
 {
 public:
 	StopSpecialPower(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual bool isReady() const;	// override: isReady slot 1 at +0x10 (0x004C683C)
 	virtual void doSpecialPower(unsigned int commandOptions);	// override: doSpecialPower slot 10 at +0x10 (0x004C67B9)

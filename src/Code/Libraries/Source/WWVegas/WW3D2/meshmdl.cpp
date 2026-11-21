@@ -19,9 +19,7 @@
 #include "WW3D2/FXShaderRenderer.h"
 #include "WW3D2/WW3D.h"
 
-bool Restore_FXShader_Pass0(MeshMatDescClass *material);
-
-// Head of the renderer's live model chain (retail VA 0x00DF6F90).
+// Head of the renderer's live model chain.
 static MeshModelClass *MeshModelListHead;
 
 // FUNCTION: BFME2 0x00171760 size=11 name=?Make_UV_Array_Unique@MeshModelClass@@QAEXHH@Z evidence=N:ledger tier=B hypothesis:name:Z
@@ -181,6 +179,28 @@ MeshModelClass &MeshModelClass::operator=(const MeshModelClass &that)
 }
 
 // FUNCTION: BFME2 0x00171F70 size=179 name=?Reset@MeshModelClass@@QAEXHHH_N@Z evidence=N:ledger tier=B hypothesis:K
+void MeshModelClass::Reset(int polycount, int vertcount, int passcount, bool keep_skin)
+{
+	Reset_Geometry(polycount, vertcount, keep_skin);
+
+	if (TheDX8MeshRenderer) {
+		TheDX8MeshRenderer->Unregister_Mesh_Type(this);
+	}
+	if (TheFXShaderRenderer) {
+		TheFXShaderRenderer->Unregister_Mesh_Type(this);
+	}
+	if (CurMatDesc->Has_Stored_Pass0_State()) {
+		Restore_FXShader_Pass0(CurMatDesc);
+	}
+
+	MatInfo->Reset();
+	DefMatDesc->Reset(polycount, vertcount, passcount);
+	if (AlternateMatDesc != NULL) {
+		delete AlternateMatDesc;
+		AlternateMatDesc = NULL;
+	}
+	CurMatDesc = DefMatDesc;
+}
 
 // FUNCTION: BFME2 0x00172030 size=52 name=?Peek_FVF_Category_Container@MeshModelClass@@QAEPAVDX8FVFCategoryContainer@@XZ evidence=N:ledger tier=B hypothesis:K
 DX8FVFCategoryContainer *MeshModelClass::Peek_FVF_Category_Container(void)
@@ -256,6 +276,32 @@ MeshModelClass::MeshModelClass(const MeshModelClass &that) :
 }
 
 // FUNCTION: BFME2 0x00172AB0 size=306 name=??1MeshModelClass@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
+MeshModelClass::~MeshModelClass(void)
+{
+	if (TheDX8MeshRenderer) {
+		TheDX8MeshRenderer->Unregister_Mesh_Type(this);
+	}
+	if (TheFXShaderRenderer) {
+		TheFXShaderRenderer->Unregister_Mesh_Type(this);
+	}
+	if (CurMatDesc->Has_Stored_Pass0_State()) {
+		Restore_FXShader_Pass0(CurMatDesc);
+	}
+
+	Reset(0, 0, 0, Get_Flag(SKIN) != 0);
+	if (MatInfo != NULL) {
+		MatInfo->Release_Ref();
+		MatInfo = NULL;
+	}
+
+	if (DefMatDesc != NULL) {
+		delete DefMatDesc;
+	}
+	if (AlternateMatDesc != NULL) {
+		delete AlternateMatDesc;
+	}
+	Unlink_Instance();
+}
 
 // FUNCTION: BFME2 0x00172D40 size=199 name=?Replace_VertexMaterial@MeshModelClass@@QAEXPAVVertexMaterialClass@@0@Z evidence=N:ledger tier=B hypothesis:K
 void MeshModelClass::Replace_VertexMaterial(VertexMaterialClass *vmat, VertexMaterialClass *new_vmat)

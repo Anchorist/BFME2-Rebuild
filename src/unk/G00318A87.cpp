@@ -1,3 +1,5 @@
+// cl: /O1
+#include "GameNetwork/NetDestroyPlayerCommandMsg.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G00318A87 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
@@ -5,5 +7,9 @@
 // FUNCTION: BFME2 0x00318A95 size=16 name=?rva00318A95@Rva00318A95@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00318ABB size=78 name=?parseCloudBreakEffectDefinition@@YAXPAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00318B09 size=10 name=?dup_00318b09@@YAXXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void NetDestroyPlayerCommandMsg::setPlayerIndex(UnsignedInt index)
+{
+	m_playerIndex = index;
+}
 // FUNCTION: BFME2 0x00318B13 size=4 name=?get@Rva00318B13FloatField@@QBEMXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00318B17 size=7 name=?get@Rva000318B17PtrChaseField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

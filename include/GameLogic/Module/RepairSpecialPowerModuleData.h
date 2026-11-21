@@ -9,6 +9,7 @@ class RepairSpecialPowerModuleData : public SpecialPowerModuleData
 public:
 	RepairSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 };
 
 typedef char RepairSpecialPowerModuleDataSizeCheck[sizeof(RepairSpecialPowerModuleData) == 0x7C ? 1 : -1];

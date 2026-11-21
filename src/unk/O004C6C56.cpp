@@ -14,6 +14,12 @@
 #include "GameLogic/AICommandParms.h"
 #include "GameLogic/Module/AIUpdate.h"
 // FUNCTION: BFME2 0x004C6C1E size=56 name=??0FellBeastSwoopPower@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+FellBeastSwoopPower::FellBeastSwoopPower(Thing *thing, const ModuleData *moduleData)
+	: SpecialAbilityUpdate(thing, moduleData)
+	, m_unk0x88(false)
+{
+}
+
 // FUNCTION: BFME2 0x004C6C56 size=6 name=?Rva004C6C56Get@@YAHXZ evidence=?:placeholder
 const char *FellBeastSwoopPower::GetSnapshotName() const
 {

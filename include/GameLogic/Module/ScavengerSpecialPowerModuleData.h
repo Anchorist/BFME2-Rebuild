@@ -19,6 +19,7 @@ class ScavengerSpecialPowerModuleData : public SpecialPowerModuleData
 public:
 	ScavengerSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_bountyPercent;                                  // +0x7C BountyPercent
 };

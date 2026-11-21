@@ -17,9 +17,13 @@
 
 class FXList;
 
+class MultiIniFieldParse;
+class INI;
 class SpecialDisguiseUpdateModuleData : public SpecialAbilityUpdateModuleData
 {
 public:
+	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	SpecialDisguiseUpdateModuleData();
 
 	Bool m_triggerInstantlyOnCreate;		// 0xC8
@@ -41,6 +45,7 @@ class SpecialDisguiseUpdate : public SpecialAbilityUpdate, public SpecialDisguis
 {
 public:
 	SpecialDisguiseUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~SpecialDisguiseUpdate();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void triggerAbilityEffect();

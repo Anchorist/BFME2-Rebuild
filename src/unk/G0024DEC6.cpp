@@ -12,7 +12,20 @@
 #include "GameLogic/Module/DemoTrapUpdate.h"
 #include "GameLogic/Module/CommandButtonHuntUpdateModuleData.h"
 #include "GameLogic/Module/CommandButtonHuntUpdate.h"
+#include "GameLogic/Module/AutoPickUpUpdate.h"
+#include "GameLogic/Module/AutoFindHealingUpdate.h"
+#include "GameLogic/Module/BannerCarrierUpdateModuleData.h"
+// Module creators. Retail registers each module class with a static friend_newModuleInstance that allocates the
+// module for a thing and its module data, and each module data class with a static friend_newModuleData that
+// allocates the data and, when an INI block is open, fills it from the class's buildFieldParse table. The bodies
+// below are those two shapes. A class whose creator is not here yet has no real header, lacks the constructor or
+// buildFieldParse declaration, or did not compile with its current header (the usual cause is a pure virtual that
+// the header does not override yet); its row stays unwritten.
 // FUNCTION: BFME2 0x0024DEC6 size=56 name=?friend_newModuleInstance@AutoFindHealingUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *AutoFindHealingUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new AutoFindHealingUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024DEFE size=81 name=?friend_newModuleData@AutoFindHealingUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024DF4F size=56 name=?friend_newModuleInstance@CommandButtonHuntUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *CommandButtonHuntUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
@@ -41,6 +54,10 @@ ModuleData *DemoTrapUpdateModuleData::friend_newModuleData(INI *ini)
 	return data;
 }
 // FUNCTION: BFME2 0x0024E061 size=56 name=?friend_newModuleInstance@AutoPickUpUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Module *AutoPickUpUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
+{
+	return new AutoPickUpUpdate(thing, moduleData);
+}
 // FUNCTION: BFME2 0x0024E099 size=81 name=?friend_newModuleData@AutoPickUpUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024E0EA size=56 name=?friend_newModuleInstance@BoredUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *BoredUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
@@ -61,6 +78,13 @@ Module *BannerCarrierUpdate::friend_newModuleInstance(Thing *thing, const Module
 	return new BannerCarrierUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024E1AB size=81 name=?friend_newModuleData@BannerCarrierUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *BannerCarrierUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	BannerCarrierUpdateModuleData *data = new BannerCarrierUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, BannerCarrierUpdateModuleData::buildFieldParse);
+	return data;
+}
 // FUNCTION: BFME2 0x0024E1FC size=59 name=?friend_newModuleInstance@BattlePlanUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *BattlePlanUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {

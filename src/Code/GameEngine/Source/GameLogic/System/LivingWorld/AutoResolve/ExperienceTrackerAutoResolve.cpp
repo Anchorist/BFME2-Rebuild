@@ -6,6 +6,11 @@
 // Edges: left=no-edge-evidence right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:cohesion, hypothesis:name:invented
 // FUNCTION: BFME2 0x005DAFFE size=6 name=?Rva005DAFFEGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva005DAFFEGet()
+{
+	return (int)"ExperienceTrackerAutoResolve";
+}
 
 // FUNCTION: BFME2 0x005DB004 size=31 name=?rva005DB004@Rva005DB004@@QAEXXZ evidence=?:placeholder tier=B hypothesis:cohesion
 

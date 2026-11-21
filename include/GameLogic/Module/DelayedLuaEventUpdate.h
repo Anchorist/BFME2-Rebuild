@@ -26,6 +26,7 @@ class DelayedLuaEventUpdate : public UpdateModule
 {
 public:
 	DelayedLuaEventUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~DelayedLuaEventUpdate();
 	virtual UpdateSleepTime update();	// override: update slot 0 at +0x10 (0x004A8F52)

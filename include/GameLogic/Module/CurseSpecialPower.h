@@ -26,6 +26,7 @@ class CurseSpecialPower : public SpecialAbilityUpdate
 {
 public:
 	CurseSpecialPower(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~CurseSpecialPower();
 	virtual void triggerAbilityEffect();	// override: triggerAbilityEffect slot 17 at +0x0 (0x004CCEEE)

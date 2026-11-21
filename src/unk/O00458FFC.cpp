@@ -9,6 +9,13 @@
 #include "Common/NameKeyGenerator.h"
 #include "Common/Xfer.h"
 // FUNCTION: BFME2 0x00458FA3 size=89 name=??0EnragedBehavior@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+EnragedBehavior::EnragedBehavior(Thing *thing, const ModuleData *moduleData)
+	: UpdateModule(thing, moduleData)
+	, m_unk0x20(0.0f)
+{
+	setWakeFrame(getObject(), UPDATE_SLEEP_NONE);
+}
+
 // FUNCTION: BFME2 0x00458FFC size=6 name=?Rva458FFCGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
 const char *EnragedBehavior::GetSnapshotName() const
 {

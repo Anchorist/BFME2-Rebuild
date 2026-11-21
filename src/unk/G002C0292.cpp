@@ -1,6 +1,7 @@
 // cl: /O1
 #include "GameClient/GameWindow.h"
 #include "GameClient/Image.h"
+#include "GameClient/GadgetComboBox.h"
 // Forwarders over the draw-state setters of GameWindow. Every window keeps nine draw records per state group
 // (enabled, disabled, hilite; GameWindow::m_instData.m_*DrawData[9]); each forwarder sets the image, colour or
 // border colour of one record. Retail has one per group, field and index. The role of indices 4 to 7 is not
@@ -29,8 +30,22 @@ int Rva002C02C0(GameWindow *window, const Image *image)
 // FUNCTION: BFME2 0x002C02D0 size=23 name=?GadgetListBoxGetDownButton@@YAPAVGameWindow@@PAV1@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x002C02E7 size=23 name=?GadgetListBoxGetSlider@@YAPAVGameWindow@@PAV1@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x002C02FE size=23 name=?GadgetComboBoxGetEditBox@@YAPAVGameWindow@@PAV1@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+GameWindow *GadgetComboBoxGetEditBox(GameWindow *comboBox)
+{
+	GadgetComboBoxData *data = static_cast<GadgetComboBoxData *>(comboBox->winGetUserData());
+	if (data && data->m_editBox)
+		return data->m_editBox;
+	return 0;
+}
 // FUNCTION: BFME2 0x002C0315 size=23 name=?bfmeGo925A@@YAPAXPAVBfmeKeyLC@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x002C032C size=23 name=?GadgetComboBoxGetListBox@@YAPAVGameWindow@@PAV1@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+GameWindow *GadgetComboBoxGetListBox(GameWindow *comboBox)
+{
+	GadgetComboBoxData *data = static_cast<GadgetComboBoxData *>(comboBox->winGetUserData());
+	if (data && data->m_dropDownButton)
+		return data->m_dropDownButton;
+	return 0;
+}
 // FUNCTION: BFME2 0x002C0343 size=16 name=?Rva002C0343@@YAHPAVGameWindow@@H@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 int Rva002C0343(GameWindow *window, int color)
 {

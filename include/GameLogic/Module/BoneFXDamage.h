@@ -16,6 +16,7 @@ class BoneFXDamage : public DamageModule
 {
 public:
 	BoneFXDamage(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~BoneFXDamage();
 
 	virtual NameKeyType getModuleNameKey() const;	// primary slot 4, 0x004B9757

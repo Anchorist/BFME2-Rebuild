@@ -15,6 +15,7 @@ class RadarUpdateModuleData : public ModuleData
 public:
 	RadarUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_radarExtendTime;                                // +0x8 RadarExtendTime; duration
 };

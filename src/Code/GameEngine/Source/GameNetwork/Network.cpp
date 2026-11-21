@@ -228,16 +228,40 @@ Int Network::vslotD0()
 
 
 // FUNCTION: BFME2 0x0025DD48 size=46 name=?rva0025DD48@Rva0025DDD2@@QBEMXZ evidence=?:placeholder tier=B hypothesis:cohesion
+Real Network::getIncomingBytesPerSecond()
+{
+	return (m_conMgr) ? (m_conMgr->m_transport ? m_conMgr->m_transport->getIncomingBytesPerSecond() : 0.0f) : 0.0f;
+}
 
 // FUNCTION: BFME2 0x0025DD76 size=46 name=?rva0025DD76@Rva0025DDD2@@QBEMXZ evidence=?:placeholder tier=B hypothesis:cohesion
+Real Network::getIncomingPacketsPerSecond()
+{
+	return (m_conMgr) ? (m_conMgr->m_transport ? m_conMgr->m_transport->getIncomingPacketsPerSecond() : 0.0f) : 0.0f;
+}
 
 // FUNCTION: BFME2 0x0025DDA4 size=46 name=?rva0025DDA4@Rva0025DDD2@@QBEMXZ evidence=?:placeholder tier=B hypothesis:cohesion
+Real Network::getOutgoingBytesPerSecond()
+{
+	return (m_conMgr) ? (m_conMgr->m_transport ? m_conMgr->m_transport->getOutgoingBytesPerSecond() : 0.0f) : 0.0f;
+}
 
 // FUNCTION: BFME2 0x0025DDD2 size=46 name=?rva0025DDD2@Rva0025DDD2@@QBEMXZ evidence=?:placeholder tier=B hypothesis:cohesion
+Real Network::getOutgoingPacketsPerSecond()
+{
+	return (m_conMgr) ? (m_conMgr->m_transport ? m_conMgr->m_transport->getOutgoingPacketsPerSecond() : 0.0f) : 0.0f;
+}
 
 // FUNCTION: BFME2 0x0025DE00 size=46 name=?rva0025DE00@Rva0025DDD2@@QBEMXZ evidence=?:placeholder tier=B hypothesis:cohesion
+Real Network::getUnknownBytesPerSecond()
+{
+	return (m_conMgr) ? (m_conMgr->m_transport ? m_conMgr->m_transport->getUnknownBytesPerSecond() : 0.0f) : 0.0f;
+}
 
 // FUNCTION: BFME2 0x0025DE2E size=46 name=?rva0025DE2E@Rva0025DDD2@@QBEMXZ evidence=?:placeholder tier=B hypothesis:cohesion
+Real Network::getUnknownPacketsPerSecond()
+{
+	return (m_conMgr) ? (m_conMgr->m_transport ? m_conMgr->m_transport->getUnknownPacketsPerSecond() : 0.0f) : 0.0f;
+}
 
 // FUNCTION: BFME2 0x0025DE5C size=26 name=?rva0025DE5C@Rva0025E4CD@@UAEHXZ evidence=?:placeholder tier=B hypothesis:cohesion
 Int Network::vslotEC()
@@ -268,6 +292,12 @@ Int Network::vslotF8(Int slot)
 
 
 // FUNCTION: BFME2 0x0025DEBB size=17 name=?rva0025DEBB@Rva0025DEBBNullForwarder@@QAE_NH@Z evidence=?:placeholder tier=B hypothesis:cohesion
+Bool Network::isPlayerSlotActive(Int slot)
+{
+	if (m_conMgr != 0)
+		return m_conMgr->isPlayerSlotActive(slot);
+	return false;
+}
 // FUNCTION: BFME2 0x0025DECC size=17 name=?rva0025DECC@Rva0025DECCNullForwarder@@QAEEH@Z evidence=?:placeholder tier=B hypothesis:cohesion
 UnsignedByte Network::vslot104(Int slot)
 {

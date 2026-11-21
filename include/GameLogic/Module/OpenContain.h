@@ -77,6 +77,7 @@ class OpenContain : public UpdateModule,
 public:
 	OpenContain(Thing *thing, const ModuleData *moduleData);			// 0x004649F8
 	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
+	static ModuleData *friend_newModuleData(INI *ini);
 	const OpenContainModuleData *getOpenContainModuleData() const { return (const OpenContainModuleData *)getModuleData(); }
 	void privateRemoveFromContain(Object *obj, Bool exposeStealthUnits);	// 0x00462FB3
 	ContainmentListView getContainList() const
@@ -293,7 +294,7 @@ public:
 	ObjectID m_unk0xE4;									// 0xE4 slot 43's first object id
 	ObjectID m_unk0xE8;									// 0xE8 slot 43's second object id
 	Int m_unk0xEC;										// 0xEC slot 43's count, at least 1
-	std::map<Int, Int> m_map0xF0;						// 0xF0
+	std::map<ObjectID, UnsignedInt> m_map0xF0;			// 0xF0 the modifier to give on exit: object id to the game frame it was added
 };
 // SIZE 0xFC
 

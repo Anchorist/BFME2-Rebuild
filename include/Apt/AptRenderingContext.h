@@ -58,3 +58,6 @@ public:
 };
 
 typedef char AptRenderingContextSize[(sizeof(AptRenderingContext) == 0x3C0) ? 1 : -1];
+
+// The root movie's width and height in movie units, or zero for both when no root movie is loaded.
+void aptGetRootAnimationInfo(int *width, int *height);

@@ -94,12 +94,51 @@ unsigned char AITactic::rva004ED169()
 }
 
 // FUNCTION: BFME2 0x004ED1A1 size=92 name=?teamAttackObject@AITactic@@QAEXHPAVObject@@@Z evidence=N:ledger tier=A
+void AITactic::teamAttackObject(Int teamIndex, Object *victim)
+{
+	Rva004ECECDNode *record = rva004ECF05(teamIndex);
+	if (record != NULL)
+	{
+		AIGroup *group = TheAI->createGroup();
+		Team *team = TheTeamFactory->findTeamByID(record->m_teamID);
+		team->getTeamAsAIGroup(group);
+		group->groupAttackObject(victim, 0x7FFFFFFF, (CommandSourceType)0);
+		TheAI->destroyGroup(group);
+		record->m_value = 0;
+	}
+}
 
 // FUNCTION: BFME2 0x004ED1FD size=90 name=?teamAttackMove@AITactic@@QAEXHPBVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
+void AITactic::teamAttackMove(Int teamIndex, const Coord3D *position)
+{
+	Rva004ECECDNode *record = rva004ECF05(teamIndex);
+	if (record != NULL)
+	{
+		AIGroup *group = TheAI->createGroup();
+		Team *team = TheTeamFactory->findTeamByID(record->m_teamID);
+		team->getTeamAsAIGroup(group);
+		group->groupAttackMoveToPosition(position, 0x7FFFFFFF, (CommandSourceType)0);
+		TheAI->destroyGroup(group);
+		record->m_value = 0;
+	}
+}
 
 // FUNCTION: BFME2 0x004ED257 size=150 name=?teamForceMove@AITactic@@QAEXHPBVCoord3D@@@Z evidence=X:retail PE exports class Coord3D: ??0Matrix4D@@QAE@ABVCoord3D@@@Z tier=A
 
 // FUNCTION: BFME2 0x004ED2ED size=85 name=?teamGarrisonObject@AITactic@@QAEXHPAVObject@@@Z evidence=N:ledger tier=A
+void AITactic::teamGarrisonObject(Int teamIndex, Object *building)
+{
+	Rva004ECECDNode *record = rva004ECF05(teamIndex);
+	if (record != NULL)
+	{
+		AIGroup *group = TheAI->createGroup();
+		Team *team = TheTeamFactory->findTeamByID(record->m_teamID);
+		team->getTeamAsAIGroup(group);
+		group->rva00372BB9(building, 0);
+		TheAI->destroyGroup(group);
+		record->m_value = 0;
+	}
+}
 
 // FUNCTION: BFME2 0x004ED342 size=48 name=?rva004ED342@AITactic@@QAEXPAX@Z evidence=?:placeholder tier=A
 void AITactic::rva004ED342(void *point)

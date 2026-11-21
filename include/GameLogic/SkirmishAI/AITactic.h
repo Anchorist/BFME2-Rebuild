@@ -23,6 +23,7 @@
 
 class Xfer;
 class Player;
+class Object;
 class Team;
 class TeamPrototype;
 
@@ -33,6 +34,9 @@ struct AITacticTeamRecord
 	unsigned char m_unk0x04[0x0C];	// +0x04
 	Int m_value;					// +0x10
 };
+
+// The map spells the record type Rva004ECECDNode (rows 0x004ECECD, 0x004ECF05).
+struct Rva004ECECDNode : public AITacticTeamRecord {};
 
 class AITactic
 {
@@ -51,7 +55,10 @@ public:
 	void end(Bool first, Bool second);	// 0x008ED748
 	Bool anyTeamMembersInCombat();		// 0x004ECF41: true when a member of any of the tactic's teams has a victim
 	void cohereTeams();				// 0x004ED08A: runs each team through a temporary AI group
+	Rva004ECECDNode *rva004ECF05(Int teamID);	// 0x004ECF05 (map: placeholder returning a Rva004ECECDNode *): the record of the team that owns that player id
 	Bool isTeamIdle(Int index);		// 0x004ED134
+	void teamAttackObject(Int id, Object *victim);	// 0x004ED1A1
+	void teamGarrisonObject(Int id, Object *building);	// 0x004ED2ED
 	void teamAttackMove(Int id, const Coord3D *point);	// 0x004ED1FD
 	void teamForceMove(Int id, const Coord3D *point);	// 0x004ED257 (the map's name; rva004ED372 calls it per team)
 	void rva004ED342(void *point);		// 0x004ED342 (the map name)

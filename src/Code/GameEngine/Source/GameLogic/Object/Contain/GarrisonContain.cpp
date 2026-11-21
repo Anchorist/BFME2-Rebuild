@@ -16,6 +16,8 @@
 #include "Common/ThingFactory.h"
 #include "Common/CreateMask.h"
 #include "Common/Player.h"
+#include "Common/GlobalData.h"
+#include "Common/PlayerList.h"
 #include "GameLogic/Module/GarrisonContainModuleData.h"
 #include "GameLogic/ContainmentListView.h"
 #include <string.h>
@@ -798,6 +800,79 @@ void GarrisonContain::redeployOccupants()
 }
 
 // FUNCTION: BFME2 0x00479432 size=529 name=?recalcApparentControllingPlayer@GarrisonContain@@UAEXXZ evidence=N:ledger tier=B hypothesis:K
+void GarrisonContain::recalcApparentControllingPlayer()
+{
+	if (getObject()->getTeam() != NULL)
+	{
+		if (m_originalTeamID == 0 || TheTeamFactory->findTeamByID(m_originalTeamID) == NULL)
+			m_originalTeamID = getObject()->getTeam()->getID();
+	}
+	if (getObject()->getTeam() == NULL)
+		m_originalTeamID = 0;
+
+	if (getCount(false) > 0)
+	{
+		const ContainedItemsList *list;
+		{
+			ContainmentListView view = getContainList();
+			list = &view.objects();
+		}
+		ContainedItemsList::const_iterator it = list->begin();
+		Object *rider = *it;
+		if (it != list->end() && rider)
+		{
+			Bool detected = (UnsignedByte)rider->rva002933CD() || rider->testStatus((ObjectStatusTypes)0x11);
+			m_hideGarrisonedStateFromNonallies = !detected && getStealthUnitsContained() == (Int)getCount(false);
+
+			Player *controller = rider->getControllingPlayer();
+			Team *team = controller ? controller->getDefaultTeam() : NULL;
+			if (team)
+				getObject()->setTeam(team);
+		}
+	}
+	else
+	{
+		Team *team = TheTeamFactory->findTeamByID(m_originalTeamID);
+		if (team)
+			getObject()->setTeam(team);
+		else
+			m_originalTeamID = 0;
+		m_hideGarrisonedStateFromNonallies = false;
+	}
+
+	Drawable *draw = getObject()->getDrawable();
+	if (draw)
+	{
+		if (getCount(false) > 0)
+		{
+			const ContainedItemsList *list;
+		{
+			ContainmentListView view = getContainList();
+			list = &view.objects();
+		}
+			ContainedItemsList::const_iterator it = list->begin();
+			Object *occupant = *it;
+			if (it != list->end() && occupant)
+			{
+				Bool detected = (UnsignedByte)occupant->rva002933CD() || occupant->testStatus((ObjectStatusTypes)0x11);
+				if (detected || getApparentControllingPlayer(ThePlayerList->getLocalPlayer()) == getObject()->getControllingPlayer())
+					getObject()->setModelConditionState(MODELCONDITION_GARRISONED);
+			}
+		}
+
+		const Player *controller = getApparentControllingPlayer(ThePlayerList->getLocalPlayer());
+		if (controller)
+		{
+			if (TheWritableGlobalData->m_timeOfDay == TIME_OF_DAY_NIGHT)
+				draw->setIndicatorColor(controller->getPlayerNightColor());
+			else
+				draw->setIndicatorColor(controller->getPlayerColor());
+		}
+
+		if (getCount(false) > 0 && !m_garrisonPointsInitialized)
+			loadGarrisonPoints();
+	}
+}
 
 // FUNCTION: BFME2 0x00479643 size=217 name=?update@GarrisonContain@@UAE?AW4UpdateSleepTime@@XZ evidence=N:ledger tier=B hypothesis:K
 

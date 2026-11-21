@@ -1,3 +1,6 @@
+// cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS
+// stlport46
+#include "GameLogic/LivingWorldLogic.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G000424F8 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
@@ -5,5 +8,9 @@
 // FUNCTION: BFME2 0x000424FF size=32 name=?rva0020424FF@ScriptEngine@@QAE_NXZ evidence=P:provisional (wb-file) tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0004251F size=7 name=?get@Rva0004251FDwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0004253A size=20 name=?isSelectionLocked@LivingWorldLogic@@QBE_NXZ evidence=X:map request tier=B hypothesis:mm1-gap-unit
+bool LivingWorldLogic::isSelectionLocked() const
+{
+	return m_flagB4 && m_flagB5;
+}
 // FUNCTION: BFME2 0x0004256D size=46 name=?Set@Vector4@@QAEXMMMM@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0004259B size=7 name=?height@Region2D@@QBEMXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit

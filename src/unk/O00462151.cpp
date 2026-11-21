@@ -10,6 +10,7 @@
 #include "GameLogic/Module/RunOffMapBehaviorModuleData.h"
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/RunOffMapBehavior.h"
+#include "GameLogic/Module/RunOffMapBehaviorModuleData.h"
 
 // The table retail passes to MultiIniFieldParse::add (VA 0x00C42F70), read back
 // entry by entry from the image.
@@ -44,4 +45,10 @@ NameKeyType RunOffMapBehavior::getModuleNameKey() const
 }
 
 // FUNCTION: BFME2 0x00462213 size=17 name=?onObjectCreated@RunOffMapBehavior@@UAEXXZ evidence=N:ledger tier=B hypothesis:cohesion
+void RunOffMapBehavior::onObjectCreated()
+{
+	const RunOffMapBehaviorModuleData *data = (const RunOffMapBehaviorModuleData *)getModuleData();
+	if (!data->m_requiresSpecificTrigger)
+		triggerFlee();
+}
 

@@ -99,7 +99,7 @@ Bool DoAnyHeroTransfer()
 		for (Int i = 0; i < MAX_SLOTS; ++i)
 		{
 			GameSlot *savedSlot = &saved->m_slots[i];
-			CreateAHeroData *data = savedSlot->m_unk0x60 ? (CreateAHeroData *)savedSlot->m_heroData : 0;
+			CreateAHeroData *data = savedSlot->m_unk0x60 ? &savedSlot->m_heroData : 0;
 			if (data != 0)
 			{
 				GameSlot *slot = TheGameInfo->getSlot(i);
@@ -176,7 +176,7 @@ Bool DoAnyHeroTransfer()
 			GameSlot *slot = TheGameInfo->getSlot(i);
 			if (slot != 0)
 			{
-				CreateAHeroData *data = slot->m_unk0x60 ? (CreateAHeroData *)slot->m_heroData : 0;
+				CreateAHeroData *data = slot->m_unk0x60 ? &slot->m_heroData : 0;
 				if (data != 0 && slot->m_heroKind == 1)
 				{
 					slot->m_unk0x54 = data->getHeroClass();

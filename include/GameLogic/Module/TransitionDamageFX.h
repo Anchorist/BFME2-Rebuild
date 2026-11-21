@@ -21,7 +21,10 @@ class TransitionDamageFX : public DamageModule
 {
 public:
 	TransitionDamageFX(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
+	virtual void onDamage(DamageInfo *damageInfo) {}	// DamageModuleInterface slot 0, retail word 0x0047A69C (the shared fold)
+	virtual void onHealing(DamageInfo *damageInfo) {}	// DamageModuleInterface slot 1, retail word 0x0047A69C (the shared fold)
 	virtual void onBodyDamageStateChange(const DamageInfo *damageInfo, BodyDamageType oldState, BodyDamageType newState);
 	void bfmeUseFDE(void *damageState);									// (the ledger's name and signature): hide and show the module data's sub-objects for the BodyDamageType passed
 	virtual void onDrawableBoundToObject();									// slot 6, 0x004B9D86 (the ledger's name bfmeGoFDE): the same hide and show for the object's current damage state

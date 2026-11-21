@@ -25,6 +25,7 @@ public:
 	AsciiString() {}
 	AsciiString(const char *s) : StringBase<char>(s) {}
 	AsciiString(const AsciiString &that) : StringBase<char>(that) {}
+	AsciiString(const AsciiString &that, int first, int count) : StringBase<char>(that, first, count) {}
 	AsciiString(const UnicodeString &that);					// 0x00038250
 	// Inline: ordinary call sites call releaseBuffer<char> 0x00036410 directly;
 	// unwind funclets (6,403) call the out-of-line COMDAT ??1AsciiString, a

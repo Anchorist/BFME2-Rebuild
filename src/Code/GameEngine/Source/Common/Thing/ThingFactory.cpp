@@ -30,6 +30,15 @@ unsigned char isLoadingMap = 0;	// 0x00DFF004
 // Set by attemptReload once the template INI files have reloaded; attemptRefresh reports it once.
 static Bool s_templatesReloaded = FALSE;	// 0x00DFF005
 // FUNCTION: BFME2 0x002CEF14 size=22 name=?attemptRefresh@ThingFactory@@UAE_NXZ evidence=X:map request (classified e935a325f6 (1 reference))
+Bool ThingFactory::attemptRefresh()
+{
+	if (s_templatesReloaded)
+	{
+		s_templatesReloaded = FALSE;
+		return TRUE;
+	}
+	return FALSE;
+}
 
 // FUNCTION: BFME2 0x002CF006 size=12 name=?get@Rva002CF006DivAvgField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:K
 

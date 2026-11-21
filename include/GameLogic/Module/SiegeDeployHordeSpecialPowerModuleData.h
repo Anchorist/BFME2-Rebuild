@@ -12,6 +12,7 @@ class SiegeDeployHordeSpecialPowerModuleData : public SpecialPowerUpdateModuleDa
 public:
 	SiegeDeployHordeSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Bool m_hordeDeploy;
 };

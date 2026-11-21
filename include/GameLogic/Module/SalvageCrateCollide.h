@@ -17,6 +17,7 @@ class SalvageCrateCollide : public CrateCollide
 {
 public:
 	SalvageCrateCollide(Thing *thing, const ModuleData *moduleData);	// 0x004BD1D7
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~SalvageCrateCollide();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual bool isSalvageCrateCollide() const { return true; }			// slot 5: the shared `mov al,1; ret` stub 0x0050B5C6

@@ -21,6 +21,7 @@ class StealthDetectorUpdate : public UpdateModule
 {
 public:
 	StealthDetectorUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~StealthDetectorUpdate();
 
 	virtual NameKeyType getModuleNameKey() const;

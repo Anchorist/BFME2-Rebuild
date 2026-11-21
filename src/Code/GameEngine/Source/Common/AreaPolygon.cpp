@@ -4,25 +4,52 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K
+#include "Common/AreaPolygon.h"
 // FUNCTION: BFME2 0x0030B395 size=60 name=?Rva0030B395Equal@@YA_NPBM00@Z evidence=?:placeholder tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x0030B3D1 size=478 name=?rva0030B3D1@AreaPolygonBase@@QAEXXZ evidence=?:placeholder tier=B hypothesis:K
 
-// FUNCTION: BFME2 0x0030B5AF size=233 name=?rva0030B5AF@@YA_NPBURva0030B7C2Point@@PAVRva0030B719Shape@@@Z evidence=?:placeholder tier=B hypothesis:K
+// FUNCTION: BFME2 0x0030B5AF size=233 name=?rva0030B5AF@@YA_NPBURva0030B7C2Point@@PAVAreaPolygonBase@@@Z evidence=?:placeholder tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x0030B6A6 size=61 name=?Rva0030B6A6Equal@@YAHPBURva0030B6A6Range@@0@Z evidence=?:placeholder tier=B hypothesis:K
 
-// FUNCTION: BFME2 0x0030B6E3 size=35 name=?rva0030B6E3@Rva0030B719Shape@@QAE?AURegion2D@@XZ evidence=?:placeholder tier=A
+// FUNCTION: BFME2 0x0030B6E3 size=35 name=?rva0030B6E3@AreaPolygonBase@@QAE?AURegion2D@@XZ evidence=?:placeholder tier=A
+Region2D AreaPolygonBase::rva0030B6E3()
+{
+	if (m_boundsDirty)
+		rva0030B3D1();
+	return m_bounds;
+}
 
-// FUNCTION: BFME2 0x0030B706 size=19 name=?rva0030B706@Rva0030B719Shape@@QBEMXZ evidence=?:placeholder tier=A
+// FUNCTION: BFME2 0x0030B706 size=19 name=?rva0030B706@AreaPolygonBase@@QBEMXZ evidence=?:placeholder tier=A
+Real AreaPolygonBase::rva0030B706() const
+{
+	if (m_boundsDirty)
+		const_cast<AreaPolygonBase *>(this)->rva0030B3D1();
+	return m_unk0x1C;
+}
 
-// FUNCTION: BFME2 0x0030B719 size=19 name=?getRadius@Rva0030B719Shape@@QBEMXZ evidence=?:placeholder tier=B hypothesis:K
+// FUNCTION: BFME2 0x0030B719 size=19 name=?getRadius@AreaPolygonBase@@QBEMXZ evidence=?:placeholder tier=B hypothesis:K
+Real AreaPolygonBase::getRadius() const
+{
+	if (m_boundsDirty)
+		const_cast<AreaPolygonBase *>(this)->rva0030B3D1();
+	return m_radius;
+}
 
-// FUNCTION: BFME2 0x0030B72C size=67 name=?rva0030B72C@Rva0030B719Shape@@QBE?AURva0030B72CPoint@@XZ evidence=?:placeholder tier=B hypothesis:K
+// FUNCTION: BFME2 0x0030B72C size=67 name=?rva0030B72C@AreaPolygonBase@@QBE?AURva0030B72CPoint@@XZ evidence=?:placeholder tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x0030B76F size=78 name=?rva0030B76F@Rva0030B76F@@QAEXPAU1@@Z evidence=?:placeholder tier=B hypothesis:K
 
-// FUNCTION: BFME2 0x0030B7C2 size=80 name=?rva0030B7C2@@YA_NPBURva0030B7C2Point@@PAVRva0030B719Shape@@@Z evidence=?:placeholder tier=B hypothesis:K
+
+// FUNCTION: BFME2 0x0030B7C2 size=80 name=?rva0030B7C2@@YA_NPBURva0030B7C2Point@@PAVAreaPolygonBase@@@Z evidence=?:placeholder tier=B hypothesis:K
+Bool rva0030B7C2(const Rva0030B7C2Point *point, AreaPolygonBase *polygon)
+{
+	Region2D bounds = polygon->rva0030B6E3();
+	if (bounds.lo.x > point->x || bounds.lo.y > point->y || point->x > bounds.hi.x || point->y > bounds.hi.y)
+		return false;
+	return rva0030B5AF(point, polygon);
+}
 
 // FUNCTION: BFME2 0x0030B812 size=31 name=?rva0030B812@Rva0030B812@@QAEXPAU1@@Z evidence=?:placeholder tier=B hypothesis:K
 

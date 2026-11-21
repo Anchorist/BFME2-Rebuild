@@ -15,6 +15,7 @@ class GeometryUpgrade : public UpgradeModule
 {
 public:
 	GeometryUpgrade(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~GeometryUpgrade();
 
 	virtual NameKeyType getModuleNameKey() const;

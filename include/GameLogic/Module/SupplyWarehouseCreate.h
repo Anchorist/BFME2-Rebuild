@@ -33,6 +33,7 @@ class SupplyWarehouseCreate : public CreateModule
 {
 public:
 	SupplyWarehouseCreate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void onCreate();	// override: onCreate slot 0 at +0x10 (0x004B8F22)
 

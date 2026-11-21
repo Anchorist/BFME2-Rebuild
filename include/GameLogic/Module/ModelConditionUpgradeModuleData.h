@@ -13,19 +13,20 @@
 #include <stddef.h>
 #include "Common/GameType.h"
 #include "GameLogic/Module/ModuleData.h"
+#include "GameLogic/Module/UpgradeModule.h"
 #include "GameLogic/Module/UpgradeMuxData.h"
 #include "Common/ModelConditionFlags.h"
 
 class INI;
 class MultiIniFieldParse;
 
-class ModelConditionUpgradeModuleData : public ModuleData
+class ModelConditionUpgradeModuleData : public UpgradeModuleData
 {
 public:
 	ModelConditionUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
-	UpgradeMuxData m_upgradeMuxData;                       // +0x8; added by buildFieldParse at +0x8
 	ModelConditionFlags m_addConditionFlags;               // +0x118 AddConditionFlags (ModelConditionFlags parse wrapper 0x000B9468)
 	ModelConditionFlags m_removeConditionFlags;            // +0x164 RemoveConditionFlags (also RemoveConditionFlagsInRange 0x004B65E4)
 	Int m_addTempConditionFlag;                            // +0x1B0 AddTempConditionFlag; INI::iniParseAnim
@@ -33,7 +34,6 @@ public:
 };
 // SIZE 0x1B8
 typedef char ModelConditionUpgradeModuleData_size[(sizeof(ModelConditionUpgradeModuleData) == 0x1B8) ? 1 : -1];
-typedef char ModelConditionUpgradeModuleData_off_m_upgradeMuxData[(offsetof(ModelConditionUpgradeModuleData, m_upgradeMuxData) == 0x8) ? 1 : -1];
 typedef char ModelConditionUpgradeModuleData_off_m_addConditionFlags[(offsetof(ModelConditionUpgradeModuleData, m_addConditionFlags) == 0x118) ? 1 : -1];
 typedef char ModelConditionUpgradeModuleData_off_m_removeConditionFlags[(offsetof(ModelConditionUpgradeModuleData, m_removeConditionFlags) == 0x164) ? 1 : -1];
 typedef char ModelConditionUpgradeModuleData_off_m_addTempConditionFlag[(offsetof(ModelConditionUpgradeModuleData, m_addTempConditionFlag) == 0x1B0) ? 1 : -1];

@@ -1,3 +1,5 @@
+// cl: /O1
+#include "Apt/AptRef.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0007DE26 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
@@ -8,6 +10,12 @@
 // FUNCTION: BFME2 0x0007DEB7 size=7 name=?get@Rva0007DEB7DwordField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0007DEBE size=10 name=?rva0007DEBE@@YAX_N@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0007DEEF size=24 name=?Release@AptRefTarget@@QAEXXZ evidence=X:map request tier=B hypothesis:mm1-gap-unit
+void AptRefTarget::Release()
+{
+	--m_refCount;
+	if (m_refCount <= 0)
+		::delete this;
+}
 // FUNCTION: BFME2 0x0007DF14 size=40 name=?rva0007DF14@@YAMM@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0007DF3C size=15 name=?Cos@WWMath@@SAMM@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0007DF4B size=60 name=?Rotate@Vector2@@QAEXMM@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit

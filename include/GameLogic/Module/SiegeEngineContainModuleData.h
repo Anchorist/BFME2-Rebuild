@@ -27,6 +27,7 @@ public:
 	SiegeEngineContainModuleData();
 	virtual ~SiegeEngineContainModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	static void parseInitialCrew(INI *ini, void *instance, void *store, const void *userData);
 
 	ObjectFilter m_crewFilter;                             // +0x18C CrewFilter

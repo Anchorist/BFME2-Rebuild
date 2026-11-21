@@ -11,9 +11,13 @@
 
 enum WeaponSlotType;
 
+class MultiIniFieldParse;
+class INI;
 class WeaponModeSpecialPowerUpdateModuleData : public SpecialPowerUpdateModuleData
 {
 public:
+	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	WeaponModeSpecialPowerUpdateModuleData();
 	virtual ~WeaponModeSpecialPowerUpdateModuleData();
 

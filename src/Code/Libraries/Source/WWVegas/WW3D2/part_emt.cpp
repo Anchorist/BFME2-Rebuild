@@ -39,6 +39,11 @@ void ParticleEmitterClass::Set_Hidden(int onoff)
 }
 
 // FUNCTION: BFME2 0x001A1480 size=34 name=?Set_Visible@ParticleEmitterClass@@UAEXHH@Z evidence=N:ledger tier=B hypothesis:cohesion
+void ParticleEmitterClass::SetVisible(SceneClass *scene, int visCheckId)
+{
+	RenderObjClass::SetVisible(scene, visCheckId);
+	Update_On_Visibilty();
+}
 
 // FUNCTION: BFME2 0x001A14B0 size=37 name=?Set_Animation_Hidden@ParticleEmitterClass@@UAEXH@Z evidence=N:ledger tier=B hypothesis:cohesion
 void ParticleEmitterClass::Set_Animation_Hidden(int onoff)
@@ -55,8 +60,69 @@ void ParticleEmitterClass::Set_Force_Visible(int onoff)
 }
 
 // FUNCTION: BFME2 0x001A1530 size=486 name=??0ParticleEmitterClass@@QAE@ABV0@@Z evidence=N:ledger tier=B hypothesis:cohesion
+ParticleEmitterClass::ParticleEmitterClass(const ParticleEmitterClass &src) :
+	RenderObjClass(src),
+	EmitRate(src.EmitRate),
+	BurstSize(src.BurstSize),
+	OneTimeBurstSize(src.OneTimeBurstSize),
+	OneTimeBurst(src.OneTimeBurst),
+	PosRand(src.PosRand ? src.PosRand->Clone() : NULL),
+	BaseVel(src.BaseVel),
+	VelRand(src.VelRand ? src.VelRand->Clone() : NULL),
+	OutwardVel(src.OutwardVel),
+	VelInheritFactor(src.VelInheritFactor),
+	EmitRemain(src.EmitRemain),
+	PrevQ(src.PrevQ),
+	PrevOrig(src.PrevOrig),
+	Active(true),
+	FirstTime(true),
+	BufferSceneNeeded(true),
+	ParticlesLeft(src.ParticlesLeft),
+	MaxParticles(src.MaxParticles),
+	IsComplete(false),
+	NameString(_strdup(src.NameString)),
+	UserString(_strdup(src.UserString)),
+	RemoveOnComplete(src.RemoveOnComplete),
+	IsInScene(false),
+	GroupID(0),
+	Buffer(NULL),
+	IsInvisible(src.IsInvisible)
+{
+	Buffer = (ParticleBufferClass *)src.Buffer->Clone();
+	Buffer->Set_Emitter(this);
+}
 // FUNCTION: BFME2 0x001A1720 size=218 name=??1ParticleEmitterClass@@UAE@XZ evidence=N:ledger tier=B hypothesis:cohesion
+ParticleEmitterClass::~ParticleEmitterClass(void)
+{
+	Buffer->Emitter_Is_Dead();
+	Buffer->Release_Ref();
+
+	if (PosRand != NULL) {
+		::delete PosRand;
+		PosRand = NULL;
+	}
+
+	if (VelRand != NULL) {
+		::delete VelRand;
+		VelRand = NULL;
+	}
+
+	if (NameString != NULL) {
+		pool_free::free(NameString);
+		NameString = NULL;
+	}
+
+	if (UserString != NULL) {
+		pool_free::free(UserString);
+		UserString = NULL;
+	}
+}
+
 // FUNCTION: BFME2 0x001A1800 size=96 name=?Clone@ParticleEmitterClass@@UBEPAVRenderObjClass@@XZ evidence=N:ledger tier=B hypothesis:cohesion
+RenderObjClass *ParticleEmitterClass::Clone(void) const
+{
+	return new ParticleEmitterClass(*this);
+}
 // FUNCTION: BFME2 0x001A1860 size=64 name=?Notify_Added@ParticleEmitterClass@@UAEXPAVSceneClass@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 void ParticleEmitterClass::Notify_Added(SceneClass *scene)
 {
@@ -401,6 +467,24 @@ void ParticleEmitterClass::Create_New_Particles(const Quaternion &curr_quat, con
 }
 
 // FUNCTION: BFME2 0x001A2970 size=388 name=?Emit@ParticleEmitterClass@@UAEXXZ evidence=N:ledger tier=B hypothesis:cohesion
+void ParticleEmitterClass::Emit(void)
+{
+	if (Active && !IsComplete) {
+		Quaternion curr_quat;
+		Vector3 curr_orig;
+
+		curr_quat = Build_Quaternion(Get_Transform());
+		curr_orig = Get_Transform().Get_Translation();
+
+		Create_New_Particles(curr_quat, curr_orig);
+
+		PrevQ = curr_quat;
+		PrevOrig = curr_orig;
+	} else {
+		PrevQ = Build_Quaternion(Get_Transform());
+		PrevOrig = Get_Transform().Get_Translation();
+	}
+}
 // FUNCTION: BFME2 0x001A2B00 size=1486 name=?Build_Definition@ParticleEmitterClass@@QBEPAVParticleEmitterDefClass@@XZ evidence=N:ledger tier=B hypothesis:Z
 
 // FUNCTION: BFME2 0x001A30D0 size=26 name=?Save@ParticleEmitterClass@@QBE_NAAVChunkSaveClass@@@Z evidence=N:ledger tier=B hypothesis:Z

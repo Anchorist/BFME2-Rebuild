@@ -8,6 +8,7 @@
 #include "GameLogic/Module/SpawnUnitBehavior.h"
 #include "Common/NameKeyGenerator.h"
 #include "Common/Xfer.h"
+#include "GameLogic/GameLogic.h"
 // FUNCTION: BFME2 0x004B8752 size=69 name=?getModuleNameKey@SpawnUnitBehavior@@UBE?AW4NameKeyType@@XZ evidence=N:ledger tier=B hypothesis:name:invented
 NameKeyType SpawnUnitBehavior::getModuleNameKey() const
 {
@@ -22,6 +23,11 @@ const char *SpawnUnitBehavior::GetSnapshotName() const
 }
 
 // FUNCTION: BFME2 0x004B879D size=6 name=?Rva004B879DGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
+// Returns the value of the global the row is named for (the ledger types it as int).
+int Rva004B879DGet()
+{
+	return BfmeLogicFramesPerSecond;
+}
 
 // FUNCTION: BFME2 0x004B87A3 size=64 name=?xfer@SpawnUnitBehavior@@MAEXPAVXfer@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 void SpawnUnitBehavior::xfer(Xfer *xfer)

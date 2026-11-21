@@ -366,6 +366,12 @@ bool Rva00261513Filter::allow(Object *object)
 template Bool BitFlags<101>::testSetAndClear(const BitFlags<101> &mustBeSet, const BitFlags<101> &mustBeClear) const;
 
 // FUNCTION: BFME2 0x002615E3 size=32 name=?distSq@Rva000CBA20@@QAEMPBVRva000CBA20Point@@@Z evidence=?:placeholder tier=B hypothesis:Z
+Real Object::rva002615E3(const Coord3D *pos)
+{
+	Real dx = getPosition()->x - pos->x;
+	Real dy = getPosition()->y - pos->y;
+	return dx * dx + dy * dy;
+}
 
 // FUNCTION: BFME2 0x00261603 size=55 name=?allow@Rva00261603Filter@@UAE_NPAVObject@@@Z evidence=?:placeholder tier=B hypothesis:Z
 bool PartitionFilterWouldCollide::allow(Object *other)

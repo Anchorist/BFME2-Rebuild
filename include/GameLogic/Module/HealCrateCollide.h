@@ -15,6 +15,7 @@ class HealCrateCollide : public CrateCollide
 {
 public:
 	HealCrateCollide(Thing *thing, const ModuleData *moduleData);	// 0x004BC80F
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~HealCrateCollide();
 	virtual NameKeyType getModuleNameKey() const;
 

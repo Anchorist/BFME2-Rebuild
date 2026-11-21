@@ -13,6 +13,11 @@
 // FUNCTION: BFME2 0x003ACB08 size=89 name=?rva003ACB08@Rva003ACB08Host@@UAEPAVRva003ACB08Object@@I@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-pointers-mixed
 // FUNCTION: BFME2 0x003ACB61 size=6 name=?vfunc_0x08@Rva003AE2A9@@UAEXXZ evidence=X:map request (free_in_slots) tier=B hypothesis:mm1-contiguity-pointers-mixed
 // FUNCTION: BFME2 0x003ACFC1 size=6 name=?Rva003ACFC1Get@@YAHXZ evidence=?:placeholder tier=B hypothesis:K
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva003ACFC1Get()
+{
+	return (int)"DefaultParticleModule<CAT_PHYSICS>";
+}
 
 // FUNCTION: BFME2 0x003AD03B size=89 name=?rva003AD03B@Rva003AD03BTemplate@@UAEPAVRva003AD03BModule@@I@Z evidence=?:placeholder tier=B hypothesis:K
 

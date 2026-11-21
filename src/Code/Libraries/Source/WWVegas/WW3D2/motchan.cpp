@@ -12,13 +12,13 @@
 #include "WWLib/chunkio.h"
 #include "WWMath/wwmath.h"
 
-#define WWMATH_PI 3.141592654f
 #define DEG_TO_RADF(x) ((x) * (WWMATH_PI / 180.0f))
 
 #define FILTER_TABLE_SIZE (256)
 #define FILTER_TABLE_GEN_START (16)
 #define FILTER_TABLE_GEN_SIZE (FILTER_TABLE_SIZE - FILTER_TABLE_GEN_START)
 
+// Shared with adaptive-delta decompression outside this unit; table_valid is file-local.
 float filtertable[FILTER_TABLE_SIZE] = {
 	0.00000001f,
 	0.0000001f,
@@ -37,6 +37,7 @@ float filtertable[FILTER_TABLE_SIZE] = {
 	1000000.0f,
 	10000000.0f,
 };
+// Kept non-static because MSVC /O2 emits a different compare sequence when table_valid has internal linkage.
 bool table_valid = false;
 
 // FUNCTION: BFME2 0x00195AB0 size=38 name=??0MotionChannelClass@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:Z

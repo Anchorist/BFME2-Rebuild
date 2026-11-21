@@ -20,6 +20,7 @@ class DetachableRiderBodyModuleData : public ActiveBodyModuleData
 public:
 	DetachableRiderBodyModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UpgradeMuxData m_upgradeMuxData;                       // +0x64; added by buildFieldParse at +0x64
 	Real m_healthPercentageWhenRiderDies;                  // +0x174 HealthPercentageWhenRiderDies; percent

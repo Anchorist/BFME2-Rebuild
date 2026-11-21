@@ -19,6 +19,7 @@ class HighlanderBody : public ActiveBody
 {
 public:
 	HighlanderBody(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~HighlanderBody();
 	virtual void attemptDamage(DamageInfo *damageInfo);		// (+0x10 slot 0)

@@ -1,7 +1,15 @@
-// cl: /O1
+// cl: /O1 /D_CRTIMP=
 // stlport46
+// bfmealloc_alloconly
 // psdk
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
+#undef _CRTIMP
+#define _CRTIMP __declspec(dllimport)
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#undef _CRTIMP
+#define _CRTIMP
 #include <winsock2.h>
 #include "GameClient/GameText.h"
 #include "GameNetwork/DownloadManager.h"

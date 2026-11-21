@@ -35,6 +35,7 @@ public:
 	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
+	void setUpdate(Bool update);					// 0x0066CA90 (stores +0x30)
 	void setIsInVehicle(Bool inVehicle);
 	void setTargetObject(const Object *target);		// (public QAE in the map)
 	Object *getTargetObject() const;				// (public QBE; update 0x004A40DB asks it for the object to follow)

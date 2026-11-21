@@ -10,7 +10,8 @@
 // FUNCTION: BFME2 0x0017FB0F size=50 name=??4HTreePrototypeOwner@@QAEAAV0@ABVHierarchyPrototypeRef@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x0017FB8E size=6 name=?Rva0017FB8EGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:cohesion
-// Returns a fixed constant whose role in the original is not recovered, so the ledger name stays.
+// No retail code or data refers to this function. It returns four characters (below), probably a W3D asset type name; its owner is not known, so it keeps its
+// ledger name.
 int Rva0017FB8EGet()
 {
 	return 0x48494552;	// the four bytes spell "HIER"

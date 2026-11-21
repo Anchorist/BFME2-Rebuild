@@ -27,7 +27,6 @@
 #include <vector>
 #include <list>
 #include "Common/GameType.h"
-#include "Common/BitFlags69.h"
 #include "Common/Thing.h"
 #include "Common/Snapshot.h"
 #include "shroudmanager/ShroudObjectClient.h"
@@ -259,6 +258,8 @@ public:
 	Bool affectedByUpgrade(const UpgradeTemplate *upgrade) const;	// 0x002940B9 (Team::rva0039E8FF 0x0039E8FF calls it on every member without a horde interface; Zero Hour's name)
 	Bool isProducedByHorde();	// 0x002931BA (role name; the map row ?rva002931BA@Object@@QAE_NXZ is a placeholder on Object: the object was spawned by a horde, Team::getTeamAsAIGroup 0x003A0F62 skips such members)
 	void setPathfinderGoal(Int a, Int b);	// 0x0028ACEE (role name; the map row ?rva0028ACEE@Object@@QAEXHH@Z is a placeholder on Object: forwards to the PathfinderPosGoalManager at +0xA4, which registers a goal through SetGoal 0x004DE109; GiantBird state onExit bodies call it)
+	void rva0028BBE1(void *guarded);	// 0x0028BBE1 (18-byte forwarder to ObjectGuardingHelper::setGuardedObject 0x004DF3B0)
+	void rva0028BBF3(Object *guarded);	// 0x0028BBF3 (18-byte forwarder to ObjectGuardingHelper::stopGuarding 0x004DF2FC)
 	void addGuarder(Object *guarder);	// 0x0028BC05 (18-byte forwarder to ObjectGuardingHelper 0x004DF4B5; ObjectGuardingHelper::setGuardedObject 0x004DF3B0 calls it)
 	void removeGuarder(Object *guarder);	// 0x0028BC17 (forwarder to ObjectGuardingHelper 0x004DF3F8; stopGuarding 0x004DF2FC calls it)
 	CellShroudStatus getShroudStatusForPlayer(Int playerIndex) const;	// 0x0028D2A2
@@ -547,6 +548,10 @@ public:
 	void clearWeaponSetFlagForHorde(WeaponSetType flag);	// clears it the same way
 	void rva0028CFB2(const int *clear, const int *set);
 	void rva0028AE6D();
+	// Ends every disabled type whose timer has run out, and clears the model condition the first type sets.
+	void checkDisabledStatus();
+	// Tests one DisabledType bit of m_disabledMask out of line; the placeholder name is the ledger's.
+	Bool rva001E4A4E(Int type);
 	void rva0028EBDA(Bool flag);							// 0x0028EBDA
 	void setSpecialModelConditionState(ModelConditionFlagType flag, UnsignedInt frames);	// 0x0028AEB2
 	void setDisabledUntil(DisabledType type, UnsignedInt frame);	// 0x0028B8B0
@@ -587,6 +592,7 @@ public:
 	void clearModelConditionFlagsForHorde(const int *flags);
 	void setModelConditionFlagsForHorde(const int *flags);
 	void replaceModelConditionFlagsForHorde(const int *flags, Bool forceDrawableUpdate);
+	Bool rva0028C264(Int *out, Int value);					// 0x0028C264
 	Object *rva002931F5(Bool checkProducer);					// 0x002931F5
 	Real rva002615E3(const Coord3D *pos);				// 0x002615E3 (map: placeholder owner Rva000CBA20): squared distance in x and y from the position (+0x38) to pos
 	CanAttackResult getAbleToUseWeaponAgainstTarget(AbleToAttackType t, const Object *victim, const Coord3D *pos, CommandSourceType cmdSource) const;	// 0x0028AF2B

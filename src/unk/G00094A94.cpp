@@ -1,7 +1,13 @@
+// cl: /O1
+#include "GameLogic/Module/ActiveBody.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G00094A94 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x00094A94 size=4 name=?get@Rva00094A94FloatField@@QBEMXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+Real ActiveBody::getInitialHealth() const
+{
+	return m_initialHealth;
+}
 // FUNCTION: BFME2 0x00094A98 size=4 name=?get@Rva00094A98FloatField@@QBEMXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00094A9C size=4 name=?get@Rva00094A9CFloatField@@QBEMXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00094AA0 size=19 name=?rva00094AA0@Rva00094AA0@@QBE?AUGapTriple3@@XZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

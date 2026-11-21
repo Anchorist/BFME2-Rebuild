@@ -27,6 +27,15 @@ void VectorProcessorClass::Transform (Vector3* dst,const Vector3 *src, const Mat
 // FUNCTION: BFME2 0x0071CEE0 size=178 name=?rva0071CEE0RotateVec3Array@@YAXPAVVector3@@PBV1@ABVMatrix3D@@H@Z evidence=?:placeholder
 
 // FUNCTION: BFME2 0x0071CFA0 size=1085 name=?Transform@VectorProcessorClass@@SAXPAVVector4@@PBVVector3@@ABVMatrix4@@H@Z evidence=N:ledger
+void VectorProcessorClass::Transform(Vector4 *dst, const Vector3 *src, const Matrix4 &matrix, const int count)
+{
+	if (count <= 0) return;
+
+	int i;
+	for (i = 0; i < count; i++) {
+		dst[i] = Transform_Point(matrix, src[i]);
+	}
+}
 
 // FUNCTION: BFME2 0x0071D3E0 size=26 name=?Copy@VectorProcessorClass@@SAXPAVVector2@@PBV2@H@Z evidence=N:ledger
 void VectorProcessorClass::Copy(Vector2 *dst, const Vector2 *src, const int count)

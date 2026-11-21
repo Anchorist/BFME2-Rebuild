@@ -5,6 +5,11 @@
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:cohesion, hypothesis:name:invented
 // FUNCTION: BFME2 0x0058902F size=6 name=?Rva0058902FGet@@YAHXZ evidence=?:placeholder tier=B hypothesis:name:invented
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva0058902FGet()
+{
+	return (int)"DamagerModule";
+}
 
 // FUNCTION: BFME2 0x00589051 size=40 name=?xfer@Rva00589051@@MAEXPAVXfer@@@Z evidence=?:placeholder tier=B hypothesis:cohesion
 

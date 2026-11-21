@@ -199,7 +199,7 @@ public:
 	virtual Bool rva0046A4C8();	// 87 0x0046A4C8
 	virtual Bool hordeSlot88(Object *obj);	// 88 0x0046CE9D
 	virtual void rva00468D7D(Object *);	// 89 0x00468D7D
-	virtual void hordeSlot90();	// 90 0x003BA648
+	virtual void rva003BA648(Int value);	// 90 0x003BA648
 	virtual void hordeSlot91();	// 91 0x005BF27A
 	virtual void rva0046D384(Team *);	// 92 0x0046D384
 	virtual void hordeSlot93(Int value);	// 93 0x0046F7D7
@@ -237,8 +237,8 @@ public:
 	virtual Bool rva0046992C();	// 125 0x0046992C
 	virtual void hordeSlot126();	// 126 0x00475F61
 	virtual Bool rva004698BC();	// 127 0x004698BC
-	virtual void hordeSlot128();	// 128 0x004698D6
-	virtual void hordeSlot129();	// 129 0x004698E2
+	virtual const void *rva004698D6();	// 128 0x004698D6
+	virtual const void *rva004698E2();	// 129 0x004698E2
 	virtual void rva00469967();	// 130 0x00469967
 	virtual void hordeSlot131(Real angle);	// 131 0x00469075
 	virtual void rva004690A9(const Coord3D *);	// 132 0x004690A9
@@ -257,6 +257,7 @@ public:
 	virtual void rva00468C60(const Coord3D *);	// 145 0x00468C60
 	virtual Bool rva00468C7B(Coord3D *);	// 146 0x00468C7B
 	virtual Bool isFlankedBy(Object *);	// 147 0x00473D55
+	void rva00468B24(Real value);	// 0x00468B24
 	virtual void rva0046E2BC();	// 148 0x0046E2BC
 	virtual UnsignedByte hordeSlot149();	// 149 0x0046F845
 	virtual Real rva0046F8DA();	// 150 0x0046F8DA
@@ -309,9 +310,16 @@ public:
 	Bool m_unk0x2C5;                               // +0x2C5; xfer Bool
 	UnsignedByte m_gap0x2C6[2];
 	HordeMeleeBase *m_unk0x2C8;                    // +0x2C8; the constructor stores a HordeMeleeSwarm (0x005843DA) or the template factory's object here; slots 85/89 call its slot 14 (offset 0x38), xfer its slot 15 (0x004751F3)
-	UnsignedByte m_gap0x2CC[0x1C];
+	UnsignedByte m_gap0x2CC[0x10];
+	_STL::map<ObjectID, UnsignedInt> m_unk0x2DC;		// +0x2DC; cleared by rva0046E2BC
 	Bool m_unk0x2E8;                               // +0x2E8; the constructor stores 1; HordeContainInterface slot 149 (0x0046F845) reads it
-	UnsignedByte m_gap0x2E9[0x1F];
+	UnsignedByte m_gap0x2E9[3];
+	Real m_unk0x2EC;									// +0x2EC; raised by rva00468B24 and capped
+	Int m_unk0x2F0;										// +0x2F0; set by rva00468BDC
+	UnsignedByte m_gap0x2F4[4];
+	Coord3D m_unk0x2F8;									// +0x2F8; written by rva00468C60, taken by rva00468C7B
+	Bool m_unk0x304;									// +0x304; set when m_unk0x2F8 holds a position
+	UnsignedByte m_gap0x305[3];
 	Int m_unk0x308;                                // +0x308; HordeContainInterface slot 64 (0x0046F7EB) stores into it and slot 65 (0x0046F7F8) reads it (both at interface +0x1EC)
 };
 // SIZE 0x30C

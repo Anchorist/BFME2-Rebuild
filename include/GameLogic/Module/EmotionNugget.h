@@ -18,6 +18,14 @@
 class Object;
 class Xfer;
 class EmotionTrackerUpdateEntry;
+class INI;
+
+// the INI-side owner of the emotion type parser (0x004DC702)
+class EmotionNuggetTemplate
+{
+public:
+	static void IniParseEmotionType(INI *ini, void *instance, void *store, const void *userData);
+};
 
 class EmotionNugget
 {

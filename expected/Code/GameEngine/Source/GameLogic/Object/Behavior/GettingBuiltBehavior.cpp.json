@@ -221,7 +221,9 @@
         "?getDamage@FlammableUpdate@@UAEPAVDamageModuleInterface@@XZ",
         "?getDie@RubbleRiseUpdate@@UAEPAVDieModuleInterface@@XZ",
         "?getBridgeBehaviorInterface@BridgeBehavior@@UAEPAVBridgeBehaviorInterface@@XZ",
-        "?slot37@BloodthirstyUpdate@@UAEPAVBloodthirstyUpdateInterface@@XZ"
+        "?slot37@BloodthirstyUpdate@@UAEPAVBloodthirstyUpdateInterface@@XZ",
+        "?getCreate@DynamicPortalBehaviour@@UAEPAVCreateModuleInterface@@XZ",
+        "?getCollide@CritterEmitterUpdate@@UAEPAVCollideModuleInterface@@XZ"
       ],
       "parent": null,
       "object": "retained:O0045314E",

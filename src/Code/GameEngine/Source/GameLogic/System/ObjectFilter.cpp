@@ -1,4 +1,10 @@
-// cl: /O1
+// cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT -Ireference/shims/bfmealloc_alloconly /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS /D_CRTIMP=
+// stlport46
+#undef _CRTIMP
+#define _CRTIMP __declspec(dllimport)
+#include <string.h>
+#undef _CRTIMP
+#define _CRTIMP
 #include "GameLogic/ObjectFilter.h"
 #include "GameLogic/ObjectFilterRecord.h"
 #include "GameLogic/Object.h"

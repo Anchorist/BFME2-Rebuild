@@ -22,6 +22,7 @@ class SupplyWarehouseDockUpdate : public DockUpdate
 public:
 	virtual DockUpdateInterface *getDockUpdateInterface() { return this; }
 	SupplyWarehouseDockUpdate(Thing *thing, const ModuleData *moduleData);	// 0x004A7DEA
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~SupplyWarehouseDockUpdate();
 
 	virtual NameKeyType getModuleNameKey() const;

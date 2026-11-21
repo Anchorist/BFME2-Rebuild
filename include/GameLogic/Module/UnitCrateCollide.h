@@ -15,6 +15,7 @@ class UnitCrateCollide : public CrateCollide
 {
 public:
 	UnitCrateCollide(Thing *thing, const ModuleData *moduleData);	// 0x004BCC13
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~UnitCrateCollide();
 	virtual NameKeyType getModuleNameKey() const;
 

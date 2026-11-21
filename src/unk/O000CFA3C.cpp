@@ -8,6 +8,9 @@
 #include "Common/NameKeyGenerator.h"
 #include "GameClient/W3DLightDraw.h"
 #include "GameClient/W3DDynamicLight.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "Draft/W3DLightDrawModuleData.h"
 // FUNCTION: BFME2 0x000CF91D size=287 name=??0W3DLightDraw@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-class+shared-data
 // FUNCTION: BFME2 0x000CFA3C size=6 name=?name@W3DLightDraw@@QBEPBDXZ evidence=N:ledger tier=B hypothesis:cohesion
 const char *W3DLightDraw::GetSnapshotName() const
@@ -54,7 +57,26 @@ NameKeyType W3DLightDraw::getModuleNameKey() const
 
 // FUNCTION: BFME2 0x000CFBA9 size=54 name=??1W3DLightDrawModuleData@@UAE@XZ evidence=N:ledger tier=B hypothesis:cohesion
 
+static const FieldParse s_w3DLightDrawModuleDataFieldParse[] =
+{
+	{ "Ambient", INI::parseRGBColor, 0, 0x8 },
+	{ "Diffuse", INI::parseRGBColor, 0, 0x14 },
+	{ "Specular", INI::parseRGBColor, 0, 0x20 },
+	{ "Radius", INI::parseReal, 0, 0x2C },
+	{ "Intensity", INI::parseReal, 0, 0x30 },
+	{ "FlickerAmplitude", INI::parseReal, 0, 0x34 },
+	{ "FlickerFrequency", INI::parseReal, 0, 0x38 },
+	{ "PulseAmplitude", INI::parseReal, 0, 0x3C },
+	{ "PulseFrequency", INI::parseReal, 0, 0x40 },
+	{ "AttachToBoneInAnotherModule", INI::parseAsciiString, 0, 0x44 },
+};
+
 // FUNCTION: BFME2 0x000CFBDF size=17 name=?buildFieldParse@W3DLightDrawModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:cohesion
+void W3DLightDrawModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_w3DLightDrawModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x000CFC0C size=467 name=?doDrawModule@W3DLightDraw@@UAEXPBVMatrix3D@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 

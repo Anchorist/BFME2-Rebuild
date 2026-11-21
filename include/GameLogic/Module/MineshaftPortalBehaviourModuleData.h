@@ -11,25 +11,24 @@
 #include <stddef.h>
 #include "Common/GameType.h"
 #include "GameLogic/Module/ModuleData.h"
+#include "GameLogic/Module/UpgradeModule.h"
 #include "GameLogic/Module/UpgradeMuxData.h"
 
 class INI;
 class MultiIniFieldParse;
 
-class MineshaftPortalBehaviourModuleData : public ModuleData
+class MineshaftPortalBehaviourModuleData : public UpgradeModuleData
 {
 public:
 	MineshaftPortalBehaviourModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
 	static ModuleData *friend_newModuleData(INI *ini);
 
-	UpgradeMuxData m_upgradeMuxData;                       // +0x8; added by buildFieldParse at +0x8
 	Bool m_allowEnemies;                                   // +0x118 AllowEnemies
 	Bool m_allowNonSkirmishAIUnits;                        // +0x119 AllowNonSkirmishAIUnits
 };
 // SIZE 0x11C
 typedef char MineshaftPortalBehaviourModuleData_size[(sizeof(MineshaftPortalBehaviourModuleData) == 0x11C) ? 1 : -1];
-typedef char MineshaftPortalBehaviourModuleData_off_m_upgradeMuxData[(offsetof(MineshaftPortalBehaviourModuleData, m_upgradeMuxData) == 0x8) ? 1 : -1];
 typedef char MineshaftPortalBehaviourModuleData_off_m_allowEnemies[(offsetof(MineshaftPortalBehaviourModuleData, m_allowEnemies) == 0x118) ? 1 : -1];
 typedef char MineshaftPortalBehaviourModuleData_off_m_allowNonSkirmishAIUnits[(offsetof(MineshaftPortalBehaviourModuleData, m_allowNonSkirmishAIUnits) == 0x119) ? 1 : -1];
 

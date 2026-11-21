@@ -365,7 +365,8 @@
         "?PreUnload@Factory@FXShaderAsset@@UAEXXZ",
         "?Unload@Factory@FXShaderAsset@@UAEXXZ",
         "?slot44@BehaviorModule@@UAEXXZ",
-        "?Release_Device_Resources@Impl@TextureAsset@@UAEXXZ"
+        "?Release_Device_Resources@Impl@TextureAsset@@UAEXXZ",
+        "?onCreate@DynamicPortalBehaviour@@UAEXXZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -12953,8 +12954,8 @@
       "role": "ehhandler",
       "parent_rva": "0x000C3D00",
       "fold_group": "",
-      "name": "__ehhandler$?parseModel@AttachModelStruct@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
-      "name_evidence": "X:parent-name",
+      "name": "__ehhandler$?parseModel@AttachModelStruct@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "name_evidence": "X:m02 request (m02 R8W3DModelDrawOwnAttachCallbacks-0x00761C54 (k13))",
       "confidence": "high",
       "evidence": "X:eh-stub FuncInfo=0x009051D8;X:parent-by-prologue",
       "object_id": "O000B2CBD",
@@ -12966,6 +12967,7 @@
       "parent": "0x000C3D00",
       "object": "O000B2CBD",
       "accepted_names": [
+        "__ehhandler$?parseModel@AttachModelStruct@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
         "__ehhandler$?parseModel@AttachModelStruct@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z"
       ],
       "seed_tier": "A",
@@ -15490,8 +15492,8 @@
       "role": "ehhandler",
       "parent_rva": "0x000C8748",
       "fold_group": "",
-      "name": "__ehhandler$?parseAttachModel@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
-      "name_evidence": "X:parent-name",
+      "name": "__ehhandler$?parseAttachModel@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
+      "name_evidence": "X:m02 request (m02 R8W3DModelDrawOwnAttachCallbacks-0x00762041 (k13))",
       "confidence": "high",
       "evidence": "X:eh-stub FuncInfo=0x0090562C;X:parent-by-prologue",
       "object_id": "O000B2CBD",
@@ -15503,6 +15505,7 @@
       "parent": "0x000C8748",
       "object": "O000B2CBD",
       "accepted_names": [
+        "__ehhandler$?parseAttachModel@W3DModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z",
         "__ehhandler$?parseAttachModel@W3DScriptedModelDrawModuleData@@SAXPAVINI@@PAX1PBX@Z"
       ],
       "seed_tier": "A",

@@ -2,9 +2,25 @@
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0056BABF name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
+#include "Common/GameType.h"
 // FUNCTION: BFME2 0x0056BABF size=205 name=?Helper0056BABF@@YA?AURvaF6Ret@@H@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0056BB8C size=177 name=?Helper0056BB8C@@YA?AURvaF6Ret@@H@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0056BC3D size=168 name=?CreateHelpFor@StrategicInGameUI@@YA?AURvaF6Ret@@PBVRva005E2338Elem@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0056BCE5 size=172 name=?Helper0056BCE5@@YA?AURvaF6Ret@@H@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0056BD91 size=20 name=?Rva0056BD91Pack@@YAEEEDD@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+UnsignedByte Rva0056BD91Pack(UnsignedByte first, UnsignedByte second, char third, char fourth)
+{
+	UnsignedByte r = first - third;
+	r <<= 4;
+	r -= fourth;
+	r += second;
+	return r;
+}
 // FUNCTION: BFME2 0x0056BDA5 size=35 name=?Rva0056BDA5Split@@YAXEDDPAE0@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+void Rva0056BDA5Split(UnsignedByte packed, char firstMin, char secondMin, UnsignedByte *firstOut, UnsignedByte *secondOut)
+{
+	*firstOut = packed >> 4;
+	*secondOut = packed & 0x0F;
+	*firstOut += firstMin;
+	*secondOut += secondMin;
+}

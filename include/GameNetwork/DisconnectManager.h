@@ -50,6 +50,8 @@ public:
 	Int rva004D3E5D(ConnectionManager *connections);		// (counts the slots that are connected, not timed out and not in the game; the map has no better name)
 	Int rva004D3E93(Int excludedSlot, ConnectionManager *connections);	// (the same count without one slot)
 
+	Bool get() const;								// 0x004D393A (+0x0C == 1; the map holds it under the placeholder class Rva004D393ACmpBoolField)
+
 protected:
 	void resetPlayerTimeout(Int slot);
 	void resetPlayerTimeouts(ConnectionManager *connections);
@@ -68,10 +70,10 @@ protected:
 	void disconnectPlayer(Int slot, ConnectionManager *connections);
 	Bool rva004D38C5(Int slot) const;						// 0x004D38C5 (true when the slot's word at +0x272 has reached 5; the map holds it under the placeholder class Rva0066B100)
 	void clearVotesAgainst(Int slot);						// 0x004D3906 (once: shuts the disconnect screen down, switches the manager off (+0x0C = 1) and clears every vote cast against the slot; the map holds it under the placeholder class Rva004D3906)
-	Bool rva004D393A() const;								// 0x004D393A (+0x0C == 1; the map holds it under the placeholder class Rva004D393ACmpBoolField)
 	Bool rva004D38D8(Real threshold);						// (the map holds it under the placeholder class Rva004D38D8: true unless the progress ratio +0x264 / +0x260 is below the threshold)
 	Bool hasPlayerTimedOut(Int slot);
 	Bool allOnSameFrame(ConnectionManager *connections);
+	void updateDisconnectStatus(ConnectionManager *connections);
 	Bool isLocalPlayerNextPacketRouter(ConnectionManager *connections);
 	Bool isPlayerVotedOut(Int slot, ConnectionManager *connections);
 	UnsignedInt getMaxDisconnectFrame();

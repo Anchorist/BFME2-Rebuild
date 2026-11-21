@@ -60,9 +60,12 @@ struct BoneParticleSystemInfo : public BaseBoneListInfo
 };
 // SIZE 0x24
 
+class MultiIniFieldParse;
 class BoneFXUpdateModuleData : public ModuleData
 {
 public:
+	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	BoneFXUpdateModuleData();
 	// No user-declared destructor: retail's (0x00487877) is the implicit one.
 

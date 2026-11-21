@@ -19,6 +19,7 @@ class WanderAIUpdateModuleData : public AIUpdateModuleData
 public:
 	WanderAIUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Bool m_wildBeast;                                      // +0x64 WildBeast
 	UnsignedByte m_unk0x65[0x3];

@@ -99,6 +99,7 @@ public:
 	void groupGuardObject(Object *target, Int guardMode, CommandSourceType cmdSource);	// 0x00370410
 	void groupGuardPosition(const Coord3D *pos, GuardMode mode, CommandSourceType cmdSource);	// 0x003703CF
 	void groupEnter(Object *target, CommandSourceType cmdSource);	// 0x00370198
+	void rva00372BB9(const void *target, Int cmdSource);	// 0x00372BB9 (the map's placeholder: the target object and the command source)
 	void groupFollowWaypointPath(const Waypoint *way, CommandSourceType cmdSource, Int mode);	// 0x0036F9FE: mode 0 each member's aiFollowWaypointPath, 1 its aiAttackFollowWaypointPath with no shot limit
 	void groupFollowWaypointPathAsTeam(const Waypoint *way, CommandSourceType cmdSource, Int mode);	// 0x0036FAF8: clears each member's Object +0x410, then mode 0 aiFollowWaypointPathAsTeam, 1 aiAttackFollowWaypointPathAsTeam
 	void groupFollowWaypointPathInFormation(const Waypoint *way, CommandSourceType cmdSource, Int mode);	// 0x0036FB57: forms the group up first (createFormation 0x005494A0), then each member follows the path (ScriptActions::doTeamFollowWaypoints 0x003BF39F calls it with mode 0, doTeamAttackMoveFollowWaypoints 0x003BF4CF with mode 1; map: ?rva0036FB57@AIGroup@@QAEXPBVWaypoint@@W4CommandSourceType@@H@Z, placeholder)
@@ -118,6 +119,7 @@ public:
 	// Zero Hour's inline forwarder: ScriptActions 0x003C3B7D calls the private 0x0036FD64 straight from the script row (its false is the first pushed argument).
 	void groupAttackObject(Object *victim, Int maxShotsToFire, CommandSourceType cmdSource) { groupAttackObjectPrivate(false, victim, maxShotsToFire, cmdSource); }
 	void groupForceAttackObject(Object *victim, Int maxShotsToFire, CommandSourceType cmdSource);
+	void groupAttackMoveToPosition(const Coord3D *pos, Int maxShotsToFire, CommandSourceType cmdSource);	// 0x00372B09
 
 protected:
 	friend class AI;

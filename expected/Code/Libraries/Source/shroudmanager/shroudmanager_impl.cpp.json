@@ -109,8 +109,8 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "??1?$_Deque_base@HV?$allocator@H@_STL@@@_STL@@QAE@XZ",
-      "name_evidence": "N:ledger",
+      "name": "??1?$_Deque_base@URva0073C8C0Pod4@@V?$allocator@URva0073C8C0Pod4@@@_STL@@@_STL@@QAE@XZ",
+      "name_evidence": "X:review",
       "confidence": "high",
       "evidence": "N:template-instantiation",
       "object_id": "O0073B600",
@@ -122,7 +122,7 @@
       "parent": null,
       "object": "O0073B600",
       "accepted_names": [
-        "??1?$_Deque_base@HV?$allocator@H@_STL@@@_STL@@QAE@XZ"
+        "??1?$_Deque_base@URva0073C8C0Pod4@@V?$allocator@URva0073C8C0Pod4@@@_STL@@@_STL@@QAE@XZ"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null

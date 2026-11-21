@@ -13,6 +13,7 @@ class HordeTransportContainDamageModuleData : public ModuleData
 public:
 	HordeTransportContainDamageModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 };
 typedef char HordeTransportContainDamageModuleData_size[(sizeof(HordeTransportContainDamageModuleData) == 0x8) ? 1 : -1];
 

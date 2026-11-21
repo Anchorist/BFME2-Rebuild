@@ -1,6 +1,7 @@
-// cl: /O1 -Ireference/shims/bfmealloc_alloconly /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_STATIC_LIB
+// cl: /O1 /GF- -Ireference/shims/bfmealloc_alloconly /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_STATIC_LIB
 // stlport46
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
+#include <wchar.h>
 #include "Common/File.h"
 #include "Common/FileSystem.h"
 #include "GameClient/LanguageFilter.h"
@@ -107,6 +108,37 @@ bool UnicodeStringLessThan::operator()(UnicodeString a, UnicodeString b) const
 // FUNCTION: BFME2 0x00387DCF size=9 name=?rva00387DCFUnicodeDestroy@@YAXPAX@Z evidence=?:placeholder tier=B hypothesis:Z
 
 // FUNCTION: BFME2 0x00388102 size=351 name=?filterLine@LanguageFilter@@QAEXAAVUnicodeString@@@Z evidence=N:ledger tier=B hypothesis:Z
+void LanguageFilter::filterLine(UnicodeString &line)
+{
+	WideChar *buf = new WideChar[line.getLength() + 1];
+	wcscpy(buf, line.str());
+
+	UnicodeString newLine(line);
+	UnicodeString token(L"");
+
+	while (newLine.nextToken(&token, UnicodeString(L" ;,.!?:=\\/><`~()&^%#\n\t").str()))
+	{
+		WideChar *pos = wcsstr(buf, token.str());
+		if (pos == NULL)
+			continue;
+
+		Int len = token.getLength();
+		unHaxor(token);
+		const LanguageFilterWordMap &wordList = m_wordList;
+		LanguageFilterWordMap::const_iterator iter = wordList.find(token);
+		if (iter != wordList.end())
+		{
+			for (Int i = 0; i < len; ++i)
+			{
+				*pos = L'*';
+				++pos;
+			}
+		}
+	}
+
+	line.set(buf);
+	delete[] buf;
+}
 
 // FUNCTION: BFME2 0x00388598 size=89 name=??1LanguageFilter@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
 LanguageFilter::~LanguageFilter()

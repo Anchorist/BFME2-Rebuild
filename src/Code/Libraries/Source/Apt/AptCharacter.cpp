@@ -769,8 +769,74 @@ AptValue *PrevFrame(AptValue *self)
 
 
 // FUNCTION: BFME2 0x006EE3B0 size=393 name=?rva006ee3b0@@YAPAVAptValue@@PAV1@@Z evidence=?:placeholder tier=A
+AptValue *rva006ee3b0(AptValue *self)
+{
+    EAStringC filename;
+    if (!((AptCIH *)self->checkedCIH(false))->mpInstance)
+        return AptFloat::Create(0.0f);
+    if (self->isCIH(false)) {
+        AptCIH *cih = (AptCIH *)self->checkedCIH(false);
+        if (!(cih != 0)) {
+            g_bfmeAptAssertAtE17734("this", "c:\\projects\\bfme2patch103\\bfme2\\code\\libraries\\source\\apt\\AptCIH.h", 0xd3);
+            if (g_bfmeAptBreakOnAssertAtDDC01C)
+                APT_ASSERT_BREAK();
+        }
+        if (cih->getVtblIndex() == 0x12 && !cih->isUndefined()) {
+            AptFile **ppFile = &((AptCIH *)self->checkedCIH(false))->rva006CD650()->pFile;
+            AptFile *pFile = *ppFile;
+            filename += pFile->mFilename;
+        }
+    }
+    if (!g_pfnGetBytesTotal) {
+        g_bfmeAptAssertAtE17734("gAptFuncs.pfnGetBytesTotal", "C:\\projects\\bfme2patch103\\bfme2\\Code\\Libraries\\Source\\Apt\\AptCharacter.cpp", 0x636);
+        if (g_bfmeAptBreakOnAssertAtDDC01C)
+            APT_ASSERT_BREAK();
+    }
+    float total = 0.0f;
+    AptCIH *cih = (AptCIH *)self->checkedCIH(false);
+    if (!(cih != 0)) {
+        g_bfmeAptAssertAtE17734("this", "c:\\projects\\bfme2patch103\\bfme2\\code\\libraries\\source\\apt\\AptCIH.h", 0xd3);
+        if (g_bfmeAptBreakOnAssertAtDDC01C)
+            APT_ASSERT_BREAK();
+    }
+    if (cih->getVtblIndex() == 0x12 && !cih->isUndefined())
+        total = (float)g_pfnGetBytesTotal((int)filename.c_str(), 0);
+    return AptFloat::Create(total);
+}
 
 // FUNCTION: BFME2 0x006EE540 size=373 name=?rva006ee540@@YAPAVAptValue@@PAV1@@Z evidence=?:placeholder tier=A
+AptValue *rva006ee540(AptValue *self)
+{
+    EAStringC filename;
+    if (self->isCIH(false)) {
+        AptCIH *cih = (AptCIH *)self->checkedCIH(false);
+        if (!(cih != 0)) {
+            g_bfmeAptAssertAtE17734("this", "c:\\projects\\bfme2patch103\\bfme2\\code\\libraries\\source\\apt\\AptCIH.h", 0xd3);
+            if (g_bfmeAptBreakOnAssertAtDDC01C)
+                APT_ASSERT_BREAK();
+        }
+        if (cih->getVtblIndex() == 0x12 && !cih->isUndefined()) {
+            AptFile **ppFile = &((AptCIH *)self->checkedCIH(false))->rva006CD650()->pFile;
+            AptFile *pFile = *ppFile;
+            filename += pFile->mFilename;
+        }
+    }
+    if (!g_pfnGetBytesLoaded) {
+        g_bfmeAptAssertAtE17734("gAptFuncs.pfnGetBytesLoaded", "C:\\projects\\bfme2patch103\\bfme2\\Code\\Libraries\\Source\\Apt\\AptCharacter.cpp", 0x64b);
+        if (g_bfmeAptBreakOnAssertAtDDC01C)
+            APT_ASSERT_BREAK();
+    }
+    float loaded = 0.0f;
+    AptCIH *cih = (AptCIH *)self->checkedCIH(false);
+    if (!(cih != 0)) {
+        g_bfmeAptAssertAtE17734("this", "c:\\projects\\bfme2patch103\\bfme2\\code\\libraries\\source\\apt\\AptCIH.h", 0xd3);
+        if (g_bfmeAptBreakOnAssertAtDDC01C)
+            APT_ASSERT_BREAK();
+    }
+    if (cih->getVtblIndex() == 0x12 && !cih->isUndefined())
+        loaded = (float)g_pfnGetBytesLoaded((int)filename.c_str(), 0);
+    return AptFloat::Create(loaded);
+}
 
 // FUNCTION: BFME2 0x006EE6C0 size=3400 name=?rva006EE6C0@@YA_NPAVAptValue@@PBVEAStringC@@0@Z evidence=?:placeholder tier=A
 

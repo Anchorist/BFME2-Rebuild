@@ -1,3 +1,6 @@
+// cl: /O1
+// stlport46
+#include "GameClient/Drawable.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G002B2221 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
@@ -6,6 +9,10 @@
 // FUNCTION: BFME2 0x002B223D size=7 name=?get@Rva002B223DByteField@@QBEEXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x002B2244 size=7 name=?get@Rva002B2244ByteField@@QBEEXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x002B224B size=7 name=?get@Drawable@@QBEHXZ evidence=S:strong (caller-this) tier=B hypothesis:mm1-gap-unit
+DrawModule **Drawable::getDrawModules() const
+{
+	return (DrawModule **)m_modules[0];
+}
 // FUNCTION: BFME2 0x002B2252 size=14 name=?get@Rva002B2252NullAdjustField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x002B2260 size=14 name=?rva002B2260@Rva002B2221@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x002B226E size=7 name=?rva002B226E@Rva002B226E@@QAEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

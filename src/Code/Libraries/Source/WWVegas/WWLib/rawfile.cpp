@@ -20,6 +20,11 @@ bool RawFileClass::Is_Open() const
 }
 
 // FUNCTION: BFME2 0x00619FF0 size=6 name=?Rva00619FF0Get@@YAHXZ evidence=?:placeholder
+int Rva00619FF0Get(void)
+{
+	return -17;
+}
+
 
 // FUNCTION: BFME2 0x0061A000 size=31 name=?Open@RawFileClass@@UAEHPBDH@Z evidence=N:ledger
 int RawFileClass::Open(const char *filename, int rights)

@@ -4,5 +4,10 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=no-edge-evidence right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:name:invented
+#include "GameLogic/Module/HijackerUpdate.h"
 // FUNCTION: BFME2 0x0066CA90 size=10 name=?setUpdate@HijackerUpdate@@QAEX_N@Z evidence=N:ledger tier=B hypothesis:name:invented
+void HijackerUpdate::setUpdate(Bool update)
+{
+	m_update = update;
+}
 

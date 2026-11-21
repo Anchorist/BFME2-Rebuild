@@ -7,6 +7,9 @@
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented, hypothesis:padding
 #include "GameLogic/Module/BannerCarrierUpdate.h"
 #include "Common/NameKeyGenerator.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/BannerCarrierUpdateModuleData.h"
 // FUNCTION: BFME2 0x004969E7 size=24 name=?rva004969E7@@YA_NPBD@Z evidence=?:placeholder tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x004969FF size=25 name=??1BannerCarrierUpdate@@UAE@XZ evidence=N:ledger tier=B hypothesis:K
@@ -58,4 +61,28 @@ BannerCarrierUpdate::BannerCarrierUpdate(Thing *thing, const ModuleData *moduleD
 // FUNCTION: BFME2 0x00497524 size=394 name=?update@BannerCarrierUpdate@@UAE?AW4UpdateSleepTime@@XZ evidence=N:ledger tier=B hypothesis:K
 
 
+void parseBannerCarrierMorphCondition(INI *ini, void *instance, void *store, const void *userData);
+void parseBannerCarrierExpLevelDraw(INI *ini, void *instance, void *store, const void *userData);
+static const FieldParse s_bannerCarrierUpdateModuleDataFieldParse[] =
+{
+	{ "IdleSpawnRate", INI::parseDurationUnsignedInt, 0, 0x8 },
+	{ "MeleeFreeUnitSpawnTime", INI::parseDurationUnsignedInt, 0, 0xC },
+	{ "DiedRespawnTime", INI::parseDurationUnsignedInt, 0, 0x10 },
+	{ "MeleeFreeBannerReSpawnTime", INI::parseDurationUnsignedInt, 0, 0x14 },
+	{ "MorphCondition", parseBannerCarrierMorphCondition, 0, 0x18 },
+	{ "ExpLevelDraw", parseBannerCarrierExpLevelDraw, 0, 0x24 },
+	{ "BannerMorphFX", INI::parseFXList, 0, 0x30 },
+	{ "UnitSpawnFX", INI::parseFXList, 0, 0x34 },
+	{ "ReplenishNearbyHorde", INI::parseBool, 0, 0x38 },
+	{ "ReplenishAllNearbyHordes", INI::parseBool, 0, 0x39 },
+	{ "ScanHordeDistance", INI::parseReal, 0, 0x3C },
+	{ "UpgradeRequired", INI::parseAsciiString, 0, 0x40 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x004976CA size=17 name=?buildFieldParse@BannerCarrierUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+void BannerCarrierUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_bannerCarrierUpdateModuleDataFieldParse, 0);
+}
+

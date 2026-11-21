@@ -58,8 +58,15 @@ public:
 class CreateAHeroData : public Snapshot
 {
 public:
+	CreateAHeroData(Int heroClass = 0, Int heroSubclass = 0, Int id = 0,
+		const UnicodeString &name = UnicodeString::TheEmptyString,
+		Int a5 = -1, Int color = 0xFF707070, Int a7 = -1);	// 0x00409C3D
+	CreateAHeroData(const CreateAHeroData &other);		// 0x00409D4D
+	CreateAHeroData &operator=(const CreateAHeroData &other);	// 0x00409359
 	virtual ~CreateAHeroData();							// 0x00409285
+	virtual void loadPostProcess();
 	virtual const char *GetSnapshotName() const;		// 0x00409353
+	virtual void xfer(Xfer *xfer);
 
 	const UnicodeString &getName() const { return m_name; }
 	Int getHeroClass() const { return m_heroClass; }

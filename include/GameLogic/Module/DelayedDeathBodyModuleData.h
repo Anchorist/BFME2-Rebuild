@@ -21,6 +21,7 @@ class DelayedDeathBodyModuleData : public RespawnBodyModuleData
 public:
 	DelayedDeathBodyModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UnsignedInt m_delayedDeathTime;                        // +0x6C DelayedDeathTime; duration, frames
 	Bool m_immortalUntilDeathTime;                         // +0x70 ImmortalUntilDeathTime

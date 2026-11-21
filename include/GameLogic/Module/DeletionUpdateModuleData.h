@@ -7,9 +7,11 @@
 
 #include "GameLogic/Module/ModuleData.h"
 
+class MultiIniFieldParse;
 class DeletionUpdateModuleData : public ModuleData
 {
 public:
+	static void buildFieldParse(MultiIniFieldParse &parse);
 	UnsignedInt m_minFrames;	// +0x08
 	UnsignedInt m_maxFrames;	// +0x0C
 };

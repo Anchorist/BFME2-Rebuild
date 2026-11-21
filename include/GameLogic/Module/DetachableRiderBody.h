@@ -20,6 +20,7 @@ class DetachableRiderBody : public ActiveBody, public UpgradeMux
 {
 public:
 	DetachableRiderBody(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual const char *GetSnapshotName() const;
 	virtual void attemptDamage(DamageInfo *);	// override: attemptDamage slot 0 at +0x10 (0x004C1D49)

@@ -20,6 +20,7 @@ public:
 	TeleportToCasterSpecialPowerModuleData();
 	virtual ~TeleportToCasterSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_radius;						// 0xC8
 	Real m_minDestinationRadius;		// 0xCC

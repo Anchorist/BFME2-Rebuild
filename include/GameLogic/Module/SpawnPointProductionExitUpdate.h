@@ -54,7 +54,14 @@ class SpawnPointProductionExitUpdate : public UpdateModule, public ExitInterface
 {
 public:
 	SpawnPointProductionExitUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
+	virtual Bool isExitBusy() const { return false; }	// ExitInterface slot 0, retail word 0x0047A699 (the shared fold)
+	virtual void exitObjectByBudding(Object *newObj, Object *budHost) {}	// ExitInterface slot 3, retail word 0x0050B238 (the shared fold)
+	virtual void unreserveDoorForExit(ExitDoorType exitDoor) {}	// ExitInterface slot 4, retail word 0x0047A69C (the shared fold)
+	virtual void setRallyPoint(const Coord3D *pos) {}	// ExitInterface slot 7, retail word 0x0047A69C (the shared fold)
+	virtual const Coord3D *getRallyPoint() const { return 0; }	// ExitInterface slot 8, retail word 0x000D43D0 (the shared fold)
+	virtual UpdateSleepTime update();		// UpdateModuleInterface slot 0 (pure in UpdateModule)
 	virtual const char *GetSnapshotName() const;
 	const char *name() const;
 

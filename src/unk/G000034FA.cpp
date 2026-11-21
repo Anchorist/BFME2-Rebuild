@@ -1,12 +1,47 @@
+// cl: /O1 /arch:SSE
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G000034FA name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
+#include <math.h>
+#include "Common/GameType.h"
+#include "Common/Coord3D.h"
+#include "Common/Coord2D.h"
+
+static const Real kMathPi = 3.14159265358979323846f;
 // FUNCTION: BFME2 0x000034FA size=42 name=?areApproxEqual@@YA_NMMM@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Bool areApproxEqual(Real a, Real b, Real eps)
+{
+	Real diff = a - b;
+	return (diff < eps && diff > -eps);
+}
 // FUNCTION: BFME2 0x00003524 size=11 name=?rad2deg@@YAMM@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Real rad2deg(Real rad)
+{
+	return rad * (180.0f / kMathPi);
+}
 // FUNCTION: BFME2 0x0000352F size=11 name=?deg2rad@@YAMM@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Real deg2rad(Real deg)
+{
+	return deg * (kMathPi / 180.0f);
+}
 // FUNCTION: BFME2 0x0000354C size=37 name=??0Coord3D@@QAE@HHH@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00003571 size=69 name=?length@Coord3D@@QBEMXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Real Coord3D::length() const
+{
+	return (Real)sqrt(x * x + y * y + z * z);
+}
 // FUNCTION: BFME2 0x000035B6 size=86 name=?normalize@Coord3D@@QAEXXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void Coord3D::normalize()
+{
+	Real len = length();
+	if (len != 0.0f)
+	{
+		Real invLen = 1.0f / len;
+		x *= invLen;
+		y *= invLen;
+		z *= invLen;
+	}
+}
 // FUNCTION: BFME2 0x0000360C size=95 name=?crossProduct@Coord3D@@SAXPBV1@0PAV1@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0000366B size=18 name=?zero@Coord3D@@QAEXXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0000367D size=49 name=?sub@Coord3D@@QAEXPBUCoord3DBase@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
@@ -14,6 +49,10 @@
 // FUNCTION: BFME2 0x000036D1 size=49 name=?scale@Coord3D@@QAEXM@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0000373B size=26 name=??0Coord2D@@QAE@HH@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00003755 size=53 name=?length@Coord2D@@QBEMXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Real Coord2D::length() const
+{
+	return (Real)sqrt(x * x + y * y);
+}
 // FUNCTION: BFME2 0x0000378A size=71 name=?normalize@Coord2D@@QAEXXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0000383D size=42 name=?IsExactlyEqualTo@Coord2D@@QBE_NABV1@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0000388A size=41 name=??_0Coord2D@@QAEAAV0@M@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
@@ -48,6 +87,14 @@
 // FUNCTION: BFME2 0x00003FC1 size=25 name=?SetMaxVect@Coord3D@@QAEAAV1@XZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00003FDA size=20 name=?SetZero@Coord3D@@QAEAAV1@XZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x00003FEE size=46 name=??G@YA?AVCoord3D@@V0@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+Coord3D operator-(Coord3D v)
+{
+	Coord3D result;
+	result.x = -v.x;
+	result.y = -v.y;
+	result.z = -v.z;
+	return result;
+}
 // FUNCTION: BFME2 0x0000401C size=93 name=?SetIdentity@Matrix4D@@QAEAAV1@XZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x000041DE size=111 name=?Transpose@Matrix4D@@QAEAAV1@XZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0000424D size=188 name=?Determinant@Matrix4D@@QBEMXZ evidence=N:ledger tier=B hypothesis:mm1-gap-unit

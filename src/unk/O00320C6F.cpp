@@ -11,17 +11,22 @@
 // FUNCTION: BFME2 0x00320737 size=190 name=?GadgetTextEntrySetCursorPosition@@YAXPAVGameWindow@@I@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x003207F5 size=694 name=?GadgetTextEntrySystem@@YA?AW4WindowMsgHandledType@@PAVGameWindow@@III@Z evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
 // FUNCTION: BFME2 0x00320AAB size=145 name=?GadgetTextEntryGetText@@YA?AVUnicodeString@@PAVGameWindow@@@Z evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
+// The style bit a text entry carries, and the system message that asks a text entry for its string: the message
+// carries the address of the result in its second data word.
+static const unsigned int kTextEntryStyleBit = 0x40;
+static const unsigned int kTextEntryGetTextMessage = 0x402f;
+
 UnicodeString GadgetTextEntryGetText(GameWindow *textEntry)
 {
 	if (!textEntry)
 		return UnicodeString::TheEmptyString;
 
 	// Only a text entry answers.
-	if (!(textEntry->winGetStyle() & 0x40))
+	if (!(textEntry->winGetStyle() & kTextEntryStyleBit))
 		return UnicodeString::TheEmptyString;
 
 	UnicodeString result;
-	TheWindowManager->winSendSystemMsg(textEntry, 0x402f, 0, (unsigned int)&result);
+	TheWindowManager->winSendSystemMsg(textEntry, kTextEntryGetTextMessage, 0, (unsigned int)&result);
 	return result;
 }
 // FUNCTION: BFME2 0x00320B3C size=307 name=?GadgetTextEntryUpdateComposition@@YA_NPAVGameWindow@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers

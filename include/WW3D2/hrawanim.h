@@ -35,6 +35,7 @@ class HRawAnimClass : public HAnimClass
 {
 public:
 	HRawAnimClass();						// 0x0018D2A0
+	int Load_W3D(ChunkLoadClass &cload);
 	virtual ~HRawAnimClass();					// (slot 1)
 	virtual float Get_VisibilityF(int pivot, float frame);		// (slot 12)
 	virtual void Get_Translation(Vector3 &translation, int pivot, float frame) const;	// (slot 8)

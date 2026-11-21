@@ -1,5 +1,11 @@
+// cl: /O1
+#include "GameLogic/Module/ActiveBody.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0052BAAB name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // FUNCTION: BFME2 0x0052BAAB size=7 name=?get@Rva0052BAABByteField@@QBEEXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+unsigned char ActiveBody::getFrontCrushed() const
+{
+	return m_frontCrushed;
+}
 // FUNCTION: BFME2 0x0052BAB2 size=15 name=?rva0052BAB2@LivingWorldCampaign@@QBEHXZ evidence=P:provisional (wb-file) tier=B hypothesis:mm1-gap-unit

@@ -16,6 +16,11 @@ static const float RANDOM_SCALE = 1.0f / 2147483648.0f;
 Random3Class Vector3Randomizer::Randomizer;
 
 // FUNCTION: BFME2 0x007230C0 size=25 name=?Get_Random_Float_Minus1_To_1@Vector3Randomizer@@IAEMXZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-shared-data
+float Vector3Randomizer::Get_Random_Float_Minus1_To_1(void)
+{
+	return (float)Randomizer() * RANDOM_SCALE;
+}
+
 // FUNCTION: BFME2 0x007230F0 size=75 name=??0Vector3SolidBoxRandomizer@@QAE@ABVVector3@@@Z evidence=N:ledger tier=B hypothesis:name:Z
 Vector3SolidBoxRandomizer::Vector3SolidBoxRandomizer(const Vector3 &extents)
 {

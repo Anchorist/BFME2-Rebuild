@@ -7,6 +7,9 @@
 #include "Common/NameKeyGenerator.h"
 #include "Common/Xfer.h"
 #include "GameLogic/GameLogic.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/PartTheHeavensUpdateModuleData.h"
 // FUNCTION: BFME2 0x004AC8EF size=77 name=??1PartTheHeavensUpdate@@UAE@XZ evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x004AC93C size=6 name=?GetSnapshotName@PartTheHeavensUpdate@@MBEPBDXZ evidence=N:ledger
 const char *PartTheHeavensUpdate::GetSnapshotName() const
@@ -21,7 +24,23 @@ NameKeyType PartTheHeavensUpdate::getModuleNameKey() const
 	return ThePartTheHeavensUpdateNameKey;
 }
 
+void Rva00339D74ParseCurve(INI *ini, void *instance, void *store, const void *userData);
+static const FieldParse s_partTheHeavensUpdateModuleDataFieldParse[] =
+{
+	{ "Texture", INI::parseAsciiString, 0, 0x8 },
+	{ "Radius", Rva00339D74ParseCurve, 0, 0x10 },
+	{ "Color", INI::parseColorInt, 0, 0xC },
+	{ "Opacity", Rva00339D74ParseCurve, 0, 0x3C },
+	{ "Angle", Rva00339D74ParseCurve, 0, 0x68 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x004AC987 size=17 name=?buildFieldParse@PartTheHeavensUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger
+void PartTheHeavensUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_partTheHeavensUpdateModuleDataFieldParse, 0);
+}
+
 
 // FUNCTION: BFME2 0x004AC998 size=70 name=??0PartTheHeavensUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger
 PartTheHeavensUpdate::PartTheHeavensUpdate(Thing *thing, const ModuleData *moduleData) :

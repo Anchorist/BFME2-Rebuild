@@ -17,6 +17,7 @@ class SpellRechargeModifierUpgradeModuleData : public UpgradeModuleData
 public:
 	SpellRechargeModifierUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	std::vector<Real> m_percentage;                       // +0x118 Percentage: the modifier table SpellRechargeModifierUpgrade indexes by the player's count (0x004B5F9F, clamped to its size)
 	Bool m_startsActive;                                   // +0x124 StartsActive

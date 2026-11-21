@@ -18,6 +18,7 @@ class CritterEmitterUpdateModuleData : public ModuleData
 public:
 	CritterEmitterUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	// s02: two pointer vectors. onCollide 0x004C8E83 plays a random entry of +0x8 through
 	// FXList::doFXObj and creates a random entry of +0x14 through ObjectCreationList::create;

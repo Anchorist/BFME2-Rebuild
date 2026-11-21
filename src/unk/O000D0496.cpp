@@ -5,6 +5,9 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "Draft/W3DStreakDrawModuleData.h"
 // FUNCTION: BFME2 0x000D0469 size=45 name=?Rva000D0469Construct@@YAXPAUTreeKey00242F5E@@ABU1@@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x000D0496 size=38 name=?Rva000D0496UninitializedCopy@@YAPAUTreeKey00242F5E@@PBU1@0PAU1@ABU__false_type@_STL@@@Z evidence=?:placeholder tier=B hypothesis:K
 
@@ -15,4 +18,22 @@
 // FUNCTION: BFME2 0x000D06C6 size=96 name=?Rva000D06C6Parse@@YAXPAVINI@@PAX1PBX@Z evidence=?:placeholder tier=B hypothesis:K
 
 
+void Rva000D06C6Parse(INI *ini, void *instance, void *store, const void *userData);
+static const FieldParse s_w3DStreakDrawModuleDataFieldParse[] =
+{
+	{ "Length", INI::parseReal, 0, 0x8 },
+	{ "Width", INI::parseReal, 0, 0xC },
+	{ "Additive", INI::parseBool, 0, 0x10 },
+	{ "Color", INI::parseRGBColor, 0, 0x14 },
+	{ "Texture", INI::parseAsciiString, 0, 0x24 },
+	{ "NumSegments", INI::parseUnsignedInt, 0, 0x20 },
+	{ "WeatherTexture", Rva000D06C6Parse, 0, 0x28 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x000D0726 size=17 name=?buildFieldParse@W3DStreakDrawModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+void W3DStreakDrawModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_w3DStreakDrawModuleDataFieldParse, 0);
+}
+

@@ -1,5 +1,6 @@
 // cl: /O1
 #include "GameClient/GameWindow.h"
+#include "GameClient/GadgetProgressBar.h"
 #include "GameClient/WinInstanceData.h"
 #include "GameClient/Image.h"
 // Draw-state accessors for the gadget window drawing; see the note in O000A3367.cpp.
@@ -67,4 +68,14 @@ const Image * getHiliteImage6(GameWindow *window)
 	return window->m_instData.m_hiliteDrawData[6].image;
 }
 // FUNCTION: BFME2 0x000A0CFF size=35 name=?input@GameWindow@@UAE?AW4WindowMsgHandledType@@III@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+WindowMsgHandledType GameWindow::input(unsigned int msg, unsigned int mData1, unsigned int mData2)
+{
+	if (m_inputFunc)
+		return m_inputFunc(this, msg, mData1, mData2);
+	return MSG_IGNORED;
+}
 // FUNCTION: BFME2 0x000A0D22 size=24 name=?system@Rva000A12E6Window@@UAE?AW4WindowMsgHandledType@@III@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
+WindowMsgHandledType GameWindow::system(unsigned int msg, unsigned int mData1, unsigned int mData2)
+{
+	return GadgetProgressBarSystem(this, msg, mData1, mData2);
+}

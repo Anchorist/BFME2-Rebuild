@@ -21,7 +21,8 @@
         "?loadPostProcess@SiegeAIUpdate@@MAEXXZ",
         "?LoadPostProcess@SiegeAIUpdate@@MAEXXZ",
         "?loadPostProcess@TransportAIUpdate@@MAEXXZ",
-        "?LoadPostProcess@TransportAIUpdate@@MAEXXZ"
+        "?LoadPostProcess@TransportAIUpdate@@MAEXXZ",
+        "?loadPostProcess@AnimalAIUpdate@@MAEXXZ"
       ],
       "parent": "0x002686A4",
       "object": "retained:O0049A67C",

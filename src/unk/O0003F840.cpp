@@ -28,3 +28,7 @@ DebugIOFlat::OutputStream::OutputStream(const char *filename, unsigned int maxSi
 
 
 // FUNCTION: BFME2 0x0003F8E0 size=94 name=?Create@OutputStream@DebugIOFlat@@SAPAV12@PBDI@Z evidence=N:ledger tier=B hypothesis:K
+DebugIOFlat::OutputStream *DebugIOFlat::OutputStream::Create(const char *filename, unsigned int maxSize)
+{
+	return new (DebugAllocMemory(sizeof(OutputStream))) OutputStream(filename, maxSize);
+}

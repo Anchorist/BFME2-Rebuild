@@ -93,7 +93,7 @@ public:
 		float Weight;
 		bool operator==(const WeightInfoStruct &) { return false; }
 		bool operator!=(const WeightInfoStruct &) { return true; }
-		~WeightInfoStruct() { if (Name) free(Name); }
+		~WeightInfoStruct() { if (Name) delete [] Name; }
 	};
 
 	void Add(const char *Name, float Weight);						// 0x00196AA0

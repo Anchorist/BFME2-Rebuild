@@ -27,6 +27,7 @@ class SwayClientUpdate : public Rva00362EC7
 {
 public:
 	SwayClientUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void clientUpdate();	// override: Rva00362EC7 slot 12 (0x004C923B)
 

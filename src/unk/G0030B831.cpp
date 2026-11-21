@@ -1,8 +1,18 @@
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0030B831 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
+#include "Common/AreaPolygon.h"
 // FUNCTION: BFME2 0x0030B831 size=41 name=?Rva0030B831Equal@@YAHPBURva0030B831Item@@0@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0030B85A size=28 name=?deletePoint@AreaPolygonBase@@QAEXH@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void AreaPolygonBase::deletePoint(Int index)
+{
+	m_points.erase(m_points.begin() + index);
+	m_boundsDirty = true;
+}
 // FUNCTION: BFME2 0x0030B8E4 size=72 name=??0AreaPolygonBase@@QAE@ABU0@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0030B92C size=63 name=??4AreaPolygonBase@@QAEAAU0@ABU0@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0030B96B size=21 name=?reserve@AreaPolygonBase@@QAEXH@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+void AreaPolygonBase::reserve(Int count)
+{
+	m_points.reserve(count < 2 ? 2 : count);
+}

@@ -6,6 +6,11 @@
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
 // FUNCTION: BFME2 0x00180E60 size=6 name=?Rva00180E60Get@@YAHXZ evidence=?:placeholder
+// Returns the address of a string literal (the ledger types the row as int).
+int Rva00180E60Get()
+{
+	return (int)"NULL";
+}
 
 // FUNCTION: BFME2 0x00180E70 size=6 name=?Rva00180E70Get@@YAHXZ evidence=?:placeholder
 

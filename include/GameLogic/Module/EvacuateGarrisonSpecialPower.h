@@ -26,6 +26,7 @@ class EvacuateGarrisonSpecialPower : public SpecialAbilityUpdate
 {
 public:
 	EvacuateGarrisonSpecialPower(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
 	virtual ~EvacuateGarrisonSpecialPower();
 	virtual void finishAbility();	// override: finishAbility slot 19 at +0x0 (0x004CDCB4)

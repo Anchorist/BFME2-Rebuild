@@ -113,7 +113,7 @@ public:
 	Int getSlotFrameLimit(Int slot);					// 0x004CF0FB
 	Bool isPlayerConnected(Int slot);						// 0x004CF083 (the map calls it BFMEConnectionManager::isPlayerConnected)
 	Bool isPlayerInGame(Int slot);							// 0x004CF0A6
-	Int isPlayerSlotActive(Int slot);						// 0x004CF0CD
+	Bool isPlayerSlotActive(Int slot);						// 0x004CF0CD
 	void attachTransport(Transport *transport);				// 0x004CF113
 	Bool IsFrameAcked(UnsignedInt frame);
 	Bool areAllQueuesEmpty();

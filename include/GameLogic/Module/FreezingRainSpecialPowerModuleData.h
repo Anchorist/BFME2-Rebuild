@@ -19,6 +19,7 @@ class FreezingRainSpecialPowerModuleData : public SpecialPowerModuleData
 public:
 	FreezingRainSpecialPowerModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	Real m_freezingRainRadius;                             // +0x7C FreezingRainRadius
 	const FXList *m_freezingRainFX;                       // +0x80 FreezingRainFX

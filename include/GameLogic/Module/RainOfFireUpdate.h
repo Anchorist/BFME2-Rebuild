@@ -44,6 +44,7 @@ class RainOfFireUpdate : public UpdateModule, public RainOfFireUpdateInterface
 {
 public:
 	RainOfFireUpdate(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual ~RainOfFireUpdate();
 	virtual NameKeyType getModuleNameKey() const;
 	virtual UpdateSleepTime update();

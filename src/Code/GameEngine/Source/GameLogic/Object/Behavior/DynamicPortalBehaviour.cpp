@@ -13,6 +13,10 @@
 #include "Common/Xfer.h"
 #include "GameLogic/TerrainLogic.h"
 #include "GameLogic/Waypoint.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/DynamicPortalBehaviourModuleData.h"
+#include "GameLogic/Module/UpgradeMuxData.h"
 void XferWaypointID(Xfer *xfer, Int *id);
 // FUNCTION: BFME2 0x004608E0 size=108 name=?rva004608E0@DynamicPortalBehaviour@@SAPAVModule@@PAVObject@@@Z evidence=?:placeholder tier=B hypothesis:mm1-neighbour-class
 // FUNCTION: BFME2 0x0046094C size=112 name=?rva0046094C@DynamicPortalBehaviour@@QAEXXZ evidence=?:placeholder tier=B hypothesis:mm1-neighbour-class
@@ -162,4 +166,27 @@ void DynamicPortalBehaviour::onBuildComplete()
 // FUNCTION: BFME2 0x004616B1 size=252 name=?parseLink@DynamicPortalBehaviourData@@SAXPAVINI@@PAX1PBX@Z evidence=N:ledger tier=A
 
 
+static const FieldParse s_dynamicPortalBehaviourModuleDataFieldParse[] =
+{
+	{ "BonePrefix", INI::parseAsciiString, 0, 0x11C },
+	{ "NumberOfBones", INI::parseInt, 0, 0x118 },
+	{ "WayPoint", DynamicPortalBehaviourData::parseWayPoint, 0, 0x120 },
+	{ "Link", DynamicPortalBehaviourData::parseLink, 0, 0x12C },
+	{ "WallBoundsMesh", INI::parseAsciiString, 0, 0x138 },
+	{ "GenerateNow", INI::parseBool, 0, 0x13C },
+	{ "AboveWall", INI::parseUnsignedInt, 0, 0x140 },
+	{ "TopAttackPos", INI::parseCoord3D, 0, 0x144 },
+	{ "TopAttackRadius", INI::parseReal, 0, 0x150 },
+	{ "AllowEnemies", INI::parseBool, 0, 0x13D },
+	{ "ActivationDelaySeconds", INI::parseReal, 0, 0x154 },
+	{ "ObjectFilter", iniParseObjectFilter, 0, 0x158 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x004617AD size=34 name=?buildFieldParse@DynamicPortalBehaviourModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+void DynamicPortalBehaviourModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(UpgradeMuxData::getFieldParse(), 0x8);
+	parse.add(s_dynamicPortalBehaviourModuleDataFieldParse, 0);
+}
+

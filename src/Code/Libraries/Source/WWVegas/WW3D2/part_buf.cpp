@@ -1031,6 +1031,41 @@ void ParticleBufferClass::Update_Bounding_Box()
 }
 
 // FUNCTION: BFME2 0x001AEF10 size=326 name=?Render_Particles@ParticleBufferClass@@IAEXAAVRenderInfoClass@@@Z evidence=N:ledger tier=A
+void ParticleBufferClass::Render_Particles(RenderInfoClass &rinfo)
+{
+	ShareBufferClass<unsigned int> *apt = NULL;
+
+	unsigned int active_point_count = 0;
+
+	Generate_APT(&apt, active_point_count);
+
+	if (!Color) {
+		PointGroup->Set_Point_Color(ColorKeyFrameValues[0]);
+	}
+	if (!Alpha) {
+		PointGroup->Set_Point_Alpha(AlphaKeyFrameValues[0]);
+	}
+	if (!Size) {
+		PointGroup->Set_Point_Size(SizeKeyFrameValues[0]);
+	}
+	if (!Orientation) {
+		PointGroup->Set_Point_Orientation(0);
+	}
+	if (!Frame) {
+		PointGroup->Set_Point_Frame(((int)(FrameKeyFrameValues[0])) & 0xFF);
+	}
+
+	int pingpong = 0;
+	if (PingPongPosition) {
+		pingpong = WW3D::Get_Frame_Count() & 0x1;
+	}
+
+	Combine_Color_And_Alpha();
+
+	PointGroup->Set_Arrays(Position[pingpong], Diffuse, apt, Size, Orientation, Frame, active_point_count);
+	Update_Bounding_Box();
+	PointGroup->Render(rinfo);
+}
 
 // FUNCTION: BFME2 0x001AF060 size=908 name=?Render_Line_Group@ParticleBufferClass@@IAEXAAVRenderInfoClass@@@Z evidence=N:ledger tier=A
 

@@ -33,7 +33,9 @@ class CivilianSpawnCollide : public CollideModule
 {
 public:
 	CivilianSpawnCollide(Thing *thing, const ModuleData *moduleData);
+	static Module *friend_newModuleInstance(Thing *thing, const ModuleData *moduleData);
 	virtual NameKeyType getModuleNameKey() const;
+	virtual void onCollide(Object *other, const Coord3D *loc, const Coord3D *normal);		// CollideModuleInterface slot 0 at +0x10, 0x004BD6DA
 	virtual const char *GetSnapshotName() const;
 
 protected:

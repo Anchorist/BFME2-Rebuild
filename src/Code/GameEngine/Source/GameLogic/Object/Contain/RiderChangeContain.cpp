@@ -1,5 +1,6 @@
 // cl: /O1 /EHs /EHc- /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_CRTIMP=
 // stlport46
+// bfmealloc_alloconly
 #include <list>
 #include "GameLogic/Module/RiderChangeContain.h"
 #include "GameLogic/Module/RiderChangeContainModuleData.h"

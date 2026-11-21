@@ -6,6 +6,7 @@ class BezierProjectileBehavior : public UpdateModule,public ProjectileUpdateInte
 {
 public:
  BezierProjectileBehavior(Thing *,const ModuleData *);
+	static ModuleData *friend_newModuleData(INI *ini);
  virtual ~BezierProjectileBehavior();
  virtual UpdateSleepTime update();
  virtual void projectileLaunchAtObjectOrPosition(Object *,const Coord3D *,Object *,int,int,const Rva0045B936Arg *,Rva002CBA7C *,const Matrix3D *);
