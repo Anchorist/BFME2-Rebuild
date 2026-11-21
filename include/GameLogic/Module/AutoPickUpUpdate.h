@@ -20,6 +20,7 @@ public:
 	AutoPickUpUpdateModuleData();
 	virtual ~AutoPickUpUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &p);
+	static ModuleData *friend_newModuleData(INI *ini);
 	static void iniParseEatObjectEntry(INI *ini, void *instance, void *store, const void *userData);
 
 	Int m_scanDelayTime;					// 0x08

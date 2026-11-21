@@ -4,7 +4,17 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=no-edge-evidence right=no-edge-evidence; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
+#include "GameLogic/Module/StealthDetectorUpdateModuleData.h"
+#include "Common/INI.h"
 // FUNCTION: BFME2 0x00255371 size=84 name=??0StealthDetectorUpdateModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:invented
 
 // FUNCTION: BFME2 0x002553C5 size=49 name=?friend_newModuleData@StealthDetectorUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:K
+ModuleData *StealthDetectorUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	StealthDetectorUpdateModuleData *data = new StealthDetectorUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, StealthDetectorUpdateModuleData::buildFieldParse);
+	return data;
+}
+
 

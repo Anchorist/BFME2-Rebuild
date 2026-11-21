@@ -17,10 +17,11 @@ class ParticleSystemTemplate;
 
 struct FieldParse;
 
+class INI;
 class StealthDetectorUpdateModuleData : public ModuleData
 {
 public:
-	StealthDetectorUpdateModuleData();
+	StealthDetectorUpdateModuleData() throw();
     const OpaqueRefElement4 &soundRef() const { return m_pingSound; }
     const OpaqueRefElement4 &loudRef() const { return m_loudPingSound; }
     const ParticleSystemTemplate *beacon() const { return m_IRBeaconParticleSysTmpl; }
@@ -32,6 +33,7 @@ public:
     const KindOfMaskType &forbid() const { return m_extraDetectKindofNot; }
 
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	// Offsets are the retail field table 0x00C52188 (types/class_fields.csv).
 	Int m_updateRate;									// 0x08 DetectionRate

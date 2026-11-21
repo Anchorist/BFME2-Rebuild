@@ -33,6 +33,8 @@ public:
 	Bool rva002E37B1(const Rva0030B7C2Point *point);	// whether the point lies inside the polygon
 	Rva002E3A8DPair *get(Rva002E3A8DPair *out, Int index);	// the vertex at the index
 	void set(Int callback, Int userData);			// stores the enter/exit callback and its user data
+	void notifyObjectEntered(Int object);			// calls the callback with true
+	void notifyObjectExited(Int object);			// calls the callback with false
 	Bool pointInTrigger(const ICoord3D &position);	// 0x002E3A13
 	void getCenterPoint(Coord3D *center) const;		// 0x002E38F3 (AIUpdateInterface::privateGuardAreaFromPosition 0x00264DF8 asks it when no position is given)
 	void getBounds(Region2D *bounds);				// 0x002E3954 (the bounding rectangle in floats)

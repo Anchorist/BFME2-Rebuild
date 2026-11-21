@@ -31,6 +31,7 @@ public:
 	virtual NameKeyType getModuleNameKey() const;
 	virtual void onCreate() {}		// CreateModuleInterface slot 0 at +0x10, retail target 0x000B3FD0 (the shared empty body)
 	virtual void onBuildComplete();	// override: onBuildComplete slot 1 at +0x10 (0x004B9231)
+	void rva004B9201();
 
 protected:
 	virtual const char *GetSnapshotName() const;

@@ -45,6 +45,8 @@ protected:
 	virtual void loadPostProcess() {}	// retail slot: the shared empty body 0x000B3FD0
 public:
 	virtual UpdateSleepTime update();	// UpdateModuleInterface slot 0: 0x004B8B41
+	UpdateSleepTime calcSleepTime();	// 0x004B8AE1
+	void rva004B8B0F();	// 0x004B8B0F
 };
 // SIZE 0x28
 typedef char OathbreakersFadeAwayBehavior_size[(sizeof(OathbreakersFadeAwayBehavior) == 0x28) ? 1 : -1];

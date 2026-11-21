@@ -35,6 +35,10 @@ void MeshModelClass::Make_Color_Array_Unique(int array)
 }
 
 // FUNCTION: BFME2 0x00171780 size=11 name=?rva00171780@MeshModelClass@@QAEXXZ evidence=?:placeholder tier=B hypothesis:Z
+void MeshModelClass::rva00171780(void)
+{
+	CurMatDesc->rva0015B8C0();
+}
 
 // FUNCTION: BFME2 0x00171790 size=152 name=?Enable_Alternate_Material_Description@MeshModelClass@@QAEX_N@Z evidence=N:ledger tier=B hypothesis:Z
 void MeshModelClass::Enable_Alternate_Material_Description(bool onoff)

@@ -263,6 +263,12 @@
 #include "GameLogic/Module/CloudBreakSpecialPowerModuleData.h"
 #include "GameLogic/Module/CashHackSpecialPower.h"
 #include "GameLogic/Module/DetachableRiderUpdateModuleData.h"
+#include "GameLogic/Module/AssistedTargetingUpdateModuleData.h"
+#include "GameLogic/Module/FireWeaponWhenDamagedBehaviorModuleData.h"
+#include "GameLogic/Module/LevelUpUpgradeModuleData.h"
+#include "GameLogic/Module/MissileUpdateModuleData.h"
+#include "GameLogic/Module/OathbreakersFadeAwayBehaviorModuleData.h"
+#include "GameLogic/Module/StatusBitsUpgradeModuleData.h"
 // Module creators. Retail registers each module class with a static friend_newModuleInstance that allocates the
 // module for a thing and its module data, and each module data class with a static friend_newModuleData that
 // allocates the data and, when an INI block is open, fills it from the class's buildFieldParse table. The bodies
@@ -326,6 +332,14 @@ Module *MissileUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *
 	return new MissileUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024EFA0 size=84 name=?friend_newModuleData@MissileUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
+ModuleData *MissileUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	MissileUpdateModuleData *data = new MissileUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, MissileUpdateModuleData::buildFieldParse);
+	return data;
+}
+
 // FUNCTION: BFME2 0x0024EFF4 size=59 name=?friend_newModuleInstance@SupplyWarehouseDockUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 Module *SupplyWarehouseDockUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -442,6 +456,14 @@ Module *RainOfFireUpdate::friend_newModuleInstance(Thing *thing, const ModuleDat
 	return new RainOfFireUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024F3EB size=81 name=?friend_newModuleData@RainOfFireUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
+ModuleData *RainOfFireUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	RainOfFireUpdateModuleData *data = new RainOfFireUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, RainOfFireUpdateModuleData::buildFieldParse);
+	return data;
+}
+
 // FUNCTION: BFME2 0x0024F43C size=56 name=?friend_newModuleInstance@DestroyEnvironmentUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=A
 Module *DestroyEnvironmentUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -2049,6 +2071,14 @@ const char *UpdateModule::GetSnapshotName() const
 // FUNCTION: BFME2 0x00253682 size=95 name=??0FireWeaponWhenDamagedBehaviorModuleData@@QAE@XZ evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x002536E1 size=34 name=?buildFieldParse@FireWeaponWhenDamagedBehaviorModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00253703 size=52 name=?friend_newModuleData@FireWeaponWhenDamagedBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
+ModuleData *FireWeaponWhenDamagedBehaviorModuleData::friend_newModuleData(INI *ini)
+{
+	FireWeaponWhenDamagedBehaviorModuleData *data = new FireWeaponWhenDamagedBehaviorModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, FireWeaponWhenDamagedBehaviorModuleData::buildFieldParse);
+	return data;
+}
+
 // FUNCTION: BFME2 0x00253737 size=111 name=??0FireWeaponWhenDeadBehaviorModuleData@@QAE@XZ evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x002537A6 size=54 name=?buildFieldParse@FireWeaponWhenDeadBehaviorModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x002537DC size=84 name=?friend_newModuleData@FireWeaponWhenDeadBehaviorModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
@@ -2596,12 +2626,28 @@ void rva00254545(MultiIniFieldParse &parse)
 // FUNCTION: BFME2 0x0025464A size=52 name=?ModuleFactoryDataAt0025464A@@YAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x0025467E size=32 name=??0LevelUpUpgradeModuleData@@QAE@XZ evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x0025469E size=52 name=?friend_newModuleData@LevelUpUpgradeModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
+ModuleData *LevelUpUpgradeModuleData::friend_newModuleData(INI *ini)
+{
+	LevelUpUpgradeModuleData *data = new LevelUpUpgradeModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, LevelUpUpgradeModuleData::buildFieldParse);
+	return data;
+}
+
 // FUNCTION: BFME2 0x002546D2 size=25 name=??0RadarUpgradeModuleData@@QAE@XZ evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x002546EB size=34 name=?buildFieldParse@Rva002546EBModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=?:placeholder tier=A
 // FUNCTION: BFME2 0x0025470D size=52 name=?ModuleFactoryDataAt0025470D@@YAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00254741 size=52 name=?friend_newModuleData@RadarUpgradeModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00254775 size=40 name=??0StatusBitsUpgradeModuleData@@QAE@XZ evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x0025479D size=52 name=?friend_newModuleData@StatusBitsUpgradeModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
+ModuleData *StatusBitsUpgradeModuleData::friend_newModuleData(INI *ini)
+{
+	StatusBitsUpgradeModuleData *data = new StatusBitsUpgradeModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, StatusBitsUpgradeModuleData::buildFieldParse);
+	return data;
+}
+
 // FUNCTION: BFME2 0x0025480B size=58 name=?ModuleFactoryDataAt0025480B@@YAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00254857 size=58 name=?ModuleFactoryDataAt00254857@@YAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=A
 // FUNCTION: BFME2 0x00254891 size=65 name=??0CommandPointsUpgradeModuleData@@QAE@XZ evidence=N:ledger tier=A

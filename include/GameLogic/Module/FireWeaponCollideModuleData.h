@@ -20,7 +20,7 @@ class WeaponTemplate;
 class FireWeaponCollideModuleData : public ModuleData
 {
 public:
-	FireWeaponCollideModuleData();
+	FireWeaponCollideModuleData() throw();
 	static void buildFieldParse(MultiIniFieldParse &parse);
 	static ModuleData *friend_newModuleData(INI *ini);
 

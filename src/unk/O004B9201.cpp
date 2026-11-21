@@ -4,8 +4,19 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=no-edge-evidence; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
+// cl: /O1
+#include "GameLogic/Module/ExperienceLevelCreate.h"
 #include "GameLogic/Module/ExperienceLevelCreateModuleData.h"
+#include "GameLogic/Object.h"
+#include "GameLogic/ExperienceTracker.h"
+#include "GameLogic/GameLogic.h"
 // FUNCTION: BFME2 0x004B9201 size=31 name=?rva004B9201@ExperienceLevelCreate@@QAEXXZ evidence=?:placeholder tier=B hypothesis:name:invented
+void ExperienceLevelCreate::rva004B9201()
+{
+	ExperienceTracker *tracker = getObject()->getExperienceTracker();
+	const ExperienceLevelCreateModuleData *data = static_cast<const ExperienceLevelCreateModuleData *>(getModuleData());
+	tracker->rva0039B4EC(data->m_levelToGrant - tracker->m_unk0x24, false, false);
+}
 
 // FUNCTION: BFME2 0x004B9220 size=17 name=??0ExperienceLevelCreateModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:K
 ExperienceLevelCreateModuleData::ExperienceLevelCreateModuleData() :
@@ -15,4 +26,12 @@ ExperienceLevelCreateModuleData::ExperienceLevelCreateModuleData() :
 }
 
 // FUNCTION: BFME2 0x004B9231 size=38 name=?onBuildComplete@ExperienceLevelCreate@@UAEXXZ evidence=N:ledger tier=B hypothesis:K
+void ExperienceLevelCreate::onBuildComplete()
+{
+	const ExperienceLevelCreateModuleData *data = static_cast<const ExperienceLevelCreateModuleData *>(getModuleData());
+	if (!data->m_mpOnly || TheGameLogic->rva0023C6FD())
+	{
+		rva004B9201();
+	}
+}
 

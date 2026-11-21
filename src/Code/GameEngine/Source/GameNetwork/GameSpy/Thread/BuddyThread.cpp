@@ -141,10 +141,22 @@ Bool GameSpyBuddyMessageQueue::getResponse(BuddyResponse &resp)
 // FUNCTION: BFME2 0x005513E9 size=1093 name=?errorCallback@BuddyThreadClass@@QAEXPAVGPConnection@@PAUGPErrorArg@@@Z evidence=N:ledger tier=A
 
 // FUNCTION: BFME2 0x00551988 size=126 name=??1GameSpyBuddyMessageQueue@@UAE@XZ evidence=N:ledger tier=A
+GameSpyBuddyMessageQueue::~GameSpyBuddyMessageQueue()
+{
+	endThread();
+}
 
 // FUNCTION: BFME2 0x00551A94 size=110 name=??0GameSpyBuddyMessageQueue@@QAE@XZ evidence=N:ledger tier=A
+GameSpyBuddyMessageQueue::GameSpyBuddyMessageQueue()
+{
+	m_thread = 0;
+}
 
 // FUNCTION: BFME2 0x00551B28 size=50 name=?createNewMessageQueue@GameSpyBuddyMessageQueueInterface@@SAPAV1@XZ evidence=N:ledger tier=A
+GameSpyBuddyMessageQueueInterface *GameSpyBuddyMessageQueueInterface::createNewMessageQueue()
+{
+	return new GameSpyBuddyMessageQueue;
+}
 
 // FUNCTION: BFME2 0x00551B5A size=77 name=?addRequest@GameSpyBuddyMessageQueue@@UAEXABVBuddyRequest@@@Z evidence=N:ledger tier=A
 void GameSpyBuddyMessageQueue::addRequest(const BuddyRequest &req)

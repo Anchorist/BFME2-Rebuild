@@ -27,6 +27,14 @@ Module *AutoFindHealingUpdate::friend_newModuleInstance(Thing *thing, const Modu
 	return new AutoFindHealingUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024DEFE size=81 name=?friend_newModuleData@AutoFindHealingUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *AutoFindHealingUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	AutoFindHealingUpdateModuleData *data = new AutoFindHealingUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, AutoFindHealingUpdateModuleData::buildFieldParse);
+	return data;
+}
+
 // FUNCTION: BFME2 0x0024DF4F size=56 name=?friend_newModuleInstance@CommandButtonHuntUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *CommandButtonHuntUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -59,6 +67,14 @@ Module *AutoPickUpUpdate::friend_newModuleInstance(Thing *thing, const ModuleDat
 	return new AutoPickUpUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024E099 size=81 name=?friend_newModuleData@AutoPickUpUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *AutoPickUpUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	AutoPickUpUpdateModuleData *data = new AutoPickUpUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, AutoPickUpUpdateModuleData::buildFieldParse);
+	return data;
+}
+
 // FUNCTION: BFME2 0x0024E0EA size=56 name=?friend_newModuleInstance@BoredUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *BoredUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {

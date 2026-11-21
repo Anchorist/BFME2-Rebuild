@@ -90,7 +90,7 @@
       "evidence": 1
     }
   },
-  "step_changes": 21,
+  "step_changes": 3,
   "changes": [
     {
       "rva": "0x0009FD78",
@@ -126705,6 +126705,146 @@
       "confidence": "strong",
       "basis": "fold-alias",
       "evidence": "Retail 0x0054FAAC (40B /O1 icf_fold) is the /O1 _Deque_base destructor called by PeerThreadClass::removeServerFromMap 0x0038A6DF for _STL::queue<Int>."
+    },
+    {
+      "rva": "0x0007FAB3",
+      "kind": "alias",
+      "old": "",
+      "name": "??1PingRequest@@QAE@XZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native 0x0007FAB3 (14B) frees [ecx] via _free 0x00030830 if non-null; PingThread.h sole non-trivial member is _STL::string hostname at +0; DisconnectManager::update EH funclet 0x00790FC8 jumps directly to 0x0007FAB3."
+    },
+    {
+      "rva": "0x0007FAB3",
+      "kind": "alias",
+      "old": "",
+      "name": "??1PingResponse@@QAE@XZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native 0x0007FAB3 (14B) frees [ecx] via _free 0x00030830 if non-null; PingThread.h sole non-trivial member is _STL::string hostname at +0; DisconnectManager::update EH funclet 0x00790FD8 jumps directly to 0x0007FAB3."
+    },
+    {
+      "rva": "0x00262453",
+      "kind": "alias",
+      "old": "",
+      "name": "?setCurScript@ScriptTracker@@QAEXPAVScript@@_NH@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "Native ScriptTracker::setCurScript 0x00262453 stores its first argument at this+4 and passes the prior value of this+4 to ScriptEngine::removeSequentialScriptsOf 0x00205140 (?removeSequentialScriptsOf@ScriptEngine@@QAEXPAVScript@@@Z), which checks byte [arg+0x10] and compares it against SequentialSc"
+    },
+    {
+      "rva": "0x00101CCC",
+      "kind": "alias",
+      "old": "",
+      "name": "?setScale@RainOfFireUpdate@@UAEXM@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native 0x00101CCC (14B: movss xmm0,[esp+4]; movss [ecx+0xc],xmm0; ret 4) is slot 0 of RainOfFireUpdateInterface vtable 0x00854BA0 (stored by RainOfFireUpdate ctor 0x004AC0A8 and dtor 0x004AC24D), matching RainOfFireUpdate::setScale (m_scale at interface +0x0C)."
+    },
+    {
+      "rva": "0x0069E440",
+      "kind": "alias",
+      "old": "",
+      "name": "?UnInstall_Materials@MaterialPassClass@@UBEXXZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native 0x0069E440 (1B bare ret c3, existing icf_fold group F0069E440) is slot 3 of MaterialPassClass vtable VA 0x00BD330C (RVA 0x7D330C, stored by MaterialPassClass::MaterialPassClass 0x0013EDD0), matching MaterialPassClass::UnInstall_Materials() const {}."
+    },
+    {
+      "rva": "0x002E3777",
+      "kind": "alias",
+      "old": "",
+      "name": "?notifyObjectEntered@PolygonTrigger@@QAEXH@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "PolygonTrigger::set 0x002E3766 writes this+0x38/0x3C and 0x002E3777 reads this+0x38/0x3C and invokes callback(obj, userData, true). Retain placeholder key and add PolygonTrigger class key."
+    },
+    {
+      "rva": "0x002E3794",
+      "kind": "alias",
+      "old": "",
+      "name": "?notifyObjectExited@PolygonTrigger@@QAEXH@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "PolygonTrigger::set 0x002E3766 writes this+0x38/0x3C and 0x002E3794 reads this+0x38/0x3C and invokes callback(obj, userData, false). Retain placeholder key and add PolygonTrigger class key."
+    },
+    {
+      "rva": "0x0030B76F",
+      "kind": "alias",
+      "old": "",
+      "name": "?rva0030B76F@AreaPolygonBase@@QAEXPAV1@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "Native 0x0030B76F (78B) swaps AreaPolygonBase fields (m_points, m_bounds, m_unk0x1C, m_radius, m_boundsDirty) on the same receiver as ElevatedAreaPolygon::rva0030B812. Retain placeholder key and add AreaPolygonBase class key."
+    },
+    {
+      "rva": "0x0030B812",
+      "kind": "alias",
+      "old": "",
+      "name": "?rva0030B812@ElevatedAreaPolygon@@QAEXPAV1@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "class-key",
+      "evidence": "Native 0x0030B812 (31B) calls 0x0030B76F on this/that then swaps m_elevation at +0x28 (ElevatedAreaPolygon). Retain placeholder key and add ElevatedAreaPolygon class key."
+    },
+    {
+      "rva": "0x00255A42",
+      "kind": "rename",
+      "old": "??1UpgradeModuleData@@UAE@XZ",
+      "name": "??1CrateCollideModuleData@@UAE@XZ",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native 0x00255A42 (48B) releases AsciiString at [esi+0x4C] (CrateCollideModuleData::m_executeAnimation) via StringBase<char>::releaseBuffer 0x00036410 and stores Snapshot vtable 0x00BBB554; called by 0x004BC7E2 (slot 0 of vtable 0x00C5A660 stored by CrateCollideModuleData::CrateCollideModuleData 0x0"
+    },
+    {
+      "rva": "0x004BC7E2",
+      "kind": "rename",
+      "old": "??_GUpgradeModuleData@@UAEPAXI@Z",
+      "name": "??_GCrateCollideModuleData@@UAEPAXI@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "rename",
+      "evidence": "Native 0x004BC7E2 (28B in CrateCollide.cpp O004BC515) is slot 0 of vtable VA 0x00C5A660 stored by CrateCollideModuleData::CrateCollideModuleData 0x004BC657 and calls ~CrateCollideModuleData 0x00255A42."
+    },
+    {
+      "rva": "0x00395928",
+      "kind": "alias",
+      "old": "",
+      "name": "?allocate@?$allocator@UPrereqUnitRec@ProductionPrerequisite@@@_STL@@QBEPAUPrereqUnitRec@ProductionPrerequisite@@IPBX@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native 0x00395928 (28B icf_fold: imul eax,eax,0xc; push 0; push eax; call 0x000307F0) is the exact 12-byte STLport game-heap allocator for ProductionPrerequisite::PrereqUnitRec (sizeof 0xC)."
+    },
+    {
+      "rva": "0x005BC661",
+      "kind": "alias",
+      "old": "",
+      "name": "??0?$_List_base@VQueuedDownload@@V?$allocator@VQueuedDownload@@@_STL@@@_STL@@QAE@ABV?$allocator@VQueuedDownload@@@1@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native 0x005BC661 (41B in O005BC495 directly between ??1QueuedDownload 0x005BC5F9 and ??$_Construct@VQueuedDownload 0x005BC68A) allocates 0x24B _List_node<QueuedDownload> (8B links + 28B QueuedDownload) via 0x000307F0."
+    },
+    {
+      "rva": "0x003769C2",
+      "kind": "alias",
+      "old": "",
+      "name": "?erase@Rva003769C2StringVector@@QAEPAVAsciiString@@PAV2@@Z",
+      "source": "review",
+      "confidence": "strong",
+      "basis": "fold-alias",
+      "evidence": "Native 0x003769C2 (55B in ObjectTypes.cpp O00376988) copies trailing AsciiString pointers via __copy_ptrs 0x000B6614 and destroys the tail element via 0x0048BA39."
     }
   ],
   "refused": [
@@ -132391,5 +132531,5 @@
     "proven-name;type-unverified": 9,
     "excluded": 6
   },
-  "expected_rewritten": 15
+  "expected_rewritten": 3
 }

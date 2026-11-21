@@ -1,15 +1,16 @@
-# measured_utc=2026-11-21T08:30:03Z revision=b3c2c33092 finished_files=520
+# measured_utc=2026-11-21T09:44:45Z revision=54fe0cd4b2 finished_files=529
 file	owned_functions	not_yet_matched	bytes_not_yet_matched	link_referrers_waiting	class_header	tried_not_matching
 src/Code/GameEngine/Source/GameLogic/Object/Body/ActiveBody.cpp	53	1	2107	5	real	0
 src/Code/Libraries/Source/WWVegas/WWMath/lineseg.cpp	4	1	790	3	real	0
-src/Code/Libraries/Source/WWVegas/WWLib/random.cpp	11	1	242	2	real	0
 src/Code/GameEngine/Source/GameLogic/Object/SpecialPower/GrabPassengerSpecialPower.cpp	2	1	641	2	real	0
 src/Code/GameEngine/Source/GameLogic/Object/Body/InactiveBody.cpp	11	1	27	1	real	0
 src/Code/Libraries/Source/debug/debug_io_ods.cpp	4	1	55	1	real	0
 src/Code/Libraries/Source/WWVegas/WW3D2/w3d_util.cpp	23	1	120	1	real	0
+src/Code/GameEngine/Source/GameLogic/Object/Upgrade/CostModifierUpgrade.cpp	12	1	140	1	real	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/Drawable/Draw/W3DPropDraw.cpp	7	1	185	1	real	0
 src/Code/GameEngine/Source/GameLogic/System/CaveSystem.cpp	8	1	216	1	real	0
 src/Code/GameEngine/Source/GameClient/Gui/IMEManager.cpp	32	1	218	1	real	0
+src/Code/Libraries/Source/Apt/AptMath.cpp	3	1	254	1	real	0
 src/Code/GameEngine/Source/GameLogic/Object/Behavior/FireWeaponWhenDeadBehavior.cpp	8	1	310	1	real	0
 src/Code/GameEngine/Source/GameLogic/Object/Behavior/PropagandaTowerBehavior.cpp	13	1	320	1	real	0
 src/Code/GameEngine/Source/GameLogic/Object/Die/CreateCrateDie.cpp	10	1	321	1	real	0
@@ -19,7 +20,6 @@ src/Code/GameEngine/Source/GameLogic/Object/Update/ProductionExitUpdate/DefaultP
 src/Code/GameEngine/Source/GameLogic/Object/Behavior/ReplenishUnitsBehavior.cpp	7	1	526	1	real	0
 src/Code/GameEngine/Source/GameLogic/Object/Update/ProductionExitUpdate/SupplyCenterProductionExitUpdate.cpp	6	1	561	1	real	0
 src/Code/GameEngine/Source/GameLogic/Object/Update/HeightDieUpdate.cpp	8	1	604	1	real	0
-src/Code/GameEngine/Source/GameNetwork/DisconnectManager.cpp	37	1	861	1	real	0
 src/Code/GameEngine/Source/GameLogic/Object/Behavior/RebuildHoleBehavior.cpp	13	1	910	1	real	0
 src/Code/GameEngine/Source/GameLogic/Object/Update/FloatUpdate.cpp	7	1	945	1	real	0
 src/Code/Libraries/Source/WWVegas/WW3D2/line3d.cpp	16	1	1267	1	real	0
@@ -53,7 +53,6 @@ src/fesl/source/address.cpp	1	1	85	0	none	0
 src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptMessageBox.cpp	1	1	87	0	real	0
 src/Code/Libraries/Source/WWVegas/WWLib/buff.cpp	8	1	88	0	real	0
 src/Code/Libraries/Source/VideoPlayer/SubTitle.cpp	1	1	98	0	none	0
-src/Code/GameEngine/Source/Common/LadderPreferences.cpp	34	1	104	0	real	0
 src/Code/Libraries/Source/Apt/AptValueFactory.cpp	3	1	140	0	none	0
 src/Code/GameEngine/Source/GameLogic/Object/Update/ToppleUpdate.cpp	11	1	150	0	real	0
 src/stlport-4.6/STLport-4.6/src/ios.cpp	15	1	157	0	draft	0
@@ -88,12 +87,13 @@ src/Code/GameEngine/Source/GameLogic/Object/Update/CritterEmitter.cpp	10	2	163	2
 src/Code/GameEngine/Source/GameLogic/AI/AIPathfind.cpp	2	2	209	2	real	0
 src/Code/GameEngine/Source/GameLogic/Object/Helper/ObjectSMCHelper.cpp	5	2	258	2	real	0
 src/Code/Libraries/Source/Apt/AptValueGCAllocator.cpp	7	2	263	2	real	0
-src/Code/Libraries/Source/Apt/AptMath.cpp	3	2	264	2	real	0
 src/Code/GameEngine/Source/GameLogic/SkirmishAI/AITacticalAI/AITacticsGenerator/TargetlessTactics/AIStartWoTRBattleTactic.cpp	6	2	291	2	real	0
 src/Code/GameEngine/Source/GameNetwork/NetCommandMsg.cpp	52	2	460	2	real	1
+src/Code/Libraries/Source/WWVegas/WW3D2/camera.cpp	39	2	2379	2	real	0
 src/Code/GameEngine/Source/Common/RTS/Command.cpp	2	2	64	1	real	0
 src/Code/Libraries/Source/debug/debug_io_con.cpp	8	2	68	1	real	1
 src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/ProductionQueueHordeContain.cpp	13	2	139	1	real	1
+src/Code/GameEngine/Source/GameLogic/Object/Update/ProductionExitUpdate/SpawnPointProductionExitUpdate.cpp	9	2	269	1	real	0
 src/Code/GameEngine/Source/GameLogic/Object/BuffLogic.cpp	4	2	296	1	real	0
 src/Code/GameEngine/Source/GameLogic/Object/SpecialPower/ElvenWoodSpecialPower.cpp	7	2	333	1	real	1
 src/Code/GameEngine/Source/GameLogic/Object/SpecialPower/ToggleHiddenSpecialAbilityUpdate.cpp	8	2	335	1	real	0
@@ -109,6 +109,7 @@ src/Code/GameEngine/Source/GameLogic/Object/Update/AIUpdate/DeployStyleAIUpdate.
 src/Code/Libraries/Source/WWVegas/WWMath/matrix3d.cpp	23	2	1381	1	real	0
 src/Code/Libraries/Source/WWVegas/WW3D2/segline.cpp	51	2	1660	1	real	1
 src/Code/GameEngine/Source/GameLogic/Object/Update/StealthDetectorUpdate.cpp	9	2	1695	1	real	1
+src/Code/Libraries/Source/WWVegas/WW3D2/boxrobj.cpp	30	2	2298	1	real	0
 src/Code/Libraries/Source/WWVegas/WW3D2/part_emt.cpp	32	2	2355	1	real	0
 src/Code/Libraries/Source/WWVegas/WW3D2/hrawanim.cpp	24	2	2363	1	real	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/Drawable/Draw/W3DDebrisDraw.cpp	11	2	34	0	real	0
@@ -123,7 +124,6 @@ src/Code/Libraries/Source/WWVegas/WWLib/cpudetect.cpp	47	2	217	0	real	0
 src/Code/GameEngine/Source/Common/System/FunctionLexicon.cpp	8	2	241	0	real	0
 src/Code/GameEngine/Source/Common/INI/INIParticleSys.cpp	2	2	253	0	none	0
 src/Code/GameEngine/Source/GameClient/System/Image.cpp	13	2	264	0	real	1
-src/Code/GameEngine/Source/GameLogic/Object/Update/ProductionExitUpdate/SpawnPointProductionExitUpdate.cpp	9	2	269	0	real	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/camerashakesystem.cpp	5	2	269	0	real	1
 src/Code/GameEngine/Source/GameClient/Gui/WindowVideoManager.cpp	20	2	273	0	real	0
 src/Code/GameEngine/Source/GameLogic/SkirmishAI/AIDifficulty.cpp	2	2	278	0	none	0
@@ -137,6 +137,7 @@ src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptMpChat.cpp	5	2	523
 src/Code/GameEngine/Source/Common/System/GameMemory.cpp	26	2	534	0	real	0
 src/Code/GameEngine/Source/GameLogic/AI/AIDock.cpp	34	2	556	0	real	1
 src/Code/GameEngine/Source/GameLogic/Object/Armor.cpp	13	2	579	0	real	0
+src/Code/Libraries/Source/WWVegas/WW3D2/meshmdl.cpp	21	2	813	0	real	0
 src/Code/GameEngine/Source/GameLogic/Object/Update/CivilianSpawnUpdate.cpp	6	2	824	0	real	1
 src/Code/GameEngine/Source/Common/INI/INIMapCache.cpp	10	2	847	0	none	1
 src/Code/GameEngine/Source/GameLogic/SkirmishAI/AIBuilder.cpp	2	2	926	0	real	0
@@ -156,14 +157,11 @@ src/Code/Libraries/Source/profile/profile_highlevel.cpp	28	3	522	2	real	0
 src/Code/GameEngine/Source/GameLogic/AI/AIGuardRetaliate.cpp	16	3	650	2	real	0
 src/Code/GameEngine/Source/GameLogic/Object/FiringTracker.cpp	12	3	975	2	real	1
 src/Code/GameEngine/Source/GameNetwork/Network.cpp	57	3	1079	2	real	0
-src/Code/Libraries/Source/WWVegas/WW3D2/boxrobj.cpp	30	3	2595	2	real	0
-src/Code/Libraries/Source/WWVegas/WW3D2/camera.cpp	39	3	3245	2	real	0
 src/Code/Libraries/Source/WWVegas/WW3D2/vertmaterial.cpp	46	3	4344	2	real	0
 src/Code/GameEngine/Source/Common/MessageStream.cpp	36	3	5147	2	real	0
 src/Code/GameEngine/Source/Common/RTS/SpecialPower.cpp	11	3	83	1	real	2
 src/Code/GameEngine/Source/GameClient/Gui/WindowLayout.cpp	6	3	112	1	real	0
 src/Code/GameEngine/Source/GameLogic/Object/Contain/CaveContain.cpp	24	3	204	1	real	2
-src/Code/GameEngine/Source/GameLogic/Object/Upgrade/CostModifierUpgrade.cpp	12	3	429	1	real	2
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/Shadow/W3DBufferManager.cpp	13	3	529	1	real	0
 src/Code/Libraries/Source/Apt/AptInput.cpp	23	3	612	1	real	0
 src/Code/Libraries/Source/profile/profile.cpp	14	3	691	1	real	0
@@ -193,7 +191,6 @@ src/Code/GameEngine/Source/GameClient/Gui/Transitions/ScreenFadeTransition.cpp	3
 src/Code/GameEngine/Source/GameClient/Gui/AptMovieGameWindow.cpp	4	3	522	0	none	0
 src/Code/GameEngine/Source/GameClient/Input/Mouse.cpp	37	3	583	0	real	2
 src/Code/GameEngine/Source/GameClient/System/FXParticleSystem/fxpsemitterboxvolumemodule.cpp	3	3	805	0	none	0
-src/Code/Libraries/Source/WWVegas/WW3D2/meshmdl.cpp	21	3	824	0	real	1
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DWaypointBuffer.cpp	3	3	936	0	none	0
 src/Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicConflictResults.cpp	3	3	973	0	none	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DBibBuffer.cpp	12	3	1018	0	real	0
@@ -206,6 +203,7 @@ src/Code/Libraries/Source/Apt/AptCIH.cpp	54	3	3136	0	real	0
 src/Code/Libraries/Source/Apt/string/StringPool.cpp	10	3	10012	0	real	0
 src/Code/GameEngine/Source/GameLogic/Object/WeaponEffects/MetaImpactNugget.cpp	5	4	2119	4	real	0
 src/Code/GameEngine/Source/GameClient/Input/Keyboard.cpp	22	4	733	3	real	2
+src/Code/Libraries/Source/WWVegas/WW3D2/part_buf.cpp	55	4	10626	3	real	0
 src/Code/GameEngine/Source/GameNetwork/NetPacket.cpp	123	4	647	2	real	2
 src/Code/GameEngine/Source/GameLogic/Object/SpecialPower/DominateEnemySpecialPower.cpp	7	4	728	2	real	0
 src/Code/GameEngine/Source/GameLogic/AI/AITNGuard.cpp	30	4	964	2	real	1
@@ -245,7 +243,7 @@ src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptDisconnectScreen.c
 src/Code/GameEngine/Source/GameLogic/SkirmishAI/AITacticalAI/AITacticsGenerator/TargetlessTactics/AIRoamingDefenseTactic.cpp	10	5	1168	4	real	0
 src/Code/GameEngine/Source/GameLogic/AI/AISkirmishPlayer.cpp	13	5	2260	4	real	0
 src/Code/Libraries/Source/Apt/AptValue.cpp	75	5	5900	4	real	0
-src/Code/Libraries/Source/WWVegas/WW3D2/part_buf.cpp	55	5	11534	4	real	0
+src/Code/GameEngine/Source/Common/AreaPolygon.cpp	11	5	899	3	real	2
 src/Code/GameEngine/Source/GameLogic/Object/SpecialPower/GiveUpgradeUpdate.cpp	16	5	938	3	real	0
 src/Code/GameEngine/Source/GameLogic/Object/SpecialPower/OCLSpecialPower.cpp	14	5	1259	3	real	2
 src/Code/Libraries/Source/WWVegas/WW3D2/hcanim.cpp	30	5	4159	3	real	1
@@ -271,6 +269,7 @@ src/Code/GameEngine/Source/GameClient/MessageStream/HotKey.cpp	15	5	314	0	real	3
 src/Code/GameEngine/Source/GameLogic/SkirmishAI/AIBuildable.cpp	5	5	325	0	real	0
 src/Code/Libraries/Source/WWVegas/WW3D2/nullrobj.cpp	9	5	344	0	real	4
 src/Code/GameEngine/Source/GameClient/LivingWorld/InGameUI/StrategicInGameUICancelArmyMemberMoveButton.cpp	5	5	389	0	none	0
+src/Code/Libraries/Source/WWVegas/WW3D2/matpass.cpp	8	5	413	0	real	2
 src/Code/GameEngine/Source/Common/Audio/GameAudio.cpp	5	5	455	0	real	0
 src/Code/GameEngine/Source/GameClient/System/FXParticleSystem/fxpsemittercylindervelocitymodule.cpp	5	5	475	0	none	0
 src/fesl/source/demangler.cpp	5	5	507	0	none	0
@@ -310,7 +309,6 @@ src/Code/GameEngine/Source/GameNetwork/LANAPIhandlers.cpp	19	6	4142	0	real	0
 src/Code/GameEngine/Source/GameLogic/Object/Update/AIUpdate/FoundationAIUpdate.cpp	19	7	3223	7	real	3
 src/Code/GameEngine/Source/GameLogic/SkirmishAI/AITacticalAI/AITacticsGenerator/ExpansionTactics/AISimpleExpansionTactic.cpp	9	7	728	4	real	0
 src/Code/Libraries/Source/WWVegas/WW3D2/hlod.cpp	87	7	6001	4	real	1
-src/Code/GameEngine/Source/Common/AreaPolygon.cpp	11	7	1008	3	real	1
 src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptMpClans.cpp	9	7	1966	3	real	0
 src/Code/GameEngine/Source/GameNetwork/NAT.cpp	36	7	2041	3	real	2
 src/Code/GameEngine/Source/GameLogic/Object/Contain/TunnelContain.cpp	27	7	599	2	real	2
@@ -328,9 +326,9 @@ src/Code/Libraries/Source/WWVegas/WW3D2/dx8caps.cpp	25	7	3880	1	real	1
 src/Code/GameEngine/Source/GameLogic/System/LivingWorld/AutoResolve/ExperienceTrackerAutoResolve.cpp	8	7	415	0	draft	0
 src/Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicHUDEndTurnButtonImpl.cpp	7	7	537	0	none	0
 src/Code/GameEngine/Source/Common/RTS/Science.cpp	23	7	591	0	real	5
-src/Code/Libraries/Source/WWVegas/WW3D2/matpass.cpp	8	7	629	0	real	0
 src/fesl/source/ariesudp.cpp	7	7	741	0	none	0
 src/Code/GameEngine/Source/GameLogic/SkirmishAI/AIUnitBuilder/AIBuildableUnit.cpp	7	7	822	0	draft	0
+src/Code/GameEngine/Source/GameNetwork/GameSpy/Thread/PingThread.cpp	16	7	908	0	real	2
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DFire.cpp	7	7	1034	0	none	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/GUI/W3DAptComponentView3D.cpp	7	7	2118	0	draft	0
 src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HordeMeleeSwarm.cpp	23	7	2762	0	real	2
@@ -393,7 +391,6 @@ src/Code/GameEngine/Source/Common/CommandLine.cpp	51	10	829	1	real	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/Drawable/Draw/W3DRopeDraw.cpp	18	10	938	1	real	0
 src/Code/Libraries/Source/sys_util/Synchronization.cpp	10	10	533	0	real	6
 src/fesl/source/util.cpp	10	10	1119	0	none	0
-src/Code/GameEngine/Source/GameNetwork/GameSpy/Thread/PingThread.cpp	16	10	1140	0	real	0
 src/Code/GameEngine/Source/GameClient/Gui/PlaceTerrainResourceClaimantFeedback.cpp	10	10	1150	0	none	0
 src/Code/GameEngine/Source/GameLogic/System/DelayedExperienceLevelGrantSystem.cpp	10	10	1304	0	draft	0
 src/Code/GameEngine/Source/GameLogic/Object/Update/AIUpdate/WorkerAIUpdate.cpp	57	10	1714	0	real	4
@@ -409,6 +406,7 @@ src/Code/GameEngine/Source/GameClient/Gui/InGame/InGameNotificationType.cpp	11	1
 src/gamespy-sdk/GameSpy/peer/peerPing.c	11	11	1597	0	real	0
 src/Code/Libraries/Source/WWVegas/WW3D2/assetinit.cpp	11	11	2572	0	none	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DShader/W3DScreenGlowFilter.cpp	11	11	4120	0	none	0
+src/Code/GameEngine/Source/GameNetwork/GameSpy/Thread/BuddyThread.cpp	27	11	5862	0	real	0
 src/Code/Libraries/Source/WWVegas/WW3D2/meshmdlio.cpp	49	12	5780	6	real	0
 src/Code/GameEngine/Source/Common/INI/inihelp.cpp	47	12	1208	5	real	8
 src/Code/GameEngine/Source/GameClient/Gui/GameWindowTransitions.cpp	46	12	1900	3	real	1
@@ -424,13 +422,14 @@ src/Code/GameEngine/Source/GameLogic/SkirmishAI/AIWallBuilder/AIWallBuilder.cpp	
 src/Code/GameEngine/Source/GameLogic/SkirmishAI/AIUpgrade/AIUpgradeScienceBuilder/AIUpgradeScienceBuilder.cpp	12	12	2457	0	draft	0
 src/Code/GameEngine/Source/GameClient/Credits.cpp	12	12	2847	0	none	0
 src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptCreateAHero.cpp	27	12	3119	0	real	0
+src/Code/GameEngine/Source/GameNetwork/GameSpy/BuddyDefs.cpp	15	12	5418	0	real	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/Drawable/W3DTruckDraw.cpp	16	12	10934	0	real	1
 src/Code/GameEngine/Source/GameLogic/Object/PartitionManager.cpp	14	13	396	20	real	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/Drawable/Draw/W3DTankDraw.cpp	19	13	2579	3	real	1
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DGameClient.cpp	22	13	785	0	real	0
 src/Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicHUDBattlePromptPlayerTabsMovieClip.cpp	13	13	1242	0	none	0
 src/Code/GameEngine/Source/Common/Thing/ThingFactoryIniStatsHelper.cpp	14	13	2433	0	none	0
-src/Code/GameEngine/Source/GameLogic/Object/Behavior/DynamicPortalBehaviour.cpp	29	14	2602	7	real	1
+src/Code/GameEngine/Source/GameLogic/Object/Behavior/DynamicPortalBehaviour.cpp	29	14	2602	9	real	1
 src/Code/Libraries/Source/Apt/AptLoad.cpp	63	14	6293	6	real	3
 src/Code/GameEngine/Source/GameLogic/SkirmishAI/AITacticalAI/AITacticsGenerator/TargetlessTactics/AIFarmKillSquad.cpp	17	14	2144	5	real	1
 src/Code/GameEngine/Source/GameClient/Gui/ChatWindowsInGame.cpp	14	14	1500	4	real	0
@@ -450,7 +449,6 @@ src/Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicHUDCommandUI
 src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptMessenger.cpp	24	14	3291	0	real	0
 src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/ControlBarPopupDescription.cpp	14	14	4338	0	none	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DBridgeBuffer.cpp	19	14	4987	0	real	2
-src/Code/GameEngine/Source/GameNetwork/GameSpy/Thread/BuddyThread.cpp	27	14	6148	0	real	0
 src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptOnlineQuickMatch.cpp	28	14	7376	0	real	1
 src/Code/GameEngine/Source/GameLogic/Object/Behavior/SlowDeathBehavior.cpp	29	15	4157	13	real	5
 src/Code/GameEngine/Source/GameClient/GameText.cpp	27	15	2397	4	real	3
@@ -465,8 +463,7 @@ src/Code/GameEngine/Source/GameClient/System/ScoredKillEvaAnnouncer.cpp	16	15	16
 src/Code/GameEngine/Source/GameLogic/SkirmishAI/AITacticalAI/AITargetChooser/AITargetChooser.cpp	15	15	1691	0	none	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/Shadow/W3DShadow.cpp	16	15	1724	0	real	0
 src/Code/GameEngine/Source/GameLogic/System/LivingWorld/LivingWorldAISupport/LivingWorldAI.cpp	15	15	2455	0	none	0
-src/Code/GameEngine/Source/GameNetwork/GameSpy/BuddyDefs.cpp	15	15	5664	0	none	0
-src/Code/GameEngine/Source/GameLogic/System/EmotionNugget.cpp	16	16	2851	4	real	0
+src/Code/GameEngine/Source/GameLogic/System/EmotionNugget.cpp	16	16	2851	5	real	0
 src/Code/GameEngine/Source/GameClient/Display.cpp	32	16	5046	3	real	0
 src/Code/GameEngine/Source/GameLogic/Pathfinder/pathfinder_classify.cpp	19	16	12026	2	real	0
 src/Code/Libraries/Source/collisionmanager/collisionmanager_data.cpp	16	16	1313	1	none	0
@@ -492,6 +489,7 @@ src/Code/Libraries/Source/file/TextFile.cpp	21	17	1858	0	real	0
 src/Code/GameEngine/Source/GameLogic/SkirmishAI/AITeamBuilder/AITeamBuilder.cpp	17	17	3343	0	none	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DTerrainTracks.cpp	17	17	4761	0	none	0
 src/Code/Libraries/Source/WWVegas/WW3D2/meshgeometry.cpp	58	18	9816	7	real	8
+src/Code/Libraries/Source/WWVegas/WW3D2/dx8renderer.cpp	66	18	11337	3	real	3
 src/Code/GameEngine/Source/Common/Audio/AudioEventInfo.cpp	31	18	2652	2	real	6
 src/Code/GameEngine/Source/Common/Recorder.cpp	44	18	8135	2	real	1
 src/Code/GameEngine/Source/GameClient/Gui/LoadScreen.cpp	21	18	3196	1	real	2
@@ -505,7 +503,6 @@ src/Code/GameEngine/Source/GameClient/Gui/InGame/InGameNotificationBoxMovieClip.
 src/Code/GameEngineDevice/Source/MilesAudioDevice/MilesAudioCache.cpp	18	18	2589	0	none	0
 src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HordeMeleeAmoeba.cpp	29	18	3979	0	real	4
 src/Code/Libraries/Source/WWVegas/WW3D2/scene.cpp	42	19	3688	3	real	6
-src/Code/Libraries/Source/WWVegas/WW3D2/dx8renderer.cpp	66	19	11545	3	real	3
 src/Code/GameEngine/Source/GameLogic/System/DOTManager.cpp	19	19	1383	1	real	0
 src/Code/GameEngine/Source/GameLogic/System/MissionObjectiveTracker.cpp	19	19	1313	0	none	0
 src/Code/GameEngine/Source/GameLogic/System/ArmySummaryEntry.cpp	20	19	1450	0	real	0
@@ -513,6 +510,7 @@ src/Code/GameEngine/Source/GameLogic/System/LivingWorld/LivingWorldAISupport/Liv
 src/Code/Libraries/Source/WWVegas/WW3D2/fxshaderrenderer.cpp	20	19	2899	0	real	0
 src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptOnlineShell.cpp	29	19	3053	0	real	0
 src/Code/Libraries/Source/VideoPlayer/VideoPlayer.cpp	22	19	4289	0	real	1
+src/Code/GameEngine/Source/GameNetwork/GameSpy/MainMenuUtils.cpp	21	19	4829	0	none	0
 src/Code/Libraries/Source/WWVegas/WW3D2/mesh.cpp	52	20	9762	6	real	8
 src/Code/GameEngine/Source/GameLogic/Object/ObjectCreationList.cpp	52	20	6550	5	real	12
 src/Code/GameEngineDevice/Source/Win32Device/Common/Win32GameEngine.cpp	20	20	1068	0	draft	0
@@ -533,7 +531,6 @@ src/Code/GameEngine/Source/GameClient/LivingWorld/LivingWorldEyeTower.cpp	21	21	
 src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HordeTransportContain.cpp	25	21	3098	0	real	0
 src/Code/GameEngine/Source/GameClient/GameSubTitles.cpp	21	21	3373	0	none	0
 src/Code/Libraries/Source/WWVegas/WW3D2/fxshadergeometry.cpp	22	21	3543	0	real	4
-src/Code/GameEngine/Source/GameNetwork/GameSpy/MainMenuUtils.cpp	21	21	4863	0	none	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DShader/W3DScreenBWZoomFilter.cpp	21	21	8841	0	none	0
 src/Code/GameEngine/Source/GameLogic/Object/Behavior/BezierProjectileBehavior.cpp	24	22	6490	9	real	1
 src/Code/GameEngine/Source/GameNetwork/GameSpy/Thread/GameResultsThread.cpp	24	22	1680	0	real	0
@@ -549,6 +546,7 @@ src/Code/GameEngine/Source/GameLogic/SkirmishAI/AIUnitBuilder/AIUnitBuilder.cpp	
 src/fesl/source/blobservice.cpp	23	23	4095	0	none	0
 src/Code/GameEngine/Source/GameLogic/Object/Weapon.cpp	132	24	10241	7	real	2
 src/Code/GameEngine/Source/GameLogic/Pathfinder/pathfinder_cell.cpp	26	24	1930	3	real	0
+src/Code/GameEngine/Source/Common/Thing/ModuleFactory.cpp	62	24	18850	2	real	8
 src/Code/GameEngine/Source/GameClient/Gui/InGame/Strategic/StrategicHUDArmyUnitSwapperMovieClip.cpp	33	24	1056	1	real	2
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DShaderManager.cpp	29	24	10693	1	real	1
 src/Code/GameEngine/Source/GameClient/CrowdResponseSystem.cpp	24	24	2087	0	none	0
@@ -557,7 +555,6 @@ src/Code/GameEngine/Source/GameLogic/Pathfinder/PathfinderPosGoalManager.cpp	26	
 src/Code/Libraries/Source/WWVegas/WW3D2/dxwrapper.cpp	134	25	14410	8	real	1
 src/Code/GameEngine/Source/Common/RTS/ScoreKeeper.cpp	66	25	4350	2	real	13
 src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptMessengerOnline.cpp	26	25	4847	2	real	0
-src/Code/GameEngine/Source/Common/Thing/ModuleFactory.cpp	62	25	18902	2	real	8
 src/Code/GameEngine/Source/GameClient/Gui/GameWindowTransitionsStyles.cpp	70	25	4888	1	real	2
 src/Code/GameEngine/Source/GameClient/LivingWorld/LivingWorldArmyIcon.cpp	25	25	1785	0	none	0
 src/Code/GameEngine/Source/GameLogic/System/LivingWorld/BuildingNuggets/LivingWorldBuildingNuggetSpawnArmy.cpp	25	25	2141	0	none	0
@@ -600,6 +597,7 @@ src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DFloorBuffer.cpp	31	31	6
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/Shadow/W3DShadowMapManager.cpp	32	31	7511	0	real	5
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DShrubBuffer.cpp	31	31	11369	0	draft	0
 src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptLanLobby.cpp	63	32	8330	4	real	3
+src/Code/GameEngine/Source/GameLogic/Map/PolygonTrigger.cpp	42	32	2172	1	real	1
 src/Code/GameEngine/Source/GameClient/LivingWorld/InGameUI/StrategicInGameUIBattleResolver.cpp	34	32	2747	0	none	1
 src/Code/GameEngine/Source/GameClient/Gui/ControlBar/ControlBar.cpp	70	33	10933	19	real	2
 src/Code/Libraries/Source/debug/debug_debug.cpp	75	33	6764	12	real	8
@@ -611,7 +609,6 @@ src/Code/GameEngine/Source/GameNetwork/GameSpy/PeerDefs.cpp	114	34	7623	12	real	
 src/Code/Libraries/Source/Apt/AptActionInterpreter.cpp	212	34	9933	7	real	19
 src/Code/Libraries/Source/WWVegas/WW3D2/render2dsentence.cpp	56	34	14066	4	real	6
 src/Code/GameEngine/Source/Common/GlobalData.cpp	68	34	10325	3	real	5
-src/Code/GameEngine/Source/GameLogic/Map/PolygonTrigger.cpp	42	34	2230	1	real	1
 src/Code/GameEngineDevice/Source/MilesAudioDevice/MilesStreamHandleWrapperImplementation.cpp	34	34	3434	0	none	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DTerrainBackground.cpp	34	34	15585	0	none	0
 src/Code/GameEngine/Source/GameClient/Eva.cpp	52	35	5134	11	real	4
@@ -644,8 +641,8 @@ src/Code/GameEngine/Source/GameLogic/System/LivingWorld/LivingWorldBuilding.cpp	
 src/Code/GameEngine/Source/GameLogic/System/LivingWorld/LivingWorldScoreKeeper.cpp	40	40	4666	0	draft	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DShroud.cpp	45	40	6722	0	real	0
 src/Code/GameEngine/Source/GameLogic/ScriptEngine/Scripts.cpp	161	41	5581	6	real	19
+src/Code/GameEngine/Source/GameLogic/Object/Update/ProductionUpdate.cpp	62	41	10943	4	real	6
 src/Code/Libraries/Source/partitionmanager/partitionmanager_impl.cpp	41	41	6444	1	none	0
-src/Code/GameEngine/Source/GameLogic/Object/Update/ProductionUpdate.cpp	62	41	10943	1	real	6
 src/Code/GameEngine/Source/Common/MapObject.cpp	41	41	3437	0	none	0
 src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptSaveLoad.cpp	65	42	10202	7	real	2
 src/Code/GameEngine/Source/GameLogic/AI/AIGroup.cpp	135	43	15706	7	real	15
@@ -667,7 +664,7 @@ src/Code/GameEngine/Source/GameNetwork/GameSpy/Thread/PeerThread.cpp	100	49	1725
 src/Code/GameEngine/Source/GameLogic/Object/Behavior/GettingBuiltBehavior.cpp	53	50	7774	1	real	0
 src/Code/Libraries/Source/geometry/Geometry.cpp	66	52	10374	8	real	5
 src/Code/Libraries/Source/core/source/dirtysock/pc/dirtynetwin.c	52	52	9548	0	none	0
-src/Code/GameEngine/Source/GameLogic/Object/CreateAHeroHero.cpp	90	53	10388	8	real	20
+src/Code/GameEngine/Source/GameLogic/Object/CreateAHeroHero.cpp	90	53	10388	9	real	20
 src/Code/GameEngine/Source/GameLogic/System/ExperienceLevelSystem.cpp	53	53	4906	0	draft	0
 src/Code/GameEngine/Source/GameClient/Gui/InGame/Tactical/InGameHeroSelectInterface.cpp	54	54	7577	0	none	0
 src/Code/Libraries/Source/shroudmanager/shroudmanager_impl.cpp	54	54	11494	0	none	0
@@ -701,8 +698,8 @@ src/Code/Libraries/Source/WWVegas/WW3D2/fxshadernamespacesas.cpp	74	74	11150	0	n
 src/Code/GameEngine/Source/GameLogic/System/LivingWorld/LivingWorldArmy.cpp	88	79	6416	3	real	0
 src/Code/GameEngine/Source/GameLogic/System/GameLogic.cpp	114	83	38779	5	real	27
 src/fesl/source/gamebrowser/gamebrowsergame.cpp	83	83	3653	1	none	0
+src/Code/GameEngine/Source/GameLogic/Object/Update/AIUpdate.cpp	274	84	30164	103	real	34
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/WorldHeightMap.cpp	84	84	19845	0	draft	0
-src/Code/GameEngine/Source/GameLogic/Object/Update/AIUpdate.cpp	274	86	30356	105	real	34
 src/Code/GameEngine/Source/GameLogic/System/ArmySummary.cpp	88	86	9127	0	real	0
 src/Code/GameEngine/Source/GameLogic/Pathfinder/pathfinder_zonemanager.cpp	101	86	11839	0	real	0
 src/Code/GameEngine/Source/GameLogic/Map/SidesList.cpp	123	88	17433	4	real	17
@@ -711,8 +708,8 @@ src/Code/GameEngine/Source/GameLogic/System/CastleSystem.cpp	118	95	17931	7	real
 src/Code/GameEngine/Source/GameLogic/ScriptEngine/ScriptEngine.cpp	212	96	16830	5	real	42
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/Water/W3DWater.cpp	98	96	16356	0	real	3
 src/Code/GameEngine/Source/GameLogic/System/LivingWorld/LivingWorldRegionManager.cpp	107	98	8112	4	real	4
+src/Code/GameEngine/Source/GameLogic/Object/CreateAHero.cpp	193	105	14273	8	real	18
 src/Code/GameEngine/Source/GameClient/Gui/GUICallbacks/Apt/AptOnlineLogin.cpp	105	105	17987	0	real	0
-src/Code/GameEngine/Source/GameLogic/Object/CreateAHero.cpp	193	106	14346	8	real	18
 src/Code/GameEngine/Source/GameLogic/ScriptEngine/LuaScriptEngine.cpp	134	108	18643	7	real	6
 src/Code/GameEngine/Source/GameClient/LivingWorld/LivingWorldManager.cpp	113	112	11552	1	real	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/W3DDisplay.cpp	131	119	35361	1	real	12
@@ -725,12 +722,12 @@ src/Code/GameEngine/Source/Common/RTS/Player.cpp	265	131	22633	40	real	52
 src/Code/GameEngine/Source/GameLogic/System/LivingWorld/LivingWorldRegion.cpp	155	136	12615	3	real	27
 src/Code/GameEngine/Source/GameClient/Drawable.cpp	260	141	41737	35	real	10
 src/Code/GameEngine/Source/GameLogic/Object/Contain/HordeContain/HordeContain.cpp	246	158	43015	7	real	29
-src/Code/GameEngineDevice/Source/W3DDevice/GameClient/BaseHeightMap.cpp	167	166	25467	0	real	1
+src/Code/GameEngineDevice/Source/W3DDevice/GameClient/BaseHeightMap.cpp	167	166	25467	7	real	1
 src/Code/GameEngine/Source/GameLogic/ScriptEngine/ScriptActions.cpp	494	179	53331	4	real	42
 src/Code/GameEngine/Source/GameLogic/AI/AIStates.cpp	539	230	61695	57	real	56
 src/Code/GameEngine/Source/GameLogic/Object/Object.cpp	452	247	47244	122	real	49
+src/Code/GameEngine/Source/GameClient/System/FXParticleSystem.cpp	258	248	24487	12	real	17
 src/Code/GameEngine/Source/GameLogic/Pathfinder/pathfinder.cpp	313	250	83343	21	real	6
-src/Code/GameEngine/Source/GameClient/System/FXParticleSystem.cpp	258	258	25635	27	real	0
 src/Code/GameEngineDevice/Source/W3DDevice/GameClient/Drawable/W3DScriptedModelDraw.cpp	310	294	69482	15	real	4
 src/Code/GameEngine/Source/GameLogic/System/LivingWorld/LivingWorldLogic.cpp	363	340	38969	11	real	19
 src/Code/GameEngineDevice/Source/MilesAudioDevice/MilesAudioManager.cpp	409	402	58412	1	real	0
@@ -754,7 +751,6 @@ src/Code/GameEngine/Source/GameLogic/Object/Update/ProneUpdate.cpp	9	1	46	0	real
 src/Code/GameEngine/Source/GameLogic/Object/Update/DynamicShroudClearingRangeUpdate.cpp	12	1	48	0	real	1
 src/gamespy-sdk/GameSpy/available.c	6	1	56	0	real	1
 src/Code/GameEngine/Source/GameLogic/Object/Update/StructureCollapseUpdate.cpp	17	1	85	0	real	1
-src/Code/GameEngine/Source/GameLogic/Object/Upgrade/SubObjectsUpgrade.cpp	15	1	127	0	real	1
 src/lua-4.0.1/Lua/lcode.c	34	1	151	0	real	1
 src/Code/Libraries/Source/WWVegas/WWMath/vp.cpp	24	1	178	0	real	1
 src/Code/GameEngine/Source/GameLogic/Object/Update/StructureToppleUpdate.cpp	19	1	182	0	real	1
@@ -817,7 +813,6 @@ src/unk/G004C1F71.cpp	2	1	90	1	address-named	0
 src/unk/G004B6A3C.cpp	2	1	91	1	address-named	0
 src/unk/O0025588E.cpp	2	1	91	1	address-named	0
 src/unk/G004B6011.cpp	1	1	93	1	address-named	0
-src/unk/O004B362D.cpp	5	1	98	1	address-named	0
 src/unk/O0044770F.cpp	1	1	100	1	address-named	0
 src/unk/O0025598C.cpp	2	1	101	1	address-named	0
 src/unk/G0047DA08.cpp	1	1	117	1	address-named	0
@@ -1130,6 +1125,7 @@ src/unk/G00496292.cpp	1	1	25	0	address-named	0
 src/unk/G004DF52E.cpp	1	1	25	0	address-named	0
 src/unk/G0054C729.cpp	1	1	25	0	address-named	0
 src/unk/O00174C40.cpp	1	1	25	0	address-named	0
+src/unk/O002557E9.cpp	2	1	25	0	address-named	0
 src/unk/G00420B10.cpp	1	1	26	0	address-named	0
 src/unk/G006554E0.cpp	1	1	26	0	address-named	0
 src/unk/O001432B0.cpp	1	1	26	0	address-named	0
@@ -1183,6 +1179,7 @@ src/unk/G00200084.cpp	1	1	32	0	address-named	0
 src/unk/G0048FF94.cpp	1	1	32	0	address-named	0
 src/unk/G004C309C.cpp	1	1	32	0	address-named	0
 src/unk/O0013F2E0.cpp	1	1	32	0	address-named	0
+src/unk/O00255795.cpp	2	1	32	0	address-named	0
 src/unk/O003ADCEB.cpp	1	1	32	0	address-named	0
 src/unk/O00488268.cpp	4	1	32	0	address-named	0
 src/unk/O005D1D38.cpp	1	1	32	0	address-named	0
@@ -1312,6 +1309,7 @@ src/unk/O004B8732.cpp	5	1	65	0	address-named	0
 src/unk/G00181F70.cpp	1	1	66	0	address-named	0
 src/unk/O0013C7F0.cpp	1	1	66	0	address-named	0
 src/unk/G006E03A0.cpp	2	1	67	0	address-named	0
+src/unk/O00254A36.cpp	2	1	68	0	address-named	0
 src/unk/O007236F0.cpp	1	1	68	0	address-named	0
 src/unk/G001EA3AE.cpp	1	1	70	0	address-named	0
 src/unk/O004AC767.cpp	1	1	70	0	address-named	0
@@ -1344,6 +1342,7 @@ src/unk/G004C636B.cpp	2	1	82	0	address-named	0
 src/unk/G001B20E5.cpp	3	1	83	0	address-named	0
 src/unk/G0054D6C8.cpp	1	1	83	0	address-named	0
 src/unk/O0024DB00.cpp	3	1	84	0	address-named	0
+src/unk/O00255371.cpp	2	1	84	0	address-named	0
 src/unk/O0040FE7A.cpp	1	1	84	0	address-named	0
 src/unk/O000ABC71.cpp	1	1	86	0	address-named	0
 src/unk/G006D3230.cpp	16	1	87	0	address-named	0
@@ -1382,7 +1381,6 @@ src/unk/O00265514.cpp	1	1	130	0	address-named	0
 src/unk/G0061F720.cpp	1	1	131	0	address-named	0
 src/unk/G003304A4.cpp	1	1	132	0	address-named	0
 src/unk/O0055AB41.cpp	1	1	134	0	address-named	0
-src/unk/G004AC03D.cpp	3	1	135	0	address-named	0
 src/unk/G003EFC1C.cpp	1	1	136	0	address-named	0
 src/unk/G006021CA.cpp	1	1	139	0	address-named	0
 src/unk/G005D9BCC.cpp	1	1	142	0	address-named	0
@@ -1463,12 +1461,12 @@ src/unk/O00651603.cpp	1	1	9617	0	address-named	0
 src/unk/G006E6C00.cpp	3	2	193	6	address-named	0
 src/unk/G0070E5D0.cpp	3	2	774	5	address-named	0
 src/unk/G00038250.cpp	2	2	138	3	address-named	0
+src/unk/O00200BBA.cpp	2	2	24	2	address-named	0
 src/unk/G005A66BF.cpp	2	2	65	2	address-named	0
 src/unk/G004C68C1.cpp	2	2	68	2	address-named	0
 src/unk/G004AB3AE.cpp	2	2	103	2	address-named	0
 src/unk/O004B7A9D.cpp	2	2	131	2	address-named	0
 src/unk/O004B5886.cpp	2	2	252	2	address-named	0
-src/unk/G004C7CAD.cpp	2	2	267	2	address-named	0
 src/unk/G0070F5C0.cpp	2	2	280	2	address-named	0
 src/unk/G004C6E49.cpp	2	2	296	2	address-named	0
 src/unk/O004C4022.cpp	7	2	425	2	address-named	1
@@ -1572,7 +1570,6 @@ src/unk/G00576F32.cpp	2	2	22	0	address-named	0
 src/unk/G00583A07.cpp	2	2	23	0	address-named	0
 src/unk/G0001C6C0.cpp	2	2	24	0	address-named	0
 src/unk/G0052AF5F.cpp	2	2	24	0	address-named	0
-src/unk/O00200BBA.cpp	2	2	24	0	address-named	0
 src/unk/G000E43CE.cpp	2	2	25	0	address-named	0
 src/unk/G000E43F4.cpp	2	2	25	0	address-named	0
 src/unk/G005CC936.cpp	2	2	25	0	address-named	0
@@ -1668,7 +1665,6 @@ src/unk/O003A616F.cpp	2	2	68	0	address-named	0
 src/unk/O005CB9D1.cpp	2	2	68	0	address-named	0
 src/unk/G0050E776.cpp	2	2	69	0	address-named	0
 src/unk/O004B5765.cpp	2	2	69	0	address-named	0
-src/unk/O004B9201.cpp	3	2	69	0	address-named	1
 src/unk/G003FA6FF.cpp	2	2	70	0	address-named	0
 src/unk/G0053EBF3.cpp	2	2	71	0	address-named	0
 src/unk/O0041513D.cpp	2	2	71	0	address-named	0
@@ -1677,13 +1673,11 @@ src/unk/O002A7677.cpp	2	2	74	0	address-named	0
 src/unk/O00306BA9.cpp	2	2	75	0	address-named	0
 src/unk/O0070DF60.cpp	2	2	75	0	address-named	0
 src/unk/G0059E2AB.cpp	2	2	77	0	address-named	0
-src/unk/O002557E9.cpp	2	2	77	0	address-named	0
 src/unk/O004C54AB.cpp	6	2	78	0	address-named	0
 src/unk/O0052B1EF.cpp	2	2	78	0	address-named	0
 src/unk/O0059E0C1.cpp	2	2	78	0	address-named	0
 src/unk/O00004F2B.cpp	2	2	79	0	address-named	0
 src/unk/O004BBA15.cpp	2	2	80	0	address-named	0
-src/unk/O00255795.cpp	2	2	84	0	address-named	0
 src/unk/G00426306.cpp	2	2	86	0	address-named	0
 src/unk/G00492F63.cpp	2	2	86	0	address-named	0
 src/unk/G00629BF0.cpp	2	2	86	0	address-named	0
@@ -1714,14 +1708,12 @@ src/unk/O003A7776.cpp	2	2	113	0	address-named	0
 src/unk/O00596225.cpp	2	2	114	0	address-named	0
 src/unk/O0066ED50.cpp	2	2	114	0	address-named	0
 src/unk/G00410223.cpp	2	2	116	0	address-named	0
-src/unk/O00254A36.cpp	2	2	117	0	address-named	0
 src/unk/G0059D74B.cpp	2	2	121	0	address-named	0
 src/unk/G001688FF.cpp	2	2	124	0	address-named	0
 src/unk/O00602316.cpp	2	2	124	0	address-named	0
 src/unk/O00542B61.cpp	2	2	125	0	address-named	0
 src/unk/G005114B7.cpp	2	2	128	0	address-named	0
 src/unk/O006020F0.cpp	2	2	131	0	address-named	0
-src/unk/O00255371.cpp	2	2	133	0	address-named	0
 src/unk/O00413D46.cpp	2	2	133	0	address-named	0
 src/unk/O005D1CAF.cpp	2	2	137	0	address-named	0
 src/unk/O005FB400.cpp	2	2	137	0	address-named	0
@@ -1884,7 +1876,6 @@ src/unk/O00485EE3.cpp	10	3	251	1	address-named	1
 src/unk/G0047A2A9.cpp	4	3	263	1	address-named	0
 src/unk/O003A4322.cpp	7	3	266	1	address-named	0
 src/unk/O004FBE7A.cpp	3	3	276	1	address-named	0
-src/unk/O004B8AE1.cpp	3	3	301	1	address-named	0
 src/unk/G004C55B2.cpp	4	3	315	1	address-named	0
 src/unk/O004921AA.cpp	7	3	331	1	address-named	0
 src/unk/O004AB415.cpp	3	3	361	1	address-named	0
@@ -1897,6 +1888,7 @@ src/unk/O004561BB.cpp	8	3	478	1	address-named	2
 src/unk/O00490D70.cpp	7	3	501	1	address-named	0
 src/unk/O004C693D.cpp	7	3	566	1	address-named	0
 src/unk/O004C2B3F.cpp	8	3	599	1	address-named	0
+src/unk/O003A44ED.cpp	3	3	742	1	address-named	0
 src/unk/G00723740.cpp	3	3	1081	1	address-named	0
 src/unk/O0055A0DD.cpp	3	3	1317	1	address-named	0
 src/unk/G003EE6F7.cpp	3	3	17	0	address-named	0
@@ -1979,6 +1971,7 @@ src/unk/G004E4E05.cpp	3	3	125	0	address-named	0
 src/unk/O0053DA53.cpp	3	3	125	0	address-named	0
 src/unk/G000D167A.cpp	4	3	128	0	address-named	0
 src/unk/G0058AE1E.cpp	3	3	129	0	address-named	0
+src/unk/G0024DEC6.cpp	17	3	131	0	address-named	1
 src/unk/O005C1A8D.cpp	3	3	132	0	address-named	0
 src/unk/O005E1B4E.cpp	3	3	135	0	address-named	0
 src/unk/G000930D9.cpp	3	3	137	0	address-named	0
@@ -2057,7 +2050,6 @@ src/unk/G002E3442.cpp	3	3	621	0	address-named	0
 src/unk/O004962EA.cpp	4	3	623	0	address-named	0
 src/unk/O000A1364.cpp	3	3	666	0	address-named	0
 src/unk/G00572E0F.cpp	3	3	693	0	address-named	0
-src/unk/O003A44ED.cpp	3	3	742	0	address-named	0
 src/unk/O00491AD0.cpp	3	3	771	0	address-named	0
 src/unk/G000A2D6F.cpp	3	3	980	0	address-named	0
 src/unk/O006A5EB0.cpp	3	3	1056	0	address-named	0
@@ -2153,6 +2145,7 @@ src/unk/G00171522.cpp	4	4	240	0	address-named	0
 src/unk/O00004FC8.cpp	4	4	242	0	address-named	0
 src/unk/O0059E390.cpp	4	4	242	0	address-named	0
 src/unk/O005F3F73.cpp	4	4	247	0	address-named	0
+src/unk/G0024E36B.cpp	44	4	252	0	address-named	0
 src/unk/G00265173.cpp	4	4	272	0	address-named	0
 src/unk/G0061F4E0.cpp	4	4	273	0	address-named	0
 src/unk/O00180527.cpp	5	4	275	0	address-named	0
@@ -2244,11 +2237,9 @@ src/unk/G003FE881.cpp	5	5	211	0	address-named	0
 src/unk/O0066C970.cpp	5	5	243	0	address-named	0
 src/unk/G0010E482.cpp	6	5	254	0	address-named	3
 src/unk/O0022104E.cpp	5	5	268	0	address-named	0
-src/unk/G0024DEC6.cpp	17	5	293	0	address-named	1
 src/unk/G001979F0.cpp	5	5	308	0	address-named	0
 src/unk/G00596095.cpp	5	5	321	0	address-named	0
 src/unk/O005C962C.cpp	5	5	331	0	address-named	0
-src/unk/G0024E36B.cpp	44	5	333	0	address-named	0
 src/unk/O0025C134.cpp	5	5	347	0	address-named	0
 src/unk/G00376D10.cpp	5	5	354	0	address-named	0
 src/unk/G0010EC4D.cpp	5	5	365	0	address-named	0
@@ -2414,6 +2405,7 @@ src/unk/G004D6B29.cpp	8	8	287	5	address-named	0
 src/unk/G001D96FF.cpp	8	8	250	3	address-named	0
 src/unk/O004B2394.cpp	12	8	1065	3	address-named	1
 src/unk/G004DF7DB.cpp	8	8	323	2	address-named	0
+src/unk/O0045ED9D.cpp	12	8	949	2	address-named	0
 src/unk/G00719800.cpp	8	8	1143	2	address-named	0
 src/unk/O00446A95.cpp	8	8	2656	2	address-named	0
 src/unk/G0033162B.cpp	9	8	187	1	address-named	0
@@ -2426,6 +2418,7 @@ src/unk/O00448423.cpp	8	8	3227	1	address-named	0
 src/unk/O00137470.cpp	8	8	67	0	address-named	0
 src/unk/G0043315C.cpp	8	8	106	0	address-named	0
 src/unk/G0059ADB9.cpp	8	8	259	0	address-named	0
+src/unk/G0024BF24.cpp	78	8	313	0	address-named	3
 src/unk/O005D4E8B.cpp	8	8	351	0	address-named	0
 src/unk/O00101EF5.cpp	8	8	389	0	address-named	0
 src/unk/G00596446.cpp	8	8	423	0	address-named	0
@@ -2450,7 +2443,6 @@ src/unk/O0009FDF5.cpp	8	8	2716	0	address-named	0
 src/unk/G0055FA5F.cpp	8	8	3317	0	address-named	0
 src/unk/O005BE20B.cpp	8	8	3688	0	address-named	0
 src/unk/O0065C6B0.cpp	8	8	4510	0	address-named	0
-src/unk/O0045ED9D.cpp	12	9	992	4	address-named	0
 src/unk/O0047B993.cpp	10	9	858	2	address-named	0
 src/unk/O007167E0.cpp	10	9	2836	2	address-named	2
 src/unk/G006BD360.cpp	9	9	300	1	address-named	0
@@ -2504,7 +2496,7 @@ src/unk/G0060B7C4.cpp	10	10	165	0	address-named	0
 src/unk/G001E3478.cpp	10	10	209	0	address-named	0
 src/unk/O005CC4B3.cpp	10	10	329	0	address-named	0
 src/unk/G000031A5.cpp	10	10	371	0	address-named	0
-src/unk/G0024BF24.cpp	78	10	475	0	address-named	3
+src/unk/G0024A7B0.cpp	92	10	386	0	address-named	4
 src/unk/O0052B685.cpp	10	10	518	0	address-named	0
 src/unk/G001D7520.cpp	10	10	673	0	address-named	0
 src/unk/O003FD9A3.cpp	10	10	720	0	address-named	0
@@ -2525,7 +2517,6 @@ src/unk/O004599DF.cpp	14	11	2096	2	address-named	0
 src/unk/G0059EABF.cpp	11	11	130	0	address-named	0
 src/unk/G00075295.cpp	11	11	174	0	address-named	0
 src/unk/G00004D95.cpp	13	11	274	0	address-named	0
-src/unk/G0024A7B0.cpp	92	11	467	0	address-named	4
 src/unk/O000014D5.cpp	11	11	487	0	address-named	0
 src/unk/O005EB77D.cpp	11	11	495	0	address-named	0
 src/unk/O005468AB.cpp	11	11	521	0	address-named	0
@@ -2585,6 +2576,7 @@ src/unk/O000748F6.cpp	13	13	2160	0	address-named	0
 src/unk/G0044D330.cpp	28	14	2146	4	address-named	6
 src/unk/G0023D0E3.cpp	14	14	602	2	address-named	0
 src/unk/O0043283C.cpp	14	14	1482	2	address-named	0
+src/unk/G003EDBAE.cpp	14	14	1285	1	address-named	0
 src/unk/G001EADF0.cpp	14	14	115	0	address-named	0
 src/unk/G001F34F6.cpp	14	14	146	0	address-named	0
 src/unk/G002C71CA.cpp	14	14	157	0	address-named	0
@@ -2599,7 +2591,6 @@ src/unk/G0007B275.cpp	14	14	933	0	address-named	0
 src/unk/O005C33D2.cpp	14	14	950	0	address-named	0
 src/unk/G003BA233.cpp	14	14	966	0	address-named	0
 src/unk/O006A4120.cpp	14	14	991	0	address-named	0
-src/unk/G003EDBAE.cpp	14	14	1285	0	address-named	0
 src/unk/O00542425.cpp	14	14	1354	0	address-named	0
 src/unk/O003ED391.cpp	14	14	1471	0	address-named	0
 src/unk/O004B7B81.cpp	18	15	808	2	address-named	0
@@ -2658,7 +2649,7 @@ src/unk/O0075A5C5.cpp	20	20	1682	0	address-named	0
 src/unk/O0059AFFB.cpp	20	20	1824	0	address-named	0
 src/unk/O004DF983.cpp	20	20	2329	0	address-named	0
 src/unk/O0045A291.cpp	26	21	2660	4	address-named	7
-src/unk/O004C9DC9.cpp	23	21	2781	1	address-named	0
+src/unk/O004C9DC9.cpp	23	21	2781	2	address-named	0
 src/unk/G002E05CA.cpp	22	21	364	0	address-named	0
 src/unk/O003A7BEA.cpp	21	21	1512	0	address-named	0
 src/unk/O00528240.cpp	21	21	1578	0	address-named	0
@@ -2715,7 +2706,7 @@ src/unk/O00564B41.cpp	45	45	3886	0	address-named	0
 src/unk/O005687FF.cpp	46	46	5311	0	address-named	0
 src/unk/O00421744.cpp	49	49	6880	0	address-named	0
 src/unk/O005EA038.cpp	50	50	4173	0	address-named	0
-src/unk/G0023C3E9.cpp	53	52	918	1	address-named	0
+src/unk/G0023C3E9.cpp	53	51	905	0	address-named	0
 src/unk/O00025140.cpp	52	52	7284	0	address-named	0
 src/unk/G000B225A.cpp	53	53	1894	0	address-named	0
 src/unk/O0009AA0F.cpp	57	57	11873	0	address-named	0
@@ -2725,7 +2716,7 @@ src/unk/G000034FA.cpp	73	66	4744	0	address-named	0
 src/unk/G0028A807.cpp	68	68	598	1	address-named	0
 src/unk/O0030BBB4.cpp	73	72	2964	0	address-named	1
 src/unk/O001B55E0.cpp	73	73	14399	0	address-named	0
-src/unk/O0024EEBB.cpp	383	97	5051	95	address-named	33
+src/unk/O0024EEBB.cpp	383	92	4730	95	address-named	33
 src/unk/O00030D10.cpp	121	120	17662	9	address-named	0
 src/unk/O001BD670.cpp	122	122	99434	0	address-named	0
 src/unk/O0006615F.cpp	5	1	39	0	address-named	1

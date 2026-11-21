@@ -2,7 +2,6 @@
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 // psdk
 #include <string.h>
-extern "C" __declspec(dllimport) int __cdecl _strcmpi(const char *, const char *);
 #include <windows.h>
 #include "WWLib/cpudetect.h"
 #include "WWLib/systimer.h"

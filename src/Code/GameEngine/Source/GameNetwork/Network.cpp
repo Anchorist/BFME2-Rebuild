@@ -533,6 +533,12 @@ void CreateTheNetwork()
 	TheNetwork->init();
 }
 
+Network::~Network()
+{
+	if (m_conMgr)
+		delete m_conMgr;
+}
+
 // FUNCTION: BFME2 0x0025E539 size=187 name=?ProcessDestroyPlayerCommand@NetworkInterface@@QAEXPAVNetWrapperCommandMsg@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x0025E5F4 size=363 name=?rva0025E5F4@Rva0025E4CD@@QAEXXZ evidence=?:placeholder tier=B hypothesis:cohesion

@@ -59,8 +59,8 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "??_GUpgradeModuleData@@UAEPAXI@Z",
-      "name_evidence": "N:ledger",
+      "name": "??_GCrateCollideModuleData@@UAEPAXI@Z",
+      "name_evidence": "X:review",
       "confidence": "high",
       "evidence": "X:scalar-deleting-dtor shape",
       "object_id": "O004BC515",
@@ -72,7 +72,7 @@
       "parent": null,
       "object": "O004BC515",
       "accepted_names": [
-        "??_GUpgradeModuleData@@UAEPAXI@Z"
+        "??_GCrateCollideModuleData@@UAEPAXI@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:Z"

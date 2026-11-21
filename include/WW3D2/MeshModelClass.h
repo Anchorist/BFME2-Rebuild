@@ -51,6 +51,7 @@ public:
 
 	virtual bool Load_W3D(ChunkLoadClass &cload);					// 2: 0x0018BA10
 
+	void rva00171780(void);								// 0x00171780
 	void Enable_Alternate_Material_Description(bool onoff);				// 0x00171790
 	bool Is_Alternate_Material_Description_Enabled(void);				// 0x00171830
 	bool Needs_Vertex_Normals(void);						// 0x00171850

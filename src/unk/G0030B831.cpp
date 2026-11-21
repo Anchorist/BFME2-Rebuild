@@ -1,6 +1,11 @@
+// cl: /O1
+// stlport46
+// bfmealloc_alloconly
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0030B831 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
+#include <stdlib.h>
+extern "C" void __cdecl free(void *);
 #include "Common/AreaPolygon.h"
 // FUNCTION: BFME2 0x0030B831 size=41 name=?Rva0030B831Equal@@YAHPBURva0030B831Item@@0@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0030B85A size=28 name=?deletePoint@AreaPolygonBase@@QAEXH@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit

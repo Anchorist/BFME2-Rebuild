@@ -15,11 +15,13 @@
 #include "Common/Coord3D.h"
 #include "Common/Coord2D.h"
 
+class INI;
 class RainOfFireUpdateModuleData : public ModuleData
 {
 public:
 	RainOfFireUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &p);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UnsignedInt m_startRainTime;		// 0x08
 	UnsignedInt m_darknessFadeTime;		// 0x0C

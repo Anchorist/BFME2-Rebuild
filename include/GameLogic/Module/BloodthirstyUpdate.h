@@ -18,12 +18,14 @@
 
 enum CommandSourceType;
 
+class INI;
 class BloodthirstyUpdateModuleData : public ModuleData
 {
 public:
 	BloodthirstyUpdateModuleData();
 	virtual ~BloodthirstyUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &p);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	ObjectFilter m_sacrificeFilter;		// 0x08
 	Real m_experienceModifier;			// 0x0C

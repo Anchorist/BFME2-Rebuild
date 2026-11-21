@@ -5,7 +5,7 @@
 
 #include "WW3D2/DX8Wrapper.h"
 
-extern "C" __declspec(dllimport) int __cdecl _strcmpi(const char *, const char *);
+#include <string.h>
 
 // The scratch string the Check_* functions format into (retail 0x00DEE938; Zero Hour's file static).
 extern StringClass CapsWorkString;

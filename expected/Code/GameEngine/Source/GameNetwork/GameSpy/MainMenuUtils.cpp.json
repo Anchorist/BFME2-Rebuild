@@ -22,7 +22,8 @@
       "parent": null,
       "object": "O005BC495",
       "accepted_names": [
-        "??0?$_List_base@UBfmePod28@@V?$allocator@UBfmePod28@@@_STL@@@_STL@@QAE@ABV?$allocator@UBfmePod28@@@1@@Z"
+        "??0?$_List_base@UBfmePod28@@V?$allocator@UBfmePod28@@@_STL@@@_STL@@QAE@ABV?$allocator@UBfmePod28@@@1@@Z",
+        "??0?$_List_base@VQueuedDownload@@V?$allocator@VQueuedDownload@@@_STL@@@_STL@@QAE@ABV?$allocator@VQueuedDownload@@@1@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"

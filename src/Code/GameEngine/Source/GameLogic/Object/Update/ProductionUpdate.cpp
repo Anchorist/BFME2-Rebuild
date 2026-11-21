@@ -20,6 +20,8 @@
 #include "Common/NameKeyGenerator.h"
 #include "GameLogic/Module/ProductionUpdateModuleData.h"
 #include "GameLogic/Module/ExitInterface.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
 
 // The model-condition bits of each exit door's opening, closing and waiting-open states (retail .rdata
 // 0x00C51304, 0x00C51314, 0x00C51324 in this object, four words each: DOOR_1..4; Zero Hour's file statics of
@@ -385,5 +387,35 @@ NameKeyType ProductionUpdate::getModuleNameKey() const
 
 // FUNCTION: BFME2 0x0049FDF9 size=113 name=?Rva0049FDF9Parse@@YAXPAVINI@@PAVProductionUpdateModuleData@@@Z evidence=?:placeholder tier=B hypothesis:K
 
+class ProductionUpdateModuleData;
+void Rva0049FDF9Parse(INI *ini, ProductionUpdateModuleData *owner);
+void Rva0049DE6DParse(INI *ini, void *instance, void *store, const void *userData);
+static const FieldParse s_productionUpdateModuleDataFieldParse[] =
+{
+	{ "MaxQueueEntries", INI::parseUnsignedInt, 0, 0x28 },
+	{ "NumDoorAnimations", INI::parseInt, 0, 0x8 },
+	{ "DoorOpeningTime", INI::parseDurationUnsignedInt, 0, 0xC },
+	{ "DoorWaitOpenTime", INI::parseDurationUnsignedInt, 0, 0x10 },
+	{ "DoorCloseTime", INI::parseDurationUnsignedInt, 0, 0x14 },
+	{ "ConstructionCompleteDuration", INI::parseDurationUnsignedInt, 0, 0x18 },
+	{ "QuantityModifier", (INIFieldParseProc)Rva0049FDF9Parse, 0, 0x1C },
+	{ "ProductionModifier", Rva0049DE6DParse, 0, 0x0 },
+	{ "DisabledTypesToProcess", Rva0049DD83::parseFromINI, 0, 0x2C },
+	{ "GiveNoXP", INI::parseBool, 0, 0x30 },
+	{ "UnitInvulnerableTime", INI::parseDurationUnsignedInt, 0, 0x34 },
+	{ "SpecialPrepModelconditionTime", INI::parseDurationUnsignedInt, 0, 0x38 },
+	{ "VeteranUnitsFromVeteranFactory", INI::parseBool, 0, 0x40 },
+	{ "SetBonusModelConditionOnSpeedBonus", INI::parseBool, 0, 0x41 },
+	{ "BonusForType", INI::parseAsciiString, 0, 0x44 },
+	{ "SpeedBonusAudioLoop", INI::parseAudioEventRTS, 0, 0x48 },
+	{ "SecondaryQueue", INI::parseBool, 0, 0x4C },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x0049FE6A size=17 name=?buildFieldParse@ProductionUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:Z
+void ProductionUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_productionUpdateModuleDataFieldParse, 0);
+}
+
 

@@ -359,7 +359,9 @@
         "??1?$vector@HV?$allocator@H@_STL@@@_STL@@QAE@XZ",
         "??1?$vector@UHorzLine@@V?$allocator@UHorzLine@@@_STL@@@_STL@@QAE@XZ",
         "??1?$_Vector_base@VCameraMarker@@V?$allocator@VCameraMarker@@@_STL@@@_STL@@QAE@XZ",
-        "??1?$_Rb_tree_base@U?$pair@$$CBW4NameKeyType@@PAVObjectCreationList@@@_STL@@V?$allocator@U?$pair@$$CBW4NameKeyType@@PAVObjectCreationList@@@_STL@@@2@@_STL@@QAE@XZ"
+        "??1?$_Rb_tree_base@U?$pair@$$CBW4NameKeyType@@PAVObjectCreationList@@@_STL@@V?$allocator@U?$pair@$$CBW4NameKeyType@@PAVObjectCreationList@@@_STL@@@2@@_STL@@QAE@XZ",
+        "??1PingRequest@@QAE@XZ",
+        "??1PingResponse@@QAE@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K",

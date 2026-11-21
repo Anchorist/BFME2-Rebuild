@@ -44,7 +44,8 @@
         "?EmergencyFlush@DebugIOOds@@UAEXXZ",
         "?EmergencyFlush@DebugIONet@@UAEXXZ",
         "?EmergencyFlush@DebugIOCon@@UAEXXZ",
-        "?DX8_Assert@@YAXXZ"
+        "?DX8_Assert@@YAXXZ",
+        "?UnInstall_Materials@MaterialPassClass@@UBEXXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:name:invented"

@@ -9,6 +9,9 @@
 #include "GameLogic/Module/AIUpdate.h"
 #include "GameLogic/Object.h"
 #include "GameLogic/ScriptEngine.h"
+#include "GameLogic/Script.h"
+#include "GameLogic/AIGroup.h"
+#include "GameLogic/Object.h"
 #include "GameLogic/LuaScriptEngine.h"
 #include "GameLogic/Object/Locomotor.h"
 #include "Common/DisabledTypes.h"
@@ -189,7 +192,44 @@ extern const FieldParse s_transportAiFieldTable[];
 // Edges: left=unknown-rows right=rests-on:veto; proof_first=false
 // Hypothesis rules: hypothesis:name:invented
 // FUNCTION: BFME2 0x00262453 size=74 name=?setCurScript@ScriptTracker@@QAEXPAVSequentialScript@@_NH@Z evidence=N:ledger tier=B hypothesis:mm1-neighbour-class
+void ScriptTracker::setCurScript(Script *script, Bool flag, Int argument)
+{
+	if (!m_idle || m_flagA)
+	{
+		if (script != m_script && m_script != NULL && m_script->m_record.m_flag0)
+		{
+			TheScriptEngine->removeSequentialScriptsOf(m_script);
+			m_flagA = false;
+		}
+	}
+	m_script = script;
+	m_idle = false;
+	m_flagB = false;
+	m_flag9 = flag;
+}
 // FUNCTION: BFME2 0x0026249D size=118 name=?update@ScriptTracker@@QAEXXZ evidence=N:ledger tier=B hypothesis:name:invented
+void ScriptTracker::update()
+{
+	if (m_flagB)
+	{
+		m_idle = true;
+		m_flagB = false;
+	}
+	if (!m_idle && !m_flagA)
+	{
+		if (m_flag9)
+		{
+			AIGroup *group = TheAI->createGroup();
+			m_owner->getObject()->getTeam()->getTeamAsAIGroup(group);
+			if (group->isIdle() && !group->rva0036E0B6())
+				m_flagB = true;
+		}
+		else if (m_owner->isIdle() && !m_owner->m_unk0x3CA)
+		{
+			m_flagB = true;
+		}
+	}
+}
 
 // FUNCTION: BFME2 0x00262513 size=63 name=?makeStateMachine@AIUpdateInterface@@MAEPAVAIStateMachine@@XZ evidence=N:ledger tier=B hypothesis:name:invented
 AIStateMachine *AIUpdateInterface::makeStateMachine()

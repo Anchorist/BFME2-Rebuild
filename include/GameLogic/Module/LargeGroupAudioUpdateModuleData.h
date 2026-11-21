@@ -18,6 +18,15 @@
 class INI;
 class MultiIniFieldParse;
 
+class INI;
+
+// the INI-side owner of one table parser (the ledger names the class only by its address)
+class Rva003D4920
+{
+public:
+	static void parseAudioKeyTokens(INI *ini, void *instance, void *store, const void *userData);
+};
+
 class LargeGroupAudioUpdateModuleData : public ModuleData
 {
 public:

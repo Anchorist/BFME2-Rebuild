@@ -16,7 +16,8 @@
       "object_id": "retained:O003956E8",
       "object_evidence": "X:closure",
       "accepted_names": [
-        "?allocate@?$allocator@UBfmeE12@@@_STL@@QBEPAUBfmeE12@@IPBX@Z"
+        "?allocate@?$allocator@UBfmeE12@@@_STL@@QBEPAUBfmeE12@@IPBX@Z",
+        "?allocate@?$allocator@UPrereqUnitRec@ProductionPrerequisite@@@_STL@@QBEPAUPrereqUnitRec@ProductionPrerequisite@@IPBX@Z"
       ],
       "parent": null,
       "object": "retained:O003956E8",

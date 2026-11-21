@@ -1068,6 +1068,78 @@ void ParticleBufferClass::Render_Particles(RenderInfoClass &rinfo)
 }
 
 // FUNCTION: BFME2 0x001AF060 size=908 name=?Render_Line_Group@ParticleBufferClass@@IAEXAAVRenderInfoClass@@@Z evidence=N:ledger tier=A
+void ParticleBufferClass::Render_Line_Group(RenderInfoClass &rinfo)
+{
+	ShareBufferClass<unsigned int> *apt = NULL;
+	unsigned int active_point_count = 0;
+
+	Generate_APT(&apt, active_point_count);
+
+	if (!Color) {
+		LineGroup->Set_Line_Color(ColorKeyFrameValues[0]);
+	}
+	if (!Alpha) {
+		LineGroup->Set_Line_Alpha(AlphaKeyFrameValues[0]);
+	}
+	if (!Size) {
+		LineGroup->Set_Line_Size(SizeKeyFrameValues[0]);
+	}
+	if (!Frame) {
+		LineGroup->Set_Line_UCoord(FrameKeyFrameValues[0]);
+	}
+
+	int pingpong = 0;
+	if (PingPongPosition) {
+		pingpong = WW3D::Get_Frame_Count() & 0x1;
+	}
+
+	Combine_Color_And_Alpha();
+
+	TailDiffuseTypeEnum tailtype = Determine_Tail_Diffuse();
+
+	switch (tailtype)
+	{
+	case BLACK:
+		REF_PTR_RELEASE(TailDiffuse);
+		DefaultTailDiffuse.Set(0, 0, 0, 0);
+		break;
+	case WHITE:
+		REF_PTR_RELEASE(TailDiffuse);
+		DefaultTailDiffuse.Set(1, 1, 1, 1);
+		break;
+	case SAME_AS_HEAD_ALPHA_ZERO:
+		if (!Diffuse) {
+			REF_PTR_RELEASE(TailDiffuse);
+			DefaultTailDiffuse.Set(ColorKeyFrameValues[0].X, ColorKeyFrameValues[0].Y, ColorKeyFrameValues[0].Z, 0);
+		} else {
+			if (!TailDiffuse) TailDiffuse = new ShareBufferClass<Vector4>(MaxNum, "ParticleBufferClass::TailDiffuse", 0);
+			for (unsigned int i = 0; i < MaxNum; i++) {
+				Vector4 elt = Diffuse->Get_Array()[i];
+				elt.W = 0;
+				TailDiffuse->Get_Array()[i] = elt;
+			}
+		}
+		break;
+	case SAME_AS_HEAD:
+		if (!Diffuse) {
+			REF_PTR_RELEASE(TailDiffuse);
+			DefaultTailDiffuse.Set(ColorKeyFrameValues[0].X, ColorKeyFrameValues[0].Y, ColorKeyFrameValues[0].Z, AlphaKeyFrameValues[0]);
+		} else {
+			if (!TailDiffuse) TailDiffuse = new ShareBufferClass<Vector4>(MaxNum, "ParticleBufferClass::TailDiffuse", 0);
+			VectorProcessorClass::Copy(TailDiffuse->Get_Array(), Diffuse->Get_Array(), MaxNum);
+		}
+		break;
+	default:
+		break;
+	}
+
+	if (!TailDiffuse)
+		LineGroup->Set_Tail_Diffuse(DefaultTailDiffuse);
+
+	LineGroup->Set_Arrays(Position[pingpong], TailPosition, Diffuse, TailDiffuse, apt, Size, UCoord, active_point_count);
+	Update_Bounding_Box();
+	LineGroup->Render(rinfo);
+}
 
 // FUNCTION: BFME2 0x001AF400 size=124 name=?Get_Obj_Space_Bounding_Sphere@ParticleBufferClass@@UBEXAAVSphereClass@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 void ParticleBufferClass::Get_Obj_Space_Bounding_Sphere(SphereClass &sphere) const

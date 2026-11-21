@@ -171,6 +171,8 @@ public:
 	bool Support_DXTC() const { return SupportDXTC; }
 	bool Support_Gamma() const { return SupportGamma; }
 	bool Support_NPatches() const { return SupportNPatches; }
+	int Get_Vendor() const { return VendorId; }
+	unsigned Get_Raw_Device_ID() const { return RawDeviceId; }
 	int Get_Max_Textures_Per_Pass() const { return MaxTexturesPerPass; }	// +0x2B0 (Release_Refs 0x0012D3D0 reads it through the current caps)
 	bool Is_Valid_Display_Format(int width, int height, WW3DFormat format);		// 0x0012B330
 

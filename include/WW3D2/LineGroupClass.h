@@ -44,6 +44,7 @@ public:
 	Vector4 Get_Tail_Diffuse();
 	void Set_Line_Alpha(float alpha);
 	float Get_Line_Alpha();
+	void Set_Line_UCoord(float u);
 	float Get_Line_UCoord();
 	void Set_Flag(FlagsType flag, bool on);
 	int Get_Flag(FlagsType flag);

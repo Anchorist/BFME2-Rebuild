@@ -26,8 +26,18 @@ void PolygonTrigger::set(Int callback, Int userData)
 }
 
 // FUNCTION: BFME2 0x002E3777 size=29 name=?notifyObjectEntered@Rva002E3766Holder@@QAEXH@Z evidence=?:placeholder tier=A
+void PolygonTrigger::notifyObjectEntered(Int object)
+{
+	if (m_enterExitCallback != 0 && m_enterExitUserData != 0)
+		((void (__cdecl *)(Int, Int, Bool))m_enterExitCallback)(object, m_enterExitUserData, true);
+}
 
 // FUNCTION: BFME2 0x002E3794 size=29 name=?notifyObjectExited@Rva002E3766Holder@@QAEXH@Z evidence=?:placeholder tier=A
+void PolygonTrigger::notifyObjectExited(Int object)
+{
+	if (m_enterExitCallback != 0 && m_enterExitUserData != 0)
+		((void (__cdecl *)(Int, Int, Bool))m_enterExitCallback)(object, m_enterExitUserData, false);
+}
 
 // FUNCTION: BFME2 0x002E37B1 size=18 name=?rva002E37B1@Rva002E37B1@@QAE_NPBURva0030B7C2Point@@@Z evidence=?:placeholder tier=A
 Bool PolygonTrigger::rva002E37B1(const Rva0030B7C2Point *point)

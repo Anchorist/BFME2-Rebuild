@@ -43,6 +43,7 @@
 #include "GameLogic/Module/FadeAndDieOrnamentUpdate.h"
 #include "GameLogic/Module/ProductionUpdate.h"
 #include "GameLogic/Module/SpawnPointProductionExitUpdate.h"
+#include "GameLogic/Module/OneRingPenaltyUpdateModuleData.h"
 // Module creators. Retail registers each module class with a static friend_newModuleInstance that allocates the
 // module for a thing and its module data, and each module data class with a static friend_newModuleData that
 // allocates the data and, when an INI block is open, fills it from the class's buildFieldParse table. The bodies
@@ -64,6 +65,14 @@ Module *OneRingPenaltyUpdate::friend_newModuleInstance(Thing *thing, const Modul
 	return new OneRingPenaltyUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024E42C size=81 name=?friend_newModuleData@OneRingPenaltyUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *OneRingPenaltyUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	OneRingPenaltyUpdateModuleData *data = new OneRingPenaltyUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, OneRingPenaltyUpdateModuleData::buildFieldParse);
+	return data;
+}
+
 // FUNCTION: BFME2 0x0024E47D size=56 name=?friend_newModuleInstance@SpecialEnemySenseUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *SpecialEnemySenseUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {

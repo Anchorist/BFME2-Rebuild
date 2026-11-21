@@ -110,6 +110,7 @@ public:
 	friend class TeamPrototype;			// ~TeamPrototype 0x003A33CD deletes the production condition script and the generic scripts
 	friend class ScriptAction;			// ParseActionDataChunk 0x003B65BF / ParseActionFalseDataChunk 0x003B65F9 link into m_actions
 	friend class OrCondition;			// ParseOrConditionDataChunk 0x003B7587 links into m_condition
+	friend class ScriptTracker;			// setCurScript 0x00262453 tests the record's first flag of the script it replaces
 	friend class ScriptEngine;			// removeSequentialScriptsOf 0x00205140 tests the record's first flag
 	friend struct ScriptTableNode<Script>;	// the node's destructor is out of line (0x003B3F5E)
 	friend class ScriptTable<Script>;		// the version nodes of a ScriptList's script table destroy it (0x003B3F5E: add 4, jmp 0x003B35B1)

@@ -1,4 +1,4 @@
-// cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS
+// cl: /O1 /EHs /EHc- /D_CRTIMP= /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS
 // stlport46
 #include "GameNetwork/NetDisconnectPlayerCommandMsg.h"
 #include "GameNetwork/ConnectionManager.h"
@@ -17,6 +17,10 @@
 #include "GameLogic/GameLogic.h"
 #include "GameNetwork/DisconnectManager.h"
 void Rva00512C88Shutdown();	// 0x00512C88 (the map has no better name)
+void Rva00512CCDShutdown();	// 0x00512CCD (the map has no better name)
+#include "GameLogic/VictoryConditions.h"
+#include "GameNetwork/GameSpy/PingThread.h"
+#include "GameNetwork/GameSpy/GameSpyConfig.h"
 #include "Common/GlobalData.h"
 #include "WWLib/systimer.h"
 static Int s_disconnectPingResult = 2;
@@ -605,4 +609,116 @@ void DisconnectManager::processDisconnectCommand(void *ref, ConnectionManager *c
 }
 
 // FUNCTION: BFME2 0x004D46FC size=861 name=?update@DisconnectManager@@QAEXPAVConnectionManager@@@Z evidence=N:ledger tier=B hypothesis:K
+void DisconnectManager::update(ConnectionManager *connections)
+{
+	Rva00512CCDShutdown();
+
+	Int numStalled = 0;
+	Bool needPing = false;
+	Int localSlot = connections->getLocalPlayerID();
+	for (Int i = 0; i < MAX_SLOTS; ++i)
+	{
+		if (!(UnsignedByte)connections->isPlayerSlotActive(i) && connections->isPlayerConnected(i) &&
+			!connections->isSlotWithinTimeout(i, 5000))
+			needPing = true;
+		if (!connections->rva004CEF58(i) && !(UnsignedByte)connections->isPlayerSlotActive(i) &&
+			connections->isPlayerConnected(i))
+		{
+			++numStalled;
+			Int slot = i;
+			if (!rva004D38D8(0.1f))
+				slot = localSlot;
+			if (!m_unk0x282[slot])
+			{
+				m_unk0x282[slot] = true;
+				++m_unk0x272[slot];
+			}
+		}
+		else
+		{
+			if (i != localSlot)
+				m_unk0x282[i] = false;
+			Int translated = Rva004D39DEGet(i, connections->getLocalPlayerID());
+			if (translated != -1)
+				resetPlayerTimeout(translated);
+		}
+	}
+
+	if (numStalled == 0)
+		m_unk0x282[localSlot] = false;
+
+	if (numStalled > 0)
+	{
+		m_unk0x270 = true;
+		if ((TheGameLogic == 0 || TheGameLogic->m_loadScreen == 0) && m_unk0x0C == 1)
+		{
+			if ((m_unk0x272[localSlot] < 5 || TheNetwork == 0) && connections->getNumPlayers() >= 2)
+			{
+				if (TheGameLogic->m_unk0x114 != 3)
+					turnOnScreen(connections);
+				else if (TheVictoryConditions != 0 &&
+					(TheVictoryConditions->isLocalAlliedDefeat() ||
+					 TheVictoryConditions->isLocalAlliedVictory() ||
+					 TheVictoryConditions->amIObserver()))
+				{
+					if (TheNetwork != 0)
+						TheNetwork->quitGame();
+				}
+				else
+					turnOnScreen(connections);
+			}
+			else if (TheNetwork != 0)
+				TheNetwork->quitGame();
+		}
+		sendKeepAlive(connections);
+	}
+	else
+	{
+		m_unk0x270 = false;
+		if (m_unk0x0C == 0)
+			clearVotesAgainst(connections->getLocalPlayerID());
+	}
+
+	if (m_unk0x08 == -1 || (UnsignedInt)m_unk0x04 != TheGameLogic->getFrame())
+	{
+		m_unk0x04 = TheGameLogic->getFrame();
+		m_unk0x08 = timeGetTime();
+	}
+
+	if (m_unk0x0C != 1)
+		updateDisconnectStatus(connections);
+
+	if (needPing)
+	{
+		if (ThePinger == 0)
+			return;
+		if (timeGetTime() - m_unk0x268 > 3000 &&
+			(numStalled == 0 || timeGetTime() - m_unk0x25C < 5000))
+		{
+			PingRequest req;
+			req.hostname = TheGameSpyConfig->getPingServers().begin()->str();
+			req.repetitions = 5;
+			req.timeout = 2000;
+			m_unk0x260 += req.repetitions;
+			ThePinger->addRequest(req);
+			m_unk0x268 = timeGetTime();
+		}
+	}
+	else
+	{
+		m_unk0x260 = 0;
+		m_unk0x264 = 0;
+		m_unk0x268 = 0;
+	}
+
+	if (ThePinger != 0)
+	{
+		PingResponse resp;
+		while (ThePinger->getResponse(resp))
+		{
+			if (needPing && resp.avgPing < 2000)
+				m_unk0x264 += resp.repetitions;
+		}
+	}
+}
 

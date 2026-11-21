@@ -20,6 +20,15 @@
 class INI;
 class MultiIniFieldParse;
 
+class INI;
+
+// the INI-side owner of one table parser (the ledger names the class only by its address)
+class Rva0049DD83
+{
+public:
+	static void parseFromINI(INI *ini, void *instance, void *store, const void *userData);
+};
+
 class ProductionUpdateModuleData : public ModuleData
 {
 public:

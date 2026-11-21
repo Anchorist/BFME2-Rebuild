@@ -1,3 +1,4 @@
+#include "GameClient/GameWindow.h"
 // Generated from the ledger; map snapshot c591f7146f88c8a8248ebb8ae22f0c978c22aed463db64e05ef57ff0dfae99cc
 // object=G0023C3E9 name-evidence=invented
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
@@ -28,6 +29,10 @@
 // FUNCTION: BFME2 0x0023C4DB size=8 name=?Rva0023C4DBSet@@YAXXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0023C4E3 size=8 name=?Rva0023C4E3Clear@@YAXXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0023C4EB size=13 name=?winSetLayout@GameWindow@@QAEXPAVWindowLayout@@@Z evidence=S:strong (caller-this) tier=B hypothesis:mm1-gap-unit
+void GameWindow::winSetLayout(WindowLayout *layout)
+{
+	m_layout = layout;
+}
 // FUNCTION: BFME2 0x0023C4F8 size=14 name=?get@Rva0023C4F8BothFlags@@QBE_NXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0023C506 size=13 name=?set@Rva0023C506ByteSlot@@QAEXE@Z evidence=?:placeholder tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0023C51A size=8 name=?get@Rva0023C51AMovsxByteField@@QBEHXZ evidence=?:placeholder tier=B hypothesis:mm1-gap-unit

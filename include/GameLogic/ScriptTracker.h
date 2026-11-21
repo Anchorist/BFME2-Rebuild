@@ -11,7 +11,7 @@
 #include "Common/GameType.h"
 
 class AIUpdateInterface;
-class SequentialScript;
+class Script;
 
 class ScriptTracker
 {
@@ -21,12 +21,12 @@ public:
 	{
 	}
 
-	void setCurScript(SequentialScript *script, Bool flag, Int argument);	// 0x00262453
+	void setCurScript(Script *script, Bool flag, Int argument);	// 0x00262453
 	void update();															// 0x0026249D
 
 private:
 	AIUpdateInterface *m_owner;		// +0x00
-	SequentialScript *m_script;		// +0x04
+	Script *m_script;		// +0x04
 	Bool m_idle;					// +0x08 (set by the constructor, 1)
 	Bool m_flag9;					// +0x09
 	Bool m_flagA;					// +0x0A

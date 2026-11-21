@@ -23,6 +23,11 @@ void StancesBehavior::xfer(Xfer *xfer)
 // FUNCTION: BFME2 0x0045EDD5 size=87 name=?changeStanceFromXfer@StancesBehavior@@QAE_NH@Z evidence=N:ledger
 
 // FUNCTION: BFME2 0x0045EE2C size=43 name=?Rva0045EE2CGet@@YA?AW4NameKeyType@@XZ evidence=?:placeholder
+NameKeyType Rva0045EE2CGet(void)
+{
+	static StaticNameKey key("StancesBehavior");
+	return key.key();
+}
 
 // FUNCTION: BFME2 0x0045EE57 size=109 name=?apply@Rva0045EF37List@@QAEXABURva0045EE57Call@@@Z evidence=?:placeholder
 

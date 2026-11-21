@@ -14,8 +14,9 @@ class MultiIniFieldParse;
 class AttributeModifierUpgradeModuleData : public UpgradeModuleData
 {
 public:
-	AttributeModifierUpgradeModuleData();
+	AttributeModifierUpgradeModuleData() throw();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	virtual Bool slot11() const { return true; }
 
 	AsciiString m_attributeModifier;                       // +0x118 AttributeModifier

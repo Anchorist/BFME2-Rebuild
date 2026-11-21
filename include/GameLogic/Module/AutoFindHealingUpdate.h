@@ -17,11 +17,13 @@
 #include "GameLogic/Module/ModuleData.h"
 #include "Common/INI/FieldParse.h"
 
+class INI;
 class AutoFindHealingUpdateModuleData : public ModuleData
 {
 public:
 	AutoFindHealingUpdateModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UnsignedInt m_scanRate;			// +0x08
 	Real m_scanRange;				// +0x0C

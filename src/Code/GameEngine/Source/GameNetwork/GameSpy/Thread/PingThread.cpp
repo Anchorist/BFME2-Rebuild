@@ -158,5 +158,22 @@ void Pinger::clearPingMap()
 // FUNCTION: BFME2 0x00550448 size=98 name=?getResponse@Pinger@@UAE_NAAVPingResponse@@@Z evidence=N:ledger tier=B hypothesis:cohesion
 
 // FUNCTION: BFME2 0x005504AF size=74 name=?addRequest@Pinger@@UAEXABVPingRequest@@@Z evidence=N:ledger tier=B hypothesis:cohesion
+void Pinger::addRequest(const PingRequest &req)
+{
+	MutexClass::LockClass m(m_requestMutex);
+
+	++m_requestCount;
+	m_requests.push(req);
+}
 
 // FUNCTION: BFME2 0x005504F9 size=125 name=?rva005504F9@Rva0055011A@@UAEXABUBfmeNarrowRecord0054FEF1@@@Z evidence=?:placeholder tier=B hypothesis:cohesion
+void Pinger::addResponse(const PingResponse &resp)
+{
+	{
+		MutexClass::LockClass m(m_pingMapMutex);
+		m_pingMap[resp.hostname] = resp.avgPing;
+	}
+	MutexClass::LockClass m(m_responseMutex);
+	++m_responseCount;
+	m_responses.push(resp);
+}

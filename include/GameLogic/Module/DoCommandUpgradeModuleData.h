@@ -14,8 +14,9 @@ class MultiIniFieldParse;
 class DoCommandUpgradeModuleData : public UpgradeModuleData
 {
 public:
-	DoCommandUpgradeModuleData();
+	DoCommandUpgradeModuleData() throw();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	AsciiString m_getUpgradeCommandButtonName;             // +0x118 GetUpgradeCommandButtonName
 	AsciiString m_removeUpgradeCommandButtonName;          // +0x11C RemoveUpgradeCommandButtonName

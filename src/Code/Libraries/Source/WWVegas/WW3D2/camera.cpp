@@ -6,8 +6,11 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:Z, hypothesis:cohesion, hypothesis:name:Z, hypothesis:padding
+// dxsdk
 #include <math.h>
+#include <d3d8.h>
 #include "WW3D2/CameraClass.h"
+#include "WW3D2/DX8Wrapper.h"
 #include "WW3D2/WW3D.h"
 #include "WWMath/CollisionMath.h"
 #include "WWMath/colmathplane.h"
@@ -410,5 +413,33 @@ bool CameraClass::Cull_Box(const AABoxClass &box) const
 	return false;
 }
 
+extern bool bfmeCameraProjectionOverride;
+
 // FUNCTION: BFME2 0x00135A70 size=866 name=?Apply@CameraClass@@QAEXXZ evidence=N:ledger tier=B hypothesis:Z
+void CameraClass::Apply(void)
+{
+	Update_Frustum();
+
+	int width, height, bits;
+	bool windowed;
+	WW3D::Get_Render_Target_Resolution(width, height, bits, windowed);
+
+	D3DVIEWPORT8 vp;
+	vp.X = (DWORD)(Viewport.Min.X * (float)width);
+	vp.Y = (DWORD)(Viewport.Min.Y * (float)height);
+	vp.Width = (DWORD)((Viewport.Max.X - Viewport.Min.X) * (float)width);
+	vp.Height = (DWORD)((Viewport.Max.Y - Viewport.Min.Y) * (float)height);
+	vp.MinZ = ZBufferMin;
+	vp.MaxZ = ZBufferMax;
+	DX8Wrapper::Set_Viewport(&vp);
+
+	Matrix4 d3dprojection;
+	if (bfmeCameraProjectionOverride) {
+		d3dprojection = ReflectedProjectionTransform.Transpose();
+	} else {
+		Get_D3D_Projection_Matrix(&d3dprojection);
+	}
+	DX8Wrapper::Set_Projection_Transform_With_Z_Bias(d3dprojection, ZNear, ZFar);
+	DX8Wrapper::Set_Transform(D3DTS_VIEW, Matrix4(CameraInvTransform));
+}
 

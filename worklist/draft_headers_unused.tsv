@@ -1,4 +1,4 @@
-# measured_utc=2026-11-21T08:11:12Z revision=71a12ee6e4ee364716da7445a8f202d52eb7e751 left_out_duplicates=10
+# measured_utc=2026-11-21T09:33:17Z revision=2af69a7e75c05861f2ca0b58eb7551339fb4a8a1 left_out_duplicates=10
 header	classes_defined
 include/Draft/AABTreeLinkClass.h	AABTreeLinkClass
 include/Draft/AIAttackApproachTargetState00C12678.h	AIAttackApproachTargetState00C12678
@@ -33,7 +33,6 @@ include/Draft/BFMECRCWriter.h	BFMECRCWriter
 include/Draft/BFMENetwork.h	BFMENetwork
 include/Draft/BannerUI.h	BannerUI
 include/Draft/BaseA.h	BaseA
-include/Draft/BaseHeightMapRenderObjClass.h	BaseHeightMapRenderObjClass
 include/Draft/BezierProjectileBehaviorData.h	BezierProjectileBehaviorData
 include/Draft/Bfme5RefHolderA.h	Bfme5RefHolderA
 include/Draft/BfmeA1187.h	BfmeA1187

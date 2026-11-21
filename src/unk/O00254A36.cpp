@@ -4,7 +4,17 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=unknown-rows right=unknown-rows; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
+#include "GameLogic/Module/FireWeaponCollideModuleData.h"
+#include "Common/INI.h"
 // FUNCTION: BFME2 0x00254A36 size=68 name=??0FireWeaponCollideModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:invented
 
 // FUNCTION: BFME2 0x00254A7A size=49 name=?friend_newModuleData@FireWeaponCollideModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:K
+ModuleData *FireWeaponCollideModuleData::friend_newModuleData(INI *ini)
+{
+	FireWeaponCollideModuleData *data = new FireWeaponCollideModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, FireWeaponCollideModuleData::buildFieldParse);
+	return data;
+}
+
 

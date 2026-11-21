@@ -95,6 +95,14 @@ Module *BloodthirstyUpdate::friend_newModuleInstance(Thing *thing, const ModuleD
 	return new BloodthirstyUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024A7E8 size=81 name=?friend_newModuleData@BloodthirstyUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *BloodthirstyUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	BloodthirstyUpdateModuleData *data = new BloodthirstyUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, BloodthirstyUpdateModuleData::buildFieldParse);
+	return data;
+}
+
 // FUNCTION: BFME2 0x0024A847 size=59 name=?friend_newModuleInstance@SpecialAbilityUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *SpecialAbilityUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {

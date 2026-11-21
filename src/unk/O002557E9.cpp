@@ -4,7 +4,17 @@
 // Extents and edges are hypotheses; byte verification alone does not establish original TU boundaries.
 // Edges: left=no-edge-evidence right=no-edge-evidence; proof_first=false
 // Hypothesis rules: hypothesis:K, hypothesis:name:invented
+#include "GameLogic/Module/AttributeModifierUpgradeModuleData.h"
+#include "Common/INI.h"
 // FUNCTION: BFME2 0x002557E9 size=25 name=??0AttributeModifierUpgradeModuleData@@QAE@XZ evidence=N:ledger tier=B hypothesis:name:invented
 
 // FUNCTION: BFME2 0x00255802 size=52 name=?friend_newModuleData@AttributeModifierUpgradeModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:K
+ModuleData *AttributeModifierUpgradeModuleData::friend_newModuleData(INI *ini)
+{
+	AttributeModifierUpgradeModuleData *data = new AttributeModifierUpgradeModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, AttributeModifierUpgradeModuleData::buildFieldParse);
+	return data;
+}
+
 

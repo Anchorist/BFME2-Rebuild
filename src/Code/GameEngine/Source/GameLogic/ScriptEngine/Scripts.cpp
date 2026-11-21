@@ -1,5 +1,8 @@
 // cl: /O1 /EHs /EHc-
 // stlport46
+// bfmealloc_alloconly
+#include <stdlib.h>
+extern "C" void __cdecl free(void *);
 #include <deque>
 #include "Common/AsciiString.h"
 #include "GameLogic/ScriptAction.h"
@@ -721,7 +724,7 @@ void ScriptAction::rva003B3D75(void *script, void *name)
 		{
 			AIUpdateInterface *ai = unit->getAIUpdateInterface();
 			if (ai)
-				ai->m_scriptTracker.setCurScript((SequentialScript *)script, false, (Int)name);
+				ai->m_scriptTracker.setCurScript((Script *)script, false, (Int)name);
 		}
 	}
 	else if (targetsNamedTeam())

@@ -10,7 +10,7 @@ below.
 ## Counts
 
 The maintainers recorded these progress counts at
-**2026-11-21**, revision `d0e3098e44` of their
+**2026-11-21**, revision `2e6bf1e322` of their
 working repository (the tree of this snapshot's `src/`, `include/`,
 `config/` and `expected/` is that revision or a later one).
 
@@ -23,23 +23,23 @@ for an unknown real name ([naming](naming.md)).
 
 | Measure | At that snapshot |
 | --- | ---: |
-| Owned functions credited MATCH | 16,552 / 41,565 |
-| Credited functions with proven references | 13,119 |
-| Whole objects VERIFIED | 210 / 2,151 |
-| Headers outside `include/Draft/` | 1,744 |
+| Owned functions credited MATCH | 16,591 / 41,565 |
+| Credited functions with proven references | 13,476 |
+| Whole objects VERIFIED | 212 / 2,151 |
+| Headers outside `include/Draft/` | 1,745 |
 | Owned function names classified as real / placeholder | 23,569 / 17,996 |
 
 40% of the owned functions had match credit at that snapshot.
 
-Source files with code: **855 named** and **486 still named by
+Source files with code: **857 named** and **491 still named by
 address** (under `src/unk/`, waiting for evidence of their real name and
-place). Another 1,910 files hold only generated
-annotations and no code yet (1,679 address-named, 231
+place). Another 1,903 files hold only generated
+annotations and no code yet (1,674 address-named, 229
 named); they are scaffolds, counted apart.
 
 In this snapshot's tree, **12 Draft headers are in use** (included by
-some file; these are the ones to retire). Another 2,058 Drafts are
-unused generated layout guesses: 2,048 are kept as leads for classes not
+some file; these are the ones to retire). Another 2,057 Drafts are
+unused generated layout guesses: 2,047 are kept as leads for classes not
 written yet and 10 are dead copies of headers that now exist outside
 `include/Draft/`. See the [worklist](../worklist/README.md).
 

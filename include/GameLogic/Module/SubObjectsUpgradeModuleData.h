@@ -34,7 +34,7 @@ struct SubObjectTexturePair
 class SubObjectsUpgradeModuleData : public UpgradeModuleData
 {
 public:
-	SubObjectsUpgradeModuleData();											// 0x00257768
+	SubObjectsUpgradeModuleData() throw();											// 0x00257768
 	virtual ~SubObjectsUpgradeModuleData();
 	static void buildFieldParse(MultiIniFieldParse &parse);
 	static ModuleData *friend_newModuleData(INI *ini);

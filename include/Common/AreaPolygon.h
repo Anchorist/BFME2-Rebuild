@@ -46,6 +46,7 @@ public:
 	Real rva0030B706() const;						// the value at +0x1C
 	Real getRadius() const;
 	Rva0030B72CPoint rva0030B72C() const;			// the midpoint of the bounds
+	void rva0030B76F(AreaPolygonBase *that);		// swaps the two polygons' contents
 
 	_STL::vector<BfmeE8> m_points;		// +0x00 the vertices
 	Region2D m_bounds;								// +0x0C
@@ -59,6 +60,8 @@ class ElevatedAreaPolygon : public AreaPolygonBase	// the polygon with an elevat
 {
 public:
 	void parse(DataChunkInput &input, Int version);	// the base parse, then the elevation
+
+	void rva0030B812(ElevatedAreaPolygon *that);	// swaps the two polygons, elevation included
 
 	Int m_elevation;								// +0x28 (the trigger's z when there is no terrain)
 };

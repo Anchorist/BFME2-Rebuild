@@ -23,8 +23,9 @@ class MultiIniFieldParse;
 class StatusBitsUpgradeModuleData : public UpgradeModuleData
 {
 public:
-	StatusBitsUpgradeModuleData();
+	StatusBitsUpgradeModuleData() throw();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	ObjectStatusMaskType m_statusToSet;                    // +0x118 StatusToSet; BitFlags<101>
 	ObjectStatusMaskType m_statusToClear;                  // +0x128 StatusToClear; BitFlags<101>

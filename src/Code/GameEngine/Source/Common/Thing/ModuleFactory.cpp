@@ -393,6 +393,14 @@ SubObjectsUpgradeModuleData::SubObjectsUpgradeModuleData()
 }
 
 // FUNCTION: BFME2 0x0025780C size=52 name=?friend_newModuleData@SubObjectsUpgradeModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger
+ModuleData *SubObjectsUpgradeModuleData::friend_newModuleData(INI *ini)
+{
+	SubObjectsUpgradeModuleData *data = new SubObjectsUpgradeModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, SubObjectsUpgradeModuleData::buildFieldParse);
+	return data;
+}
+
 // FUNCTION: BFME2 0x0025785C size=102 name=??0RandomSoundSelectorClientBehaviorModuleData@@QAE@XZ evidence=N:ledger
 
 // FUNCTION: BFME2 0x002578DE size=76 name=??1RandomSoundSelectorClientBehaviorModuleData@@UAE@XZ evidence=N:ledger

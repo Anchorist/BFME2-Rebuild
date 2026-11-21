@@ -13,8 +13,9 @@ class MultiIniFieldParse;
 class LevelUpUpgradeModuleData : public UpgradeModuleData
 {
 public:
-	LevelUpUpgradeModuleData();
+	LevelUpUpgradeModuleData() throw();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 	virtual const LevelUpUpgradeModuleData *slot26() const { return this; }
 	virtual Bool slot12() const { return true; }
 

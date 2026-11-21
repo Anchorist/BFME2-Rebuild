@@ -156050,7 +156050,9 @@
         "??1?$vector@HV?$allocator@H@_STL@@@_STL@@QAE@XZ",
         "??1?$vector@UHorzLine@@V?$allocator@UHorzLine@@@_STL@@@_STL@@QAE@XZ",
         "??1?$_Vector_base@VCameraMarker@@V?$allocator@VCameraMarker@@@_STL@@@_STL@@QAE@XZ",
-        "??1?$_Rb_tree_base@U?$pair@$$CBW4NameKeyType@@PAVObjectCreationList@@@_STL@@V?$allocator@U?$pair@$$CBW4NameKeyType@@PAVObjectCreationList@@@_STL@@@2@@_STL@@QAE@XZ"
+        "??1?$_Rb_tree_base@U?$pair@$$CBW4NameKeyType@@PAVObjectCreationList@@@_STL@@V?$allocator@U?$pair@$$CBW4NameKeyType@@PAVObjectCreationList@@@_STL@@@2@@_STL@@QAE@XZ",
+        "??1PingRequest@@QAE@XZ",
+        "??1PingResponse@@QAE@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K",
@@ -238894,7 +238896,8 @@
       "object": "O0010185A",
       "accepted_names": [
         "?slot8@CameraSettings@@UAEXM@Z",
-        "?set@Rva00101CCCFloatField@@QAEXM@Z"
+        "?set@Rva00101CCCFloatField@@QAEXM@Z",
+        "?setScale@RainOfFireUpdate@@UAEXM@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:cohesion"
@@ -566177,8 +566180,8 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "??1UpgradeModuleData@@UAE@XZ",
-      "name_evidence": "N:ledger",
+      "name": "??1CrateCollideModuleData@@UAE@XZ",
+      "name_evidence": "X:review",
       "confidence": "low",
       "evidence": "?:no-compiler-generated-signal;N:special-member(may be implicit);O:placed-among-SpawnUnitBehaviorModuleData|UnitCrateCollideModuleData;N+O:special member placed in another class's object (implicit/inline)",
       "object_id": "unknown",
@@ -566190,7 +566193,7 @@
       "parent": null,
       "object": "unknown",
       "accepted_names": [
-        "??1UpgradeModuleData@@UAE@XZ"
+        "??1CrateCollideModuleData@@UAE@XZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:legacy-membership"
@@ -578832,7 +578835,8 @@
       "parent": null,
       "object": "O00265667",
       "accepted_names": [
-        "?setCurScript@ScriptTracker@@QAEXPAVSequentialScript@@_NH@Z"
+        "?setCurScript@ScriptTracker@@QAEXPAVSequentialScript@@_NH@Z",
+        "?setCurScript@ScriptTracker@@QAEXPAVScript@@_NH@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:mm1-neighbour-class",
@@ -698992,7 +698996,8 @@
       "parent": null,
       "object": "O002E36B7",
       "accepted_names": [
-        "?notifyObjectEntered@Rva002E3766Holder@@QAEXH@Z"
+        "?notifyObjectEntered@Rva002E3766Holder@@QAEXH@Z",
+        "?notifyObjectEntered@PolygonTrigger@@QAEXH@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -699017,7 +699022,8 @@
       "parent": null,
       "object": "O002E36B7",
       "accepted_names": [
-        "?notifyObjectExited@Rva002E3766Holder@@QAEXH@Z"
+        "?notifyObjectExited@Rva002E3766Holder@@QAEXH@Z",
+        "?notifyObjectExited@PolygonTrigger@@QAEXH@Z"
       ],
       "seed_tier": "A",
       "membership_hypothesis": null
@@ -727142,7 +727148,8 @@
       "parent": null,
       "object": "O0030B395",
       "accepted_names": [
-        "?rva0030B76F@Rva0030B76F@@QAEXPAU1@@Z"
+        "?rva0030B76F@Rva0030B76F@@QAEXPAU1@@Z",
+        "?rva0030B76F@AreaPolygonBase@@QAEXPAV1@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"
@@ -727218,7 +727225,8 @@
       "parent": null,
       "object": "O0030B395",
       "accepted_names": [
-        "?rva0030B812@Rva0030B812@@QAEXPAU1@@Z"
+        "?rva0030B812@Rva0030B812@@QAEXPAU1@@Z",
+        "?rva0030B812@ElevatedAreaPolygon@@QAEXPAV1@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"
@@ -821124,7 +821132,8 @@
       "parent": null,
       "object": "O00376988",
       "accepted_names": [
-        "?erase@?$vector@UGen_t_001db910_p4cd@@V?$allocator@UGen_t_001db910_p4cd@@@_STL@@@_STL@@QAEPAUGen_t_001db910_p4cd@@PAU3@@Z"
+        "?erase@?$vector@UGen_t_001db910_p4cd@@V?$allocator@UGen_t_001db910_p4cd@@@_STL@@@_STL@@QAEPAUGen_t_001db910_p4cd@@PAU3@@Z",
+        "?erase@Rva003769C2StringVector@@QAEPAVAsciiString@@PAV2@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:Z"
@@ -843806,7 +843815,8 @@
       "object_id": "retained:O003956E8",
       "object_evidence": "X:closure",
       "accepted_names": [
-        "?allocate@?$allocator@UBfmeE12@@@_STL@@QBEPAUBfmeE12@@IPBX@Z"
+        "?allocate@?$allocator@UBfmeE12@@@_STL@@QBEPAUBfmeE12@@IPBX@Z",
+        "?allocate@?$allocator@UPrereqUnitRec@ProductionPrerequisite@@@_STL@@QBEPAUPrereqUnitRec@ProductionPrerequisite@@IPBX@Z"
       ],
       "parent": null,
       "object": "retained:O003956E8",
@@ -1115141,8 +1115151,8 @@
       "role": "comdat",
       "parent_rva": "",
       "fold_group": "",
-      "name": "??_GUpgradeModuleData@@UAEPAXI@Z",
-      "name_evidence": "N:ledger",
+      "name": "??_GCrateCollideModuleData@@UAEPAXI@Z",
+      "name_evidence": "X:review",
       "confidence": "high",
       "evidence": "X:scalar-deleting-dtor shape",
       "object_id": "O004BC515",
@@ -1115154,7 +1115164,7 @@
       "parent": null,
       "object": "O004BC515",
       "accepted_names": [
-        "??_GUpgradeModuleData@@UAEPAXI@Z"
+        "??_GCrateCollideModuleData@@UAEPAXI@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:Z"
@@ -1359173,7 +1359183,8 @@
       "parent": null,
       "object": "O005BC495",
       "accepted_names": [
-        "??0?$_List_base@UBfmePod28@@V?$allocator@UBfmePod28@@@_STL@@@_STL@@QAE@ABV?$allocator@UBfmePod28@@@1@@Z"
+        "??0?$_List_base@UBfmePod28@@V?$allocator@UBfmePod28@@@_STL@@@_STL@@QAE@ABV?$allocator@UBfmePod28@@@1@@Z",
+        "??0?$_List_base@VQueuedDownload@@V?$allocator@VQueuedDownload@@@_STL@@@_STL@@QAE@ABV?$allocator@VQueuedDownload@@@1@@Z"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:K"
@@ -1623766,7 +1623777,8 @@
         "?EmergencyFlush@DebugIOOds@@UAEXXZ",
         "?EmergencyFlush@DebugIONet@@UAEXXZ",
         "?EmergencyFlush@DebugIOCon@@UAEXXZ",
-        "?DX8_Assert@@YAXXZ"
+        "?DX8_Assert@@YAXXZ",
+        "?UnInstall_Materials@MaterialPassClass@@UBEXXZ"
       ],
       "seed_tier": "B",
       "membership_hypothesis": "hypothesis:name:invented"

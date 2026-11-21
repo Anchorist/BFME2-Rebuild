@@ -5,7 +5,24 @@
 // Edges: left=unknown-rows right=unknown-rows
 #include "GameLogic/Module/LargeGroupAudioUpdate.h"
 #include "Common/NameKeyGenerator.h"
+#include "Common/INI.h"
+#include "Common/INI/FieldParse.h"
+#include "GameLogic/Module/LargeGroupAudioUpdateModuleData.h"
+static const FieldParse s_largeGroupAudioUpdateModuleDataFieldParse[] =
+{
+	{ "TimeBetweenUpdatesMin", INI::parseDurationUnsignedInt, 0, 0x14 },
+	{ "TimeBetweenUpdatesVariation", INI::parseDurationUnsignedInt, 0, 0x18 },
+	{ "UnitWeight", INI::parseUnsignedShort, 0, 0x1C },
+	{ "Key", Rva003D4920::parseAudioKeyTokens, 0, 0x8 },
+	{ 0, 0, 0, 0 }
+};
+
 // FUNCTION: BFME2 0x004AB800 size=17 name=?buildFieldParse@LargeGroupAudioUpdateModuleData@@SAXAAVMultiIniFieldParse@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
+void LargeGroupAudioUpdateModuleData::buildFieldParse(MultiIniFieldParse &parse)
+{
+	parse.add(s_largeGroupAudioUpdateModuleDataFieldParse, 0);
+}
+
 // FUNCTION: BFME2 0x004AB811 size=120 name=??0LargeGroupAudioUpdate@@QAE@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-held-object-encloses-unk-file
 // FUNCTION: BFME2 0x004AB897 size=69 name=?getModuleNameKey@LargeGroupAudioUpdate@@UBE?AW4NameKeyType@@XZ evidence=N:ledger
 NameKeyType LargeGroupAudioUpdate::getModuleNameKey() const

@@ -40,6 +40,22 @@ Real AreaPolygonBase::getRadius() const
 // FUNCTION: BFME2 0x0030B72C size=67 name=?rva0030B72C@AreaPolygonBase@@QBE?AURva0030B72CPoint@@XZ evidence=?:placeholder tier=B hypothesis:K
 
 // FUNCTION: BFME2 0x0030B76F size=78 name=?rva0030B76F@Rva0030B76F@@QAEXPAU1@@Z evidence=?:placeholder tier=B hypothesis:K
+template <class T>
+inline void swapValues(T &first, T &second)
+{
+	T temp = first;
+	first = second;
+	second = temp;
+}
+
+void AreaPolygonBase::rva0030B76F(AreaPolygonBase *that)
+{
+	m_points.swap(that->m_points);
+	Rva0030B31ASwap(&m_bounds, &that->m_bounds);
+	swapValues(m_unk0x1C, that->m_unk0x1C);
+	swapValues(m_radius, that->m_radius);
+	swapValues(m_boundsDirty, that->m_boundsDirty);
+}
 
 
 // FUNCTION: BFME2 0x0030B7C2 size=80 name=?rva0030B7C2@@YA_NPBURva0030B7C2Point@@PAVAreaPolygonBase@@@Z evidence=?:placeholder tier=B hypothesis:K
@@ -52,4 +68,11 @@ Bool rva0030B7C2(const Rva0030B7C2Point *point, AreaPolygonBase *polygon)
 }
 
 // FUNCTION: BFME2 0x0030B812 size=31 name=?rva0030B812@Rva0030B812@@QAEXPAU1@@Z evidence=?:placeholder tier=B hypothesis:K
+void ElevatedAreaPolygon::rva0030B812(ElevatedAreaPolygon *that)
+{
+	rva0030B76F(that);
+	Int elevation = m_elevation;
+	m_elevation = that->m_elevation;
+	that->m_elevation = elevation;
+}
 

@@ -35,6 +35,7 @@ class Xfer;
 // Snapshot's 0x00BBB554. +4 is ModuleData's module tag key, which the ctor row
 // 0x0048BC03 leaves alone.
 
+class INI;
 class FireWeaponUpdateModuleData : public ModuleData
 {
 public:
@@ -64,6 +65,7 @@ public:
 
 	void addNugget(int nugget);
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 private:
 	_STL::list<int> m_nuggets; // +0x08

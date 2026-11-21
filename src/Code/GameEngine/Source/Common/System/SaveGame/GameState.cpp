@@ -9,6 +9,7 @@
 #include "GameClient/MapCache.h"
 #include "Common/GlobalData.h"
 #include "GameLogic/FPModeScope.h"
+#include "GameNetwork/GameSlot.h"
 
 // The end-of-file token (.data 0x009BD038, a pointer to "SG_EOF" in game.dat): the block list's end marker
 // (used at lines below as the save token and the load loop's stop token).
@@ -71,6 +72,40 @@ File *FileSystem::openFile(const unsigned short *path, int access)
 // FUNCTION: BFME2 0x002DBA6A size=79 name=?rva002DBA6A@BfmeSubobject00229875@@QAEXXZ evidence=?:placeholder tier=A
 
 // FUNCTION: BFME2 0x002DBAB9 size=225 name=?rva002DBAB9@GameSlot@@QAEAAV1@ABV1@@Z evidence=?:placeholder tier=A
+// The member-wise assignment retail keeps out of line (the map spells it rva002DBAB9): every member in declaration order, the
+// strings and the hero data through their own assignments; the Snapshot base is not touched.
+GameSlot &GameSlot::operator=(const GameSlot &that)
+{
+	m_state = that.m_state;
+	m_isAccepted = that.m_isAccepted;
+	m_hasMap = that.m_hasMap;
+	m_isMuted = that.m_isMuted;
+	m_color = that.m_color;
+	m_startPos = that.m_startPos;
+	m_unk0x14 = that.m_unk0x14;
+	m_playerTemplate = that.m_playerTemplate;
+	m_teamNumber = that.m_teamNumber;
+	m_unk0x20 = that.m_unk0x20;
+	m_origColor = that.m_origColor;
+	m_origStartPos = that.m_origStartPos;
+	m_origPlayerTemplate = that.m_origPlayerTemplate;
+	m_name = that.m_name;
+	m_unk0x34 = that.m_unk0x34;
+	m_address = that.m_address;
+	m_unk0x40 = that.m_unk0x40;
+	m_unk0x44 = that.m_unk0x44;
+	m_unk0x48 = that.m_unk0x48;
+	m_livingWorldPlayerID = that.m_livingWorldPlayerID;
+	m_heroKind = that.m_heroKind;
+	m_unk0x54 = that.m_unk0x54;
+	m_unk0x58 = that.m_unk0x58;
+	m_unk0x5C = that.m_unk0x5C;
+	m_unk0x60 = that.m_unk0x60;
+	m_heroData = that.m_heroData;
+	m_unk0x1A4 = that.m_unk0x1A4;
+	m_unk0x1A8 = that.m_unk0x1A8;
+	return *this;
+}
 
 // FUNCTION: BFME2 0x002DBB9A size=116 name=?isNewerThan@SaveDate@@QAE_NPAU1@@Z evidence=N:ledger tier=A
 Bool SaveDate::isNewerThan(SaveDate *other)

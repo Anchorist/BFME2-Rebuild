@@ -16,6 +16,11 @@ unsigned short AptMath::m_nStackCount = 0;
 // Hypothesis rules: none; hard membership, hypothetical extent
 // FUNCTION: BFME2 0x006DFEA0 size=254 name=?ClipStackMakeUnit@AptMath@@SAXXZ evidence=N:ledger tier=B hypothesis:mm1-neighbour-callers
 // FUNCTION: BFME2 0x006DFFA0 size=10 name=?ClipStackPushUnit@AptMath@@SAXXZ evidence=N:ledger tier=B hypothesis:mm1-contiguity-callers
+void AptMath::ClipStackPushUnit()
+{
+	ClipStackPush();
+	ClipStackMakeUnit();
+}
 // FUNCTION: BFME2 0x006DFFB0 size=110 name=?ClipStackInit@AptMath@@SAXI@Z evidence=N:ledger tier=A
 void AptMath::ClipStackInit(unsigned int nMaxTransforms)
 {

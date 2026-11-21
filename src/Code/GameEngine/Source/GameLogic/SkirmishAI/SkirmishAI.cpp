@@ -1,4 +1,8 @@
 // cl: /O1
+// stlport46
+// bfmealloc_alloconly
+#include <stdlib.h>
+extern "C" void __cdecl free(void *);
 #include "GameLogic/SkirmishAI/TacticalAI.h"
 #include "GameLogic/SkirmishAI/SkirmishAI.h"
 #include "GameLogic/SkirmishAI/SkirmishAIManager.h"

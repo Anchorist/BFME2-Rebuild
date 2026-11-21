@@ -1,6 +1,8 @@
 // cl: /O1 /GF- -Ireference/shims/bfmealloc_alloconly /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_STATIC_LIB
 // stlport46
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
+#include <stdlib.h>
+extern "C" void __cdecl free(void *);
 #include <wchar.h>
 #include "Common/File.h"
 #include "Common/FileSystem.h"

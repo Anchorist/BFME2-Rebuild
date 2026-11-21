@@ -48,6 +48,7 @@ class MeshMatDescRendererState;
 class MeshMatDescClass
 {
 public:
+	void rva0015B8C0(void);								// 0x0015B8C0
 	enum
 	{
 		MAX_PASSES = 4,

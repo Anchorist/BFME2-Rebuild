@@ -3,6 +3,7 @@
 // Extent is a hypothesis; only Object VERIFIED establishes recovery.
 // Edges: left=unknown-rows right=unknown-rows
 // cl: /O2
+// Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
 #include <stddef.h>
 #include "WWLib/random.h"
 
@@ -16,6 +17,38 @@ template int Pick_Random_Number<Random4Class>(Random4Class &, int, int);
 // FUNCTION: BFME2 0x006192D0 size=24 name=??RRandomClass@@QAEHXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x006192F0 size=67 name=??RRandom2Class@@QAEHXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
 // FUNCTION: BFME2 0x00619340 size=242 name=??RRandom3Class@@QAEHXZ evidence=N:ledger tier=B hypothesis:mm1-held-object-same-path
+int Random3Class::Mix1[20] = {
+	0xbaa96887, 0x1e17d32c, 0x03bcdc3c, 0x0f33d1b2,
+	0x76a6491d, 0xc570d85d, 0xe382b1e3, 0x78db4362,
+	0x7439a9d4, 0x9cea8ac5, 0x89537c5c, 0x2588f55d,
+	0x415b5e1d, 0x216e3d95, 0x85c662e7, 0x5e8ab368,
+	0x3ea5cc8c, 0xd26a0f74, 0xf3a9222b, 0x48aad7e4
+};
+
+int Random3Class::Mix2[20] = {
+	0x4b0f3b58, 0xe874f0c3, 0x6955c5a6, 0x55a7ca46,
+	0x4d9a9d86, 0xfe28a195, 0xb1ca7865, 0x6b235751,
+	0x9a997a61, 0xaa6e95c8, 0xaaa98ee1, 0x5af9154c,
+	0xfc8e2263, 0x390f5e8c, 0x58ffd802, 0xac0a5eba,
+	0xac4874f6, 0xa9df0913, 0x86be4c74, 0xed2c123b
+};
+
+int Random3Class::operator() (void)
+{
+	int loword = Seed;
+	int hiword = Index++;
+	for (int i = 0; i < 4; i++) {
+		int hihold = hiword;
+		int temp = hihold ^ Mix1[i];
+		int itmpl = temp & 0xffff;
+		int itmph = temp >> 16;
+		temp = itmpl * itmpl + ~(itmph * itmph);
+		temp = (temp >> 16) | (temp << 16);
+		hiword = loword ^ ((temp ^ Mix2[i]) + itmpl * itmph);
+		loword = hihold;
+	}
+	return hiword;
+}
 /// FUNCTION: BFME2 0x00619440 size=75 name=??0Random4Class@@QAE@I@Z evidence=N:ledger
 Random4Class::Random4Class(unsigned int seed)
 {

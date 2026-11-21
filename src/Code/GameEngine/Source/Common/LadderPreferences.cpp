@@ -1,6 +1,9 @@
 // cl: /O1 /D_BFME_RETAIL_TREE_INSERT_LAYOUT /D_STLP_USE_MALLOC /D_STLP_USE_STATIC_LIB /D_STLP_BFME_COPY_TRIVIAL_EXTERN /D_STLP_NO_EXCEPTIONS
 // stlport46
+// bfmealloc_alloconly
 // Portions derived from Command & Conquer Generals and Command & Conquer Generals Zero Hour, (c) Electronic Arts Inc., GPL-3.0-or-later; see LICENSE and NOTICE.
+#include <stdlib.h>
+extern "C" void __cdecl free(void *);
 #include <stdlib.h>
 #include "Common/QuickMatchPreferences.h"
 #include "Common/CustomMatchPreferences.h"
@@ -168,6 +171,12 @@ Int QuickMatchPreferences::getMaxPing()
 }
 
 // FUNCTION: BFME2 0x005DF73F size=104 name=?setMapSelected@QuickMatchPreferences@@QAEXABVAsciiString@@_N@Z evidence=N:ledger tier=B hypothesis:Z
+void QuickMatchPreferences::setMapSelected(const AsciiString &mapName, Bool selected)
+{
+	const char *val = selected ? "1" : "0";
+	AsciiString *entry;
+	(entry = &(*this)[AsciiStringToQuotedPrintable(mapName)], entry->set(val));
+}
 
 // FUNCTION: BFME2 0x005DF7A7 size=175 name=?setLastLadder@QuickMatchPreferences@@QAEXABVAsciiString@@G@Z evidence=N:ledger tier=B hypothesis:Z
 void QuickMatchPreferences::setLastLadder(const AsciiString &addr, UnsignedShort port)

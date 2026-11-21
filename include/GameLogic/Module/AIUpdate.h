@@ -213,6 +213,7 @@ enum AIFreeToExitType
 class AIUpdateInterface : public UpdateModule, public AICommandInterface, public CollideModuleInterface
 {
 	friend class Object;	// Object::rva0028AE6D 0x0028AE6D tail-calls the protected wakeUpNow 0x00262871 (Zero Hour's AIUpdateInterface names Object a friend)
+	friend class ScriptTracker;	// ScriptTracker::update 0x0026249D reads the owner object (Team) of the tracker's AIUpdateInterface
 	friend class AIGroup;	// AIGroup::groupIdle 0x0036FC23 sets +0x3CC on a player's idle order
 public:
 	// Zero Hour's inline accessors over the module data (+0x1C AutoAcquireEnemiesWhenIdle, bit 1 while stealthed):

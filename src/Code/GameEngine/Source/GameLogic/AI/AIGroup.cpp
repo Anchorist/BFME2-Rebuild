@@ -581,7 +581,7 @@ void AIGroup::setSequentialScriptOnMembers(SequentialScript *script, Int flag)
 	{
 		AIUpdateInterface *ai = (*it)->getAIUpdateInterface();
 		if (ai)
-			ai->m_scriptTracker.setCurScript(script, true, flag);
+			ai->m_scriptTracker.setCurScript((Script *)script, true, flag);
 	}
 }
 

@@ -479,6 +479,16 @@ void ControlBar::rva0031BAB1()
 
 // FUNCTION: BFME2 0x0031BDC1 size=45 name=?Rva0031BDC1Construct@@YAXPAXPBX@Z evidence=?:placeholder tier=A
 
+CommandButton *ControlBar::findNonConstCommandButton(const AsciiString &name)
+{
+	for (CommandButton *button = m_commandButtons; button; button = button->m_next)
+	{
+		if (button->m_name.compare(name) == 0)
+			return static_cast<CommandButton *>(button->friend_getFinalOverride());
+	}
+	return NULL;
+}
+
 // FUNCTION: BFME2 0x0031BE3C size=28 name=?findCommandButton@ControlBar@@QAEPBVCommandButton@@ABVAsciiString@@@Z evidence=N:ledger tier=A
 const CommandButton *ControlBar::findCommandButton(const AsciiString &name)
 {

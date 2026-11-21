@@ -68,6 +68,7 @@
 #include "GameLogic/Module/OilSpillUpdateModuleData.h"
 #include "GameLogic/Module/SlaveWatcherBehaviorModuleData.h"
 #include "GameLogic/Module/DelayedWeaponSetUpgradeUpdate.h"
+#include "GameLogic/Module/FloodUpdateModuleData.h"
 // Module creators. Retail registers each module class with a static friend_newModuleInstance that allocates the
 // module for a thing and its module data, and each module data class with a static friend_newModuleData that
 // allocates the data and, when an INI block is open, fills it from the class's buildFieldParse table. The bodies
@@ -455,6 +456,14 @@ Module *FireWeaponUpdate::friend_newModuleInstance(Thing *thing, const ModuleDat
 	return new FireWeaponUpdate(thing, moduleData);
 }
 // FUNCTION: BFME2 0x0024CF56 size=81 name=?friend_newModuleData@FireWeaponUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *FireWeaponUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	FireWeaponUpdateModuleData *data = new FireWeaponUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, FireWeaponUpdateModuleData::buildFieldParse);
+	return data;
+}
+
 // FUNCTION: BFME2 0x0024CFA7 size=56 name=?friend_newModuleInstance@OilSpillUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 Module *OilSpillUpdate::friend_newModuleInstance(Thing *thing, const ModuleData *moduleData)
 {
@@ -496,6 +505,14 @@ ModuleData *FloatUpdateModuleData::friend_newModuleData(INI *ini)
 }
 // FUNCTION: BFME2 0x0024D142 size=56 name=?friend_newModuleInstance@FloodUpdate@@SAPAVModule@@PAVThing@@PBVModuleData@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
 // FUNCTION: BFME2 0x0024D17A size=81 name=?friend_newModuleData@FloodUpdateModuleData@@SAPAVModuleData@@PAVINI@@@Z evidence=N:ledger tier=B hypothesis:mm1-gap-unit
+ModuleData *FloodUpdateModuleData::friend_newModuleData(INI *ini)
+{
+	FloodUpdateModuleData *data = new FloodUpdateModuleData;
+	if (ini)
+		ini->initFromINIMultiProc(data, FloodUpdateModuleData::buildFieldParse);
+	return data;
+}
+
 // Field parse table for DeployStyleAIUpdateModuleData (decoded from retail image).
 static const FieldParse s_deployStyleAIUpdateModuleDataFieldParse[] =
 {

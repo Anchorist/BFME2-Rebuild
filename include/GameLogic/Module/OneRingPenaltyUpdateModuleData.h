@@ -1,12 +1,14 @@
 #pragma once
 #include "GameLogic/Module/ModuleData.h"
 #include "Common/OpaqueRefElement4.h"
+class INI;
 class OneRingPenaltyUpdateModuleData : public ModuleData
 {
 public:
  OneRingPenaltyUpdateModuleData();
  virtual ~OneRingPenaltyUpdateModuleData();
  static void buildFieldParse(MultiIniFieldParse &);
+ static ModuleData *friend_newModuleData(INI *ini);
  AsciiString m_specialObjectName; // 0x08
  unsigned m_ringTimeBeforeSpawning; // 0x0C
  unsigned m_timeSpentRoamingAround; // 0x10

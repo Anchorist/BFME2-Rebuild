@@ -2,12 +2,14 @@
 #include "GameLogic/Module/BezierProjectileBehaviorModuleData.h"
 #include "Common/BitFlags.h"
 class FXList;
+class INI;
 class MissileUpdateModuleData : public BezierProjectileBehaviorModuleData
 {
 public:
  MissileUpdateModuleData();
  virtual ~MissileUpdateModuleData();
  static void buildFieldParse(MultiIniFieldParse &);
+ static ModuleData *friend_newModuleData(INI *ini);
  int m_fuelLifetime; // 0xC4
  int m_ignitionDelay; // 0xC8
  float m_unkCC; // 0xCC

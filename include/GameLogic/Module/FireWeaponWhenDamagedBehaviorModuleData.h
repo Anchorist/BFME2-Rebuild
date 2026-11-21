@@ -16,8 +16,9 @@ class WeaponTemplate;
 class FireWeaponWhenDamagedBehaviorModuleData : public ModuleData
 {
 public:
-	FireWeaponWhenDamagedBehaviorModuleData();
+	FireWeaponWhenDamagedBehaviorModuleData() throw();
 	static void buildFieldParse(MultiIniFieldParse &parse);
+	static ModuleData *friend_newModuleData(INI *ini);
 
 	UpgradeMuxData m_upgradeMuxData;                       // +0x8; added by buildFieldParse at +0x8
 	Bool m_startsActive;                                   // +0x118 StartsActive

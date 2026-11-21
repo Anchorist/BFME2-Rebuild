@@ -1,4 +1,8 @@
 // cl: /O1
+// stlport46
+// bfmealloc_alloconly
+#include <stdlib.h>
+extern "C" void __cdecl free(void *);
 #include <stdio.h>
 #include "Common/OptionPreferences.h"
 #include "GameClient/AptOptions.h"
