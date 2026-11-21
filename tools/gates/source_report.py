@@ -26,16 +26,50 @@ PATH_FIXES = {
 }
 
 TYPE_FIXES = {
-    "void pointer": ("untyped pointers",
-                     "Replace void * on this line with a pointer to the actual object type used by the caller."),
-    "reinterpret cast": ("reinterpret casts",
-                         "Remove this reinterpret_cast and carry the actual object or pointer type through to this line."),
+    "void pointer": ("void-pointer declarations",
+                     "Use the concrete pointer type the function reads or writes, or the field stores. "
+                     "Update the shared declaration, definition and callers together. "
+                     "If the symbol ledger already records this function with void *, "
+                     "keep that signature and ask a maintainer to confirm its ledger entry."),
+    "reinterpret cast": ("reinterpret_cast uses",
+                         "Give the value its concrete type where it is stored or returned, then use it directly here."),
     "c pointer cast": ("C-style pointer casts",
-                       "Remove this C-style pointer cast and give the pointer its actual type where it is declared or passed."),
+                       "Declare the pointer with its concrete type where it is supplied, then use it directly here."),
     "this arithmetic": ("offsets from this",
-                        "Replace the offset calculation with direct access to the typed member or base class."),
+                        "Replace the byte offset with direct access to the typed member or base class."),
     "cast call result": ("casts of return values",
-                         "Declare the function's actual return type and use the returned value without a cast here."),
+                         "Give the callee and its shared declaration the concrete return type, then use that result directly."),
+}
+
+
+COMPILER_COPY = {
+    "A protected compiler directive was added or changed.":
+        ("This build-setting line was added or changed.",
+         "Remove the line if it is new, or copy the exact original line from main if it replaces an existing setting."),
+    "A protected compiler directive was removed (base line).":
+        ("This build-setting line is missing. The line number is from main.",
+         "Copy the exact line from main back into the file."),
+    "Compiler directives changed order.":
+        ("The build-setting lines changed order.",
+         "Restore their order and exact text from main."),
+    "The STLport compiler setting changed.":
+        ("This text enables a different C++ library for the file.",
+         "Remove the new // stlport text and keep the file's original library setting."),
+    "The STLport compiler setting changed (base line).":
+        ("The file's original C++ library setting is missing. The line number is from main.",
+         "Restore the original // stlport text from main."),
+}
+
+FORBIDDEN_FIXES = {
+    "inline assembly": "Write the operation in C or C++ using the declared values and functions.",
+    "emitted bytes": "Express the operation in C or C++ so the compiler emits its instructions.",
+    "naked function": "Use a regular function with the correct signature and C or C++ body.",
+    "symbol alias": "Use the existing declaration for the real symbol and call it directly.",
+    "symbol alias pragma": "Remove the pragma and use the existing declaration for the real symbol.",
+    "linker pragma": "Remove the pragma and ask a maintainer for any required link-setting change.",
+    "optimization pragma": "Remove the pragma and keep the file's existing compiler settings.",
+    "token pasting that can form a forbidden compiler control":
+        "Remove the token paste and express the operation directly in C or C++.",
 }
 
 
@@ -58,11 +92,19 @@ def contributor_copy(rule, message, remedy):
         size = re.fullmatch(r"The file exceeds ([0-9]+) bytes\.", message)
         if size:
             return message, f"Reduce this file to at most {size[1]} bytes."
+    if rule == "G2" and message in COMPILER_COPY:
+        return COMPILER_COPY[message]
+    if rule == "G3" and message.startswith("Added ") and message.endswith("."):
+        construct = message[6:-1]
+        if construct in FORBIDDEN_FIXES:
+            return message, FORBIDDEN_FIXES[construct]
+        if "compiler pragma" in construct:
+            return message, "Remove this pragma and keep the file's existing compiler settings."
     if rule == "G4":
         kind, _, rest = message.partition(" increased by ")
         if kind in TYPE_FIXES and rest:
             label, fix = TYPE_FIXES[kind]
-            return f"The number of {label} increased by {rest}", fix
+            return f"{label[0].upper() + label[1:]} increased by {rest}", fix
     if rule == "G6":
         scope = re.fullmatch(r"([0-9]+) source files contain real changes beyond Draft include/use updates\. The limit is ([0-9]+)\.",
                              message)
@@ -71,6 +113,9 @@ def contributor_copy(rule, message, remedy):
                     f"Move this file's edits to a separate pull request so this one changes at most {scope[2]} source files.")
         if message == "A literal include still points to a deleted Draft header.":
             return message, "Point this include at the permanent header or keep the Draft header until all includes are updated."
+    if rule == "G8" and message.startswith("New address-shaped identifier "):
+        return message, ("Use the identifier already recorded for that address, or ask a maintainer "
+                         "to approve a spelling with the address and your evidence.")
     return message, remedy
 
 
@@ -80,7 +125,8 @@ def public_report(items, rules):
     for item in items:
         rule = item["id"]
         state = {"pass": "Pass", "fail": "Fail", "blocked": "Fail (blocked by G1)"}[item["status"]]
-        table.append(f"| {rule} {rules[rule]} | {state} |")
+        label = "Build settings and annotations" if rule == "G2" else rules[rule]
+        table.append(f"| {rule} {label} | {state} |")
         findings.extend(item["findings"])
     lines = table
     size = sum(len(line) + 1 for line in lines)

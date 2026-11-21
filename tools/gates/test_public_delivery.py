@@ -400,10 +400,15 @@ class Delivery(unittest.TestCase):
 
 
 class Copy(unittest.TestCase):
+    def test_void_pointer_guidance_preserves_an_existing_ledger_signature(self):
+        _, remedy = contributor_copy("G4", "void pointer increased by 1 across changed files.", "")
+        self.assertIn("symbol ledger already records this function with void *", remedy)
+        self.assertIn("keep that signature and ask a maintainer", remedy)
+
     def test_top_refusal_copy_names_the_action_at_the_given_line(self):
         rows = (
             ("G1", "This change adds a source translation unit.", "existing .c or .cpp"),
-            ("G4", "void pointer increased by 1 across changed files.", "actual object type used by the caller"),
+            ("G4", "void pointer increased by 1 across changed files.", "Update the shared declaration, definition and callers together."),
             ("G6", "4 source files contain real changes beyond Draft include/use updates. The limit is 3.",
              "Move this file&#39;s edits to a separate pull request"),
         )
@@ -424,6 +429,41 @@ class Copy(unittest.TestCase):
             ("The file exceeds 1048576 bytes.", "at most 1048576 bytes"),
         ):
             self.assertIn(phrase, contributor_copy("G1", problem, "Old copy.")[1])
+
+    def test_build_setting_copy_distinguishes_new_removed_and_reordered_lines(self):
+        for message, expected in (
+            ("A protected compiler directive was added or changed.", "Remove the line if it is new"),
+            ("A protected compiler directive was removed (base line).", "Copy the exact line from main"),
+            ("Compiler directives changed order.", "Restore their order and exact text from main"),
+            ("The STLport compiler setting changed.", "Remove the new // stlport text"),
+            ("The STLport compiler setting changed (base line).", "Restore the original // stlport text"),
+        ):
+            with self.subTest(message=message):
+                item = dict(id="G2", status="fail", findings=[dict(path="src/Control.cpp", line=2, rule="G2",
+                            message=message, remedy="Old copy.")])
+                report = public_report([item], source.RULES)
+                self.assertIn("Build settings and annotations", report)
+                self.assertIn("src/Control.cpp:2</code> **G2**", report)
+                self.assertIn(expected, report)
+                self.assertNotIn("Old copy", report)
+
+    def test_remaining_failure_copy_gives_a_concrete_edit(self):
+        for rule, problem, baseline_remedy, expected in (
+            ("G3", "Added linker pragma.", "Old copy.", "Remove the pragma"),
+            ("G3", "Added inline assembly.", "Old copy.", "Write the operation in C or C++"),
+            ("G4", "cast call result increased by 1 across changed files.", "Old copy.",
+             "callee and its shared declaration"),
+            ("G4", "reinterpret cast increased by 2 across changed files.", "Old copy.",
+             "where it is stored or returned"),
+            ("G5", "Added comment contains a date.", "Explain the evidence or intent.",
+             "Explain the evidence or intent."),
+            ("G7", "The type Widget already has a definition in include/Widget.h.",
+             "Keep one definition and include its shared declaration.", "include its shared declaration"),
+            ("G8", "New address-shaped identifier rva00543210 is absent from the base ledger.",
+             "Old copy.", "approve a spelling with the address"),
+        ):
+            with self.subTest(rule=rule, problem=problem):
+                self.assertIn(expected, contributor_copy(rule, problem, baseline_remedy)[1])
 
     def test_adversarial_filename_is_rendered_as_text(self):
         item = dict(id="G1", status="fail", findings=[dict(path="src/<mark>@other\n.cpp",
