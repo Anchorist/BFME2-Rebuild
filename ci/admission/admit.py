@@ -206,7 +206,8 @@ def unmeasured_claim(api, number, head, base, clock=None):
 
 def latest_status(api, sha):
     entries = api.call(f"commits/{sha}/statuses?per_page=100&page=1")
-    found = [item for item in entries if item.get("context") == CONTEXT]
+    found = [item for item in entries if item.get("context") == CONTEXT
+             and (item.get("creator") or {}).get("id") == BOT_ID]
     return max(found, key=lambda item: item["id"]) if found else None
 
 
@@ -317,6 +318,25 @@ def source_conflict(api, head, base):
     return None
 
 
+def refresh_recent(api, head, base, clock=None):
+    """True when this commit already has a refresh marker for this main from the Actions bot written within the hour,
+    on any status page, whatever came after it (an event's status, other writers, more than 100 newer statuses).
+    True also when the pages cannot all be read: no second request on doubt."""
+    marker = refresh_text(base)
+    for page in range(1, STATUS_PAGES + 1):
+        entries = api.call(f"commits/{head}/statuses?per_page=100&page={page}")
+        if not isinstance(entries, list):
+            return True
+        for item in entries:
+            if (isinstance(item, dict) and item.get("context") == CONTEXT
+                    and (item.get("creator") or {}).get("id") == BOT_ID and item.get("state") == "pending"
+                    and item.get("description") == marker and recent(item, clock)):
+                return True
+        if len(entries) < 100:
+            return False
+    return True
+
+
 def recent(status, clock=None, seconds=REFRESH_SECONDS):
     """True unless the status is certainly older than `seconds` (an unreadable time counts as recent)."""
     try:
@@ -384,7 +404,11 @@ def on_moved_main(api, number, pr, head, base, prior, clock, find_tree, attempts
             if attempt + 1 < attempts:
                 sleep(5)
     text = refresh_text(base)
-    if prior and prior.get("state") == "pending" and prior.get("description") == text and recent(prior, clock):
+    try:
+        waiting = refresh_recent(api, head, base, clock)
+    except (ApiError, ValueError, TypeError, AttributeError):
+        waiting = True
+    if waiting:
         return f"#{number}: waiting for the source rules on main {base[:12]}; nothing reserved, retried hourly"
     if not still_current(api, number, pr, head, base):
         return f"#{number}: protected main, head or admission type moved; nothing reserved"
@@ -434,7 +458,7 @@ def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
         post(api, head, "pending", DAILY_LIMIT)
         return f"#{number}: held, the daily limits are not configured"
     tree = merge_preview(api, number, head, base, sleep)
-    if tree in (STALE, "conflict") and refresh:
+    if tree in (STALE, "conflict", None) and refresh:
         tree = on_moved_main(api, number, pr, head, base, prior, clock, find_tree or source_tree,
                              attempts=refresh_attempts, sleep=sleep)
         if not (tree == "conflict" or HEX40.fullmatch(tree)):
@@ -466,11 +490,33 @@ def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
         # Only a still-current commit may be marked held, and only if its latest status says something else.
         if not still_current(api, number, pr, head, base):
             return moved
-        latest_admission = latest_status(api, head)
-        if not (latest_admission and latest_admission.get("state") == "pending"
-                and latest_admission.get("description") == SOURCE_HOLD):
-            post(api, head, "pending", SOURCE_HOLD)
-        return f"#{number}: {SOURCE_HOLD}; nothing reserved"
+        proven = False
+        if refresh:
+            # No receipt for GitHub's tree on this main. The hourly run and the landing request never just wait:
+            # the source rules' own receipt (with their tree) is used, or requested once an hour, exactly as for a
+            # stale preview. The pull request event keeps waiting for its own source run.
+            routed = on_moved_main(api, number, pr, head, base, prior, clock, find_tree or source_tree,
+                                   attempts=refresh_attempts, sleep=sleep)
+            if routed == "conflict":
+                if not (prior and prior.get("description") == CONFLICT):
+                    post(api, head, "pending", CONFLICT)
+                return f"#{number}: conflicts with main; nothing reserved"
+            if not HEX40.fullmatch(routed):
+                return routed
+            try:
+                (check_source if source_proof is None else source_proof)(api, number, head, base, routed)
+                tree, proven = routed, True
+            except source_approval.Refused:
+                return f"#{number}: protected source rules refused this head; nothing reserved"
+            except (ApiError, OSError, ValueError, KeyError, TypeError, AttributeError, subprocess.SubprocessError,
+                    zipfile.BadZipFile):
+                pass
+        if not proven:
+            latest_admission = latest_status(api, head)
+            if not (latest_admission and latest_admission.get("state") == "pending"
+                    and latest_admission.get("description") == SOURCE_HOLD):
+                post(api, head, "pending", SOURCE_HOLD)
+            return f"#{number}: {SOURCE_HOLD}; nothing reserved"
     if not still_current(api, number, pr, head, base):
         return moved
     try:

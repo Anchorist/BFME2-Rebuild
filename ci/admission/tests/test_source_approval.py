@@ -324,6 +324,125 @@ class MovedMain(unittest.TestCase):
         api.prs[21]["mergeable"] = False
         self.assertIn("conflicts with main", self.decide(api, mode="event"))
 
+    def fresh(self):
+        api = self.api()
+        api.preview_base = NEWER                                   # GitHub did recompute the preview for the new main
+        for row in api.statuses[HEAD]:
+            row["description"] = f"Pass (main {MAIN[:12]})"        # but only the old main's source rules exist
+        return api
+
+    def test_a_fresh_preview_without_a_receipt_requests_the_source_rules_once_an_hour(self):
+        api = self.fresh()
+        self.assertEqual(admit.merge_preview(api, 21, HEAD, NEWER, sleep=lambda s: None), TREE)
+        self.assertIn("source rules requested", self.decide(api))
+        self.assertEqual(self.refreshes(api), [{"event_type": admit.REFRESH_EVENT,
+                                                "client_payload": {"number": 21, "head": HEAD, "base": NEWER}}])
+        api.statuses[HEAD][-1]["created_at"] = "2026-11-20T19:10:00Z"
+        self.assertIn("waiting for the source rules", self.decide(api, mode="request"))
+        self.assertEqual((len(self.refreshes(api)), api.store), (1, {}))
+        # the pull request event keeps waiting for its own source run
+        api = self.fresh()
+        self.assertIn(admit.SOURCE_HOLD, self.decide(api, mode="event"))
+        self.assertEqual(dispatches(api), [])
+
+    def test_a_fresh_preview_with_the_receipt_published_later_reserves(self):
+        api = self.fresh()
+        self.decide(api)
+        for row in api.statuses[HEAD]:
+            if row.get("context") in CONTEXTS:
+                row["description"] = f"Pass (main {NEWER[:12]})"   # the refresh published for the new main
+        self.assertIn("admitted by rule", self.decide(api, mode="request"))
+        self.assertEqual(admit.ledger.find(api, 21, HEAD, NEWER)["tree"], TREE)
+
+    def test_a_preview_github_never_finishes_takes_the_receipt_route(self):
+        api = self.api()
+        api.prs[21]["merge_commit_sha"] = None                     # mergeable null, no preview commit
+        api.prs[21]["mergeable"] = None
+        self.assertIsNone(admit.merge_preview(api, 21, HEAD, NEWER, sleep=lambda s: None))
+        self.assertIn("admitted by rule", self.decide(api))
+        api = self.api()
+        api.prs[21]["merge_commit_sha"] = None
+        for row in api.statuses[HEAD]:
+            row["description"] = f"Pass (main {MAIN[:12]})"
+        self.assertIn("source rules requested", self.decide(api))
+        self.assertIn("not ready", self.decide(self.api_without_preview(), mode="event"))
+
+    def api_without_preview(self):
+        api = self.api()
+        api.prs[21]["merge_commit_sha"] = None
+        return api
+
+    def test_a_receipt_whose_tree_differs_from_githubs_preview_still_reserves_its_own_tree(self):
+        api = self.fresh()
+        for row in api.statuses[HEAD]:
+            row["description"] = f"Pass (main {NEWER[:12]})"
+        api.receipt["tree"] = "b" * 40                             # the source rules' merge, not GitHub's
+        self.assertIn("admitted by rule", self.decide(api))
+        self.assertEqual(admit.ledger.find(api, 21, HEAD, NEWER)["tree"], "b" * 40)
+
+    def no_receipt(self):
+        api = self.api()
+        for row in api.statuses[HEAD]:
+            row["description"] = f"Pass (main {MAIN[:12]})"
+        return api
+
+    def test_an_intervening_event_status_does_not_reopen_the_hour(self):
+        for later in (admit.PREVIEW_WAIT, admit.CONFLICT, admit.SOURCE_HOLD):
+            with self.subTest(later=later):
+                api = self.no_receipt()
+                self.decide(api)
+                api.statuses[HEAD][-1]["created_at"] = "2026-11-20T19:35:00Z"
+                admit.post(api, HEAD, "pending", later)              # e.g. reopen / ready_for_review event
+                self.assertIn("waiting for the source rules", self.decide(api, mode="request"))
+                self.assertEqual(len(self.refreshes(api)), 1)
+
+    def test_the_marker_counts_on_any_page_and_an_unreadable_list_fails_closed(self):
+        api = self.no_receipt()
+        self.decide(api)
+        api.statuses[HEAD][-1]["created_at"] = "2026-11-20T19:35:00Z"
+        for index in range(105):                                     # push the marker to page 2
+            api.statuses[HEAD].append({"context": "other", "state": "success", "creator": {"id": 7}, "id": 5000 + index})
+        self.assertIn("waiting for the source rules", self.decide(api))
+        self.assertEqual(len(self.refreshes(api)), 1)
+        api = self.no_receipt()
+        for index in range(admit.STATUS_PAGES * 100):                 # more statuses than are read: no new request
+            api.statuses[HEAD].append({"context": "other", "state": "success", "creator": {"id": 7}, "id": 9000 + index})
+        self.assertIn("waiting for the source rules", self.decide(api))
+        self.assertEqual(self.refreshes(api), [])
+
+    def test_a_marker_or_status_from_anyone_but_the_bot_does_not_count(self):
+        api = self.no_receipt()
+        self.decide(api)
+        api.statuses[HEAD][-1]["created_at"] = "2026-11-20T19:35:00Z"
+        api.statuses[HEAD].append({"context": admit.CONTEXT, "state": "success", "creator": {"id": 1234},
+                                   "description": "anything", "id": 7777})
+        self.assertIn("waiting for the source rules", self.decide(api))
+        self.assertEqual(len(self.refreshes(api)), 1)
+        api = self.no_receipt()                                      # a forged marker does not suppress the request
+        api.statuses[HEAD].append({"context": admit.CONTEXT, "state": "pending", "creator": {"id": 1234},
+                                   "description": admit.refresh_text(NEWER), "id": 7777,
+                                   "created_at": "2026-11-20T19:35:00Z"})
+        self.assertIn("source rules requested", self.decide(api))
+        self.assertEqual(len(self.refreshes(api)), 1)
+
+    def test_a_request_on_a_fresh_preview_waits_for_the_run_that_sent_it(self):
+        api = self.fresh()
+        for row in api.statuses[HEAD]:
+            row["description"] = f"Pass (main {NEWER[:12]})"
+        api.receipt["tree"] = "b" * 40                            # GitHub's preview tree has no proof
+        calls, delays = [], []
+
+        def late(api_, number, head, base):
+            calls.append(1)
+            if len(calls) < 3:                                    # the source run is still being marked completed
+                raise admit.source_approval.Unavailable("in progress")
+            return self.tree(api_, number, head, base)
+        line = admit.handle(api, 21, CONFIG, NEWER, BUDGET, CLOCK, sleep=delays.append, source_proof=api.proof,
+                            refresh=True, find_tree=late, refresh_attempts=12)
+        self.assertIn("admitted by rule", line)
+        self.assertEqual((len(calls), delays), (3, [5, 5]))
+        self.assertEqual([item["event_type"] for item in dispatches(api)], ["bfme-remeasure"])
+
     def test_a_refused_source_verdict_on_the_moved_main_is_final(self):
         api = self.api()
         api.statuses[HEAD][2]["state"] = "failure"
