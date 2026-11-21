@@ -77,7 +77,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for dir in ci/header ci/managed-check ci/managed-nt2; do
+          for dir in ci/header ci/managed-check ci/managed-nt2 ci/header-witness; do
             if [ "$dir" != ci/header ] && [ ! -f "$dir/bundle.sha256" ]; then
               continue   # the declaration reader is not on this main yet: H2 shows as not built
             fi

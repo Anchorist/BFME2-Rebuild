@@ -125,7 +125,26 @@ def read_h2(record):
         return {"error": f"no published declaration evidence for this commit ({type(exc).__name__})"}
 
 
-def components_for(record, boat, h2=None, admission=None):
+H5_READER = HERE.parents[1] / "ci" / "header-witness" / "h5_reader.py"
+
+
+def read_h5(record):
+    """The compiler check's published layout receipt for exactly this pull request, head, main and tree. None: the
+    reader is not on main yet. Any refusal holds H5."""
+    if not H5_READER.exists():
+        return None
+    sys.path.insert(0, str(H5_READER.parent))
+    try:
+        import h5_reader as h5_reader
+    except ImportError as exc:
+        return {"error": f"the layout reader did not load ({type(exc).__name__})"}
+    try:
+        return h5_reader.read_published({key: record[key] for key in ("number", "base", "head", "tree")})
+    except Exception as exc:   # the reader refuses by exception; every refusal holds
+        return {"error": f"no published layout evidence for this commit ({type(exc).__name__})"}
+
+
+def components_for(record, boat, h2=None, admission=None, h5=None):
     base = record["base"]
     if record.get("checks") is None:
         rows = {rule: {"state": "missing"} for rule in SOURCE_RULES}
@@ -142,7 +161,12 @@ def components_for(record, boat, h2=None, admission=None):
         rows["H2"], request = compose.from_h2(h2)
         if request:
             rows["H9"] = request
-    rows.setdefault("H5", {"state": "missing"})     # layout producer: not on main yet
+    if h5 is None:
+        rows.setdefault("H5", {"state": "missing"})  # layout reader: not on main yet
+    elif "error" in h5:
+        rows["H5"] = {"state": "held", "message": h5["error"]}
+    else:
+        rows["H5"] = compose.from_h5(h5, record.get("header_paths") or [])
     rows["H10"] = compose.from_admission(admission, rows["H1"])
     return rows
 
@@ -209,8 +233,14 @@ def publish(path, api=None, out=print):
     code, statuses = api.send("GET", f"commits/{record['head']}/statuses?per_page=100")
     if code != 200:
         raise Stop(f"Expected the status list. Found HTTP {code}.")
-    rows = components_for(record, latest_bot_status(statuses, "BFME II / Boat"), read_h2(record),
-                          latest_bot_status(statuses, "BFME II / Admission"))
+    token = os.environ.get("BFME_RECOVERY_READ_TOKEN")
+    h2 = read_h2(record)
+    if token:                                       # each reader takes the read token out of the environment
+        os.environ["BFME_RECOVERY_READ_TOKEN"] = token
+    h5 = read_h5(record)
+    os.environ.pop("BFME_RECOVERY_READ_TOKEN", None)
+    rows = components_for(record, latest_bot_status(statuses, "BFME II / Boat"), h2,
+                          latest_bot_status(statuses, "BFME II / Admission"), h5)
     request = rows.pop("H9", None)
     state, text, report = compose.compose(record["base"], rows, ledger_request=request)
     prior = latest_bot_status(statuses, compose.CONTEXT) or {}

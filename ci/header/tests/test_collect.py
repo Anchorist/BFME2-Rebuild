@@ -13,6 +13,7 @@ import collect  # noqa: E402
 
 INSTALLED_READER = collect.H2_READER
 collect.H2_READER = Path("/nonexistent/ci/managed-check/header_h2_action.py")   # tests choose the reader themselves
+collect.H5_READER = Path("/nonexistent/ci/header-witness/h5_reader.py")
 
 FIXTURE = json.loads((Path(__file__).parent / "fixtures/preview-13-15.json").read_text())
 BASE = FIXTURE["base"]
@@ -186,6 +187,66 @@ class DeclarationEvidence(unittest.TestCase):
         self.assertEqual(held, {"error": "no published declaration evidence for this commit (ValueError)"})
         self.assertEqual(passed["status"], "pass")
         self.assertEqual(module.seen[0], {key: record()[key] for key in ("number", "base", "head", "tree")})
+
+
+def h5doc(atoms=(), reads=(), compatible=None, held=()):
+    layout = {"complete": True, "compatible_shape": (not atoms) if compatible is None else compatible,
+              "atoms": list(atoms)}
+    return {"version": 1, "held": list(held),
+            "headers": {path: {"layout": layout, "access": {"reads": list(reads)}, "held": []}
+                        for path in PR13["header_paths"]}}
+
+
+ATOM = {"header": "include/GameClient/W3DView.h", "qualified_class": "W3DView", "kind": "member",
+        "identity": "m_x", "before": {"offset": 8, "width": 4, "type": "int"},
+        "after": {"offset": 12, "width": 4, "type": "int"}}
+READ = {k: ATOM[k] for k in ("header", "qualified_class", "kind", "identity")} | {
+    "receiver_type": "W3DView", "observed": ATOM["after"], "operation": "access", "rva": 4096}
+
+
+class LayoutEvidence(unittest.TestCase):
+    def h5(self, doc):
+        return collect.components_for(record(), None, None, None, doc)["H5"]
+
+    def test_unchanged_or_compatible_layout_passes(self):
+        self.assertEqual(self.h5(h5doc())["state"], "pass")
+
+    def test_a_moved_member_passes_only_with_its_witness(self):
+        self.assertEqual(self.h5(h5doc([ATOM], [READ]))["state"], "pass")
+        state = self.h5(h5doc([ATOM]))
+        self.assertEqual(state["state"], "held")
+        self.assertIn("W3DView::m_x moved", state["message"])
+        wrong = dict(READ, observed={"offset": 8, "width": 4, "type": "int"})
+        self.assertEqual(self.h5(h5doc([ATOM], [wrong]))["state"], "held")
+
+    def test_size_base_and_slot_changes_and_any_hold_wait(self):
+        for doc in (h5doc([dict(ATOM, kind="size")], [READ]), h5doc(held=["4 headers changed"]),
+                    h5doc(compatible=False), {"version": 1, "held": [], "headers": {}}):
+            self.assertEqual(self.h5(doc)["state"], "held")
+
+    def test_reader_absent_is_not_built_and_a_refusal_holds(self):
+        self.assertEqual(collect.components_for(record(), None)["H5"]["state"], "missing")
+        self.assertEqual(self.h5({"error": "no published layout evidence"})["state"], "held")
+
+    def test_both_readers_get_the_read_token(self):
+        seen = []
+
+        def reader(name):
+            def read(rec):
+                seen.append((name, os.environ.pop("BFME_RECOVERY_READ_TOKEN", None)))
+                return None
+            return read
+        real = collect.components_for
+
+        def composing(*args):
+            seen.append(("compose", os.environ.get("BFME_RECOVERY_READ_TOKEN")))
+            return real(*args)
+        with unittest.mock.patch.object(collect, "read_h2", side_effect=reader("h2")), \
+                unittest.mock.patch.object(collect, "read_h5", side_effect=reader("h5")), \
+                unittest.mock.patch.object(collect, "components_for", side_effect=composing), \
+                unittest.mock.patch.dict(os.environ, {"BFME_RECOVERY_READ_TOKEN": "t" * 20}):
+            publish(record(), FakeApi())
+        self.assertEqual(seen, [("h2", "t" * 20), ("h5", "t" * 20), ("compose", None)])
 
 
 class AdmissionStatus(unittest.TestCase):

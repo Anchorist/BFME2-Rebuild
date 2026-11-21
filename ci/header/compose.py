@@ -122,6 +122,42 @@ def from_h2(result):
     return {"state": "held", "message": "the declaration check gave no verdict"}, None
 
 
+def from_h5(doc, paths):
+    """H5 from the bound layout receipt: for every changed header, the measured layout and the typed-use witnesses.
+    Same rule as the layout join: unchanged or compatible shape passes; every moved member needs a newly matched
+    function that uses it; size, base and slot changes wait for a witness form. It never fails."""
+    def held(message):
+        return {"state": "held", "message": message[:120]}
+    if doc.get("held"):
+        return held(str(doc["held"][0]))
+    headers = doc.get("headers") if isinstance(doc.get("headers"), dict) else {}
+    for path in paths:
+        item = headers.get(path)
+        if not isinstance(item, dict):
+            return held(f"no layout evidence for {path}")
+        if item.get("held"):
+            return held(str(item["held"][0]))
+        layout = item.get("layout") or {}
+        atoms = layout.get("atoms")
+        if layout.get("complete") is not True or not isinstance(atoms, list):
+            return held(f"the layout of {path} is not completely measured")
+        if not atoms:
+            if layout.get("compatible_shape") is not True:
+                return held(f"the layout of {path} was not certified unchanged")
+            continue
+        reads = (item.get("access") or {}).get("reads") or []
+        for atom in atoms:
+            name = f"{atom.get('qualified_class')}::{atom.get('identity')}"
+            if atom.get("kind") != "member":
+                return held(f"{atom.get('qualified_class')}: a {atom.get('kind')} change needs a witness this check "
+                            "does not have yet")
+            if not any(all(read.get(key) == atom.get(key) for key in ("header", "qualified_class", "kind", "identity"))
+                       and read.get("observed") == atom.get("after") and read.get("operation") == "access"
+                       for read in reads if isinstance(read, dict)):
+                return held(f"{name} moved; it needs a newly matched function that uses it")
+    return {"state": "pass", "message": "Every changed layout is unchanged in shape or used by a new match."}
+
+
 def from_admission(status, wide):
     """H10, the wide budget, from the bot's BFME II / Admission status on this head and the H1 row already composed.
     It never fails: over budget, a header change waits and is retried automatically."""
