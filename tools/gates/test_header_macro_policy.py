@@ -110,5 +110,43 @@ class MacroPolicyTests(unittest.TestCase):
                 self.assertTrue(self.verify(invalid)[1])
 
 
+
+class HeaderOwnDeclarations(unittest.TestCase):
+    """A macro in a header that rewrites the header's own declarations, with no include after it."""
+
+    def test_a_keyword_macro_before_the_class_is_flagged(self):
+        before = "class A { int x; };\n"
+        self.assertIsNotNone(change_in("include/K13Control.h", before, "#define int short\n" + before))
+        for spelled in ("#define class struct\n", "#define unsigned signed\n"):
+            self.assertIsNotNone(change_in(HEADER, before, spelled + before))
+
+    def test_a_macro_capturing_an_identifier_the_header_used_is_flagged(self):
+        before = "#include \"Types.h\"\nstruct A { Bool b; };\n"
+        self.assertIsNotNone(change_in(HEADER, before, before + "#define Bool char\n"))
+        self.assertIsNotNone(change_in(HEADER, before.replace("Bool b", "Real r"),
+                                       before.replace("Bool b", "Real r") + "#undef Real\n"))
+        changed = '#include "Types.h"\n#define Bool int\nstruct A { Bool b; };\n'
+        self.assertIsNotNone(change_in(HEADER, changed, changed.replace("Bool int", "Bool char")))
+
+    def test_an_added_ordinary_include_guard_is_not_flagged(self):
+        before = "class A { int x; };\n"
+        guarded = "#ifndef A_H\n#define A_H\n" + before + "#endif\n"
+        self.assertIsNone(change_in(HEADER, before, guarded))
+        self.assertIsNone(change_in(HEADER, "", guarded))
+
+    def test_an_identical_macro_on_both_sides_is_not_flagged(self):
+        text = "#define int short\nclass A { int x; };\n"
+        self.assertIsNone(change_in(HEADER, text, text + "// a comment\n"))
+
+    def test_a_new_constant_after_the_last_include_is_not_flagged(self):
+        before = '#include "Types.h"\nstruct A { int x; };\n'
+        after = before + "#define MAX_ARMIES 16\nstruct B { int armies[MAX_ARMIES]; };\n"
+        self.assertIsNone(change_in(HEADER, before, after))
+
+    def test_a_source_file_keeps_its_local_macros(self):
+        before = '#include "Shared.h"\nint f() { return 1; }\n'
+        self.assertIsNone(change_in(PATH, before, before + "#define int short\n"))
+
+
 if __name__ == "__main__":
     unittest.main()

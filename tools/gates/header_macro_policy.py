@@ -13,6 +13,15 @@ MACROS = {"define", "undef", "push_macro", "pop_macro"}
 INCLUDES = {"include", "include_next", "import", "using"}
 OPEN = {"if", "ifdef", "ifndef"}
 ARMS = {"elif", "elifdef", "elifndef", "else"}
+IDENTIFIER = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\Z")
+# A macro named like one of these rewrites declarations wherever it is defined.
+KEYWORDS = frozenset("""
+    alignof asm auto bool break case catch char class const const_cast continue default delete do double
+    dynamic_cast else enum explicit export extern false float for friend goto if inline int long mutable namespace
+    new operator private protected public register reinterpret_cast return short signed sizeof static static_cast
+    struct switch template this throw true try typedef typeid typename union unsigned using virtual void volatile
+    wchar_t while __int8 __int16 __int32 __int64 __declspec __stdcall __cdecl __fastcall __thiscall
+""".split())
 MOVE = re.compile(r"[-/](?:[DU](?:[A-Za-z_]\S*)?|FI\S*)\Z")
 HASH = re.compile(r"[0-9a-f]{64}\Z")
 OID = re.compile(r"[0-9a-f]{40}\Z")
@@ -107,7 +116,7 @@ def guard_definition(source):
     return source.ordered[opening[0] + 2], definition[0]
 
 
-def events(source, ignored_definition=None):
+def events(source, ignored_definition=None, whole_file=False):
     flags = source_flags(source)
     all_events = [flags] if flags else []
     guards = []
@@ -153,10 +162,35 @@ def events(source, ignored_definition=None):
                 offset = stop + 1
                 continue
         offset += 1
+    if whole_file:
+        return tuple(all_events)
     last_include = max((i for i, item in enumerate(all_events) if item.kind in INCLUDES), default=-1)
     if last_include < 0:
         return (flags,) if flags and any(value.startswith("-FI") for value in flags.values) else ()
     return tuple(all_events[:last_include + 1])
+
+
+def own_identifiers(source):
+    """Identifiers in the file's own text, outside preprocessor directives."""
+    inside = {index for start, end in source.directives() for index in range(start, end)}
+    return {token.value for index, token in enumerate(source.tokens)
+            if index not in inside and IDENTIFIER.fullmatch(token.value)}
+
+
+def macro_name(event):
+    if event.kind in ("define", "undef"):
+        return event.values[0] if event.values else ""
+    for value in event.values:                       # push_macro("NAME") / pop_macro("NAME")
+        if value.startswith('"'):
+            return value.strip('"')
+    return ""
+
+
+def capturing(source, ignored_definition, names):
+    """Macro directives anywhere in a header whose name is a keyword or one of the header's own identifiers: they
+    rewrite the header's own declarations whether or not an include follows them."""
+    return tuple(event for event in events(source, ignored_definition, whole_file=True)
+                 if event.kind in MACROS and (macro_name(event) in KEYWORDS or macro_name(event) in names))
 
 
 def shape_key(record):
@@ -175,16 +209,28 @@ def change_in(path, before, after):
         prior_ignored, candidate_ignored = old_guard[1], new_guard[1]
     elif new_guard and not prior.tokens:
         candidate_ignored = new_guard[1]
+    own = False
     old, new = events(prior, prior_ignored), events(candidate, candidate_ignored)
     old_key, new_key = tuple(map(shape_key, old)), tuple(map(shape_key, new))
     if old_key == new_key or not any(e.kind in MACROS | {"flags"} for e in old + new):
-        return None
+        if not path.startswith("include/"):
+            return None
+        # A header's own declarations: a macro named like a keyword, or like an identifier the header already
+        # used, changes them even after the last include. A new macro name (a new constant) does not.
+        names = own_identifiers(prior)
+        old = capturing(prior, prior_ignored, names)
+        new = capturing(candidate, candidate_ignored, names)
+        old_key, new_key = tuple(map(shape_key, old)), tuple(map(shape_key, new))
+        if old_key == new_key:
+            return None
+        own = True
     # Locate the first changed preprocessor input or include boundary. Lines
     # are for presentation and stay out of the canonical input identity.
     limit = min(len(old_key), len(new_key))
     first = next((i for i in range(limit) if old_key[i] != new_key[i]), limit)
     physical = new[first] if first < len(new) else old[first]
-    material = json.dumps((old_key, new_key), ensure_ascii=True, separators=(",", ":")).encode("ascii")
+    shape = ("own", old_key, new_key) if own else (old_key, new_key)
+    material = json.dumps(shape, ensure_ascii=True, separators=(",", ":")).encode("ascii")
     return MacroChange(path, physical.line, sha256(material).hexdigest())
 
 
