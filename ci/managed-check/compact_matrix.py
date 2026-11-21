@@ -10,11 +10,13 @@ from wide_plan import identity, key
 SHA = re.compile(r"[a-f0-9]{64}\Z")
 RUN = re.compile(r"[1-9][0-9]{0,19}\Z")
 ROWS = ("rva", "status", "pct", "proof", "credited", "size", "symbol")
-NATIVE = ("object_verified", "error", "gates", "rows", "optimization_hint", "emitted_data")
+NATIVE = ("object_verified", "error", "gates", "rows", "optimization_hint", "emitted_data", "blockers")
 
 
 def compact_native(outcome):
     check_native(outcome)
+    if "blockers" not in outcome:
+        raise ValueError("The native comparison omitted its verification facts.")
     if "emitted_data" in outcome and not valid_witness(outcome["emitted_data"]):
         raise ValueError("The emitted-data witness is malformed.")
     row_fields = [{name: row[name] for name in ROWS if name in row} for row in outcome["rows"]]
@@ -101,6 +103,8 @@ def join_compact(document, receipts, *, expected, run, attempt):
                 raise ValueError("A compact result has an invalid failure witness.")
             outcome = row["native"]
             check_native(outcome)
+            if "blockers" not in outcome:
+                raise ValueError("A native receipt omitted its verification facts.")
             if set(outcome) - set(NATIVE) or any(set(r) - set(ROWS) for r in outcome["rows"]):
                 raise ValueError("A compact result includes private native fields.")
             native["base" if k[0] == "parent" else "head"][k[1]] = outcome

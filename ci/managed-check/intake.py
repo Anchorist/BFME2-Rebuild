@@ -9,10 +9,12 @@ from common import PIN, REPO_ID, digest, policy, read, validate_binding, write
 from gitrepo import Change, Git, Refusal, safe_path
 from fork_admission import narrow
 from pool_compare import projection
-from pool_protocol import compiler_source_problem, decode, encode
+from pool_protocol import DIRECTIVE, INCLUDE, compiler_source_problem, decode, encode
+from cpp import SPLICE, TOKEN, TRIGRAPH
 
-INCLUDE = re.compile(rb'^[ \t]*#[ \t]*include[ \t]*[<"]([^>"\r\n]+)[>"]', re.M)
 MAX_AFFECTED = 512
+INCLUDE_HINT = re.compile(r"\binclude\b[^\n]*")
+INCLUDE_DIGRAPH = re.compile(r"^([ \t]*)%:")
 
 
 class Refused(Exception):
@@ -30,8 +32,48 @@ def tu(path):
     return path.startswith("src/") and PurePosixPath(path).suffix.lower() in {".c", ".cpp"}
 
 
-def affected(files, headers):
-    """A conservative reverse graph. Include suffixes cover different search paths and case."""
+def literal_includes(content):
+    raw = decode(content, 1024**2)
+    if b"#" not in raw and b"??=" not in raw and b"%:" not in raw:
+        return ()
+    text = raw.decode("utf-8-sig", "replace").replace("\r\n", "\n").replace("\r", "\n")
+    text = re.sub(r"\?\?([=/'()!<>-])", lambda match: TRIGRAPH[match[1]], text) if "??" in text else text
+    text = SPLICE.sub("", text)
+    # Find a conservative upper bound on logical directives. A block comment
+    # can span physical lines before or after the include word.
+    last = 0
+    for hint in INCLUDE_HINT.finditer(text):
+        last = hint.end()
+    parts, previous, position = [], 0, 0
+    while position < last and (match := TOKEN.search(text, position)):
+        start, end = match.span()
+        if start >= last:
+            break
+        if match.lastgroup == "raw":
+            # VC7.1 reads this as a word followed by an ordinary literal.
+            end = text.index('"', start, end)
+        if match.lastgroup in {"line", "block"}:
+            parts.extend((text[previous:start], " "))
+            previous = end
+            if end > last:
+                newline = text.find("\n", end)
+                last = len(text) if newline < 0 else newline
+        position = end
+    parts.append(text[previous:last])
+    names = []
+    for line in "".join(parts).split("\n"):
+        directive = DIRECTIVE.fullmatch(INCLUDE_DIGRAPH.sub(r"\1#", line, count=1))
+        if directive and directive[1] == "include":
+            operand = INCLUDE.fullmatch(directive[2])
+            if operand:
+                names.append((operand[1] or operand[2]).replace("\\", "/").casefold())
+    return tuple(names)
+
+
+def affected(files, changed, *, include_cache=None):
+    """Follow reverse include edges on either exact source tree."""
+    if include_cache is None:
+        include_cache = {}
     aliases = defaultdict(set)
     includers = defaultdict(set)
     for path in files:
@@ -39,12 +81,17 @@ def affected(files, headers):
         for start in range(len(parts)):
             aliases["/".join(parts[start:])].add(path)
     for path, content in files.items():
-        for item in INCLUDE.findall(decode(content, 1024**2)):
-            pieces = item.decode("utf-8", "replace").replace("\\", "/").casefold().split("/")
+        if content not in include_cache:
+            include_cache[content] = literal_includes(content)
+        for name in include_cache[content]:
+            pieces = name.split("/")
             label = "/".join(part for part in pieces if part not in {"", ".", ".."})
-            for target in aliases[label] | aliases[pieces[-1]]:
+            targets = aliases[label]
+            if ".." in pieces:
+                targets = targets | aliases[pieces[-1]]
+            for target in targets:
                 includers[target].add(path)
-    seen, todo = set(headers), deque(headers)
+    seen, todo = set(changed), deque(changed)
     while todo:
         for includer in includers[todo.popleft()] - seen:
             seen.add(includer)
@@ -99,12 +146,11 @@ def candidate(git, event):
         changes.append({"path": path, "mode": mode, "oid": oid,
                         "blob": encode(data) if data is not None else None})
     changed = sorted(row["path"] for row in changes)
-    headers = {path for path in changed if path.startswith("include/")}
-    paths = {path for path in changed if tu(path)}
-    if headers:
-        old_files, _ = projection(git, base)
-        new_files, _ = projection(git, prepared.commit)
-        paths |= affected(old_files, headers) | affected(new_files, headers)
+    old_files, _ = projection(git, base)
+    new_files, _ = projection(git, prepared.commit)
+    include_cache = {}
+    paths = affected(old_files, changed, include_cache=include_cache)
+    paths |= affected(new_files, changed, include_cache=include_cache)
     if not paths:
         raise Refused("no-includers")
     if len(paths) > MAX_AFFECTED:

@@ -87,6 +87,15 @@ def check_native(outcome):
             or not isinstance(outcome.get("gates"), list)
             or any(not isinstance(gate, str) for gate in outcome["gates"])):
         raise ValueError("The native comparison has a malformed verdict.")
+    if "blockers" in outcome:
+        facts = outcome["blockers"]
+        kinds = {"emitted-row", "unexpected-code", "owned-order", "placeholder-virtual", "native-object"}
+        if (not isinstance(facts, list) or len(facts) > 8192
+                or not all(isinstance(fact, list) and len(fact) == 2 and isinstance(fact[0], str)
+                           and fact[0] in kinds and isinstance(fact[1], str)
+                           and re.fullmatch(r"[0-9a-f]{64}", fact[1]) for fact in facts)
+                or sorted({tuple(fact) for fact in facts}) != list(map(tuple, facts))):
+            raise ValueError("The native comparison has invalid verification facts.")
     addresses = [int(row["rva"], 16) for row in outcome["rows"]]
     if len(addresses) != len(set(addresses)):
         raise ValueError("The native comparison repeated a row.")

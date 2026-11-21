@@ -42,6 +42,12 @@ RULES = {
     "reference-proof": ("Reference proof", "Restore the previously proven reference and its typed provider."),
     "placeholder-type": ("Type names", "Use the evidenced name of the represented type."),
     "type-placement": ("Class definition placement", "Put the canonical class definition in an existing project header."),
+    "native-identity": ("Function identity", "Restore the expected function declaration and compiled name."),
+    "emitted-row": ("Expected emitted functions", "Restore the expected compiler-emitted function or ask for a ledger review."),
+    "unexpected-code": ("Unexpected compiler-emitted code", "Check for a new body or template instantiation outside the mapped unit."),
+    "owned-order": ("Compiled function order", "Keep owned functions in their expected relative order."),
+    "placeholder-virtual": ("Virtual declarations", "Use a canonical virtual declaration in the affected header."),
+    "native-object": ("Native object evidence", "Review the compiler input and object verification diagnostics."),
     "partial-body": ("New function body match", "Match the reference body before landing the new function."),
 }
 

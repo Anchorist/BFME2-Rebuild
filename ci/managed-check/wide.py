@@ -9,7 +9,7 @@ from time import monotonic
 from types import SimpleNamespace
 
 from common import HEX64, PIN, digest, encoded, read, validate_binding, write
-from compare import difference, make_report, native_commands, protected_judge
+from compare import difference, make_report, native_commands, protected_judge, native_blockers, measure_batch
 from emitted_data import record_pairs
 from compact_matrix import make_compact, join_compact
 from diff_scope import diff_lines
@@ -18,7 +18,6 @@ from finished_index import Owners
 from gitrepo import Git
 from intake import reconstruct
 from managed_matrix import SIDES, assignment, check_native, compiler_receipt, make
-import measure as canary_measure
 from measure import audit, pin
 from pool_protocol import safe_diagnostics
 from reporting import GATES, STATES, numeric, safe_listing
@@ -105,7 +104,8 @@ def sanitize_outcome(raw, path, changed):
     verdict = {"rows": [{key: row[key] for key in ("rva", "status", "credited", "proof", "pct") if key in row}
                         for row in raw["rows"]],
                "object_verified": bool(raw.get("object_verified")),
-               "gates": sorted({gate_key(value) for value in raw["gates"]})}
+               "gates": sorted({gate_key(value) for value in raw["gates"]}),
+               "blockers": native_blockers(raw)}
     if raw.get("error"):
         located = safe_diagnostics(path, raw["error"], tuple(sorted(changed)))
         diagnostics = "\n".join(line for line in located.splitlines() if line.split("(", 1)[0] in changed)
@@ -121,21 +121,6 @@ def clean_difference(value, listing):
         "retail_size": numeric(value.get("retail_size"), 2**31),
         "compiled_listing": safe_listing(value.get("compiled_listing", [])) if listing else [],
     }.items() if field is not None}
-
-
-def measure_batch(git, judge, side, plan, tools, job, *, timing=None):
-    """Preserve the optional assembly allowances from the protected base."""
-    previous = canary_measure.CONFIG
-    base = plan["historical_base"]
-    asm = "asm_allowlist.json"
-    if git.run("cat-file", "-e", f"{base}:config/{asm}", check=False).returncode == 0:
-        canary_measure.CONFIG = (*previous, asm)
-    try:
-        if timing is None:
-            return canary_measure.measure(git, judge, side, plan, tools, job)
-        return canary_measure.measure(git, judge, side, plan, tools, job, timing=timing)
-    finally:
-        canary_measure.CONFIG = previous
 
 
 def compile_shard(source, matrix, expected, index, out):

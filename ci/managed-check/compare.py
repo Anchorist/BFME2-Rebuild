@@ -12,7 +12,8 @@ from intake import reconstruct
 from gitrepo import Git
 from pool_compare import TrustedPaths, projection
 from pool_protocol import decode
-from measure import audit, measure, pin, setup_home
+import measure as canary_measure
+from measure import audit, pin, setup_home
 from edited_functions import edited
 from diff_scope import diff_lines
 from finished_index import Owners, RealHeaders
@@ -58,10 +59,38 @@ def protected_judge(work, roots, baseline):
     return judge
 
 
+def native_blockers(outcome):
+    """Keep stable failure identities, never native details or scratch paths."""
+    if "blockers" in outcome:
+        return outcome["blockers"]
+    facts = {
+        ("emitted-row", digest(encoded([int(row["rva"], 16), row["status"]])))
+        for row in outcome["expected"] if row["status"] != "MATCH"
+    }
+    facts.update(("unexpected-code", digest(encoded(row["symbol"])))
+                 for row in outcome["rejected_extras"])
+    for text in outcome["verification_blockers"]:
+        if text == "compiled owned function order differs from retail RVA order":
+            facts.add(("owned-order", digest(encoded(text))))
+        elif text.startswith(("placeholder virtual in ", "unresolved draft ")):
+            facts.add(("placeholder-virtual", digest(encoded(text))))
+        else:
+            receipt = next((message for message in (
+                "no compiler input/object receipt", "source changed since compilation",
+                "compiled object changed after its receipt", "header changed since compilation",
+            ) if text.startswith(message)), None)
+            if receipt:
+                facts.add(("native-object", digest(encoded(receipt))))
+            elif text.endswith("has ambiguous/missing COFF position"):
+                facts.add(("native-object", digest(encoded(text))))
+    return [list(fact) for fact in sorted(facts)]
+
+
 def index(table):
     return {path: {"verified": item.get("object_verified", False),
                    "error": bool(item.get("error")),
                    "gates": set(item["gates"]),
+                   "blockers": {tuple(fact) for fact in native_blockers(item)},
                    "proven": {row["rva"] for row in item["rows"]
                               if row.get("credited", row["status"] == "MATCH") and row.get("proof") == "proven"},
                    "rows": {row["rva"]: (row["status"], row.get("pct", 100.0 if row["status"] == "MATCH" else 0.0))
@@ -84,6 +113,18 @@ def reduction(old, new):
         counts["new_compiler_errors"] += int(not prior["error"] and current["error"])
         added = current["gates"] - prior["gates"]
         counts["new_source_gates"] += len(added)
+        rules.update(kind for kind, _ in current["blockers"] - prior["blockers"])
+        for address, (status, _) in current["rows"].items():
+            previous = prior["rows"].get(address, ("MISSING", 0.0))[0]
+            if previous == status:
+                continue
+            if status in {"WRONG_REFERENCE", "MISNAMED"}:
+                rules.add("wrong-reference" if status == "WRONG_REFERENCE" else "native-identity")
+            elif previous == "MISSING" and status == "PARTIAL":
+                rules.add("partial-body")
+            else:
+                continue
+            hint.append(f"{path} at {address}: {previous} to {status}.")
         if prior["rows"].keys() - current["rows"].keys():
             rules.add("regression")
         for problem in sorted(added):
@@ -146,14 +187,6 @@ def make_report(git, judge, plan, tip, old, new, find_object, *, lookup_differen
     owners = Owners(git, base)
     adapter = SimpleNamespace(ANNOT=judge.ANNOT, land_gate9=SimpleNamespace(diff_lines=diff_lines))
     scope = edited(git, adapter, base, tip, owners)
-    for entry in scope:
-        address = entry["address"]
-        if entry["after_body"] and address is not None:
-            row = f"0x{address:08X}"
-            before = indexed_old.get(entry["owner"], {}).get("rows", {}).get(row)
-            after = indexed_new.get(entry["owner"], {}).get("rows", {}).get(row)
-            if after and after[0] == "PARTIAL" and (before is None or before[0] == "MISSING"):
-                rules.add("partial-body")
     state = {"new": indexed_new, "gains": counts["gained"], "jt": plan["request_paths"],
              "kind": "regression" if rules else "ok"}
     changed = set(plan["changed_paths"])
@@ -189,6 +222,21 @@ def make_report(git, judge, plan, tip, old, new, find_object, *, lookup_differen
     return clean, counts, functions
 
 
+def measure_batch(git, judge, side, plan, tools, job, *, timing=None):
+    """Preserve the optional assembly allowances from the protected base."""
+    previous = canary_measure.CONFIG
+    base = plan["historical_base"]
+    asm = "asm_allowlist.json"
+    if git.run("cat-file", "-e", f"{base}:config/{asm}", check=False).returncode == 0:
+        canary_measure.CONFIG = (*previous, asm)
+    try:
+        if timing is None:
+            return canary_measure.measure(git, judge, side, plan, tools, job)
+        return canary_measure.measure(git, judge, side, plan, tools, job, timing=timing)
+    finally:
+        canary_measure.CONFIG = previous
+
+
 def main(admission, out):
     admission, out = Path(admission), Path(out)
     plan_path = admission / "plan.json"
@@ -219,8 +267,8 @@ def main(admission, out):
         native = dict(plan, historical_base=plan["base"], historical_head=tip,
                       compile={side: native_commands(git, judge, rev, plan["request_paths"], roots)
                                for side, rev in (("base", plan["base"]), ("head", tip))})
-        old = measure(git, judge, "base", native, roots, work / "base")
-        new = measure(git, judge, "head", native, roots, work / "head")
+        old = measure_batch(git, judge, "base", native, roots, work / "base")
+        new = measure_batch(git, judge, "head", native, roots, work / "head")
         objects = [(path, *(work / side / "obj" / (path.replace("/", "_") + ".obj")
                             for side in ("base", "head"))) for path in plan["request_paths"]]
         record_pairs(judge, work / "base", objects, new)
