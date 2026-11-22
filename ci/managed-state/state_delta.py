@@ -216,6 +216,32 @@ GRAPH_CHANGES += (BASE_CACHE_GRAPH,) + tuple(
 )
 GRAPH_PATHS |= set(BASE_CACHE_GRAPH)
 
+SOURCE_RECHECK_GRAPH = {
+    "tools/gates/workflow.py": (
+        "62d349176331acdab620a6c6154d9fab6495ee2491816cfdd87a996b0f77b826",
+        "d31fc88e23c82e3c263af49d99a4f8f66d66e982e5396794c6947cdb7f085a72",
+    ),
+}
+GRAPH_CHANGES += (SOURCE_RECHECK_GRAPH,)
+GRAPH_PATHS |= set(SOURCE_RECHECK_GRAPH)
+
+EMITTED_MSG_GRAPH = {
+    "ci/managed-check/compare.py": (
+        "0bc96c5aee42ed234c3600a9f726aba86c74763675c073d31161c1fa5adae969",
+        "753b59e77e5338a51d6d3ee9897efaafa2e9e1633c5f3cfa913248a89f0bfb68",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "1c7998cc3788b9efd66c714e7aff1fea6370bd698400fbda4629bdf209eba5b1",
+        "a297c06e70fb86926416a15d5af6ac3b8ca2f31d3e3031614bd8c53c66b01195",
+    ),
+}
+GRAPH_CHANGES = (SOURCE_RECHECK_GRAPH | EMITTED_MSG_GRAPH,) + GRAPH_CHANGES + (EMITTED_MSG_GRAPH,) + tuple(
+    advance_graph(previous, EMITTED_MSG_GRAPH)
+    for previous in GRAPH_CHANGES
+    if BUNDLE in previous and previous[BUNDLE][1] == EMITTED_MSG_GRAPH[BUNDLE][0]
+)
+GRAPH_PATHS |= set(EMITTED_MSG_GRAPH)
+
 COMPACT_SCOPE = {"ci/managed-state/state_delta.py", "ci/managed-state/state_origin.py",
                  "ci/managed-state/bundle.sha256"}
 MAX_DIFF_BYTES = 4 * 1024**2

@@ -110,6 +110,28 @@ class Api:
         self.writes.append((method, path, body))
         return self._send(method, path, body)
 
+    def query(self, query, variables=None):
+        """Read-only GraphQL query (allowed in both dry-run and live mode) with transient retry."""
+        if not isinstance(query, str) or not query.lstrip().startswith("query"):
+            raise ApiError("Expected a read-only GraphQL query starting with 'query'.")
+        body = {"query": query, "variables": variables or {}}
+        for attempt in range(GET_ATTEMPTS):
+            try:
+                code, payload = self._send("POST", "graphql", body)
+            except TransientApiError:
+                if attempt + 1 >= GET_ATTEMPTS:
+                    raise
+                self._sleep(1 << attempt)
+                continue
+            if code == 200 and isinstance(payload, dict) and not payload.get("errors"):
+                return payload.get("data") or {}
+            if code not in RETRY_STATUSES or attempt + 1 >= GET_ATTEMPTS:
+                if code == 200 and isinstance(payload, dict) and payload.get("errors"):
+                    msg = printable((payload["errors"][0] or {}).get("message", ""), 160)
+                    raise ApiError(f"Expected GraphQL query to succeed. Found error: {msg}")
+                raise ApiError(f"Expected HTTP 200 from GraphQL. Found HTTP {code}.")
+            self._sleep(1 << attempt)
+
     def mutate(self, query, variables):
         """A GraphQL mutation (writes, so live only). Returns the data object or raises with GitHub's message."""
         if not self.live:

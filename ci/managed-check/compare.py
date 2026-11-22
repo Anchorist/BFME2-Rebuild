@@ -340,9 +340,28 @@ def reduction(old, new):
         new_blockers = sorted(current["blockers"] - prior["blockers"])
         rules.update(kind for kind, _ in new_blockers)
         sym_map = current.get("unexpected_symbols") or {}
+        emitted_by_hash = {
+            digest(encoded([int(address, 16), status])): (address, status, pct)
+            for address, (status, pct) in current["rows"].items()
+            if status != "MATCH"
+        }
         for kind, fact_hash in new_blockers:
             if kind == "unexpected-code" and fact_hash in sym_map:
                 hint.append(f"{path}: unexpected emitted code symbol `{sym_map[fact_hash]}`.")
+            elif kind == "emitted-row":
+                row_info = emitted_by_hash.get(fact_hash)
+                if row_info is not None:
+                    address, status, pct = row_info
+                    previous = prior["rows"].get(address, ("MISSING", 0.0))[0]
+                    hint.append(f"{path} at {address}: emitted function {status} ({pct:.1f}% vs retail; previously {previous}).")
+                else:
+                    hint.append(f"{path}: an emitted function did not match retail.")
+            elif kind == "owned-order":
+                hint.append(f"{path}: compiled owned function order differs from retail RVA order.")
+            elif kind == "placeholder-virtual":
+                hint.append(f"{path}: placeholder virtual or unresolved draft type in compiled object.")
+            elif kind == "native-object":
+                hint.append(f"{path}: object verification blocker (missing/ambiguous COFF position or stale receipt).")
         for address, (status, _) in current["rows"].items():
             previous = prior["rows"].get(address, ("MISSING", 0.0))[0]
             if previous == status:
