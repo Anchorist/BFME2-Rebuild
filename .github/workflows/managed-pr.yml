@@ -313,6 +313,15 @@ jobs:
           cd /opt/boat-compiler
           sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
           sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Restore trusted base object cache
+        continue-on-error: true
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: '${{ runner.temp }}/bfme-base-cache'
+          key: bfme-base-obj-v1-n-${{ github.sha }}
+          restore-keys: |
+            bfme-base-obj-v1-n-
+            bfme-base-obj-v1-
       - name: Compile admitted source and compare exact pairs
         id: compile
         shell: bash
@@ -333,8 +342,24 @@ jobs:
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
+            BFME_BASE_CACHE="$RUNNER_TEMP/bfme-base-cache" \
             BFME_INLINE_EXPORT="$RUNNER_TEMP/bfme-inline-narrow" BFME_H5_EXPORT="$h5_export" \
             python3 -B ci/managed-check/compare.py "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-verdict"
+      - name: Check whether trusted base cache updated
+        id: base_cache_check
+        shell: bash
+        run: |
+          if [ -f "$RUNNER_TEMP/bfme-base-cache/.updated" ]; then
+            rm -f "$RUNNER_TEMP/bfme-base-cache/.updated"
+            echo "save=yes" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Save trusted base object cache
+        if: steps.base_cache_check.outputs.save == 'yes'
+        continue-on-error: true
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: '${{ runner.temp }}/bfme-base-cache'
+          key: bfme-base-obj-v1-n-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Save capped structured verdict
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -609,6 +634,15 @@ jobs:
           cd /opt/boat-compiler
           sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
           sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Restore trusted base object cache
+        continue-on-error: true
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: '${{ runner.temp }}/bfme-base-cache'
+          key: bfme-base-obj-v1-s${{ matrix.index }}-${{ github.sha }}
+          restore-keys: |
+            bfme-base-obj-v1-s${{ matrix.index }}-
+            bfme-base-obj-v1-
       - name: Compile paired primary group 0
         shell: bash
         id: group0
@@ -642,7 +676,8 @@ jobs:
           rc=0
           timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
-            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" BFME_BASE_CACHE="$RUNNER_TEMP/bfme-base-cache" \
+            python3 -B ci/managed-check/wide_recovery.py \
             compile "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$PART" \
             "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
           if (( rc == 124 || rc == 137 )); then
@@ -694,7 +729,8 @@ jobs:
           rc=0
           timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
-            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" BFME_BASE_CACHE="$RUNNER_TEMP/bfme-base-cache" \
+            python3 -B ci/managed-check/wide_recovery.py \
             compile "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$PART" \
             "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
           if (( rc == 124 || rc == 137 )); then
@@ -746,7 +782,8 @@ jobs:
           rc=0
           timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
-            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" BFME_BASE_CACHE="$RUNNER_TEMP/bfme-base-cache" \
+            python3 -B ci/managed-check/wide_recovery.py \
             compile "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$PART" \
             "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
           if (( rc == 124 || rc == 137 )); then
@@ -798,7 +835,8 @@ jobs:
           rc=0
           timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
-            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" BFME_BASE_CACHE="$RUNNER_TEMP/bfme-base-cache" \
+            python3 -B ci/managed-check/wide_recovery.py \
             compile "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$PART" \
             "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
           if (( rc == 124 || rc == 137 )); then
@@ -817,6 +855,22 @@ jobs:
           path: '${{ runner.temp }}/bfme-paired-3/group.json'
           if-no-files-found: error
           retention-days: 1
+      - name: Check whether trusted base cache updated
+        id: wide_cache_check
+        if: always() && !cancelled()
+        shell: bash
+        run: |
+          if [ -f "$RUNNER_TEMP/bfme-base-cache/.updated" ]; then
+            rm -f "$RUNNER_TEMP/bfme-base-cache/.updated"
+            echo "save=yes" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Save trusted base object cache
+        if: always() && !cancelled() && steps.wide_cache_check.outputs.save == 'yes'
+        continue-on-error: true
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: '${{ runner.temp }}/bfme-base-cache'
+          key: bfme-base-obj-v1-s${{ matrix.index }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Account for every planned primary checkpoint
         if: always() && !cancelled()
         shell: bash

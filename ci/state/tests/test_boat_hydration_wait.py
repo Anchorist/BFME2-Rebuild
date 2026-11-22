@@ -26,7 +26,7 @@ EXPECTED_SNAPSHOT_JOBS = {
         "wide-fallback",
     },
     ".github/workflows/nightly-trial.yml": {"compile", "result"},
-    ".github/workflows/nightly.yml": {"compile", "publish", "fold-in"},
+    ".github/workflows/nightly.yml": {"compile"},
     ".github/workflows/nt2-managed-match.yml": {"compare"},
     ".github/workflows/state-parity.yml": {"measure"},
     ".github/workflows/state-seed-refresh.yml": {"refresh"},

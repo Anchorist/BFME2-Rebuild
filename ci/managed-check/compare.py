@@ -456,6 +456,13 @@ def measure_batch(git, judge, side, plan, tools, job, *, timing=None):
     if git.run("cat-file", "-e", f"{base}:config/{asm}", check=False).returncode == 0:
         canary_measure.CONFIG = (*previous, asm)
     try:
+        cache_dir = os.environ.get("BFME_BASE_CACHE") if side == "base" else None
+        if cache_dir:
+            import base_cache
+            return base_cache.measure_base_with_cache(
+                git, judge, plan, tools, job, cache_dir,
+                measure_fn=canary_measure.measure, timing=timing,
+            )
         if timing is None:
             return canary_measure.measure(git, judge, side, plan, tools, job)
         return canary_measure.measure(git, judge, side, plan, tools, job, timing=timing)

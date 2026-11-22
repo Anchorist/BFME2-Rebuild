@@ -192,6 +192,28 @@ GRAPH_CHANGES += (WIDE_ADMISSION_GRAPH,) + tuple(
 )
 GRAPH_PATHS |= set(WIDE_ADMISSION_GRAPH)
 
+BASE_CACHE_GRAPH = {
+    "ci/managed-check/base_cache.py": (
+        None,
+        "dd852ef62365c5a1333f1d818ad84d539e19f4c41180be9ad97bdadcc0798970",
+    ),
+    "ci/managed-check/compare.py": (
+        "7096d164997ca3ab224a0edc77003898190af33431cdc0640de1e26b9a5072cf",
+        "33bcf90abbea57b28d61527a4af73d03c6ab2b0d3b16200578ad5289253c98e5",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "d8ea452fadaace93fd7785d045aac330da534c80e9402ef2b26d20f7c9d55a24",
+        "12b2491e2c66606e248986ec9b7a47670c4cf84f6f38db1b7e0c1e846a562bf5",
+    ),
+}
+
+GRAPH_CHANGES += (BASE_CACHE_GRAPH,) + tuple(
+    advance_graph(previous, BASE_CACHE_GRAPH)
+    for previous in GRAPH_CHANGES
+    if previous[BUNDLE][1] == BASE_CACHE_GRAPH[BUNDLE][0]
+)
+GRAPH_PATHS |= set(BASE_CACHE_GRAPH)
+
 COMPACT_SCOPE = {"ci/managed-state/state_delta.py", "ci/managed-state/state_origin.py",
                  "ci/managed-state/bundle.sha256"}
 MAX_DIFF_BYTES = 4 * 1024**2
