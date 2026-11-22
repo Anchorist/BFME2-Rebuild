@@ -15,6 +15,9 @@ env:
   BFME_PR_COMPACT: '${{ vars.BFME_PR_COMPACT }}'
   BFME_ADMISSION_DAILY_TOTAL: '${{ vars.BFME_ADMISSION_DAILY_TOTAL }}'
   BFME_ADMISSION_DAILY_PER_AUTHOR: '${{ vars.BFME_ADMISSION_DAILY_PER_AUTHOR }}'
+  BFME_AUTO_HEADERS: '${{ vars.BFME_AUTO_HEADERS }}'
+  BFME_ADMISSION_WIDE_DAILY_TOTAL: '${{ vars.BFME_ADMISSION_WIDE_DAILY_TOTAL }}'
+  BFME_ADMISSION_WIDE_DAILY_PER_AUTHOR: '${{ vars.BFME_ADMISSION_WIDE_DAILY_PER_AUTHOR }}'
   BFME_TRIGGERING_ACTOR: '${{ github.triggering_actor }}'
   BFME_INLINE_OWNER_SCOPE: '${{ vars.BFME_INLINE_OWNER_SCOPE }}'
 
@@ -195,7 +198,7 @@ jobs:
   claim:
     needs: intake
     if: >-
-      needs.intake.result == 'success' && needs.intake.outputs.route == 'automatic' &&
+      needs.intake.result == 'success' && (needs.intake.outputs.route == 'automatic' || needs.intake.outputs.route == 'automatic-wide') &&
       vars.BFME_AUTO_ADMISSION == 'yes' && vars.BFME_PR_COMPACT == 'yes' &&
       fromJSON(needs.intake.outputs.source_decision || '{}').state == 'pass' &&
       github.repository_id == '1464323350' && github.ref == 'refs/heads/main' &&
@@ -252,6 +255,48 @@ jobs:
       h2_attempted: ${{ steps.h2_probe.outputs.attempted }}
       inline_matrix_sha: '${{ steps.compile.outputs.inline_matrix_sha }}'
     steps:
+      - name: Wait for runner filesystem hydration
+        shell: bash
+        run: |
+          set -euo pipefail
+          deadline=$((SECONDS + 90))
+          runner_grace=$((SECONDS + 15))
+          waited=0
+          while true; do
+            pending=$(awk '
+              {
+                for (i = 7; i <= NF - 2; i++) {
+                  if ($i == "-") {
+                    if ($(i + 1) ~ /^fuse(\.|$)/ && ($(i + 1) ~ /^fuse\.ascii-lazyfs(-|$)/ || $(i + 2) ~ /^ascii-lazyfs(-|$)/) && $5 !~ /^\/var\/lib\/ascii-lazy\/retired(\/|$)/) {
+                      print $5
+                    }
+                    break
+                  }
+                }
+              }
+            ' /proc/self/mountinfo)
+            if [ -z "$pending" ]; then
+              if [ "$waited" -eq 1 ]; then
+                printf 'Runner filesystem hydration finished after %ss.\n' "$SECONDS"
+              fi
+              exit 0
+            fi
+            home_dir="${HOME%/}"
+            if [ -n "$home_dir" ] && [ "$pending" = "$home_dir" ] \
+              && [ "${pending#/opt/boat-compiler}" = "$pending" ] \
+              && [ "${pending#/var/}" = "$pending" ] \
+              && [ "${pending#/usr}" = "$pending" ] \
+              && [ "$SECONDS" -ge "$runner_grace" ]; then
+              printf 'Proceeding after %ss with persistent lazy mount %s (all other mounts retired).\n' "$SECONDS" "$home_dir"
+              exit 0
+            fi
+            waited=1
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              printf 'Expected lazy runner mounts to retire within 90s; still mounted:\n%s\n' "$pending" >&2
+              exit 1
+            fi
+            sleep 0.5
+          done
       - name: Check out the same protected main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -278,6 +323,15 @@ jobs:
           cd /opt/boat-compiler
           sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
           sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Restore trusted base object cache
+        continue-on-error: true
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: '${{ runner.temp }}/bfme-base-cache'
+          key: bfme-base-obj-v1-n-${{ github.sha }}
+          restore-keys: |
+            bfme-base-obj-v1-n-
+            bfme-base-obj-v1-
       - name: Compile admitted source and compare exact pairs
         id: compile
         shell: bash
@@ -298,8 +352,24 @@ jobs:
           env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
+            BFME_BASE_CACHE="$RUNNER_TEMP/bfme-base-cache" \
             BFME_INLINE_EXPORT="$RUNNER_TEMP/bfme-inline-narrow" BFME_H5_EXPORT="$h5_export" \
             python3 -B ci/managed-check/compare.py "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-verdict"
+      - name: Check whether trusted base cache updated
+        id: base_cache_check
+        shell: bash
+        run: |
+          if [ -f "$RUNNER_TEMP/bfme-base-cache/.updated" ]; then
+            rm -f "$RUNNER_TEMP/bfme-base-cache/.updated"
+            echo "save=yes" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Save trusted base object cache
+        if: steps.base_cache_check.outputs.save == 'yes'
+        continue-on-error: true
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: '${{ runner.temp }}/bfme-base-cache'
+          key: bfme-base-obj-v1-n-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Save capped structured verdict
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -392,10 +462,10 @@ jobs:
           retention-days: 1
 
   wide-plan:
-    needs: [pending, intake]
+    needs: [pending, intake, claim]
     if: >-
       ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) &&
-      (always() && !cancelled() && needs.intake.result == 'success' && (vars.BFME_PR_COMPACT == 'yes' || needs.pending.result == 'success') && needs.intake.outputs.route == 'wide')
+      (always() && !cancelled() && needs.intake.result == 'success' && (vars.BFME_PR_COMPACT == 'yes' || needs.pending.result == 'success') && (needs.intake.outputs.route == 'wide' || (needs.intake.outputs.route == 'automatic-wide' && needs.claim.result == 'success' && needs.claim.outputs.allowed == 'yes')))
     name: Plan the paired Boat matrix
     timeout-minutes: 5
     outputs:
@@ -410,6 +480,48 @@ jobs:
       contents: read
       actions: read
     steps:
+      - name: Wait for runner filesystem hydration
+        shell: bash
+        run: |
+          set -euo pipefail
+          deadline=$((SECONDS + 90))
+          runner_grace=$((SECONDS + 15))
+          waited=0
+          while true; do
+            pending=$(awk '
+              {
+                for (i = 7; i <= NF - 2; i++) {
+                  if ($i == "-") {
+                    if ($(i + 1) ~ /^fuse(\.|$)/ && ($(i + 1) ~ /^fuse\.ascii-lazyfs(-|$)/ || $(i + 2) ~ /^ascii-lazyfs(-|$)/) && $5 !~ /^\/var\/lib\/ascii-lazy\/retired(\/|$)/) {
+                      print $5
+                    }
+                    break
+                  }
+                }
+              }
+            ' /proc/self/mountinfo)
+            if [ -z "$pending" ]; then
+              if [ "$waited" -eq 1 ]; then
+                printf 'Runner filesystem hydration finished after %ss.\n' "$SECONDS"
+              fi
+              exit 0
+            fi
+            home_dir="${HOME%/}"
+            if [ -n "$home_dir" ] && [ "$pending" = "$home_dir" ] \
+              && [ "${pending#/opt/boat-compiler}" = "$pending" ] \
+              && [ "${pending#/var/}" = "$pending" ] \
+              && [ "${pending#/usr}" = "$pending" ] \
+              && [ "$SECONDS" -ge "$runner_grace" ]; then
+              printf 'Proceeding after %ss with persistent lazy mount %s (all other mounts retired).\n' "$SECONDS" "$home_dir"
+              exit 0
+            fi
+            waited=1
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              printf 'Expected lazy runner mounts to retire within 90s; still mounted:\n%s\n' "$pending" >&2
+              exit 1
+            fi
+            sleep 0.5
+          done
       - name: Check out the same protected main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -453,7 +565,7 @@ jobs:
         shell: bash
         id: plan
         env:
-          MANAGED_WIDE_SHARDS: "${{ vars.BFME_WIDE_SHARDS || '24' }}"
+          MANAGED_WIDE_SHARDS: "${{ vars.BFME_WIDE_SHARDS || '16' }}"
         run: |
           set -Eeuo pipefail
           trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
@@ -485,6 +597,48 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Wait for runner filesystem hydration
+        shell: bash
+        run: |
+          set -euo pipefail
+          deadline=$((SECONDS + 90))
+          runner_grace=$((SECONDS + 15))
+          waited=0
+          while true; do
+            pending=$(awk '
+              {
+                for (i = 7; i <= NF - 2; i++) {
+                  if ($i == "-") {
+                    if ($(i + 1) ~ /^fuse(\.|$)/ && ($(i + 1) ~ /^fuse\.ascii-lazyfs(-|$)/ || $(i + 2) ~ /^ascii-lazyfs(-|$)/) && $5 !~ /^\/var\/lib\/ascii-lazy\/retired(\/|$)/) {
+                      print $5
+                    }
+                    break
+                  }
+                }
+              }
+            ' /proc/self/mountinfo)
+            if [ -z "$pending" ]; then
+              if [ "$waited" -eq 1 ]; then
+                printf 'Runner filesystem hydration finished after %ss.\n' "$SECONDS"
+              fi
+              exit 0
+            fi
+            home_dir="${HOME%/}"
+            if [ -n "$home_dir" ] && [ "$pending" = "$home_dir" ] \
+              && [ "${pending#/opt/boat-compiler}" = "$pending" ] \
+              && [ "${pending#/var/}" = "$pending" ] \
+              && [ "${pending#/usr}" = "$pending" ] \
+              && [ "$SECONDS" -ge "$runner_grace" ]; then
+              printf 'Proceeding after %ss with persistent lazy mount %s (all other mounts retired).\n' "$SECONDS" "$home_dir"
+              exit 0
+            fi
+            waited=1
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              printf 'Expected lazy runner mounts to retire within 90s; still mounted:\n%s\n' "$pending" >&2
+              exit 1
+            fi
+            sleep 0.5
+          done
       - name: Check out the same protected main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -510,6 +664,15 @@ jobs:
           cd /opt/boat-compiler
           sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
           sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
+      - name: Restore trusted base object cache
+        continue-on-error: true
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: '${{ runner.temp }}/bfme-base-cache'
+          key: bfme-base-obj-v1-s${{ matrix.index }}-${{ github.sha }}
+          restore-keys: |
+            bfme-base-obj-v1-s${{ matrix.index }}-
+            bfme-base-obj-v1-
       - name: Compile paired primary group 0
         shell: bash
         id: group0
@@ -543,7 +706,8 @@ jobs:
           rc=0
           timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
-            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" BFME_BASE_CACHE="$RUNNER_TEMP/bfme-base-cache" \
+            python3 -B ci/managed-check/wide_recovery.py \
             compile "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$PART" \
             "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
           if (( rc == 124 || rc == 137 )); then
@@ -595,7 +759,8 @@ jobs:
           rc=0
           timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
-            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" BFME_BASE_CACHE="$RUNNER_TEMP/bfme-base-cache" \
+            python3 -B ci/managed-check/wide_recovery.py \
             compile "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$PART" \
             "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
           if (( rc == 124 || rc == 137 )); then
@@ -647,7 +812,8 @@ jobs:
           rc=0
           timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
-            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" BFME_BASE_CACHE="$RUNNER_TEMP/bfme-base-cache" \
+            python3 -B ci/managed-check/wide_recovery.py \
             compile "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$PART" \
             "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
           if (( rc == 124 || rc == 137 )); then
@@ -699,7 +865,8 @@ jobs:
           rc=0
           timeout --kill-after=2 "$left" env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
-            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" python3 -B ci/managed-check/wide_recovery.py \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" BFME_BASE_CACHE="$RUNNER_TEMP/bfme-base-cache" \
+            python3 -B ci/managed-check/wide_recovery.py \
             compile "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$SHARD" "$PART" \
             "$RUNNER_TEMP/bfme-paired-$PART" || rc=$?
           if (( rc == 124 || rc == 137 )); then
@@ -718,6 +885,22 @@ jobs:
           path: '${{ runner.temp }}/bfme-paired-3/group.json'
           if-no-files-found: error
           retention-days: 1
+      - name: Check whether trusted base cache updated
+        id: wide_cache_check
+        if: always() && !cancelled()
+        shell: bash
+        run: |
+          if [ -f "$RUNNER_TEMP/bfme-base-cache/.updated" ]; then
+            rm -f "$RUNNER_TEMP/bfme-base-cache/.updated"
+            echo "save=yes" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Save trusted base object cache
+        if: always() && !cancelled() && steps.wide_cache_check.outputs.save == 'yes'
+        continue-on-error: true
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: '${{ runner.temp }}/bfme-base-cache'
+          key: bfme-base-obj-v1-s${{ matrix.index }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Account for every planned primary checkpoint
         if: always() && !cancelled()
         shell: bash
@@ -766,11 +949,94 @@ jobs:
               raise SystemExit(1)
           PY
 
-  wide-reserve:
-    needs: wide-plan
+  wide-freeze:
+    needs: [intake, wide-plan]
     if: >-
       ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) &&
       (always() && !cancelled() && needs.wide-plan.result == 'success')
+    name: Freeze primary wide checkpoints
+    continue-on-error: true
+    timeout-minutes: 12
+    outputs:
+      lease_sha: '${{ steps.freeze.outputs.lease_sha }}'
+      reserve_needed: '${{ steps.freeze.outputs.reserve_needed }}'
+      reserve_slots: '${{ steps.freeze.outputs.reserve_slots }}'
+      has_primaries: '${{ steps.freeze.outputs.has_primaries }}'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Read the wide recovery tools from protected main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: |
+            ci/managed-check
+            ci/managed-nt2
+      - name: Read this run's source-free recovery decision
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-admission-status-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-admission-status'
+      - name: Read this run's exact compile assignments
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-matrix-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-matrix'
+      - name: Verify protected recovery tools
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
+      - name: Freeze verified primaries and bind unfinished work to reserve slots
+        shell: bash
+        id: freeze
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
+          BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
+          FORCE_FALLBACK: '${{ vars.BFME_PRIMARY_FALLBACK_TEST }}'
+          EXACT_HEAD: '${{ github.event.pull_request.head.sha || github.event.client_payload.head }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Freeze verified primaries and bind unfinished work to reserve slots" "$rc" "$LINENO" >&2' ERR
+          if [[ "$FORCE_FALLBACK" == 'yes' && "$EXACT_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e ]]; then
+            printf '%s\n' 'Expected the primary collector to run. Found the owner-approved fallback test.' >&2
+            exit 64
+          fi
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
+            BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
+            python3 -B ci/managed-check/recovery_broker.py freeze "$RUNNER_TEMP/bfme-admission-status" \
+              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-groups" \
+              "$RUNNER_TEMP/lease.json" "$STARTED" "$CUTOFF"
+      - name: Publish the protected reserve assignment
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-recovery-lease-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/lease.json'
+          if-no-files-found: error
+          retention-days: 1
+      - name: Save collected primary checkpoints for join
+        if: steps.freeze.outputs.has_primaries == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-frozen-primaries-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-groups/'
+          if-no-files-found: error
+          retention-days: 1
+
+  wide-reserve:
+    needs: [wide-plan, wide-freeze]
+    if: >-
+      ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) &&
+      (always() && !cancelled() && needs.wide-plan.result == 'success' && needs.wide-freeze.result == 'success' && needs.wide-freeze.outputs.reserve_needed == 'true')
     name: Reassign paired files on reserve ${{ matrix.slot }}
     continue-on-error: true
     timeout-minutes: 14
@@ -778,12 +1044,54 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        slot: [0, 1, 2, 3]
+        slot: ${{ fromJSON(needs.wide-freeze.outputs.reserve_needed == 'true' && needs.wide-freeze.outputs.reserve_slots || '[0]') }}
     runs-on: ${{ ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) && 'boat-small/from=bfme2-compiler-v1' || 'ubuntu-24.04' }}
     permissions:
       contents: read
       actions: read
     steps:
+      - name: Wait for runner filesystem hydration
+        shell: bash
+        run: |
+          set -euo pipefail
+          deadline=$((SECONDS + 90))
+          runner_grace=$((SECONDS + 15))
+          waited=0
+          while true; do
+            pending=$(awk '
+              {
+                for (i = 7; i <= NF - 2; i++) {
+                  if ($i == "-") {
+                    if ($(i + 1) ~ /^fuse(\.|$)/ && ($(i + 1) ~ /^fuse\.ascii-lazyfs(-|$)/ || $(i + 2) ~ /^ascii-lazyfs(-|$)/) && $5 !~ /^\/var\/lib\/ascii-lazy\/retired(\/|$)/) {
+                      print $5
+                    }
+                    break
+                  }
+                }
+              }
+            ' /proc/self/mountinfo)
+            if [ -z "$pending" ]; then
+              if [ "$waited" -eq 1 ]; then
+                printf 'Runner filesystem hydration finished after %ss.\n' "$SECONDS"
+              fi
+              exit 0
+            fi
+            home_dir="${HOME%/}"
+            if [ -n "$home_dir" ] && [ "$pending" = "$home_dir" ] \
+              && [ "${pending#/opt/boat-compiler}" = "$pending" ] \
+              && [ "${pending#/var/}" = "$pending" ] \
+              && [ "${pending#/usr}" = "$pending" ] \
+              && [ "$SECONDS" -ge "$runner_grace" ]; then
+              printf 'Proceeding after %ss with persistent lazy mount %s (all other mounts retired).\n' "$SECONDS" "$home_dir"
+              exit 0
+            fi
+            waited=1
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              printf 'Expected lazy runner mounts to retire within 90s; still mounted:\n%s\n' "$pending" >&2
+              exit 1
+            fi
+            sleep 0.5
+          done
       - name: Check out the same protected main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -865,10 +1173,10 @@ jobs:
           retention-days: 1
 
   wide-join:
-    needs: [intake, wide-plan]
+    needs: [intake, wide-plan, wide-freeze, wide-reserve]
     if: >-
       ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) &&
-      (always() && !cancelled() && needs.wide-plan.result == 'success')
+      (always() && !cancelled() && needs.wide-plan.result == 'success' && needs.wide-freeze.result == 'success')
     name: Freeze, recover and verify wide receipts
     continue-on-error: true
     timeout-minutes: 15
@@ -882,6 +1190,48 @@ jobs:
       contents: read
       actions: read
     steps:
+      - name: Wait for runner filesystem hydration
+        shell: bash
+        run: |
+          set -euo pipefail
+          deadline=$((SECONDS + 90))
+          runner_grace=$((SECONDS + 15))
+          waited=0
+          while true; do
+            pending=$(awk '
+              {
+                for (i = 7; i <= NF - 2; i++) {
+                  if ($i == "-") {
+                    if ($(i + 1) ~ /^fuse(\.|$)/ && ($(i + 1) ~ /^fuse\.ascii-lazyfs(-|$)/ || $(i + 2) ~ /^ascii-lazyfs(-|$)/) && $5 !~ /^\/var\/lib\/ascii-lazy\/retired(\/|$)/) {
+                      print $5
+                    }
+                    break
+                  }
+                }
+              }
+            ' /proc/self/mountinfo)
+            if [ -z "$pending" ]; then
+              if [ "$waited" -eq 1 ]; then
+                printf 'Runner filesystem hydration finished after %ss.\n' "$SECONDS"
+              fi
+              exit 0
+            fi
+            home_dir="${HOME%/}"
+            if [ -n "$home_dir" ] && [ "$pending" = "$home_dir" ] \
+              && [ "${pending#/opt/boat-compiler}" = "$pending" ] \
+              && [ "${pending#/var/}" = "$pending" ] \
+              && [ "${pending#/usr}" = "$pending" ] \
+              && [ "$SECONDS" -ge "$runner_grace" ]; then
+              printf 'Proceeding after %ss with persistent lazy mount %s (all other mounts retired).\n' "$SECONDS" "$home_dir"
+              exit 0
+            fi
+            waited=1
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              printf 'Expected lazy runner mounts to retire within 90s; still mounted:\n%s\n' "$pending" >&2
+              exit 1
+            fi
+            sleep 0.5
+          done
       - name: Check out the same protected main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -913,47 +1263,29 @@ jobs:
           cd /opt/boat-compiler
           sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
           sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
-      - name: Freeze verified primaries and bind unfinished work to reserve slots
-        shell: bash
-        id: freeze
-        env:
-          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
-          STARTED: '${{ needs.wide-plan.outputs.started }}'
-          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
-          BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
-          FORCE_FALLBACK: '${{ vars.BFME_PRIMARY_FALLBACK_TEST }}'
-          EXACT_HEAD: '${{ github.event.pull_request.head.sha || github.event.client_payload.head }}'
-        run: |
-          set -euo pipefail
-          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Freeze verified primaries and bind unfinished work to reserve slots" "$rc" "$LINENO" >&2' ERR
-          if [[ "$FORCE_FALLBACK" == 'yes' && "$EXACT_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e ]]; then
-            printf '%s\n' 'Expected the primary collector to run. Found the owner-approved fallback test.' >&2
-            exit 64
-          fi
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
-            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
-            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
-            GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
-            BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
-            python3 -B ci/managed-check/recovery_broker.py freeze "$RUNNER_TEMP/bfme-admission-status" \
-              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-groups" \
-              "$RUNNER_TEMP/lease.json" "$STARTED" "$CUTOFF"
-      - name: Publish the protected reserve assignment
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - name: Read the frozen recovery lease
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: bfme-recovery-lease-${{ github.run_attempt }}
-          path: '${{ runner.temp }}/lease.json'
-          if-no-files-found: error
-          retention-days: 1
+          path: '${{ runner.temp }}/bfme-lease'
+      - name: Read the collected primary checkpoints
+        if: needs.wide-freeze.outputs.has_primaries == 'true'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-frozen-primaries-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-groups'
+      - name: Ensure primary group directory exists
+        shell: bash
+        run: mkdir -p "$RUNNER_TEMP/bfme-groups"
       - name: Collect exact leased results before the deadline
         shell: bash
-        if: steps.freeze.outputs.reserve_needed == 'true'
+        if: needs.wide-freeze.outputs.reserve_needed == 'true'
         env:
           PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
           STARTED: '${{ needs.wide-plan.outputs.started }}'
           CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
           BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
-          LEASE_SHA: '${{ steps.freeze.outputs.lease_sha }}'
+          LEASE_SHA: '${{ needs.wide-freeze.outputs.lease_sha }}'
         run: |
           set -euo pipefail
           trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Collect exact leased results before the deadline" "$rc" "$LINENO" >&2' ERR
@@ -963,7 +1295,7 @@ jobs:
             GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
             BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
             python3 -B ci/managed-check/recovery_broker.py gather "$RUNNER_TEMP/bfme-admission-status" \
-              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/lease.json" "$LEASE_SHA" \
+              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-lease/lease.json" "$LEASE_SHA" \
               "$RUNNER_TEMP/bfme-groups" "$STARTED" "$CUTOFF"
       - name: Verify exactly one result per paired assignment
         shell: bash
@@ -971,7 +1303,7 @@ jobs:
           PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
           STARTED: '${{ needs.wide-plan.outputs.started }}'
           CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
-          LEASE_SHA: '${{ steps.freeze.outputs.lease_sha }}'
+          LEASE_SHA: '${{ needs.wide-freeze.outputs.lease_sha }}'
         run: |
           set -euo pipefail
           trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Verify exactly one result per paired assignment" "$rc" "$LINENO" >&2' ERR
@@ -979,12 +1311,12 @@ jobs:
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
             GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             python3 -B ci/managed-check/wide_recovery.py join "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" \
-              "$RUNNER_TEMP/lease.json" "$LEASE_SHA" "$RUNNER_TEMP/bfme-groups" "$RUNNER_TEMP/bfme-shards"
+              "$RUNNER_TEMP/bfme-lease/lease.json" "$LEASE_SHA" "$RUNNER_TEMP/bfme-groups" "$RUNNER_TEMP/bfme-shards"
       - name: Join complete paired outcomes
         shell: bash
         env:
           PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
-          LEASE_SHA: '${{ steps.freeze.outputs.lease_sha }}'
+          LEASE_SHA: '${{ needs.wide-freeze.outputs.lease_sha }}'
         run: |
           set -Eeuo pipefail
           trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
@@ -992,7 +1324,7 @@ jobs:
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
             python3 -B ci/managed-check/wide.py join-selected "$RUNNER_TEMP/bfme-plan" \
               "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-shards" "$RUNNER_TEMP/bfme-verdict" \
-              "$RUNNER_TEMP/lease.json" "$LEASE_SHA"
+              "$RUNNER_TEMP/bfme-lease/lease.json" "$LEASE_SHA"
       - name: Save complete capped comparison
         id: verdict
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -1151,11 +1483,11 @@ jobs:
           retention-days: 1
 
   inline-report:
-    needs: [pending, intake, compare, wide-plan, wide-join, inline-virtual]
+    needs: [pending, intake, claim, compare, wide-plan, wide-join, inline-virtual]
     if: >-
-      always() && !cancelled() && (vars.BFME_PR_COMPACT != 'yes' || needs.intake.outputs.route == 'wide') &&
+      always() && !cancelled() && (vars.BFME_PR_COMPACT != 'yes' || needs.intake.outputs.route == 'wide' || (needs.intake.outputs.route == 'automatic-wide' && needs.claim.outputs.allowed == 'yes')) &&
       (vars.BFME_PR_COMPACT == 'yes' || needs.pending.result == 'success') &&
-      (needs.intake.outputs.route == 'compile' || needs.intake.outputs.route == 'wide') && (needs.wide-plan.result != 'success' || needs.wide-join.outputs.complete == 'true')
+      (needs.intake.outputs.route == 'compile' || needs.intake.outputs.route == 'wide' || (needs.intake.outputs.route == 'automatic-wide' && needs.claim.outputs.allowed == 'yes')) && (needs.wide-plan.result != 'success' || needs.wide-join.outputs.complete == 'true')
     name: Publish inline virtual commit status
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -1219,6 +1551,7 @@ jobs:
     outputs:
       stale: ${{ (steps.native.outputs.stale == 'yes' || steps.publish.outputs.stale == 'yes') && 'yes' || 'no' }}
       passed: ${{ steps.native.outcome == 'success' && steps.native.outputs.verdict == 'success' && 'yes' || 'no' }}
+      unmeasured: ${{ steps.native.outputs.verdict == 'unavailable' && 'yes' || 'no' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -1309,7 +1642,7 @@ jobs:
           retention-days: 7
       - name: Read this attempt's sanitized inline status
         id: receipt
-        if: always() && !cancelled() && vars.BFME_PR_COMPACT == 'yes' && (needs.intake.outputs.route == 'compile' || needs.claim.outputs.allowed == 'yes') && needs.compare.result == 'success'
+        if: always() && !cancelled() && vars.BFME_PR_COMPACT == 'yes' && (needs.intake.outputs.route == 'compile' || (needs.intake.outputs.route == 'automatic' && needs.claim.outputs.allowed == 'yes')) && needs.compare.result == 'success'
         continue-on-error: true
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
@@ -1317,7 +1650,7 @@ jobs:
           path: '${{ runner.temp }}/bfme-inline-status'
       - name: Publish exact-head inline virtual status
         shell: bash
-        if: always() && !cancelled() && vars.BFME_PR_COMPACT == 'yes' && (needs.intake.outputs.route == 'compile' || needs.claim.outputs.allowed == 'yes')
+        if: always() && !cancelled() && vars.BFME_PR_COMPACT == 'yes' && (needs.intake.outputs.route == 'compile' || (needs.intake.outputs.route == 'automatic' && needs.claim.outputs.allowed == 'yes'))
         env:
           BFME_STATUS_TOKEN: '${{ github.token }}'
           RECEIPT: '${{ steps.receipt.outcome }}'
@@ -1371,7 +1704,7 @@ jobs:
           retention-days: 7
 
   wide-fallback:
-    needs: [wide-plan, wide-join, wide-compare]
+    needs: [intake, wide-plan, wide-freeze, wide-join, wide-compare]
     if: >-
       ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) &&
       (always() && !cancelled() && needs.wide-plan.result == 'success' && needs.wide-join.outputs.complete != 'true')
@@ -1380,11 +1713,56 @@ jobs:
     timeout-minutes: 15
     outputs:
       complete: "${{ steps.verdict.outcome == 'success' }}"
+      h2_artifact: ${{ steps.h2_upload.outputs.artifact-id }}
+      h2_digest: ${{ steps.h2_upload.outputs.artifact-digest }}
+      h2_attempted: ${{ steps.h2_probe.outputs.attempted }}
     runs-on: ${{ ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) && 'boat-small/from=bfme2-compiler-v1' || 'ubuntu-24.04' }}
     permissions:
       contents: read
       actions: read
     steps:
+      - name: Wait for runner filesystem hydration
+        shell: bash
+        run: |
+          set -euo pipefail
+          deadline=$((SECONDS + 90))
+          runner_grace=$((SECONDS + 15))
+          waited=0
+          while true; do
+            pending=$(awk '
+              {
+                for (i = 7; i <= NF - 2; i++) {
+                  if ($i == "-") {
+                    if ($(i + 1) ~ /^fuse(\.|$)/ && ($(i + 1) ~ /^fuse\.ascii-lazyfs(-|$)/ || $(i + 2) ~ /^ascii-lazyfs(-|$)/) && $5 !~ /^\/var\/lib\/ascii-lazy\/retired(\/|$)/) {
+                      print $5
+                    }
+                    break
+                  }
+                }
+              }
+            ' /proc/self/mountinfo)
+            if [ -z "$pending" ]; then
+              if [ "$waited" -eq 1 ]; then
+                printf 'Runner filesystem hydration finished after %ss.\n' "$SECONDS"
+              fi
+              exit 0
+            fi
+            home_dir="${HOME%/}"
+            if [ -n "$home_dir" ] && [ "$pending" = "$home_dir" ] \
+              && [ "${pending#/opt/boat-compiler}" = "$pending" ] \
+              && [ "${pending#/var/}" = "$pending" ] \
+              && [ "${pending#/usr}" = "$pending" ] \
+              && [ "$SECONDS" -ge "$runner_grace" ]; then
+              printf 'Proceeding after %ss with persistent lazy mount %s (all other mounts retired).\n' "$SECONDS" "$home_dir"
+              exit 0
+            fi
+            waited=1
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              printf 'Expected lazy runner mounts to retire within 90s; still mounted:\n%s\n' "$pending" >&2
+              exit 1
+            fi
+            sleep 0.5
+          done
       - name: Check out the same protected main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -1485,6 +1863,74 @@ jobs:
           path: '${{ runner.temp }}/bfme-shards/'
           if-no-files-found: error
           retention-days: 1
+      - name: Probe declarations on the admitted header trees
+        id: h2_probe
+        if: >-
+          steps.verdict.outcome == 'success' && vars.BFME_PR_COMPACT == 'yes' &&
+          needs.intake.outputs.source_decision != '' &&
+          fromJSON(needs.intake.outputs.source_decision).overall == 'success' &&
+          (vars.BFME_AUTO_HEADERS == 'yes' ||
+           (github.event_name == 'pull_request_target' && github.actor_id == '1760627' &&
+            github.event.action == 'labeled' && github.event.label.name == 'boat-ok'))
+        continue-on-error: true
+        shell: bash
+        env:
+          BFME_H2_SOURCE: ${{ needs.intake.outputs.source_decision }}
+        run: |
+          set -euo pipefail
+          if ! jq -e '.report.kind == "ok"' "$RUNNER_TEMP/bfme-verdict/verdict.json" >/dev/null ||
+             ! jq -e '.changed_paths | any(startswith("include/"))' "$RUNNER_TEMP/bfme-plan/plan.json" >/dev/null; then
+            exit 0
+          fi
+          printf 'attempted=yes\n' >> "$GITHUB_OUTPUT"
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C TMPDIR="$RUNNER_TEMP" \
+            GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
+            BFME_H2_SOURCE="$BFME_H2_SOURCE" /usr/bin/timeout --kill-after=5s 90s \
+            python3 -B ci/managed-check/header_h2_action.py probe "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-h2"
+          test -s "$RUNNER_TEMP/bfme-h2/header-h2.json"
+          test "$(wc -c < "$RUNNER_TEMP/bfme-h2/header-h2.json")" -le 131072
+          printf 'available=yes\n' >> "$GITHUB_OUTPUT"
+      - name: Save the bounded declaration receipt
+        id: h2_upload
+        if: steps.h2_probe.outputs.available == 'yes'
+        continue-on-error: true
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-header-h2-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-h2/header-h2.json'
+          if-no-files-found: error
+          retention-days: 1
+      - name: Measure header layout on the admitted header trees
+        id: h5_wide
+        if: >-
+          steps.verdict.outcome == 'success' && vars.BFME_PR_COMPACT == 'yes' &&
+          needs.intake.outputs.source_decision != '' &&
+          fromJSON(needs.intake.outputs.source_decision).overall == 'success' &&
+          (vars.BFME_AUTO_HEADERS == 'yes' ||
+           (github.event_name == 'pull_request_target' && github.actor_id == '1760627' &&
+            github.event.action == 'labeled' && github.event.label.name == 'boat-ok'))
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! jq -e '.report.kind == "ok"' "$RUNNER_TEMP/bfme-verdict/verdict.json" >/dev/null ||
+             ! jq -e '.changed_paths | any(startswith("include/"))' "$RUNNER_TEMP/bfme-plan/plan.json" >/dev/null; then
+            exit 0
+          fi
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C TMPDIR="$RUNNER_TEMP" \
+            GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
+            /usr/bin/timeout --kill-after=5s 420s \
+            python3 -B ci/header-witness/h5_wide.py "$RUNNER_TEMP/bfme-plan" "$RUNNER_TEMP/bfme-h5"
+          printf 'available=yes\n' >> "$GITHUB_OUTPUT"
+      - name: Save the bounded header layout receipt
+        if: steps.h5_wide.outputs.available == 'yes'
+        continue-on-error: true
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-header-h5-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-h5/header-h5.json'
+          if-no-files-found: error
+          retention-days: 1
 
   inline-fallback-virtual:
     needs: [intake, compare, wide-plan, wide-fallback]
@@ -1558,10 +2004,10 @@ jobs:
           retention-days: 1
 
   inline-fallback-report:
-    needs: [pending, intake, compare, wide-plan, wide-join, wide-fallback, inline-fallback-virtual]
+    needs: [pending, intake, claim, compare, wide-plan, wide-join, wide-fallback, inline-fallback-virtual]
     if: >-
-      always() && !cancelled() && needs.pending.result == 'success' &&
-      (needs.intake.outputs.route == 'compile' || needs.intake.outputs.route == 'wide') && (needs.wide-plan.result == 'success' && needs.wide-join.outputs.complete != 'true')
+      always() && !cancelled() && (vars.BFME_PR_COMPACT == 'yes' || needs.pending.result == 'success') &&
+      (needs.intake.outputs.route == 'compile' || needs.intake.outputs.route == 'wide' || (needs.intake.outputs.route == 'automatic-wide' && needs.claim.outputs.allowed == 'yes')) && (needs.wide-plan.result == 'success' && needs.wide-join.outputs.complete != 'true')
     name: Publish inline virtual status after primary fallback
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -1619,15 +2065,17 @@ jobs:
           exit "$rc"
 
   fallback-report:
-    needs: [pending, intake, compare, wide-plan, wide-join, wide-fallback]
+    needs: [pending, intake, claim, compare, wide-plan, wide-join, wide-fallback]
     if: always() && !cancelled() && needs.intake.result != 'skipped' && (needs.wide-plan.result == 'success' && needs.wide-join.outputs.complete != 'true')
     name: Report verified wide fallback on the pull request head
     outputs:
       stale: ${{ steps.native.outputs.stale }}
       passed: ${{ steps.native.outcome == 'success' && steps.native.outputs.verdict == 'success' && 'yes' || 'no' }}
+      unmeasured: ${{ steps.native.outputs.verdict == 'unavailable' && 'yes' || 'no' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
+      actions: read
       contents: read
       pull-requests: read
       statuses: write
@@ -1653,6 +2101,21 @@ jobs:
         with:
           name: bfme-admission-status-${{ github.run_attempt }}
           path: '${{ runner.temp }}/bfme-admission-status'
+      - name: Authenticate the exact header declaration receipt
+        id: h2_collector
+        if: needs.wide-fallback.outputs.h2_artifact != '' && needs.wide-fallback.outputs.h2_digest != ''
+        continue-on-error: true
+        shell: bash
+        env:
+          BFME_RECOVERY_READ_TOKEN: ${{ github.token }}
+          H2_ARTIFACT: ${{ needs.wide-fallback.outputs.h2_artifact }}
+          H2_DIGEST: ${{ needs.wide-fallback.outputs.h2_digest }}
+        run: |
+          set -euo pipefail
+          python3 -B ci/managed-check/header_h2_action.py collect \
+            "$RUNNER_TEMP/bfme-admission-status/decision.json" "$RUNNER_TEMP/bfme-h2-verified" \
+            "$H2_ARTIFACT" "$H2_DIGEST"
+          printf '\n## Header declaration evidence\n\nAuthenticated H2 receipt from this exact Boat attempt.\n' >> "$GITHUB_STEP_SUMMARY"
       - name: Read this run's comparison
         if: needs.compare.result == 'success'
         continue-on-error: true
@@ -1672,6 +2135,7 @@ jobs:
         shell: bash
         env:
           BFME_STATUS_TOKEN: '${{ github.token }}'
+          BFME_AUTOMATIC_CLAIM: '${{ needs.claim.outputs.allowed }}'
           MANAGED_PUBLIC_REPORT: '${{ runner.temp }}/bfme-report'
         run: |
           set -Eeuo pipefail
@@ -1764,13 +2228,47 @@ jobs:
           jq -n '{event_type: "bfme-land-next", client_payload: {}}' |
             gh api --method POST "repos/$GITHUB_REPOSITORY/dispatches" --input - >/dev/null
 
+  # A check that claimed its automatic reservation and then measured nothing (a machine fault) leaves no verdict, and
+  # only an admission run can re-issue that reservation, after this run has completed and been quiet for 120 s
+  # (admit.unmeasured_claim). Hand the wait to admission-unmeasured.yml. Only for a claimed reservation, so the
+  # bound is the ledger's: at most two re-issues per commit per main, then a plain hold.
+  notify-unmeasured:
+    needs: [claim, report, fallback-report]
+    if: >-
+      always() && !cancelled() && needs.claim.outputs.allowed == 'yes' &&
+      (needs.report.outputs.unmeasured == 'yes' || needs.fallback-report.outputs.unmeasured == 'yes') &&
+      github.repository_id == '1464323350' && github.ref == 'refs/heads/main' &&
+      github.event_name == 'repository_dispatch' && github.actor_id == '41898282'
+    name: Ask admission to look again after this run
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    steps:
+      - name: Send bfme-unmeasured
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.client_payload.number }}
+          RUN: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$NUMBER" =~ ^[1-9][0-9]{0,8}$ || ! "$RUN" =~ ^[1-9][0-9]{0,19}$ ]]; then
+            echo "Expected one pull request number and this run id. Found something else." >&2
+            exit 1
+          fi
+          jq -n --argjson number "$NUMBER" --arg run "$RUN" \
+            '{event_type: "bfme-unmeasured", client_payload: {number: $number, run: $run}}' |
+            gh api --method POST "repos/$GITHUB_REPOSITORY/dispatches" --input - >/dev/null
+
   notify-header-rules:
-    needs: [compare, wide-join, report]
+    needs: [compare, wide-join, wide-fallback, report, fallback-report]
     if: >-
       always() && !cancelled() && github.repository_id == '1464323350' &&
       github.ref == 'refs/heads/main' &&
-      (needs.wide-join.outputs.h2_attempted == 'yes' || needs.compare.outputs.h2_attempted == 'yes') &&
-      needs.report.result == 'success' && needs.report.outputs.stale != 'yes'
+      (needs.wide-join.outputs.h2_attempted == 'yes' || needs.wide-fallback.outputs.h2_attempted == 'yes' || needs.compare.outputs.h2_attempted == 'yes') &&
+      ((needs.report.result == 'success' && needs.report.outputs.stale != 'yes') ||
+       (needs.fallback-report.result == 'success' && needs.fallback-report.outputs.stale != 'yes'))
     name: Ask the hosted header rules to refresh
     runs-on: ubuntu-24.04
     timeout-minutes: 3

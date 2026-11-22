@@ -117,9 +117,15 @@ def main(out):
     ok, reason, values = decide(meta, stage2, datetime.now(timezone.utc))
     if ok:
         run = get(api, f"repos/{own}/actions/runs/{values['run_id']}/attempts/{values['attempt']}", own_token)
-        jobs = get(api, f"repos/{own}/actions/runs/{values['run_id']}/attempts/{values['attempt']}/jobs?per_page=100",
-                   own_token)["jobs"]
-        ok, reason = bind(values, run, jobs, shards)
+        by_name = {}
+        for att in range(1, int(values["attempt"]) + 1):
+            att_jobs = get(api, f"repos/{own}/actions/runs/{values['run_id']}/attempts/{att}/jobs?per_page=100",
+                           own_token)["jobs"]
+            for j in att_jobs:
+                name = j.get("name")
+                if name:
+                    by_name[name] = j
+        ok, reason = bind(values, run, list(by_name.values()), shards)
     print(f"fold-in: result commit {commit[:12]}: {reason}")
     if not ok:
         return stale(out, reason)

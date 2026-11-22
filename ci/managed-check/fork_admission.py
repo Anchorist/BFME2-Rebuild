@@ -23,8 +23,13 @@ def enabled(env):
     return env.get("BFME_AUTO_ADMISSION") == "yes" and env.get("BFME_PR_COMPACT") == "yes"
 
 
-def budget_configured(env):
-    limits = [env.get("BFME_ADMISSION_DAILY_" + key, "") for key in ("TOTAL", "PER_AUTHOR")]
+def wide_enabled(env):
+    return enabled(env) and env.get("BFME_AUTO_HEADERS") == "yes"
+
+
+def budget_configured(env, kind="narrow"):
+    prefix = "BFME_ADMISSION_DAILY_" if kind == "narrow" else "BFME_ADMISSION_WIDE_DAILY_"
+    limits = [env.get(prefix + key, "") for key in ("TOTAL", "PER_AUTHOR")]
     return (all(re.fullmatch(r"[1-9][0-9]{0,4}", value) for value in limits)
             and 0 < int(limits[1]) <= int(limits[0]) <= 5040)
 
@@ -81,6 +86,8 @@ def authority(pr, binding, env):
             return {"approved": True}
     author = (pr.get("user") or {}).get("id")
     decision = {"approved": False, "automatic_pending": True}
+    if wide_enabled(env) and kind == "narrow":
+        decision["automatic_wide_allowed"] = True
     if pr.get("draft") is False and type(author) is int and author > 0 and bot_dispatch(env):
         decision["automatic_author"] = author
     return decision
@@ -89,6 +96,13 @@ def authority(pr, binding, env):
 def narrow(plan):
     return (0 < len(plan["request_paths"]) <= 8 and bool(plan["changed_paths"])
             and all(path.startswith("src/") for path in plan["changed_paths"]))
+
+
+def wide_eligible(plan):
+    changed = plan.get("changed_paths") or ()
+    return (0 < len(changed) <= 60
+            and any(path.startswith("include/") for path in changed)
+            and all(path.startswith(("src/", "include/")) for path in changed))
 
 
 def verified_issuer(api, reservation, binding, author, tree, kind):
@@ -114,9 +128,16 @@ def verified_issuer(api, reservation, binding, author, tree, kind):
 
 def decision_matches(decision, binding):
     author = decision.get("automatic_author")
-    return (set(decision) == {"version","repo","number","base","head","tree","kind","plan","automatic_author"}
-            and decision["version"] == 1 and decision["repo"] == REPO_ID and type(author) is int and author > 0
-            and decision["kind"] == "compile" and type(decision["number"]) is int
+    base_keys = {"version", "repo", "number", "base", "head", "tree", "kind", "plan", "automatic_author"}
+    keys = set(decision)
+    if keys == base_keys:
+        kind_ok = decision["kind"] == "compile"
+    elif keys == base_keys | {"automatic_kind"}:
+        kind_ok = decision["automatic_kind"] == "wide" and decision["kind"] in {"compile", "wide"}
+    else:
+        return False
+    return (kind_ok and decision["version"] == 1 and decision["repo"] == REPO_ID
+            and type(author) is int and author > 0 and type(decision["number"]) is int
             and all(decision[key] == binding[key] for key in ("number", "base", "head"))
             and isinstance(decision["tree"], str) and HEX40.fullmatch(decision["tree"]) is not None
             and isinstance(decision["plan"], str) and HEX64.fullmatch(decision["plan"]) is not None)
@@ -147,9 +168,16 @@ def claim_compiler(api, book, ledger, binding, decision, env):
         return False
     author = decision["automatic_author"]
     pr = api.current(binding)
-    kind = reservation_kind(pr)
-    if (kind is None or (kind == "narrow" and not budget_configured(env))
-            or pr.get("draft") is not False or (pr.get("user") or {}).get("id") != author):
+    pr_kind = reservation_kind(pr)
+    if decision.get("automatic_kind") == "wide":
+        if not (wide_enabled(env) and budget_configured(env, "wide") and pr_kind == "narrow"):
+            return False
+        kind = "wide"
+    else:
+        if pr_kind is None or (pr_kind == "narrow" and not budget_configured(env, "narrow")):
+            return False
+        kind = pr_kind
+    if pr.get("draft") is not False or (pr.get("user") or {}).get("id") != author:
         return False
     args = (binding["number"], binding["head"], binding["base"])
     reservation = ledger.find(book, *args)
@@ -161,7 +189,7 @@ def claim_compiler(api, book, ledger, binding, decision, env):
     if claim not in {"claimed", "already-claimed-by-this-run"}:
         return False
     latest = api.current(binding)
-    return (reservation_kind(latest) == kind and latest.get("draft") is False
+    return (reservation_kind(latest) == pr_kind and latest.get("draft") is False
             and (latest.get("user") or {}).get("id") == author)
 
 

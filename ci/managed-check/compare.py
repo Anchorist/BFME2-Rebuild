@@ -1,8 +1,14 @@
 """Compare a protected base and validated source-only candidate on the sealed Boat image."""
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 import hashlib
+from time import monotonic
 import os
+from collections import Counter
+from itertools import permutations
 from pathlib import Path
 import re
+import struct
 import sys
 import tempfile
 from types import SimpleNamespace
@@ -19,7 +25,7 @@ from diff_scope import diff_lines
 from finished_index import Owners, RealHeaders
 from gateway import projection as public_projection
 from progress_delta import drafts_in_use, progress
-from reporting import GATES, from_landing
+from reporting import GATES, SYMBOL, from_landing
 from emitted_data import record_pairs
 
 
@@ -59,7 +65,193 @@ def protected_judge(work, roots, baseline):
     return judge
 
 
-def native_blockers(outcome):
+LOCAL_LABEL = re.compile(r"\$L\d+\Z")
+MAX_LOCAL_DEPTH = 8
+
+
+_COFF_ERRORS = (OSError, KeyError, TypeError, ValueError, AttributeError, IndexError, struct.error)
+
+
+def _read_local_target(judge, obj, sym):
+    try:
+        return judge.read_body(obj, sym)
+    except _COFF_ERRORS:
+        coff_fn = getattr(judge, "coff", None)
+        if not callable(coff_fn):
+            return None
+        try:
+            coff = coff_fn(obj)
+            idx = coff.index(sym)
+            loc = coff.loc(idx)
+            n = coff.extent(idx, code=False)
+            body = coff.bytes(loc, n)
+            relocs = [(o, k, coff.symbols[j]["name"]) for o, k, j in coff.relocs(loc, n)]
+            return body, relocs
+        except _COFF_ERRORS:
+            return None
+
+
+def _local_structural_digest(sym, judge, obj, visiting, seen_locals):
+    if len(visiting) > MAX_LOCAL_DEPTH:
+        return None
+    if len(visiting) == 1:
+        try:
+            body, relocs = judge.read_body(obj, sym)
+        except _COFF_ERRORS:
+            return None
+    else:
+        loaded = _read_local_target(judge, obj, sym)
+        if loaded is None:
+            return None
+        body, relocs = loaded
+    if not isinstance(body, (bytes, bytearray)):
+        return None
+    ordered_relocs = sorted(
+        ((int(off), int(rtype), target) for off, rtype, target in relocs),
+        key=lambda item: (item[0], item[1], "" if isinstance(item[2], str) and LOCAL_LABEL.fullmatch(item[2]) else str(item[2])),
+    )
+    norm_relocs = []
+    for off_i, rtype_i, target in ordered_relocs:
+        addend = bytes(body[off_i:off_i + 4]).hex() if 0 <= off_i <= len(body) else ""
+        if isinstance(target, str) and LOCAL_LABEL.fullmatch(target):
+            if target in visiting:
+                target_id = ["cycle", visiting.index(target)]
+            elif target in seen_locals:
+                target_id = ["local-ref", seen_locals[target]]
+            else:
+                cid = len(seen_locals)
+                seen_locals[target] = cid
+                target_digest = _local_structural_digest(target, judge, obj, visiting + (target,), seen_locals)
+                if target_digest is None:
+                    return None
+                target_id = ["local", cid, target_digest]
+        else:
+            target_id = ["sym", str(target)]
+        norm_relocs.append([off_i, rtype_i, addend, target_id])
+    return digest(encoded({"len": len(body), "body": digest(bytes(body)), "relocs": norm_relocs}))
+
+
+def local_label_fingerprint(row, judge=None, obj=None, *, targets_out=None):
+    """Structural identity for compiler-generated MSVC local labels ($L<n>).
+
+    MSVC numbers $L<n> labels from a per-unit counter that shifts when an included
+    header changes line count. Hashing exact COFF body bytes (preserving relocation
+    addends) and canonical local-target aliasing graphs keeps identical shifted
+    labels equal while catching changed addends, distinct targets with identical
+    bytes, or changed bodies. Returns None when readable COFF evidence is
+    unavailable so callers fail closed to raw names.
+    """
+    if judge is None or obj is None or not Path(obj).is_file():
+        return None
+    seen_locals = {row["symbol"]: 0}
+    struct_digest = _local_structural_digest(row["symbol"], judge, obj, (row["symbol"],), seen_locals)
+    if struct_digest is None:
+        return None
+    if targets_out is not None:
+        targets_out.update(seen_locals)
+    return encoded({
+        "kind": "local-label",
+        "selection": int(row.get("comdat_selection", 0) or 0),
+        "live": bool(row.get("referenced_by_kept")),
+        "why": str(row.get("why") or ""),
+        "struct": struct_digest,
+    })
+
+
+MAX_SHARED_COMPONENT = 6
+
+
+def _canonical_component_digest(comp_items, judge, obj):
+    """Graph-isomorphism-complete canonical digest for a connected component of local roots."""
+    if len(comp_items) > MAX_SHARED_COMPONENT:
+        return None
+    best = None
+    for order in permutations(comp_items):
+        shared_seen = {row["symbol"]: idx for idx, (row, _s, _f, _t) in enumerate(order)}
+        seq = []
+        ok = True
+        for row, _sym, _fp, _targets in order:
+            sd = _local_structural_digest(row["symbol"], judge, obj, (row["symbol"],), shared_seen)
+            if sd is None:
+                ok = False
+                break
+            seq.append([
+                int(row.get("comdat_selection", 0) or 0),
+                bool(row.get("referenced_by_kept")),
+                str(row.get("why") or ""),
+                sd,
+            ])
+        if not ok:
+            return None
+        cand = encoded(seq)
+        if best is None or cand < best:
+            best = cand
+    return digest(best) if best is not None else None
+
+
+def unexpected_extra_facts(outcome, *, judge=None, obj=None):
+    """Return (facts_set, full_symbol_map) for rejected extra code symbols."""
+    facts = set()
+    symbols = {}
+    local_items = []
+    for row in outcome.get("rejected_extras") or ():
+        sym = row["symbol"]
+        targets = {}
+        fp = (local_label_fingerprint(row, judge=judge, obj=obj, targets_out=targets)
+              if isinstance(sym, str) and LOCAL_LABEL.fullmatch(sym) else None)
+        if fp is not None:
+            local_items.append((row, sym, fp, set(targets)))
+        else:
+            fact_hash = digest(encoded(sym))
+            facts.add(("unexpected-code", fact_hash))
+            if isinstance(sym, str) and SYMBOL.fullmatch(sym):
+                symbols.setdefault(fact_hash, sym)
+
+    # Partition normalized local roots into connected components sharing any local target.
+    n = len(local_items)
+    visited = [False] * n
+    comp_fps = []
+    for i in range(n):
+        if visited[i]:
+            continue
+        comp_idx = []
+        stack = [i]
+        visited[i] = True
+        while stack:
+            cur = stack.pop()
+            comp_idx.append(cur)
+            cur_nodes = local_items[cur][3] | {local_items[cur][1]}
+            for j in range(n):
+                if not visited[j] and (cur_nodes & (local_items[j][3] | {local_items[j][1]})):
+                    visited[j] = True
+                    stack.append(j)
+        comp = [local_items[k] for k in comp_idx]
+        if len(comp) == 1:
+            comp_fps.append((comp[0][2], comp[0][1]))
+        else:
+            cd = _canonical_component_digest(comp, judge, obj)
+            if cd is None:
+                # Too large or unreadable: fail closed to exact raw symbol names.
+                for _row, sym, _fp, _targets in comp:
+                    fact_hash = digest(encoded(sym))
+                    facts.add(("unexpected-code", fact_hash))
+                    if isinstance(sym, str) and SYMBOL.fullmatch(sym):
+                        symbols.setdefault(fact_hash, sym)
+            else:
+                comp_fps.append((encoded(["local-component", cd]), comp[0][1]))
+
+    local_counts = Counter()
+    for fp, sym in sorted(comp_fps):
+        occ = local_counts[fp]
+        local_counts[fp] += 1
+        fact_hash = digest(encoded(["local-label", digest(fp), occ]))
+        facts.add(("unexpected-code", fact_hash))
+        if isinstance(sym, str) and SYMBOL.fullmatch(sym):
+            symbols.setdefault(fact_hash, sym)
+    return facts, symbols
+
+
+def native_blockers(outcome, *, judge=None, obj=None):
     """Keep stable failure identities, never native details or scratch paths."""
     if "blockers" in outcome:
         return outcome["blockers"]
@@ -67,8 +259,8 @@ def native_blockers(outcome):
         ("emitted-row", digest(encoded([int(row["rva"], 16), row["status"]])))
         for row in outcome["expected"] if row["status"] != "MATCH"
     }
-    facts.update(("unexpected-code", digest(encoded(row["symbol"])))
-                 for row in outcome["rejected_extras"])
+    extra_facts, _ = unexpected_extra_facts(outcome, judge=judge, obj=obj)
+    facts.update(extra_facts)
     for text in outcome["verification_blockers"]:
         if text == "compiled owned function order differs from retail RVA order":
             facts.add(("owned-order", digest(encoded(text))))
@@ -86,11 +278,72 @@ def native_blockers(outcome):
     return [list(fact) for fact in sorted(facts)]
 
 
+def unexpected_symbol_pairs(outcome, *, judge=None, obj=None, baseline=None):
+    """Return bounded, allowlisted [digest, symbol] pairs for rejected extra code symbols.
+
+    When `baseline` is supplied, filter out facts already present on base before applying
+    the 32-symbol cap so pre-existing base symbols never crowd out a newly introduced one.
+    """
+    if "unexpected_symbols" in outcome and isinstance(outcome["unexpected_symbols"], list):
+        if all(isinstance(pair, list) and len(pair) == 2 for pair in outcome["unexpected_symbols"]):
+            return outcome["unexpected_symbols"][:32]
+    _, symbols = unexpected_extra_facts(outcome, judge=judge, obj=obj)
+    if baseline is not None:
+        base_hashes = {fact[1] for fact in native_blockers(baseline) if fact[0] == "unexpected-code"}
+        symbols = {h: s for h, s in symbols.items() if h not in base_hashes}
+    return [[h, s] for h, s in sorted(symbols.items())[:32]]
+
+
+def emitted_row_pairs(outcome, *, baseline=None):
+    """Return bounded [digest, rva, status, name] tuples for non-MATCH expected rows."""
+    if "emitted_rows" in outcome and isinstance(outcome["emitted_rows"], list):
+        if all(isinstance(p, list) and len(p) == 4 for p in outcome["emitted_rows"]):
+            return outcome["emitted_rows"][:32]
+    base_hashes = ({fact[1] for fact in native_blockers(baseline) if fact[0] == "emitted-row"}
+                   if baseline is not None else set())
+    pairs = []
+    for row in outcome.get("expected") or ():
+        if not isinstance(row, dict):
+            continue
+        status, rva = row.get("status"), row.get("rva")
+        if not status or status == "MATCH" or not rva:
+            continue
+        try:
+            fact_hash = digest(encoded([int(rva, 16), status]))
+        except (TypeError, ValueError):
+            continue
+        if fact_hash in base_hashes:
+            continue
+        name = row.get("symbol") or row.get("name") or ""
+        pairs.append([fact_hash, str(rva), str(status), str(name)[:120]])
+    return sorted(pairs)[:32]
+
+
+def attach_blockers(judge, side_dir, table, *, baseline=None, include_symbols=True):
+    """Precompute structural blockers and safe symbol labels using compiled COFF objects."""
+    for path, outcome in table.items():
+        if "blockers" in outcome:
+            continue
+        obj = side_dir / "obj" / (path.replace("/", "_") + ".obj")
+        target = obj if obj.is_file() else None
+        outcome["blockers"] = native_blockers(outcome, judge=judge, obj=target)
+        if include_symbols:
+            base_outcome = baseline.get(path) if isinstance(baseline, dict) else None
+            pairs = unexpected_symbol_pairs(outcome, judge=judge, obj=target, baseline=base_outcome)
+            if pairs:
+                outcome["unexpected_symbols"] = pairs
+            epairs = emitted_row_pairs(outcome, baseline=base_outcome)
+            if epairs:
+                outcome["emitted_rows"] = epairs
+
+
 def index(table):
     return {path: {"verified": item.get("object_verified", False),
                    "error": bool(item.get("error")),
                    "gates": set(item["gates"]),
                    "blockers": {tuple(fact) for fact in native_blockers(item)},
+                   "unexpected_symbols": {pair[0]: pair[1] for pair in unexpected_symbol_pairs(item)},
+                   "emitted_rows": {pair[0]: (pair[1], pair[2], pair[3]) for pair in emitted_row_pairs(item)},
                    "proven": {row["rva"] for row in item["rows"]
                               if row.get("credited", row["status"] == "MATCH") and row.get("proof") == "proven"},
                    "rows": {row["rva"]: (row["status"], row.get("pct", 100.0 if row["status"] == "MATCH" else 0.0))
@@ -113,7 +366,36 @@ def reduction(old, new):
         counts["new_compiler_errors"] += int(not prior["error"] and current["error"])
         added = current["gates"] - prior["gates"]
         counts["new_source_gates"] += len(added)
-        rules.update(kind for kind, _ in current["blockers"] - prior["blockers"])
+        new_blockers = sorted(current["blockers"] - prior["blockers"])
+        rules.update(kind for kind, _ in new_blockers)
+        sym_map = current.get("unexpected_symbols") or {}
+        emitted_by_hash = {
+            digest(encoded([int(address, 16), status])): (address, status, pct)
+            for address, (status, pct) in current["rows"].items()
+            if status != "MATCH"
+        }
+        for kind, fact_hash in new_blockers:
+            if kind == "unexpected-code" and fact_hash in sym_map:
+                hint.append(f"{path}: unexpected emitted code symbol `{sym_map[fact_hash]}`.")
+            elif kind == "emitted-row":
+                row_info = emitted_by_hash.get(fact_hash)
+                exp_info = (current.get("emitted_rows") or {}).get(fact_hash)
+                if row_info is not None:
+                    address, status, pct = row_info
+                    previous = prior["rows"].get(address, ("MISSING", 0.0))[0]
+                    hint.append(f"{path} at {address}: emitted function {status} ({pct:.1f}% vs retail; previously {previous}).")
+                elif exp_info is not None:
+                    address, status, name = exp_info
+                    label = f" `{name}`" if name else ""
+                    hint.append(f"{path} at {address}{label}: emitted function {status} (expected row mismatch vs retail).")
+                else:
+                    hint.append(f"{path}: an emitted function did not match retail.")
+            elif kind == "owned-order":
+                hint.append(f"{path}: compiled owned function order differs from retail RVA order.")
+            elif kind == "placeholder-virtual":
+                hint.append(f"{path}: placeholder virtual or unresolved draft type in compiled object.")
+            elif kind == "native-object":
+                hint.append(f"{path}: object verification blocker (missing/ambiguous COFF position or stale receipt).")
         for address, (status, _) in current["rows"].items():
             previous = prior["rows"].get(address, ("MISSING", 0.0))[0]
             if previous == status:
@@ -222,20 +504,179 @@ def make_report(git, judge, plan, tip, old, new, find_object, *, lookup_differen
     return clean, counts, functions
 
 
-def measure_batch(git, judge, side, plan, tools, job, *, timing=None):
-    """Preserve the optional assembly allowances from the protected base."""
+@contextmanager
+def memoized_projection():
+    """Cache source tree projections and packed payloads per revision for this run."""
+    import base_cache as base_cache_mod
+    built, packed = {}, {}
+    orig_m_proj = canary_measure.projection
+    orig_m_pack = canary_measure.pack_sources
+    orig_b_proj = base_cache_mod.projection
+
+    def cached_projection(git, revision):
+        key = (str(git.path), revision)
+        if key not in built:
+            built[key] = orig_m_proj(git, revision)
+        return built[key]
+
+    def cached_pack(files):
+        key = id(files)
+        if key not in packed or packed[key][0] is not files:
+            packed[key] = (files, orig_m_pack(files))
+        return packed[key][1]
+
+    canary_measure.projection = base_cache_mod.projection = cached_projection
+    canary_measure.pack_sources = cached_pack
+    try:
+        yield
+    finally:
+        canary_measure.projection = orig_m_proj
+        canary_measure.pack_sources = orig_m_pack
+        base_cache_mod.projection = orig_b_proj
+
+
+@contextmanager
+def _with_asm_allowance(git, base):
     previous = canary_measure.CONFIG
-    base = plan["historical_base"]
     asm = "asm_allowlist.json"
     if git.run("cat-file", "-e", f"{base}:config/{asm}", check=False).returncode == 0:
         canary_measure.CONFIG = (*previous, asm)
     try:
-        if timing is None:
-            return canary_measure.measure(git, judge, side, plan, tools, job)
-        return canary_measure.measure(git, judge, side, plan, tools, job, timing=timing)
+        yield
     finally:
         canary_measure.CONFIG = previous
 
+
+def measure_batch(git, judge, side, plan, tools, job, *, timing=None):
+    """Preserve the optional assembly allowances from the protected base."""
+    with _with_asm_allowance(git, plan["historical_base"]):
+        cache_dir = os.environ.get("BFME_BASE_CACHE") if side == "base" else None
+        if cache_dir:
+            import base_cache
+            return base_cache.measure_base_with_cache(
+                git, judge, plan, tools, job, cache_dir,
+                measure_fn=canary_measure.measure, timing=timing,
+            )
+        if timing is None:
+            return canary_measure.measure(git, judge, side, plan, tools, job)
+        return canary_measure.measure(git, judge, side, plan, tools, job, timing=timing)
+
+
+def measure_pair(git, judge, plan, tools, base_job, head_job, *,
+                 cache_dir=None, base_timing=None, head_timing=None):
+    """Compile uncached base and head sides concurrently across host vCPUs, then judge sequentially."""
+    if cache_dir is None:
+        cache_dir = os.environ.get("BFME_BASE_CACHE")
+    with _with_asm_allowance(git, plan["historical_base"]):
+        base_cache_state = None
+        if cache_dir:
+            import base_cache
+            cache_root, base_sources, base_hashes, hit_payloads, missed_rows = base_cache.plan_base_cache(
+                git, plan, tools, cache_dir,
+            )
+            base_cache_state = (base_cache, cache_root, base_sources, base_hashes, hit_payloads, missed_rows)
+            base_plan = (
+                dict(plan, request_paths=[r["tu"] for r in missed_rows],
+                     compile=dict(plan["compile"], base=missed_rows))
+                if missed_rows else None
+            )
+        else:
+            base_plan = plan
+        head_plan = plan
+        base_count = len(base_plan["compile"]["base"]) if base_plan else 0
+        head_count = len(head_plan["compile"]["head"])
+        workers = canary_measure.compile_workers(base_count + head_count)
+
+        if base_plan is None:
+            base_cache_mod, cache_root, base_sources, base_hashes, hit_payloads, missed_rows = base_cache_state
+            old = base_cache_mod.finish_base_cache(
+                git, judge, plan, tools, base_job, cache_root, base_sources, base_hashes,
+                hit_payloads, missed_rows, {}, timing=base_timing,
+            )
+            new = canary_measure.measure(git, judge, "head", head_plan, tools, head_job, timing=head_timing)
+            return old, new
+
+        if workers <= 1:
+            # Concurrency cap of 1: base and head carry distinct source projections, so run one RPC per side serially.
+            if base_cache_state is not None:
+                base_cache_mod, cache_root, base_sources, base_hashes, hit_payloads, missed_rows = base_cache_state
+                miss_timing = {} if base_timing is not None else None
+                try:
+                    miss_results = canary_measure.measure(git, judge, "base", base_plan, tools, base_job, timing=miss_timing)
+                finally:
+                    if base_timing is not None and miss_timing:
+                        base_timing.update(miss_timing)
+                old = base_cache_mod.finish_base_cache(
+                    git, judge, plan, tools, base_job, cache_root, base_sources, base_hashes,
+                    hit_payloads, missed_rows, miss_results, timing=base_timing,
+                    compile_s=(miss_timing or {}).get("compile", 0.0),
+                    compare_s=(miss_timing or {}).get("compare", 0.0),
+                )
+            else:
+                old = canary_measure.measure(git, judge, "base", base_plan, tools, base_job, timing=base_timing)
+            new = canary_measure.measure(git, judge, "head", head_plan, tools, head_job, timing=head_timing)
+            return old, new
+
+        b_sources, b_hashes, b_rows, b_packed = canary_measure.prepare_compile_side(git, "base", base_plan)
+        h_sources, h_hashes, h_rows, h_packed = canary_measure.prepare_compile_side(git, "head", head_plan)
+        profile = plan["profile_sha256"]
+
+        def build_chunks(rows, max_chunks):
+            count = max(1, min(len(rows), max_chunks))
+            groups = [[(i, rows[i]) for i in range(slot, len(rows), count)] for slot in range(count)]
+            return [g for g in groups if g]
+
+        total_rows = len(b_rows) + len(h_rows)
+        b_slots = max(1, min(len(b_rows), (workers * len(b_rows) + total_rows // 2) // total_rows))
+        if b_slots >= workers:
+            b_slots = workers - 1
+        h_slots = max(1, min(len(h_rows), workers - b_slots))
+        b_chunks = build_chunks(b_rows, b_slots)
+        h_chunks = build_chunks(h_rows, h_slots)
+        b_results = [None] * len(b_rows)
+        h_results = [None] * len(h_rows)
+        started = monotonic()
+        try:
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                tasks = []
+                for chunk in b_chunks:
+                    fut = pool.submit(canary_measure.execute_compile_rpc, profile, b_packed, [r for _, r in chunk])
+                    tasks.append(("base", chunk, fut))
+                for chunk in h_chunks:
+                    fut = pool.submit(canary_measure.execute_compile_rpc, profile, h_packed, [r for _, r in chunk])
+                    tasks.append(("head", chunk, fut))
+                for side_name, chunk, fut in tasks:
+                    out_list = b_results if side_name == "base" else h_results
+                    for (orig_idx, _), value in zip(chunk, fut.result(), strict=True):
+                        out_list[orig_idx] = value
+        finally:
+            wall_compile = monotonic() - started
+            if base_timing is not None:
+                base_timing["compile"] = wall_compile
+
+        if base_cache_state is not None:
+            base_cache_mod, cache_root, base_sources, base_hashes, hit_payloads, missed_rows = base_cache_state
+            miss_timing = {} if base_timing is not None else None
+            miss_results = canary_measure.judge_compiled(
+                git, judge, "base", base_plan, tools, base_job, b_sources, b_hashes, b_rows, b_results,
+                timing=miss_timing, compile_seconds=wall_compile,
+            )
+            old = base_cache_mod.finish_base_cache(
+                git, judge, plan, tools, base_job, cache_root, base_sources, base_hashes,
+                hit_payloads, missed_rows, miss_results, timing=base_timing,
+                compile_s=(miss_timing or {}).get("compile", 0.0),
+                compare_s=(miss_timing or {}).get("compare", 0.0),
+            )
+        else:
+            old = canary_measure.judge_compiled(
+                git, judge, "base", base_plan, tools, base_job, b_sources, b_hashes, b_rows, b_results,
+                timing=base_timing, compile_seconds=wall_compile,
+            )
+        new = canary_measure.judge_compiled(
+            git, judge, "head", head_plan, tools, head_job, h_sources, h_hashes, h_rows, h_results,
+            timing=head_timing, compile_seconds=0.0,
+        )
+        return old, new
 
 def main(admission, out):
     admission, out = Path(admission), Path(out)
@@ -267,8 +708,10 @@ def main(admission, out):
         native = dict(plan, historical_base=plan["base"], historical_head=tip,
                       compile={side: native_commands(git, judge, rev, plan["request_paths"], roots)
                                for side, rev in (("base", plan["base"]), ("head", tip))})
-        old = measure_batch(git, judge, "base", native, roots, work / "base")
-        new = measure_batch(git, judge, "head", native, roots, work / "head")
+        with memoized_projection():
+            old, new = measure_pair(git, judge, native, roots, work / "base", work / "head")
+        attach_blockers(judge, work / "base", old, include_symbols=False)
+        attach_blockers(judge, work / "head", new, baseline=old, include_symbols=True)
         objects = [(path, *(work / side / "obj" / (path.replace("/", "_") + ".obj")
                             for side in ("base", "head"))) for path in plan["request_paths"]]
         record_pairs(judge, work / "base", objects, new)

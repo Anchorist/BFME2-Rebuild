@@ -53,7 +53,7 @@ the reference build. Changes need both good source and a passing check.
   The check names any it requires that are missing.
 - **Checking without the reference compiler:** the reference toolchain is
   Visual C++ 7.1, which most contributors will not have. You can still
-  compile a header with any C++ compiler and assert its layout
+  compile a header with a compatible 32-bit x86 ABI C++ compiler and assert its layout
   (`static_assert`-style `typedef char check[sizeof(T) == 0x40 ? 1 : -1];`
   and `offsetof`) before you open a pull request. The pull-request check then
   compiles with the reference compiler. A member that no compiled function
@@ -94,10 +94,29 @@ list at the end of that page.
    `// FUNCTION:` line for it.
 4. Read its bytes in `baseline/game.dat` at the RVA, and its Zero Hour body at
    `zero_hour_file:zero_hour_line`.
-5. Write the body directly below its `// FUNCTION:` line, against the shared
-   headers. Where Zero Hour and the bytes differ, follow the bytes.
-6. Commit with a message that gives the evidence.
-7. Open a draft pull request whose description starts with the claim line
+5. Claim the item before writing code: search upstream open PR descriptions with
+   `gh pr list -R Open-BFME/BFME2-Rebuild --state open --search "<RVA or file>"`,
+   then open a draft PR with your `Claim:` line or take an exclusive swarm
+   assignment.
+6. Write the body directly below its `// FUNCTION:` line, against the shared
+   headers. Where Zero Hour and the bytes differ, follow the bytes. Commit your
+   change on top of current upstream `main` with a message that gives the
+   evidence.
+7. Run the local source-rules check on the committed tree before pushing so you
+   never spend a compiler run on a G1-G8 failure:
+
+   ```sh
+   python3 tools/gates/gate.py . <upstream-main-ref> HEAD --json /tmp/gate.json
+   ```
+
+   `gate.py` reads committed Git trees (not uncommitted working-tree files).
+   Fix every finding until it **exits 0 and `/tmp/gate.json` reports
+   `"status": "pass"`**. If you edited a header under `include/`, check syntax
+   and `sizeof`/`offsetof` with a compatible 32-bit x86 ABI compiler first, and
+   keep function bodies out of shared headers unless supported by retail
+   evidence (unowned inline definitions or constructors emit unexpected code in
+   every includer).
+8. Mark the pull request **Ready for review** with the claim line
    (`Claim: src/path/File.cpp` for a file, `Claim: include/Draft/X.h` for a
    Draft, `Claim: 0x00ABCDEF` for one function) and the evidence, for example:
 
@@ -108,7 +127,12 @@ list at the end of that page.
    Bytes against Zero Hour: <what agrees, what differs and which you followed>.
    Unconfirmed: <fields, slots or names you could not confirm, or "none">.
    ```
-8. Read the **BFME II / Boat** report, fix, and mark it ready when it passes.
+
+   Draft pull requests can run source rules, but **automatic Boat admission
+   waits until the pull request is marked Ready for review** (maintainer-started
+   comparisons are separate).
+9. Read the **BFME II / Admission**, **BFME II / Boat**, and **BFME II / Landing**
+   statuses and fix measured code refusals (at most three rounds).
 
 ## Choose and prepare a change
 
@@ -142,25 +166,43 @@ limits. Submit regular UTF-8 `.c` or `.cpp` files under `src/` and `.h`,
 generated metadata and documentation proposals in a maintainer issue or
 a separately coordinated change.
 
-Three checks report on every pull request: **BFME II / Boat** (the match
-check), **BFME II / source rules** and **BFME II / Inline virtual**. A pull
-request from a fork gets the source rules at once; the maintainer admits it
-to the compile check with the `boat-ok` label. Look for Pending, Pass or Fail
-and the report in the conversation. The
-report identifies the compared head and base, affected source files,
-intake or compiler failures, and losses of match credit, reference proof
-or verified object results. A header edit reaches both its direct users
-and units that use it through other headers. When available, a partial
-row shows the first differing offset and a short excerpt of the changed
-function compiled from your source.
+Three comparison checks report on pull requests—**BFME II / source rules**
+(G1-G8), **BFME II / Boat** (Visual C++ 7.1 match comparison), and
+**BFME II / Inline virtual** (pending can land; a fresh failure blocks; a stale
+failure triggers re-measurement)—alongside **BFME II / Admission** and
+**BFME II / Landing**.
 
-Update against current `main` when the check asks. When every check passes,
-a pull request from a branch of this repository lands by itself; a change
-under `include/`, or to anything listed in `.github/CODEOWNERS`, waits for
-the maintainer's review first.
+- **Ready source-only fork PRs** (1-8 eligible `src/` paths affecting at most 8
+  translation units, passing current source rules, within daily limits of 30
+  per author and 150 total): admitted automatically, compiled on Boat, and
+  squash-merged to `main` automatically when current source rules and Boat pass
+  against current `main` with a clean merge and no landing hold.
+- **Draft PRs:** source rules can run, while automatic Boat admission waits
+  until you mark the pull request **Ready for review** (maintainer-started
+  comparisons are separate).
+- **Header PRs (`include/`):** ready fork pull requests changing `include/`
+  (with or without `src/`, up to 60 files, passing current source rules) are
+  admitted automatically under the wide daily budget (currently 5/author and
+  20 total/day). Boat compares all affected translation units, including
+  transitive includers (narrow for at most 8 affected units; wide for larger
+  eligible sets). Keep function bodies out of shared headers unless supported
+  by retail evidence. Header PRs auto-land once **BFME II / Header rules** pass on current `main`
+  (including member layout changes proven by a matching typed-access witness
+  under H5); header PRs whose Header rules are held (not failed) wait for
+  approval on that exact commit from a listed maintainer in
+  `ci/landing/landing.json`.
 
-A local check is optional. [Checker inputs and methods](tools/README.md)
-describes the toolchain and comparison. Do not attach executables, game
+Read the statuses to see who must act: **Admission** reports budget holds
+(retried automatically), conflicts (update your branch and push), or maintainer
+waits; **Boat** Details shows code refusals to fix (with first differing offset
+and compiled instructions when available) versus unmeasured runner faults
+(retried automatically up to twice before a maintainer hold); **Landing** names
+any remaining merge hold.
+
+A local Visual C++ 7.1 check is optional (see
+[Checker inputs and methods](tools/README.md)), while running
+`tools/gates/gate.py` locally on committed changes before pushing is strongly
+recommended. Do not attach executables, game
 assets, or byte or disassembly dumps to a pull request. Point to the address,
 caller, slot, offset or other evidence that a reviewer can verify in
 `baseline/game.dat`.

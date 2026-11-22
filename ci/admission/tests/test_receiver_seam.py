@@ -81,5 +81,37 @@ class Seam(unittest.TestCase):
         self.assertFalse(self.claim(receiver_env()))
 
 
+    def test_wide_header_reservation_claimed_by_receiver(self):
+        wide_pr = fork_pr(number=22)
+        book = LedgerApi(True, [wide_pr], {22: ["include/Game/Foo.h"]})
+        book.run_id = ADMISSION_RUN
+        wide_budget = {"daily_total": 20, "daily_per_author": 5}
+        with redirect_stdout(io.StringIO()):
+            out = admit.handle(book, 22, CONFIG, MAIN, BUDGET, CLOCK, auto_headers=True,
+                               wide_budget=wide_budget, source_proof=lambda *_: None)
+        self.assertIn("admitted by rule", out)
+        binding = {"number": 22, "head": HEAD, "base": MAIN}
+        decision = {"version": 1, "repo": admit.REPO_ID, "number": 22, "base": MAIN, "head": HEAD,
+                    "tree": TREE, "kind": "wide", "plan": "5" * 64, "automatic_author": 424242,
+                    "automatic_kind": "wide"}
+        env = receiver_env() | {"BFME_AUTO_HEADERS": "yes", "BFME_ADMISSION_WIDE_DAILY_TOTAL": "20",
+                                "BFME_ADMISSION_WIDE_DAILY_PER_AUTHOR": "5"}
+        original = admit.ledger.days
+        admit.ledger.days = lambda clock=None: original(CLOCK)
+        try:
+            # Missing BFME_AUTO_HEADERS must refuse.
+            self.assertFalse(fork_admission.claim_compiler(Receiver(wide_pr), book, admit.ledger, binding,
+                                                           decision, receiver_env()))
+            # With BFME_AUTO_HEADERS and wide budget, receiver claims once.
+            self.assertTrue(fork_admission.claim_compiler(Receiver(wide_pr), book, admit.ledger, binding,
+                                                          decision, env))
+            self.assertEqual(admit.ledger.find(book, 22, HEAD, MAIN, CLOCK)["claimed_by"],
+                             {"run": "900", "attempt": "1"})
+            self.assertFalse(fork_admission.claim_compiler(Receiver(wide_pr), book, admit.ledger, binding,
+                                                           decision, env | {"GITHUB_RUN_ID": "901"}))
+        finally:
+            admit.ledger.days = original
+
+
 if __name__ == "__main__":
     unittest.main()

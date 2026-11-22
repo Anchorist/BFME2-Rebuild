@@ -15,6 +15,8 @@ from wide_recovery import (
 )
 
 PRIMARY_SECONDS = 520
+MAX_RUN_AGE = 1800
+MAX_PLAN_DELAY = 240
 LEASE_LIMIT = 64 * 1024
 POLL = 10
 
@@ -27,11 +29,17 @@ def output(values):
 
 def source_free_decision(source):
     decision = read(Path(source) / "decision.json", 4096)
-    if (set(decision) != {"version", "repo", "number", "base", "head", "tree", "kind", "plan"}
+    base_keys = {"version", "repo", "number", "base", "head", "tree", "kind", "plan"}
+    auto_keys = base_keys | {"automatic_author", "automatic_kind"}
+    keys = set(decision)
+    auto_ok = (keys == base_keys
+               or (keys == auto_keys and type(decision.get("automatic_author")) is int
+                   and decision["automatic_author"] > 0 and decision.get("automatic_kind") == "wide"))
+    if (not auto_ok
             or decision["version"] != 1 or decision["repo"] != REPO_ID
             or type(decision["number"]) is not int or decision["number"] <= 0
             or decision["kind"] != "wide" or decision["base"] != os.environ["GITHUB_SHA"]
-            or not all(HEX40.fullmatch(decision[key]) for key in ("base","head","tree"))
+            or not all(HEX40.fullmatch(decision[key]) for key in ("base", "head", "tree"))
             or not HEX64.fullmatch(decision["plan"])):
         raise ValueError("Expected source-free protected wide authorization; found an invalid decision.")
     return decision
@@ -39,9 +47,12 @@ def source_free_decision(source):
 
 def anchor(source):
     decision = source_free_decision(source)
-    start = Actions(decision["head"], base=decision["base"]).anchor()
-    cutoff = start + PRIMARY_SECONDS
-    output({"started": start, "primary_cutoff": cutoff, "reserve_cutoff": cutoff + RESERVE_SECONDS})
+    run_start, plan_start = Actions(decision["head"], base=decision["base"]).plan_anchor()
+    now = time()
+    if now - run_start > MAX_RUN_AGE or now - plan_start > MAX_PLAN_DELAY:
+        raise ValueError("This attempt waited too long before planning; aborting before wide Boat fan-out.")
+    cutoff = plan_start + PRIMARY_SECONDS
+    output({"started": plan_start, "primary_cutoff": cutoff, "reserve_cutoff": cutoff + RESERVE_SECONDS})
 
 
 def recovery_inputs(source, matrix, checksum, started, cutoff):
@@ -50,11 +61,12 @@ def recovery_inputs(source, matrix, checksum, started, cutoff):
     if doc["partition"]["binding"] != {key: decision[key] for key in ("base", "head", "tree")}:
         raise ValueError("Expected the authorized wide matrix; found different revisions.")
     start, cutoff = int(started), int(cutoff)
-    if cutoff - start != PRIMARY_SECONDS or start > time() or start + 900 < time():
+    if cutoff - start != PRIMARY_SECONDS or start > time() or start + MAX_RUN_AGE < time():
         raise ValueError("A recovery job has an unavailable attempt window.")
     api = Actions(decision["head"], base=decision["base"])
-    if api.anchor() != start:
-        raise ValueError("The recovery clock is not the service's attempt clock.")
+    _run_start, plan_start = api.plan_anchor()
+    if plan_start != start:
+        raise ValueError("The recovery clock is not the service's wide planner clock.")
     return doc, api, start, cutoff
 
 
@@ -84,7 +96,13 @@ def freeze_for_reserves(source, matrix, checksum, directory, target, started, cu
     collect_primary(doc, api, start, cutoff, directory, cutoff)
     lease = freeze(doc, checksum, directory, cutoff)
     write(target, lease)
-    output({"lease_sha": identity(lease), "reserve_needed": str(bool(lease["reserve"])).lower()})
+    slots = sorted(set(lease["reserve"].values()))
+    output({
+        "lease_sha": identity(lease),
+        "reserve_needed": str(bool(lease["reserve"])).lower(),
+        "reserve_slots": "[" + ",".join(map(str, slots)) + "]",
+        "has_primaries": str(bool(lease["primary"])).lower(),
+    })
     print(f"Frozen {len(lease['primary'])} paired groups; leased {len(lease['reserve'])} groups.")
 
 

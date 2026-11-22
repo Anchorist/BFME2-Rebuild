@@ -15,7 +15,7 @@ from wide import BATCH, MAX_RECEIPT, admission, compile_assigned, load_matrix
 from wide_plan import identity, key
 
 RESERVES = 4
-RESERVE_SECONDS = 270
+RESERVE_SECONDS = 450
 MATRIX_LIMIT = 3 * 1024**2
 GROUP_LIMIT = MAX_RECEIPT + 4096
 NAME = re.compile(r"(primary|reserve)-([0-9]|[12][0-9]|3[01])-([0-3])\Z")

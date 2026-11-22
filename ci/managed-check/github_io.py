@@ -5,7 +5,7 @@ import sys
 
 from common import REPO, REPO_ID, read, write
 from github_status import GitHub, Superseded, event
-from fork_admission import authority, bot_dispatch, enabled, reservation_kind
+from fork_admission import authority, bot_dispatch, enabled, reservation_kind, wide_enabled
 from gitrepo import Git, GitFailure
 
 
@@ -143,7 +143,8 @@ def publish(phase, admission=None, result=None):
         return
     if status == "success":
         if "automatic_author" in (decision or {}):
-            if (not enabled(os.environ) or not bot_dispatch(os.environ)
+            auto_ok = wide_enabled(os.environ) if decision.get("automatic_kind") == "wide" else enabled(os.environ)
+            if (not auto_ok or not bot_dispatch(os.environ)
                     or os.environ.get("BFME_AUTOMATIC_CLAIM") != "yes" or reservation_kind(latest) is None
                     or (latest.get("user") or {}).get("id") != decision["automatic_author"]):
                 raise Superseded()
@@ -155,6 +156,11 @@ def publish(phase, admission=None, result=None):
         # run started with the Actions token, so the dispatch-started check wakes the landing workflow itself.
         with Path(os.environ["GITHUB_OUTPUT"]).open("a") as stream:
             stream.write("verdict=success\n")
+    if phase == "finish" and status == "error" and decision and os.environ.get("GITHUB_OUTPUT"):
+        # Measured nothing (a machine or receipt fault, not a verdict): the run asks admission to look again once it
+        # has completed; admission re-issues a claimed reservation at most twice (ledger.reissue_unmeasured).
+        with Path(os.environ["GITHUB_OUTPUT"]).open("a") as stream:
+            stream.write("verdict=unavailable\n")
     if status in {"failure", "error"}:
         raise SystemExit(1)
 

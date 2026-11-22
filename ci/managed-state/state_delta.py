@@ -10,7 +10,8 @@ from state_evidence import LIMIT, cached_pairs, header
 # implementation retain full-refresh semantics. state.yml can be carried only
 # across the reviewed producer-v2 to resume transport revision.
 REPORT_DIRS = ("docs/", "worklist/", "ci/state/", "ci/progress/", "ci/alarms/",
-               "ci/nightly/", "ci/landing/", "ci/admission/", "ci/public-text/", ".github/workflows/")
+               "ci/nightly/", "ci/landing/", "ci/admission/", "ci/header/", "ci/public-text/",
+               "ci/managed-check/tests/", ".github/workflows/")
 STATE_FLOW = ".github/workflows/state.yml"
 TRANSPORT = {"ci/managed-state/state_delta.py", "ci/managed-state/state_fetch.py",
              "ci/managed-state/state_workflow.py",
@@ -19,6 +20,8 @@ TRANSPORT = {"ci/managed-state/state_delta.py", "ci/managed-state/state_fetch.py
              "ci/managed-state/bundle.sha256",
              "ci/README.md"}
 RESUME_MIGRATION = ("5df8abc2a97aef390b5a0256a15e163ae4a312566c0ea893187da4a254aea8fc", "14286c7910816519777d5a46c720605d142dff009f5751843d4e4c5263e2111f")
+HYDRATION_MIGRATION = ("c5495ba4c03861220f77ddc48cd6533617fde93b869d51a0accf479fcc760bcb", "ec1ec3a1489c459a4513cfef8937101998a740667c0662d15e4df00f102bce61")
+STATE_FLOW_MIGRATIONS = {RESUME_MIGRATION, HYDRATION_MIGRATION}
 # The one-shot PR orchestration change leaves every comparison input intact.
 COMPACT_GRAPH = {
     "ci/managed-check/landing_read.py": (
@@ -119,10 +122,151 @@ GRAPH_CHANGES += (ADMISSION_GRAPH,) + tuple(
 )
 GRAPH_PATHS |= set(ADMISSION_GRAPH)
 
+WIDE_CLOCK_GRAPH = {
+    "ci/managed-check/compact_matrix.py": (
+        "9e5e479a33cfe39bd2cb48d565c00dde51c5ad1adcdae03a50c7f0285683e266",
+        "5795922e9a9a034cb2d02e7e686ad3c7efb4a5ac018c2944a2807a47d913afe2",
+    ),
+    "ci/managed-check/compare.py": (
+        "7a3d3976b32c89fa4f656c5a25d882a8172cc232ade04743f99fb84fa6b7e82b",
+        "7096d164997ca3ab224a0edc77003898190af33431cdc0640de1e26b9a5072cf",
+    ),
+    "ci/managed-check/managed_matrix.py": (
+        "313a21b37f4ac441aef9cb091893db268a07f709468b0b8f375710f311b3451c",
+        "8d80ff76da20ee6d29a9e38502f713532f18c3f42622caed58e885f35201cba1",
+    ),
+    "ci/managed-check/recovery_artifacts.py": (
+        "f81d84ed474e743cc0fdfeec982b919649b2d3d8b6f89c5275fbc896a71d71c9",
+        "9f7c44bbf667ff5e64b183bf0d8ca44e5c0077b3131105751257faf10224c924",
+    ),
+    "ci/managed-check/recovery_broker.py": (
+        "4fef8dd2172ea8d1c8f0415bedb9fdd31d2a70356a07f6e1e3ed9cee53ec7639",
+        "dd6071bc1fe9e872f239e50e92b97358b349bbe8170e4d896729c805e42be55f",
+    ),
+    "ci/managed-check/wide.py": (
+        "6767f2bb9500c5d3c96251e66bc6c88a8910ac78f71cc3d499e5d2243847ff04",
+        "5bd0c4a37ca8fc131f8737fc3ce67047466cb3ebb3e7eb35c9705bf1173370f4",
+    ),
+    "ci/managed-check/wide_recovery.py": (
+        "af69c85ba0829c103afbcfe68d8b1788ee23ea34af0d87bb3f503f6734e4e433",
+        "57b74a0ebfa703aaae7c7fa47fcd22610058059cb5e27524b450a7e6c9d981ed",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "efb05a79f87b5cd21373cbfcf854ecae90cc53fe5d3c381b1408fbc3ef4fa24e",
+        "7e52d1b99613f8940f426bcf06fd16e3f4c60aa31c4e3757a9a82aeea99f2cf4",
+    ),
+}
+
+GRAPH_CHANGES += (WIDE_CLOCK_GRAPH,) + tuple(
+    advance_graph(previous, WIDE_CLOCK_GRAPH)
+    for previous in GRAPH_CHANGES
+    if previous[BUNDLE][1] == WIDE_CLOCK_GRAPH[BUNDLE][0]
+)
+GRAPH_PATHS |= set(WIDE_CLOCK_GRAPH)
+
+WIDE_ADMISSION_GRAPH = {
+    "ci/managed-check/fork_admission.py": (
+        "9d5d811357515f81e46ee729a1ced768846042f34711d1817712fcded00f45d7",
+        "25badb095dabc6c8a717145f3ea1e14342fbb5982fb10982608e9df7b8e01e34",
+    ),
+    "ci/managed-check/github_io.py": (
+        "9f761ce5ada2907486f1665b98b68650ecc6b764c9685d2d6f168f0aebed3b66",
+        "c34a1c9bde3d83f39346bdb8246ee74290cebd5058672d9e24b13388bb02c9e8",
+    ),
+    "ci/managed-check/intake.py": (
+        "509d2ef40980f7c83a5be4f9c096046eb881dda19f4ea2273677e2a07297a493",
+        "5c0dc9af03ab8dc962b62aa2ecb5a1b64218c989b387e8bd178aebc352e78bce",
+    ),
+    "ci/managed-check/recovery_broker.py": (
+        "dd6071bc1fe9e872f239e50e92b97358b349bbe8170e4d896729c805e42be55f",
+        "22a4cce5519019c86534849930a0f5704a5b7ee9f0b00d4eb06ede8f8869b51d",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "7e52d1b99613f8940f426bcf06fd16e3f4c60aa31c4e3757a9a82aeea99f2cf4",
+        "d8ea452fadaace93fd7785d045aac330da534c80e9402ef2b26d20f7c9d55a24",
+    ),
+}
+
+GRAPH_CHANGES += (WIDE_ADMISSION_GRAPH,) + tuple(
+    advance_graph(previous, WIDE_ADMISSION_GRAPH)
+    for previous in GRAPH_CHANGES
+    if previous[BUNDLE][1] == WIDE_ADMISSION_GRAPH[BUNDLE][0]
+)
+GRAPH_PATHS |= set(WIDE_ADMISSION_GRAPH)
+
+BASE_CACHE_GRAPH = {
+    "ci/managed-check/base_cache.py": (
+        None,
+        "dd852ef62365c5a1333f1d818ad84d539e19f4c41180be9ad97bdadcc0798970",
+    ),
+    "ci/managed-check/compare.py": (
+        "7096d164997ca3ab224a0edc77003898190af33431cdc0640de1e26b9a5072cf",
+        "33bcf90abbea57b28d61527a4af73d03c6ab2b0d3b16200578ad5289253c98e5",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "d8ea452fadaace93fd7785d045aac330da534c80e9402ef2b26d20f7c9d55a24",
+        "12b2491e2c66606e248986ec9b7a47670c4cf84f6f38db1b7e0c1e846a562bf5",
+    ),
+}
+
+GRAPH_CHANGES += (BASE_CACHE_GRAPH,) + tuple(
+    advance_graph(previous, BASE_CACHE_GRAPH)
+    for previous in GRAPH_CHANGES
+    if previous[BUNDLE][1] == BASE_CACHE_GRAPH[BUNDLE][0]
+)
+GRAPH_PATHS |= set(BASE_CACHE_GRAPH)
+
+SOURCE_RECHECK_GRAPH = {
+    "tools/gates/workflow.py": (
+        "62d349176331acdab620a6c6154d9fab6495ee2491816cfdd87a996b0f77b826",
+        "d31fc88e23c82e3c263af49d99a4f8f66d66e982e5396794c6947cdb7f085a72",
+    ),
+}
+GRAPH_CHANGES += (SOURCE_RECHECK_GRAPH,)
+GRAPH_PATHS |= set(SOURCE_RECHECK_GRAPH)
+
+EMITTED_MSG_GRAPH = {
+    "ci/managed-check/compare.py": (
+        "0bc96c5aee42ed234c3600a9f726aba86c74763675c073d31161c1fa5adae969",
+        "753b59e77e5338a51d6d3ee9897efaafa2e9e1633c5f3cfa913248a89f0bfb68",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "1c7998cc3788b9efd66c714e7aff1fea6370bd698400fbda4629bdf209eba5b1",
+        "a297c06e70fb86926416a15d5af6ac3b8ca2f31d3e3031614bd8c53c66b01195",
+    ),
+}
+GRAPH_CHANGES = (SOURCE_RECHECK_GRAPH | EMITTED_MSG_GRAPH,) + GRAPH_CHANGES + (EMITTED_MSG_GRAPH,) + tuple(
+    advance_graph(previous, EMITTED_MSG_GRAPH)
+    for previous in GRAPH_CHANGES
+    if BUNDLE in previous and previous[BUNDLE][1] == EMITTED_MSG_GRAPH[BUNDLE][0]
+)
+GRAPH_PATHS |= set(EMITTED_MSG_GRAPH)
+
+EMITTED_ROWS_FIX_GRAPH = {
+    "ci/managed-check/compare.py": (
+        "753b59e77e5338a51d6d3ee9897efaafa2e9e1633c5f3cfa913248a89f0bfb68",
+        "9b5ca88a540ed2a555944542dd16f9a4d3e3933e5a3a058a82f20362f5a79537",
+    ),
+    "ci/managed-check/wide.py": (
+        "3f764d3df855f1d8aeed8bc05728667c3d376e9c2bd1a527cea196be434efefe",
+        "618d17c6c5e8f83c64bf1c678a51f351f20a87087bbe2015c7ce0327cf6f3822",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "a297c06e70fb86926416a15d5af6ac3b8ca2f31d3e3031614bd8c53c66b01195",
+        "35c124efeef151a48c0cacc3a55125eedd52379ce0a1de23a76b76afd2ba59ee",
+    ),
+}
+GRAPH_CHANGES += (EMITTED_ROWS_FIX_GRAPH,) + tuple(
+    advance_graph(previous, EMITTED_ROWS_FIX_GRAPH)
+    for previous in GRAPH_CHANGES
+    if BUNDLE in previous and previous[BUNDLE][1] == EMITTED_ROWS_FIX_GRAPH[BUNDLE][0]
+)
+GRAPH_PATHS |= set(EMITTED_ROWS_FIX_GRAPH)
+
 COMPACT_SCOPE = {"ci/managed-state/state_delta.py", "ci/managed-state/state_origin.py",
                  "ci/managed-state/bundle.sha256"}
 MAX_DIFF_BYTES = 4 * 1024**2
-ANCESTOR_LIMIT = 16
+ANCESTOR_LIMIT = 128
 
 
 def predecessors(root, main):
@@ -140,16 +284,18 @@ def graph_blob(root, revision, path):
 
 
 def graph_change(root, parent, main, paths=None):
+    best = None
     try:
         for transition in GRAPH_CHANGES:
             if paths is not None and set(transition) != paths:
                 continue
             if all(tuple(graph_blob(root, rev, path) for rev in (parent, main)) == expected
                    for path, expected in transition.items()):
-                return transition
+                if best is None or len(transition) > len(best):
+                    best = transition
     except (OSError, ValueError, CalledProcessError):
         return None
-    return None
+    return best
 
 
 def publication_path(root, parent, main, file):
@@ -159,7 +305,7 @@ def publication_path(root, parent, main, file):
     if file == STATE_FLOW:
         fingerprints = tuple(sha256(git(root, "show", f"{rev}:{file}")).hexdigest()
                              for rev in (parent, main))
-        return fingerprints == RESUME_MIGRATION
+        return fingerprints in STATE_FLOW_MIGRATIONS
     return (file in TRANSPORT or file.startswith(REPORT_DIRS)
             or ("/" not in file and file.endswith(".md")))
 

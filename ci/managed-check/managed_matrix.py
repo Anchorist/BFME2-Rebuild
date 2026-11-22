@@ -4,6 +4,7 @@ import json
 import re
 from pathlib import Path
 
+from reporting import SYMBOL
 from wide_plan import encoded, identity, join, plan
 
 SIDES = {"base": "parent", "head": "candidate"}
@@ -20,7 +21,7 @@ def digest_pins(scope):
     return pins
 
 
-def make(scope, commands, *, limit, weights=None):
+def make(scope, commands, *, limit, weights=None, max_tus_per_shard=None):
     """Commands are portable native compiler instructions from the protected planner."""
     if scope.get("version", scope.get("schema")) != 1 or set(commands) != set(SIDES):
         raise ValueError("Unknown managed plan format.")
@@ -44,7 +45,8 @@ def make(scope, commands, *, limit, weights=None):
     pins = digest_pins(scope)
     binding = {name: scope[name] for name in ("base", "head", "tree")}
     partition = plan(binding, input_rows, image_sha256=pins["image_sha256"],
-                     policy_sha256=pins["policy_sha256"], limit=limit)
+                     policy_sha256=pins["policy_sha256"], limit=limit,
+                     max_tus_per_shard=max_tus_per_shard)
     return {"schema": 1, "scope_sha256": identity(scope), "pins": pins,
             "partition": partition, "instructions": instructions}
 
@@ -96,6 +98,14 @@ def check_native(outcome):
                            and re.fullmatch(r"[0-9a-f]{64}", fact[1]) for fact in facts)
                 or sorted({tuple(fact) for fact in facts}) != list(map(tuple, facts))):
             raise ValueError("The native comparison has invalid verification facts.")
+    if "unexpected_symbols" in outcome:
+        pairs = outcome["unexpected_symbols"]
+        if (not isinstance(pairs, list) or len(pairs) > 32
+                or not all(isinstance(pair, list) and len(pair) == 2
+                           and isinstance(pair[0], str) and SHA.fullmatch(pair[0])
+                           and isinstance(pair[1], str) and SYMBOL.fullmatch(pair[1])
+                           for pair in pairs)):
+            raise ValueError("The native comparison has invalid unexpected symbol labels.")
     addresses = [int(row["rva"], 16) for row in outcome["rows"]]
     if len(addresses) != len(set(addresses)):
         raise ValueError("The native comparison repeated a row.")

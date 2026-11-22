@@ -43,7 +43,7 @@ def select_run(api, sha):
 
 
 def select_ancestor_artifact(api, shas):
-    filters = urllib.parse.urlencode({"branch": "main", "status": "success", "per_page": 50})
+    filters = urllib.parse.urlencode({"branch": "main", "status": "success", "per_page": 100})
     runs = api.call("actions/workflows/state.yml/runs?" + filters)["workflow_runs"]
     by_base = {}
     allowed = set(shas)
@@ -51,7 +51,7 @@ def select_ancestor_artifact(api, shas):
         sha = row.get("head_sha")
         if sha in allowed and verified_run(row, sha):
             by_base.setdefault(sha, (row["id"], row["run_attempt"]))
-    nearest = [by_base[sha] for sha in shas if sha in by_base][:3]
+    nearest = [by_base[sha] for sha in shas if sha in by_base][:25]
     for run, attempt in nearest:
         if artifact := select_artifact(api, run, attempt):
             return artifact

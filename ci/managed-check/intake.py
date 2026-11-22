@@ -7,7 +7,7 @@ import sys
 
 from common import PIN, REPO_ID, digest, policy, read, validate_binding, write
 from gitrepo import Change, Git, Refusal, safe_path
-from fork_admission import narrow
+from fork_admission import narrow, wide_eligible
 from pool_compare import projection
 from pool_protocol import DIRECTIVE, INCLUDE, compiler_source_problem, decode, encode
 from cpp import SPLICE, TOKEN, TRIGRAPH
@@ -204,19 +204,30 @@ def main(work, out):
               | {"version": 1, "repo": REPO_ID, "kind": "gate", "rules": [rejected.rule]}
               | ({"location": rejected.location} if rejected.location else {}))
         return
-    automatic = event.get("automatic_author") if narrow(plan) else None
+    is_narrow = narrow(plan)
+    is_wide_auto = (not is_narrow) and wide_eligible(plan) and bool(event.get("automatic_wide_allowed"))
+    auto_eligible = is_narrow or is_wide_auto
+    automatic = event.get("automatic_author") if auto_eligible else None
     if not event["approved"] and automatic is None:
-        kind = "awaiting-automatic" if narrow(plan) and event.get("automatic_pending") else "awaiting-approval"
+        kind = "awaiting-automatic" if auto_eligible and event.get("automatic_pending") else "awaiting-approval"
         write(out / "decision.json", {key: event[key] for key in ("number", "head", "base")}
               | {"version": 1, "repo": REPO_ID, "kind": kind})
         return
     route = "compile" if len(plan["request_paths"]) <= 8 else "wide"
     write(out / "plan.json", plan)
+    extra_auto = {}
+    if automatic is not None:
+        extra_auto["automatic_author"] = automatic
+        if is_wide_auto:
+            extra_auto["automatic_kind"] = "wide"
     write(out / "decision.json", {key: plan[key] for key in ("number", "head", "base", "tree")}
           | {"version": 1, "repo": REPO_ID, "kind": route, "plan": digest((out / "plan.json").read_bytes())}
-          | ({"automatic_author": automatic} if automatic is not None else {}))
+          | extra_auto)
+    out_route = route
+    if automatic is not None:
+        out_route = "automatic-wide" if route == "wide" else "automatic"
     with Path(os.environ["GITHUB_OUTPUT"]).open("a") as output:
-        output.write("route=" + ("automatic" if automatic is not None else route) + "\n")
+        output.write("route=" + out_route + "\n")
 
 
 

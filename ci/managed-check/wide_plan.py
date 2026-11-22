@@ -23,7 +23,7 @@ def key(row):
     return row["side"], row["tu"]
 
 
-def plan(binding, rows, *, image_sha256, policy_sha256, limit=16):
+def plan(binding, rows, *, image_sha256, policy_sha256, limit=16, max_tus_per_shard=None):
     if set(binding) != {"head", "base", "tree"} or not all(
         isinstance(value, str) and OID.fullmatch(value) for value in binding.values()
     ):
@@ -49,10 +49,21 @@ def plan(binding, rows, *, image_sha256, policy_sha256, limit=16):
         raise ValueError("no compiler work in the wide plan")
     work = [(sum(r["weight"] for r in group), tu, sorted(group, key=key)) for tu, group in grouped.items()]
     shards = [{"index": i, "weight": 0, "compile": []} for i in range(min(limit, len(work)))]
+    if max_tus_per_shard is not None:
+        if type(max_tus_per_shard) is not int or max_tus_per_shard < 1:
+            raise ValueError("wide plan requires a positive per-shard TU limit")
+        if len(work) > len(shards) * max_tus_per_shard:
+            raise ValueError("wide plan exceeds per-shard TU capacity for the requested runner limit")
+    shard_tus = [0] * len(shards)
     for weight, _, group in sorted(work, key=lambda item: (-item[0], item[1])):
-        worker = min(shards, key=lambda shard: (shard["weight"], shard["index"]))
+        candidates = (
+            [s for s in shards if shard_tus[s["index"]] < max_tus_per_shard]
+            if max_tus_per_shard is not None else shards
+        )
+        worker = min(candidates, key=lambda shard: (shard["weight"], shard["index"]))
         worker["weight"] += weight
         worker["compile"].extend(group)
+        shard_tus[worker["index"]] += 1
     for shard in shards:
         shard["compile"].sort(key=key)
     return {"schema": 1, "binding": dict(binding), "image_sha256": image_sha256,

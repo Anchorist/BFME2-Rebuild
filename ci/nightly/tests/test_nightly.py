@@ -385,7 +385,7 @@ class Package(unittest.TestCase):
         # the public workflow names no machine image that holds game files, and no variable can supply one
         for line in text.splitlines():
             if "runs-on:" in line:
-                self.assertEqual(line.strip(), "runs-on: boat-small/from=bfme2-compiler-v1")
+                self.assertIn(line.strip(), ("runs-on: boat-small/from=bfme2-compiler-v1", "runs-on: ubuntu-24.04"))
         self.assertNotIn("bfme2-nightly", text)
         self.assertNotIn("bfme2-game", text)
         compile_job = text.split("\n  compile:")[1].split("\n  publish:")[0]
@@ -997,6 +997,32 @@ class WorkflowExpressions(unittest.TestCase):
         self.assertIn("type: choice", text)
         self.assertNotIn("type: string", text)
         self.assertIn("fromJSON('[0, 1]')", text)
+
+
+class MultiAttemptShardSelection(unittest.TestCase):
+    def test_selects_highest_attempt_up_to_current(self):
+        import select_shards
+        with tempfile.TemporaryDirectory() as tmp:
+            src, dst = Path(tmp) / "raw", Path(tmp) / "sel"
+            for name in (
+                "nightly-shard-summary-0-a1",
+                "nightly-shard-summary-1-a1",
+                "nightly-shard-summary-1-a2",
+                "nightly-shard-summary-1-a3",
+                "nightly-shard-summary-99-a1",
+            ):
+                d = src / name
+                d.mkdir(parents=True)
+                (d / "sample.obj").write_bytes(b"obj")
+            winners = select_shards.select(src, dst, "nightly-shard-summary-", max_attempt=2, expected=16)
+            self.assertEqual(sorted(winners), [0, 1])
+            self.assertEqual(winners[0][0], 1)
+            self.assertEqual(winners[1][0], 2)
+            self.assertEqual(sorted(p.name for p in dst.iterdir()),
+                             ["nightly-shard-summary-0-a1", "nightly-shard-summary-1-a2"])
+            # Real directories (not symlinks): rglob("*.obj") used by link_census must discover every object.
+            self.assertEqual(len(list(dst.rglob("*.obj"))), 2)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -41,6 +41,48 @@ jobs:
       matrix:
         shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     steps:
+      - name: Wait for runner filesystem hydration
+        shell: bash
+        run: |
+          set -euo pipefail
+          deadline=$((SECONDS + 90))
+          runner_grace=$((SECONDS + 15))
+          waited=0
+          while true; do
+            pending=$(awk '
+              {
+                for (i = 7; i <= NF - 2; i++) {
+                  if ($i == "-") {
+                    if ($(i + 1) ~ /^fuse(\.|$)/ && ($(i + 1) ~ /^fuse\.ascii-lazyfs(-|$)/ || $(i + 2) ~ /^ascii-lazyfs(-|$)/) && $5 !~ /^\/var\/lib\/ascii-lazy\/retired(\/|$)/) {
+                      print $5
+                    }
+                    break
+                  }
+                }
+              }
+            ' /proc/self/mountinfo)
+            if [ -z "$pending" ]; then
+              if [ "$waited" -eq 1 ]; then
+                printf 'Runner filesystem hydration finished after %ss.\n' "$SECONDS"
+              fi
+              exit 0
+            fi
+            home_dir="${HOME%/}"
+            if [ -n "$home_dir" ] && [ "$pending" = "$home_dir" ] \
+              && [ "${pending#/opt/boat-compiler}" = "$pending" ] \
+              && [ "${pending#/var/}" = "$pending" ] \
+              && [ "${pending#/usr}" = "$pending" ] \
+              && [ "$SECONDS" -ge "$runner_grace" ]; then
+              printf 'Proceeding after %ss with persistent lazy mount %s (all other mounts retired).\n' "$SECONDS" "$home_dir"
+              exit 0
+            fi
+            waited=1
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              printf 'Expected lazy runner mounts to retire within 90s; still mounted:\n%s\n' "$pending" >&2
+              exit 1
+            fi
+            sleep 0.5
+          done
       - name: Check out main
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -107,7 +149,7 @@ jobs:
       always() && github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
       github.event.schedule != '47 19 * * *' && !inputs.fold_game_result
     name: Publish the result and raise or clear alarms
-    runs-on: boat-small/from=bfme2-compiler-v1
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
       contents: write
@@ -120,12 +162,18 @@ jobs:
           ref: '${{ github.sha }}'
           fetch-depth: 1
           persist-credentials: false
-      - name: Read the shard summaries
+      - name: Read the shard summaries (all attempts up to current)
         continue-on-error: true
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          pattern: nightly-shard-summary-*-a${{ github.run_attempt }}
-          path: '${{ runner.temp }}/shards'
+          pattern: nightly-shard-summary-*-a*
+          path: '${{ runner.temp }}/shards-raw'
+      - name: Select the latest attempt per shard summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B ci/nightly/select_shards.py --src "$RUNNER_TEMP/shards-raw" --dst "$RUNNER_TEMP/shards" \
+            --prefix nightly-shard-summary- --max-attempt "${{ github.run_attempt }}" --expected "$SHARDS"
       - name: Read the result already published (kept on the card if this run measures nothing)
         shell: bash
         run: |
@@ -137,12 +185,18 @@ jobs:
             echo "No published latest.json yet; nothing to keep if this run measures nothing."
             rm -f "$RUNNER_TEMP/previous.json"
           fi
-      - name: Read the compiled objects
+      - name: Read the compiled objects (all attempts up to current)
         continue-on-error: true
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          pattern: nightly-shard-[0-9]*-a${{ github.run_attempt }}
-          path: '${{ runner.temp }}/objects'
+          pattern: nightly-shard-[0-9]*-a*
+          path: '${{ runner.temp }}/objects-raw'
+      - name: Select the latest attempt per compiled shard
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B ci/nightly/select_shards.py --src "$RUNNER_TEMP/objects-raw" --dst "$RUNNER_TEMP/objects" \
+            --prefix nightly-shard- --max-attempt "${{ github.run_attempt }}" --expected "$SHARDS"
       - name: Measure linking
         shell: bash
         run: |
@@ -213,7 +267,7 @@ jobs:
       github.repository == 'Open-BFME/BFME2-Rebuild' && github.ref == 'refs/heads/main' &&
       (github.event.schedule == '47 19 * * *' || inputs.fold_game_result) && vars.BFME_NIGHTLY_GAME_REPO != ''
     name: Publish the private game run's result
-    runs-on: boat-small/from=bfme2-compiler-v1
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
       contents: write
@@ -234,14 +288,21 @@ jobs:
           GAME_TOKEN: '${{ secrets.BFME_NIGHTLY_GAME_READ }}'
           GH_TOKEN: '${{ github.token }}'
         run: python3 -B ci/nightly/fold_in.py "$RUNNER_TEMP/fold"
-      - name: Read the shard summaries of the compile run it played
+      - name: Read the shard summaries of the compile run it played (all attempts up to current)
         if: steps.fold.outputs.fresh == 'true'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          pattern: nightly-shard-summary-*-a${{ steps.fold.outputs.attempt }}
-          path: '${{ runner.temp }}/shards'
+          pattern: nightly-shard-summary-*-a*
+          path: '${{ runner.temp }}/shards-raw'
           run-id: '${{ steps.fold.outputs.run_id }}'
           github-token: '${{ github.token }}'
+      - name: Select the latest attempt per shard summary for fold-in
+        if: steps.fold.outputs.fresh == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B ci/nightly/select_shards.py --src "$RUNNER_TEMP/shards-raw" --dst "$RUNNER_TEMP/shards" \
+            --prefix nightly-shard-summary- --max-attempt "${{ steps.fold.outputs.attempt }}" --expected "$SHARDS"
       - name: Read the result the compile run published (its linking figure is kept for the same commit)
         if: steps.fold.outputs.fresh == 'true'
         shell: bash

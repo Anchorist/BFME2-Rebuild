@@ -264,6 +264,9 @@ def publish(path, api=None, out=print):
     code, _ = api.send("POST", f"statuses/{record['head']}", body)
     if code != 201:
         raise Stop(f"Expected HTTP 201 for the {compose.CONTEXT} status. Found HTTP {code}.")
+    if state == "success" and os.environ.get("GITHUB_OUTPUT"):
+        with open(os.environ["GITHUB_OUTPUT"], "a") as stream:
+            stream.write("passed=yes\n")
     out(f"::notice title=BFME II header rules::#{record['number']}: {state}, {text}")
     return 0
 

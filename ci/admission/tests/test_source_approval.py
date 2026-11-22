@@ -443,6 +443,48 @@ class MovedMain(unittest.TestCase):
         self.assertEqual((len(calls), delays), (3, [5, 5]))
         self.assertEqual([item["event_type"] for item in dispatches(api)], ["bfme-remeasure"])
 
+    def test_a_dead_compiler_run_does_not_cost_the_commit_its_source_proof(self):
+        # Live case, pull 34 on main 9fa818c2b3: the refresh run (rules.yml, success) published the nine statuses and
+        # the receipt; the compiler check then re-published them with its own run, and its Boat job died (failure).
+        api = self.fresh()
+        for row in api.statuses[HEAD]:
+            row["description"] = f"Pass (main {NEWER[:12]})"        # the refresh run's statuses, older
+        dead = "271828"
+        api.dead_run = {"id": int(dead), "run_attempt": 1, "path": ".github/workflows/managed-pr.yml",
+                        "repository": {"id": admit.REPO_ID}, "head_sha": NEWER, "event": "repository_dispatch",
+                        "status": "completed", "conclusion": "failure"}
+        for index, context in enumerate(CONTEXTS):
+            api.statuses[HEAD].append({"context": context, "state": "success", "creator": {"id": 41898282},
+                                       "target_url": f"https://github.com/{admit.REPO}/actions/runs/{dead}",
+                                       "description": f"Pass (main {NEWER[:12]})", "id": 500 + index})
+        original = api.call
+
+        def call(path):
+            if path == f"actions/runs/{dead}":
+                return dict(api.dead_run)
+            return original(path)
+        api.call = call
+        self.assertEqual(admit.source_approval.statuses(api, HEAD, NEWER), dead)      # the newest names the dead run
+        self.assertEqual(self.tree(api, 21, HEAD, NEWER), TREE)                       # the earlier receipt is used
+        api.receipt["tree"] = "b" * 40                                                # GitHub preview differs
+        self.assertIn("admitted by rule", self.decide(api))
+        self.assertEqual(admit.ledger.find(api, 21, HEAD, NEWER)["tree"], "b" * 40)
+        self.assertEqual([item["event_type"] for item in dispatches(api)], ["bfme-remeasure"])
+
+    def test_no_older_run_can_hide_a_newer_refusal_or_lend_another_mains_receipt(self):
+        api = self.api()
+        for index, context in enumerate(CONTEXTS):                   # a newer run refused one rule on this main
+            api.statuses[HEAD].append({"context": context, "state": "failure" if index == 3 else "success",
+                                       "creator": {"id": 41898282}, "id": 600 + index,
+                                       "target_url": f"https://github.com/{admit.REPO}/actions/runs/31",
+                                       "description": f"Pass (main {NEWER[:12]})"})
+        self.assertIn("source rules refused", self.decide(api))
+        api = self.api()
+        for row in api.statuses[HEAD]:
+            row["description"] = f"Pass (main {MAIN[:12]})"           # only another main's complete run
+        self.assertIn("source rules requested", self.decide(api))
+        self.assertEqual(api.store, {})
+
     def test_a_refused_source_verdict_on_the_moved_main_is_final(self):
         api = self.api()
         api.statuses[HEAD][2]["state"] = "failure"

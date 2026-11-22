@@ -10,7 +10,7 @@ from wide_plan import identity, key
 SHA = re.compile(r"[a-f0-9]{64}\Z")
 RUN = re.compile(r"[1-9][0-9]{0,19}\Z")
 ROWS = ("rva", "status", "pct", "proof", "credited", "size", "symbol")
-NATIVE = ("object_verified", "error", "gates", "rows", "optimization_hint", "emitted_data", "blockers")
+NATIVE = ("object_verified", "error", "gates", "rows", "optimization_hint", "emitted_data", "blockers", "unexpected_symbols")
 
 
 def compact_native(outcome):
