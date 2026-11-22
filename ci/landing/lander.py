@@ -557,6 +557,11 @@ def evaluate(api, number, main, config, *, prefetched=None, compare_cache=None, 
         hold("merge-conflict", "a pull request that merges cleanly into main",
              "a conflict; merge or rebase main into the branch", True)
     decision["landing_status"] = bot_statuses.get(LANDING_CONTEXT)
+    prior_landing = decision["landing_status"] or {}
+    if (prior_landing.get("state") == "failure"
+            and (prior_landing.get("description") or "").startswith("Held: merge-forbidden.")):
+        hold("merge-forbidden", "an updated head after GitHub refused the automated merge (HTTP 403)",
+             "same commit that got HTTP 403; update or rebase your branch onto main and push", True)
     stale = False
     required = REQUIRED + ((INLINE,) if INLINE_VIRTUAL_POLICY == "required" else ())
     for context in (BOAT, RULES, INLINE):
@@ -1326,6 +1331,21 @@ def land_bound(api, env, config, directory, prior, sleep):
     if code == 409:
         raise Held("head-changed", f"head {binding['head'][:12]} at merge",
                    f"a newer head; GitHub refused the merge ({message}). The new head is measured from scratch")
+    if code == 403:
+        hdrs = getattr(api, "last_headers", None) or {}
+        diag = ", ".join(f"{k}={printable(v, 100)}" for k, v in sorted(hdrs.items()) if v)
+        if diag:
+            print(f"merge 403 diagnostics for #{binding['number']}: {diag}", file=sys.stderr)
+        comment(api, binding["number"], f"Held: GitHub refused the automated merge (HTTP 403: {message}). "
+                "This can happen when a fork branch lags a `.github/workflows/` update on `main`; "
+                "update or rebase your branch onto current `main` and push.")
+        if env.get("BFME_LANDING_CHAIN") == "1":
+            try:
+                dispatch(api, NEXT_EVENT, {"after": target_main})
+            except Held as exc:
+                print(exc.line(), file=sys.stderr)
+        raise Held("merge-forbidden", "GitHub to allow the landing workflow to merge this pull request",
+                   f"HTTP 403: {message}; update or rebase onto main and push", True)
     if code == 405:
         comment(api, binding["number"], f"Held: GitHub would not merge this pull request ({message}). "
                 "If it conflicts with main, merge or rebase main into your branch and push.")

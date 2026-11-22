@@ -1044,6 +1044,18 @@ class DisjointAncestorAndGraphQLTests(unittest.TestCase):
             self.assertTrue(dispatches and dispatches[0]["client_payload"]["number"] == 5,
                             f"Expected stale header #5 to dispatch despite 5 old-main pendings, got {dispatches}")
 
+    def test_merge_http_403_holds_pr_without_blocking_other_candidates(self):
+        api = FakeApi(live=True, main=MEASURED)
+        api.fx[f"commits/{PR2}/statuses?per_page=100&page=1"].append({
+            "id": 99999, "context": lander.LANDING_CONTEXT, "state": "failure",
+            "description": "Held: merge-forbidden. Expected GitHub to allow the landing workflow to merge.",
+            "creator": {"id": lander.lr.BOT_ID},
+        })
+        dec = lander.evaluate(api, 2, MEASURED, CONFIG)
+        self.assertEqual(dec["stage"], "hold")
+        self.assertEqual(dec["reasons"][0].code, "merge-forbidden")
+        self.assertTrue(dec["reasons"][0].final)
+
 
 if __name__ == "__main__":
     unittest.main()

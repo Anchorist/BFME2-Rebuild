@@ -70,11 +70,14 @@ class Api:
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
             "Content-Type": "application/json"})
+        headers = {}
         try:
             with self._opener().open(request, timeout=30) as response:
                 code, raw = response.status, response.read(LIMIT + 1)
+                headers = {k.lower(): response.headers.get(k) for k in ("X-Accepted-GitHub-Permissions", "X-GitHub-Request-Id") if response.headers and response.headers.get(k)}
         except urllib.error.HTTPError as exc:
             code, raw = exc.code, exc.read(LIMIT + 1)
+            headers = {k.lower(): exc.headers.get(k) for k in ("X-Accepted-GitHub-Permissions", "X-GitHub-Request-Id") if exc.headers and exc.headers.get(k)}
         except (urllib.error.URLError, OSError) as exc:
             raise TransientApiError(f"Expected a response from GitHub for {method} {path.split('?')[0]}. "
                                     f"Found a connection failure ({type(exc).__name__}).") from None
@@ -84,6 +87,7 @@ class Api:
             payload = json.loads(raw) if raw.strip() else None
         except ValueError:
             payload = None
+        self.last_headers = headers
         return code, payload
 
     _sleep = staticmethod(time.sleep)
