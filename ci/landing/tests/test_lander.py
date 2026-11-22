@@ -662,6 +662,48 @@ class LandingResilienceTests(unittest.TestCase):
         self.assertIn("H2 no exact protected key", first.found)
         self.assertIn("listed header approval", first.expected)
 
+    def test_evaluate_fetches_commit_statuses_only_once_per_pr(self):
+        api = FakeApi(live=False, main=MEASURED)
+        seen = []
+        orig_send = api._send
+        def counting_send(method, path, body):
+            if method == "GET" and "/statuses" in path:
+                seen.append(path)
+            return orig_send(method, path, body)
+        api._send = counting_send
+        lander.evaluate(api, 2, MEASURED, {**CONFIG, "auto_headers": True})
+        page1 = [p for p in seen if p.endswith("&page=1")]
+        self.assertEqual(len(page1), 1, f"Expected 1 page=1 statuses GET, got {seen}")
+
+    def test_parallel_select_preserves_deterministic_pr_order(self):
+        import threading
+        api = FakeApi(live=False, main=MEASURED)
+        pr2 = api.fx["pulls/2"]
+        api.fx["pulls?state=open&base=main&sort=created&direction=asc&per_page=100&page=1"] = [
+            {"number": 2}, {"number": 3},
+        ]
+        api.fx["pulls/3"] = copy.deepcopy(pr2)
+        api.fx["pulls/3"]["number"] = 3
+        api.fx["pulls/3/files?per_page=100&page=1"] = copy.deepcopy(api.fx["pulls/2/files?per_page=100&page=1"])
+        api.thread_safe_reads = True
+        barrier = threading.Barrier(2, timeout=5)
+        first_pass = set()
+        lock = threading.Lock()
+        orig_send = api._send
+        def parallel_send(method, path, body):
+            wait_now = False
+            if method == "GET" and path in ("pulls/2", "pulls/3"):
+                with lock:
+                    if path not in first_pass:
+                        first_pass.add(path)
+                        wait_now = True
+            if wait_now:
+                barrier.wait()
+            return orig_send(method, path, body)
+        api._send = parallel_send
+        with tempfile.TemporaryDirectory() as tmp:
+            quiet(lander.run, ["select", tmp + "/w"], env(mode="dry-run"), api=api, config=CONFIG)
+
 
 if __name__ == "__main__":
     unittest.main()

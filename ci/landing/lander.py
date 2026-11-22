@@ -19,6 +19,7 @@ import os
 from pathlib import Path
 import re
 import sys
+from concurrent.futures import ThreadPoolExecutor
 import datetime
 import time
 
@@ -100,21 +101,29 @@ def current_main(api):
     return sha
 
 
-def read_statuses(api, head):
-    latest = {}
+def read_statuses_all(api, head):
+    """Read all commit statuses once, returning (latest_any, latest_bot) maps by context."""
+    latest, latest_bot = {}, {}
     for page in range(1, 11):
         entries = api.call(f"commits/{head}/statuses?per_page=100&page={page}")
         if not isinstance(entries, list):
             raise Failed("status-list", "GitHub's status list", "a different response")
         for item in entries:
-            context = item.get("context")
-            if context in (BOAT, RULES, INLINE, LANDING_CONTEXT):
+            if isinstance(item, dict) and isinstance(item.get("context"), str) and isinstance(item.get("id"), int):
+                context = item["context"]
                 if context not in latest or item["id"] > latest[context]["id"]:
                     latest[context] = item
+                if (item.get("creator") or {}).get("id") == lr.BOT_ID:
+                    if context not in latest_bot or item["id"] > latest_bot[context]["id"]:
+                        latest_bot[context] = item
         if len(entries) < 100:
             break
-    return latest
+    return latest, latest_bot
 
+
+def read_statuses(api, head):
+    latest, _ = read_statuses_all(api, head)
+    return latest
 
 def classify(status, main):
     """fresh-* = measured on this main; stale-* = measured on another main."""
@@ -204,16 +213,18 @@ def evaluate(api, number, main, config):
     decision["has_ledger_label"] = any(label.get("name") == LEDGER_REQUEST_LABEL for label in pr.get("labels") or ())
     if any(label.get("name") == HOLD_LABEL for label in pr.get("labels") or ()):
         hold("hold-label", f"no {HOLD_LABEL} label", f"the {HOLD_LABEL} label, set by a maintainer")
+    statuses, bot_statuses = read_statuses_all(api, head)
+    adm_status = bot_statuses.get(ADMISSION_CONTEXT) or {}
     if not head_repo:
         hold("head-repository-missing", "the pull request's source repository",
              "a deleted repository; open a new pull request from an existing fork", True)
     elif admitted(pr):
         decision["rule_admitted"] = False
-    elif ((admission_status(api, head) or {}).get("state") == "success"
-          and ((admission_status(api, head) or {}).get("description") or "").startswith(ADMITTED_BY_RULE)):
+    elif (adm_status.get("state") == "success"
+          and (adm_status.get("description") or "").startswith(ADMITTED_BY_RULE)):
         # Admitted by rule: each compiler measurement of it is reserved by .github/workflows/admission.yml.
         decision["rule_admitted"] = True
-    elif ((admission_status(api, head) or {}).get("description") or "").startswith("Held: daily limit"):
+    elif (adm_status.get("description") or "").startswith("Held: daily limit"):
         hold("daily-limit", "room in today's limit for automatic admissions",
              "the limit is reached; retried automatically, you do not need to do anything")
     else:
@@ -230,7 +241,7 @@ def evaluate(api, number, main, config):
              f"a change under {', '.join(protected)}; a maintainer merges those by hand", True)
     header_change = any(name.startswith("include/") for name in files)
     if header_change and config.get("auto_headers"):
-        rules = latest_bot_status(api, head, HEADER_RULES_CONTEXT) or {}
+        rules = bot_statuses.get(HEADER_RULES_CONTEXT) or {}
         text = rules.get("description") or ""
         if rules.get("state") == "success" and marker(main) in text:
             pass                                    # H1-H8 passed on this head and this main
@@ -274,7 +285,6 @@ def evaluate(api, number, main, config):
                     hold("header-approval", f"an approval of head {head[:12]} by a listed header approver",
                          "none yet. A maintainer listed in ci/landing/landing.json reviews every change under "
                          "include/; a new push needs a new approval")
-    statuses = read_statuses(api, head)
     # GitHub does not recompute "mergeable" when main moves. A compiler check that passed on this exact main composed
     # this head onto it (unique ancestor, three-way merge), so an older "false" does not hold it; the merge itself is
     # still GitHub's and refuses a real conflict.
@@ -634,7 +644,11 @@ def select(api, env, config, directory, clock=time.monotonic, sleep=time.sleep):
     if only and not lr.NUMBER.fullmatch(only):
         raise Failed("input", "a pull request number or nothing", printable(only, 40))
     numbers = [int(only)] if only else open_pulls(api)
-    decisions = [evaluate(api, number, main, config) for number in numbers]
+    if len(numbers) > 1 and getattr(api, "thread_safe_reads", False):
+        with ThreadPoolExecutor(max_workers=min(6, len(numbers))) as pool:
+            decisions = list(pool.map(lambda n: evaluate(api, n, main, config), numbers))
+    else:
+        decisions = [evaluate(api, number, main, config) for number in numbers]
     for item in decisions:
         report_hold(api, item, main=main)
         label_ledger_request(api, item)

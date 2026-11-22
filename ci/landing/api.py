@@ -5,6 +5,7 @@ unless the job runs in live mode, so a dry run cannot change anything.
 """
 import json
 import re
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -37,6 +38,8 @@ def printable(text, limit=200):
 
 
 class Api:
+    thread_safe_reads = False
+
     def __init__(self, repo, token, live):
         if not token or not re.fullmatch(r"[A-Za-z0-9_.-]{15,2048}", token):
             raise ApiError("Expected the landing job token in BFME_LANDING_TOKEN. Found none or a malformed value.")
@@ -44,8 +47,20 @@ class Api:
         self.live = live
         self.root = f"https://api.github.com/repos/{repo}/"
         self.graphql = "https://api.github.com/graphql"
-        self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+        self._local = threading.local()
+        self.opener = self._opener()
+        self.thread_safe_reads = True
         self.writes = []
+
+    def _opener(self):
+        local = getattr(self, "_local", None)
+        if local is None:
+            return self.opener
+        opener = getattr(local, "opener", None)
+        if opener is None:
+            opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+            local.opener = opener
+        return opener
 
     def _send(self, method, path, body):
         data = json.dumps(body, sort_keys=True).encode("utf-8") if body is not None else None
@@ -56,7 +71,7 @@ class Api:
             "X-GitHub-Api-Version": "2022-11-28",
             "Content-Type": "application/json"})
         try:
-            with self.opener.open(request, timeout=30) as response:
+            with self._opener().open(request, timeout=30) as response:
                 code, raw = response.status, response.read(LIMIT + 1)
         except urllib.error.HTTPError as exc:
             code, raw = exc.code, exc.read(LIMIT + 1)
