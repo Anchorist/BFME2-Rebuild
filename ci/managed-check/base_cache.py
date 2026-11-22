@@ -7,11 +7,13 @@ import time
 import zlib
 
 from common import HEX64, digest, encoded
-from measure import CONFIG, data_entry, file_hash
+import measure as canary_measure
+from measure import data_entry, file_hash
 from pool_compare import projection
 from pool_protocol import MAX_OBJECT, check_object, decode, encode
 
 SCHEMA = 1
+CONFIG = None  # None -> read canary_measure.CONFIG dynamically (honors asm_allowlist.json)
 MAX_CACHE_BYTES = 256 * 1024 * 1024
 MAX_ENTRY_BYTES = 8 * 1024 * 1024
 
@@ -230,8 +232,8 @@ def store(cache_dir, row, plan, job, tools, hashes):
         return False
 
 
-def measure_base_with_cache(git, judge, plan, tools, job, cache_dir, *, measure_fn, timing=None):
-    """Serve verified base TUs from `cache_dir` and compile only cache misses."""
+def plan_base_cache(git, plan, tools, cache_dir):
+    """Partition `plan['compile']['base']` into verified cache hits and misses."""
     cache_root = Path(cache_dir)
     cache_root.mkdir(parents=True, exist_ok=True)
     base = plan["historical_base"]
@@ -244,20 +246,16 @@ def measure_base_with_cache(git, judge, plan, tools, job, cache_dir, *, measure_
             hit_payloads[row["tu"]] = hit
         else:
             missed_rows.append(row)
+    return cache_root, sources, hashes, hit_payloads, missed_rows
 
+
+def finish_base_cache(git, judge, plan, tools, job, cache_root, sources, hashes, hit_payloads,
+                      missed_rows, miss_results, *, timing=None, compile_s=0.0, compare_s=0.0):
+    """Store newly compiled misses, materialize & judge hits, and return ordered results."""
+    base = plan["historical_base"]
+    rows = plan["compile"]["base"]
     results = {}
-    compile_s, compare_s = 0.0, 0.0
     if missed_rows:
-        miss_plan = dict(
-            plan,
-            request_paths=[row["tu"] for row in missed_rows],
-            compile=dict(plan["compile"], base=missed_rows),
-        )
-        miss_timing = {} if timing is not None else None
-        miss_results = measure_fn(git, judge, "base", miss_plan, tools, job, timing=miss_timing)
-        if miss_timing:
-            compile_s += miss_timing.get("compile", 0.0)
-            compare_s += miss_timing.get("compare", 0.0)
         results.update(miss_results)
         stored_any = False
         for row in missed_rows:
@@ -274,7 +272,7 @@ def measure_base_with_cache(git, judge, plan, tools, job, cache_dir, *, measure_
 
     if hit_payloads:
         hit_objs = {tu: materialize_hit(hit, sources, job) for tu, hit in hit_payloads.items()}
-        for file in CONFIG:
+        for file in (canary_measure.CONFIG if CONFIG is None else CONFIG):
             if not (job / "config" / file).is_file():
                 data_entry(git, base, "config/" + file, job)
         for tu in hit_objs:
@@ -300,3 +298,25 @@ def measure_base_with_cache(git, judge, plan, tools, job, cache_dir, *, measure_
         timing["compare"] = compare_s
     print(f"Base compile cache: {len(hit_payloads)}/{len(rows)} hits, {len(missed_rows)} compiled.", flush=True)
     return {tu: results[tu] for tu in plan["request_paths"]}
+
+
+def measure_base_with_cache(git, judge, plan, tools, job, cache_dir, *, measure_fn, timing=None):
+    """Serve verified base TUs from `cache_dir` and compile only cache misses."""
+    cache_root, sources, hashes, hit_payloads, missed_rows = plan_base_cache(git, plan, tools, cache_dir)
+    compile_s, compare_s = 0.0, 0.0
+    miss_results = {}
+    if missed_rows:
+        miss_plan = dict(
+            plan,
+            request_paths=[row["tu"] for row in missed_rows],
+            compile=dict(plan["compile"], base=missed_rows),
+        )
+        miss_timing = {} if timing is not None else None
+        miss_results = measure_fn(git, judge, "base", miss_plan, tools, job, timing=miss_timing)
+        if miss_timing:
+            compile_s += miss_timing.get("compile", 0.0)
+            compare_s += miss_timing.get("compare", 0.0)
+    return finish_base_cache(
+        git, judge, plan, tools, job, cache_root, sources, hashes, hit_payloads,
+        missed_rows, miss_results, timing=timing, compile_s=compile_s, compare_s=compare_s,
+    )

@@ -21,7 +21,7 @@ def digest_pins(scope):
     return pins
 
 
-def make(scope, commands, *, limit, weights=None):
+def make(scope, commands, *, limit, weights=None, max_tus_per_shard=None):
     """Commands are portable native compiler instructions from the protected planner."""
     if scope.get("version", scope.get("schema")) != 1 or set(commands) != set(SIDES):
         raise ValueError("Unknown managed plan format.")
@@ -45,7 +45,8 @@ def make(scope, commands, *, limit, weights=None):
     pins = digest_pins(scope)
     binding = {name: scope[name] for name in ("base", "head", "tree")}
     partition = plan(binding, input_rows, image_sha256=pins["image_sha256"],
-                     policy_sha256=pins["policy_sha256"], limit=limit)
+                     policy_sha256=pins["policy_sha256"], limit=limit,
+                     max_tus_per_shard=max_tus_per_shard)
     return {"schema": 1, "scope_sha256": identity(scope), "pins": pins,
             "partition": partition, "instructions": instructions}
 

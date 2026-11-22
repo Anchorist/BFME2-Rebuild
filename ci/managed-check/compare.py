@@ -1,5 +1,8 @@
 """Compare a protected base and validated source-only candidate on the sealed Boat image."""
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 import hashlib
+from time import monotonic
 import os
 from collections import Counter
 from itertools import permutations
@@ -448,14 +451,52 @@ def make_report(git, judge, plan, tip, old, new, find_object, *, lookup_differen
     return clean, counts, functions
 
 
-def measure_batch(git, judge, side, plan, tools, job, *, timing=None):
-    """Preserve the optional assembly allowances from the protected base."""
+@contextmanager
+def memoized_projection():
+    """Cache source tree projections and packed payloads per revision for this run."""
+    import base_cache as base_cache_mod
+    built, packed = {}, {}
+    orig_m_proj = canary_measure.projection
+    orig_m_pack = canary_measure.pack_sources
+    orig_b_proj = base_cache_mod.projection
+
+    def cached_projection(git, revision):
+        key = (str(git.path), revision)
+        if key not in built:
+            built[key] = orig_m_proj(git, revision)
+        return built[key]
+
+    def cached_pack(files):
+        key = id(files)
+        if key not in packed or packed[key][0] is not files:
+            packed[key] = (files, orig_m_pack(files))
+        return packed[key][1]
+
+    canary_measure.projection = base_cache_mod.projection = cached_projection
+    canary_measure.pack_sources = cached_pack
+    try:
+        yield
+    finally:
+        canary_measure.projection = orig_m_proj
+        canary_measure.pack_sources = orig_m_pack
+        base_cache_mod.projection = orig_b_proj
+
+
+@contextmanager
+def _with_asm_allowance(git, base):
     previous = canary_measure.CONFIG
-    base = plan["historical_base"]
     asm = "asm_allowlist.json"
     if git.run("cat-file", "-e", f"{base}:config/{asm}", check=False).returncode == 0:
         canary_measure.CONFIG = (*previous, asm)
     try:
+        yield
+    finally:
+        canary_measure.CONFIG = previous
+
+
+def measure_batch(git, judge, side, plan, tools, job, *, timing=None):
+    """Preserve the optional assembly allowances from the protected base."""
+    with _with_asm_allowance(git, plan["historical_base"]):
         cache_dir = os.environ.get("BFME_BASE_CACHE") if side == "base" else None
         if cache_dir:
             import base_cache
@@ -466,9 +507,123 @@ def measure_batch(git, judge, side, plan, tools, job, *, timing=None):
         if timing is None:
             return canary_measure.measure(git, judge, side, plan, tools, job)
         return canary_measure.measure(git, judge, side, plan, tools, job, timing=timing)
-    finally:
-        canary_measure.CONFIG = previous
 
+
+def measure_pair(git, judge, plan, tools, base_job, head_job, *,
+                 cache_dir=None, base_timing=None, head_timing=None):
+    """Compile uncached base and head sides concurrently across host vCPUs, then judge sequentially."""
+    if cache_dir is None:
+        cache_dir = os.environ.get("BFME_BASE_CACHE")
+    with _with_asm_allowance(git, plan["historical_base"]):
+        base_cache_state = None
+        if cache_dir:
+            import base_cache
+            cache_root, base_sources, base_hashes, hit_payloads, missed_rows = base_cache.plan_base_cache(
+                git, plan, tools, cache_dir,
+            )
+            base_cache_state = (base_cache, cache_root, base_sources, base_hashes, hit_payloads, missed_rows)
+            base_plan = (
+                dict(plan, request_paths=[r["tu"] for r in missed_rows],
+                     compile=dict(plan["compile"], base=missed_rows))
+                if missed_rows else None
+            )
+        else:
+            base_plan = plan
+        head_plan = plan
+        base_count = len(base_plan["compile"]["base"]) if base_plan else 0
+        head_count = len(head_plan["compile"]["head"])
+        workers = canary_measure.compile_workers(base_count + head_count)
+
+        if base_plan is None:
+            base_cache_mod, cache_root, base_sources, base_hashes, hit_payloads, missed_rows = base_cache_state
+            old = base_cache_mod.finish_base_cache(
+                git, judge, plan, tools, base_job, cache_root, base_sources, base_hashes,
+                hit_payloads, missed_rows, {}, timing=base_timing,
+            )
+            new = canary_measure.measure(git, judge, "head", head_plan, tools, head_job, timing=head_timing)
+            return old, new
+
+        if workers <= 1:
+            # Concurrency cap of 1: base and head carry distinct source projections, so run one RPC per side serially.
+            if base_cache_state is not None:
+                base_cache_mod, cache_root, base_sources, base_hashes, hit_payloads, missed_rows = base_cache_state
+                miss_timing = {} if base_timing is not None else None
+                try:
+                    miss_results = canary_measure.measure(git, judge, "base", base_plan, tools, base_job, timing=miss_timing)
+                finally:
+                    if base_timing is not None and miss_timing:
+                        base_timing.update(miss_timing)
+                old = base_cache_mod.finish_base_cache(
+                    git, judge, plan, tools, base_job, cache_root, base_sources, base_hashes,
+                    hit_payloads, missed_rows, miss_results, timing=base_timing,
+                    compile_s=(miss_timing or {}).get("compile", 0.0),
+                    compare_s=(miss_timing or {}).get("compare", 0.0),
+                )
+            else:
+                old = canary_measure.measure(git, judge, "base", base_plan, tools, base_job, timing=base_timing)
+            new = canary_measure.measure(git, judge, "head", head_plan, tools, head_job, timing=head_timing)
+            return old, new
+
+        b_sources, b_hashes, b_rows, b_packed = canary_measure.prepare_compile_side(git, "base", base_plan)
+        h_sources, h_hashes, h_rows, h_packed = canary_measure.prepare_compile_side(git, "head", head_plan)
+        profile = plan["profile_sha256"]
+
+        def build_chunks(rows, max_chunks):
+            count = max(1, min(len(rows), max_chunks))
+            groups = [[(i, rows[i]) for i in range(slot, len(rows), count)] for slot in range(count)]
+            return [g for g in groups if g]
+
+        total_rows = len(b_rows) + len(h_rows)
+        b_slots = max(1, min(len(b_rows), (workers * len(b_rows) + total_rows // 2) // total_rows))
+        if b_slots >= workers:
+            b_slots = workers - 1
+        h_slots = max(1, min(len(h_rows), workers - b_slots))
+        b_chunks = build_chunks(b_rows, b_slots)
+        h_chunks = build_chunks(h_rows, h_slots)
+        b_results = [None] * len(b_rows)
+        h_results = [None] * len(h_rows)
+        started = monotonic()
+        try:
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                tasks = []
+                for chunk in b_chunks:
+                    fut = pool.submit(canary_measure.execute_compile_rpc, profile, b_packed, [r for _, r in chunk])
+                    tasks.append(("base", chunk, fut))
+                for chunk in h_chunks:
+                    fut = pool.submit(canary_measure.execute_compile_rpc, profile, h_packed, [r for _, r in chunk])
+                    tasks.append(("head", chunk, fut))
+                for side_name, chunk, fut in tasks:
+                    out_list = b_results if side_name == "base" else h_results
+                    for (orig_idx, _), value in zip(chunk, fut.result(), strict=True):
+                        out_list[orig_idx] = value
+        finally:
+            wall_compile = monotonic() - started
+            if base_timing is not None:
+                base_timing["compile"] = wall_compile
+
+        if base_cache_state is not None:
+            base_cache_mod, cache_root, base_sources, base_hashes, hit_payloads, missed_rows = base_cache_state
+            miss_timing = {} if base_timing is not None else None
+            miss_results = canary_measure.judge_compiled(
+                git, judge, "base", base_plan, tools, base_job, b_sources, b_hashes, b_rows, b_results,
+                timing=miss_timing, compile_seconds=wall_compile,
+            )
+            old = base_cache_mod.finish_base_cache(
+                git, judge, plan, tools, base_job, cache_root, base_sources, base_hashes,
+                hit_payloads, missed_rows, miss_results, timing=base_timing,
+                compile_s=(miss_timing or {}).get("compile", 0.0),
+                compare_s=(miss_timing or {}).get("compare", 0.0),
+            )
+        else:
+            old = canary_measure.judge_compiled(
+                git, judge, "base", base_plan, tools, base_job, b_sources, b_hashes, b_rows, b_results,
+                timing=base_timing, compile_seconds=wall_compile,
+            )
+        new = canary_measure.judge_compiled(
+            git, judge, "head", head_plan, tools, head_job, h_sources, h_hashes, h_rows, h_results,
+            timing=head_timing, compile_seconds=0.0,
+        )
+        return old, new
 
 def main(admission, out):
     admission, out = Path(admission), Path(out)
@@ -500,8 +655,8 @@ def main(admission, out):
         native = dict(plan, historical_base=plan["base"], historical_head=tip,
                       compile={side: native_commands(git, judge, rev, plan["request_paths"], roots)
                                for side, rev in (("base", plan["base"]), ("head", tip))})
-        old = measure_batch(git, judge, "base", native, roots, work / "base")
-        new = measure_batch(git, judge, "head", native, roots, work / "head")
+        with memoized_projection():
+            old, new = measure_pair(git, judge, native, roots, work / "base", work / "head")
         attach_blockers(judge, work / "base", old, include_symbols=False)
         attach_blockers(judge, work / "head", new, baseline=old, include_symbols=True)
         objects = [(path, *(work / side / "obj" / (path.replace("/", "_") + ".obj")

@@ -1,4 +1,5 @@
 """Recompile and judge both sides of the exact private nt2 canary in a Boat job."""
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 import os
@@ -103,7 +104,18 @@ def data_entry(git, rev, name, root, *, max_size=128 * 1024**2):
     path.write_bytes(data)
 
 
-def measure(git, judge, side, plan, tools, job, *, timing=None):
+def compile_workers(count):
+    """Number of concurrent isolated sealed-compiler RPCs for this host."""
+    raw = os.environ.get("BFME_COMPILE_WORKERS", "").strip()
+    if raw.isdigit():
+        cap = max(1, min(int(raw), 4))
+    else:
+        cap = max(1, min(os.cpu_count() or 2, 4))
+    return max(1, min(count, cap))
+
+
+def prepare_compile_side(git, side, plan):
+    """Validate and pack one side's compile request on the main thread."""
     base = plan["historical_base"]
     sha = plan["historical_" + side]
     sources, hashes = projection(git, sha)
@@ -119,26 +131,67 @@ def measure(git, judge, side, plan, tools, job, *, timing=None):
         for change in changes:
             if change.mode != "000000" and contributed_source_problem(decode(sources[change.path], 1024**2)):
                 raise ValueError("The canary violated compiler source-input policy.")
-    wire = json.dumps({"version": 1, "profile": plan["profile_sha256"],
-                       "source": pack_sources(sources), "plan": rows},
+    packed = pack_sources(sources)
+    return sources, hashes, rows, packed
+
+
+def make_compile_wire(profile_sha256, packed_sources, rows):
+    wire = json.dumps({"version": 1, "profile": profile_sha256,
+                       "source": packed_sources, "plan": rows},
                       sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("ascii")
     if len(wire) > 92 * 1024**2:
         raise ValueError("The compiler input is too large.")
-    started = monotonic()
-    try:
-        reply = request("compile", wire)
-    finally:
-        if timing is not None:
-            timing["compile"] = monotonic() - started
+    return wire
+
+
+def execute_compile_rpc(profile_sha256, packed_sources, rows):
+    """Run one isolated sealed-compiler RPC and verify its exact reply envelope."""
+    wire = make_compile_wire(profile_sha256, packed_sources, rows)
+    reply = request("compile", wire)
     if (reply["version"] != 1 or reply["request"] != digest(wire)
-            or reply["profile"] != plan["profile_sha256"] or len(reply["results"]) != len(rows)):
+            or reply["profile"] != profile_sha256 or len(reply["results"]) != len(rows)):
         raise ValueError("The compiler response is incompatible with the exact source plan.")
+    return reply["results"]
+
+
+def compile_batch_rpc(git, side, plan, *, workers=None):
+    """Compile `plan['compile'][side]` using up to `workers` concurrent sealed RPCs."""
+    sources, hashes, rows, packed = prepare_compile_side(git, side, plan)
+    profile = plan["profile_sha256"]
+    width = compile_workers(len(rows)) if workers is None else max(1, min(len(rows), int(workers)))
+    started = monotonic()
+    if width <= 1 or len(rows) <= 1:
+        results = execute_compile_rpc(profile, packed, rows)
+    else:
+        indexed_chunks = [[(i, rows[i]) for i in range(slot, len(rows), width)] for slot in range(width)]
+        indexed_chunks = [chunk for chunk in indexed_chunks if chunk]
+        assembled = [None] * len(rows)
+        with ThreadPoolExecutor(max_workers=len(indexed_chunks)) as pool:
+            futures = [
+                (chunk, pool.submit(execute_compile_rpc, profile, packed, [row for _, row in chunk]))
+                for chunk in indexed_chunks
+            ]
+            for chunk, future in futures:
+                chunk_results = future.result()
+                for (orig_idx, _), value in zip(chunk, chunk_results, strict=True):
+                    assembled[orig_idx] = value
+        results = assembled
+    return sources, hashes, rows, results, monotonic() - started
+
+
+def judge_compiled(git, judge, side, plan, tools, job, sources, hashes, rows, results, *,
+                   timing=None, compile_seconds=0.0):
+    """Verify compiled COFF receipts, stage files into `job`, and judge sequentially."""
+    base = plan["historical_base"]
+    sha = plan["historical_" + side]
+    if timing is not None:
+        timing["compile"] = compile_seconds
     receipts = {}
     paths = TrustedPaths(tools, hashes)
-    (job / "obj").mkdir(parents=True)
+    (job / "obj").mkdir(parents=True, exist_ok=True)
     for file in CONFIG:
         data_entry(git, base, "config/" + file, job)
-    for want, value in zip(rows, reply["results"], strict=True):
+    for want, value in zip(rows, results, strict=True):
         tu = want["tu"]
         if any(want[key] != value[key] for key in ("tu", "source", "contract")):
             raise ValueError("A compiler result changed its input identity.")
@@ -185,6 +238,17 @@ def measure(git, judge, side, plan, tools, job, *, timing=None):
         if timing is not None:
             timing["compare"] = monotonic() - started
 
+
+def measure(git, judge, side, plan, tools, job, *, timing=None):
+    started = monotonic()
+    try:
+        sources, hashes, rows, results, compile_s = compile_batch_rpc(git, side, plan)
+    except Exception:
+        if timing is not None:
+            timing["compile"] = monotonic() - started
+        raise
+    return judge_compiled(git, judge, side, plan, tools, job, sources, hashes, rows, results,
+                          timing=timing, compile_seconds=compile_s)
 
 def reduced(before, after):
     counts = {"gained": 0, "lost_credit": 0, "lost_proof": 0, "lost_verified": 0,

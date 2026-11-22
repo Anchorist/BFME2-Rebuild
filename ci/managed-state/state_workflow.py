@@ -17,9 +17,9 @@ from state_delta import inherited, merge
 def make_checked_plan(root, main, budget, *, measured=None):
     if not re.fullmatch(r"[1-9][0-9]{0,2}", budget) or int(budget) > 128:
         raise ValueError("Set BFME_STATE_BUDGET_JOBS to the approved runner cap, between 1 and 128.")
-    plan = make_plan(root, main, PIN["checker"], per_batch=32)
+    plan = make_plan(root, main, PIN["checker"], per_batch=64)
     if measured is not None:
-        plan["batches"] = [measured[i:i+32] for i in range(0, len(measured), 32)]
+        plan["batches"] = [measured[i:i+64] for i in range(0, len(measured), 64)]
         validate_plan(plan)
     count = len(plan["batches"])
     if count > int(budget):

@@ -9,7 +9,7 @@ from time import monotonic
 from types import SimpleNamespace
 
 from common import HEX64, PIN, digest, encoded, read, validate_binding, write
-from compare import difference, make_report, native_commands, protected_judge, native_blockers, unexpected_symbol_pairs, measure_batch
+from compare import difference, make_report, native_commands, protected_judge, native_blockers, unexpected_symbol_pairs, measure_batch, measure_pair, memoized_projection
 from emitted_data import record_pairs
 from compact_matrix import make_compact, join_compact
 from diff_scope import diff_lines
@@ -25,6 +25,7 @@ from wide_plan import identity
 
 RUNNERS = 24
 BATCH = 8
+MAX_SHARD_TUS = 4 * BATCH  # matches wide_recovery's 4-part-per-shard limit
 MAX_RECEIPT = 4 * 1024**2
 
 
@@ -74,15 +75,48 @@ def choose_runner_count(tu_count, *, max_runners=RUNNERS, target_per_shard=10):
     return max(1, min(max_runners, desired, tu_count))
 
 
+def tu_weights(git, base, tip, paths):
+    """Approximate compile cost by source file byte size so LPT sharding avoids stragglers."""
+    weights = {}
+    for path in paths:
+        size = 0
+        for rev in (base, tip):
+            res = git.run("cat-file", "-s", f"{rev}:{path}", check=False)
+            if res.returncode == 0:
+                try:
+                    size = int(res.stdout.decode().strip())
+                except ValueError:
+                    size = 0
+                if size > 0:
+                    break
+        weights[path] = max(1, size)
+    return weights
+
+
+def balanced_chunks(total, max_size=BATCH):
+    """Split `total` items into even slices <= `max_size` (e.g. 9 -> [5, 4] instead of [8, 1])."""
+    if total <= 0:
+        return []
+    groups = (total + max_size - 1) // max_size
+    base, extra = divmod(total, groups)
+    slices, start = [], 0
+    for idx in range(groups):
+        size = base + (1 if idx < extra else 0)
+        slices.append((start, start + size))
+        start += size
+    return slices
+
+
 def plan_matrix(source, out):
     plan, _ = admission(source)
     with comparison_inputs(plan) as (_, git, tip, judge, tools):
         commands = {side: native_commands(git, judge, rev, plan["request_paths"], tools)
                     for side, rev in (("base", plan["base"]), ("head", tip))}
+        weights = tu_weights(git, plan["base"], tip, plan["request_paths"])
     max_runners = int(os.environ.get("MANAGED_WIDE_SHARDS", RUNNERS))
     target_per_shard = int(os.environ.get("MANAGED_WIDE_TUS_PER_SHARD", "10"))
     runners = choose_runner_count(len(plan["request_paths"]), max_runners=max_runners, target_per_shard=target_per_shard)
-    document = make(plan, commands, limit=runners)
+    document = make(plan, commands, limit=runners, weights=weights, max_tus_per_shard=MAX_SHARD_TUS)
     out.mkdir(mode=0o700)
     write(out / "matrix.json", document)
     indexes = list(range(len(document["partition"]["shards"])))
@@ -92,7 +126,6 @@ def plan_matrix(source, out):
         from wide_recovery import groups
         stream.write("groups=" + encoded([{"shard": shard, "part": part}
                                            for shard, part in groups(document)]).decode())
-
 
 def load_matrix(path, expected, plan):
     doc = read(Path(path) / "matrix.json", 3 * 1024**2)
@@ -158,63 +191,77 @@ def compile_assigned(plan, doc, expected, index, out, *, label):
         adapter = SimpleNamespace(ANNOT=judge.ANNOT, land_gate9=SimpleNamespace(diff_lines=diff_lines))
         edited_keys = {(item["owner"], item["address"]) for item in edited(git, adapter, plan["base"], tip, owners)}
         changed = set(plan["changed_paths"])
-        for side in SIDES:
-            commands = commands_by_side[SIDES[side]]
-            paths = [row["tu"] for row in commands]
-            rev = plan["base"] if side == "base" else tip
+        base_commands = commands_by_side[SIDES["base"]]
+        head_commands = commands_by_side[SIDES["head"]]
+        base_paths = [row["tu"] for row in base_commands]
+        head_paths = [row["tu"] for row in head_commands]
+        if base_paths != head_paths:
+            raise ValueError("Shard base and head assignments differ.")
+        for side, rev, commands, paths in (("base", plan["base"], base_commands, base_paths),
+                                           ("head", tip, head_commands, head_paths)):
             if native_commands(git, judge, rev, paths, tools) != commands:
                 raise ValueError("A shard command differs from the protected native compiler settings.")
-            for begin in range(0, len(paths), BATCH):
-                batch = commands[begin:begin + BATCH]
-                names = [command["tu"] for command in batch]
+        job = None
+        with memoized_projection():
+            for chunk_index, (begin, end) in enumerate(balanced_chunks(len(base_paths), BATCH), start=1):
+                b_batch = base_commands[begin:end]
+                h_batch = head_commands[begin:end]
+                names = [command["tu"] for command in b_batch]
                 native = dict(plan, historical_base=plan["base"], historical_head=tip,
-                              request_paths=names, compile={side: batch})
-                job = work / f"{side}-{begin}"
-                spans = {}
+                              request_paths=names, compile={"base": b_batch, "head": h_batch})
+                b_job = work / f"base-{begin}"
+                h_job = work / f"head-{begin}"
+                b_spans, h_spans = {}, {}
                 try:
-                    results = measure_batch(git, judge, side, native, tools, job, timing=spans)
-                finally:
-                    for stage in total:
-                        total[stage] += spans.get(stage, 0.0)
-                    compile_s, compare_s = (f"{spans[stage]:.2f}" if stage in spans else "unavailable"
-                                            for stage in ("compile", "compare"))
-                    print(f"Wide shard {label}: {side} batch {begin // BATCH + 1}, {len(names)} files, "
-                          f"compiler RPC {compile_s} s, native comparison {compare_s} s.", flush=True)
-                if list(results) != names:
-                    raise ValueError("The trusted comparator omitted a planned TU.")
-                for command in batch:
-                    path = command["tu"]
-                    raw = results[path]
-                    obj = job / "obj" / (path.replace("/", "_") + ".obj")
-                    value = {key: command[key] for key in ("tu", "source", "contract")} | {"side": SIDES[side]}
-                    base_outcome = reports["base"].get(path) if side == "head" else None
-                    reports[side][path] = sanitize_outcome(
-                        raw, path, changed, judge=judge, obj=obj if obj.is_file() else None,
-                        baseline=base_outcome, include_symbols=(side == "head"),
+                    b_results, h_results = measure_pair(
+                        git, judge, native, tools, b_job, h_job,
+                        base_timing=b_spans, head_timing=h_spans,
                     )
-                    if obj.is_file():
-                        inline_objects[(SIDES[side], path)] = obj
-                        local = read(obj.with_suffix(".obj.compile.json"), 4 * 1024**2)
-                        if (local["source_sha256"] != command["source"] or local["compiler_contract"] != command["contract"]
-                                or not HEX64.fullmatch(local["object_sha256"])):
-                            raise ValueError("The local comparison changed a verified compiler receipt.")
-                        dependencies = sorted((str(Path(label).relative_to(job)) if Path(label).is_relative_to(job)
-                                               else "sealed/" + Path(label).name, checksum)
-                                              for label, checksum in local["headers"].items())
-                        value.update(status="compiled", object_sha256=local["object_sha256"], dependencies=dependencies)
-                    elif raw.get("error"):
-                        value["status"] = "error"
-                    else:
-                        raise ValueError("The local comparison omitted the compiler outcome.")
-                    records.append(value)
-                    if side == "head" and obj.is_file():
-                        for row in raw["rows"]:
-                            if row["status"] != "PARTIAL":
-                                continue
-                            listing = (path, int(row["rva"], 16)) in edited_keys
-                            record = difference(judge, obj, row, listing)
-                            if record:
-                                details[path + "@" + row["rva"]] = clean_difference(record, listing)
+                finally:
+                    batch_compile = b_spans.get("compile", 0.0) + h_spans.get("compile", 0.0)
+                    batch_compare = b_spans.get("compare", 0.0) + h_spans.get("compare", 0.0)
+                    total["compile"] += batch_compile
+                    total["compare"] += batch_compare
+                    print(f"Wide shard {label}: paired batch {chunk_index}, {len(names)} files, "
+                          f"compiler RPC {batch_compile:.2f} s, native comparison {batch_compare:.2f} s.", flush=True)
+                job = h_job
+                for side, batch, results, side_job in (("base", b_batch, b_results, b_job),
+                                                       ("head", h_batch, h_results, h_job)):
+                    if list(results) != names:
+                        raise ValueError("The trusted comparator omitted a planned TU.")
+                    for command in batch:
+                        path = command["tu"]
+                        raw = results[path]
+                        obj = side_job / "obj" / (path.replace("/", "_") + ".obj")
+                        value = {key: command[key] for key in ("tu", "source", "contract")} | {"side": SIDES[side]}
+                        base_outcome = reports["base"].get(path) if side == "head" else None
+                        reports[side][path] = sanitize_outcome(
+                            raw, path, changed, judge=judge, obj=obj if obj.is_file() else None,
+                            baseline=base_outcome, include_symbols=(side == "head"),
+                        )
+                        if obj.is_file():
+                            inline_objects[(SIDES[side], path)] = obj
+                            local = read(obj.with_suffix(".obj.compile.json"), 4 * 1024**2)
+                            if (local["source_sha256"] != command["source"] or local["compiler_contract"] != command["contract"]
+                                    or not HEX64.fullmatch(local["object_sha256"])):
+                                raise ValueError("The local comparison changed a verified compiler receipt.")
+                            dependencies = sorted((str(Path(dep_path).relative_to(side_job)) if Path(dep_path).is_relative_to(side_job)
+                                                   else "sealed/" + Path(dep_path).name, checksum)
+                                                  for dep_path, checksum in local["headers"].items())
+                            value.update(status="compiled", object_sha256=local["object_sha256"], dependencies=dependencies)
+                        elif raw.get("error"):
+                            value["status"] = "error"
+                        else:
+                            raise ValueError("The local comparison omitted the compiler outcome.")
+                        records.append(value)
+                        if side == "head" and obj.is_file():
+                            for row in raw["rows"]:
+                                if row["status"] != "PARTIAL":
+                                    continue
+                                listing = (path, int(row["rva"], 16)) in edited_keys
+                                record = difference(judge, obj, row, listing)
+                                if record:
+                                    details[path + "@" + row["rva"]] = clean_difference(record, listing)
         # Both authenticated objects of a pair stay on one runner.
         objects = [(path, inline_objects.get((SIDES["base"], path)), inline_objects.get((SIDES["head"], path)))
                    for path in reports["head"]]
