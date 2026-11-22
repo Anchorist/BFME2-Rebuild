@@ -1,8 +1,11 @@
 """Compare a protected base and validated source-only candidate on the sealed Boat image."""
 import hashlib
 import os
+from collections import Counter
+from itertools import permutations
 from pathlib import Path
 import re
+import struct
 import sys
 import tempfile
 from types import SimpleNamespace
@@ -19,7 +22,7 @@ from diff_scope import diff_lines
 from finished_index import Owners, RealHeaders
 from gateway import projection as public_projection
 from progress_delta import drafts_in_use, progress
-from reporting import GATES, from_landing
+from reporting import GATES, SYMBOL, from_landing
 from emitted_data import record_pairs
 
 
@@ -59,7 +62,193 @@ def protected_judge(work, roots, baseline):
     return judge
 
 
-def native_blockers(outcome):
+LOCAL_LABEL = re.compile(r"\$L\d+\Z")
+MAX_LOCAL_DEPTH = 8
+
+
+_COFF_ERRORS = (OSError, KeyError, TypeError, ValueError, AttributeError, IndexError, struct.error)
+
+
+def _read_local_target(judge, obj, sym):
+    try:
+        return judge.read_body(obj, sym)
+    except _COFF_ERRORS:
+        coff_fn = getattr(judge, "coff", None)
+        if not callable(coff_fn):
+            return None
+        try:
+            coff = coff_fn(obj)
+            idx = coff.index(sym)
+            loc = coff.loc(idx)
+            n = coff.extent(idx, code=False)
+            body = coff.bytes(loc, n)
+            relocs = [(o, k, coff.symbols[j]["name"]) for o, k, j in coff.relocs(loc, n)]
+            return body, relocs
+        except _COFF_ERRORS:
+            return None
+
+
+def _local_structural_digest(sym, judge, obj, visiting, seen_locals):
+    if len(visiting) > MAX_LOCAL_DEPTH:
+        return None
+    if len(visiting) == 1:
+        try:
+            body, relocs = judge.read_body(obj, sym)
+        except _COFF_ERRORS:
+            return None
+    else:
+        loaded = _read_local_target(judge, obj, sym)
+        if loaded is None:
+            return None
+        body, relocs = loaded
+    if not isinstance(body, (bytes, bytearray)):
+        return None
+    ordered_relocs = sorted(
+        ((int(off), int(rtype), target) for off, rtype, target in relocs),
+        key=lambda item: (item[0], item[1], "" if isinstance(item[2], str) and LOCAL_LABEL.fullmatch(item[2]) else str(item[2])),
+    )
+    norm_relocs = []
+    for off_i, rtype_i, target in ordered_relocs:
+        addend = bytes(body[off_i:off_i + 4]).hex() if 0 <= off_i <= len(body) else ""
+        if isinstance(target, str) and LOCAL_LABEL.fullmatch(target):
+            if target in visiting:
+                target_id = ["cycle", visiting.index(target)]
+            elif target in seen_locals:
+                target_id = ["local-ref", seen_locals[target]]
+            else:
+                cid = len(seen_locals)
+                seen_locals[target] = cid
+                target_digest = _local_structural_digest(target, judge, obj, visiting + (target,), seen_locals)
+                if target_digest is None:
+                    return None
+                target_id = ["local", cid, target_digest]
+        else:
+            target_id = ["sym", str(target)]
+        norm_relocs.append([off_i, rtype_i, addend, target_id])
+    return digest(encoded({"len": len(body), "body": digest(bytes(body)), "relocs": norm_relocs}))
+
+
+def local_label_fingerprint(row, judge=None, obj=None, *, targets_out=None):
+    """Structural identity for compiler-generated MSVC local labels ($L<n>).
+
+    MSVC numbers $L<n> labels from a per-unit counter that shifts when an included
+    header changes line count. Hashing exact COFF body bytes (preserving relocation
+    addends) and canonical local-target aliasing graphs keeps identical shifted
+    labels equal while catching changed addends, distinct targets with identical
+    bytes, or changed bodies. Returns None when readable COFF evidence is
+    unavailable so callers fail closed to raw names.
+    """
+    if judge is None or obj is None or not Path(obj).is_file():
+        return None
+    seen_locals = {row["symbol"]: 0}
+    struct_digest = _local_structural_digest(row["symbol"], judge, obj, (row["symbol"],), seen_locals)
+    if struct_digest is None:
+        return None
+    if targets_out is not None:
+        targets_out.update(seen_locals)
+    return encoded({
+        "kind": "local-label",
+        "selection": int(row.get("comdat_selection", 0) or 0),
+        "live": bool(row.get("referenced_by_kept")),
+        "why": str(row.get("why") or ""),
+        "struct": struct_digest,
+    })
+
+
+MAX_SHARED_COMPONENT = 6
+
+
+def _canonical_component_digest(comp_items, judge, obj):
+    """Graph-isomorphism-complete canonical digest for a connected component of local roots."""
+    if len(comp_items) > MAX_SHARED_COMPONENT:
+        return None
+    best = None
+    for order in permutations(comp_items):
+        shared_seen = {row["symbol"]: idx for idx, (row, _s, _f, _t) in enumerate(order)}
+        seq = []
+        ok = True
+        for row, _sym, _fp, _targets in order:
+            sd = _local_structural_digest(row["symbol"], judge, obj, (row["symbol"],), shared_seen)
+            if sd is None:
+                ok = False
+                break
+            seq.append([
+                int(row.get("comdat_selection", 0) or 0),
+                bool(row.get("referenced_by_kept")),
+                str(row.get("why") or ""),
+                sd,
+            ])
+        if not ok:
+            return None
+        cand = encoded(seq)
+        if best is None or cand < best:
+            best = cand
+    return digest(best) if best is not None else None
+
+
+def unexpected_extra_facts(outcome, *, judge=None, obj=None):
+    """Return (facts_set, full_symbol_map) for rejected extra code symbols."""
+    facts = set()
+    symbols = {}
+    local_items = []
+    for row in outcome.get("rejected_extras") or ():
+        sym = row["symbol"]
+        targets = {}
+        fp = (local_label_fingerprint(row, judge=judge, obj=obj, targets_out=targets)
+              if isinstance(sym, str) and LOCAL_LABEL.fullmatch(sym) else None)
+        if fp is not None:
+            local_items.append((row, sym, fp, set(targets)))
+        else:
+            fact_hash = digest(encoded(sym))
+            facts.add(("unexpected-code", fact_hash))
+            if isinstance(sym, str) and SYMBOL.fullmatch(sym):
+                symbols.setdefault(fact_hash, sym)
+
+    # Partition normalized local roots into connected components sharing any local target.
+    n = len(local_items)
+    visited = [False] * n
+    comp_fps = []
+    for i in range(n):
+        if visited[i]:
+            continue
+        comp_idx = []
+        stack = [i]
+        visited[i] = True
+        while stack:
+            cur = stack.pop()
+            comp_idx.append(cur)
+            cur_nodes = local_items[cur][3] | {local_items[cur][1]}
+            for j in range(n):
+                if not visited[j] and (cur_nodes & (local_items[j][3] | {local_items[j][1]})):
+                    visited[j] = True
+                    stack.append(j)
+        comp = [local_items[k] for k in comp_idx]
+        if len(comp) == 1:
+            comp_fps.append((comp[0][2], comp[0][1]))
+        else:
+            cd = _canonical_component_digest(comp, judge, obj)
+            if cd is None:
+                # Too large or unreadable: fail closed to exact raw symbol names.
+                for _row, sym, _fp, _targets in comp:
+                    fact_hash = digest(encoded(sym))
+                    facts.add(("unexpected-code", fact_hash))
+                    if isinstance(sym, str) and SYMBOL.fullmatch(sym):
+                        symbols.setdefault(fact_hash, sym)
+            else:
+                comp_fps.append((encoded(["local-component", cd]), comp[0][1]))
+
+    local_counts = Counter()
+    for fp, sym in sorted(comp_fps):
+        occ = local_counts[fp]
+        local_counts[fp] += 1
+        fact_hash = digest(encoded(["local-label", digest(fp), occ]))
+        facts.add(("unexpected-code", fact_hash))
+        if isinstance(sym, str) and SYMBOL.fullmatch(sym):
+            symbols.setdefault(fact_hash, sym)
+    return facts, symbols
+
+
+def native_blockers(outcome, *, judge=None, obj=None):
     """Keep stable failure identities, never native details or scratch paths."""
     if "blockers" in outcome:
         return outcome["blockers"]
@@ -67,8 +256,8 @@ def native_blockers(outcome):
         ("emitted-row", digest(encoded([int(row["rva"], 16), row["status"]])))
         for row in outcome["expected"] if row["status"] != "MATCH"
     }
-    facts.update(("unexpected-code", digest(encoded(row["symbol"])))
-                 for row in outcome["rejected_extras"])
+    extra_facts, _ = unexpected_extra_facts(outcome, judge=judge, obj=obj)
+    facts.update(extra_facts)
     for text in outcome["verification_blockers"]:
         if text == "compiled owned function order differs from retail RVA order":
             facts.add(("owned-order", digest(encoded(text))))
@@ -86,11 +275,43 @@ def native_blockers(outcome):
     return [list(fact) for fact in sorted(facts)]
 
 
+def unexpected_symbol_pairs(outcome, *, judge=None, obj=None, baseline=None):
+    """Return bounded, allowlisted [digest, symbol] pairs for rejected extra code symbols.
+
+    When `baseline` is supplied, filter out facts already present on base before applying
+    the 32-symbol cap so pre-existing base symbols never crowd out a newly introduced one.
+    """
+    if "unexpected_symbols" in outcome and isinstance(outcome["unexpected_symbols"], list):
+        if all(isinstance(pair, list) and len(pair) == 2 for pair in outcome["unexpected_symbols"]):
+            return outcome["unexpected_symbols"][:32]
+    _, symbols = unexpected_extra_facts(outcome, judge=judge, obj=obj)
+    if baseline is not None:
+        base_hashes = {fact[1] for fact in native_blockers(baseline) if fact[0] == "unexpected-code"}
+        symbols = {h: s for h, s in symbols.items() if h not in base_hashes}
+    return [[h, s] for h, s in sorted(symbols.items())[:32]]
+
+
+def attach_blockers(judge, side_dir, table, *, baseline=None, include_symbols=True):
+    """Precompute structural blockers and safe symbol labels using compiled COFF objects."""
+    for path, outcome in table.items():
+        if "blockers" in outcome:
+            continue
+        obj = side_dir / "obj" / (path.replace("/", "_") + ".obj")
+        target = obj if obj.is_file() else None
+        outcome["blockers"] = native_blockers(outcome, judge=judge, obj=target)
+        if include_symbols:
+            base_outcome = baseline.get(path) if isinstance(baseline, dict) else None
+            pairs = unexpected_symbol_pairs(outcome, judge=judge, obj=target, baseline=base_outcome)
+            if pairs:
+                outcome["unexpected_symbols"] = pairs
+
+
 def index(table):
     return {path: {"verified": item.get("object_verified", False),
                    "error": bool(item.get("error")),
                    "gates": set(item["gates"]),
                    "blockers": {tuple(fact) for fact in native_blockers(item)},
+                   "unexpected_symbols": {pair[0]: pair[1] for pair in unexpected_symbol_pairs(item)},
                    "proven": {row["rva"] for row in item["rows"]
                               if row.get("credited", row["status"] == "MATCH") and row.get("proof") == "proven"},
                    "rows": {row["rva"]: (row["status"], row.get("pct", 100.0 if row["status"] == "MATCH" else 0.0))
@@ -113,7 +334,12 @@ def reduction(old, new):
         counts["new_compiler_errors"] += int(not prior["error"] and current["error"])
         added = current["gates"] - prior["gates"]
         counts["new_source_gates"] += len(added)
-        rules.update(kind for kind, _ in current["blockers"] - prior["blockers"])
+        new_blockers = sorted(current["blockers"] - prior["blockers"])
+        rules.update(kind for kind, _ in new_blockers)
+        sym_map = current.get("unexpected_symbols") or {}
+        for kind, fact_hash in new_blockers:
+            if kind == "unexpected-code" and fact_hash in sym_map:
+                hint.append(f"{path}: unexpected emitted code symbol `{sym_map[fact_hash]}`.")
         for address, (status, _) in current["rows"].items():
             previous = prior["rows"].get(address, ("MISSING", 0.0))[0]
             if previous == status:
@@ -269,6 +495,8 @@ def main(admission, out):
                                for side, rev in (("base", plan["base"]), ("head", tip))})
         old = measure_batch(git, judge, "base", native, roots, work / "base")
         new = measure_batch(git, judge, "head", native, roots, work / "head")
+        attach_blockers(judge, work / "base", old, include_symbols=False)
+        attach_blockers(judge, work / "head", new, baseline=old, include_symbols=True)
         objects = [(path, *(work / side / "obj" / (path.replace("/", "_") + ".obj")
                             for side in ("base", "head"))) for path in plan["request_paths"]]
         record_pairs(judge, work / "base", objects, new)

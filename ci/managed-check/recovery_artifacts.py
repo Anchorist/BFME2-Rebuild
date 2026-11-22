@@ -85,6 +85,32 @@ class Actions:
         self.run_head = expected
         return epoch(row["run_started_at"])
 
+    def plan_anchor(self):
+        """Return (run_started_at, wide_plan_started_at) from GitHub's authenticated API.
+
+        Anchoring the primary compile cutoff to when the wide-plan job actually started
+        prevents upstream GitHub-hosted queue wait in intake from consuming Boat's compile window.
+        """
+        run_start = self.anchor()
+        jobs = self.get(f"actions/runs/{self.run['id']}/attempts/{self.run['attempt']}/jobs?per_page=100")
+        if jobs["total_count"] > len(jobs["jobs"]):
+            raise ValueError("Too many protected jobs to identify the wide planner.")
+        matched = []
+        for job in jobs["jobs"]:
+            if job.get("name") != "Plan the paired Boat matrix":
+                continue
+            if (str(job.get("run_id")) != self.run["id"]
+                    or str(job.get("run_attempt")) != self.run["attempt"]
+                    or job.get("head_sha") != self.run_head):
+                raise ValueError("Unexpected wide planner provenance.")
+            matched.append(job)
+        if len(matched) != 1 or not matched[0].get("started_at"):
+            raise ValueError("Expected one started wide planner job in this attempt.")
+        plan_start = epoch(matched[0]["started_at"])
+        if plan_start < run_start:
+            raise ValueError("Wide planner timestamp precedes the attempt start.")
+        return run_start, plan_start
+
     def reserve_should_stop(self):
         jobs = self.get(f"actions/runs/{self.run['id']}/attempts/{self.run['attempt']}/jobs?per_page=100")
         if jobs["total_count"] > len(jobs["jobs"]):

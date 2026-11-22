@@ -9,7 +9,7 @@ from time import monotonic
 from types import SimpleNamespace
 
 from common import HEX64, PIN, digest, encoded, read, validate_binding, write
-from compare import difference, make_report, native_commands, protected_judge, native_blockers, measure_batch
+from compare import difference, make_report, native_commands, protected_judge, native_blockers, unexpected_symbol_pairs, measure_batch
 from emitted_data import record_pairs
 from compact_matrix import make_compact, join_compact
 from diff_scope import diff_lines
@@ -61,14 +61,27 @@ def comparison_inputs(plan):
         yield work, git, tip, judge, tools
 
 
+def choose_runner_count(tu_count, *, max_runners=RUNNERS, target_per_shard=10):
+    if not 1 <= max_runners <= 32:
+        raise ValueError("Select between 1 and 32 managed wide runners.")
+    if not 1 <= target_per_shard <= 32:
+        raise ValueError("Select between 1 and 32 translation units per wide shard.")
+    # Each shard supports at most 4 recovery groups of 8 TUs (32 TUs).
+    min_for_groups = (tu_count + 31) // 32
+    if max_runners < min_for_groups:
+        raise ValueError(f"Select at least {min_for_groups} wide runners for {tu_count} translation units.")
+    desired = max(min_for_groups, (tu_count + target_per_shard - 1) // target_per_shard)
+    return max(1, min(max_runners, desired, tu_count))
+
+
 def plan_matrix(source, out):
     plan, _ = admission(source)
     with comparison_inputs(plan) as (_, git, tip, judge, tools):
         commands = {side: native_commands(git, judge, rev, plan["request_paths"], tools)
                     for side, rev in (("base", plan["base"]), ("head", tip))}
-    runners = int(os.environ.get("MANAGED_WIDE_SHARDS", RUNNERS))
-    if runners not in (16, 24, 32):
-        raise ValueError("Select 16, 24 or 32 managed wide runners.")
+    max_runners = int(os.environ.get("MANAGED_WIDE_SHARDS", RUNNERS))
+    target_per_shard = int(os.environ.get("MANAGED_WIDE_TUS_PER_SHARD", "10"))
+    runners = choose_runner_count(len(plan["request_paths"]), max_runners=max_runners, target_per_shard=target_per_shard)
     document = make(plan, commands, limit=runners)
     out.mkdir(mode=0o700)
     write(out / "matrix.json", document)
@@ -91,7 +104,7 @@ def load_matrix(path, expected, plan):
     return doc
 
 
-def sanitize_outcome(raw, path, changed):
+def sanitize_outcome(raw, path, changed, *, judge=None, obj=None, baseline=None, include_symbols=True):
     def gate_key(value):
         if "annotation" in value:
             label = "annotations"
@@ -105,7 +118,11 @@ def sanitize_outcome(raw, path, changed):
                         for row in raw["rows"]],
                "object_verified": bool(raw.get("object_verified")),
                "gates": sorted({gate_key(value) for value in raw["gates"]}),
-               "blockers": native_blockers(raw)}
+               "blockers": native_blockers(raw, judge=judge, obj=obj)}
+    if include_symbols:
+        pairs = unexpected_symbol_pairs(raw, judge=judge, obj=obj, baseline=baseline)
+        if pairs:
+            verdict["unexpected_symbols"] = pairs
     if raw.get("error"):
         located = safe_diagnostics(path, raw["error"], tuple(sorted(changed)))
         diagnostics = "\n".join(line for line in located.splitlines() if line.split("(", 1)[0] in changed)
@@ -170,7 +187,11 @@ def compile_assigned(plan, doc, expected, index, out, *, label):
                     raw = results[path]
                     obj = job / "obj" / (path.replace("/", "_") + ".obj")
                     value = {key: command[key] for key in ("tu", "source", "contract")} | {"side": SIDES[side]}
-                    reports[side][path] = sanitize_outcome(raw, path, changed)
+                    base_outcome = reports["base"].get(path) if side == "head" else None
+                    reports[side][path] = sanitize_outcome(
+                        raw, path, changed, judge=judge, obj=obj if obj.is_file() else None,
+                        baseline=base_outcome, include_symbols=(side == "head"),
+                    )
                     if obj.is_file():
                         inline_objects[(SIDES[side], path)] = obj
                         local = read(obj.with_suffix(".obj.compile.json"), 4 * 1024**2)

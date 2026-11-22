@@ -1,0 +1,231 @@
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest import mock
+
+ROOT = Path(__file__).resolve().parents[1]
+STATE_ROOT = Path(__file__).resolve().parents[2] / "managed-state"
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(STATE_ROOT))
+
+import compare
+import managed_matrix
+import recovery_broker
+import wide
+import wide_recovery
+
+
+class FakeJudge:
+    def __init__(self, bodies):
+        self.bodies = bodies
+
+    def read_body(self, obj, symbol):
+        return self.bodies[(Path(obj).name, symbol)]
+
+
+class Cut2OptimizationTests(unittest.TestCase):
+    def _lbl(self, n):
+        return "$" + "L" + str(n)
+
+    def test_local_label_renumber_matches_and_preserves_addends_and_targets(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base_obj = Path(tmp) / "base.obj"
+            head_obj = Path(tmp) / "head.obj"
+            base_obj.write_bytes(b"stub")
+            head_obj.write_bytes(b"stub")
+
+            l_b1, l_b2 = self._lbl(9622), self._lbl(9623)
+            l_h1, l_h2 = self._lbl(9624), self._lbl(9625)
+            body_a = bytes([85, 139, 236, 233, 0, 0, 0, 0, 195])
+            body_addend = bytes([85, 139, 236, 233, 4, 0, 0, 0, 195])
+            target_same = bytes([144, 195])
+            target_diff = bytes([204, 195])
+
+            judge = FakeJudge({
+                ("base.obj", l_b1): (body_a, [(4, 20, l_b2)]),
+                ("base.obj", l_b2): (target_same, []),
+                ("head.obj", l_h1): (body_a, [(4, 20, l_h2)]),
+                ("head.obj", l_h2): (target_same, []),
+            })
+            base_out = {"rows": [], "expected": [], "gates": [], "verification_blockers": [],
+                        "rejected_extras": [{"symbol": l_b1, "comdat_selection": 2, "referenced_by_kept": True, "why": "unwind"}]}
+            head_out = {"rows": [], "expected": [], "gates": [], "verification_blockers": [],
+                        "rejected_extras": [{"symbol": l_h1, "comdat_selection": 2, "referenced_by_kept": True, "why": "unwind"}]}
+            self.assertEqual(
+                compare.native_blockers(base_out, judge=judge, obj=base_obj),
+                compare.native_blockers(head_out, judge=judge, obj=head_obj),
+            )
+
+            # Different relocation addend must NOT match.
+            judge_addend = FakeJudge({
+                ("base.obj", l_b1): (body_a, [(4, 20, l_b2)]),
+                ("base.obj", l_b2): (target_same, []),
+                ("head.obj", l_h1): (body_addend, [(4, 20, l_h2)]),
+                ("head.obj", l_h2): (target_same, []),
+            })
+            self.assertNotEqual(
+                compare.native_blockers(base_out, judge=judge_addend, obj=base_obj),
+                compare.native_blockers(head_out, judge=judge_addend, obj=head_obj),
+            )
+
+            # Different local relocation target body must NOT match.
+            judge_target = FakeJudge({
+                ("base.obj", l_b1): (body_a, [(4, 20, l_b2)]),
+                ("base.obj", l_b2): (target_same, []),
+                ("head.obj", l_h1): (body_a, [(4, 20, l_h2)]),
+                ("head.obj", l_h2): (target_diff, []),
+            })
+            self.assertNotEqual(
+                compare.native_blockers(base_out, judge=judge_target, obj=base_obj),
+                compare.native_blockers(head_out, judge=judge_target, obj=head_obj),
+            )
+
+            # Aliasing: two refs to SAME local cell vs TWO DISTINCT cells with identical bytes must NOT match.
+            body_two = bytes([85, 139, 236, 161, 0, 0, 0, 0, 163, 0, 0, 0, 0, 195])
+            l_b3, l_h3 = self._lbl(9626), self._lbl(9627)
+            judge_alias = FakeJudge({
+                ("base.obj", l_b1): (body_two, [(4, 6, l_b2), (9, 6, l_b2)]),
+                ("base.obj", l_b2): (target_same, []),
+                ("head.obj", l_h1): (body_two, [(4, 6, l_h2), (9, 6, l_h3)]),
+                ("head.obj", l_h2): (target_same, []),
+                ("head.obj", l_h3): (target_same, []),
+            })
+            self.assertNotEqual(
+                compare.native_blockers(base_out, judge=judge_alias, obj=base_obj),
+                compare.native_blockers(head_out, judge=judge_alias, obj=head_obj),
+            )
+
+            # Cross-root aliasing: two roots sharing ONE target vs TWO distinct byte-identical targets must NOT match.
+            l_b4, l_h4 = self._lbl(9628), self._lbl(9629)
+            judge_cross = FakeJudge({
+                ("base.obj", l_b1): (body_a, [(4, 20, l_b3)]),
+                ("base.obj", l_b2): (body_a, [(4, 20, l_b3)]),
+                ("base.obj", l_b3): (target_same, []),
+                ("head.obj", l_h1): (body_a, [(4, 20, l_h3)]),
+                ("head.obj", l_h2): (body_a, [(4, 20, l_h4)]),
+                ("head.obj", l_h3): (target_same, []),
+                ("head.obj", l_h4): (target_same, []),
+            })
+            base_two = {"rows": [], "expected": [], "gates": [], "verification_blockers": [],
+                        "rejected_extras": [{"symbol": l_b1, "comdat_selection": 2, "referenced_by_kept": True, "why": "unwind"},
+                                            {"symbol": l_b2, "comdat_selection": 2, "referenced_by_kept": True, "why": "unwind"}]}
+            head_two = {"rows": [], "expected": [], "gates": [], "verification_blockers": [],
+                        "rejected_extras": [{"symbol": l_h1, "comdat_selection": 2, "referenced_by_kept": True, "why": "unwind"},
+                                            {"symbol": l_h2, "comdat_selection": 2, "referenced_by_kept": True, "why": "unwind"}]}
+            self.assertNotEqual(
+                compare.native_blockers(base_two, judge=judge_cross, obj=base_obj),
+                compare.native_blockers(head_two, judge=judge_cross, obj=head_obj),
+            )
+
+            # 4-root 2-site partner-swap: (R1,R2) sharing BOTH sites vs 4-cycle sharing must NOT match.
+            ta, tb, tc, td = self._lbl(101), self._lbl(102), self._lbl(103), self._lbl(104)
+            r1, r2, r3, r4 = self._lbl(201), self._lbl(202), self._lbl(203), self._lbl(204)
+            judge_four = FakeJudge({
+                ("base.obj", r1): (body_two, [(4, 6, ta), (9, 6, tb)]),
+                ("base.obj", r2): (body_two, [(4, 6, ta), (9, 6, tb)]),
+                ("base.obj", r3): (body_two, [(4, 6, tc), (9, 6, td)]),
+                ("base.obj", r4): (body_two, [(4, 6, tc), (9, 6, td)]),
+                ("base.obj", ta): (target_same, []), ("base.obj", tb): (target_same, []),
+                ("base.obj", tc): (target_same, []), ("base.obj", td): (target_same, []),
+                ("head.obj", r1): (body_two, [(4, 6, ta), (9, 6, td)]),
+                ("head.obj", r2): (body_two, [(4, 6, ta), (9, 6, tb)]),
+                ("head.obj", r3): (body_two, [(4, 6, tc), (9, 6, tb)]),
+                ("head.obj", r4): (body_two, [(4, 6, tc), (9, 6, td)]),
+                ("head.obj", ta): (target_same, []), ("head.obj", tb): (target_same, []),
+                ("head.obj", tc): (target_same, []), ("head.obj", td): (target_same, []),
+            })
+            four_rows = [{"symbol": r, "comdat_selection": 2, "referenced_by_kept": True, "why": "unwind"} for r in (r1, r2, r3, r4)]
+            four_out = {"rows": [], "expected": [], "gates": [], "verification_blockers": [], "rejected_extras": four_rows}
+            self.assertNotEqual(
+                compare.native_blockers(four_out, judge=judge_four, obj=base_obj),
+                compare.native_blockers(four_out, judge=judge_four, obj=head_obj),
+            )
+
+            # Root-vs-non-root target: R1->R2 (both rejected roots) vs R1->T_nonroot (same bytes as R2) must NOT match.
+            t_nr = self._lbl(301)
+            judge_root_vs_nr = FakeJudge({
+                ("base.obj", r1): (body_a, [(4, 20, r2)]),
+                ("base.obj", r2): (target_same, []),
+                ("head.obj", r1): (body_a, [(4, 20, t_nr)]),
+                ("head.obj", r2): (target_same, []),
+                ("head.obj", t_nr): (target_same, []),
+            })
+            two_r = {"rows": [], "expected": [], "gates": [], "verification_blockers": [],
+                     "rejected_extras": [{"symbol": r1, "comdat_selection": 2, "referenced_by_kept": True, "why": "unwind"},
+                                         {"symbol": r2, "comdat_selection": 2, "referenced_by_kept": True, "why": "unwind"}]}
+            self.assertNotEqual(
+                compare.native_blockers(two_r, judge=judge_root_vs_nr, obj=base_obj),
+                compare.native_blockers(two_r, judge=judge_root_vs_nr, obj=head_obj),
+            )
+
+            # Unreadable COFF evidence must fail closed to raw symbol names.
+            judge_missing = FakeJudge({})
+            self.assertNotEqual(
+                compare.native_blockers(base_out, judge=judge_missing, obj=base_obj),
+                compare.native_blockers(head_out, judge=judge_missing, obj=head_obj),
+            )
+
+    def test_unexpected_symbol_cap_never_hides_new_offender(self):
+        # 40 pre-existing base symbols + 1 new head symbol whose digest could sort last.
+        base_extras = [{"symbol": f"?baseExtra{i:02d}@@YAXXZ"} for i in range(40)]
+        new_sym = "?newOffender@@YAXXZ"
+        base_raw = {"rows": [], "expected": [], "gates": [], "verification_blockers": [], "rejected_extras": base_extras}
+        head_raw = {"rows": [], "expected": [], "gates": [], "verification_blockers": [], "rejected_extras": base_extras + [{"symbol": new_sym}]}
+
+        base_clean = wide.sanitize_outcome(base_raw, "src/Foo.cpp", {"src/Foo.cpp"}, include_symbols=False)
+        head_clean = wide.sanitize_outcome(head_raw, "src/Foo.cpp", {"src/Foo.cpp"}, baseline=base_clean, include_symbols=True)
+        self.assertNotIn("unexpected_symbols", base_clean)
+        self.assertEqual(len(head_clean["unexpected_symbols"]), 1)
+        self.assertEqual(head_clean["unexpected_symbols"][0][1], new_sym)
+        managed_matrix.check_native(head_clean)
+
+        old_idx = compare.index({"src/Foo.cpp": base_clean})
+        new_idx = compare.index({"src/Foo.cpp": head_clean})
+        _, rules, hints = compare.reduction(old_idx, new_idx)
+        self.assertIn("unexpected-code", rules)
+        self.assertTrue(any(new_sym in h for h in hints))
+
+    def test_dynamic_shard_sizing_uses_production_function(self):
+        self.assertEqual(wide.choose_runner_count(23, max_runners=16, target_per_shard=10), 3)
+        self.assertEqual(wide.choose_runner_count(9, max_runners=16, target_per_shard=10), 1)
+        self.assertEqual(wide.choose_runner_count(160, max_runners=16, target_per_shard=10), 16)
+        self.assertEqual(wide.choose_runner_count(512, max_runners=16, target_per_shard=10), 16)
+        self.assertEqual(wide.choose_runner_count(512, max_runners=32, target_per_shard=10), 32)
+        with self.assertRaises(ValueError):
+            wide.choose_runner_count(10, max_runners=0)
+        with self.assertRaises(ValueError):
+            wide.choose_runner_count(33, max_runners=1)
+
+    def test_reserve_window_includes_on_demand_boot_margin(self):
+        self.assertGreaterEqual(wide_recovery.RESERVE_SECONDS, 450)
+
+    def test_plan_anchor_clock_and_staleness_guard(self):
+        decision = {
+            "version": 1, "repo": recovery_broker.REPO_ID, "number": 17,
+            "base": "a" * 40, "head": "b" * 40, "tree": "c" * 40,
+            "kind": "wide", "plan": "d" * 64,
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            out_file = Path(tmp) / "out.txt"
+            with mock.patch.dict("os.environ", {"GITHUB_OUTPUT": str(out_file), "GITHUB_SHA": "a" * 40}), \
+                 mock.patch.object(recovery_broker, "source_free_decision", return_value=decision), \
+                 mock.patch.object(recovery_broker, "Actions") as actions_cls, \
+                 mock.patch.object(recovery_broker, "time", return_value=2000.0):
+                actions_cls.return_value.plan_anchor.return_value = (1500, 1980)
+                recovery_broker.anchor(tmp)
+                lines = dict(line.split("=", 1) for line in out_file.read_text().splitlines())
+                self.assertEqual(lines["started"], "1980")
+                self.assertEqual(lines["primary_cutoff"], str(1980 + recovery_broker.PRIMARY_SECONDS))
+                self.assertEqual(lines["reserve_cutoff"], str(1980 + recovery_broker.PRIMARY_SECONDS + wide_recovery.RESERVE_SECONDS))
+
+            with mock.patch.object(recovery_broker, "source_free_decision", return_value=decision), \
+                 mock.patch.object(recovery_broker, "Actions") as actions_cls, \
+                 mock.patch.object(recovery_broker, "time", return_value=5000.0):
+                actions_cls.return_value.plan_anchor.return_value = (1000, 4990)
+                with self.assertRaises(ValueError):
+                    recovery_broker.anchor(tmp)
+
+
+if __name__ == "__main__":
+    unittest.main()

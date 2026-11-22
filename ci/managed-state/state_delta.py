@@ -10,7 +10,8 @@ from state_evidence import LIMIT, cached_pairs, header
 # implementation retain full-refresh semantics. state.yml can be carried only
 # across the reviewed producer-v2 to resume transport revision.
 REPORT_DIRS = ("docs/", "worklist/", "ci/state/", "ci/progress/", "ci/alarms/",
-               "ci/nightly/", "ci/landing/", "ci/admission/", "ci/public-text/", ".github/workflows/")
+               "ci/nightly/", "ci/landing/", "ci/admission/", "ci/public-text/",
+               "ci/managed-check/tests/", ".github/workflows/")
 STATE_FLOW = ".github/workflows/state.yml"
 TRANSPORT = {"ci/managed-state/state_delta.py", "ci/managed-state/state_fetch.py",
              "ci/managed-state/state_workflow.py",
@@ -118,6 +119,48 @@ GRAPH_CHANGES += (ADMISSION_GRAPH,) + tuple(
     if previous[BUNDLE][1] == ADMISSION_GRAPH[BUNDLE][0]
 )
 GRAPH_PATHS |= set(ADMISSION_GRAPH)
+
+WIDE_CLOCK_GRAPH = {
+    "ci/managed-check/compact_matrix.py": (
+        "9e5e479a33cfe39bd2cb48d565c00dde51c5ad1adcdae03a50c7f0285683e266",
+        "5795922e9a9a034cb2d02e7e686ad3c7efb4a5ac018c2944a2807a47d913afe2",
+    ),
+    "ci/managed-check/compare.py": (
+        "7a3d3976b32c89fa4f656c5a25d882a8172cc232ade04743f99fb84fa6b7e82b",
+        "7096d164997ca3ab224a0edc77003898190af33431cdc0640de1e26b9a5072cf",
+    ),
+    "ci/managed-check/managed_matrix.py": (
+        "313a21b37f4ac441aef9cb091893db268a07f709468b0b8f375710f311b3451c",
+        "8d80ff76da20ee6d29a9e38502f713532f18c3f42622caed58e885f35201cba1",
+    ),
+    "ci/managed-check/recovery_artifacts.py": (
+        "f81d84ed474e743cc0fdfeec982b919649b2d3d8b6f89c5275fbc896a71d71c9",
+        "9f7c44bbf667ff5e64b183bf0d8ca44e5c0077b3131105751257faf10224c924",
+    ),
+    "ci/managed-check/recovery_broker.py": (
+        "4fef8dd2172ea8d1c8f0415bedb9fdd31d2a70356a07f6e1e3ed9cee53ec7639",
+        "dd6071bc1fe9e872f239e50e92b97358b349bbe8170e4d896729c805e42be55f",
+    ),
+    "ci/managed-check/wide.py": (
+        "6767f2bb9500c5d3c96251e66bc6c88a8910ac78f71cc3d499e5d2243847ff04",
+        "5bd0c4a37ca8fc131f8737fc3ce67047466cb3ebb3e7eb35c9705bf1173370f4",
+    ),
+    "ci/managed-check/wide_recovery.py": (
+        "af69c85ba0829c103afbcfe68d8b1788ee23ea34af0d87bb3f503f6734e4e433",
+        "57b74a0ebfa703aaae7c7fa47fcd22610058059cb5e27524b450a7e6c9d981ed",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "efb05a79f87b5cd21373cbfcf854ecae90cc53fe5d3c381b1408fbc3ef4fa24e",
+        "7e52d1b99613f8940f426bcf06fd16e3f4c60aa31c4e3757a9a82aeea99f2cf4",
+    ),
+}
+
+GRAPH_CHANGES += (WIDE_CLOCK_GRAPH,) + tuple(
+    advance_graph(previous, WIDE_CLOCK_GRAPH)
+    for previous in GRAPH_CHANGES
+    if previous[BUNDLE][1] == WIDE_CLOCK_GRAPH[BUNDLE][0]
+)
+GRAPH_PATHS |= set(WIDE_CLOCK_GRAPH)
 
 COMPACT_SCOPE = {"ci/managed-state/state_delta.py", "ci/managed-state/state_origin.py",
                  "ci/managed-state/bundle.sha256"}

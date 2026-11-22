@@ -517,7 +517,7 @@ jobs:
         shell: bash
         id: plan
         env:
-          MANAGED_WIDE_SHARDS: "${{ vars.BFME_WIDE_SHARDS || '24' }}"
+          MANAGED_WIDE_SHARDS: "${{ vars.BFME_WIDE_SHARDS || '16' }}"
         run: |
           set -Eeuo pipefail
           trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
@@ -862,11 +862,94 @@ jobs:
               raise SystemExit(1)
           PY
 
-  wide-reserve:
-    needs: wide-plan
+  wide-freeze:
+    needs: [intake, wide-plan]
     if: >-
       ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) &&
       (always() && !cancelled() && needs.wide-plan.result == 'success')
+    name: Freeze primary wide checkpoints
+    continue-on-error: true
+    timeout-minutes: 12
+    outputs:
+      lease_sha: '${{ steps.freeze.outputs.lease_sha }}'
+      reserve_needed: '${{ steps.freeze.outputs.reserve_needed }}'
+      reserve_slots: '${{ steps.freeze.outputs.reserve_slots }}'
+      has_primaries: '${{ steps.freeze.outputs.has_primaries }}'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Read the wide recovery tools from protected main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: '${{ github.sha }}'
+          persist-credentials: false
+          sparse-checkout: |
+            ci/managed-check
+            ci/managed-nt2
+      - name: Read this run's source-free recovery decision
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-admission-status-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-admission-status'
+      - name: Read this run's exact compile assignments
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-matrix-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-matrix'
+      - name: Verify protected recovery tools
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          (cd ci/managed-check && sha256sum -c --quiet bundle.sha256)
+          (cd ci/managed-nt2 && sha256sum -c --quiet bundle.sha256)
+      - name: Freeze verified primaries and bind unfinished work to reserve slots
+        shell: bash
+        id: freeze
+        env:
+          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
+          STARTED: '${{ needs.wide-plan.outputs.started }}'
+          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
+          BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
+          FORCE_FALLBACK: '${{ vars.BFME_PRIMARY_FALLBACK_TEST }}'
+          EXACT_HEAD: '${{ github.event.pull_request.head.sha || github.event.client_payload.head }}'
+        run: |
+          set -euo pipefail
+          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Freeze verified primaries and bind unfinished work to reserve slots" "$rc" "$LINENO" >&2' ERR
+          if [[ "$FORCE_FALLBACK" == 'yes' && "$EXACT_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e ]]; then
+            printf '%s\n' 'Expected the primary collector to run. Found the owner-approved fallback test.' >&2
+            exit 64
+          fi
+          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
+            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
+            BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
+            python3 -B ci/managed-check/recovery_broker.py freeze "$RUNNER_TEMP/bfme-admission-status" \
+              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-groups" \
+              "$RUNNER_TEMP/lease.json" "$STARTED" "$CUTOFF"
+      - name: Publish the protected reserve assignment
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-recovery-lease-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/lease.json'
+          if-no-files-found: error
+          retention-days: 1
+      - name: Save collected primary checkpoints for join
+        if: steps.freeze.outputs.has_primaries == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bfme-frozen-primaries-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-groups/'
+          if-no-files-found: error
+          retention-days: 1
+
+  wide-reserve:
+    needs: [wide-plan, wide-freeze]
+    if: >-
+      ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) &&
+      (always() && !cancelled() && needs.wide-plan.result == 'success' && needs.wide-freeze.result == 'success' && needs.wide-freeze.outputs.reserve_needed == 'true')
     name: Reassign paired files on reserve ${{ matrix.slot }}
     continue-on-error: true
     timeout-minutes: 14
@@ -874,7 +957,7 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        slot: [0, 1, 2, 3]
+        slot: ${{ fromJSON(needs.wide-freeze.outputs.reserve_needed == 'true' && needs.wide-freeze.outputs.reserve_slots || '[0]') }}
     runs-on: ${{ ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) && 'boat-small/from=bfme2-compiler-v1' || 'ubuntu-24.04' }}
     permissions:
       contents: read
@@ -993,10 +1076,10 @@ jobs:
           retention-days: 1
 
   wide-join:
-    needs: [intake, wide-plan]
+    needs: [intake, wide-plan, wide-freeze, wide-reserve]
     if: >-
       ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) &&
-      (always() && !cancelled() && needs.wide-plan.result == 'success')
+      (always() && !cancelled() && needs.wide-plan.result == 'success' && needs.wide-freeze.result == 'success')
     name: Freeze, recover and verify wide receipts
     continue-on-error: true
     timeout-minutes: 15
@@ -1073,47 +1156,29 @@ jobs:
           cd /opt/boat-compiler
           sudo -n sha256sum -c --quiet input.sha256 runtime-files.sha256
           sudo -n systemd-tmpfiles --create /etc/tmpfiles.d/boat-compiler.conf
-      - name: Freeze verified primaries and bind unfinished work to reserve slots
-        shell: bash
-        id: freeze
-        env:
-          PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
-          STARTED: '${{ needs.wide-plan.outputs.started }}'
-          CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
-          BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
-          FORCE_FALLBACK: '${{ vars.BFME_PRIMARY_FALLBACK_TEST }}'
-          EXACT_HEAD: '${{ github.event.pull_request.head.sha || github.event.client_payload.head }}'
-        run: |
-          set -euo pipefail
-          trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Freeze verified primaries and bind unfinished work to reserve slots" "$rc" "$LINENO" >&2' ERR
-          if [[ "$FORCE_FALLBACK" == 'yes' && "$EXACT_HEAD" == a88a136a54c7f1456d7a670960ffcff0ee831f5e ]]; then
-            printf '%s\n' 'Expected the primary collector to run. Found the owner-approved fallback test.' >&2
-            exit 64
-          fi
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C LC_ALL=C \
-            TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
-            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
-            GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
-            BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
-            python3 -B ci/managed-check/recovery_broker.py freeze "$RUNNER_TEMP/bfme-admission-status" \
-              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-groups" \
-              "$RUNNER_TEMP/lease.json" "$STARTED" "$CUTOFF"
-      - name: Publish the protected reserve assignment
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - name: Read the frozen recovery lease
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: bfme-recovery-lease-${{ github.run_attempt }}
-          path: '${{ runner.temp }}/lease.json'
-          if-no-files-found: error
-          retention-days: 1
+          path: '${{ runner.temp }}/bfme-lease'
+      - name: Read the collected primary checkpoints
+        if: needs.wide-freeze.outputs.has_primaries == 'true'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: bfme-frozen-primaries-${{ github.run_attempt }}
+          path: '${{ runner.temp }}/bfme-groups'
+      - name: Ensure primary group directory exists
+        shell: bash
+        run: mkdir -p "$RUNNER_TEMP/bfme-groups"
       - name: Collect exact leased results before the deadline
         shell: bash
-        if: steps.freeze.outputs.reserve_needed == 'true'
+        if: needs.wide-freeze.outputs.reserve_needed == 'true'
         env:
           PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
           STARTED: '${{ needs.wide-plan.outputs.started }}'
           CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
           BFME_RECOVERY_READ_TOKEN: '${{ github.token }}'
-          LEASE_SHA: '${{ steps.freeze.outputs.lease_sha }}'
+          LEASE_SHA: '${{ needs.wide-freeze.outputs.lease_sha }}'
         run: |
           set -euo pipefail
           trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Collect exact leased results before the deadline" "$rc" "$LINENO" >&2' ERR
@@ -1123,7 +1188,7 @@ jobs:
             GITHUB_REPOSITORY="$GITHUB_REPOSITORY" GITHUB_REPOSITORY_ID="$GITHUB_REPOSITORY_ID" \
             BFME_RECOVERY_READ_TOKEN="$BFME_RECOVERY_READ_TOKEN" \
             python3 -B ci/managed-check/recovery_broker.py gather "$RUNNER_TEMP/bfme-admission-status" \
-              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/lease.json" "$LEASE_SHA" \
+              "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-lease/lease.json" "$LEASE_SHA" \
               "$RUNNER_TEMP/bfme-groups" "$STARTED" "$CUTOFF"
       - name: Verify exactly one result per paired assignment
         shell: bash
@@ -1131,7 +1196,7 @@ jobs:
           PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
           STARTED: '${{ needs.wide-plan.outputs.started }}'
           CUTOFF: '${{ needs.wide-plan.outputs.primary_cutoff }}'
-          LEASE_SHA: '${{ steps.freeze.outputs.lease_sha }}'
+          LEASE_SHA: '${{ needs.wide-freeze.outputs.lease_sha }}'
         run: |
           set -euo pipefail
           trap 'rc=$?; printf "Expected %s to finish; found exit %s at shell line %s.\n" "Verify exactly one result per paired assignment" "$rc" "$LINENO" >&2' ERR
@@ -1139,12 +1204,12 @@ jobs:
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
             GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             python3 -B ci/managed-check/wide_recovery.py join "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" \
-              "$RUNNER_TEMP/lease.json" "$LEASE_SHA" "$RUNNER_TEMP/bfme-groups" "$RUNNER_TEMP/bfme-shards"
+              "$RUNNER_TEMP/bfme-lease/lease.json" "$LEASE_SHA" "$RUNNER_TEMP/bfme-groups" "$RUNNER_TEMP/bfme-shards"
       - name: Join complete paired outcomes
         shell: bash
         env:
           PLAN_SHA: '${{ needs.wide-plan.outputs.matrix_sha }}'
-          LEASE_SHA: '${{ steps.freeze.outputs.lease_sha }}'
+          LEASE_SHA: '${{ needs.wide-freeze.outputs.lease_sha }}'
         run: |
           set -Eeuo pipefail
           trap 'rc=$?; printf "Expected protected workflow step to finish. Found exit %s at shell line %s.\n" "$rc" "$LINENO" >&2' ERR
@@ -1152,7 +1217,7 @@ jobs:
             TMPDIR="$RUNNER_TEMP" GITHUB_SHA="$GITHUB_SHA" GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
             python3 -B ci/managed-check/wide.py join-selected "$RUNNER_TEMP/bfme-plan" \
               "$RUNNER_TEMP/bfme-matrix" "$PLAN_SHA" "$RUNNER_TEMP/bfme-shards" "$RUNNER_TEMP/bfme-verdict" \
-              "$RUNNER_TEMP/lease.json" "$LEASE_SHA"
+              "$RUNNER_TEMP/bfme-lease/lease.json" "$LEASE_SHA"
       - name: Save complete capped comparison
         id: verdict
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -1532,7 +1597,7 @@ jobs:
           retention-days: 7
 
   wide-fallback:
-    needs: [wide-plan, wide-join, wide-compare]
+    needs: [wide-plan, wide-freeze, wide-join, wide-compare]
     if: >-
       ((github.actor_id == '1760627' || (github.actor_id == '41898282' && github.event_name == 'repository_dispatch')) && (github.triggering_actor == 'Ancalgonn' || github.triggering_actor == 'github-actions[bot]')) &&
       (always() && !cancelled() && needs.wide-plan.result == 'success' && needs.wide-join.outputs.complete != 'true')
