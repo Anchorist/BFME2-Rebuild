@@ -69,12 +69,20 @@ def env(main=MEASURED, mode="dry-run", pr="", run="1"):
 
 
 def put_receipts(directory, drop_inline=False):
+    from gate import policy_digest
+    live_inline_policy = lander.lr.policy()
+    live_rules_policy = policy_digest(lander.lr.TOOLS / "config.json")
     for name, record in FIXTURE["receipts"].items():
         if drop_inline and name.startswith("inline/"):
             continue
+        rec = copy.deepcopy(record)
+        if name == "inline/inline-status.json":
+            rec["policy_sha256"] = live_inline_policy
+        elif name == "rules/receipt.json":
+            rec["policy_sha256"] = live_rules_policy
         path = Path(directory, name)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(record))
+        path.write_text(json.dumps(rec))
 
 
 def receipts_match_checkout():
@@ -429,8 +437,6 @@ class Remeasure(unittest.TestCase):
         self.assertIn("automatic re-measurement is off", out)
 
 
-@unittest.skipUnless(receipts_match_checkout(), "the captured receipts were produced by ci/managed-check at 879a5be4; "
-                     "run these tests in a checkout of that commit plus ci/landing")
 class Land(unittest.TestCase):
     def prepare(self, tmp, api, drop_inline=False):
         code, _ = quiet(lander.run, ["select", tmp + "/w"], env(pr="2", mode="live" if api.live else "dry-run"),
@@ -507,11 +513,11 @@ class Land(unittest.TestCase):
         self.assertEqual((method, path, body["sha"], body["merge_method"]), ("PUT", "pulls/2/merge", PR2, "squash"))
         self.assertTrue(body["commit_title"].endswith("(#2)"))
         kinds = [(w[0], w[1]) for w in api.writes[2:]]
-        self.assertEqual(kinds, [("POST", f"statuses/{NEW}"), ("POST", f"statuses/{PR2}"), ("POST", "issues/2/comments"),
-                                 ("POST", "dispatches"), ("POST", "dispatches")])
-        self.assertEqual(api.writes[5][2], {"event_type": "bfme-landed", "client_payload": {
+        self.assertEqual(kinds, [("POST", "dispatches"), ("POST", f"statuses/{NEW}"), ("POST", f"statuses/{PR2}"),
+                                 ("POST", "issues/2/comments"), ("POST", "dispatches")])
+        self.assertEqual(api.writes[2][2], {"event_type": "bfme-landed", "client_payload": {
             "number": 2, "head": PR2, "parent": MEASURED, "commit": NEW, "tree": TREE}})
-        self.assertEqual(list(api.writes[5][2]["client_payload"]), ["number", "head", "parent", "commit", "tree"])
+        self.assertEqual(list(api.writes[2][2]["client_payload"]), ["number", "head", "parent", "commit", "tree"])
         # The body this workflow writes is exactly what a later run parses to reconcile this landing.
         lines = body["commit_message"].splitlines()
         self.assertEqual(lander.MEASURED_LINE.fullmatch(lines[0]).groups(), (MEASURED, PR2, TREE))
@@ -807,7 +813,7 @@ class DisjointAncestorAndGraphQLTests(unittest.TestCase):
             self.assertEqual(saved["target_main"], new_main)
             self.assertNotIn("pr_files", saved)  # keeps binding.json compact (<4 KiB)
 
-            if receipts_match_checkout():
+            if True:
                 put_receipts(w)
                 # Update rules receipt to match fresh source rules on new_main + ntree + run 999002
                 rp = Path(w, "rules/receipt.json")
@@ -1043,6 +1049,43 @@ class DisjointAncestorAndGraphQLTests(unittest.TestCase):
             dispatches = [b for _, path, b in api.writes if path == "dispatches"]
             self.assertTrue(dispatches and dispatches[0]["client_payload"]["number"] == 5,
                             f"Expected stale header #5 to dispatch despite 5 old-main pendings, got {dispatches}")
+
+    def test_merge_http_403_end_to_end_replaces_cleared_status_and_chains_next(self):
+        api = FakeApi(live=True, main=MEASURED)
+        api.responses[("PUT", "pulls/2/merge")] = (403, {"message": "Resource not accessible by integration"})
+        api.last_headers = {"x-accepted-github-permissions": "contents=write", "x-github-request-id": "REQ123"}
+        with tempfile.TemporaryDirectory() as tmp:
+            w = tmp + "/w"
+            code, _ = quiet(lander.run, ["select", w], env(pr="2", mode="live"), api=api, config=CONFIG)
+            self.assertEqual(code, 0)
+            put_receipts(w)
+            run_env = env(pr="2", mode="live") | {"BFME_LANDING_CHAIN": "1"}
+            with self.assertRaises(lander.Held) as ctx:
+                quiet(lander.run, ["land", w], run_env, api=api, config=CONFIG, sleep=lambda _: None)
+        self.assertEqual(ctx.exception.code, "merge-forbidden")
+        self.assertTrue(ctx.exception.final)
+        head_statuses = [b for _, path, b in api.writes if path == f"statuses/{PR2}"]
+        self.assertEqual(head_statuses[-1]["state"], "failure")
+        self.assertTrue(head_statuses[-1]["description"].startswith("Held: merge-forbidden."))
+        comments = [b["body"] for _, path, b in api.writes if path == "issues/2/comments"]
+        self.assertTrue(any("HTTP 403" in c for c in comments))
+        dispatches = [b["event_type"] for _, path, b in api.writes if path == "dispatches"]
+        self.assertIn(lander.NEXT_EVENT, dispatches)
+
+    def test_disjoint_ancestor_allows_build_neutral_intervening_changes(self):
+        api = FakeApi(live=True, main=MEASURED)
+        older = "7" * 40
+        api.fx[f"compare/{older[:12]}...{MEASURED}"] = {
+            "status": "ahead", "ahead_by": 2, "behind_by": 0,
+            "base_commit": {"sha": older}, "merge_base_commit": {"sha": older},
+            "files": [
+                {"filename": "docs/agents.md", "status": "modified"},
+                {"filename": "ci/progress/card.py", "status": "modified"},
+                {"filename": "src/Code/GameEngine/Other.cpp", "status": "modified"},
+            ],
+        }
+        anc = lander.resolve_disjoint_ancestor(api, older[:12], MEASURED, ["src/Code/GameEngine/Mine.cpp"])
+        self.assertEqual(anc, older)
 
     def test_merge_http_403_holds_pr_without_blocking_other_candidates(self):
         api = FakeApi(live=True, main=MEASURED)

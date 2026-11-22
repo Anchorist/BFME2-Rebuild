@@ -123,15 +123,21 @@ def reserve(api, limits, author, number, head, base, run, attempt, clock=None, t
         if item:
             exact = item.get("tree") == tree and item.get("kind") == kind and item.get("author") == author
             return "already" if exact else "binding-mismatch"
-        if kind != "trusted-narrow":
+        already_paid_today = any(
+            r.get("day") == today
+            and r.get("number") == number and r.get("head") == head and r.get("kind") == kind
+            and r.get("author") == author
+            for r in data["reservations"]
+        )
+        if kind != "trusted-narrow" and not already_paid_today:
             counts = data["days"].setdefault(today, {"total": 0, "authors": {}, "wide_total": 0, "wide_authors": {}})
             key = str(author)
             if counts[total_key] >= limits["daily_total"] or counts[authors_key].get(key, 0) >= limits["daily_per_author"]:
                 return "over-budget"
             counts[total_key] += 1
             counts[authors_key][key] = counts[authors_key].get(key, 0) + 1
-        data["reservations"].append({"day": today, "number": number, "author": author, "head": head, "base": base,
-                                     "tree": tree, "kind": kind,
+        data["reservations"].append({"day": today, "number": number, "author": author,
+                                     "head": head, "base": base, "tree": tree, "kind": kind,
                                      "admitted_by": {"run": str(run), "attempt": str(attempt)}, "claimed_by": None})
         _prune(data, yesterday, base)
         if _write(api, data, sha, f"Reserve #{number} {head[:12]} on {base[:12]}"):

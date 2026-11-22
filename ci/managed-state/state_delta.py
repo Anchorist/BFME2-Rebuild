@@ -242,6 +242,27 @@ GRAPH_CHANGES = (SOURCE_RECHECK_GRAPH | EMITTED_MSG_GRAPH,) + GRAPH_CHANGES + (E
 )
 GRAPH_PATHS |= set(EMITTED_MSG_GRAPH)
 
+EMITTED_ROWS_FIX_GRAPH = {
+    "ci/managed-check/compare.py": (
+        "753b59e77e5338a51d6d3ee9897efaafa2e9e1633c5f3cfa913248a89f0bfb68",
+        "9b5ca88a540ed2a555944542dd16f9a4d3e3933e5a3a058a82f20362f5a79537",
+    ),
+    "ci/managed-check/wide.py": (
+        "3f764d3df855f1d8aeed8bc05728667c3d376e9c2bd1a527cea196be434efefe",
+        "618d17c6c5e8f83c64bf1c678a51f351f20a87087bbe2015c7ce0327cf6f3822",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "a297c06e70fb86926416a15d5af6ac3b8ca2f31d3e3031614bd8c53c66b01195",
+        "35c124efeef151a48c0cacc3a55125eedd52379ce0a1de23a76b76afd2ba59ee",
+    ),
+}
+GRAPH_CHANGES += (EMITTED_ROWS_FIX_GRAPH,) + tuple(
+    advance_graph(previous, EMITTED_ROWS_FIX_GRAPH)
+    for previous in GRAPH_CHANGES
+    if BUNDLE in previous and previous[BUNDLE][1] == EMITTED_ROWS_FIX_GRAPH[BUNDLE][0]
+)
+GRAPH_PATHS |= set(EMITTED_ROWS_FIX_GRAPH)
+
 COMPACT_SCOPE = {"ci/managed-state/state_delta.py", "ci/managed-state/state_origin.py",
                  "ci/managed-state/bundle.sha256"}
 MAX_DIFF_BYTES = 4 * 1024**2

@@ -170,6 +170,38 @@ def admission_status(api, head):
     return max(found, key=lambda item: item["id"]) if found else None
 
 
+MAX_ANCESTOR_AGE_SECONDS = 20 * 3600
+BUILD_NEUTRAL_PREFIXES = (
+    "docs/", "worklist/", "ci/nightly/", "ci/progress/", "ci/alarms/",
+    "ci/public-text/", "ci/managed-check/tests/", "ci/landing/tests/", "ci/admission/tests/",
+)
+BUILD_NEUTRAL_WORKFLOWS = frozenset({
+    ".github/workflows/nightly.yml", ".github/workflows/nightly-trial.yml",
+    ".github/workflows/progress.yml", ".github/workflows/ci-tests.yml",
+})
+
+
+def _status_fresh_enough(status_obj, max_age_seconds, now=None):
+    if not isinstance(status_obj, dict):
+        return False
+    ts = status_obj.get("created_at") or ""
+    if not ts:
+        return True
+    try:
+        created = datetime.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    ref_now = now if now is not None else datetime.datetime.now(datetime.timezone.utc)
+    return (ref_now - created).total_seconds() <= max_age_seconds
+
+
+def _is_build_neutral_path(name):
+    return (isinstance(name, str) and bool(name)
+            and (name.startswith(BUILD_NEUTRAL_PREFIXES)
+                 or name in BUILD_NEUTRAL_WORKFLOWS
+                 or ("/" not in name and name.endswith(".md"))))
+
+
 def _is_disjoint_tu_path(name):
     return (isinstance(name, str)
             and name.startswith(DISJOINT_TU_PREFIX)
@@ -254,8 +286,11 @@ def resolve_disjoint_ancestor(api, prefix12, main, pr_files, compare_cache=None,
         if not isinstance(item, dict):
             return None
         fname = item.get("filename", "")
+        prev = item.get("previous_filename")
+        if _is_build_neutral_path(fname) and (not prev or _is_build_neutral_path(prev)):
+            continue
         if (item.get("status") != "modified"
-                or item.get("previous_filename")
+                or prev
                 or not _is_disjoint_tu_path(fname)):
             return None
         intervening_lower.add(fname.lower())
@@ -314,6 +349,7 @@ OPEN_PULLS_QUERY = """query($owner: String!, $name: String!, $cursor: String) {
         commits(last: 1) {
           nodes {
             commit {
+              oid
               status {
                 contexts {
                   context
@@ -359,7 +395,9 @@ def _gql_to_prefetched(node):
     }
     statuses, bot_statuses = {}, {}
     commit_nodes = (node.get("commits") or {}).get("nodes") or ()
-    status_obj = ((commit_nodes[0].get("commit") or {}).get("status") if commit_nodes else None) or {}
+    commit_obj = (commit_nodes[0].get("commit") if commit_nodes else None) or {}
+    commit_oid = commit_obj.get("oid")
+    status_obj = (commit_obj.get("status") or {}) if (not commit_oid or commit_oid == node.get("headRefOid")) else {}
     for idx, ctx in enumerate(status_obj.get("contexts") or ()):
         if not isinstance(ctx, dict) or not isinstance(ctx.get("context"), str):
             continue
@@ -608,7 +646,8 @@ def evaluate(api, number, main, config, *, prefetched=None, compare_cache=None, 
                 and pr.get("mergeable") is not False
                 and decision["checks"].get(BOAT) == "stale-success"
                 and decision["checks"].get(INLINE) != "stale-failure"):
-            boat_prefix = extract_main_prefix(bot_statuses.get(BOAT))
+            boat_st = bot_statuses.get(BOAT)
+            boat_prefix = extract_main_prefix(boat_st) if _status_fresh_enough(boat_st, MAX_ANCESTOR_AGE_SECONDS) else None
             if boat_prefix:
                 ancestor = resolve_disjoint_ancestor(api, boat_prefix, main, files,
                                                      compare_cache=compare_cache, cache_lock=cache_lock)

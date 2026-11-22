@@ -822,5 +822,144 @@ class DormantRefusal(unittest.TestCase):
         self.assertIn("admitted by rule", out)
 
 
+
+class Cut11SwarmTests(unittest.TestCase):
+    def test_reserve_does_not_double_charge_same_head_when_main_moves(self):
+        api = LedgerApi(True, [], {})
+        limits = {"daily_total": 1, "daily_per_author": 1}
+        m1, m2 = "1" * 40, "2" * 40
+        r1 = admit.ledger.reserve(api, limits, 42, 7, HEAD, m1, "100", "1", CLOCK, tree="3" * 40, kind="wide")
+        self.assertEqual(r1, "reserved")
+        # Main moves to m2 while head is unchanged: must NOT consume a second quota slot.
+        r2 = admit.ledger.reserve(api, limits, 42, 7, HEAD, m2, "101", "1", CLOCK, tree="4" * 40, kind="wide")
+        self.assertEqual(r2, "reserved")
+        data, _ = admit.ledger._read(api)
+        today = admit.ledger.days(CLOCK)[0]
+        self.assertEqual(data["days"][today]["wide_total"], 1)
+        self.assertEqual(data["days"][today]["wide_authors"]["42"], 1)
+
+    def test_retry_skips_boat_on_build_neutral_or_disjoint_ancestor_but_request_honors_landing(self):
+        old_main = "1" * 40
+        pr = fork_pr(number=44)
+        api = LedgerApi(True, [pr], {44: ["src/Code/GameEngine/A.cpp"]})
+        api.statuses[HEAD] = [
+            {"id": 10, "context": admit.CONTEXT, "state": "success",
+             "description": admit.ADMITTED, "creator": {"id": admit.BOT_ID}},
+            {"id": 11, "context": admit.BOAT_CONTEXT, "state": "success",
+             "description": f"BFME II comparison passed (main {old_main[:12]})",
+             "creator": {"id": admit.BOT_ID}},
+        ]
+        orig = api.call
+        def fake_call(path):
+            if path.startswith("compare/"):
+                return {"status": "ahead", "ahead_by": 2, "behind_by": 0,
+                        "files": [{"filename": "docs/guide.md", "status": "modified"},
+                                  {"filename": "src/Code/GameEngine/B.cpp", "status": "modified"}]}
+            return orig(path)
+        api.call = fake_call
+        with redirect_stdout(io.StringIO()):
+            out_retry = admit.handle(api, 44, CONFIG, MAIN, BUDGET, CLOCK, refresh=True,
+                                     allow_ancestor_skip=True, source_proof=lambda *_: None)
+        self.assertIn("Boat already passed on disjoint ancestor", out_retry)
+        # Explicit landing request (allow_ancestor_skip=False) MUST still admit/remeasure.
+        with redirect_stdout(io.StringIO()):
+            out_req = admit.handle(api, 44, CONFIG, MAIN, BUDGET, CLOCK, refresh=True,
+                                   allow_ancestor_skip=False, source_proof=lambda *_: None)
+        self.assertIn("admitted by rule", out_req)
+
+    def test_fetch_retry_candidates_batch_graphql_and_fallback(self):
+        class GqlApi:
+            def __init__(self, fail=False):
+                self.fail = fail
+            def query(self, q, variables):
+                if self.fail:
+                    raise admit.ApiError(502, "bad gateway")
+                return {
+                    "repository": {
+                        "pullRequests": {
+                            "pageInfo": {"hasNextPage": False, "endCursor": None},
+                            "nodes": [{
+                                "number": 50, "title": "Fix", "state": "OPEN", "isDraft": False,
+                                "authorAssociation": "NONE", "baseRefName": "main", "headRefOid": HEAD,
+                                "author": {"login": "bob", "databaseId": 77},
+                                "headRepository": {"databaseId": 999}, "baseRepository": {"databaseId": 1464323350},
+                                "files": {"totalCount": 1, "nodes": [{"path": "src/Code/A.cpp", "changeType": "MODIFIED"}]},
+                                "commits": {"nodes": [{"commit": {"status": {"contexts": []}}}]},
+                            }, {
+                                "number": 51, "title": "Draft", "state": "OPEN", "isDraft": True,
+                                "authorAssociation": "NONE", "baseRefName": "main", "headRefOid": HEAD,
+                                "author": {"login": "bob", "databaseId": 77},
+                                "headRepository": {"databaseId": 999}, "baseRepository": {"databaseId": 1464323350},
+                                "files": {"totalCount": 1, "nodes": [{"path": "src/Code/B.cpp", "changeType": "MODIFIED"}]},
+                                "commits": {"nodes": [{"commit": {"status": {"contexts": []}}}]},
+                            }],
+                        }
+                    }
+                }
+        res = admit.fetch_retry_candidates_batch(GqlApi(fail=False))
+        self.assertEqual([item["number"] for item in res], [50])
+        self.assertEqual(res[0]["files"], ["src/Code/A.cpp"])
+        self.assertIsNone(admit.fetch_retry_candidates_batch(GqlApi(fail=True)))
+
+
+
+    def test_quota_waiver_does_not_slide_across_days(self):
+        api = LedgerApi(True, [], {})
+        limits = {"daily_total": 1, "daily_per_author": 1}
+        day1 = lambda: datetime.datetime(2026, 11, 20, 12, 0, tzinfo=datetime.timezone.utc)
+        day2 = lambda: datetime.datetime(2026, 11, 21, 12, 0, tzinfo=datetime.timezone.utc)
+        day3 = lambda: datetime.datetime(2026, 11, 22, 12, 0, tzinfo=datetime.timezone.utc)
+        self.assertEqual(admit.ledger.reserve(api, limits, 42, 7, HEAD, "1" * 40, "1", "1", day1, tree="a" * 40, kind="wide"), "reserved")
+        # Same day, new base: free!
+        self.assertEqual(admit.ledger.reserve(api, limits, 42, 7, HEAD, "2" * 40, "2", "1", day1, tree="b" * 40, kind="wide"), "reserved")
+        # Next day: paid_day != today, so charges 1 on day2; a second distinct head on day2 hits over-budget!
+        self.assertEqual(admit.ledger.reserve(api, limits, 42, 7, HEAD, "3" * 40, "3", "1", day2, tree="c" * 40, kind="wide"), "reserved")
+        self.assertEqual(admit.ledger.reserve(api, limits, 42, 8, "9" * 40, "3" * 40, "4", "1", day2, tree="d" * 40, kind="wide"), "over-budget")
+        # Day 3: charges 1 on day3 (never slides infinitely for free)
+        self.assertEqual(admit.ledger.reserve(api, limits, 42, 7, HEAD, "4" * 40, "5", "1", day3, tree="e" * 40, kind="wide"), "reserved")
+        data, _ = admit.ledger._read(api)
+        self.assertEqual(data["days"]["2026-11-22"]["wide_total"], 1)
+
+    def test_retry_does_not_skip_when_boat_pass_is_expired_or_beyond_32_commits(self):
+        old_main = "1" * 40
+        pr = fork_pr(number=45)
+        api = LedgerApi(True, [pr], {45: ["src/Code/GameEngine/A.cpp"]})
+        # 22 hours old -> outside 18h freshness window, must re-measure
+        api.statuses[HEAD] = [
+            {"id": 10, "context": admit.CONTEXT, "state": "success",
+             "description": admit.ADMITTED, "creator": {"id": admit.BOT_ID}},
+            {"id": 11, "context": admit.BOAT_CONTEXT, "state": "success",
+             "description": f"BFME II comparison passed (main {old_main[:12]})",
+             "created_at": "2026-11-19T14:00:00Z",
+             "creator": {"id": admit.BOT_ID}},
+        ]
+        orig = api.call
+        api.call = lambda path: ({"status": "ahead", "ahead_by": 2, "behind_by": 0,
+                                  "files": [{"filename": "docs/guide.md", "status": "modified"}]}
+                                 if path.startswith("compare/") else orig(path))
+        with redirect_stdout(io.StringIO()):
+            out_old = admit.handle(api, 45, CONFIG, MAIN, BUDGET, CLOCK, refresh=True,
+                                   allow_ancestor_skip=True, source_proof=lambda *_: None)
+        self.assertIn("admitted by rule", out_old)
+        # Fresh timestamp but ahead_by=33 (>32): must NOT skip
+        api2 = LedgerApi(True, [pr], {45: ["src/Code/GameEngine/A.cpp"]})
+        api2.statuses[HEAD] = [
+            {"id": 10, "context": admit.CONTEXT, "state": "success",
+             "description": admit.ADMITTED, "creator": {"id": admit.BOT_ID}},
+            {"id": 11, "context": admit.BOAT_CONTEXT, "state": "success",
+             "description": f"BFME II comparison passed (main {old_main[:12]})",
+             "created_at": "2026-11-20T11:00:00Z",
+             "creator": {"id": admit.BOT_ID}},
+        ]
+        orig2 = api2.call
+        api2.call = lambda path: ({"status": "ahead", "ahead_by": 33, "behind_by": 0,
+                                   "files": [{"filename": "docs/guide.md", "status": "modified"}]}
+                                  if path.startswith("compare/") else orig2(path))
+        with redirect_stdout(io.StringIO()):
+            out_far = admit.handle(api2, 45, CONFIG, MAIN, BUDGET, CLOCK, refresh=True,
+                                   allow_ancestor_skip=True, source_proof=lambda *_: None)
+        self.assertIn("admitted by rule", out_far)
+
+
 if __name__ == "__main__":
     unittest.main()

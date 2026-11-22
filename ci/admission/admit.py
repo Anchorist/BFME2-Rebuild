@@ -153,13 +153,115 @@ def prior_code_refusal(api, head, base):
     return match.group(1)
 
 
-def dormant_refusal(api, head, base, pr_files):
+PASSED_MAIN_RE = re.compile(r"^BFME II comparison passed \(main ([0-9a-f]{12})\)\Z")
+ANCESTOR_LIMIT = 32
+MAX_ANCESTOR_AGE_SECONDS = 18 * 3600
+LAND_NEXT_EVENT = "bfme-land-next"
+DISJOINT_TU_PREFIX = "src/Code/"
+DISJOINT_TU_SUFFIXES = (".c", ".cpp")
+BUILD_NEUTRAL_PREFIXES = (
+    "docs/", "worklist/", "ci/nightly/", "ci/progress/", "ci/alarms/",
+    "ci/public-text/", "ci/managed-check/tests/", "ci/landing/tests/", "ci/admission/tests/",
+)
+BUILD_NEUTRAL_WORKFLOWS = frozenset({
+    ".github/workflows/nightly.yml", ".github/workflows/nightly-trial.yml",
+    ".github/workflows/progress.yml", ".github/workflows/ci-tests.yml",
+})
+
+
+def _status_fresh_enough(status_obj, max_age_seconds, clock=None):
+    if not isinstance(status_obj, dict):
+        return False
+    ts = status_obj.get("created_at") or ""
+    if not ts:
+        return True
+    try:
+        created = datetime.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    now = clock() if clock else datetime.datetime.now(datetime.timezone.utc)
+    return (now - created).total_seconds() <= max_age_seconds
+
+
+def _is_build_neutral(name):
+    return (isinstance(name, str) and bool(name)
+            and (name.startswith(BUILD_NEUTRAL_PREFIXES)
+                 or name in BUILD_NEUTRAL_WORKFLOWS
+                 or ("/" not in name and name.endswith(".md"))))
+
+
+def _is_simple_tu(name):
+    return (isinstance(name, str) and name.startswith(DISJOINT_TU_PREFIX)
+            and name.lower().endswith(DISJOINT_TU_SUFFIXES))
+
+
+def _cached_compare(api, old12, base, compare_cache=None):
+    key = (old12, base)
+    if compare_cache is not None and key in compare_cache:
+        return compare_cache[key]
+    comp = api.call(f"compare/{old12}...{base}")
+    if compare_cache is not None:
+        compare_cache[key] = comp
+    return comp
+
+
+def prior_boat_pass(api, head, base, pr_files, *, boat_status=None, compare_cache=None, clock=None):
+    """Return prior main12 if Boat passed on a fresh disjoint/build-neutral ancestor for a src/Code/*.c(pp)-only PR."""
+    if not pr_files or not all(_is_simple_tu(name) for name in pr_files):
+        return None
+    if boat_status is None:
+        entries = api.call(f"commits/{head}/statuses?per_page=100&page=1")
+        found = [item for item in entries if isinstance(item, dict) and item.get("context") == BOAT_CONTEXT
+                 and (item.get("creator") or {}).get("id") == BOT_ID]
+        boat_status = max(found, key=lambda item: item["id"]) if found else None
+    if not boat_status or boat_status.get("state") != "success":
+        return None
+    if not _status_fresh_enough(boat_status, MAX_ANCESTOR_AGE_SECONDS, clock=clock):
+        return None
+    m = PASSED_MAIN_RE.fullmatch(boat_status.get("description") or "")
+    if not m or m.group(1) == base[:12]:
+        return None
+    old12 = m.group(1)
+    try:
+        comp = _cached_compare(api, old12, base, compare_cache)
+    except (ApiError, ValueError, TypeError, KeyError, AttributeError):
+        return None
+    if not isinstance(comp, dict) or comp.get("status") != "ahead" or comp.get("behind_by") != 0:
+        return None
+    ahead_by = comp.get("ahead_by")
+    if type(ahead_by) is not int or not 1 <= ahead_by <= ANCESTOR_LIMIT:
+        return None
+    changed = comp.get("files")
+    if not isinstance(changed, list) or not (0 < len(changed) < 300):
+        return None
+    pr_lower = {name.lower() for name in pr_files}
+    for item in changed:
+        if not isinstance(item, dict):
+            return None
+        fname = item.get("filename") or ""
+        prev = item.get("previous_filename")
+        if _is_build_neutral(fname) and (not prev or _is_build_neutral(prev)):
+            continue
+        if item.get("status") != "modified" or prev or not _is_simple_tu(fname):
+            return None
+        if fname.lower() in pr_lower:
+            return None
+    return old12
+
+
+def dormant_refusal(api, head, base, pr_files, *, boat_status=None, compare_cache=None):
     """Return the prior main prefix when a refused head cannot be fixed by unrelated main moves, else None."""
     try:
-        old12 = prior_code_refusal(api, head, base)
+        if boat_status is not None:
+            if boat_status.get("state") != "failure":
+                return None
+            m = REFUSED_MAIN_RE.fullmatch(boat_status.get("description") or "")
+            old12 = m.group(1) if m and m.group(1) != base[:12] else None
+        else:
+            old12 = prior_code_refusal(api, head, base)
         if not old12:
             return None
-        comp = api.call(f"compare/{old12}...{base}")
+        comp = _cached_compare(api, old12, base, compare_cache)
     except (ApiError, ValueError, TypeError, KeyError, AttributeError):
         return None
     comp_status = comp.get("status") if isinstance(comp, dict) else None
@@ -560,22 +662,33 @@ def _recently_dispatched(prior, text, clock, refresh):
 def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
            auto_headers=False, wide_budget=None, *, source_proof=None,
            source_attempts=1, owner_origin=False, expected_head=None, refresh=False, find_tree=None,
-           refresh_attempts=1):
+           refresh_attempts=1, prefetched=None, compare_cache=None, allow_ancestor_skip=False):
     """Decide for one pull request against main commit `base`. The ledger reservation is the authority.
 
     refresh: when GitHub's preview is of another main, use the protected source receipt (and request one) instead
     of waiting for a preview GitHub never recomputes. The hourly run and the landing request use it."""
-    pr = api.call(f"pulls/{number}")
+    pr = prefetched["pr"] if prefetched is not None else api.call(f"pulls/{number}")
     head = (pr.get("head") or {}).get("sha", "")
     if not HEX40.fullmatch(head):
         raise Stop("an exact pull request head", "missing metadata")
     if expected_head is not None and head != expected_head:
         return f"#{number}: a newer head has its own event; nothing reserved"
-    files = changed_files(api, number)
+    if prefetched is not None and prefetched.get("files") is not None:
+        files = prefetched["files"]
+    else:
+        files = changed_files(api, number)
     verdict, state, description = decide(pr, files, config, auto_headers)
     if verdict == "skip":
         return f"#{number}: no eligible pull request targeting main"
-    prior = latest_status(api, head)
+    pf_bot = prefetched["bot_statuses"] if prefetched is not None else None
+    pf_any = prefetched["statuses"] if prefetched is not None else None
+    if pf_bot is not None and not (CONTEXT in pf_any and CONTEXT not in pf_bot):
+        prior = pf_bot.get(CONTEXT)
+    else:
+        prior = latest_status(api, head)
+    pf_boat = (pf_bot.get(BOAT_CONTEXT)
+               if pf_bot is not None and not (BOAT_CONTEXT in pf_any and BOAT_CONTEXT not in pf_bot)
+               else None)
     kind = {"admit-wide": "wide", "admit-trusted": "trusted-narrow"}.get(verdict, "narrow")
     if kind == "wide":
         budget = wide_budget
@@ -585,16 +698,27 @@ def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
         return f"#{number}: {description}"
     if owner_origin and trusted_source(pr):
         return f"#{number}: owner-started protected direct comparison"
-    if kind == "trusted-narrow" and measured_on(api, head, base):
-        # A direct run (the owner's) already gave this exact head a final compiler verdict on this main, so a
-        # trusted pull request needs no second compare. A pending verdict is not enough: a direct run whose
-        # compiler jobs were refused leaves pending behind, and that head must still be admitted.
-        return f"#{number}: commit {head[:12]} already has a compiler verdict on main {base[:12]}"
+    if kind == "trusted-narrow":
+        if pf_boat is not None:
+            btxt = pf_boat.get("description") or ""
+            bpref = {"success": "BFME II comparison passed", "failure": "BFME II check refused this patch"}.get(pf_boat.get("state"))
+            already_measured = bpref is not None and btxt.startswith(bpref) and btxt.endswith(f"(main {base[:12]})")
+        else:
+            already_measured = measured_on(api, head, base)
+        if already_measured:
+            return f"#{number}: commit {head[:12]} already has a compiler verdict on main {base[:12]}"
     if refresh:
-        prior_main = dormant_refusal(api, head, base, files)
+        prior_main = dormant_refusal(api, head, base, files, boat_status=pf_boat, compare_cache=compare_cache)
         if prior_main:
             return (f"#{number}: commit {head[:12]} was refused on main {prior_main} and no relevant files "
                     f"changed on main {base[:12]}; waiting for author push")
+        if allow_ancestor_skip and kind in ("narrow", "trusted-narrow"):
+            admission_ready = (kind == "trusted-narrow") or (prior is not None and prior.get("state") == "success")
+            if admission_ready:
+                passed_anc = prior_boat_pass(api, head, base, files, boat_status=pf_boat, compare_cache=compare_cache, clock=clock)
+                if passed_anc:
+                    return (f"#{number}: Boat already passed on disjoint ancestor {passed_anc}; "
+                            "landing handles hosted source-only recheck")
     if not api.live:
         return f"#{number}: would check source receipts and reserve {kind} commit {head[:12]} on main {base[:12]}"
     if kind != "trusted-narrow" and budget is None:
@@ -752,6 +876,124 @@ def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
     return f"#{number}: commit {head[:12]} admitted by rule; compiler check requested on main {base[:12]}"
 
 
+ADMIT_OPEN_PULLS_QUERY = """query($owner: String!, $name: String!, $cursor: String) {
+  repository(owner: $owner, name: $name) {
+    pullRequests(states: OPEN, baseRefName: "main", orderBy: {field: CREATED_AT, direction: ASC}, first: 50, after: $cursor) {
+      pageInfo { hasNextPage endCursor }
+      nodes {
+        number
+        title
+        state
+        isDraft
+        authorAssociation
+        baseRefName
+        headRefOid
+        author { login ... on User { databaseId } ... on Bot { databaseId } }
+        headRepository { databaseId }
+        baseRepository { databaseId }
+        files(first: 100) { totalCount nodes { path changeType } }
+        commits(last: 1) {
+          nodes {
+            commit {
+              oid
+              status {
+                contexts {
+                  context
+                  state
+                  description
+                  targetUrl
+                  createdAt
+                  creator { ... on User { databaseId } ... on Bot { databaseId } }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"""
+
+
+def _gql_to_admit_prefetched(node):
+    if not isinstance(node, dict) or not isinstance(node.get("number"), int):
+        return None
+    head_repo_id = (node.get("headRepository") or {}).get("databaseId")
+    base_repo_id = (node.get("baseRepository") or {}).get("databaseId")
+    author = node.get("author") or {}
+    pr = {
+        "number": node["number"],
+        "title": node.get("title") or "",
+        "state": (node.get("state") or "").lower(),
+        "draft": node.get("isDraft"),
+        "author_association": node.get("authorAssociation"),
+        "user": {"login": author.get("login"), "id": author.get("databaseId")},
+        "base": {"ref": node.get("baseRefName") or "", "repo": {"id": base_repo_id} if base_repo_id else {}},
+        "head": {"sha": node.get("headRefOid") or "", "repo": {"id": head_repo_id} if head_repo_id else None},
+    }
+    statuses, bot_statuses = {}, {}
+    commit_nodes = (node.get("commits") or {}).get("nodes") or ()
+    commit_obj = (commit_nodes[0].get("commit") if commit_nodes else None) or {}
+    commit_oid = commit_obj.get("oid")
+    oid_matches = (not commit_oid) or (commit_oid == node.get("headRefOid"))
+    status_obj = (commit_obj.get("status") or {}) if oid_matches else {}
+    for idx, ctx in enumerate(status_obj.get("contexts") or ()):
+        if not isinstance(ctx, dict) or not isinstance(ctx.get("context"), str):
+            continue
+        creator_id = (ctx.get("creator") or {}).get("databaseId")
+        item = {
+            "id": idx + 1,
+            "context": ctx["context"],
+            "state": (ctx.get("state") or "").lower(),
+            "description": ctx.get("description") or "",
+            "target_url": ctx.get("targetUrl") or "",
+            "created_at": ctx.get("createdAt") or "",
+            "creator": {"id": creator_id} if creator_id is not None else {},
+        }
+        statuses[ctx["context"]] = item
+        if creator_id == BOT_ID:
+            bot_statuses[ctx["context"]] = item
+    files_node = node.get("files")
+    files = None
+    if isinstance(files_node, dict):
+        total = files_node.get("totalCount")
+        fnodes = files_node.get("nodes") or ()
+        if isinstance(total, int) and total <= 100 and len(fnodes) == total:
+            if not any(isinstance(f, dict) and f.get("changeType") == "RENAMED" for f in fnodes):
+                files = [f.get("path", "") for f in fnodes if isinstance(f, dict)]
+    if not oid_matches:
+        statuses, bot_statuses = None, None
+    return {"number": node["number"], "pr": pr, "statuses": statuses, "bot_statuses": bot_statuses, "files": files}
+
+
+def fetch_retry_candidates_batch(api):
+    """Fetch up to 1000 open non-draft PRs + statuses + files via GraphQL (50/call). Returns None on fallback."""
+    if not hasattr(api, "query"):
+        return None
+    owner, name = REPO.split("/", 1)
+    results = []
+    cursor = None
+    try:
+        for _ in range(20):
+            data = api.query(ADMIT_OPEN_PULLS_QUERY, {"owner": owner, "name": name, "cursor": cursor})
+            conn = ((data or {}).get("repository") or {}).get("pullRequests")
+            if not isinstance(conn, dict):
+                return None
+            for node in conn.get("nodes") or ():
+                parsed = _gql_to_admit_prefetched(node)
+                if parsed is not None and parsed["pr"].get("draft") is False:
+                    results.append(parsed)
+                if len(results) >= 1000:
+                    return results
+            page_info = conn.get("pageInfo") or {}
+            if not page_info.get("hasNextPage") or not page_info.get("endCursor"):
+                break
+            cursor = page_info["endCursor"]
+        return results
+    except ApiError:
+        return None
+
+
 def retry_candidates(api):
     numbers = []
     for page in range(1, 11):
@@ -796,18 +1038,30 @@ def run(argv, env, api=None, config=None, clock=None):
                 raise Stop("a bfme-admit-request payload with one pull request number", "something else")
             numbers = [payload["number"]]
         else:
-            numbers = retry_candidates(api)
+            prefetched_batch = fetch_retry_candidates_batch(api)
+            numbers = [item["number"] for item in prefetched_batch] if prefetched_batch is not None else retry_candidates(api)
     else:
         raise Stop("event, retry or request", printable(mode, 20))
+    if mode != "retry":
+        prefetched_batch = None
     auto_headers = env.get("BFME_AUTO_HEADERS") == "yes"
     wide_budget = limits(env, "wide")
     owner_origin = mode == "event" and env.get("GITHUB_ACTOR_ID") == "1760627" \
         and env.get("GITHUB_TRIGGERING_ACTOR") == "Ancalgonn"
+    compare_cache = {}
+    pf_by_num = {item["number"]: item for item in (prefetched_batch or ())}
     lines = [handle(api, number, config, main, budget, clock, auto_headers=auto_headers,
                     wide_budget=wide_budget, source_attempts=25 if mode == "event" else 1,
                     owner_origin=owner_origin, expected_head=expected_head, refresh=mode != "event",
-                    refresh_attempts=12 if mode == "request" else 1)
+                    refresh_attempts=12 if mode == "request" else 1,
+                    prefetched=pf_by_num.get(number), compare_cache=compare_cache,
+                    allow_ancestor_skip=(mode == "retry"))
              for number in numbers]
+    if mode == "retry" and api.live and any("Boat already passed on disjoint ancestor" in line for line in lines):
+        try:
+            api.write("POST", "dispatches", {"event_type": LAND_NEXT_EVENT, "client_payload": {}})
+        except ApiError:
+            pass
     text = f"Admission ({'live' if live else 'dry run'}): " + ("; ".join(lines) if lines else "no fork pull requests")
     print(f"::notice title=BFME II admission::{printable(text, 200).replace('::', ': ')}")
     path = env.get("GITHUB_STEP_SUMMARY")
