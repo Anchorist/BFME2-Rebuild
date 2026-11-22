@@ -284,16 +284,18 @@ def graph_blob(root, revision, path):
 
 
 def graph_change(root, parent, main, paths=None):
+    best = None
     try:
         for transition in GRAPH_CHANGES:
             if paths is not None and set(transition) != paths:
                 continue
             if all(tuple(graph_blob(root, rev, path) for rev in (parent, main)) == expected
                    for path, expected in transition.items()):
-                return transition
+                if best is None or len(transition) > len(best):
+                    best = transition
     except (OSError, ValueError, CalledProcessError):
         return None
-    return None
+    return best
 
 
 def publication_path(root, parent, main, file):
