@@ -29,11 +29,17 @@ def output(values):
 
 def source_free_decision(source):
     decision = read(Path(source) / "decision.json", 4096)
-    if (set(decision) != {"version", "repo", "number", "base", "head", "tree", "kind", "plan"}
+    base_keys = {"version", "repo", "number", "base", "head", "tree", "kind", "plan"}
+    auto_keys = base_keys | {"automatic_author", "automatic_kind"}
+    keys = set(decision)
+    auto_ok = (keys == base_keys
+               or (keys == auto_keys and type(decision.get("automatic_author")) is int
+                   and decision["automatic_author"] > 0 and decision.get("automatic_kind") == "wide"))
+    if (not auto_ok
             or decision["version"] != 1 or decision["repo"] != REPO_ID
             or type(decision["number"]) is not int or decision["number"] <= 0
             or decision["kind"] != "wide" or decision["base"] != os.environ["GITHUB_SHA"]
-            or not all(HEX40.fullmatch(decision[key]) for key in ("base","head","tree"))
+            or not all(HEX40.fullmatch(decision[key]) for key in ("base", "head", "tree"))
             or not HEX64.fullmatch(decision["plan"])):
         raise ValueError("Expected source-free protected wide authorization; found an invalid decision.")
     return decision

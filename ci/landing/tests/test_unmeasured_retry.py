@@ -50,7 +50,7 @@ class Workflows(unittest.TestCase):
         self.assertIn("unmeasured: ${{ steps.native.outputs.verdict == 'unavailable' && 'yes' || 'no' }}",
                       job(text, "report"))
         block = job(text, "notify-unmeasured")
-        for guard in ("needs: [claim, report]", "needs.claim.outputs.allowed == 'yes'",
+        for guard in ("needs: [claim, report, fallback-report]", "needs.claim.outputs.allowed == 'yes'",
                       "needs.report.outputs.unmeasured == 'yes'", "github.repository_id == '1464323350'",
                       "github.ref == 'refs/heads/main'", "github.event_name == 'repository_dispatch'",
                       "github.actor_id == '41898282'", '"bfme-unmeasured"', "RUN: ${{ github.run_id }}",

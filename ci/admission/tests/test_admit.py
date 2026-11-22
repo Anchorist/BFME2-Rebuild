@@ -684,5 +684,80 @@ class UnmeasuredRun(unittest.TestCase):
         self.assertEqual(json.loads(api.store["ledger.json"][0])["days"][DAY]["total"], 1)
 
 
+
+class DormantRefusal(unittest.TestCase):
+    def _api_with_refusal(self, compare_files):
+        old_main = "1" * 40
+        pr = fork_pr(number=34)
+        api = LedgerApi(True, [pr], {34: ["src/Game/Foo.cpp"]})
+        api.statuses[HEAD] = [{
+            "id": 99, "context": admit.BOAT_CONTEXT, "state": "failure",
+            "description": f"BFME II check refused this patch (main {old_main[:12]})",
+            "creator": {"id": admit.BOT_ID},
+        }]
+        orig_call = api.call
+        def fake_call(path):
+            if path == f"compare/{old_main[:12]}...{MAIN}":
+                return {"status": "ahead", "files": [{"filename": f} for f in compare_files]}
+            return orig_call(path)
+        api.call = fake_call
+        return api
+
+    def test_unrelated_main_move_stays_dormant_on_refresh(self):
+        api = self._api_with_refusal(["src/Game/Unrelated.cpp", "docs/agents.md"])
+        with redirect_stdout(io.StringIO()):
+            out = admit.handle(api, 34, CONFIG, MAIN, BUDGET, CLOCK, refresh=True, source_proof=lambda *_: None)
+        self.assertIn("waiting for author push", out)
+        self.assertEqual(dispatches(api), [])
+
+    def test_relevant_main_move_wakes_up_refused_pr(self):
+        for changed in (["include/Common/Thing.h"], ["ci/managed-check/compare.py"], ["src/Game/Foo.cpp"]):
+            with self.subTest(changed=changed):
+                api = self._api_with_refusal(changed)
+                with redirect_stdout(io.StringIO()):
+                    out = admit.handle(api, 34, CONFIG, MAIN, BUDGET, CLOCK, refresh=True, source_proof=lambda *_: None)
+                self.assertIn("admitted by rule", out)
+
+
+    def test_malformed_compare_payload_fails_open(self):
+        api = self._api_with_refusal([])
+        orig = api.call
+        for bad in (
+            {"status": "ahead", "files": [{"filename": 12345}]},
+            {"status": "ahead", "files": [{}]},
+            {"status": "ahead", "files": [{"filename": None}]},
+            {"status": ["ahead"], "files": []},
+        ):
+            api = self._api_with_refusal([])
+            orig = api.call
+            api.call = lambda path, b=bad, o=orig: b if path.startswith("compare/") else o(path)
+            with redirect_stdout(io.StringIO()):
+                out = admit.handle(api, 34, CONFIG, MAIN, BUDGET, CLOCK, refresh=True, source_proof=lambda *_: None)
+            self.assertIn("admitted by rule", out)
+        return
+        api.call = lambda path: {"status": "ahead", "files": [{"filename": 12345}]} if path.startswith("compare/") else orig(path)
+        with redirect_stdout(io.StringIO()):
+            out = admit.handle(api, 34, CONFIG, MAIN, BUDGET, CLOCK, refresh=True, source_proof=lambda *_: None)
+        self.assertIn("admitted by rule", out)
+
+
+    def test_header_pr_wakes_when_any_src_consumer_changes(self):
+        old_main = "1" * 40
+        pr = fork_pr(number=35)
+        api = LedgerApi(True, [pr], {35: ["include/Game/Foo.h"]})
+        api.statuses[HEAD] = [{
+            "id": 99, "context": admit.BOAT_CONTEXT, "state": "failure",
+            "description": f"BFME II check refused this patch (main {old_main[:12]})",
+            "creator": {"id": admit.BOT_ID},
+        }]
+        orig = api.call
+        api.call = lambda path: {"status": "ahead", "files": [{"filename": "src/Game/Consumer.cpp"}]} if path.startswith("compare/") else orig(path)
+        with redirect_stdout(io.StringIO()):
+            out = admit.handle(api, 35, CONFIG, MAIN, BUDGET, CLOCK, auto_headers=True,
+                               wide_budget={"daily_total": 20, "daily_per_author": 5},
+                               refresh=True, source_proof=lambda *_: None)
+        self.assertIn("admitted by rule", out)
+
+
 if __name__ == "__main__":
     unittest.main()

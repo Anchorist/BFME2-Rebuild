@@ -273,45 +273,152 @@ class Reconcile(unittest.TestCase):
 
 
 class Remeasure(unittest.TestCase):
-    def test_live_remeasure_sends_exact_dispatch_and_stops_when_main_moves(self):
+    def test_live_remeasure_dispatches_non_blocking_and_suppresses_duplicates(self):
         api = FakeApi(live=True, main=LIVE_MAIN)
-        ticks = iter(range(0, 100000, 20))
-        reads = {"n": 0}
-
-        def move(fx):
-            reads["n"] += 1
-            if reads["n"] > 30:
-                fx["git/ref/heads/main"] = {"object": {"sha": "cd" * 20}}
-        api.after_read = [move] * 1000
         with tempfile.TemporaryDirectory() as tmp:
             code, out = quiet(lander.run, ["select", tmp + "/w"], env(main=LIVE_MAIN, mode="live", pr="2"),
-                              api=api, config=CONFIG, clock=lambda: next(ticks), sleep=lambda s: None)
+                              api=api, config=CONFIG)
         self.assertEqual(code, 0)
         self.assertEqual(api.writes[0], ("POST", "dispatches", {"event_type": "bfme-remeasure", "client_payload": {
             "number": 2, "base": LIVE_MAIN, "head": PR2}}))
         self.assertNotIn("PUT", [w[0] for w in api.writes])
-        self.assertIn("main-moved", out)
-
-    def test_remeasure_times_out_with_a_named_reason(self):
-        api = FakeApi(live=True, main=LIVE_MAIN)
-        ticks = iter(range(0, 10**7, 600))
+        self.assertIn("non-blocking re-measurement", out)
+        # A subsequent run while still measuring on the same main does not re-dispatch.
+        measuring_desc = f"Measuring on main {LIVE_MAIN[:12]} before landing"
+        api.fx[f"commits/{PR2}/statuses?per_page=100&page=1"].insert(0, {
+            "id": 10**11, "context": lander.LANDING_CONTEXT, "state": "pending",
+            "description": measuring_desc, "creator": {"id": lander.lr.BOT_ID},
+        })
+        api.writes.clear()
         with tempfile.TemporaryDirectory() as tmp:
             code, out = quiet(lander.run, ["select", tmp + "/w"], env(main=LIVE_MAIN, mode="live", pr="2"),
-                              api=api, config=CONFIG, clock=lambda: next(ticks), sleep=lambda s: None)
+                              api=api, config=CONFIG)
+        self.assertEqual((code, [w for w in api.writes if w[1] == "dispatches"]), (0, []))
+        self.assertIn("Already measuring", out)
+
+    def test_expired_remeasure_times_out_with_a_named_reason(self):
+        api = FakeApi(live=True, main=LIVE_MAIN)
+        measuring_desc = f"Measuring on main {LIVE_MAIN[:12]} before landing"
+        api.fx[f"commits/{PR2}/statuses?per_page=100&page=1"].insert(0, {
+            "id": 10**11, "context": lander.LANDING_CONTEXT, "state": "pending",
+            "description": measuring_desc, "created_at": "2020-01-01T00:00:00Z",
+            "creator": {"id": lander.lr.BOT_ID},
+        })
+        with tempfile.TemporaryDirectory() as tmp:
+            code, out = quiet(lander.run, ["select", tmp + "/w"], env(main=LIVE_MAIN, mode="live", pr="2"),
+                              api=api, config=CONFIG)
         self.assertEqual(code, 0)
         self.assertIn("measurement-timeout", out)
         posted = [w for w in api.writes if w[1] == f"statuses/{PR2}"][-1][2]["description"]
         self.assertIn(f"(main {LIVE_MAIN[:12]})", posted)
-        # The next run does not wait on the same pull request again for the same main.
+        # The next run does not re-dispatch after measurement-timeout on the same main.
         api.fx[f"commits/{PR2}/statuses?per_page=100&page=1"].insert(0, {
             "id": 10**12, "context": lander.LANDING_CONTEXT, "state": "pending", "description": posted,
             "creator": {"id": lander.lr.BOT_ID}})
         api.writes.clear()
         with tempfile.TemporaryDirectory() as tmp:
             code, out = quiet(lander.run, ["select", tmp + "/w"], env(main=LIVE_MAIN, mode="live", pr="2"),
-                              api=api, config=CONFIG, clock=lambda: next(ticks), sleep=lambda s: None)
+                              api=api, config=CONFIG)
         self.assertEqual((code, [w for w in api.writes if w[1] == "dispatches"]), (0, []))
         self.assertIn("Nothing to land.", out)
+
+    def test_infrastructure_error_is_non_final_hold(self):
+        def boat_err(fx):
+            for item in fx[f"commits/{PR2}/statuses?per_page=100&page=1"]:
+                if item["context"] == lander.BOAT:
+                    item["state"] = "error"
+                    item["description"] = f"Boat comparison unavailable. (main {MEASURED[:12]})"
+        decision = lander.evaluate(FakeApi(live=False, main=MEASURED, edit=boat_err), 2, MEASURED, CONFIG)
+        self.assertEqual(decision["stage"], "hold")
+        self.assertEqual(decision["checks"][lander.BOAT], "fresh-error")
+        self.assertEqual((decision["reasons"][0].code, decision["reasons"][0].final), ("infrastructure-error", False))
+
+    def test_tiered_header_landing_allows_maintainer_override_of_hold_but_not_failure(self):
+        def add_header(fx, state, desc, approved=False):
+            fx["pulls/2/files?per_page=100&page=1"].append({"filename": "include/Game/Foo.h", "status": "modified"})
+            fx[f"commits/{PR2}/statuses?per_page=100&page=1"].append({
+                "id": 10**10, "context": lander.HEADER_RULES_CONTEXT, "state": state,
+                "description": desc, "creator": {"id": lander.lr.BOT_ID},
+            })
+            fx["pulls/2/reviews?per_page=100&page=1"] = (
+                [{"id": 1, "state": "APPROVED", "commit_id": PR2, "user": {"id": 99}}] if approved else []
+            )
+
+        tiered_cfg = CONFIG | {"auto_headers": True, "approvers": {99}}
+        # Pending/held H5 + maintainer approval -> clears to land.
+        d1 = lander.evaluate(FakeApi(live=False, main=MEASURED, edit=lambda fx: add_header(
+            fx, "pending", f"Held: H5 layout needs witness (main {MEASURED[:12]})", approved=True)), 2, MEASURED, tiered_cfg)
+        self.assertEqual((d1["stage"], d1["reasons"]), ("land", []))
+        # Hard failure -> still blocked even with maintainer approval.
+        d2 = lander.evaluate(FakeApi(live=False, main=MEASURED, edit=lambda fx: add_header(
+            fx, "failure", f"H3: forbidden macro (main {MEASURED[:12]})", approved=True)), 2, MEASURED, tiered_cfg)
+        self.assertEqual(d2["stage"], "hold")
+        self.assertEqual(d2["reasons"][0].code, "header-rules")
+
+    def test_parallel_remeasure_caps_total_in_flight_across_invocations(self):
+        api = FakeApi(live=True, main=LIVE_MAIN)
+        measuring_desc = f"Measuring on main {LIVE_MAIN[:12]} before landing"
+        stale_pr = dict(api.fx["pulls/2"])
+        open_list = []
+        for num in range(10, 16):
+            pr_copy = json.loads(json.dumps(stale_pr))
+            pr_copy["number"] = num
+            head_sha = f"{num:040x}"
+            pr_copy["head"]["sha"] = head_sha
+            api.fx[f"pulls/{num}"] = pr_copy
+            api.fx[f"pulls/{num}/files?per_page=100&page=1"] = list(api.fx["pulls/2/files?per_page=100&page=1"])
+            sts = json.loads(json.dumps(api.fx[f"commits/{PR2}/statuses?per_page=100&page=1"]))
+            if num < 15:
+                sts.insert(0, {"id": 10**11 + num, "context": lander.LANDING_CONTEXT, "state": "pending",
+                               "description": measuring_desc, "creator": {"id": lander.lr.BOT_ID}})
+            api.fx[f"commits/{head_sha}/statuses?per_page=100&page=1"] = sts
+            open_list.append(pr_copy)
+        api.fx["pulls?state=open&base=main&sort=created&direction=asc&per_page=100&page=1"] = open_list
+        with tempfile.TemporaryDirectory() as tmp:
+            code, out = quiet(lander.run, ["select", tmp + "/w"], env(main=LIVE_MAIN, mode="live"),
+                              api=api, config=CONFIG | {"exceptions": {(n, f"{n:040x}") for n in range(10, 16)}})
+        self.assertEqual(code, 0)
+        self.assertEqual([w for w in api.writes if w[1] == "dispatches"], [])
+        self.assertIn("Waiting for in-flight measurements", out)
+
+    def test_pending_boat_prs_count_toward_cap_and_keep_measuring_marker(self):
+        api = FakeApi(live=True, main=LIVE_MAIN)
+        measuring_desc = f"Measuring on main {LIVE_MAIN[:12]} before landing"
+        stale_pr = dict(api.fx["pulls/2"])
+        open_list = []
+        for num in range(20, 26):
+            pr_copy = json.loads(json.dumps(stale_pr))
+            pr_copy["number"] = num
+            head_sha = f"{num:040x}"
+            pr_copy["head"]["sha"] = head_sha
+            api.fx[f"pulls/{num}"] = pr_copy
+            api.fx[f"pulls/{num}/files?per_page=100&page=1"] = list(api.fx["pulls/2/files?per_page=100&page=1"])
+            sts = json.loads(json.dumps(api.fx[f"commits/{PR2}/statuses?per_page=100&page=1"]))
+            if num < 25:
+                for item in sts:
+                    if item["context"] == lander.BOAT:
+                        item["state"] = "pending"
+                sts.insert(0, {"id": 10**11 + num, "context": lander.LANDING_CONTEXT, "state": "pending",
+                               "description": measuring_desc, "creator": {"id": lander.lr.BOT_ID}})
+            api.fx[f"commits/{head_sha}/statuses?per_page=100&page=1"] = sts
+            open_list.append(pr_copy)
+        api.fx["pulls?state=open&base=main&sort=created&direction=asc&per_page=100&page=1"] = open_list
+        with tempfile.TemporaryDirectory() as tmp:
+            code, out = quiet(lander.run, ["select", tmp + "/w"], env(main=LIVE_MAIN, mode="live"),
+                              api=api, config=CONFIG | {"exceptions": {(n, f"{n:040x}") for n in range(20, 26)}})
+        self.assertEqual(code, 0)
+        self.assertEqual([w for w in api.writes if w[1] == "dispatches"], [])
+        self.assertEqual([w for w in api.writes if w[1].startswith("statuses/")], [])
+        # If those five pending markers have expired, the sixth stale PR is no longer starved.
+        for num in range(20, 25):
+            head_sha = f"{num:040x}"
+            api.fx[f"commits/{head_sha}/statuses?per_page=100&page=1"][0]["created_at"] = "2020-01-01T00:00:00Z"
+        api.writes.clear()
+        with tempfile.TemporaryDirectory() as tmp:
+            code, out = quiet(lander.run, ["select", tmp + "/w"], env(main=LIVE_MAIN, mode="live"),
+                              api=api, config=CONFIG | {"exceptions": {(n, f"{n:040x}") for n in range(20, 26)}})
+        self.assertEqual(code, 0)
+        self.assertEqual(len([w for w in api.writes if w[1] == "dispatches"]), 1)
 
     def test_remeasure_off_names_the_manual_route(self):
         api = FakeApi(live=True, main=LIVE_MAIN)

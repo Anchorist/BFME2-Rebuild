@@ -19,6 +19,7 @@ import os
 from pathlib import Path
 import re
 import sys
+import datetime
 import time
 
 HERE = Path(__file__).resolve().parent
@@ -47,6 +48,8 @@ LANDED_EVENT = "bfme-landed"        # state and progress workflows run after a l
 NEXT_EVENT = "bfme-land-next"       # this workflow takes the next pull request
 ADMIT_REQUEST_EVENT = "bfme-admit-request"  # admission.yml reserves and starts a measurement of a fork
 MEASURE_WAIT_SECONDS = 1800         # wide changes measured 744 to 978 s
+LAND_SETTLE_SECONDS = 180           # bounded wait for just-completed runs on stage == land
+MAX_PARALLEL_REMEASURES = 5         # fan out stale-ready PRs without holding the global lock
 POLL_SECONDS = 20
 MAX_OPEN_PULLS = 300
 TRAILER = "Landed by the BFME II landing workflow"
@@ -125,7 +128,7 @@ def classify(status, main):
         return "pending"
     if state not in {"success", "failure", "error"}:
         return "missing"
-    kind = "success" if state == "success" else "failure"
+    kind = "success" if state == "success" else ("error" if state == "error" else "failure")
     return ("fresh-" if bound else "stale-") + kind
 
 
@@ -231,18 +234,29 @@ def evaluate(api, number, main, config):
         text = rules.get("description") or ""
         if rules.get("state") == "success" and marker(main) in text:
             pass                                    # H1-H8 passed on this head and this main
-        elif rules.get("state") == "success":
-            decision["header_stale"] = True         # measured on another main: re-measured like the checks
-        elif rules.get("state") == "pending" and text.startswith("Held: ledger request"):
-            decision["ledger_request"] = True
-            hold("ledger-request", "a decision on the ledger change this pull request asks for",
-                 f"{printable(text, 90)}; it waits and never fails, you do not need to do anything")
-        elif rules.get("state") == "pending" and text.startswith("Held: rule not built"):
-            hold("header-rule-not-built", "every header rule to be in place", printable(text, 90))
         elif rules.get("state") in ("failure", "error"):
             hold("header-rules", f"{HEADER_RULES_CONTEXT} success", f"{printable(text, 100)}", True)
         else:
-            hold("header-rules", f"{HEADER_RULES_CONTEXT} on head {head[:12]}", "no result yet")
+            approved_by_maintainer = False
+            if config["approvers"]:
+                try:
+                    approved_by_maintainer = lr.maintainer_review(
+                        api, pr, {"number": number, "head": head}, config["approvers"]
+                    )
+                except lr.Waiting:
+                    approved_by_maintainer = False
+            if approved_by_maintainer:
+                pass                                # listed maintainer approved this exact head
+            elif rules.get("state") == "success":
+                decision["header_stale"] = True     # measured on another main: re-measured like the checks
+            elif rules.get("state") == "pending" and text.startswith("Held: ledger request"):
+                decision["ledger_request"] = True
+                hold("ledger-request", "a decision on the ledger change this pull request asks for",
+                     f"{printable(text, 90)}; it waits and never fails, you do not need to do anything")
+            elif rules.get("state") == "pending" and text.startswith("Held: rule not built"):
+                hold("header-rule-not-built", "every header rule to be in place", printable(text, 90))
+            else:
+                hold("header-rules", f"{HEADER_RULES_CONTEXT} on head {head[:12]}", "no result yet")
     elif header_change:
         if not config["approvers"]:
             hold("header-approvers-empty", "a listed header approver in ci/landing/landing.json",
@@ -280,6 +294,12 @@ def evaluate(api, number, main, config):
             continue
         if kind == "stale-success":
             stale = True
+        elif kind == "fresh-error":
+            hold("infrastructure-error", f"{context} to complete on main {main[:12]}",
+                 "an infrastructure error; retried automatically, you do not need to push")
+        elif kind == "stale-error":
+            hold("infrastructure-error", f"{context} to complete",
+                 "an infrastructure error on an older main; retried automatically, you do not need to push")
         elif kind == "fresh-failure":
             hold("check-failure", f"{context} success on main {main[:12]}",
                  "failure; open that check's Details for the reason, then push a fix", True)
@@ -321,7 +341,7 @@ def main_failed_landing(api, main):
 CLEARED = "Cleared to land on main"
 
 
-def report_hold(api, decision):
+def report_hold(api, decision, main=None):
     """Live only: keep one current BFME II / Landing status on the pull request head.
 
     That status is also a required check of main's ruleset. "Cleared to land" exists only while this job merges
@@ -335,6 +355,10 @@ def report_hold(api, decision):
             status(api, decision["head"], "pending", "Eligible; waiting for the landing job")
         return
     first = decision["reasons"][0]
+    if (first.code == "measuring" and main
+            and prior.get("state") == "pending"
+            and prior.get("description") == f"Measuring on main {main[:12]} before landing"):
+        return
     state = "failure" if first.final else "pending"
     text = printable(f"Held: {first.code}. Expected {first.expected}.", 140)
     if prior.get("state") == state and prior.get("description") == text:
@@ -442,13 +466,13 @@ def table(decisions, main, live):
     return lines
 
 
-def wait_for_measurement(api, config, binding, clock, sleep, check_first=False):
+def wait_for_measurement(api, config, binding, clock, sleep, check_first=False, max_wait=MEASURE_WAIT_SECONDS):
     """Poll until fresh results on this main exist AND their producing runs have completed and bind.
 
     A check posts its status a few seconds before its workflow run is marked completed, so a fresh status alone
     is not enough: the protected run check in landing_read requires a completed run.
     """
-    deadline = clock() + (MEASURE_WAIT_SECONDS if api.live else 0)
+    deadline = clock() + (max_wait if api.live else 0)
     first = True
     while True:
         if not (first and check_first):
@@ -483,6 +507,25 @@ def timed_out(decision, main):
     """A re-measurement that already timed out on this main is not retried until main or the head changes."""
     text = (decision.get("landing_status") or {}).get("description") or ""
     return text.startswith("Held: measurement-timeout") and marker(main) in text
+
+
+def measuring_state(decision, main, wall_clock=None):
+    """Return 'active', 'expired', or None for an in-flight non-blocking remeasurement on this main."""
+    prior = decision.get("landing_status") or {}
+    expected = f"Measuring on main {main[:12]} before landing"
+    if prior.get("state") != "pending" or prior.get("description") != expected:
+        return None
+    created = prior.get("created_at") or ""
+    if not created:
+        return "active"
+    try:
+        started = datetime.datetime.strptime(created, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.timezone.utc)
+    except ValueError:
+        return "active"
+    now = wall_clock() if wall_clock else datetime.datetime.now(datetime.timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=datetime.timezone.utc)
+    return "expired" if (now - started).total_seconds() >= MEASURE_WAIT_SECONDS else "active"
 
 
 ENQUEUE = ("mutation($pr: ID!, $head: GitObjectID!) { enqueuePullRequest(input: "
@@ -590,57 +633,96 @@ def select(api, env, config, directory, clock=time.monotonic, sleep=time.sleep):
     numbers = [int(only)] if only else open_pulls(api)
     decisions = [evaluate(api, number, main, config) for number in numbers]
     for item in decisions:
-        report_hold(api, item)
+        report_hold(api, item, main=main)
         label_ledger_request(api, item)
     lines = table(decisions, main, api.live)
     if merge_queue_active(api):
         return enqueue(api, decisions, main, lines)
-    pick = (next((item for item in decisions if item["stage"] == "land"), None)
-            or next((item for item in decisions if item["stage"] == "remeasure" and not timed_out(item, main)), None))
+    pick = next((item for item in decisions if item["stage"] == "land"), None)
     if pick is None:
-        held = [f"#{item['number']} {item['reasons'][0].code}" for item in decisions if item["reasons"]]
-        headline(f"Nothing to land on main {main[:12]}: {len(decisions)} open pull request(s)"
-                 + (f"; held {', '.join(held[:6])}" if held else "") + ".")
-        summary(lines + ["", "Nothing to land."])
-        output("action", "none")
-        return 0
-    binding = {"number": pick["number"], "base": main, "head": pick["head"]}
-    if pick["stage"] == "remeasure":
+        stale_items = [item for item in decisions if item["stage"] == "remeasure" and not timed_out(item, main)]
+        if not stale_items:
+            held = [f"#{item['number']} {item['reasons'][0].code}" for item in decisions if item["reasons"]]
+            headline(f"Nothing to land on main {main[:12]}: {len(decisions)} open pull request(s)"
+                     + (f"; held {', '.join(held[:6])}" if held else "") + ".")
+            summary(lines + ["", "Nothing to land."])
+            output("action", "none")
+            return 0
         if config["remeasure"] == "off":
-            headline(f"#{pick['number']} waits: measured on an older main and automatic re-measurement is off.")
-            summary(lines + ["", f"#{pick['number']} needs a fresh measurement on main {main[:12]}; "
+            first = stale_items[0]
+            headline(f"#{first['number']} waits: measured on an older main and automatic re-measurement is off.")
+            summary(lines + ["", f"#{first['number']} needs a fresh measurement on main {main[:12]}; "
                              "automatic re-measurement is off. Push a commit or reopen the pull request."])
             output("action", "none")
             return 0
         if not api.live:
-            headline(f"Dry run: would re-measure #{pick['number']} on main {main[:12]}, then land it.")
-            summary(lines + ["", f"Would send repository_dispatch {REMEASURE_EVENT} for #{pick['number']} "
-                             f"head {pick['head'][:12]} on main {main[:12]} and wait for fresh results."])
+            first = stale_items[0]
+            headline(f"Dry run: would re-measure #{first['number']} on main {main[:12]}, then land it.")
+            summary(lines + ["", f"Would send repository_dispatch {REMEASURE_EVENT} for #{first['number']} "
+                             f"head {first['head'][:12]} on main {main[:12]} and land once fresh results arrive."])
             output("action", "none")
             return 0
-        if config.get("auto_admission"):
-            # Automatic admission on: every bot-started measurement needs a reservation, so the admission workflow
-            # decides by rule for this exact commit and main (narrow for outsiders, trusted-narrow for members and
-            # this repository's branches), reserves, and then sends bfme-remeasure itself, or holds by name.
-            dispatch(api, ADMIT_REQUEST_EVENT, {"number": binding["number"]})
-        elif not pick.get("trusted"):
-            # Switched off: a pull request from outside the organisation is never re-measured on a label alone,
-            # because the label is not bound to a commit. A maintainer re-admits this commit on the new main.
-            held = Held("awaiting-readmission", f"a maintainer to admit commit {binding['head'][:12]} on main "
-                        f"{main[:12]} (remove and add the boat-ok label)",
-                        "a measurement on an older main only; you do not need to do anything")
-            report_hold(api, {"head": binding["head"], "reasons": [held], "landing_status": None})
-            headline(f"Held #{binding['number']}: awaiting-readmission.")
-            summary(lines + ["", f"#{binding['number']} held. {held.line()}"])
-            output("action", "none")
-            return 0
+        dispatched, active, expired, held_notes, pending_dispatch = [], [], [], [], []
+        for item in stale_items:
+            mstate = measuring_state(item, main)
+            if mstate == "active":
+                active.append(f"#{item['number']}")
+            elif mstate == "expired":
+                exc = Held("measurement-timeout", f"fresh results {marker(main)} within {MEASURE_WAIT_SECONDS} s",
+                           "checks still pending or not started; are the check workflows listening for "
+                           f"repository_dispatch {REMEASURE_EVENT}?")
+                report_hold(api, {"head": item["head"], "reasons": [exc], "landing_status": None})
+                expired.append(f"#{item['number']}")
+            else:
+                pending_dispatch.append(item)
+        in_flight_measuring = sum(
+            1 for item in decisions
+            if item["reasons"] and any(r.code == "measuring" for r in item["reasons"])
+            and measuring_state(item, main) != "expired"
+        )
+        for item in pending_dispatch:
+            if len(active) + in_flight_measuring + len(dispatched) >= MAX_PARALLEL_REMEASURES:
+                break
+            item_binding = {"number": item["number"], "base": main, "head": item["head"]}
+            if config.get("auto_admission"):
+                dispatch(api, ADMIT_REQUEST_EVENT, {"number": item["number"]})
+            elif not item.get("trusted"):
+                held = Held("awaiting-readmission", f"a maintainer to admit commit {item['head'][:12]} on main "
+                            f"{main[:12]} (remove and add the boat-ok label)",
+                            "a measurement on an older main only; you do not need to do anything")
+                report_hold(api, {"head": item["head"], "reasons": [held], "landing_status": None})
+                held_notes.append(f"#{item['number']} held. {held.line()}")
+                continue
+            else:
+                dispatch(api, REMEASURE_EVENT, item_binding)
+            status(api, item["head"], "pending", f"Measuring on main {main[:12]} before landing")
+            print(f"Requested a fresh measurement of #{item['number']} on main {main[:12]}.")
+            dispatched.append(f"#{item['number']}")
+        notes = []
+        if dispatched:
+            notes.append(f"Requested fresh measurements on main {main[:12]} for {', '.join(dispatched)}; "
+                         "landing resumes automatically when results arrive.")
+        if active:
+            notes.append(f"Already measuring on main {main[:12]}: {', '.join(active)}.")
+        if expired:
+            notes.append(f"Held (measurement-timeout) on main {main[:12]}: {', '.join(expired)}.")
+        notes.extend(held_notes)
+        if dispatched:
+            headline(f"Requested non-blocking re-measurement on main {main[:12]} for {', '.join(dispatched)}.")
+        elif expired:
+            headline(f"Held {', '.join(expired)}: measurement-timeout.")
+        elif held_notes:
+            headline(f"Held: awaiting-readmission ({len(held_notes)} pull request(s)).")
         else:
-            dispatch(api, REMEASURE_EVENT, binding)
-        status(api, pick["head"], "pending", f"Measuring on main {main[:12]} before landing")
-        print(f"Requested a fresh measurement of #{pick['number']} on main {main[:12]}.")
+            waiting_desc = ", ".join(active) if active else f"{in_flight_measuring} measuring pull request(s)"
+            headline(f"Waiting for in-flight measurements on main {main[:12]}: {waiting_desc}.")
+        summary(lines + [""] + (notes or ["Nothing to land."]))
+        output("action", "none")
+        return 0
+    binding = {"number": pick["number"], "base": main, "head": pick["head"]}
     try:
         pick, runs = wait_for_measurement(api, config, binding, clock, sleep,
-                                          check_first=pick["stage"] == "land")
+                                          check_first=True, max_wait=LAND_SETTLE_SECONDS)
     except Held as exc:
         report_hold(api, {"head": binding["head"], "reasons": [exc], "landing_status": None})
         headline(f"Held #{binding['number']}: {exc.code}. Expected {exc.expected}.")

@@ -10,7 +10,7 @@ from state_evidence import LIMIT, cached_pairs, header
 # implementation retain full-refresh semantics. state.yml can be carried only
 # across the reviewed producer-v2 to resume transport revision.
 REPORT_DIRS = ("docs/", "worklist/", "ci/state/", "ci/progress/", "ci/alarms/",
-               "ci/nightly/", "ci/landing/", "ci/admission/", "ci/public-text/",
+               "ci/nightly/", "ci/landing/", "ci/admission/", "ci/header/", "ci/public-text/",
                "ci/managed-check/tests/", ".github/workflows/")
 STATE_FLOW = ".github/workflows/state.yml"
 TRANSPORT = {"ci/managed-state/state_delta.py", "ci/managed-state/state_fetch.py",
@@ -161,6 +161,36 @@ GRAPH_CHANGES += (WIDE_CLOCK_GRAPH,) + tuple(
     if previous[BUNDLE][1] == WIDE_CLOCK_GRAPH[BUNDLE][0]
 )
 GRAPH_PATHS |= set(WIDE_CLOCK_GRAPH)
+
+WIDE_ADMISSION_GRAPH = {
+    "ci/managed-check/fork_admission.py": (
+        "9d5d811357515f81e46ee729a1ced768846042f34711d1817712fcded00f45d7",
+        "25badb095dabc6c8a717145f3ea1e14342fbb5982fb10982608e9df7b8e01e34",
+    ),
+    "ci/managed-check/github_io.py": (
+        "9f761ce5ada2907486f1665b98b68650ecc6b764c9685d2d6f168f0aebed3b66",
+        "c34a1c9bde3d83f39346bdb8246ee74290cebd5058672d9e24b13388bb02c9e8",
+    ),
+    "ci/managed-check/intake.py": (
+        "509d2ef40980f7c83a5be4f9c096046eb881dda19f4ea2273677e2a07297a493",
+        "5c0dc9af03ab8dc962b62aa2ecb5a1b64218c989b387e8bd178aebc352e78bce",
+    ),
+    "ci/managed-check/recovery_broker.py": (
+        "dd6071bc1fe9e872f239e50e92b97358b349bbe8170e4d896729c805e42be55f",
+        "22a4cce5519019c86534849930a0f5704a5b7ee9f0b00d4eb06ede8f8869b51d",
+    ),
+    "ci/managed-check/bundle.sha256": (
+        "7e52d1b99613f8940f426bcf06fd16e3f4c60aa31c4e3757a9a82aeea99f2cf4",
+        "d8ea452fadaace93fd7785d045aac330da534c80e9402ef2b26d20f7c9d55a24",
+    ),
+}
+
+GRAPH_CHANGES += (WIDE_ADMISSION_GRAPH,) + tuple(
+    advance_graph(previous, WIDE_ADMISSION_GRAPH)
+    for previous in GRAPH_CHANGES
+    if previous[BUNDLE][1] == WIDE_ADMISSION_GRAPH[BUNDLE][0]
+)
+GRAPH_PATHS |= set(WIDE_ADMISSION_GRAPH)
 
 COMPACT_SCOPE = {"ci/managed-state/state_delta.py", "ci/managed-state/state_origin.py",
                  "ci/managed-state/bundle.sha256"}

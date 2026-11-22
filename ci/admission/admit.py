@@ -123,6 +123,62 @@ def changed_files(api, number):
 
 
 BOAT_CONTEXT = "BFME II / Boat"
+REFUSED_MAIN_RE = re.compile(r"^BFME II check refused this patch \(main ([0-9a-f]{12})\)\Z")
+RELEVANT_MAIN_PREFIXES = ("include/", "config/", "expected/", "baseline/", "ci/managed-check/", "ci/managed-nt2/")
+
+
+def prior_code_refusal(api, head, base):
+    """The 12-char main SHA of a prior measured Boat code refusal for this exact head, or None."""
+    latest = None
+    for page in range(1, STATUS_PAGES + 1):
+        entries = api.call(f"commits/{head}/statuses?per_page=100&page={page}")
+        if not isinstance(entries, list):
+            return None
+        for item in entries:
+            if (isinstance(item, dict) and item.get("context") == BOAT_CONTEXT
+                    and (item.get("creator") or {}).get("id") == BOT_ID):
+                if latest is None or item.get("id", 0) > latest.get("id", 0):
+                    latest = item
+        if len(entries) < 100:
+            break
+    if not latest or latest.get("state") != "failure":
+        return None
+    match = REFUSED_MAIN_RE.fullmatch(latest.get("description") or "")
+    if not match or match.group(1) == base[:12]:
+        return None
+    return match.group(1)
+
+
+def dormant_refusal(api, head, base, pr_files):
+    """Return the prior main prefix when a refused head cannot be fixed by unrelated main moves, else None."""
+    try:
+        old12 = prior_code_refusal(api, head, base)
+        if not old12:
+            return None
+        comp = api.call(f"compare/{old12}...{base}")
+    except (ApiError, ValueError, TypeError, KeyError, AttributeError):
+        return None
+    comp_status = comp.get("status") if isinstance(comp, dict) else None
+    if not isinstance(comp_status, str) or comp_status not in {"ahead", "identical"}:
+        return None
+    changed = comp.get("files")
+    if not isinstance(changed, list) or len(changed) >= 300:
+        return None
+    watched = set(pr_files)
+    prefixes = RELEVANT_MAIN_PREFIXES + (("src/",) if any(p.startswith("include/") for p in pr_files) else ())
+    for item in changed:
+        if not isinstance(item, dict):
+            return None
+        fname = item.get("filename")
+        if not isinstance(fname, str) or not fname:
+            return None
+        prev = item.get("previous_filename")
+        if prev is not None and (not isinstance(prev, str) or not prev):
+            return None
+        for name in (fname, prev):
+            if name and (name in watched or name.startswith(prefixes)):
+                return None
+    return old12
 
 
 def measured_on(api, head, base):
@@ -434,7 +490,8 @@ def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
         raise Stop("an exact pull request head", "missing metadata")
     if expected_head is not None and head != expected_head:
         return f"#{number}: a newer head has its own event; nothing reserved"
-    verdict, state, description = decide(pr, changed_files(api, number), config, auto_headers)
+    files = changed_files(api, number)
+    verdict, state, description = decide(pr, files, config, auto_headers)
     if verdict == "skip":
         return f"#{number}: no eligible pull request targeting main"
     prior = latest_status(api, head)
@@ -452,6 +509,11 @@ def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
         # trusted pull request needs no second compare. A pending verdict is not enough: a direct run whose
         # compiler jobs were refused leaves pending behind, and that head must still be admitted.
         return f"#{number}: commit {head[:12]} already has a compiler verdict on main {base[:12]}"
+    if refresh:
+        prior_main = dormant_refusal(api, head, base, files)
+        if prior_main:
+            return (f"#{number}: commit {head[:12]} was refused on main {prior_main} and no relevant files "
+                    f"changed on main {base[:12]}; waiting for author push")
     if not api.live:
         return f"#{number}: would check source receipts and reserve {kind} commit {head[:12]} on main {base[:12]}"
     if kind != "trusted-narrow" and budget is None:
