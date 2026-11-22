@@ -20,6 +20,8 @@ TRANSPORT = {"ci/managed-state/state_delta.py", "ci/managed-state/state_fetch.py
              "ci/managed-state/bundle.sha256",
              "ci/README.md"}
 RESUME_MIGRATION = ("5df8abc2a97aef390b5a0256a15e163ae4a312566c0ea893187da4a254aea8fc", "14286c7910816519777d5a46c720605d142dff009f5751843d4e4c5263e2111f")
+HYDRATION_MIGRATION = ("c5495ba4c03861220f77ddc48cd6533617fde93b869d51a0accf479fcc760bcb", "ec1ec3a1489c459a4513cfef8937101998a740667c0662d15e4df00f102bce61")
+STATE_FLOW_MIGRATIONS = {RESUME_MIGRATION, HYDRATION_MIGRATION}
 # The one-shot PR orchestration change leaves every comparison input intact.
 COMPACT_GRAPH = {
     "ci/managed-check/landing_read.py": (
@@ -217,7 +219,7 @@ GRAPH_PATHS |= set(BASE_CACHE_GRAPH)
 COMPACT_SCOPE = {"ci/managed-state/state_delta.py", "ci/managed-state/state_origin.py",
                  "ci/managed-state/bundle.sha256"}
 MAX_DIFF_BYTES = 4 * 1024**2
-ANCESTOR_LIMIT = 16
+ANCESTOR_LIMIT = 128
 
 
 def predecessors(root, main):
@@ -254,7 +256,7 @@ def publication_path(root, parent, main, file):
     if file == STATE_FLOW:
         fingerprints = tuple(sha256(git(root, "show", f"{rev}:{file}")).hexdigest()
                              for rev in (parent, main))
-        return fingerprints == RESUME_MIGRATION
+        return fingerprints in STATE_FLOW_MIGRATIONS
     return (file in TRANSPORT or file.startswith(REPORT_DIRS)
             or ("/" not in file and file.endswith(".md")))
 

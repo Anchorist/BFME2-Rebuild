@@ -55,7 +55,11 @@ ADMITTED_TRUSTED = "Admitted by rule: trusted source files only"
 ADMITTED_WIDE = "Admitted by rule: header change, wide check"
 DAILY_LIMIT = "Held: daily limit, retried automatically"
 SOURCE_HOLD = "Held: current source rules have not passed, retried automatically"
-UNMEASURED = "Held: the compiler check failed to run three times; a maintainer will look"
+UNMEASURED = "Held: the compiler check failed to run five times; a maintainer will look"
+OUTAGE = "Held: compiler runners unavailable; retried automatically"
+OUTAGE_WINDOW_SECONDS = 900
+OUTAGE_CONSECUTIVE = 4
+BOAT_JOB_PREFIXES = ("Isolated Boat compiler", "Plan the paired Boat matrix", "Compare wide shard ")
 COMPILER_WORKFLOW = ".github/workflows/managed-pr.yml"
 RUN_NUMBER = re.compile(r"[1-9][0-9]{0,19}")
 SETTLE_SECONDS = 120                    # a finished run's last status is visible well within this
@@ -476,6 +480,83 @@ def on_moved_main(api, number, pr, head, base, prior, clock, find_tree, attempts
     return f"#{number}: source rules requested on main {base[:12]}; admission decides again when they publish"
 
 
+def boat_outage_active(api, clock=None):
+    """Return True if the last OUTAGE_CONSECUTIVE recent Boat dispatch runs all failed on Boat infra."""
+    try:
+        payload = api.call(
+            "actions/workflows/managed-pr.yml/runs?event=repository_dispatch&status=completed&per_page=6"
+        )
+    except (ApiError, OSError, ValueError, KeyError, TypeError):
+        return False
+    runs = (payload or {}).get("workflow_runs") if isinstance(payload, dict) else None
+    if not isinstance(runs, list):
+        return False
+    now = clock() if clock else datetime.datetime.now(datetime.timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=datetime.timezone.utc)
+    recent_runs = []
+    for run in runs:
+        if not isinstance(run, dict) or run.get("conclusion") == "cancelled":
+            continue
+        stamp = run.get("updated_at") or run.get("created_at") or ""
+        try:
+            ts = datetime.datetime.fromisoformat(stamp.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if (now - ts).total_seconds() > OUTAGE_WINDOW_SECONDS:
+            continue
+        recent_runs.append(run)
+        if len(recent_runs) >= OUTAGE_CONSECUTIVE:
+            break
+    if len(recent_runs) < OUTAGE_CONSECUTIVE:
+        return False
+    outage_conclusions = {"failure", "timed_out"}
+    if any(r.get("conclusion") not in outage_conclusions for r in recent_runs):
+        return False
+    # Confirm the newest two failures were Boat runner failures or timeouts, not contributor code refusals.
+    for run in recent_runs[:2]:
+        rid = run.get("id")
+        if not rid:
+            return False
+        try:
+            jobs_doc = api.call(f"actions/runs/{rid}/jobs?per_page=20")
+        except (ApiError, OSError, ValueError, KeyError, TypeError):
+            return False
+        jobs = (jobs_doc or {}).get("jobs") if isinstance(jobs_doc, dict) else None
+        if not isinstance(jobs, list):
+            return False
+        boat_failed = any(
+            isinstance(j, dict)
+            and str(j.get("name") or "").startswith(BOAT_JOB_PREFIXES)
+            and j.get("conclusion") in outage_conclusions
+            for j in jobs
+        )
+        if not boat_failed:
+            return False
+    return True
+
+
+DISPATCH_COOLDOWN_SECONDS = 300
+
+
+def _recently_dispatched(prior, text, clock, refresh):
+    if not (prior and prior.get("state") == "success" and prior.get("description") == text):
+        return False
+    stamp = prior.get("updated_at") or prior.get("created_at") or ""
+    if stamp:
+        try:
+            ts = datetime.datetime.fromisoformat(stamp.replace("Z", "+00:00"))
+        except ValueError:
+            return not refresh
+        now = clock() if clock else datetime.datetime.now(datetime.timezone.utc)
+        if now.tzinfo is None:
+            now = now.replace(tzinfo=datetime.timezone.utc)
+        if ts.tzinfo is None:
+            ts = ts.replace(tzinfo=datetime.timezone.utc)
+        return (now - ts).total_seconds() < DISPATCH_COOLDOWN_SECONDS
+    return not refresh
+
+
 def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
            auto_headers=False, wide_budget=None, *, source_proof=None,
            source_attempts=1, owner_origin=False, expected_head=None, refresh=False, find_tree=None,
@@ -581,8 +662,34 @@ def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
             return f"#{number}: {SOURCE_HOLD}; nothing reserved"
     if not still_current(api, number, pr, head, base):
         return moved
+    text = admitted_text(base, kind)
+    author_id = (pr.get("user") or {}).get("id")
+    # Inspect any existing reservation before the outage breaker so an already-measured or already-dispatched
+    # pull request never loses its Admission success status or double-dispatches.
+    existing = None
     try:
-        result = ledger.reserve(api, budget, (pr.get("user") or {}).get("id"), number, head, base,
+        existing = ledger.find(api, number, head, base, clock)
+    except (ledger.LedgerError, ApiError):
+        existing = None
+    if existing is not None:
+        exact = (existing.get("tree") == tree and existing.get("kind") == kind
+                 and existing.get("author") == author_id)
+        if not exact:
+            return f"#{number}: prior reservation has another tree, kind or author; nothing dispatched"
+        if existing.get("claimed_by"):
+            claimed = unmeasured_claim(api, number, head, base, clock)
+            if claimed is None:
+                if not (prior and prior.get("state") == "success" and prior.get("description") == text):
+                    post(api, head, "success", text)
+                return f"#{number}: exact reservation was already used on main {base[:12]}"
+        elif _recently_dispatched(prior, text, clock, refresh):
+            return f"#{number}: commit {head[:12]} already dispatched on main {base[:12]}; waiting for compiler check"
+    if boat_outage_active(api, clock):
+        if not (prior and prior.get("state") == "pending" and prior.get("description") == OUTAGE):
+            post(api, head, "pending", OUTAGE)
+        return f"#{number}: paused, compiler runners unavailable; retried automatically"
+    try:
+        result = ledger.reserve(api, budget, author_id, number, head, base,
                                 getattr(api, "run_id", ""), getattr(api, "run_attempt", ""), clock, tree, kind)
     except (ledger.LedgerError, ApiError) as exc:
         post(api, head, "pending", DAILY_LIMIT)
@@ -592,11 +699,18 @@ def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
         return f"#{number}: held, daily limit reached"
     if result == "binding-mismatch":
         return f"#{number}: prior reservation has another tree, kind or author; nothing dispatched"
-    text = admitted_text(base, kind)
     if result == "already":
-        # The ledger, not the status, decides: a claimed reservation was measured; an unclaimed one was reserved
-        # by a run that may have stopped before its dispatch, so it is re-issued to this run and dispatched again
-        # (the compiler check's single-use claim fences any duplicate delivery).
+        # Re-check status in case a concurrent admission run just posted success and dispatched.
+        latest_prior = latest_status(api, head)
+        try:
+            current_item = ledger.find(api, number, head, base, clock)
+        except (ledger.LedgerError, ApiError):
+            current_item = None
+        if (current_item is not None and not current_item.get("claimed_by")
+                and _recently_dispatched(latest_prior, text, clock, refresh)):
+            return f"#{number}: commit {head[:12]} already dispatched on main {base[:12]}; waiting for compiler check"
+        # The ledger, not the status, decides: a claimed reservation was measured; an unclaimed one whose
+        # dispatch is stranded (no success status or past cooldown on refresh) is re-issued and dispatched again.
         try:
             issued = ledger.refresh_issuer(api, number, head, base, getattr(api, "run_id", ""),
                                            getattr(api, "run_attempt", ""))
@@ -621,7 +735,7 @@ def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
             if again == "exhausted":
                 if not (prior and prior.get("state") == "pending" and prior.get("description") == UNMEASURED):
                     post(api, head, "pending", UNMEASURED)
-                return f"#{number}: the compiler check ended unmeasured three times; nothing more is dispatched"
+                return f"#{number}: the compiler check ended unmeasured five times; nothing more is dispatched"
             if again != "reissued":
                 return f"#{number}: the reservation changed while it was read; retried automatically"
             issued = "refreshed"
@@ -640,7 +754,7 @@ def handle(api, number, config, base, budget, clock=None, sleep=time.sleep,
 
 def retry_candidates(api):
     numbers = []
-    for page in range(1, 4):
+    for page in range(1, 11):
         entries = api.call(f"pulls?state=open&base=main&sort=created&direction=asc&per_page=100&page={page}")
         for pr in entries:
             if pr.get("draft") is False:
