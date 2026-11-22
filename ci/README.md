@@ -7,7 +7,7 @@ virtual results. You do not need to install anything on your machine.
 | --- | --- | --- |
 | **BFME II / source rules** | The text rules G1 to G8 in [RULES.md](../RULES.md): paths and sizes, annotations, constructs, stand-in types, comments, scope, definitions and names. | GitHub-hosted runner, within about a minute |
 | **BFME II / Boat** | Compiles the changed files with the original 2003 compiler and compares every function with the original program, byte for byte, with its references. | A Boat compiler job for a narrow change or a matrix of Boat jobs for a wider change. Intake and reporting run on GitHub-hosted runners. |
-| **BFME II / Inline virtual** | How the change affects inline virtual functions. | It reports only for now; it does not hold a landing. |
+| **BFME II / Inline virtual** | How the change affects inline virtual functions. | Reports on GitHub-hosted runners. Pending does not hold a landing; a fresh failure blocks landing, and a stale failure triggers remeasurement on current `main`. |
 
 A fourth status, **BFME II / Landing**, says whether and when the pull request lands
 ([ci/landing/README.md](landing/README.md)).
@@ -36,10 +36,15 @@ checks the affected source files.
 ## Pull requests from a fork
 
 - The source rules run at once.
-- The compile check runs after the maintainer has read the change and added the `boat-ok` label. The Landing
-  status shows `Held: awaiting-admission` until then; you do not need to do anything.
-- A new commit pushed afterwards is not compiled by itself: it waits until the maintainer admits that commit
-  (`Held: awaiting-readmission`).
+- **Ready source-only pull requests** (1-8 eligible `src/` paths affecting at most 8 translation units, passing
+  current source rules, within the daily admission limits) are admitted automatically on every push without a
+  `boat-ok` label.
+- **Draft pull requests** run source rules, while automatic Boat admission waits until the pull request is marked
+  **Ready for review**.
+- **Ready header (`include/`) pull requests** (up to 60 files under `src/` and `include/`, passing current
+  source rules) are admitted automatically under the wide daily budget (currently 5/author and 20 total/day).
+- **Other maintainer-scoped pull requests** wait for a maintainer to admit each commit with the `boat-ok` label
+  (`Held: awaiting-admission` / `Held: awaiting-readmission`).
 
 An event started by the maintainer on a pull request from a branch of this repository enters compiler intake
 automatically.
@@ -47,9 +52,11 @@ automatically.
 ## When it lands
 
 A pull request lands by itself, as one squash commit credited to you, when the source rules and the Boat check
-passed on its latest commit against the current `main`, it is ready for review (not a draft), it merges cleanly
-and it changes nothing under `.github/`. Both checks must be current on `main` before landing. Changes under
-`include/` also wait for the maintainer's review ([CODEOWNERS](../.github/CODEOWNERS)). A draft can receive
+passed on its latest commit against the current `main`, Inline virtual is not failing (a fresh failure blocks
+landing and a stale failure triggers remeasurement; pending can land), it is ready for review (not a draft), it
+merges cleanly and it changes nothing under `.github/`. Both checks must be current on `main` before landing. Changes under
+`include/` land automatically once **BFME II / Header rules** pass on current `main`, or once a listed
+maintainer in `ci/landing/landing.json` approves that exact commit when header rules are held (not failed). A draft can receive
 feedback before you choose **Ready for review**.
 
 ## Read the result

@@ -19,9 +19,17 @@ agent reads by itself; this page is for you, and for the agent to read once.
    `ready_at_snapshot=yes`, `reference_kind=def`, `body_check=none-found` and
    a `size_bytes` under about 100. The newest lists are on the
    [`progress` branch](https://github.com/Open-BFME/BFME2-Rebuild/tree/progress).
-2. **Make sure it is free.** Search the open pull requests for the address
-   and the file. Search `src/` and `include/` for the address too: the list
-   may be older than `main`.
+2. **Make sure it is free and claim it first.** Search upstream open pull
+   request descriptions (claims live in bodies, not only titles):
+
+   ```sh
+   gh pr list -R Open-BFME/BFME2-Rebuild --state open --search "<RVA or file>"
+   ```
+
+   Search `src/` and `include/` for the address too, since the worklist can lag
+   `main`. Claim the item before implementing by opening a draft pull request
+   with your `Claim:` line (or taking an exclusive scope from a swarm
+   scheduler).
 3. **Read the original.** Each function has a `// FUNCTION:` line in the file
    that owns it, giving its address (an RVA) and size. Add `0x400000` to the
    RVA and disassemble that range:
@@ -35,36 +43,75 @@ agent reads by itself; this page is for you, and for the agent to read once.
    function under `reference/`. It is a guide to names, types and shape. Where
    it and the bytes disagree, the bytes are right.
 5. **Write the function** directly below its `// FUNCTION:` line, against the
-   shared headers, in ordinary C++.
-6. **Open a draft pull request** whose description starts with the claim and
-   the evidence, as in the [template](../.github/pull_request_template.md):
-   `Claim: 0x005DA563` for one function, `Claim: src/path/File.cpp` for a file.
-7. **Read the report and fix.** The checks answer on the pull request, usually
-   in about four minutes for a one-file change. Allow three rounds. If it
-   still does not match, record what you learned in
-   [hard_rows.md](hard_rows.md), close the pull request and take another item.
+   shared headers and real templates, in ordinary C++. Commit on top of current
+   upstream `main`.
+6. **Run the local source gate on the committed tree before pushing** so you
+   catch G1-G8 issues without spending a compiler run:
 
-When every check passes and the pull request is marked ready, it lands by
-itself.
+   ```sh
+   python3 tools/gates/gate.py . <upstream-main-ref> HEAD --json /tmp/gate.json
+   ```
+
+   Fix every finding until `gate.py` **exits 0 and `/tmp/gate.json` reports
+   `"status": "pass"`**. If you edited a header under `include/`, check syntax
+   and layout (`sizeof`/`offsetof`) with a compatible 32-bit x86 ABI compiler
+   first, and keep function bodies out of shared headers unless supported by
+   retail evidence.
+7. **Mark the pull request Ready for review** with the claim and evidence in
+   the [template](../.github/pull_request_template.md): `Claim: 0x005DA563` for
+   one function, `Claim: src/path/File.cpp` for a file. Draft pull requests can
+   run source rules, while **automatic Boat admission waits until the pull
+   request is marked Ready for review** (maintainer-started checks are
+   separate).
+8. **Read the exact statuses and fix.** Check **BFME II / Admission**,
+   **BFME II / Boat** (open **Details** for partial offsets and instruction
+   excerpts when available), and **BFME II / Landing**. Fix measured code
+   refusals and push (up to three rounds). Wait on automatic budget/infra
+   retries (eligible unmeasured runs retry up to twice before a maintainer
+   hold), and rebase on an explicit conflict. If it still does not match
+   cleanly after three measured rounds, record what you learned in
+   [hard_rows.md](hard_rows.md), close the pull request, and take another item.
+
+When current source rules and Boat pass on a ready source-only pull request
+against current `main` with a clean merge and no landing hold, it lands on
+`main` automatically. (**BFME II / Inline virtual** pending can land; a fresh
+failure blocks; a stale failure triggers re-measurement.)
 
 ## From a fork
 
-Your pull requests come from a fork. The source rules answer at once. The
-compile check needs one of the project's machines, so it waits until the
-maintainer admits the pull request with the `boat-ok` label; the pull request
-says so while it waits. Nothing from a pull request is ever run, only
-compiled, and the checks themselves always come from `main`.
+- **Ready source-only pull requests** (1-8 eligible `src/` paths affecting at
+  most 8 translation units, passing current source rules, within daily limits
+  of 30/author and 150 total): admitted automatically, compiled on Boat, and
+  auto-landed when green—no `boat-ok` label needed.
+- **Header pull requests (`include/`):** ready fork pull requests changing
+  `include/` (up to 60 files under `src/` and `include/`, passing current
+  source rules) are admitted automatically under the wide daily budget
+  (currently 5/author and 20 total/day). Boat compares all affected translation
+  units, including transitive includers (narrow for at most 8 affected units;
+  wide for larger eligible sets). Header PRs auto-land once **BFME II / Header rules** pass on current `main`
+  (including member layout changes proven by a matching typed-access witness
+  under H5); header PRs whose Header rules are held (not failed) wait for
+  approval on that exact head from a listed maintainer in
+  `ci/landing/landing.json`.
+- Nothing from a pull request is ever executed: only compiled inside a sealed,
+  network-isolated compiler sandbox, and all checks run from `main`.
 
-## Running several agents
+## Running several agents (swarm tips)
 
-- One item for each agent, and one item for each pull request.
-- Claim first, then work: the draft pull request is the claim. Two agents on
-  the same function waste both.
-- Keep header changes out of a first pull request. A change to a header that
-  many files include is rebuilt and compared for all of them, takes twelve to
-  sixteen minutes, and anything under `include/` waits for the maintainer.
-- Start each agent from a fresh `main`. The repository changes many times a
-  day.
+- **Claim first and spread across the worklist:** search upstream open PR
+  descriptions (`gh pr list -R Open-BFME/BFME2-Rebuild --state open --search ...`)
+  and assign each agent an exclusive file or address slice so agents never pile
+  onto the top row.
+- **One logical item per PR:** G6 caps substantive edits at 3 source files
+  (with the narrow Draft-promotion exception); staying within 1-8 `src/` paths
+  and <= 8 affected TUs keeps your PR on the fast automatic lane.
+- **Pre-flight locally:** commit first, then run `tools/gates/gate.py` before
+  pushing; if you have Visual C++ 7.1 locally, use the local judge workflow in
+  [tools/README.md](../tools/README.md) (do not run
+  `tools/compiler-image/build.sh` on a workstation).
+- **Prefer source-only first:** start with rows whose real headers already
+  exist; only edit `include/` when a declaration is genuinely missing.
+- **Start from a fresh `main`:** `main` advances frequently.
 
 ## What gets a pull request refused
 
@@ -75,8 +122,9 @@ are the ones agents meet most:
 - A `void *` or an integer standing in for a type the code shows.
 - A second definition of a class, struct or global that already exists.
 - A changed `// FUNCTION:` or `// cl:` line.
-- A new file, a function moved between files, or a change outside `src/` and
-  `include/`.
+- A new file (except a permanent header added when replacing and deleting an
+  `include/Draft/` header), a function moved between files, or a change outside
+  `src/` and `include/`.
 - A comment that carries an address, a date or an author tag.
 - Anything that matched before and no longer does.
 
@@ -97,11 +145,17 @@ Task: write one unwritten function.
    and that src/ and include/ hold no body for it.
 2. Disassemble it from baseline/game.dat (address = RVA + 0x400000) and read
    its Zero Hour counterpart under reference/.
-3. Write the body below its FUNCTION line in the owning file. Real types, no
-   casts to force a match, no inline assembly, no new files.
-4. Open a draft pull request that starts with "Claim: <address>" and gives
-   the evidence in the template's form.
-5. Read the report from the checks. Fix and push, three rounds at most. If it
-   passes, mark the pull request ready. If not, say what you learned and
-   close it.
+3. Claim the item before writing code (draft PR with "Claim: <address>" or
+   exclusive swarm assignment).
+4. Write the body below its FUNCTION line in the owning file (real types, no
+   casts to force a match, no inline assembly, no new files), commit your change
+   on current upstream main, and run
+   `python3 tools/gates/gate.py . <upstream-main-ref> HEAD --json /tmp/gate.json`
+   until it exits 0 with `"status": "pass"`.
+5. Mark the pull request Ready for review with the evidence in the template's
+   form (automatic Boat admission runs on ready PRs, not drafts).
+6. Read the Admission, Boat, and Landing statuses. Fix measured code refusals
+   and push, three rounds at most (wait on automatic budget/infra retries). If
+   it passes, it will land automatically. If not, record what you learned in
+   docs/hard_rows.md or an issue and close it.
 ```

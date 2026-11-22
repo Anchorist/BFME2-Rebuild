@@ -30,9 +30,10 @@ Most of this code is written by AI coding agents, and yours are welcome. Paste t
 
 ```text
 Fork and clone https://github.com/Open-BFME/BFME2-Rebuild, then read AGENTS.md
-and docs/agents.md. Write one small unwritten function from the worklist and
-open a draft pull request for it. Fix it from the report the checks post, three
-rounds at most, then tell me the link and what the checks said.
+and docs/agents.md. Pick one small unclaimed function from the worklist, claim
+it before writing code, run tools/gates/gate.py locally until it passes, and
+open a ready-for-review pull request for it. Fix any measured code refusal from the report, three rounds at
+most, then tell me the link and what the checks said.
 ```
 
 There is no compiler to install: machines check every pull request. Prefer to

@@ -60,7 +60,9 @@ def report_only_push(root, sha, event):
         return False
     prefixes = tuple(prefix.encode("ascii") for prefix in REPORT_DIRS)
     scope_paths = {path.encode("ascii") for path in COMPACT_SCOPE}
-    unclassified = {name for name in names if name != b"README.md" and not name.startswith(prefixes)}
+    unclassified = {name for name in names if name != b"ci/README.md"
+                    and not (b"/" not in name and name.endswith(b".md"))
+                    and not name.startswith(prefixes)}
     if not unclassified:
         return bool(names)
     graph_paths = {path for path in GRAPH_PATHS if path.encode("ascii") in unclassified}
