@@ -255,6 +255,9 @@ def evaluate(api, number, main, config):
                      f"{printable(text, 90)}; it waits and never fails, you do not need to do anything")
             elif rules.get("state") == "pending" and text.startswith("Held: rule not built"):
                 hold("header-rule-not-built", "every header rule to be in place", printable(text, 90))
+            elif rules.get("state") == "pending" and text.startswith("Held:"):
+                hold("header-rules", f"{HEADER_RULES_CONTEXT} success or listed header approval",
+                     f"{printable(text, 90)}; a listed maintainer approval can clear this hold")
             else:
                 hold("header-rules", f"{HEADER_RULES_CONTEXT} on head {head[:12]}", "no result yet")
     elif header_change:

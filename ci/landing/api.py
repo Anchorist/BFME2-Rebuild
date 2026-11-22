@@ -5,13 +5,20 @@ unless the job runs in live mode, so a dry run cannot change anything.
 """
 import json
 import re
+import time
 import urllib.error
 import urllib.request
 
 LIMIT = 4 * 1024**2
+RETRY_STATUSES = {500, 502, 503, 504}
+GET_ATTEMPTS = 3
 
 
 class ApiError(Exception):
+    pass
+
+
+class TransientApiError(ApiError):
     pass
 
 
@@ -54,8 +61,8 @@ class Api:
         except urllib.error.HTTPError as exc:
             code, raw = exc.code, exc.read(LIMIT + 1)
         except (urllib.error.URLError, OSError) as exc:
-            raise ApiError(f"Expected a response from GitHub for {method} {path.split('?')[0]}. "
-                           f"Found a connection failure ({type(exc).__name__}).") from None
+            raise TransientApiError(f"Expected a response from GitHub for {method} {path.split('?')[0]}. "
+                                    f"Found a connection failure ({type(exc).__name__}).") from None
         if len(raw) > LIMIT:
             raise ApiError(f"Expected at most {LIMIT} bytes from {path.split('?')[0]}. Found more.")
         try:
@@ -64,11 +71,23 @@ class Api:
             payload = None
         return code, payload
 
+    _sleep = staticmethod(time.sleep)
+
     def call(self, path):
-        code, payload = self._send("GET", path, None)
-        if code != 200:
-            raise ApiError(f"Expected HTTP 200 from GET {path.split('?')[0]}. Found HTTP {code}.")
-        return payload
+        for attempt in range(GET_ATTEMPTS):
+            try:
+                code, payload = self._send("GET", path, None)
+            except TransientApiError:
+                if attempt + 1 >= GET_ATTEMPTS:
+                    raise
+                self._sleep(1 << attempt)
+                continue
+            if code == 200:
+                return payload
+            if code not in RETRY_STATUSES or attempt + 1 >= GET_ATTEMPTS:
+                raise ApiError(f"Expected HTTP 200 from GET {path.split('?')[0]}. Found HTTP {code}.")
+            self._sleep(1 << attempt)
+        raise ApiError(f"Expected HTTP 200 from GET {path.split('?')[0]}. Found no response.")
 
     def write(self, method, path, body):
         if not self.live:

@@ -601,5 +601,67 @@ class Land(unittest.TestCase):
         self.assertEqual(caught.exception.code, "receipt")
 
 
+
+
+class LandingResilienceTests(unittest.TestCase):
+    def test_api_call_retries_transient_5xx_and_connection_errors(self):
+        from api import Api, ApiError, TransientApiError
+        api = Api("Open-BFME/BFME2-Rebuild", "ghp_" + "a" * 30, live=False)
+        sleeps = []
+        api._sleep = sleeps.append
+        responses = [(500, None), TransientApiError("conn"), (200, {"ok": True})]
+        def fake_send(method, path, body):
+            item = responses.pop(0)
+            if isinstance(item, Exception):
+                raise item
+            return item
+        api._send = fake_send
+        self.assertEqual(api.call("pulls/18/files"), {"ok": True})
+        self.assertEqual(sleeps, [1, 2])
+
+    def test_api_call_does_not_retry_404_or_exhausted_500(self):
+        from api import Api, ApiError
+        api = Api("Open-BFME/BFME2-Rebuild", "ghp_" + "a" * 30, live=False)
+        sleeps = []
+        api._sleep = sleeps.append
+        calls = []
+        def fake_404(method, path, body):
+            calls.append(path)
+            return (404, None)
+        api._send = fake_404
+        with self.assertRaises(ApiError):
+            api.call("pulls/99/files")
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(sleeps, [])
+
+        calls.clear()
+        def fake_500(method, path, body):
+            calls.append(path)
+            return (500, None)
+        api._send = fake_500
+        with self.assertRaises(ApiError):
+            api.call("pulls/18/files")
+        self.assertEqual(len(calls), 3)
+        self.assertEqual(sleeps, [1, 2])
+
+    def test_held_header_rules_pending_preserves_reason_text(self):
+        def add_held_header(fx):
+            fx["pulls/2/files?per_page=100&page=1"].append({"filename": "include/A.h", "status": "modified"})
+            head = fx["pulls/2"]["head"]["sha"]
+            fx[f"commits/{head}/statuses?per_page=100&page=1"].append({
+                "id": 99,
+                "context": lander.HEADER_RULES_CONTEXT,
+                "state": "pending",
+                "description": f"Held: H2 no exact protected key (main {MEASURED[:12]})",
+                "creator": {"id": 41898282},
+            })
+        cfg = {**CONFIG, "auto_headers": True, "approvers": [1760627]}
+        decision = lander.evaluate(FakeApi(live=False, main=MEASURED, edit=add_held_header), 2, MEASURED, cfg)
+        first = decision["reasons"][0]
+        self.assertEqual((first.code, first.final), ("header-rules", False))
+        self.assertIn("H2 no exact protected key", first.found)
+        self.assertIn("listed header approval", first.expected)
+
+
 if __name__ == "__main__":
     unittest.main()
